@@ -173,7 +173,7 @@ void VcpThread::setvcp(uint8_t feature_code, uint8_t sl) {
             //                                    QString("Verification failed"));
 
             // undefined reference to VcpThread::postError(Qstring)
-            emit postError(QString("Verification failed"));
+            // emit postError(QString("Verification failed"));
        }
     }
 
