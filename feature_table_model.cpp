@@ -1,11 +1,18 @@
-#include "feature_table_model.h"
+/* feature_table_model.cpp */
+
 #include <assert.h>
-#include <QVector>
 #include <iostream>
+
+#include <QtCore/QVector>
+#include <QtWidgets/QWidget>
+
 #include "ddcutil_c_api.h"
+
 #include "ddcui_globals.h"
 #include "feature_value.h"
-#include <QWidget>
+
+#include "feature_table_model.h"
+
 
 // #include <QAbstractItemModel>
 
@@ -56,7 +63,6 @@ QVariant FeatureTableModel::headerData(int section, Qt::Orientation orientation,
                 break;
             default:
                 break;
-
             }
         }
     }

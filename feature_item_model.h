@@ -1,7 +1,10 @@
+/* feature_item_model.h */
+
 #ifndef FEATUREITEMMODEL_H
 #define FEATUREITEMMODEL_H
 
-#include <QAbstractListModel>
+#include <QtCore/QAbstractListModel>
+
 #include "feature_base_model.h"
 #include "feature_value.h"
 

@@ -1,5 +1,7 @@
+/* ui_main.cpp */
+
 #include "ui_main.h"
-#include <QApplication>
+#include <QtWidgets/QApplication>
 
 
     void Ui_MainWindow::setupUi()

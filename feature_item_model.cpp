@@ -2,9 +2,9 @@
 #include "ddcutil_c_api.h"
 #include "ddcutil_types.h"
 #include "feature_value.h"
-#include <QVector>
+#include <QtCore/QVector>
 #include "assert.h"
-#include <QByteArray>
+#include <QtCore/QByteArray>
 #include <iostream>
 
 using namespace std;

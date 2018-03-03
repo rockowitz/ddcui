@@ -1,12 +1,12 @@
 /* feature_value.cpp */
 
-#include <QMetaType>
+// #include <QMetaType>
 #include <string.h>
 #include "ddcutil_types.h"
 
 #include "feature_value.h"
 
-FeatureValue::FeatureValue() {}
+// FeatureValue::FeatureValue() {}
 
 FeatureValue::FeatureValue(
         uint8_t                feature_code,

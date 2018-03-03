@@ -1,8 +1,14 @@
+/* ui_main.h */
 
 #ifndef UI_MAIN_H
 #define UI_MAIN_H
 
 #include <QtCore/QVariant>
+#include <QtWidgets/QtWidgets>
+
+// #include <QtWidgets/QAction>
+
+#ifdef OLD
 #include <QAction>
 #include <QApplication>
 #include <QButtonGroup>
@@ -22,6 +28,7 @@
 #include <QToolBar>
 #include <QWidget>
 #include <QMainWindow>
+#endif
 
 QT_BEGIN_NAMESPACE
 

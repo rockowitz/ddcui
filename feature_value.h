@@ -3,7 +3,7 @@
 #ifndef FEATURE_VALUE_H
 #define FEATURE_VALUE_H
 
-#include <QMetaType>
+#include <QtCore/QMetaType>
 // #include <QString>
 #include "ddcutil_types.h"
 
@@ -12,7 +12,7 @@ class FeatureValue
 {
 
 public:
-    FeatureValue();
+    FeatureValue() {}
 
     explicit     // ???
     FeatureValue(

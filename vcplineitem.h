@@ -1,17 +1,21 @@
+/* vcplineitem.h */
 
 #ifndef VCPLINEITEM_H
 #define VCPLINEITEM_H
 
-#include <QDialog>
+#include <QtWidgets/QDialog>
 #include <QtCore/QVariant>
+
+#include <QtWidgets/QWidget>
+// #include <QtWidgets/QApplication>
+// #include <QtWidgets/QButtonGroup>
+// #include <QtWidgets/QHeaderView>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QListWidgetItem>
+#include <QtWidgets/QStackedWidget>
+
 // #include <QtGui/QAction>   // Qt4
-#include <QApplication>
-#include <QButtonGroup>
-#include <QHeaderView>
-#include <QLabel>
-#include <QStackedWidget>
-#include <QWidget>
-#include <QListWidgetItem>
+
 #include "ddcutil_c_api.h"
 
 // QT_BEGIN_NAMESPACE

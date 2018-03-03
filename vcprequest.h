@@ -1,14 +1,13 @@
-/* VcpRequestQueue and the VcpRequest classes that populate the queue */
+/* vcprequest.h - VcpRequestQueue and the VcpRequest classes that populate the queue */
 
 #ifndef VCPREQUEST_H
 #define VCPREQUEST_H
 
 #include <stdint.h>
 
-// #include <QObject>
-#include <QMutex>
-#include <QQueue>
-#include <QWaitCondition>
+#include <QtCore/QMutex>
+#include <QtCore/QQueue>
+#include <QtCore/QWaitCondition>
 
 #include <ddcutil_c_api.h>
 

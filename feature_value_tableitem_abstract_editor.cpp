@@ -1,3 +1,5 @@
+/* feature_value_tableitem_abstract_editor.cpp */
+
 #include "feature_value_tableitem_abstract_editor.h"
 
 FeatureValueTableItemAbstractEditor::FeatureValueTableItemAbstractEditor(QWidget *parent)

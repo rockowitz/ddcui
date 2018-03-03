@@ -1,8 +1,10 @@
+/* vcpthread.h */
+
 #ifndef VCPTHREAD_H
 #define VCPTHREAD_H
 
-#include <QObject>
-#include <QThread>
+#include <QtCore/QObject>
+#include <QtCore/QThread>
 
 #include "ddcutil_c_api.h"
 

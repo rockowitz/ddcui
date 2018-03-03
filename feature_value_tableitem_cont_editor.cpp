@@ -1,12 +1,15 @@
-#include "feature_value_tableitem_cont_editor.h"
+/* feature_value_tableitem_cont_editor.cpp */
+
 #include <iostream>
 #include <stdio.h>
 #include <string.h>
-#include <QLayout>
-#include <QPaintEvent>
-#include <QRect>
-#include <QRegion>
 
+#include <QtCore/QRect>
+#include <QtGui/QPaintEvent>
+#include <QtGui/QRegion>
+#include <QtWidgets/QLayout>
+
+#include "feature_value_tableitem_cont_editor.h"
 
 
 FeatureValueTableItemContEditor::FeatureValueTableItemContEditor(QWidget *parent) :
@@ -38,9 +41,7 @@ FeatureValueTableItemContEditor::FeatureValueTableItemContEditor(QWidget *parent
   layout->addWidget(_maxTitle);
   layout->addWidget(_maxValue);
   setLayout(layout);
-
 }
-
 
 
 void FeatureValueTableItemContEditor::setFeatureValue(const FeatureValue &fv) {
@@ -65,12 +66,13 @@ void FeatureValueTableItemContEditor::setFeatureValue(const FeatureValue &fv) {
 }
 
 FeatureValue FeatureValueTableItemContEditor::featureValue() {
-        printf("============> (FeatureValueTableItemContEditor::featureValue)\n" ); fflush(stdout);
+    printf("============> (FeatureValueTableItemContEditor::featureValue)\n" ); fflush(stdout);
     int curval = _curSlider->value();
     _fv._sh = curval >> 8;
     _fv._sl = curval & 0xff;
     return _fv;
 }
+
 
 void FeatureValueTableItemContEditor::setCurValue(ushort curval) {
     _fv._sh = curval >> 8;
@@ -79,11 +81,13 @@ void FeatureValueTableItemContEditor::setCurValue(ushort curval) {
     _curSlider->setValue(curval);
 }
 
+
 void FeatureValueTableItemContEditor::paintEvent(QPaintEvent *event)  {
-   // printf("============> (FeatureValueTableItemContEditor::paintEvent)\n" ); fflush(stdout);
-   QRect rect = event->rect();
-   QRegion region = event->region();
+    // printf("============> (FeatureValueTableItemContEditor::paintEvent)\n" ); fflush(stdout);
+    QRect rect = event->rect();
+    QRegion region = event->region();
 }
+
 
 QSize FeatureValueTableItemContEditor::sizeHint() const {
     printf("============> (FeatureValueTableItemContEditor::sizeHint)\n" ); fflush(stdout);

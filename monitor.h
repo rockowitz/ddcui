@@ -3,9 +3,9 @@
 #ifndef MONITOR_H
 #define MONITOR_H
 
-#include <QObject>
-#include <QHash>
-#include <QString>
+#include <QtCore/QHash>
+#include <QtCore/QObject>
+#include <QtCore/QString>
 
 #include <ddcutil_c_api.h>
 

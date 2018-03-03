@@ -1,7 +1,9 @@
+/* feature_table_model.h */
+
 #ifndef FEATURETABLEMODEL_H
 #define FEATURETABLEMODEL_H
 
-#include <QAbstractTableModel>
+#include <QtCore/QAbstractTableModel>
 
 #include "feature_base_model.h"
 

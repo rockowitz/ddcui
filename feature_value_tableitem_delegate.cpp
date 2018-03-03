@@ -1,13 +1,18 @@
-#include "feature_value_tableitem_delegate.h"
-#include "feature_value_tableitem_cont_editor.h"
-#include "feature_value_tableitem_cb_editor.h"
-#include "feature_value_tableitem_abstract_editor.h"
-#include "feature_value.h"
-#include <iostream>
+/* feature_value_tableitem_delegate.cpp */
+
 #include <stdio.h>
 #include <string.h>
-#include <QApplication>
+#include <iostream>
+
+#include <QtWidgets/QApplication>
+
 #include "ddcui_globals.h"
+#include "feature_value_tableitem_cb_editor.h"
+#include "feature_value_tableitem_cont_editor.h"
+#include "feature_value_tableitem_delegate.h"
+#include "feature_value.h"
+
+#include "feature_value_tableitem_abstract_editor.h"
 
 
 FeatureValueTableItemDelegate::FeatureValueTableItemDelegate()

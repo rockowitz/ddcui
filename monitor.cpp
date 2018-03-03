@@ -3,7 +3,7 @@
 #include <assert.h>
 #include <string.h>
 
-#include <QVector>
+#include <QtCore/QVector>
 
 #include "feature_value.h"
 #include "monitor.h"

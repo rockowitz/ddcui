@@ -1,8 +1,10 @@
+/* feature_value_tableitem_delegate.h */
+
 #ifndef FEATURE_VALUE_TABLEITEM_DELEGATE_H
 #define FEATURE_VALUE_TABLEITEM_DELEGATE_H
 
-#include <QObject>
-#include <QStyledItemDelegate>
+#include <QtCore/QObject>
+#include <QtWidgets/QStyledItemDelegate>
 // #include "c_vcp.h"
 
 class FeatureValueTableItemDelegate : public QStyledItemDelegate
@@ -52,7 +54,6 @@ public:
     // public/protected/private ignored by metaobject system
 public slots:    // StarDelegate   - was private slots
     void commitAndCloseEditor();
-
 };
 
 #endif // FEATURE_VALUE_TABLEITEM_DELEGATE_H

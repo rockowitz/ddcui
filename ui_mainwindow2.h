@@ -1,16 +1,10 @@
-/********************************************************************************
-** Form generated from reading UI file 'mainwindow.ui'
-**
-** Created by: Qt User Interface Compiler version 4.8.7
-**
-** WARNING! All changes made in this file will be lost when recompiling UI file!
-********************************************************************************/
+/* ui_mainwindow2.h */
 
-#ifndef XXX_H
-#define XXX_H
+#ifndef UI_MAINWINDOW2_H
+#define UI_MAINWINDOW2_H
 
 #include <QtCore/QVariant>
-#include <QtWidgets>
+#include <QtWidgets/QtWidgets>
 #ifdef OLD
 #include <QtGui/QAction>
 #include <QtGui/QApplication>
@@ -443,4 +437,4 @@ namespace Ui {
 
 QT_END_NAMESPACE
 
-#endif // XXX_H
+#endif // UI_MAINWINDOW2_H

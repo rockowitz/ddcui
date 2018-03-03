@@ -1,8 +1,13 @@
-#include "vcplineitem.h"
-#include "ddcutil_c_api.h"
+/* vcplineitem.h */
+
 //#include <assert.h>
 #include <iostream>
-#include <QHBoxLayout>
+
+#include "ddcutil_c_api.h"
+
+#include <QtWidgets/QHBoxLayout>
+
+#include "vcplineitem.h"
 
 using namespace std;
 

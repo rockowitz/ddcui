@@ -1,7 +1,10 @@
+/* feature_value_tableitem_editor.h */
+
 #ifndef FEATURE_VALUE_TABLEITEM_EDITOR_H
 #define FEATURE_VALUE_TABLEITEM_EDITOR_H
 
-#include <QWidget>
+#include <QtWidgets/QWidget>
+
 #include "feature_value.h"
 // #include "simple_feature_value.h"
 
@@ -22,7 +25,6 @@ public:
     FeatureValue featureValue() {
         return _featureValue;
     }
-
 
 // signals are protected in QT4, public in QT5
 signals:

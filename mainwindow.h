@@ -1,14 +1,18 @@
+/* mainwindow.h */
+
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
+#include <QtWidgets/QtWidgets>
 #include <ddcutil_types.h>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QPlainTextEdit>
+#include <QtWidgets/QStackedWidget>
+#include <QtWidgets/QTableView>
+
 #include "misc.h"
 #include "monitor.h"
-#include <QComboBox>
-#include <QPlainTextEdit>
-#include <QTableView>
-#include <QStackedWidget>
 
 namespace Ui {
 class MainWindow;

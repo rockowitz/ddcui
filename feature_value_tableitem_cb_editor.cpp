@@ -4,11 +4,11 @@
 #include <string.h>
 #include <iostream>
 
-#include <QLayout>
-#include <QPaintEvent>
-#include <QRect>
-#include <QRegion>
-#include <QComboBox>
+#include <QtCore/QRect>
+#include <QtGui/QPaintEvent>
+#include <QtGui/QRegion>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QLayout>
 
 #include <ddcutil_c_api.h>
 
@@ -29,7 +29,6 @@ FeatureValueTableItemCbEditor::FeatureValueTableItemCbEditor(QWidget *parent) :
   layout->addWidget(_cb);
   setLayout(layout);
 }
-
 
 
 int FeatureValueTableItemCbEditor::findItem(uint8_t sl_value) {
@@ -58,13 +57,12 @@ void FeatureValueTableItemCbEditor::setFeatureValue(const FeatureValue &fv) {
 
         if (cur) {
             while (cur->value_name) {
-                // printf("cur=%p\n", cur);  fflush(stdout);
-                printf("(%s) value code: 0x%02x, value_name: %s\n", __func__, cur->value_code, cur->value_name);  fflush(stdout);
+                // printf("(%s) value code: 0x%02x, value_name: %s\n",
+                //        __func__, cur->value_code, cur->value_name);  fflush(stdout);
                 QString s;
                 s.sprintf("%s (0x%02x)", cur->value_name, cur->value_code);
                 _cb->addItem(s, QVariant(cur->value_code));
                 cur++;     // ??
-                // cur += sizeof(DDCA_Feature_Value_Entry);
             }
         }
 
@@ -76,12 +74,12 @@ void FeatureValueTableItemCbEditor::setFeatureValue(const FeatureValue &fv) {
         else {
             printf("(FeatureValueTableItemCbEditor::%s) Unable to find value 0x%02x\n", __func__, _fv._sl);
         }
-
     }
 }
 
+
 FeatureValue FeatureValueTableItemCbEditor::featureValue() {
-        printf("============> (FeatureValueTableItemCbEditor::featureValue)\n" ); fflush(stdout);
+    printf("============> (FeatureValueTableItemCbEditor::featureValue)\n" ); fflush(stdout);
     // get sl from combobox
     int ndx = _cb->currentIndex();
     QVariant qv = _cb->itemData(ndx);
@@ -92,18 +90,21 @@ FeatureValue FeatureValueTableItemCbEditor::featureValue() {
     return _fv;
 }
 
+
 void FeatureValueTableItemCbEditor::setCurValue(ushort curval) {
     _fv._sh = curval >> 8;
     _fv._sl = curval & 0xff;
     // _curSpinBox->setValue(curval);
-   //  _curSlider->setValue(curval);
+    // _curSlider->setValue(curval);
 }
 
+
 void FeatureValueTableItemCbEditor::paintEvent(QPaintEvent *event)  {
-           // printf("============> (FeatureValueTableItemCbEditor::paintEvent)\n" ); fflush(stdout);
-           // QRect rect = event->rect();
-           // QRegion region = event->region();
+    // printf("============> (FeatureValueTableItemCbEditor::paintEvent)\n" ); fflush(stdout);
+    // QRect rect = event->rect();
+    // QRegion region = event->region();
 }
+
 
 // why needed, not finding function in parent
 QSize FeatureValueTableItemCbEditor::sizeHint() const {

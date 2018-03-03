@@ -1,14 +1,12 @@
+/* feature_value_tableitem_cb_editor.h */
+
 #ifndef FEATURE_VALUE_TABLEITEM_CB_EDITOR_H
 #define FEATURE_VALUE_TABLEITEM_CB_EDITOR_H
 
-#include <QWidget>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QComboBox>
+
 #include "feature_value.h"
-// #include "simple_feature_value.h"
-#include <QWidget>
-#include <QSlider>
-#include <QSpinBox>
-#include <QLabel>
-#include <QComboBox>
 #include "feature_value_tableitem_abstract_editor.h"
 
 class FeatureValueTableItemCbEditor : public FeatureValueTableItemAbstractEditor
@@ -29,9 +27,9 @@ signals:
     void editingFinished();
 
 protected:
-        void paintEvent(QPaintEvent *event) override;
-#ifdef ARE_THESE_NEEDED
+    void paintEvent(QPaintEvent *event) override;
 
+#ifdef ARE_THESE_NEEDED
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
 #endif

@@ -1,8 +1,12 @@
+/* feature_value_tableitem_abstract_editor.h */
+
 #ifndef FEATURE_VALUE_TABLEITEM_ABSTRACT_EDITOR_H
 #define FEATURE_VALUE_TABLEITEM_ABSTRACT_EDITOR_H
 
-#include <QWidget>
+#include <QtWidgets/QWidget>
+
 #include "feature_value.h"
+
 
 class FeatureValueTableItemAbstractEditor : public QWidget
 {
@@ -24,15 +28,14 @@ protected:
     virtual void paintEvent(QPaintEvent *event) =0;
 
 #ifdef ARE_THESE_NEEDED
-void mouseMoveEvent(QMouseEvent *event) override;
-void mouseReleaseEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
 #endif
 
 public slots:
 
 protected:
-FeatureValue  _fv;   // should probably be a pointer
-
+    FeatureValue  _fv;   // should probably be a pointer
 };
 
 #endif // FEATURE_VALUE_TABLEITEM_ABSTRACT_EDITOR_H

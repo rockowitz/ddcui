@@ -1,8 +1,11 @@
-#include "featureselectiondialog.h"
-#include "ui_featureselectiondialog.h"
-#include <iostream>
-#include "stdio.h"
+/* featureselectiondialog.cpp */
+
 #include <assert.h>
+#include <stdio.h>
+#include <iostream>
+
+#include "ui_featureselectiondialog.h"
+#include "featureselectiondialog.h"
 
 
 using namespace std;

@@ -1,8 +1,12 @@
+/* featureselectiondialog.h */
+
 #ifndef FEATURESELECTIONDIALOG_H
 #define FEATURESELECTIONDIALOG_H
 
-#include <QDialog>
+// #include <QtWidgets/QDialog>
+
 #include <ddcutil_c_api.h>
+
 #include "mainwindow.h"
 #include "misc.h"
 
@@ -47,8 +51,6 @@ private:
     MainWindow * _mainWindow;
 
     FeatureSelector * _feature_selector = nullptr;
-
-
 };
 
 #endif // FEATURESELECTIONDIALOG_H

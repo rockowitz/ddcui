@@ -3,8 +3,8 @@
 #include <assert.h>
 #include <iostream>
 
-#include <QVector>
-#include <QByteArray>
+#include <QtCore/QVector>
+#include <QtCore/QByteArray>
 
 #include "ddcutil_types.h"
 #include "feature_value.h"

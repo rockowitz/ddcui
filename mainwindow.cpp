@@ -1,16 +1,22 @@
-#include "mainwindow.h"
-#include "ui_mainwindow2.h"
-#include <QMessageBox>
-#include <ddcutil_c_api.h>
-// #include "inmemoryfile.h"
+/* mainwindow.cpp */
+
 #include <iostream>
-#include <QFont>
-#include "featureselectiondialog.h"
-#include "monitor.h"
-#include "vcplineitem.h"
+
+#include <QtGui/QFont>
+#include <QtWidgets/QMessageBox>
+
+#include <ddcutil_c_api.h>
+
 #include "feature_item_model.h"
 #include "feature_table_model.h"
 #include "feature_value_tableitem_delegate.h"
+#include "featureselectiondialog.h"
+#include "monitor.h"
+#include "ui_mainwindow2.h"
+#include "vcplineitem.h"
+// #include "inmemoryfile.h"
+
+#include "mainwindow.h"
 
 using namespace std;
 

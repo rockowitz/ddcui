@@ -1,8 +1,11 @@
-#include "vcpthread.h"
-#include <iostream>
-#include <string.h>
-#include <QMessageBox>
+/* vcpthread.cpp */
 
+#include <string.h>
+#include <iostream>
+
+#include <QtWidgets/QMessageBox>
+
+#include "vcpthread.h"
 
 
 using namespace std;

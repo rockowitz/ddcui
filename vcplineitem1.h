@@ -1,7 +1,7 @@
 #ifndef VCPLINEITEM_H
 #define VCPLINEITEM_H
 
-#include <QWidget>
+#include <QtWidgets/QWidget>
 
 class VcpLineItem : public QListWidgetItem
 {

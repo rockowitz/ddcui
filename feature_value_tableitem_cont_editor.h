@@ -1,13 +1,14 @@
+/* feature_value_tableitem_cont_editor.h */
+
 #ifndef FEATURE_VALUE_TABLEITEM_CONT_EDITOR_H
 #define FEATURE_VALUE_TABLEITEM_CONT_EDITOR_H
 
-#include <QWidget>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QSlider>
+#include <QtWidgets/QSpinBox>
+#include <QtWidgets/QWidget>
+
 #include "feature_value.h"
-// #include "simple_feature_value.h"
-#include <QWidget>
-#include <QSlider>
-#include <QSpinBox>
-#include <QLabel>
 #include "feature_value_tableitem_abstract_editor.h"
 
 class FeatureValueTableItemContEditor : public FeatureValueTableItemAbstractEditor
