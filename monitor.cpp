@@ -20,7 +20,7 @@ Monitor::~Monitor() {
 
 
 DDCA_Feature_List
-Monitor::getFeatureList(DDCA_Feature_List_Id feature_list_id) {
+Monitor::getFeatureList(DDCA_Feature_Subset_Id feature_list_id) {
     bool include_table_features = false;    // TODO get from feature selection dialog
     DDCA_Feature_List result;
     if (_features.contains(feature_list_id)) {

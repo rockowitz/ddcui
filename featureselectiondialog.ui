@@ -60,7 +60,7 @@
     <item>
      <widget class="QRadioButton" name="known_radioButton">
       <property name="text">
-       <string>K&amp;NOWN - All features defined in MCCS</string>
+       <string>&amp;KNOWN - All features defined in MCCS</string>
       </property>
      </widget>
     </item>
@@ -82,6 +82,9 @@
      <widget class="QRadioButton" name="profile_RadioButton">
       <property name="text">
        <string>PROFILE - Features saved and restored for color profile</string>
+      </property>
+      <property name="checked">
+       <bool>true</bool>
       </property>
      </widget>
     </item>

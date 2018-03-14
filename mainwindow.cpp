@@ -10,11 +10,12 @@
 #include "feature_item_model.h"
 #include "feature_table_model.h"
 #include "feature_value_tableitem_delegate.h"
-#include "featureselectiondialog.h"
+#include "feature_selection_dialog.h"
 #include "monitor.h"
 #include "ui_mainwindow2.h"
 #include "vcplineitem.h"
 // #include "inmemoryfile.h"
+#include "QtWaitingSpinner/waitingspinnerwidget.h"
 
 #include "mainwindow.h"
 
@@ -29,7 +30,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     cout << "After setupUI()" << endl;
 
-    QLabel* toolbarDisplayLabel = new QLabel("DisplayX:  ");
+    QLabel* toolbarDisplayLabel = new QLabel("Display:  ");
     _toolbarDisplayCB = new QComboBox();
     ui->mainToolBar->addWidget( toolbarDisplayLabel);
     ui->mainToolBar->addWidget( _toolbarDisplayCB);
@@ -72,8 +73,13 @@ MainWindow::MainWindow(QWidget *parent) :
     _vcp_tableview = new QTableView();
     _vcp_tableview->setObjectName("vcp_tableview");
 
+    QWidget * page2 = new QScrollArea();
+    page2->setObjectName("featureWidgetScrollArea");
+
+
     _views_StackedWidget->addWidget(page0);
     _views_StackedWidget->addWidget(page1);
+    _views_StackedWidget->addWidget(page2);
 
     QVBoxLayout * layout = new QVBoxLayout();
     layout->addWidget(_views_StackedWidget);
@@ -89,13 +95,37 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+QSizePolicy pageSizePolicy() {
+    QSizePolicy policy(QSizePolicy::MinimumExpanding,QSizePolicy::MinimumExpanding);
+    policy.setHorizontalStretch(1);
+    policy.setVerticalStretch(1);
+    policy.setHeightForWidth(false);
+    return policy;
+}
+
+
+QSizePolicy tableWidgetSizePolicy() {
+    QSizePolicy policy(QSizePolicy::MinimumExpanding,QSizePolicy::Expanding);
+    policy.setHorizontalStretch(1);
+    policy.setVerticalStretch(1);
+    policy.setHeightForWidth(false);
+    return policy;
+}
 
 void MainWindow::initDisplaySelector() {
    //  ui->displaySelectorComboBox->setSizeAdjustPolicy(QComboBox::AdjustToContents);
    //  ui->displaySelectorComboBox->setMinimumContentsLength(28);   // 2 + 3 + 3 + 3 + 13
 
+    Qt::WindowModality modality = Qt::ApplicationModal;   // alt WindowModal, ApplicationModal, NonModal
+    WaitingSpinnerWidget* spinner = new WaitingSpinnerWidget(
+                                           modality,
+                                           this,       // parent
+                                           true);       /// centerOnParent
+    spinner->start(); // starts spinning
+
     _dlist = ddca_get_display_info_list();
     for (int ndx = 0; ndx < _dlist->ct; ndx++) {
+        printf("(%s) Processing display %d\n", __func__, ndx);  fflush(stdout);
         QString mfg_id = _dlist->info[ndx].mfg_id;
         QString model_name = _dlist->info[ndx].model_name;
         QString s = QString::number(ndx+1) + ":  " + mfg_id + " - " + model_name;
@@ -105,15 +135,50 @@ void MainWindow::initDisplaySelector() {
         Monitor * curMonitor = new Monitor(&_dlist->info[ndx]);
         monitors.append(curMonitor);
 
-        cout << "(initDisplaySelector) Staring vcp thread" << endl;
+        cout << "(initDisplaySelector) Starting vcp thread" << endl;
         curMonitor->_requestQueue = new VcpRequestQueue();
         FeatureBaseModel * baseModel = new FeatureBaseModel();
         FeatureItemModel * listModel = new FeatureItemModel(baseModel);
+
+        // FeatureListWidget * listWidget = ui->feature_listWidget;   // WRONG  -need separate instance for each monitor
+
+
+        // page_list_widget/vcp_feature_listwidget
+#ifdef REF
+        QWidget *page_list_widget;
+        QListWidget *feature_listWidget;
+        int _pageno_list_widget;
+#endif
+        QWidget * page_listWidget =  new QWidget();
+        curMonitor->_page_listWidget = page_listWidget;
+
+        page_listWidget->setObjectName(QString::asprintf("page_listwidget-%d",ndx));
+        page_listWidget->setSizePolicy(pageSizePolicy());
+        page_listWidget->setMinimumSize(QSize(700,0));
+
+        // TODO: size, font, etc
+
+        // feature_listWidget = new QListWidget(page_list_widget);
+       //  FeatureListWidget * listWidget = ui->feature_listWidget;
+        FeatureListWidget * featureListWidget= new FeatureListWidget(curMonitor->_page_listWidget);
+        featureListWidget->setObjectName(QString::asprintf("featureListWidget-%d",ndx));
+        featureListWidget->setSizePolicy(tableWidgetSizePolicy());
+        curMonitor->_featureListWidget = featureListWidget;
+
+        QHBoxLayout *hLayout = new QHBoxLayout(page_listWidget);
+        hLayout->setSpacing(6);
+        hLayout->setContentsMargins(11,11,11,11);
+        hLayout->addWidget(featureListWidget);
+
+        curMonitor->_pageno_listWidget = ui->views_stackedWidget->count();
+        ui->views_stackedWidget->addWidget(page_listWidget);
+
 
         QObject::connect(baseModel,  SIGNAL(signalStartInitialLoad()),
                          listModel,  SLOT(startInitialLoad()));
         QObject::connect(baseModel,  SIGNAL(signalEndInitialLoad()),
                          listModel,  SLOT(endInitialLoad()));
+
         QObject::connect(baseModel,  SIGNAL(signalVcpRequest(VcpRequest*)),
                          curMonitor, SLOT(putVcpRequest(VcpRequest*)));
 
@@ -124,21 +189,42 @@ void MainWindow::initDisplaySelector() {
         QObject::connect(baseModel,  SIGNAL(signalEndInitialLoad()),
                          tableModel, SLOT(endInitialLoad()));
 
+
+        QObject::connect(baseModel,  SIGNAL(signalStartInitialLoad()),
+                         featureListWidget, SLOT(startInitialLoad()));
+        QObject::connect(baseModel,  SIGNAL(signalEndInitialLoad()),
+                         featureListWidget, SLOT(endInitialLoad()));
+
+        printf("====> (MainWindow::%s) Connecting baseModel signalFeatureAdded to listWidget featureAdded\n", __func__); fflush(stdout);
+        QObject::connect(baseModel,  SIGNAL(signalFeatureAdded(FeatureValue&)),    // char is a built-in QMetaType, uint8_t is not
+                         featureListWidget, SLOT(featureAdded(FeatureValue&)));
+        QObject::connect(baseModel,  SIGNAL(signalFeatureUpdated(char)),
+                         featureListWidget, SLOT(featureUpdated(char)));
+
+        // Use Qt5 function pointers
+        QObject::connect(baseModel,         &FeatureBaseModel::signalFeatureAdded,
+                         featureListWidget, &FeatureListWidget::featureAdded);
+
+        // use directly coded observers:
+        // invalid use of non-static member function
+        // baseModel->addFeatureChangedObserver(featureListWidget->featureChangedObserver);
+
+        baseModel->addFeatureChangeObserver(*featureListWidget);
+
         curMonitor->setFeatureItemModel(listModel);
         curMonitor->setFeatureTableModel(tableModel);
         VcpThread * curThread = new VcpThread(NULL,
                                               curMonitor->_displayInfo,
                                               curMonitor->_requestQueue,
-                                          //  listModel,
                                               baseModel);
         curThread->start();
         vcp_threads.append(curThread);
-
     }
     // ui->displaySelectorComboBox->setCurrentIndex(0);
     _toolbarDisplayCB->setCurrentIndex(0);
     QString msg = QString("Detected ") + QString::number(_dlist->ct) + QString(" displays.");
     ui->statusBar->showMessage(msg);
+    spinner->stop();
 }
 
 
@@ -151,7 +237,6 @@ void MainWindow::on_actionAbout_triggered()
 
     // QMessageBox mbox;
     // mbox.setText("About ddcutil");
-
 
     QString msg = "";
     msg = msg + "ddcui version:    " + "0.0.0" + "\n\n";
@@ -172,11 +257,18 @@ void MainWindow::on_actionAbout_Qt_triggered()
 
 void MainWindow::loadMonitorFeatures(Monitor * monitor) {
 
+
+    WaitingSpinnerWidget* spinner = new WaitingSpinnerWidget(
+                                           Qt::ApplicationModal,    // alt WindowModal, ApplicationModal, NonModal
+                                           this,       // parent
+                                           true);       /// centerOnParent
+    spinner->start();
+
     DDCA_Feature_List feature_list = monitor->getFeatureList(feature_selector->feature_list_id);
 
     cout << "feature_list_id: " << feature_selector->feature_list_id << ",  Feature ids: " << endl;
     for (int ndx = 0; ndx <= 255; ndx++) {
-        if ( ddca_feature_list_test(&feature_list, (uint8_t) ndx)) {
+        if ( ddca_feature_list_contains(&feature_list, (uint8_t) ndx)) {
             printf("%02x ", ndx);
         }
 
@@ -187,7 +279,7 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
 
     for (int ndx = 0; ndx <= 255; ndx++) {
         uint8_t vcp_code = (uint8_t) ndx;
-        if ( ddca_feature_list_test(&feature_list, vcp_code)) {
+        if ( ddca_feature_list_contains(&feature_list, vcp_code)) {
             // printf("%02x ");
 
             monitor->_requestQueue->put( new VcpGetRequest(vcp_code));
@@ -195,7 +287,7 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
     }
     monitor->_requestQueue->put(new VcpEndInitialLoadRequest);
 
-
+    spinner->stop();
 }
 
 
@@ -257,10 +349,18 @@ void MainWindow::on_actionFeatures_triggered()
 }
 #endif
 
+
 void MainWindow::reportDdcApiError(QString funcname, int rc) const {
      QString msg = funcname + "() returned " + QString::number(rc) + " - " + ddca_rc_name(rc);
      ui->statusBar->showMessage(msg);
+
+     // QErrorMessage * emsg;
+     // invalid conversion from const QWidget* to QWidget*
+     // emsg = new QErrorMessage(this);
+     // emsg->showMessage("oy vey");
+
 }
+
 
 void MainWindow::on_actionCapabilities_triggered()
 {
@@ -276,6 +376,7 @@ void MainWindow::on_actionCapabilities_triggered()
     DDCA_Display_Handle dh;
     DDCA_Status rc = ddca_open_display(dref,&dh);
     if (rc != 0) {
+        reportDdcApiError("ddca_open_display", rc);
         // put up dialog box?
     }
     if (rc == 0) {
@@ -292,13 +393,14 @@ void MainWindow::on_actionCapabilities_triggered()
         rc = ddca_parse_capabilities_string(caps, &parsed_caps);
         if (rc != 0) {
             // do something
+            reportDdcApiError("ddca_parse_capabilities_string", rc);
         }
     }
     if (rc == 0) {
         // wrap in collector
         DDCA_Output_Level saved_ol = ddca_get_output_level();
         ddca_set_output_level(DDCA_OL_VERBOSE);
-        ddca_start_capture();
+        ddca_start_capture(DDCA_CAPTURE_NOOPTS);
         ddca_report_parsed_capabilities(parsed_caps, 0);
         caps_report = ddca_end_capture();
         ddca_set_output_level(saved_ol);
@@ -337,7 +439,7 @@ void MainWindow::on_actionMonitor_Summary_triggered()
       FILE * f = memfile->handle();
       ddca_set_fout(f);
 #endif
-      ddca_start_capture();
+      ddca_start_capture(DDCA_CAPTURE_NOOPTS);
 
       DDCA_Display_Info * dinfo = &_dlist->info[monitorNdx];
       DDCA_Output_Level saved_ol = ddca_get_output_level();
@@ -379,11 +481,11 @@ void MainWindow::on_actionFeature_Selection_Dialog_triggered()
        fsd->show();
 }
 
-DDCA_Feature_List_Id MainWindow::feature_list_id() const {
+DDCA_Feature_Subset_Id MainWindow::feature_list_id() const {
     return this->_feature_list_id;
 }
 
-void MainWindow::set_feature_list_id(DDCA_Feature_List_Id feature_list_id) {
+void MainWindow::set_feature_list_id(DDCA_Feature_Subset_Id feature_list_id) {
     cout << "(set_feature_list_id) feature_list_id =" << feature_list_id <<endl;
     this->_feature_list_id = feature_list_id;
 }
@@ -423,6 +525,7 @@ void MainWindow::on_actionFeatures_TableView_triggered()
 
 void MainWindow::on_actionFeaturesListView_triggered()
 {
+    std::cout << "(MainWindow::on_actionFeaturesListView()" << endl;
     if (_curView != View::FeaturesView) {
        _curView = View::FeaturesView;
        // ???
@@ -438,6 +541,29 @@ void MainWindow::on_actionFeaturesListView_triggered()
     ui->views_stackedWidget->setCurrentIndex(5);
     ui->views_stackedWidget->show();
 }
+
+
+void MainWindow::on_actionFeatures_ListWidget_triggered()
+{
+    printf("=================== (MainWindow::%s) Starting\n", __func__);  fflush(stdout);
+    if (_curView != View::FeaturesView) {
+       _curView = View::FeaturesView;
+       // ???
+    }
+    // int monitorNdx = ui->displaySelectorComboBox->currentIndex();
+    int monitorNdx = _toolbarDisplayCB->currentIndex();
+    Monitor * monitor = monitors[monitorNdx];
+    loadMonitorFeatures(monitor);
+
+    // TO FIX:
+    FeatureListWidget * lwidget = monitor->_featureListWidget;
+    // lview->setModel(monitor->_listModel);
+
+    // TO FIX:
+    ui->views_stackedWidget->setCurrentIndex(monitor->_pageno_listWidget);
+    ui->views_stackedWidget->show();
+}
+
 
 void MainWindow::on_vcp_tableView_clicked(const QModelIndex &index)
 {

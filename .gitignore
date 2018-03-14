@@ -4,4 +4,7 @@ ddcui.pro.user
 *~
 playitemmodel*
 *.autosave
+*dumped
+*temp
+*tmp
 

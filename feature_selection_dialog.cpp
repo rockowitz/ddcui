@@ -1,11 +1,11 @@
-/* featureselectiondialog.cpp */
+/* feature_selection_dialog.cpp */
 
 #include <assert.h>
 #include <stdio.h>
 #include <iostream>
 
 #include "ui_featureselectiondialog.h"
-#include "featureselectiondialog.h"
+#include "feature_selection_dialog.h"
 
 
 using namespace std;
@@ -22,16 +22,16 @@ FeatureSelectionDialog::FeatureSelectionDialog(QWidget *parent, FeatureSelector 
     QRadioButton * curButton;
     this->_local_fsid = featureSelector->feature_list_id;
     switch(_local_fsid) {
-    case DDCA_FEATURE_LIST_KNOWN:
+    case DDCA_SUBSET_KNOWN:
         curButton = ui->known_radioButton;
         break;
-    case DDCA_FEATURE_LIST_COLOR:
+    case DDCA_SUBSET_COLOR:
                 curButton = ui->color_radioButton;
         break;
-    case DDCA_FEATURE_LIST_PROFILE:
+    case DDCA_SUBSET_PROFILE:
                 curButton = ui->profile_RadioButton;
         break;
-    case DDCA_FEATURE_LIST_MFG:
+    case DDCA_SUBSET_MFG:
                 curButton = ui->mfg_RadioButton;
         break;
     }
@@ -58,7 +58,7 @@ void FeatureSelectionDialog::on_known_radioButton_clicked(bool checked)
 
 void FeatureSelectionDialog::on_known_radioButton_clicked()
 {
-  setFeatureSet(DDCA_FEATURE_LIST_KNOWN);
+  setFeatureSet(DDCA_SUBSET_KNOWN);
 }
 
 void FeatureSelectionDialog::on_scan_radioButton_clicked()
@@ -68,17 +68,17 @@ void FeatureSelectionDialog::on_scan_radioButton_clicked()
 
 void FeatureSelectionDialog::on_mfg_RadioButton_clicked()
 {
-  setFeatureSet(DDCA_FEATURE_LIST_MFG);
+  setFeatureSet(DDCA_SUBSET_MFG);
 }
 
 void FeatureSelectionDialog::on_profile_RadioButton_clicked()
 {
-  setFeatureSet(DDCA_FEATURE_LIST_PROFILE);
+  setFeatureSet(DDCA_SUBSET_PROFILE);
 }
 
 void FeatureSelectionDialog::on_color_radioButton_clicked()
 {
-  setFeatureSet(DDCA_FEATURE_LIST_COLOR);
+  setFeatureSet(DDCA_SUBSET_COLOR);
 }
 
 void FeatureSelectionDialog::on_show_unsupported_checkBox_stateChanged(int arg1)
@@ -94,19 +94,19 @@ void FeatureSelectionDialog::on_include_table_checkBox_stateChanged(int arg1)
 void FeatureSelectionDialog::on_buttonBox_accepted()
 {
     // which button is currently clicked?
-    DDCA_Feature_List_Id feature_list;
+    DDCA_Feature_Subset_Id feature_list;
     if (ui->color_radioButton->isChecked())
-        feature_list = DDCA_FEATURE_LIST_COLOR;
+        feature_list = DDCA_SUBSET_COLOR;
     else if (ui->known_radioButton->isChecked())
-        feature_list = DDCA_FEATURE_LIST_KNOWN;
+        feature_list = DDCA_SUBSET_KNOWN;
     else if (ui->mfg_RadioButton->isChecked())
-        feature_list = DDCA_FEATURE_LIST_MFG;
+        feature_list = DDCA_SUBSET_MFG;
     else if (ui->profile_RadioButton->isChecked())
-        feature_list = DDCA_FEATURE_LIST_PROFILE;
+        feature_list = DDCA_SUBSET_PROFILE;
     else if (ui->scan_radioButton->isChecked())
-        feature_list = DDCA_FEATURE_LIST_KNOWN;    // hack for now
+        feature_list = DDCA_SUBSET_KNOWN;    // hack for now
     else
-        feature_list = DDCA_FEATURE_LIST_KNOWN;    // should never occur
+        feature_list = DDCA_SUBSET_KNOWN;    // should never occur
 
     // this->_mainWindow->set_feature_list_id(feature_list);
     this->_feature_selector->feature_list_id = feature_list;

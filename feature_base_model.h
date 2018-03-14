@@ -10,6 +10,9 @@
 #include "feature_value.h"
 // #include "monitor.h"   // errors because of order of includes
 #include "vcprequest.h"
+#include "feature_change_observer.h"
+
+typedef void (*NotifyFeatureChanged)(uint8_t feature_code);
 
 
 /** The UI independent portion of the QT feature data model.
@@ -47,10 +50,20 @@ public:
 
     void          report();
 
+    // void  addFeatureChangedObserver(NotifyFeatureChanged func);
+    void addFeatureChangeObserver(FeatureChangeObserver &observer);
+
 signals:
     void signalStartInitialLoad(void);
     void signalEndInitialLoad(void);
+    void signalFeatureAdded(FeatureValue& fv);
+    void signalFeatureUpdated(char feature_code);
     void signalVcpRequest(VcpRequest * rqst);  // used to call into monitor
+
+
+protected:
+    // void notifyFeatureChangedObservers(uint8_t feature_code) ;
+    void notifyFeatureChangeObservers(uint8_t feature_code) ;
 
 private:
     int modelVcpValueIndex(uint8_t feature_code);
@@ -58,6 +71,10 @@ private:
     QVector<FeatureValue*> * _featureValues;
     DDCA_MCCS_Version_Spec   _vspec;
     //  Monitor * _monitor;
+
+    // QVector<NotifyFeatureChanged> *_featureChangedObservers;
+
+    QVector<FeatureChangeObserver> * _featureChangeObservers;
 };
 
 #endif // FEATURE_BASE_MODEL_H

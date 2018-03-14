@@ -3,13 +3,14 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QtWidgets/QtWidgets>
-#include <ddcutil_types.h>
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QPlainTextEdit>
 #include <QtWidgets/QStackedWidget>
 #include <QtWidgets/QTableView>
+#include <QtWidgets/QtWidgets>
+
+#include <ddcutil_types.h>
 
 #include "misc.h"
 #include "monitor.h"
@@ -17,6 +18,7 @@
 namespace Ui {
 class MainWindow;
 }
+
 
 class MainWindow : public QMainWindow
 {
@@ -34,21 +36,21 @@ public:
 
     void reportDdcApiError(QString funcname, int rc) const;
 
-    DDCA_Feature_List_Id feature_list_id() const;
-    void set_feature_list_id(DDCA_Feature_List_Id feature_list_id);
+    DDCA_Feature_Subset_Id feature_list_id() const;
+    void set_feature_list_id(DDCA_Feature_Subset_Id feature_list_id);
     FeatureSelector * feature_selector;
 
     QVector<Monitor*> monitors;
 
     QComboBox * _toolbarDisplayCB;
 
-    QStackedWidget *  _views_StackedWidget;
+    QStackedWidget * _views_StackedWidget;
     QPlainTextEdit * _moninfoPlainText = nullptr;
     QTableView *     _vcp_tableview = nullptr;
 
 
 private:
-    DDCA_Feature_List_Id _feature_list_id = DDCA_FEATURE_LIST_KNOWN;
+    DDCA_Feature_Subset_Id _feature_list_id = DDCA_SUBSET_KNOWN;
     QVector<VcpThread*> vcp_threads;
 
 private slots:
@@ -69,6 +71,8 @@ private slots:
     void on_actionFeatures_TableView_triggered();
 
     void on_actionFeaturesListView_triggered();
+
+    void on_actionFeatures_ListWidget_triggered();
 
     void on_vcp_tableView_clicked(const QModelIndex &index);
 

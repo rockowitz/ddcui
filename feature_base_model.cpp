@@ -17,6 +17,8 @@ FeatureBaseModel::FeatureBaseModel()
 {
      _featureValues = new QVector<FeatureValue*>();
 
+     // _featureChangedObservers = new QVector<NotifyFeatureChanged>;
+    _featureChangeObservers = new QVector<FeatureChangeObserver>;
 }
 
 // void setMonitor(Monitor * monitor) {
@@ -103,8 +105,10 @@ void   FeatureBaseModel::modelVcpValueSet(
     printf("(modelVcpValueSet) feature_code=0x%02x, mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x\n",
            feature_code, feature_value->mh, feature_value->ml, feature_value->sh, feature_value->sl);
     int ndx = modelVcpValueIndex(feature_code);
-    printf("(%s) ndx=%d\n", __func__, ndx);  fflush(stdout);
-    assert(ndx < 0);
+    // printf("(%s) ndx=%d\n", __func__, ndx);  fflush(stdout);
+    // FIXME: HACK AROUND LOGIC ERROR
+    // MAY DO A FULL LOAD MULTIPLE TIMES, E.G if switch table type
+    // assert(ndx < 0);
     if (ndx < 0) {
         printf("(%s) Creating new FeatureValue\n", __func__); fflush(stdout);
         FeatureValue * fv = new FeatureValue();
@@ -118,9 +122,13 @@ void   FeatureBaseModel::modelVcpValueSet(
         fv->_value          = *feature_value;
 
         _featureValues->append(fv);
+        printf("(%s) Emitting signalFeatureAdded()\n", __func__); fflush(stdout);
+        emit signalFeatureAdded(*fv);
+        // notifyFeatureChangedObservers(feature_code);
+        notifyFeatureChangeObservers(feature_code);
     }
     else {
-#ifdef OLD
+// #ifdef OLD
         printf("(%s) Modifying existing FeatureValue\n", __func__); fflush(stdout);
         FeatureValue * fv =  _featureValues->at(ndx);
        // FeatureValue * fv = modelVcpValueAt(ndx);
@@ -134,7 +142,10 @@ void   FeatureBaseModel::modelVcpValueSet(
 
         fv->_value.sh = feature_value->sh;
         fv->_value.sl = feature_value->sl;
-#endif
+
+        printf("(%s) Emitting signalFeatureAdded()\n", __func__); fflush(stdout);
+        emit signalFeatureAdded(*fv);
+// #endif
     }
 }
 
@@ -156,6 +167,8 @@ void   FeatureBaseModel::modelVcpValueUpdate(
 
     fv->_value.sh = sh;
     fv->_value.sl = sl;
+
+    emit signalFeatureUpdated(feature_code);
 }
 
 
@@ -199,4 +212,36 @@ void  FeatureBaseModel::modelStartInitialLoad(void) {
 void  FeatureBaseModel::modelEndInitialLoad(void) {
     cout << "(FeatureBaseModel::modelEndInitialLoad()" << endl;
     signalEndInitialLoad();
+}
+
+#ifdef OLD
+void  FeatureBaseModel::addFeatureChangedObserver(NotifyFeatureChanged func) {
+    _featureChangedObservers->append(func);
+}
+#endif
+
+#ifdef NO
+void FeatureBaseModel::notifyFeatureChangedObservers(uint8_t feature_code) {
+    int ct = _featureChangedObservers->count();
+    printf("(%s) Starting ct=%d\n", __func__, ct);  fflush(stdout);
+    for (int ndx = 0; ndx < ct; ndx++) {
+            printf("(%s) Notifying observer\n", __func__);  fflush(stdout);
+            NotifyFeatureChanged func = _featureChangedObservers->at(ndx);
+            func(feature_code);
+    }
+}
+#endif
+
+void  FeatureBaseModel::addFeatureChangeObserver(FeatureChangeObserver &observer) {
+    _featureChangeObservers->append(observer);
+}
+
+void FeatureBaseModel::notifyFeatureChangeObservers(uint8_t feature_code) {
+    int ct = _featureChangeObservers->count();
+    printf("(%s) Starting ct=%d\n", __func__, ct);  fflush(stdout);
+    for (int ndx = 0; ndx < ct; ndx++) {
+            printf("(%s) Notifying observer\n", __func__);  fflush(stdout);
+            FeatureChangeObserver observer = _featureChangeObservers->at(ndx);
+            observer.featureChanged(feature_code);
+    }
 }

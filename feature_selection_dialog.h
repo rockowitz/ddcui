@@ -1,4 +1,4 @@
-/* featureselectiondialog.h */
+/* feature_welection_dialog.h */
 
 #ifndef FEATURESELECTIONDIALOG_H
 #define FEATURESELECTIONDIALOG_H
@@ -46,7 +46,7 @@ private:
 
     void setFeatureSet(int fsid);
 
-    DDCA_Feature_List_Id _local_fsid;
+    DDCA_Feature_Subset_Id _local_fsid;
 
     MainWindow * _mainWindow;
 

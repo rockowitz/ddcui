@@ -1,8 +1,9 @@
 /* main.cpp */
 
-#include "mainwindow.h"
 #include <QtWidgets/QApplication>
+
 #include <ui_main.h>
+#include "mainwindow.h"
 
 int main(int argc, char *argv[])
 {

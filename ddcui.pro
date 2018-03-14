@@ -23,6 +23,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    QtWaitingSpinner/waitingspinnerwidget.cpp \
     feature_base_model.cpp \
     feature_item_model.cpp \
     feature_table_model.cpp \
@@ -31,18 +32,29 @@ SOURCES += \
     feature_value_tableitem_cb_editor.cpp \
     feature_value_tableitem_cont_editor.cpp \
     feature_value_tableitem_delegate.cpp \
-    featureselectiondialog.cpp \
     main.cpp \
     mainwindow.cpp \
     monitor.cpp \
     vcplineitem.cpp \
     vcprequest.cpp \
-    vcpthread.cpp 
+    vcpthread.cpp \ 
+    feature_widget.cpp \
+    value_base_widget.cpp \
+    value_std_widget.cpp \
+    value_cont_widget.cpp \
+    value_nc_widget.cpp \
+    value_abstract_widget.cpp \
+    value_stacked_widget.cpp \
+    feature_list_widget.cpp \
+    feature_selection_dialog.cpp \
+    feature_change_observer.cpp
 
-#    c_feature_widget.cpp \
+# SOURCES += \
+#     c_feature_widget.cpp
 
 HEADERS += \
-   ui_mainwindow2.h \
+    QtWaitingSpinner/waitingspinnerwidget.h \
+    ui_mainwindow2.h \
     ddcui_globals.h \
     feature_base_model.h \
     feature_item_model.h \
@@ -52,21 +64,36 @@ HEADERS += \
     feature_value_tableitem_cb_editor.h \
     feature_value_tableitem_cont_editor.h \
     feature_value_tableitem_delegate.h \
-    featureselectiondialog.h \
     mainwindow.h \
     misc.h \
     monitor.h \
     vcplineitem.h \
     vcprequest.h \
-    vcpthread.h
+    vcpthread.h \
+    feature_widget.h \
+    value_base_widget.h \
+    value_std_widget.h \
+    value_cont_widget.h \
+    value_nc_widget.h \
+    value_abstract_widget.h \
+    value_stacked_widget.h \
+    feature_list_widget.h \
+    feature_selection_dialog.h \
+    feature_change_observer.h
 
-#    c_feature_widget.h \
+# HEADERS += \
+#     c_feature_widget.h
+
 #   mainwindow.ui \
 
 FORMS += \
     featureselectiondialog.ui
 
-#    c_feature_widget.ui \
+# FORMS += \
+#     c_feature_widget.ui
+
+FORMS += \
+    featureitem.ui
 
 unix: CONFIG += link_pkgconfig
 unix: PKGCONFIG += ddcutil

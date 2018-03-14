@@ -5,6 +5,8 @@
 
 #include <QtWidgets/QMessageBox>
 
+#include <ddcutil_status_codes.h>
+
 #include "vcpthread.h"
 
 
@@ -153,9 +155,11 @@ void VcpThread::setvcp(uint8_t feature_code, uint8_t sl) {
     }
 
     ddca_enable_verify(true);
+    uint8_t verified_hi_byte = 0;
+    uint8_t verified_lo_byte = 0;
 
     // need to update mh, ml, use a valrec
-    ddcrc = ddca_set_raw_vcp_value(dh, feature_code, 0, sl);
+    ddcrc = ddca_set_raw_vcp_value(dh, feature_code, 0, sl, &verified_hi_byte, &verified_lo_byte);
     if (ddcrc != 0) {
         printf("(VcpThread::%s) ddca_set_raw_vcp_value() returned %d - %s\n",
                __func__, ddcrc, ddca_rc_name(ddcrc)); fflush(stdout);
@@ -198,6 +202,9 @@ void VcpThread::setvcp(uint8_t feature_code, uint8_t sl) {
         // _baseModel->modelVcpValueSet(feature_code, _dinfo->vcp_version, finfo, &valrec);
         _baseModel->modelVcpValueUpdate(feature_code, 0, sl);
     }
+    else if (ddcrc == DDCRC_VERIFY) {
+        _baseModel->modelVcpValueUpdate(feature_code, verified_hi_byte, verified_lo_byte);
+    }
 
 
     ddcrc = ddca_close_display(dh);
@@ -211,7 +218,7 @@ void VcpThread::setvcp(uint8_t feature_code, uint8_t sl) {
 
 
 void VcpThread::startInitialLoad(void) {
-    printf("(VcpThread::StartInitialLoad)\n");
+    printf("(VcpThread::StartInitialLoad)\n");  fflush(stdout);
     // _baseModel->beginResetModel();
     _baseModel->modelStartInitialLoad();
     _baseModel->modelMccsVersionSet(_dinfo->vcp_version);
@@ -219,7 +226,7 @@ void VcpThread::startInitialLoad(void) {
 }
 
 void VcpThread::endInitialLoad(void) {
-        printf("(VcpThread::EndInitialLoad)\n");
+        printf("(VcpThread::EndInitialLoad)\n");  fflush(stdout);
         _baseModel->report();
         // _baseModel->endResetModel();
         _baseModel->modelEndInitialLoad();

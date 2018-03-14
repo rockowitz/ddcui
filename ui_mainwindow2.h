@@ -27,6 +27,7 @@
 #endif
 #include <iostream>
 
+#include "feature_list_widget.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -37,6 +38,7 @@ public:
     QAction *actionAbout_Qt;
     QAction *actionMonitor_Summary;
     QAction *actionCapabilities;
+    QAction *actionFeatures_ListWidget;        // for ListWidget
     QAction *actionFeaturesListView;
     QAction *actionFeature_Selection;
     QAction *actionShow_Unsupported_Features;
@@ -47,21 +49,40 @@ public:
     QAction *actionManufacturer;
     QAction *actionFeature_Selection_Dialog;
     QAction *actionFeatures_TableView;
-    QWidget *centralWidget;
+
+    QWidget *centralWidget;   
     QStackedWidget *views_stackedWidget;
+
     QWidget *page_moninfo;
     QPlainTextEdit *moninfoPlainText;
+    int     _pageno_moninfo;
+
     QWidget *page_capabilities;
     QPlainTextEdit *capabilities_plainText;
+    int _pageno_capabilities;
+
     QWidget *page_vcp;
     QListWidget *vcp_listWidget;
+    int _pageno_vcp;
+
     QWidget *page_table_item;
     QTableWidget *tableWidget;
+    int _pageno_table_item;
+
     QWidget *page_table_view;
-    QHBoxLayout *horizontalLayout;
+    int _pageno_table_view;
     QTableView *vcp_tableView;
+
     QWidget *page_list_view;
     QListView *vcp_listView;
+    int _pageno_list_view;
+
+    QWidget *page_list_widget;
+    // QListWidget *feature_listWidget;
+    FeatureListWidget * feature_listWidget;
+    int _pageno_list_widget;
+
+    QHBoxLayout *horizontalLayout;
     QLabel *label;
     QMenuBar *menuBar;
     QMenu *menuView;
@@ -83,6 +104,9 @@ public:
 
         actionCapabilities = new QAction(MainWindow);
         actionCapabilities->setObjectName(QString::fromUtf8("actionCapabilities"));
+
+        actionFeatures_ListWidget = new QAction(MainWindow);
+        actionFeatures_ListWidget->setObjectName(QString::fromUtf8("actionFeatures_ListWidget"));
 
         actionFeaturesListView = new QAction(MainWindow);
         actionFeaturesListView->setObjectName(QString::fromUtf8("actionFeaturesListView"));
@@ -170,6 +194,7 @@ public:
 
         //       std::cout << "(setupUi) Wolf 4" << std::endl;
 
+        int pagectr = 0;
         // page_moninfo/moninfoPlainText
         page_moninfo = new QWidget();
         page_moninfo->setObjectName(QString::fromUtf8("page_moninfo"));
@@ -184,6 +209,7 @@ public:
         moninfoPlainText->setLineWrapMode(QPlainTextEdit::NoWrap);
         moninfoPlainText->setReadOnly(true);
         views_stackedWidget->addWidget(page_moninfo);
+        _pageno_moninfo = pagectr++;
 
           //             std::cout << "(setupUi) Wolf 5" << std::endl;
 #ifdef NO
@@ -225,6 +251,7 @@ public:
         capabilities_plainText->setReadOnly(true);
         capabilities_plainText->setCenterOnScroll(false);
         views_stackedWidget->addWidget(page_capabilities);
+        _pageno_capabilities = pagectr++;
 
         // AMEN!
         QHBoxLayout *
@@ -253,6 +280,7 @@ public:
         // sizePolicy3.setHeightForWidth(vcp_listWidget->sizePolicy().hasHeightForWidth());
         vcp_listWidget->setSizePolicy(sizePolicy3);
         views_stackedWidget->addWidget(page_vcp);
+        _pageno_vcp = pagectr++;
 
                   //     std::cout << "(setupUi) Wolf 9" << std::endl;
 
@@ -281,6 +309,7 @@ public:
         tableWidget->setMinimumSize(QSize(581, 0));
         tableWidget->setColumnCount(5);
         views_stackedWidget->addWidget(page_table_item);
+        _pageno_table_item = pagectr++;
 
                     //   std::cout << "(setupUi) Wolf 10" << std::endl;
 
@@ -311,6 +340,7 @@ public:
         horizontalLayout->addWidget(vcp_tableView);
 
         views_stackedWidget->addWidget(page_table_view);
+        _pageno_table_view = pagectr++;
 
           //             std::cout << "(setupUi) Wolf 12" << std::endl;
 
@@ -339,8 +369,28 @@ public:
         label->setObjectName(QString::fromUtf8("label"));
         label->setGeometry(QRect(268, 6, 342, 17));
         views_stackedWidget->addWidget(page_list_view);
+        _pageno_list_view = pagectr++;
 
             //           std::cout << "(setupUi) Wolf 13" << std::endl;
+
+        // page_list_widget/vcp_feature_listwidget
+#ifdef REF
+        QWidget *page_list_widget;
+        QListWidget *feature_listWidget;
+        int _pageno_list_widget;
+#endif
+        page_list_widget = new QWidget();
+        page_list_widget->setObjectName(QString::fromUtf8("page_list_widget"));
+
+        // TODO: size, font, etc
+
+        // feature_listWidget = new QListWidget(page_list_widget);
+        feature_listWidget = new FeatureListWidget(page_list_widget);
+        feature_listWidget->setObjectName(QString::fromUtf8("feature_listWidget"));
+
+        views_stackedWidget->addWidget(page_list_widget);
+        _pageno_list_widget = pagectr++;
+
 
         MainWindow->setCentralWidget(centralWidget);
 
@@ -379,6 +429,7 @@ public:
 
         menuView->addAction(actionMonitor_Summary);
         menuView->addAction(actionCapabilities);
+        menuView->addAction(actionFeatures_ListWidget);
         menuView->addAction(actionFeaturesListView);
         menuView->addAction(actionFeatures_TableView);
 
@@ -402,6 +453,7 @@ public:
         actionAbout_Qt->setText(QApplication::translate("MainWindow", "About &Qt", 0));
         actionMonitor_Summary->setText(QApplication::translate("MainWindow", "&Monitor Summary", 0));
         actionCapabilities->setText(QApplication::translate("MainWindow", "&Capabilities", 0));
+        actionFeatures_ListWidget->setText(QApplication::translate("MainWindow", "&Features - ListWidget", 0));
         actionFeaturesListView->setText(QApplication::translate("MainWindow", "&Features - ListView", 0));
         actionFeature_Selection->setText(QApplication::translate("MainWindow", "Feature Selection", 0));
         actionShow_Unsupported_Features->setText(QApplication::translate("MainWindow", "Show Unsupported Features", 0));
