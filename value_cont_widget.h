@@ -11,7 +11,7 @@
 
 class ValueContWidget : public ValueBaseWidget
 {
-        Q_OBJECT
+    Q_OBJECT
 
 public:
     ValueContWidget(QWidget *parent = nullptr);
@@ -20,7 +20,6 @@ public:
     void setCurrentValue(uint16_t newval); // virtual
 
     uint16_t getCurrentValue() override;
-
 
     QSlider*    _curSlider;
     QSpinBox*   _curSpinBox;

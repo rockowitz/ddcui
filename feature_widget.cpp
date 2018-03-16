@@ -3,10 +3,6 @@
 #include "assert.h"
 
 #include <QtWidgets>
-// #include <QWidget>
-// #include <QVBoxLayout>
-// #include <QHBoxLayout>
-
 
 #include "feature_widget.h"
 #include "value_cont_widget.h"
@@ -17,8 +13,11 @@
 FeatureWidget::FeatureWidget(QListWidget *parent) :
  //   QWidget(parent)
   //   QWidgetItem(nullptr)
-      QListWidgetItem(parent, UserType+1)
+      QListWidgetItem(parent, FeatureWidgetType)
 {
+    _cls = metaObject()->className();
+    setText("Dummy Item Text");
+
     // layout
     // setObjectName(QString::fromUtf8("FeatureWidget"));
     // resize(400,20);
@@ -83,7 +82,6 @@ FeatureWidget::FeatureWidget(QListWidget *parent) :
     _featureValueStackedWidget->setCurrentIndex(0);
 #endif
 
-
     _layout = new QHBoxLayout();
     _layout->addWidget(_featureCodeField);
     _layout->addWidget(_featureNameField);
@@ -94,6 +92,8 @@ FeatureWidget::FeatureWidget(QListWidget *parent) :
 
 
 void FeatureWidget::setFeatureValue(FeatureValue &fv) {
+    printf("(FeatureWidget::%s)", __func__); fflush(stdout);
+    fv.report();
     _feature_code  = fv._feature_code;
     _feature_flags = fv._feature_flags;
     _vspec         = fv._vspec;
@@ -136,9 +136,24 @@ void FeatureWidget::setFeatureValue(FeatureValue &fv) {
 
     _valueWidget->setFeatureValue(fv);
     _layout->addWidget(_valueWidget);
-
 }
+
 
 void FeatureWidget::setCurrentValue(uint16_t newval) {
     _valueWidget->setCurrentValue(newval);
+}
+
+
+void FeatureWidget::paintEvent(QPaintEvent *event) {
+     printf("%s::%s)\n", _cls, __func__); fflush(stdout);
+     // QWidget::paintEvent(event);
+     _featureCodeField->update();  // causes separate X window - NO NOT THIS
+}
+
+
+void FeatureWidget::dbgrpt() const {
+    std::string on1 = objectName().toStdString();
+    const char * objname = on1.c_str();
+    printf("%-20s code: 0x%02x, flags: 0x%04x, mh: 0x%02x, ml: 0x%02x, sh: 0x%02x, sl 0x%02x\n",
+           objname, _feature_code, _feature_flags, _mh, _ml, _sh, _sl);
 }

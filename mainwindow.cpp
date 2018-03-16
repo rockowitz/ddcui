@@ -7,6 +7,8 @@
 
 #include <ddcutil_c_api.h>
 
+#include "QtWaitingSpinner/waitingspinnerwidget.h"
+
 #include "feature_item_model.h"
 #include "feature_table_model.h"
 #include "feature_value_tableitem_delegate.h"
@@ -15,7 +17,7 @@
 #include "ui_mainwindow2.h"
 #include "vcplineitem.h"
 // #include "inmemoryfile.h"
-#include "QtWaitingSpinner/waitingspinnerwidget.h"
+
 
 #include "mainwindow.h"
 
@@ -138,6 +140,7 @@ void MainWindow::initDisplaySelector() {
         cout << "(initDisplaySelector) Starting vcp thread" << endl;
         curMonitor->_requestQueue = new VcpRequestQueue();
         FeatureBaseModel * baseModel = new FeatureBaseModel();
+        baseModel->setObjectName(QString::asprintf("baseModel-%d",ndx));
         FeatureItemModel * listModel = new FeatureItemModel(baseModel);
 
         // FeatureListWidget * listWidget = ui->feature_listWidget;   // WRONG  -need separate instance for each monitor
@@ -150,9 +153,8 @@ void MainWindow::initDisplaySelector() {
         int _pageno_list_widget;
 #endif
         QWidget * page_listWidget =  new QWidget();
+        page_listWidget->setObjectName(QString::asprintf("page_listWidget-%d",ndx));
         curMonitor->_page_listWidget = page_listWidget;
-
-        page_listWidget->setObjectName(QString::asprintf("page_listwidget-%d",ndx));
         page_listWidget->setSizePolicy(pageSizePolicy());
         page_listWidget->setMinimumSize(QSize(700,0));
 
@@ -162,6 +164,21 @@ void MainWindow::initDisplaySelector() {
        //  FeatureListWidget * listWidget = ui->feature_listWidget;
         FeatureListWidget * featureListWidget= new FeatureListWidget(curMonitor->_page_listWidget);
         featureListWidget->setObjectName(QString::asprintf("featureListWidget-%d",ndx));
+        featureListWidget->setModel(baseModel);
+
+        // works
+        // QString on1 = featureListWidget->objectName();
+        // std::string on2 = on1.toStdString();
+        // const char * on3 = on2.c_str();
+
+        std::string on2 =  featureListWidget->objectName().toStdString();
+
+        // fails
+        // const char * on3 = featureListWidget->objectName().toStdString().c_str();
+        // must be separate step.  why?
+        const char * on3 = on2.c_str();
+
+        printf("(MainWindow::%s) Allocated FeatureListWidget. objectName = %s\n", __func__, on3); fflush(stdout);
         featureListWidget->setSizePolicy(tableWidgetSizePolicy());
         curMonitor->_featureListWidget = featureListWidget;
 
@@ -195,9 +212,10 @@ void MainWindow::initDisplaySelector() {
         QObject::connect(baseModel,  SIGNAL(signalEndInitialLoad()),
                          featureListWidget, SLOT(endInitialLoad()));
 
+        qRegisterMetaType<FeatureValue>("FeatureValue");
         printf("====> (MainWindow::%s) Connecting baseModel signalFeatureAdded to listWidget featureAdded\n", __func__); fflush(stdout);
-        QObject::connect(baseModel,  SIGNAL(signalFeatureAdded(FeatureValue&)),    // char is a built-in QMetaType, uint8_t is not
-                         featureListWidget, SLOT(featureAdded(FeatureValue&)));
+        QObject::connect(baseModel,  SIGNAL(signalFeatureAdded(FeatureValue)),    // char is a built-in QMetaType, uint8_t is not
+                         featureListWidget, SLOT(featureAdded(FeatureValue)));
         QObject::connect(baseModel,  SIGNAL(signalFeatureUpdated(char)),
                          featureListWidget, SLOT(featureUpdated(char)));
 
@@ -205,11 +223,8 @@ void MainWindow::initDisplaySelector() {
         QObject::connect(baseModel,         &FeatureBaseModel::signalFeatureAdded,
                          featureListWidget, &FeatureListWidget::featureAdded);
 
-        // use directly coded observers:
-        // invalid use of non-static member function
-        // baseModel->addFeatureChangedObserver(featureListWidget->featureChangedObserver);
-
-        baseModel->addFeatureChangeObserver(*featureListWidget);
+        // use directly coded observers  - DISABLED slots now working
+        // baseModel->addFeatureChangeObserver(featureListWidget);
 
         curMonitor->setFeatureItemModel(listModel);
         curMonitor->setFeatureTableModel(tableModel);

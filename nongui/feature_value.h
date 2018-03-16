@@ -4,7 +4,7 @@
 #define FEATURE_VALUE_H
 
 #include <QtCore/QMetaType>
-// #include <QString>
+
 #include "ddcutil_types.h"
 
 

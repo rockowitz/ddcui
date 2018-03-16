@@ -6,7 +6,6 @@
 
 ValueContWidget::ValueContWidget(QWidget *parent):
     ValueBaseWidget(parent)
-
 {
     printf("============> (ValueContWidget::ValueContWidget)\n" ); fflush(stdout);
 
@@ -34,6 +33,7 @@ ValueContWidget::ValueContWidget(QWidget *parent):
     setLayout(layout);
 }
 
+
 void ValueContWidget::setFeatureValue(const FeatureValue &fv) {
     ValueBaseWidget::setFeatureValue(fv);
 
@@ -51,8 +51,8 @@ void ValueContWidget::setFeatureValue(const FeatureValue &fv) {
 
     QString s = QString::number(maxval);
     _maxValue->setText(s);
-
 }
+
 
 void ValueContWidget::setCurrentValue(uint16_t newval) {
     ValueBaseWidget::setCurrentValue(newval);
@@ -72,5 +72,3 @@ uint16_t ValueContWidget::getCurrentValue() {
     uint16_t result = (_sh << 8) | _sl;
     return result;
 }
-
-

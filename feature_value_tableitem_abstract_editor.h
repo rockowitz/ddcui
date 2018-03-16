@@ -5,7 +5,7 @@
 
 #include <QtWidgets/QWidget>
 
-#include "feature_value.h"
+#include "nongui/feature_value.h"
 
 
 class FeatureValueTableItemAbstractEditor : public QWidget

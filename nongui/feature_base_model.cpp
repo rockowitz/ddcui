@@ -7,23 +7,19 @@
 #include <QtCore/QByteArray>
 
 #include "ddcutil_types.h"
-#include "feature_value.h"
-#include "feature_base_model.h"
 
+#include "nongui/feature_value.h"
+
+#include "nongui/feature_base_model.h"
 
 using namespace std;
 
 FeatureBaseModel::FeatureBaseModel()
 {
-     _featureValues = new QVector<FeatureValue*>();
-
-     // _featureChangedObservers = new QVector<NotifyFeatureChanged>;
-    _featureChangeObservers = new QVector<FeatureChangeObserver>;
+    _cls                    = metaObject()->className();
+    _featureValues          = new QVector<FeatureValue*>();
+    _featureChangeObservers = new QVector<FeatureChangeObserver*>;
 }
-
-// void setMonitor(Monitor * monitor) {
-//         _monitor = monitor;
-// }
 
 
 /** Returns the index of the entry for the specified feature in _feature_values
@@ -51,6 +47,14 @@ int FeatureBaseModel::modelVcpValueIndex(uint8_t feature_code) {
  */
 FeatureValue * FeatureBaseModel::modelVcpValueFind(uint8_t feature_code) {
     FeatureValue * result = NULL;
+    // printf("(FeatureBaseModel::%s) this=%p\n", __func__, this); fflush(stdout);
+
+    //    QString qobjname = objectName();
+    //    std::string str_objname = qobjname.toStdString();
+    //    const char * objname = str_objname.c_str();
+    //    printf("(FeatureBaseModel::%s) objectName=%s\n", __func__, objname); fflush(stdout);
+
+    // printf("(FeatureBaseModel::%s) _featureValues=%p\n", __func__, _featureValues); fflush(stdout);
     for (int ndx = 0; ndx < _featureValues->count(); ndx++) {
         FeatureValue * cur = _featureValues->at(ndx);
         if (cur->_feature_code == feature_code) {
@@ -102,8 +106,8 @@ void   FeatureBaseModel::modelVcpValueSet(
                    DDCA_Simplified_Version_Feature_Info feature_info,
                    DDCA_Non_Table_Value *               feature_value)
 {
-    printf("(modelVcpValueSet) feature_code=0x%02x, mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x\n",
-           feature_code, feature_value->mh, feature_value->ml, feature_value->sh, feature_value->sl);
+    printf("(%s::%s) feature_code=0x%02x, mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x\n",
+           _cls, __func__, feature_code, feature_value->mh, feature_value->ml, feature_value->sh, feature_value->sl);
     int ndx = modelVcpValueIndex(feature_code);
     // printf("(%s) ndx=%d\n", __func__, ndx);  fflush(stdout);
     // FIXME: HACK AROUND LOGIC ERROR
@@ -122,14 +126,14 @@ void   FeatureBaseModel::modelVcpValueSet(
         fv->_value          = *feature_value;
 
         _featureValues->append(fv);
-        printf("(%s) Emitting signalFeatureAdded()\n", __func__); fflush(stdout);
+        printf("(%s::%s) Emitting signalFeatureAdded()\n", _cls, __func__); fflush(stdout);
         emit signalFeatureAdded(*fv);
         // notifyFeatureChangedObservers(feature_code);
         notifyFeatureChangeObservers(feature_code);
     }
     else {
 // #ifdef OLD
-        printf("(%s) Modifying existing FeatureValue\n", __func__); fflush(stdout);
+        printf("(%s::%s) Modifying existing FeatureValue\n", _cls, __func__); fflush(stdout);
         FeatureValue * fv =  _featureValues->at(ndx);
        // FeatureValue * fv = modelVcpValueAt(ndx);
         // need to test _mh = 255, _ml = 0 ?
@@ -155,10 +159,10 @@ void   FeatureBaseModel::modelVcpValueUpdate(
                    uint8_t                              sh,
                    uint8_t                              sl)
 {
-    printf("(modelVcpValueUpdate) feature_code=0x%02x, sh=0x%02x, sl=0x%02x\n",
-           feature_code, sh, sl); fflush(stdout);
+    printf("(%s::%s) feature_code=0x%02x, sh=0x%02x, sl=0x%02x\n",
+           _cls, __func__, feature_code, sh, sl); fflush(stdout);
     int ndx = modelVcpValueIndex(feature_code);
-    printf("(%s) ndx=%d\n", __func__, ndx);  fflush(stdout);
+    // printf("(%s) ndx=%d\n", __func__, ndx);  fflush(stdout);
     assert (ndx >= 0);
     printf("(%s) Modifying existing FeatureValue\n", __func__); fflush(stdout);
     FeatureValue * fv =  _featureValues->at(ndx);
@@ -214,34 +218,21 @@ void  FeatureBaseModel::modelEndInitialLoad(void) {
     signalEndInitialLoad();
 }
 
-#ifdef OLD
-void  FeatureBaseModel::addFeatureChangedObserver(NotifyFeatureChanged func) {
-    _featureChangedObservers->append(func);
-}
-#endif
 
-#ifdef NO
-void FeatureBaseModel::notifyFeatureChangedObservers(uint8_t feature_code) {
-    int ct = _featureChangedObservers->count();
-    printf("(%s) Starting ct=%d\n", __func__, ct);  fflush(stdout);
-    for (int ndx = 0; ndx < ct; ndx++) {
-            printf("(%s) Notifying observer\n", __func__);  fflush(stdout);
-            NotifyFeatureChanged func = _featureChangedObservers->at(ndx);
-            func(feature_code);
-    }
-}
-#endif
-
-void  FeatureBaseModel::addFeatureChangeObserver(FeatureChangeObserver &observer) {
+void  FeatureBaseModel::addFeatureChangeObserver(FeatureChangeObserver* observer) {
     _featureChangeObservers->append(observer);
 }
 
+
 void FeatureBaseModel::notifyFeatureChangeObservers(uint8_t feature_code) {
+    printf("(%s::%s) Disabled\n", _cls, __func__);  fflush(stdout);
+#ifdef DISABLED
     int ct = _featureChangeObservers->count();
     printf("(%s) Starting ct=%d\n", __func__, ct);  fflush(stdout);
     for (int ndx = 0; ndx < ct; ndx++) {
             printf("(%s) Notifying observer\n", __func__);  fflush(stdout);
-            FeatureChangeObserver observer = _featureChangeObservers->at(ndx);
-            observer.featureChanged(feature_code);
+            FeatureChangeObserver*  observer = _featureChangeObservers->at(ndx);
+            observer->featureChanged(feature_code);
     }
+#endif
 }

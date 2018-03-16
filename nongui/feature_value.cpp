@@ -1,10 +1,11 @@
 /* feature_value.cpp */
 
 // #include <QMetaType>
+#include "nongui/feature_value.h"
+
 #include <string.h>
 #include "ddcutil_types.h"
 
-#include "feature_value.h"
 
 // FeatureValue::FeatureValue() {}
 

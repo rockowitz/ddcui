@@ -1,4 +1,4 @@
-/* feature_base_model.h */
+/* feature_base_model.h - Records all VCP feature values for a single monitor */
 
 #ifndef FEATURE_BASE_MODEL_H
 #define FEATURE_BASE_MODEL_H
@@ -7,10 +7,9 @@
 
 #include "ddcutil_types.h"
 
-#include "feature_value.h"
-// #include "monitor.h"   // errors because of order of includes
-#include "vcprequest.h"
-#include "feature_change_observer.h"
+#include "nongui/feature_change_observer.h"
+#include "nongui/feature_value.h"
+#include "nongui/vcprequest.h"
 
 typedef void (*NotifyFeatureChanged)(uint8_t feature_code);
 
@@ -51,18 +50,18 @@ public:
     void          report();
 
     // void  addFeatureChangedObserver(NotifyFeatureChanged func);
-    void addFeatureChangeObserver(FeatureChangeObserver &observer);
+    void addFeatureChangeObserver(FeatureChangeObserver *observer);
+
+    const char * _cls;    // className
 
 signals:
     void signalStartInitialLoad(void);
     void signalEndInitialLoad(void);
-    void signalFeatureAdded(FeatureValue& fv);
+    void signalFeatureAdded(FeatureValue fv);
     void signalFeatureUpdated(char feature_code);
     void signalVcpRequest(VcpRequest * rqst);  // used to call into monitor
 
-
 protected:
-    // void notifyFeatureChangedObservers(uint8_t feature_code) ;
     void notifyFeatureChangeObservers(uint8_t feature_code) ;
 
 private:
@@ -70,11 +69,8 @@ private:
 
     QVector<FeatureValue*> * _featureValues;
     DDCA_MCCS_Version_Spec   _vspec;
-    //  Monitor * _monitor;
 
-    // QVector<NotifyFeatureChanged> *_featureChangedObservers;
-
-    QVector<FeatureChangeObserver> * _featureChangeObservers;
+    QVector<FeatureChangeObserver*> * _featureChangeObservers;
 };
 
 #endif // FEATURE_BASE_MODEL_H

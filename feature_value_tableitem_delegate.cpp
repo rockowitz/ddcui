@@ -10,9 +10,8 @@
 #include "feature_value_tableitem_cb_editor.h"
 #include "feature_value_tableitem_cont_editor.h"
 #include "feature_value_tableitem_delegate.h"
-#include "feature_value.h"
-
 #include "feature_value_tableitem_abstract_editor.h"
+#include "nongui/feature_value.h"
 
 
 FeatureValueTableItemDelegate::FeatureValueTableItemDelegate()

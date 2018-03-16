@@ -1,5 +1,9 @@
-#include "value_std_widget.h"
+/* value_std_widget.cpp */
+
 #include "ddcutil_c_api.h"
+
+#include "value_std_widget.h"
+
 
 ValueStdWidget::ValueStdWidget(QWidget *parent):
         ValueBaseWidget(parent)

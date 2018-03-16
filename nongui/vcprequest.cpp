@@ -1,6 +1,6 @@
 /* vcprequest.cpp - VcpRequestQueue and the classes that populate it */
 
-#include "vcprequest.h"
+#include "nongui/vcprequest.h"
 
 /* VcpRequest and subclasses */
 

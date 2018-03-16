@@ -1,18 +1,21 @@
-#include "feature_item_model.h"
-#include "ddcutil_c_api.h"
-#include "ddcutil_types.h"
-#include "feature_value.h"
-#include <QtCore/QVector>
+/* feature_item_model.cpp */
+
 #include "assert.h"
-#include <QtCore/QByteArray>
 #include <iostream>
+
+#include <QtCore/QByteArray>
+#include <QtCore/QVector>
+
+#include "ddcutil_c_api.h"
+
+#include "nongui/feature_value.h"
+#include "feature_item_model.h"
 
 using namespace std;
 
 FeatureItemModel::FeatureItemModel(FeatureBaseModel * baseModel, QObject *parent)
     : QAbstractListModel(parent)
 {
-        // this->_featureValues = new QVector<FeatureValue*>();
         this->_baseModel = baseModel;
 }
 

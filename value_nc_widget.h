@@ -9,8 +9,7 @@
 
 class ValueNcWidget : public ValueBaseWidget
 {
-
-        Q_OBJECT
+    Q_OBJECT
 
 public:
     ValueNcWidget(QWidget *parent = nullptr);
@@ -23,7 +22,6 @@ public:
     int findItem(uint8_t sl_value);
 
     uint16_t getCurrentValue() override;
-
 };
 
 #endif // VALUE_NC_WIDGET_H

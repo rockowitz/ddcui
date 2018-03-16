@@ -8,8 +8,8 @@
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QWidget>
 
-#include "feature_value.h"
 #include "feature_value_tableitem_abstract_editor.h"
+#include "nongui/feature_value.h"
 
 class FeatureValueTableItemContEditor : public FeatureValueTableItemAbstractEditor
 {

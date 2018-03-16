@@ -11,6 +11,7 @@
 #include <QtWidgets/QLayout>
 
 #include <ddcutil_c_api.h>
+
 #include "value_nc_widget.h"
 
 
@@ -84,8 +85,6 @@ void ValueNcWidget::setCurrentValue(uint16_t newval) {
 }
 
 
-
-
 int ValueNcWidget::findItem(uint8_t sl_value) {
     int result = _cb->findData(QVariant(sl_value));
     return result;
@@ -102,8 +101,4 @@ uint16_t ValueNcWidget::getCurrentValue() {
     uint16_t result = (_sh << 8) | _sl;
     return result;
 }
-
-
-
-
 

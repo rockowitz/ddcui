@@ -1,14 +1,11 @@
 /* vcpthread.cpp */
 
-#include <string.h>
 #include <iostream>
-
-#include <QtWidgets/QMessageBox>
+#include <string.h>
 
 #include <ddcutil_status_codes.h>
 
-#include "vcpthread.h"
-
+#include "nongui/vcpthread.h"
 
 using namespace std;
 
@@ -26,18 +23,28 @@ VcpThread::VcpThread(
     // open the display, raise exception if error
 }
 
+
+void VcpThread::rpt_ddca_status(const char * caller_name, const char *ddca_func_name, int ddcrc) {
+    printf("(%s::%s) %s() returned %d - %s\n",
+           cls, caller_name, ddca_func_name, ddcrc, ddca_rc_name(ddcrc));
+    fflush(stdout);
+}
+
+
+// Process RQGetVcp
 void VcpThread::getvcp(uint8_t feature_code) {
     // printf("(VcpThread::getvcp) Starting. feature_code=0x%02x\n", feature_code);
     DDCA_Display_Handle         dh;
     DDCA_Non_Table_Value        valrec;
+    DDCA_Simplified_Version_Feature_Info  finfo;
+
     // char *                      formatted_value = NULL;
     // DDCA_Version_Feature_Info*  feature_info = NULL;
-    DDCA_Simplified_Version_Feature_Info  finfo;
     // char *                      feature_name = NULL;
 
     DDCA_Status ddcrc = ddca_open_display(this->_dref, &dh);
     if (ddcrc != 0) {
-        cout << "ddca_open_display() returned " << ddcrc << endl;
+        rpt_ddca_status(__func__, "ddca_open_display", ddcrc);
         // how to handle?
     }
 
@@ -56,13 +63,11 @@ void VcpThread::getvcp(uint8_t feature_code) {
 
         }
 #endif
+
     if (ddcrc == 0) {
-        // TODO: get raw value
         ddcrc = ddca_get_nontable_vcp_value(dh, feature_code, &valrec);
         if (ddcrc != 0) {
-            printf("(%s) ddca_get_nontable_vcp_value() returned %d - %s\n",
-                   __func__, ddcrc, ddca_rc_name(ddcrc)); fflush(stdout);
-            cout << "ddca_get_nontable_vcp_value() returned " << ddcrc << endl;
+            rpt_ddca_status(__func__, "ddca_get_nontable_vcp_value", ddcrc);
             // how to handle?
         }
         else {
@@ -70,7 +75,6 @@ void VcpThread::getvcp(uint8_t feature_code) {
             // printf("  opcode:   0x%02x, mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x\n",
             //        feature_code, valrec.mh, valrec.ml, valrec.sh, valrec.sl);
         }
-
     }
 
 #ifdef NOT_HERE
@@ -90,13 +94,11 @@ void VcpThread::getvcp(uint8_t feature_code) {
 #endif
 
     if (ddcrc == 0) {
-
+       // should this be here?
        ddcrc = ddca_get_simplified_feature_info(feature_code, _dinfo->vcp_version,&finfo);
        if (ddcrc != 0) {
+           rpt_ddca_status(__func__, "ddca_get_simplified_feature_info", ddcrc);
            cout << "ddca_get_simplified_feature_info() returned " << ddcrc << endl;
-           // how to handle?
-           printf("ddca_get_simplfied_feature_info() returned %d - %s - %s\n",
-                  ddcrc, ddca_rc_name(ddcrc), ddca_rc_desc(ddcrc));
        }
     }
 
@@ -128,16 +130,15 @@ void VcpThread::getvcp(uint8_t feature_code) {
 
     ddcrc = ddca_close_display(dh);
     if (ddcrc != 0) {
-        cout << "ddca_close_display() returned " << ddcrc << endl;
+        rpt_ddca_status(__func__, "ddca_close_display", ddcrc);
         // how to handle?
     }
-
 
     // printf("(VcpThread::getvcp) Done\n");
 }
 
 
-
+// Process RQSetVcp
 void VcpThread::setvcp(uint8_t feature_code, uint8_t sl) {
     // printf("(VcpThread::setvcp) Starting. feature_code=0x%02x\n", feature_code);
     DDCA_Display_Handle         dh;
@@ -217,6 +218,7 @@ void VcpThread::setvcp(uint8_t feature_code, uint8_t sl) {
 }
 
 
+// Process RQStartInitailLoad
 void VcpThread::startInitialLoad(void) {
     printf("(VcpThread::StartInitialLoad)\n");  fflush(stdout);
     // _baseModel->beginResetModel();
@@ -225,6 +227,8 @@ void VcpThread::startInitialLoad(void) {
 
 }
 
+
+// Process RQEndInitialLoad
 void VcpThread::endInitialLoad(void) {
         printf("(VcpThread::EndInitialLoad)\n");  fflush(stdout);
         _baseModel->report();
@@ -270,9 +274,6 @@ void VcpThread::run() {
         case VcpRequestType::RQSetVcp:
         {
             VcpSetRequest* setRqst = static_cast<VcpSetRequest*>(rqst);
-            // garbage output
-            // cout << "VcpSetRequest.  feature_code = " << setRqst->_featureCode<<
-            //         "newval = " << setRqst->_newval << endl;
             printf("(VcpThread::run) RQSetVcp. feature code=0x%02x, newval=%d\n",
                    setRqst->_featureCode, setRqst->_newval);  fflush(stdout);
             setvcp(setRqst->_featureCode, setRqst->_newval & 0xff);

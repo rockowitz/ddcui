@@ -5,7 +5,7 @@
 
 #include <QtCore/QAbstractTableModel>
 
-#include "feature_base_model.h"
+#include "nongui/feature_base_model.h"
 
 
 class FeatureTableModel : public QAbstractTableModel
@@ -41,6 +41,8 @@ public:
     bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
     bool removeColumns(int column, int count, const QModelIndex &parent = QModelIndex()) override;
 #endif
+
+    const char * _cls;    // className
 
 public slots:
     void          startInitialLoad(void);

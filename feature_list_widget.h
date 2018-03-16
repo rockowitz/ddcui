@@ -1,15 +1,20 @@
+/* feature_list_widget.h - List widget containing FeatureListWidgets */
+
 #ifndef FEATURE_LIST_WIDGET_H
 #define FEATURE_LIST_WIDGET_H
 
 #include <QWidget>
 
-#include "feature_base_model.h"
 #include <ddcutil_c_api.h>
+
+#include "nongui/feature_base_model.h"
+#include "nongui/feature_change_observer.h"
+
 #include "feature_widget.h"
-#include "feature_change_observer.h"
 
 
-class FeatureListWidget : public QListWidget, public FeatureChangeObserver
+class FeatureListWidget : public QListWidget
+                        , public FeatureChangeObserver    // no longer needed
 {
     Q_OBJECT
 
@@ -18,15 +23,20 @@ public:
 
     void setModel(FeatureBaseModel * baseModel);
 
+    const char * _cls;    // className
+
+    void dbgrpt() const;
+
 public slots:
+
 #ifdef NO
-    void           modelVcpValueSet(
+    void  modelVcpValueSet(
                        uint8_t                              feature_code,
                        DDCA_MCCS_Version_Spec               vspec,
                        DDCA_Simplified_Version_Feature_Info feature_flags,
                        DDCA_Non_Table_Value *               feature_value);
 
-    void           modelVcpValueUpdate(
+    void  modelVcpValueUpdate(
                        uint8_t                              feature_code,
                        uint8_t                              sh,
                        uint8_t                              sl);
@@ -34,23 +44,24 @@ public slots:
     // void modelMccsVersionSet(DDCA_MCCS_Version_Spec    vspec);
     // DDCA_MCCS_Version_Spec mccsVersionSpec();
 
-    void          startInitialLoad(void);
-    void          endInitialLoad(void);
+    void            startInitialLoad(void);
+    void            endInitialLoad(void);
 
-    void          featureAdded(FeatureValue& fv);
-    void          featureUpdated(char feature_code);
+    void            featureAdded(FeatureValue fv);
+    void            featureUpdated(char feature_code);
 
-    // void          featureChangedObserver(uint8_t feature_code);
+    void            featureChanged(uint8_t feature_code) override;    // virtual
 
-    virtual void featureChanged(uint8_t feature_code) override;    // virtual
-
+protected:
+    void            paintEvent(QPaintEvent *event);
 
 private:
-    FeatureBaseModel * _baseModel;
-    void addFeature(FeatureValue * fv);
-    int findFeatureItem(uint8_t feature_code);
+    int             findFeatureItem(uint8_t feature_code);
     FeatureWidget * getFeatureItem(uint8_t feature_code) ;
-    void updateFeature(FeatureValue * fv);
+    void            addFeature(FeatureValue * fv);
+    void            updateFeature(FeatureValue * fv);
+
+    FeatureBaseModel * _baseModel;
 };
 
 #endif // FEATURE_LIST_WIDGET_H

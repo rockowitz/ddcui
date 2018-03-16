@@ -5,13 +5,14 @@
 
 #include <QtCore/QVector>
 
-#include "feature_value.h"
 #include "monitor.h"
+#include "nongui/feature_value.h"
 
 
 Monitor::Monitor(DDCA_Display_Info * display_info)
 {
     _displayInfo = display_info;
+    _cls         = metaObject()->className();
 }
 
 

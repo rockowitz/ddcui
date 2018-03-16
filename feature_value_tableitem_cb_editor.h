@@ -6,8 +6,9 @@
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QComboBox>
 
-#include "feature_value.h"
+#include "nongui/feature_value.h"
 #include "feature_value_tableitem_abstract_editor.h"
+
 
 class FeatureValueTableItemCbEditor : public FeatureValueTableItemAbstractEditor
 {
@@ -16,11 +17,10 @@ class FeatureValueTableItemCbEditor : public FeatureValueTableItemAbstractEditor
 public:
     explicit FeatureValueTableItemCbEditor(QWidget *parent = nullptr);
 
-    QSize sizeHint() const override;
-    void setFeatureValue(const FeatureValue &fv);
+    QSize        sizeHint() const override;
+    void         setFeatureValue(const FeatureValue &fv);
     FeatureValue featureValue();
-
-    void setCurValue(ushort curVal);
+    void         setCurValue(ushort curVal);
 
 // signals are protected in QT4, public in QT5
 signals:
@@ -37,8 +37,6 @@ protected:
 public slots:
 
 private:
-    // FeatureValue  _fv;   // should probably be a pointer
-
     QComboBox * _cb;
 
     int findItem(uint8_t sl_value);

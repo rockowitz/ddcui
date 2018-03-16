@@ -8,8 +8,8 @@
 
 #include "ddcutil_c_api.h"
 
+#include "nongui/feature_value.h"
 #include "ddcui_globals.h"
-#include "feature_value.h"
 
 #include "feature_table_model.h"
 
@@ -21,6 +21,7 @@ using namespace std;
 FeatureTableModel::FeatureTableModel(FeatureBaseModel * baseModel, QObject *parent)
     : QAbstractTableModel(parent)
 {
+        _cls = metaObject()->className();
     _baseModel = baseModel;
 }
 

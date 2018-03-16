@@ -11,10 +11,10 @@
 
 #include "feature_item_model.h"
 #include "feature_table_model.h"
-#include "misc.h"
-#include "vcprequest.h"
-#include "vcpthread.h"
 #include "feature_list_widget.h"
+#include "misc.h"
+#include "nongui/vcprequest.h"
+#include "nongui/vcpthread.h"
 
 
 // Represets a single display
@@ -41,6 +41,8 @@ public:
     QWidget *           _page_listWidget;
     int                 _pageno_listWidget;
     FeatureListWidget * _featureListWidget;
+
+    const char * _cls;    // className
 
 public slots:
     void putVcpRequest(VcpRequest * rqst);

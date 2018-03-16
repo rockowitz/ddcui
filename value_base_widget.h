@@ -5,8 +5,8 @@
 
 #include <ddcutil_c_api.h>
 
+#include "nongui/feature_value.h"
 #include "value_abstract_widget.h"
-#include "feature_value.h"
 
 class ValueBaseWidget : public ValueAbstractWidget
 {
@@ -31,6 +31,8 @@ public:
     DDCA_Feature_Flags     _feature_flags;  // should this be here or looked up?
 
     QSize sizeHint() const override;   //   needed?
+
+    const char * _cls;
 
 signals:
 

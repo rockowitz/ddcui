@@ -3,14 +3,14 @@
 
 #include <QWidget>
 
-#include "feature_value.h"
+#include "nongui/feature_value.h"
 
 class ValueAbstractWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit ValueAbstractWidget(QWidget *parent = nullptr);
+    explicit ValueAbstractWidget(QWidget *parent = nullptr);   // should constructor exist for pure virtual class
 
     virtual void setFeatureValue(const FeatureValue &fv) = 0;
 

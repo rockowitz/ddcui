@@ -23,63 +23,69 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    nongui/feature_base_model.cpp \
+    nongui/feature_change_observer.cpp \
+    nongui/feature_value.cpp \
+    nongui/vcprequest.cpp \
+    nongui/vcpthread.cpp
+
+
+SOURCES += \
     QtWaitingSpinner/waitingspinnerwidget.cpp \
-    feature_base_model.cpp \
     feature_item_model.cpp \
+    feature_list_widget.cpp \
+    feature_selection_dialog.cpp \
     feature_table_model.cpp \
-    feature_value.cpp \
     feature_value_tableitem_abstract_editor.cpp \
     feature_value_tableitem_cb_editor.cpp \
     feature_value_tableitem_cont_editor.cpp \
     feature_value_tableitem_delegate.cpp \
+    feature_widget.cpp \
     main.cpp \
     mainwindow.cpp \
     monitor.cpp \
-    vcplineitem.cpp \
-    vcprequest.cpp \
-    vcpthread.cpp \ 
-    feature_widget.cpp \
+    value_abstract_widget.cpp \
     value_base_widget.cpp \
-    value_std_widget.cpp \
     value_cont_widget.cpp \
     value_nc_widget.cpp \
-    value_abstract_widget.cpp \
     value_stacked_widget.cpp \
-    feature_list_widget.cpp \
-    feature_selection_dialog.cpp \
-    feature_change_observer.cpp
+    value_std_widget.cpp \
+    vcplineitem.cpp
 
 # SOURCES += \
 #     c_feature_widget.cpp
 
 HEADERS += \
+    nongui/feature_base_model.h \
+    nongui/feature_change_observer.h \
+    nongui/feature_value.h \
+    nongui/vcprequest.h \
+    nongui/vcpthread.h
+
+HEADERS += \
     QtWaitingSpinner/waitingspinnerwidget.h \
-    ui_mainwindow2.h \
     ddcui_globals.h \
-    feature_base_model.h \
     feature_item_model.h \
+    feature_list_widget.h \
+    feature_selection_dialog.h \
     feature_table_model.h \
-    feature_value.h \
     feature_value_tableitem_abstract_editor.h \
     feature_value_tableitem_cb_editor.h \
     feature_value_tableitem_cont_editor.h \
     feature_value_tableitem_delegate.h \
+    feature_widget.h \
     mainwindow.h \
     misc.h \
     monitor.h \
-    vcplineitem.h \
-    vcprequest.h \
-    vcpthread.h \
-    feature_widget.h \
+    ui_mainwindow2.h \
+    value_abstract_widget.h \
     value_base_widget.h \
-    value_std_widget.h \
     value_cont_widget.h \
     value_nc_widget.h \
-    value_abstract_widget.h \
     value_stacked_widget.h \
-    feature_list_widget.h \
-    feature_selection_dialog.h \
-    feature_change_observer.h
+    value_std_widget.h \
+    vcplineitem.h
+
 
 # HEADERS += \
 #     c_feature_widget.h
