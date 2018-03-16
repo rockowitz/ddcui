@@ -1,3 +1,5 @@
+/* value_cont_widget.h - Widget for displaying/editing a Continuous VCP feature value */
+
 #ifndef VALUE_CONT_WIDGET_H
 #define VALUE_CONT_WIDGET_H
 
@@ -6,7 +8,7 @@
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QLabel>
 
-#include "value_base_widget.h"
+#include "feature_value_widgets/value_base_widget.h"
 
 
 class ValueContWidget : public ValueBaseWidget

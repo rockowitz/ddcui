@@ -1,8 +1,9 @@
 /* value_std_widget.cpp */
 
+#include "feature_value_widgets/value_std_widget.h"
+
 #include "ddcutil_c_api.h"
 
-#include "value_std_widget.h"
 
 
 ValueStdWidget::ValueStdWidget(QWidget *parent):

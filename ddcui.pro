@@ -29,6 +29,13 @@ SOURCES += \
     nongui/vcprequest.cpp \
     nongui/vcpthread.cpp
 
+SOURCES += \
+    feature_value_widgets/value_abstract_widget.cpp \
+    feature_value_widgets/value_base_widget.cpp \
+    feature_value_widgets/value_cont_widget.cpp \
+    feature_value_widgets/value_nc_widget.cpp \
+    feature_value_widgets/value_stacked_widget.cpp \
+    feature_value_widgets/value_std_widget.cpp 
 
 SOURCES += \
     QtWaitingSpinner/waitingspinnerwidget.cpp \
@@ -44,12 +51,6 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     monitor.cpp \
-    value_abstract_widget.cpp \
-    value_base_widget.cpp \
-    value_cont_widget.cpp \
-    value_nc_widget.cpp \
-    value_stacked_widget.cpp \
-    value_std_widget.cpp \
     vcplineitem.cpp
 
 # SOURCES += \
@@ -60,7 +61,16 @@ HEADERS += \
     nongui/feature_change_observer.h \
     nongui/feature_value.h \
     nongui/vcprequest.h \
-    nongui/vcpthread.h
+    nongui/vcpthread.h 
+
+HEADERS += \
+    feature_value_widgets/value_abstract_widget.h \
+    feature_value_widgets/value_base_widget.h \
+    feature_value_widgets/value_cont_widget.h \
+    feature_value_widgets/value_nc_widget.h \
+    feature_value_widgets/value_stacked_widget.h \
+    feature_value_widgets/value_std_widget.h 
+
 
 HEADERS += \
     QtWaitingSpinner/waitingspinnerwidget.h \
@@ -78,12 +88,6 @@ HEADERS += \
     misc.h \
     monitor.h \
     ui_mainwindow2.h \
-    value_abstract_widget.h \
-    value_base_widget.h \
-    value_cont_widget.h \
-    value_nc_widget.h \
-    value_stacked_widget.h \
-    value_std_widget.h \
     vcplineitem.h
 
 

@@ -1,5 +1,7 @@
 /* value_nc_widget.cpp */
 
+#include "feature_value_widgets/value_nc_widget.h"
+
 #include <stdio.h>
 #include <string.h>
 #include <iostream>
@@ -12,7 +14,6 @@
 
 #include <ddcutil_c_api.h>
 
-#include "value_nc_widget.h"
 
 
 ValueNcWidget::ValueNcWidget(QWidget *parent):

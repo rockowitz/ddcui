@@ -1,10 +1,12 @@
+/* value_nc_widget.h - Widget for displaying/editing a simple Non-Continuous VCP feature value */
+
 #ifndef VALUE_NC_WIDGET_H
 #define VALUE_NC_WIDGET_H
 
 #include <QWidget>
 #include <QtWidgets/QComboBox>
 
-#include "value_base_widget.h"
+#include "feature_value_widgets/value_base_widget.h"
 
 
 class ValueNcWidget : public ValueBaseWidget

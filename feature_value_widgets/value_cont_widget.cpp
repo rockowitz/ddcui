@@ -1,8 +1,9 @@
+#include "feature_value_widgets/value_cont_widget.h"
+
 #include <string.h>
 
 #include <QtWidgets>
 
-#include "value_cont_widget.h"
 
 ValueContWidget::ValueContWidget(QWidget *parent):
     ValueBaseWidget(parent)

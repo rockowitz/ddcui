@@ -1,7 +1,8 @@
-#include "value_stacked_widget.h"
+#include "feature_value_widgets/value_stacked_widget.h"
 
 ValueStackedWidget::ValueStackedWidget(QWidget *parent):
-    ValueAbstractWidget(parent), QStackedWidget(parent)       //
+    // ValueAbstractWidget(parent),
+    QStackedWidget(parent)       //
 {
 
     // this->setObjectName(QString::fromUtf8("value_stacked_widget"));   // ambiguous

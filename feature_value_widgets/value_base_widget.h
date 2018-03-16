@@ -1,3 +1,5 @@
+/* value_base_widget.h - Common features of all Value_..._Widgets */
+
 #ifndef VALUE_BASE_WIDGET_H
 #define VALUE_BASE_WIDGET_H
 

@@ -1,6 +1,7 @@
-#include "value_base_widget.h"
+#include "feature_value_widgets/value_base_widget.h"
 
-ValueBaseWidget::ValueBaseWidget(QWidget *parent) : ValueAbstractWidget(parent)
+ValueBaseWidget::ValueBaseWidget(QWidget *parent)
+    // : ValueAbstractWidget(parent)
 {
    // will this get subclass name or "ValueBaseWidget"?
    _cls                    = metaObject()->className();
