@@ -10,10 +10,10 @@
 // FeatureValue::FeatureValue() {}
 
 FeatureValue::FeatureValue(
-        uint8_t                feature_code,
-        DDCA_MCCS_Version_Spec vspec,
-        DDCA_Feature_Flags     feature_flags,
-        DDCA_Non_Table_Value   val)  // use DDCA_Non_Table_Value or individual bytes?
+        uint8_t                  feature_code,
+        DDCA_MCCS_Version_Spec   vspec,
+        DDCA_Feature_Flags       feature_flags,
+        DDCA_Non_Table_Vcp_Value val)  // use DDCA_Non_Table_Value or individual bytes?
 {
     _feature_code    = feature_code;
     _vspec           = vspec;

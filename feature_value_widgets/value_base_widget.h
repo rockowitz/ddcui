@@ -17,22 +17,21 @@ class ValueBaseWidget : public ValueAbstractWidget
 public:
     explicit ValueBaseWidget(QWidget *parent = nullptr);
 
-    virtual void setFeatureValue(const FeatureValue &fv);
+    void     setFeatureValue(const FeatureValue &fv) override;
+    void     setCurrentValue(uint16_t newval) override;
+    uint16_t getCurrentValue() override;
 
-    virtual void setCurrentValue(uint16_t newval);
-
-    virtual uint16_t getCurrentValue();
+    QSize sizeHint() const override;   //   needed?
 
     uint8_t                _feature_code;
     DDCA_MCCS_Version_Spec _vspec;
-    DDCA_Non_Table_Value   _value;    // use this or individual bytes? DDCA_Non_Table_Value needed for get_formatted_value call
+    DDCA_Non_Table_Vcp_Value   _value;    // use this or individual bytes? DDCA_Non_Table_Value needed for get_formatted_value call
     uint8_t                _mh;
     uint8_t                _ml;
     uint8_t                _sh;
     uint8_t                _sl;
     DDCA_Feature_Flags     _feature_flags;  // should this be here or looked up?
 
-    QSize sizeHint() const override;   //   needed?
 
     const char * _cls;
 

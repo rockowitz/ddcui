@@ -16,7 +16,9 @@
 #include "monitor.h"
 #include "ui_mainwindow2.h"
 #include "vcplineitem.h"
+#include "feature_value_widgets/value_stacked_widget.h"
 // #include "inmemoryfile.h"
+#include "feature_widget_basic.h"
 
 
 #include "mainwindow.h"
@@ -73,7 +75,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QWidget* page1 = new QWidget();
     page1->setObjectName("page_table_view");
     _vcp_tableview = new QTableView();
-    _vcp_tableview->setObjectName("vcp_tableview");
+    _vcp_tableview->setObjectName("vcpTableView");
 
     QWidget * page2 = new QScrollArea();
     page2->setObjectName("featureWidgetScrollArea");
@@ -158,6 +160,14 @@ void MainWindow::initDisplaySelector() {
         page_listWidget->setSizePolicy(pageSizePolicy());
         page_listWidget->setMinimumSize(QSize(700,0));
 
+#ifdef PER_MONITOR_FEATURE_SCROLLAREA
+        QWidget * page_scrollArea = new QWidget();
+        page_scrollArea->setObjectName(QString::asprintf("page_scrollArea-%d", ndx));
+        curMonitor->_page_scrollArea = page_scrollArea;
+        page_scrollArea->setSizePolicy(pageSizePolicy());
+        page_scrollArea->setMinimumSize(QSize(700,0));
+#endif
+
         // TODO: size, font, etc
 
         // feature_listWidget = new QListWidget(page_list_widget);
@@ -190,6 +200,22 @@ void MainWindow::initDisplaySelector() {
         curMonitor->_pageno_listWidget = ui->views_stackedWidget->count();
         ui->views_stackedWidget->addWidget(page_listWidget);
 
+#ifdef PER_MONITOR_FEATURE_SCROLLAREA
+        ValueStdWidget * mock1 = new ValueStdWidget();
+
+        DDCA_Non_Table_Vcp_Value val1 = {0, 254, 0, 20};
+        DDCA_Feature_Flags flags1 = DDCA_RW | DDCA_STD_CONT;
+        DDCA_MCCS_Version_Spec vspec1 = {2,0};
+        FeatureValue * fv1 = new FeatureValue(0x22, vspec1, flags1, val1);
+        mock1->setFeatureValue(*fv1);
+
+        QVBoxLayout * vLayout = new QVBoxLayout(page_scrollArea);
+        vLayout->addWidget(mock1);
+        // vLayout->addWidget(mock2);
+
+        curMonitor->_pageno_scrollArea = ui->views_stackedWidget->count();
+        ui->views_stackedWidget->addWidget(page_scrollArea);
+#endif
 
         QObject::connect(baseModel,  SIGNAL(signalStartInitialLoad()),
                          listModel,  SLOT(startInitialLoad()));
@@ -242,6 +268,8 @@ void MainWindow::initDisplaySelector() {
     spinner->stop();
 }
 
+
+// *** About ***
 
 void MainWindow::on_actionAbout_triggered()
 {
@@ -377,6 +405,8 @@ void MainWindow::reportDdcApiError(QString funcname, int rc) const {
 }
 
 
+// Action: Capabilities
+
 void MainWindow::on_actionCapabilities_triggered()
 {
     char * caps = NULL;
@@ -440,57 +470,45 @@ void MainWindow::on_actionCapabilities_triggered()
     return;
 }
 
-void MainWindow::on_actionMonitor_Summary_triggered()
+
+// Action: Monitor
+
+void MainWindow::on_actionMonitorSummary_triggered()
 {
-    std::cout << "(MainWindow::on_actionMonitor_Summary_triggered()" << endl;
-    // if (m_curView != View::MonitorView) {
-       _curView = View::MonitorView;
-       // ???
-      // int monitorNdx = ui->displaySelectorComboBox->currentIndex();
-      int monitorNdx = _toolbarDisplayCB->currentIndex();
+    std::cout << "(MainWindow::on_actionMonitorSummary_triggered()" << endl;
 
-#ifdef OLD
-      InMemoryFile * memfile = new InMemoryFile();
-      FILE * f = memfile->handle();
-      ddca_set_fout(f);
-#endif
-      ddca_start_capture(DDCA_CAPTURE_NOOPTS);
+    int monitorNdx = _toolbarDisplayCB->currentIndex();
 
-      DDCA_Display_Info * dinfo = &_dlist->info[monitorNdx];
-      DDCA_Output_Level saved_ol = ddca_get_output_level();
-      ddca_set_output_level(DDCA_OL_VERBOSE);
-      ddca_report_display_info(dinfo, 0);
-      ddca_set_output_level(saved_ol);
+    ddca_start_capture(DDCA_CAPTURE_NOOPTS);
+    DDCA_Display_Info * dinfo = &_dlist->info[monitorNdx];
+    DDCA_Output_Level saved_ol = ddca_get_output_level();
+    ddca_set_output_level(DDCA_OL_VERBOSE);
+    ddca_dbgrpt_display_info(dinfo, 0);
+    ddca_set_output_level(saved_ol);
+    char * s = ddca_end_capture();
 
-#ifdef OLD
-      ddca_set_fout_to_default();
-      char * s = memfile->buffer();
-      cout << "len: " << memfile->size() << endl;
-      cout << "s: " << s << endl;
-#endif
-      char * s = ddca_end_capture();
+    ui->moninfoPlainText->setPlainText(s);
+    free(s);
+    QFont fixedFont("Courier");
+    ui->moninfoPlainText->setFont(fixedFont);
 
-      ui->moninfoPlainText->setPlainText(s);
-      free(s);
-      QFont fixedFont("Courier");
-      ui->moninfoPlainText->setFont(fixedFont);
-
-      ui->views_stackedWidget->setCurrentIndex(0);    // need proper constants
-
-       ui->views_stackedWidget->show();
-    // }
+    ui->views_stackedWidget->setCurrentIndex(0);    // need proper constants
+    ui->views_stackedWidget->show();
 }
 
-void MainWindow::on_actionFeature_Selection_triggered()
+
+// Actions:  Feature Selection
+
+void MainWindow::on_actionFeatureSelection_triggered()
 {
     // display dialog box for selecting features
     cout << "(on_actionFeatureSelection_triggered)" << endl;
 }
 
-void MainWindow::on_actionFeature_Selection_Dialog_triggered()
+void MainWindow::on_actionFeatureSelectionDialog_triggered()
 {
         // display dialog box for selecting features
-        cout << "(on_actionFeatureSelection_Dialog_triggered)" << endl;
+        cout << "(on_actionFeatureSelectionDialog_triggered)" << endl;
 
        FeatureSelectionDialog* fsd = new FeatureSelectionDialog(this, this->feature_selector);
        fsd->show();
@@ -505,7 +523,10 @@ void MainWindow::set_feature_list_id(DDCA_Feature_Subset_Id feature_list_id) {
     this->_feature_list_id = feature_list_id;
 }
 
-void MainWindow::on_actionFeatures_TableView_triggered()
+
+// Actions: Feature Views
+
+void MainWindow::on_actionFeaturesTableView_triggered()
 {
     printf("(=============> MainWindow::on_actionFeatures_TableView_triggered)\n");
     // int monitorNdx = ui->displaySelectorComboBox->currentIndex();
@@ -529,7 +550,7 @@ void MainWindow::on_actionFeatures_TableView_triggered()
     //         this,  SLOT  (cell_clicked(int,int)));
 
     connect(tview, SIGNAL(clicked(QModelIndex)),
-            this,  SLOT(on_vcp_tableView_clicked(QModelIndex)));
+            this,  SLOT(on_vcpTableView_clicked(QModelIndex)));
 
     tview->setSelectionBehavior(QAbstractItemView::SelectItems);
     tview->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -537,6 +558,7 @@ void MainWindow::on_actionFeatures_TableView_triggered()
     ui->views_stackedWidget->setCurrentIndex(4);
     ui->views_stackedWidget->show();
 }
+
 
 void MainWindow::on_actionFeaturesListView_triggered()
 {
@@ -558,13 +580,13 @@ void MainWindow::on_actionFeaturesListView_triggered()
 }
 
 
-void MainWindow::on_actionFeatures_ListWidget_triggered()
+void MainWindow::on_actionFeaturesListWidget_triggered()
 {
     printf("=================== (MainWindow::%s) Starting\n", __func__);  fflush(stdout);
-    if (_curView != View::FeaturesView) {
-       _curView = View::FeaturesView;
-       // ???
-    }
+    // if (_curView != View::FeaturesView) {
+    //    _curView = View::FeaturesView;
+    //    // ???
+    // }
     // int monitorNdx = ui->displaySelectorComboBox->currentIndex();
     int monitorNdx = _toolbarDisplayCB->currentIndex();
     Monitor * monitor = monitors[monitorNdx];
@@ -580,12 +602,94 @@ void MainWindow::on_actionFeatures_ListWidget_triggered()
 }
 
 
-void MainWindow::on_vcp_tableView_clicked(const QModelIndex &index)
+void MainWindow::on_actionFeaturesScrollArea_triggered()
 {
-    printf("-------------> (MainWindow::on_vcp_tableView_clicked) row=%d, col=%d\n", index.row(), index.column() );
+    printf("=================== (MainWindow::%s) Starting\n", __func__);  fflush(stdout);
+    // if (_curView != View::FeaturesView) {
+    //    _curView = View::FeaturesView;
+    //    // ???
+    // }
+    // int monitorNdx = ui->displaySelectorComboBox->currentIndex();
+    int monitorNdx = _toolbarDisplayCB->currentIndex();
+    Monitor * monitor = monitors[monitorNdx];
+    // loadMonitorFeatures(monitor);
+
+    // TO FIX:
+    // FeatureListWidget * lwidget = monitor->_featureListWidget;
+    // lview->setModel(monitor->_listModel);
+
+    // Add some dummy data
+
+    // ISSUE: Get per-monitor page?
+    // For per-monitor page
+    // ui->views_stackedWidget->setCurrentIndex(monitor->_pageno_scrollArea);
+    // Single page for all monitors
+    ui->views_stackedWidget->setCurrentIndex(ui->_pageno_scrollarea);
+
+
+    ValueStdWidget * mock1 = new ValueStdWidget();
+        DDCA_MCCS_Version_Spec vspec1 = {2,0};
+        DDCA_Non_Table_Vcp_Value val1 = {0, 254, 0, 20};
+        DDCA_Feature_Flags flags1 = DDCA_RW | DDCA_STD_CONT;
+        FeatureValue * fv1 = new FeatureValue(0x22, vspec1, flags1, val1);
+        mock1->setFeatureValue(*fv1);
+
+    ValueContWidget * mock2 = new ValueContWidget();
+        DDCA_Non_Table_Vcp_Value val2 = {0, 100, 0, 50};
+        DDCA_Feature_Flags flags2 = DDCA_RW | DDCA_STD_CONT;
+        FeatureValue * fv2 = new FeatureValue(0x10, vspec1, flags2, val2);
+        mock2->setFeatureValue(*fv2);
+
+    ValueStackedWidget * mock3 = new ValueStackedWidget();
+        DDCA_Non_Table_Vcp_Value val3 = {0, 80, 0, 30};
+        DDCA_Feature_Flags flags3 = DDCA_RW | DDCA_STD_CONT;
+        FeatureValue * fv3 = new FeatureValue(0x10, vspec1, flags3, val3);
+        mock3->setFeatureValue(*fv3);
+
+    ValueStackedWidget * mock4 = new ValueStackedWidget();
+        DDCA_Feature_Flags flags4 = DDCA_RW | DDCA_COMPLEX_CONT;
+        FeatureValue * fv4 = new FeatureValue(0x10, vspec1, flags4, val3);
+        mock4->setFeatureValue(*fv4);
+
+    FeatureWidgetBasic * mock5 = new FeatureWidgetBasic();
+        mock5->setFeatureValue(*fv4);
+        printf("mock5:\n");
+        mock5->dbgrpt();
+
+        fflush(stdout);
+
+    FeatureWidgetBasic * mock6 = new FeatureWidgetBasic();
+            mock5->setFeatureValue(*fv3);
+
+
+    QVBoxLayout * vLayout = new QVBoxLayout();
+
+    vLayout->addWidget(mock4);
+    vLayout->addWidget(mock3);
+    vLayout->addWidget(mock5);
+    vLayout->addWidget(mock6);
+    vLayout->addWidget(mock1);
+    vLayout->addWidget(mock2);
+
+    ui->featuresScrollAreaContents->setLayout(vLayout);
+    // ui->featuresScrollArea->setWidget(ui->featuresScrollAreaContents);
+
+   // ui->page_features_scrollarea->
+
+    printf("(%s) ui->_pageno_scrollarea=%d\n", __func__, ui->_pageno_scrollarea); fflush(stdout);
+    ui->views_stackedWidget->setCurrentIndex(ui->_pageno_scrollarea);
+    ui->views_stackedWidget->show();
 }
 
-void MainWindow::on_vcp_tableView_doubleClicked(const QModelIndex &index)
+
+
+
+void MainWindow::on_vcpTableView_clicked(const QModelIndex &index)
 {
-     printf("----------> (MainWindow::on_vcp_tableView_doubleClicked) row=%d, col=%d\n", index.row(), index.column() );
+    printf("-------------> (MainWindow::on_vcpTableView_clicked) row=%d, col=%d\n", index.row(), index.column() );
+}
+
+void MainWindow::on_vcpTableView_doubleClicked(const QModelIndex &index)
+{
+     printf("----------> (MainWindow::on_vcpTableView_doubleClicked) row=%d, col=%d\n", index.row(), index.column() );
 }

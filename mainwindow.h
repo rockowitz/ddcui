@@ -55,28 +55,23 @@ private:
 
 private slots:
     void on_actionAbout_triggered();
-
     void on_actionAbout_Qt_triggered();
 
     // void on_actionFeatures_triggered();
 
+    void on_actionMonitorSummary_triggered();
     void on_actionCapabilities_triggered();
 
-    void on_actionMonitor_Summary_triggered();
+    void on_actionFeatureSelectionDialog_triggered();
+    void on_actionFeatureSelection_triggered();
 
-    void on_actionFeature_Selection_triggered();
-
-    void on_actionFeature_Selection_Dialog_triggered();
-
-    void on_actionFeatures_TableView_triggered();
-
+    void on_actionFeaturesTableView_triggered();
     void on_actionFeaturesListView_triggered();
+    void on_actionFeaturesListWidget_triggered();
+    void on_actionFeaturesScrollArea_triggered();
 
-    void on_actionFeatures_ListWidget_triggered();
-
-    void on_vcp_tableView_clicked(const QModelIndex &index);
-
-    void on_vcp_tableView_doubleClicked(const QModelIndex &index);
+    void on_vcpTableView_clicked(const QModelIndex &index);
+    void on_vcpTableView_doubleClicked(const QModelIndex &index);
 
 private:
     Ui::MainWindow *ui;

@@ -18,9 +18,8 @@ class ValueContWidget : public ValueBaseWidget
 public:
     ValueContWidget(QWidget *parent = nullptr);
 
-    void setFeatureValue(const FeatureValue &fv);    // virtual
-    void setCurrentValue(uint16_t newval); // virtual
-
+    void     setFeatureValue(const FeatureValue &fv) override;
+    void     setCurrentValue(uint16_t newval) override;
     uint16_t getCurrentValue() override;
 
     QSlider*    _curSlider;

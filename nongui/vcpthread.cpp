@@ -34,9 +34,9 @@ void VcpThread::rpt_ddca_status(const char * caller_name, const char *ddca_func_
 // Process RQGetVcp
 void VcpThread::getvcp(uint8_t feature_code) {
     // printf("(VcpThread::getvcp) Starting. feature_code=0x%02x\n", feature_code);
-    DDCA_Display_Handle         dh;
-    DDCA_Non_Table_Value        valrec;
-    DDCA_Simplified_Version_Feature_Info  finfo;
+    DDCA_Display_Handle                   dh;
+    DDCA_Non_Table_Vcp_Value              valrec;
+    DDCA_Feature_Metadata                 finfo;
 
     // char *                      formatted_value = NULL;
     // DDCA_Version_Feature_Info*  feature_info = NULL;
@@ -65,7 +65,7 @@ void VcpThread::getvcp(uint8_t feature_code) {
 #endif
 
     if (ddcrc == 0) {
-        ddcrc = ddca_get_nontable_vcp_value(dh, feature_code, &valrec);
+        ddcrc = ddca_get_non_table_vcp_value(dh, feature_code, &valrec);
         if (ddcrc != 0) {
             rpt_ddca_status(__func__, "ddca_get_nontable_vcp_value", ddcrc);
             // how to handle?
@@ -95,10 +95,12 @@ void VcpThread::getvcp(uint8_t feature_code) {
 
     if (ddcrc == 0) {
        // should this be here?
-       ddcrc = ddca_get_simplified_feature_info(feature_code, _dinfo->vcp_version,&finfo);
+       // ddcrc = ddca_get_simplified_feature_info(feature_code, _dinfo->vcp_version,&finfo);
+       // ddcrc = ddca_get_simplified_feature_info_by_display(dh, feature_code, &finfo);
+       ddcrc = ddca_get_feature_metadata_by_display(dh, feature_code,false, &finfo);
        if (ddcrc != 0) {
-           rpt_ddca_status(__func__, "ddca_get_simplified_feature_info", ddcrc);
-           cout << "ddca_get_simplified_feature_info() returned " << ddcrc << endl;
+           rpt_ddca_status(__func__, "ddca_get_feature_metadata",  ddcrc);
+           cout << "ddca_get_feature_metadata() returned " << ddcrc << endl;
        }
     }
 
@@ -125,7 +127,7 @@ void VcpThread::getvcp(uint8_t feature_code) {
 #endif
 
     if (ddcrc == 0) {
-        _baseModel->modelVcpValueSet(feature_code, _dinfo->vcp_version, finfo, &valrec);
+        _baseModel->modelVcpValueSet(feature_code, finfo, &valrec);
     }
 
     ddcrc = ddca_close_display(dh);
@@ -142,12 +144,13 @@ void VcpThread::getvcp(uint8_t feature_code) {
 void VcpThread::setvcp(uint8_t feature_code, uint8_t sl) {
     // printf("(VcpThread::setvcp) Starting. feature_code=0x%02x\n", feature_code);
     DDCA_Display_Handle         dh;
-    DDCA_Non_Table_Value        valrec;
+    DDCA_Non_Table_Vcp_Value    valrec;
     valrec.sh = 0;     // only setting low byte
     valrec.sl = sl;
     valrec.mh = 0;  //hack
     valrec.ml = 0;   // hack
-        DDCA_Simplified_Version_Feature_Info  finfo;
+
+    DDCA_Feature_Metadata  finfo;
 
     DDCA_Status ddcrc = ddca_open_display(this->_dref, &dh);
     if (ddcrc != 0) {
@@ -160,7 +163,8 @@ void VcpThread::setvcp(uint8_t feature_code, uint8_t sl) {
     uint8_t verified_lo_byte = 0;
 
     // need to update mh, ml, use a valrec
-    ddcrc = ddca_set_raw_vcp_value(dh, feature_code, 0, sl, &verified_hi_byte, &verified_lo_byte);
+    // ddcrc = ddca_set_non_table_vcp_value_verify(dh, feature_code, 0, sl, &verified_hi_byte, &verified_lo_byte);
+    ddcrc = ddca_set_non_table_vcp_value(dh, feature_code, 0, sl);
     if (ddcrc != 0) {
         printf("(VcpThread::%s) ddca_set_raw_vcp_value() returned %d - %s\n",
                __func__, ddcrc, ddca_rc_name(ddcrc)); fflush(stdout);

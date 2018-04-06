@@ -39,8 +39,11 @@ public:
     // VcpThread        _vcpThread;
 
     QWidget *           _page_listWidget;
+    QWidget *           _page_scrollArea;
     int                 _pageno_listWidget;
+    int                 _pageno_scrollArea;
     FeatureListWidget * _featureListWidget;
+
 
     const char * _cls;    // className
 

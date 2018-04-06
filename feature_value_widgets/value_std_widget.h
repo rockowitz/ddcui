@@ -18,6 +18,8 @@ public:
     void setFeatureValue(const FeatureValue  &fv) override;
     void setCurrentValue(uint16_t newval) override;
 
+    void paintEvent(QPaintEvent *event) override;
+
 private:
     void setValueField();
 

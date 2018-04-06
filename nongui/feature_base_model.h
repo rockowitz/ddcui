@@ -7,9 +7,9 @@
 
 #include "ddcutil_types.h"
 
-#include "nongui/feature_change_observer.h"
-#include "nongui/feature_value.h"
-#include "nongui/vcprequest.h"
+#include "feature_change_observer.h"
+#include "feature_value.h"
+#include "vcprequest.h"
 
 typedef void (*NotifyFeatureChanged)(uint8_t feature_code);
 
@@ -32,9 +32,10 @@ public:
 
     void           modelVcpValueSet(
                        uint8_t                              feature_code,
-                       DDCA_MCCS_Version_Spec               vspec,
-                       DDCA_Simplified_Version_Feature_Info feature_flags,
-                       DDCA_Non_Table_Value *               feature_value);
+                       DDCA_Feature_Metadata                metadata,
+                       // DDCA_MCCS_Version_Spec               vspec,
+                       // DDCA_Simplified_Version_Feature_Info feature_flags,
+                       DDCA_Non_Table_Vcp_Value *           feature_value);
 
     void           modelVcpValueUpdate(
                        uint8_t                              feature_code,

@@ -6,18 +6,28 @@
 
 #include <QtWidgets/QApplication>
 
+#include "nongui/feature_value.h"
+
 #include "ddcui_globals.h"
+
+#include "feature_value_widgets/value_stacked_widget.h"
+#include "feature_value_widgets/value_std_widget.h"
+
+
 #include "feature_value_tableitem_cb_editor.h"
 #include "feature_value_tableitem_cont_editor.h"
 #include "feature_value_tableitem_delegate.h"
 #include "feature_value_tableitem_abstract_editor.h"
-#include "nongui/feature_value.h"
+
+
 
 
 FeatureValueTableItemDelegate::FeatureValueTableItemDelegate()
 {
   std::cout << "(FeatureValueTableItemDelegate::FeatureValueTableItemDelegate" << std::endl;
   printf("-------------------------> (FeatureValueTableItemDelegate::FeatureValueTableItemDelegate)\n"); fflush(stdout);
+  _valueWidget = new ValueStdWidget();   // TEMP     // HOW TO SET PARENT?
+  // _valueWidget = new ValueStackedWidget(this);  // eventual
 }
 
 FeatureValueTableItemDelegate::~FeatureValueTableItemDelegate()
@@ -70,7 +80,13 @@ void FeatureValueTableItemDelegate::paint(
           //                             QStyle::CE_ProgressBar,
          //                              myOption,
          //                              painter);
+
            QStyledItemDelegate::paint(painter, option, index);   // ???
+
+           // Wrong - there's one delegate for entire column,
+           // need separate _valueWidgets for each row
+           // _valueWidget->setFeatureValue(fv);
+           // _valueWidget->update();
         }
         else {
             // printf("      Feature Value, not Continuous\n"); fflush(stdout);

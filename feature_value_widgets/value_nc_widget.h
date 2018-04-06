@@ -16,14 +16,13 @@ class ValueNcWidget : public ValueBaseWidget
 public:
     ValueNcWidget(QWidget *parent = nullptr);
 
-    void setFeatureValue(const FeatureValue &fv);    // virtual
-    void setCurrentValue(uint16_t newval); // virtual
-
-    QComboBox *_cb;
+    void     setFeatureValue(const FeatureValue &fv) override;
+    void     setCurrentValue(uint16_t newval) override;
+    uint16_t getCurrentValue() override;
 
     int findItem(uint8_t sl_value);
 
-    uint16_t getCurrentValue() override;
+    QComboBox *_cb;
 };
 
 #endif // VALUE_NC_WIDGET_H

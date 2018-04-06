@@ -1,9 +1,11 @@
+/* value_base_widget.cpp */
+
 #include "feature_value_widgets/value_base_widget.h"
 
 ValueBaseWidget::ValueBaseWidget(QWidget *parent)
     // : ValueAbstractWidget(parent)
 {
-   // will this get subclass name or "ValueBaseWidget"?
+   // will this get subclass name or "ValueBaseWidget"?  ValueBaseWidget
    _cls                    = metaObject()->className();
 }
 
@@ -35,6 +37,6 @@ uint16_t ValueBaseWidget::getCurrentValue() {
 
 
 QSize ValueBaseWidget::sizeHint() const {
-    printf("============> (ValueBaseWidget::sizeHint)\n" ); fflush(stdout);
+    // printf("============> (ValueBaseWidget::sizeHint)\n" ); fflush(stdout);
     return QSize(100,50);
 }

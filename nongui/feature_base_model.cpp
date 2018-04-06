@@ -96,18 +96,17 @@ int FeatureBaseModel::modelVcpValueCount(void) const {
  *  the note that actual VCP value. 
  * 
  *  @param  feature_code    VCP feature code
- *  @param  vspec           MCCS version 
- *  @param  feature_info    feature information 
+ *  @param  metadata        feature metadata
  *  @param  feature_value   feature value 
  */
 void   FeatureBaseModel::modelVcpValueSet(
                    uint8_t                              feature_code,
-                   DDCA_MCCS_Version_Spec               vspec,
-                   DDCA_Simplified_Version_Feature_Info feature_info,
-                   DDCA_Non_Table_Value *               feature_value)
+                   DDCA_Feature_Metadata                metadata,
+                   DDCA_Non_Table_Vcp_Value *           feature_value)
 {
     printf("(%s::%s) feature_code=0x%02x, mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x\n",
-           _cls, __func__, feature_code, feature_value->mh, feature_value->ml, feature_value->sh, feature_value->sl);
+           _cls, __func__, feature_code,
+           feature_value->mh, feature_value->ml, feature_value->sh, feature_value->sl);
     int ndx = modelVcpValueIndex(feature_code);
     // printf("(%s) ndx=%d\n", __func__, ndx);  fflush(stdout);
     // FIXME: HACK AROUND LOGIC ERROR
@@ -117,8 +116,8 @@ void   FeatureBaseModel::modelVcpValueSet(
         printf("(%s) Creating new FeatureValue\n", __func__); fflush(stdout);
         FeatureValue * fv = new FeatureValue();
         fv->_feature_code    = feature_code;
-        fv->_vspec          = vspec;
-        fv->_feature_flags  = feature_info.feature_flags,
+        fv->_vspec          = metadata.vspec;
+        fv->_feature_flags  = metadata.feature_flags,
         fv->_mh             = feature_value->mh;
         fv->_ml             = feature_value->ml;
         fv->_sh             = feature_value->sh;

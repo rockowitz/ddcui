@@ -36,19 +36,19 @@ class Ui_MainWindow : public QMainWindow
 {
 public:
     QAction *actionAbout;
-    QAction *actionAbout_Qt;
-    QAction *actionMonitor_Summary;
+    QAction *actionAboutQt;
+    QAction *actionMonitorSummary;
     QAction *actionCapabilities;
     QAction *actionFeaturesListView;
-    QAction *actionFeature_Selection;
-    QAction *actionShow_Unsupported_Features;
+    QAction *actionFeatureSelection;
+    QAction *actionShowUnsupportedFeatures;
     QAction *actionKnown;
     QAction *actionScan;
     QAction *actionColor;
     QAction *actionProfile;
     QAction *actionManufacturer;
-    QAction *actionFeature_Selection_Dialog;
-    QAction *actionFeatures_TableView;
+    QAction *actionFeatureSelectionDialog;
+    QAction *actionFeaturesTableView;
 
     QWidget *centralWidget;
     QStackedWidget *views_stackedWidget;
@@ -60,7 +60,7 @@ public:
     QPlainTextEdit *capabilities_plainText;
 
     QWidget *page_vcp;
-    QListWidget *vcp_listWidget;
+    QListWidget *vcpListWidget;
 
     QWidget *page_table_item;
     QTableWidget *tableWidget;

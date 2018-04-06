@@ -1,7 +1,7 @@
-/* feature_Widget.h - Custom widget for displaying/editing a VCP feature */
+/* feature_widge_basict.h - Custom widget for displaying/editing a VCP feature */
 
-#ifndef FEATURE_WIDGET_H
-#define FEATURE_WIDGET_H
+#ifndef FEATURE_WIDGET_BASIC_H
+#define FEATURE_WIDGET_BASIC_H
 
 #include <QtWidgets>
 
@@ -9,16 +9,17 @@
 #include "ddcui_globals.h"
 #include "feature_value_widgets/value_abstract_widget.h"
 
-class FeatureWidget :
-        public QWidget,
-        public QListWidgetItem     // n. does not inherit from QWidget
+// Like FeatureWidget, but derives only from QWidget, not QListWidgetItem
+
+class FeatureWidgetBasic :
+        public QFrame
 {
     Q_OBJECT
 
 public:
-    explicit FeatureWidget(QListWidget *parent = nullptr);
+    explicit FeatureWidgetBasic(QWidget *parent = nullptr);
 
-    FeatureWidget(FeatureValue *fv, QWidget *parent=nullptr);
+    // FeatureWidgetBasic(FeatureValue *fv, QWidget *parent=nullptr);
 
     void setFeatureValue(FeatureValue &fv);
 
@@ -37,12 +38,15 @@ public:
 
     const char * _cls;    // className
 
+    QSize sizeHint() const override;
+
 signals:
 
 public slots:
 
 protected:
-//    void paintEvent(QPaintEvent *event);
+
+    void paintEvent(QPaintEvent *event) override;
 
 private:
     QHBoxLayout *_layout;
@@ -62,4 +66,4 @@ private:
 
 };
 
-#endif // FEATURE_WIDGET_H
+#endif // FEATURE_WIDGET_BASIC_H

@@ -3,7 +3,7 @@
 #ifndef VALUE_ABSTRACT_WIDGET_H
 #define VALUE_ABSTRACT_WIDGET_H
 
-#include <QWidget>
+#include <QtWidgets/QWidget>
 
 #include "nongui/feature_value.h"
 

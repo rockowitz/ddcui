@@ -6,6 +6,7 @@
 #include <QtCore/QObject>
 #include <QtWidgets/QStyledItemDelegate>
 // #include "c_vcp.h"
+#include "feature_value_widgets/value_base_widget.h"
 
 class FeatureValueTableItemDelegate : public QStyledItemDelegate
 {
@@ -54,6 +55,9 @@ public:
     // public/protected/private ignored by metaobject system
 public slots:    // StarDelegate   - was private slots
     void commitAndCloseEditor();
+
+private:
+    ValueBaseWidget* _valueWidget;
 };
 
 #endif // FEATURE_VALUE_TABLEITEM_DELEGATE_H

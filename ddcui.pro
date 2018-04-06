@@ -48,6 +48,7 @@ SOURCES += \
     feature_value_tableitem_cont_editor.cpp \
     feature_value_tableitem_delegate.cpp \
     feature_widget.cpp \
+    feature_widget_basic.cpp \
     main.cpp \
     mainwindow.cpp \
     monitor.cpp \
@@ -61,7 +62,7 @@ HEADERS += \
     nongui/feature_change_observer.h \
     nongui/feature_value.h \
     nongui/vcprequest.h \
-    nongui/vcpthread.h 
+    nongui/vcpthread.h
 
 HEADERS += \
     feature_value_widgets/value_abstract_widget.h \
@@ -70,7 +71,6 @@ HEADERS += \
     feature_value_widgets/value_nc_widget.h \
     feature_value_widgets/value_stacked_widget.h \
     feature_value_widgets/value_std_widget.h 
-
 
 HEADERS += \
     QtWaitingSpinner/waitingspinnerwidget.h \
@@ -84,12 +84,12 @@ HEADERS += \
     feature_value_tableitem_cont_editor.h \
     feature_value_tableitem_delegate.h \
     feature_widget.h \
+    feature_widget_basic.h \
     mainwindow.h \
     misc.h \
     monitor.h \
     ui_mainwindow2.h \
     vcplineitem.h
-
 
 # HEADERS += \
 #     c_feature_widget.h

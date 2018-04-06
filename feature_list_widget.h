@@ -3,7 +3,7 @@
 #ifndef FEATURE_LIST_WIDGET_H
 #define FEATURE_LIST_WIDGET_H
 
-#include <QWidget>
+#include <QtWidgets/QWidget>
 
 #include <ddcutil_c_api.h>
 
