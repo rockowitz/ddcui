@@ -51,6 +51,7 @@ SOURCES += \
     feature_selection_dialog.cpp \ 
     feature_widget.cpp \
     feature_widget_basic.cpp \
+    features_scroll_area.cpp \
     main.cpp \
     mainwindow.cpp \
     monitor.cpp \
@@ -89,6 +90,7 @@ HEADERS += \
     feature_selection_dialog.h \
     feature_widget.h \
     feature_widget_basic.h \
+    features_scroll_area.h \
     mainwindow.h \
     misc.h \
     monitor.h \

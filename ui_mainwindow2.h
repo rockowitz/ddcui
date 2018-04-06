@@ -30,6 +30,7 @@
 #include "feature_value_widgets/value_std_widget.h"
 
 #include "feature_list_widget.h"
+#include "features_scroll_area.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -92,10 +93,10 @@ public:
     // or should this be per monitor?
 
     QWidget *     featuresScrollAreaContents;
-    QScrollArea * featuresScrollArea;
+    FeaturesScrollArea * featuresScrollArea;
 
     // QWidget *     page_features_scrollarea;   // OK - 1
-    QScrollArea * page_features_scrollarea;      // ALT - 2
+    FeaturesScrollArea * page_features_scrollarea;      // ALT - 2
 
     int           _pageno_scrollarea;
 
@@ -463,7 +464,7 @@ private:
 #endif
 
        // page_features_scrollarea = new QWidget();   // OK - 1
-       page_features_scrollarea = new QScrollArea();  // ALT - 2
+       page_features_scrollarea = new FeaturesScrollArea();  // ALT - 2
        page_features_scrollarea->setObjectName(QString::fromUtf8("page_features_scrollarea"));
 
        featuresScrollAreaContents = new QWidget();    // ALT - 2

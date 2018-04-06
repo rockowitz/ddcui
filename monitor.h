@@ -19,7 +19,7 @@
 #include "misc.h"
 
 
-// Represets a single display
+// Represents a single display
 
 class Monitor : public QObject
 {
