@@ -640,6 +640,7 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
         FeatureValue * fv2 = new FeatureValue(0x10, vspec1, flags2, val2);
         mock2->setFeatureValue(*fv2);
 
+
     ValueStackedWidget * mock3 = new ValueStackedWidget();
         DDCA_Non_Table_Vcp_Value val3 = {0, 80, 0, 30};
         DDCA_Feature_Flags flags3 = DDCA_RW | DDCA_STD_CONT;
@@ -651,30 +652,40 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
         FeatureValue * fv4 = new FeatureValue(0x10, vspec1, flags4, val3);
         mock4->setFeatureValue(*fv4);
 
+
     FeatureWidgetBasic * mock5 = new FeatureWidgetBasic();
         mock5->setFeatureValue(*fv4);
-        printf("mock5:\n");
-        mock5->dbgrpt();
-
-        fflush(stdout);
+        printf("mock5:\n");  mock5->dbgrpt();  fflush(stdout);
 
     FeatureWidgetBasic * mock6 = new FeatureWidgetBasic();
-            mock5->setFeatureValue(*fv3);
+            mock6->setFeatureValue(*fv3);
 
+    FeatureWidgetBasic * mock7 = new FeatureWidgetBasic();
+        DDCA_Non_Table_Vcp_Value val7 = {0, 0, 0, 4};
+        DDCA_Feature_Flags flags7 = DDCA_RW | DDCA_SIMPLE_NC;
+        FeatureValue * fv7 = new FeatureValue(0x60, vspec1, flags7, val7);
+        mock7->setFeatureValue(*fv7);
 
     QVBoxLayout * vLayout = new QVBoxLayout();
 
     vLayout->addWidget(mock4);
     vLayout->addWidget(mock3);
     vLayout->addWidget(mock5);
+    vLayout->addWidget(mock7);
     vLayout->addWidget(mock6);
-    vLayout->addWidget(mock1);
-    vLayout->addWidget(mock2);
+    // vLayout->addWidget(mock1);
+    // vLayout->addWidget(mock2);
 
     ui->featuresScrollAreaContents->setLayout(vLayout);
-    // ui->featuresScrollArea->setWidget(ui->featuresScrollAreaContents);
 
-   // ui->page_features_scrollarea->
+    // From doc for void QScrollArea::setWidget(QWidget *widget)
+    // Note that You must add the layout of widget before you call this function;
+    // if you add it later, the widget will not be visible - regardless of when you
+    // show() the scroll area. In this case, you can also not show() the widget later.
+
+
+    ui->featuresScrollArea->setWidget(ui->featuresScrollAreaContents);  // ALT-2
+
 
     printf("(%s) ui->_pageno_scrollarea=%d\n", __func__, ui->_pageno_scrollarea); fflush(stdout);
     ui->views_stackedWidget->setCurrentIndex(ui->_pageno_scrollarea);

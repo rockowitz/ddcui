@@ -1,5 +1,10 @@
 /* value_std_widget.cpp */
 
+
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLabel>
+#include <QtCore/QRect>
+
 #include "feature_value_widgets/value_std_widget.h"
 
 #include "ddcutil_c_api.h"

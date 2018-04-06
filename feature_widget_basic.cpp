@@ -169,12 +169,13 @@ QSize FeatureWidgetBasic::sizeHint() const {
 }
 
 
-
+#ifdef NO
 void FeatureWidgetBasic::paintEvent(QPaintEvent *event) {
      printf("%s::%s)\n", _cls, __func__); fflush(stdout);
      QFrame::paintEvent(event);
      _featureCodeField->update();  // causes separate X window - NO NOT THIS
 }
+#endif
 
 
 

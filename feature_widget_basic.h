@@ -3,7 +3,8 @@
 #ifndef FEATURE_WIDGET_BASIC_H
 #define FEATURE_WIDGET_BASIC_H
 
-#include <QtWidgets>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QHBoxLayout>
 
 #include "nongui/feature_value.h"
 #include "ddcui_globals.h"
@@ -46,7 +47,7 @@ public slots:
 
 protected:
 
-    void paintEvent(QPaintEvent *event) override;
+    // void paintEvent(QPaintEvent *event) override;
 
 private:
     QHBoxLayout *_layout;

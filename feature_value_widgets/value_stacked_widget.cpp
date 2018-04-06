@@ -46,14 +46,17 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
     ValueBaseWidget::setFeatureValue(fv);
 
     if (fv._feature_flags & DDCA_STD_CONT) {
+        printf("(%s::%s) DDCA_STD_CONT\n", _cls, __func__); fflush(stdout);
         _stacked->setCurrentIndex(_pageno_cont);
         _cur_stacked_widget = _contWidget;
     }
     else if (fv._feature_flags & DDCA_SIMPLE_NC) {
+       printf("(%s::%s) DDCA_SIMPLE_NC\n", _cls, __func__); fflush(stdout);
         _stacked->setCurrentIndex(_pageno_nc);
         _cur_stacked_widget = _ncWidget;
     }
     else {
+       printf("(%s::%s) default case, _stdWidget\n", _cls, __func__); fflush(stdout);
         _stacked->setCurrentIndex(_pageno_std);
         _cur_stacked_widget = _stdWidget;
     }

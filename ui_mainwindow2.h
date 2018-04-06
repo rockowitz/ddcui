@@ -90,8 +90,11 @@ public:
     // or should this be per monitor?
 
     QWidget *     featuresScrollAreaContents;
-    // QScrollArea * featuresScrollArea;
-    QWidget *     page_features_scrollarea;
+    QScrollArea * featuresScrollArea;
+
+    // QWidget *     page_features_scrollarea;   // OK - 1
+    QScrollArea * page_features_scrollarea;      // ALT - 2
+
     int           _pageno_scrollarea;
 
     QHBoxLayout *horizontalLayout;
@@ -457,18 +460,26 @@ private:
        int _pageno_scrollarea;
 #endif
 
-       page_features_scrollarea = new QWidget();
+       // page_features_scrollarea = new QWidget();   // OK - 1
+       page_features_scrollarea = new QScrollArea();  // ALT - 2
        page_features_scrollarea->setObjectName(QString::fromUtf8("page_features_scrollarea"));
 
-       // featuresScrollAreaContents = new QWidget(page_features_scrollarea);
+       featuresScrollAreaContents = new QWidget();    // ALT - 2
        // featuresScrollAreaContents->setObjectName(QString::fromUtf8("featuresScrollAreaContents"));
 
        // try eliminating wrapping the "real" Widget in a page widget
-       featuresScrollAreaContents = page_features_scrollarea;   // works
+       // featuresScrollAreaContents = page_features_scrollarea;   // OK - 1
+
+       featuresScrollArea = page_features_scrollarea;  // ALT - 2
+
+
 
        // featuresScrollArea = new QScrollArea(page_features_scrollarea);
        // featuresScrollArea->setObjectName(QString::fromUtf8("featuresScrollArea"));
-       // featuresScrollArea->setWidget(featuresScrollAreaContents);
+
+       // NO: see doc for void QScrollArea::setWidget(QWidget *widget)
+       // featuresScrollArea->setWidget(featuresScrollAreaContents); // ALT - 2
+
 
        // views_stackedWidget->addWidget(page_features_scrollarea_contents);
 
