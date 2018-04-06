@@ -7,8 +7,12 @@
 #include "value_cont_widget.h"
 #include "value_nc_widget.h"
 
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QStackedWidget>
+// #include <QtWidgets/QWidget>
+// #include <QtWidgets/QStackedWidget>
+
+class QWidget;
+class QPaintEvent;
+class QStackedWidget;
 
 class ValueStackedWidget : public ValueBaseWidget
 {
@@ -19,7 +23,7 @@ public:
     void     setCurrentValue(uint16_t newval) override;
     uint16_t getCurrentValue() override;
 
-    QSize sizeHint() const override;
+    // QSize sizeHint() const override;
 
     void paintEvent(QPaintEvent *event) override;
 

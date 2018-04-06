@@ -1,6 +1,8 @@
 /* value_stacked_widget.cpp */
 
 #include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QStackedWidget>
 
 #include "feature_value_widgets/value_std_widget.h"
 #include "feature_value_widgets/value_cont_widget.h"
@@ -73,10 +75,10 @@ uint16_t ValueStackedWidget::getCurrentValue() {
     return _cur_stacked_widget->getCurrentValue();
 }
 
-QSize ValueStackedWidget::sizeHint() const {
-    // printf("(%s::%s) Starting\n", _cls, __func__);  fflush(stdout);
-    return QSize(100,50);    // ???
-}
+// QSize ValueStackedWidget::sizeHint() const {
+//     // printf("(%s::%s) Starting\n", _cls, __func__);  fflush(stdout);
+//     return QSize(100,50);    // ???
+// }
 
 
 void ValueStackedWidget::paintEvent(QPaintEvent *event) {

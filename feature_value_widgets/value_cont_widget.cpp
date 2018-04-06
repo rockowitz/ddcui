@@ -2,7 +2,9 @@
 
 #include <string.h>
 
-#include <QtWidgets>
+
+#include <QtWidgets/QHBoxLayout>
+// #include <QtWidgets/QVBoxLayout>
 
 
 ValueContWidget::ValueContWidget(QWidget *parent):
@@ -10,16 +12,27 @@ ValueContWidget::ValueContWidget(QWidget *parent):
 {
     printf("============> (ValueContWidget::ValueContWidget)\n" ); fflush(stdout);
 
+    QSizePolicy fixedSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
+    fixedSizePolicy.setHorizontalStretch(0);    // needed?
+    fixedSizePolicy.setVerticalStretch(0);
+    // sizePolicy1.setHeightForWidth(centralWidget->sizePolicy().hasHeightForWidth());
+    fixedSizePolicy.setHeightForWidth(false);
+
+
     _curSlider = new QSlider(Qt::Horizontal);
     _curSlider->setFocusPolicy(Qt::StrongFocus);
     _curSlider->setTickPosition(QSlider::TicksBelow);   // alt TicksBothSides
     _curSlider->setSingleStep(1);
+    _curSlider->setFixedSize(200,20);
 
     _curSpinBox = new QSpinBox();
     _curSpinBox->setSingleStep(1);
+    _curSpinBox->setFixedSize(20,20);
 
     _maxTitle = new QLabel("Max:");
+
     _maxValue = new QLabel();
+
 
     connect( _curSlider, SIGNAL(valueChanged(int)),
              _curSpinBox, SLOT(setValue(int)));
@@ -31,6 +44,7 @@ ValueContWidget::ValueContWidget(QWidget *parent):
     layout->addWidget(_curSpinBox);
     layout->addWidget(_maxTitle);
     layout->addWidget(_maxValue);
+    layout->setStretch(1,0);
     setLayout(layout);
 }
 

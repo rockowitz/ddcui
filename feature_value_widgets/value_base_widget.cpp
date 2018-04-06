@@ -35,8 +35,11 @@ uint16_t ValueBaseWidget::getCurrentValue() {
     return result;
 }
 
-
+#ifdef NO
 QSize ValueBaseWidget::sizeHint() const {
-    // printf("============> (ValueBaseWidget::sizeHint)\n" ); fflush(stdout);
-    return QSize(100,50);
+    int w = 300;
+    int h = 20;
+    printf("============> (ValueBaseWidget::sizeHint) returning (%d,%d)\n", w,h ); fflush(stdout);
+    return QSize(w,h);
 }
+#endif

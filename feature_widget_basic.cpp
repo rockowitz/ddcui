@@ -4,6 +4,7 @@
 
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLabel>
 
 #include "feature_widget_basic.h"
 
@@ -13,10 +14,12 @@
 #include "feature_value_widgets/value_stacked_widget.h"
 
 
+
 FeatureWidgetBasic::FeatureWidgetBasic(QWidget *parent) :
    QFrame(parent)
 {
     _cls = metaObject()->className();
+
 
     // QFrame methods:
     setFrameStyle(QFrame::Box);    // something to amke it visible
@@ -37,13 +40,18 @@ FeatureWidgetBasic::FeatureWidgetBasic(QWidget *parent) :
     QSizePolicy fixedSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
     fixedSizePolicy.setHorizontalStretch(0);    // needed?
     fixedSizePolicy.setVerticalStretch(0);
+    // sizePolicy1.setHeightForWidth(centralWidget->sizePolicy().hasHeightForWidth());
+    fixedSizePolicy.setHeightForWidth(false);
+
+
 
     /* Feature Code */
     int codeLabelStartX = 10;
     int codeLabelLen = 10;
     _featureCodeField = new QLabel();
     _featureCodeField->setObjectName(QString::fromUtf8("featureCode"));
-    _featureCodeField->setGeometry( QRect(codeLabelStartX,0, codeLabelLen,10));
+ // _featureCodeField->setGeometry( QRect(codeLabelStartX,0, codeLabelLen,10));
+    _featureCodeField->setMinimumWidth(20);
     _featureCodeField->setSizePolicy(fixedSizePolicy);
     _featureCodeField->setFont(monoValueFont);
     _featureCodeField->setText(QString::fromUtf8("0x00"));    // dummy
@@ -52,7 +60,8 @@ FeatureWidgetBasic::FeatureWidgetBasic(QWidget *parent) :
     int nameLabelStartX = codeLabelStartX + codeLabelLen + 10;
     _featureNameField = new QLabel();
     _featureNameField->setObjectName(QString::fromUtf8("featureName"));
-    _featureNameField->setGeometry((QRect(nameLabelStartX,0,59,19)));
+  //  _featureNameField->setGeometry((QRect(nameLabelStartX,0,59,19)));
+    _featureNameField->setMinimumWidth(150);
     _featureNameField->setSizePolicy(fixedSizePolicy);
     _featureNameField->setFont(nonMonoValueFont);
     _featureNameField->setText(QString::fromUtf8("Dummy feature name"));    // dummy
@@ -60,16 +69,18 @@ FeatureWidgetBasic::FeatureWidgetBasic(QWidget *parent) :
     /* RW/RO/WO */
     _featureRwField = new QLabel();
     _featureRwField->setObjectName(QString::fromUtf8("featureRW"));
-    _featureRwField->setGeometry((QRect(50,0,59,19)));
+   // _featureRwField->setGeometry((QRect(50,0,59,19)));
     _featureRwField->setSizePolicy(fixedSizePolicy);
+    _featureRwField->setMinimumWidth(20);
     _featureRwField->setFont(nonMonoValueFont);
     _featureRwField->setText(QString::fromUtf8("RW"));    // dummy
 
     /* MCCS Type */
     _featureTypeField = new QLabel();
     _featureTypeField->setObjectName(QString::fromUtf8("featureType"));
-    _featureTypeField->setGeometry((QRect(60,0,69,19)));
+ //   _featureTypeField->setGeometry((QRect(60,0,69,19)));
     _featureTypeField->setSizePolicy(fixedSizePolicy);
+    _featureTypeField->setMinimumWidth(20);
     _featureTypeField->setFont(nonMonoValueFont);
     _featureTypeField->setText(QString::fromUtf8("NC"));    // dummy
 
@@ -86,6 +97,8 @@ FeatureWidgetBasic::FeatureWidgetBasic(QWidget *parent) :
 #endif
 
     _valueWidget = new ValueStackedWidget();
+    _valueWidget->setSizePolicy(fixedSizePolicy);
+    _valueWidget->setMinimumWidth(200);
 
     _layout = new QHBoxLayout();
     _layout->addWidget(_featureCodeField);
@@ -94,6 +107,7 @@ FeatureWidgetBasic::FeatureWidgetBasic(QWidget *parent) :
     _layout->addWidget(_featureTypeField);
     _layout->addWidget(_valueWidget);
     // layout->addWidget(_featureValueStackedWidget);
+    _layout->addStretch(1);
 
     setLayout(_layout);
 }
@@ -164,8 +178,10 @@ void FeatureWidgetBasic::setCurrentValue(uint16_t newval) {
 
 
 QSize FeatureWidgetBasic::sizeHint() const {
-    // printf("(%s::%s) Starting\n", _cls, __func__);  fflush(stdout);
-    return QSize(500,50);    // ???
+    int w = 500;
+    int h = 20;
+    printf("(%s::%s) Returning (%d,%d)\n", _cls, __func__, w, h);  fflush(stdout);
+    return QSize(w,h);    // ???
 }
 
 

@@ -3,12 +3,13 @@
 #ifndef VALUE_BASE_WIDGET_H
 #define VALUE_BASE_WIDGET_H
 
-#include <QWidget>
+#include <QtCore/QSize>
 
 #include <ddcutil_c_api.h>
 
 #include "nongui/feature_value.h"
 #include "value_abstract_widget.h"
+
 
 class ValueBaseWidget : public ValueAbstractWidget
 {
@@ -21,7 +22,7 @@ public:
     void     setCurrentValue(uint16_t newval) override;
     uint16_t getCurrentValue() override;
 
-    QSize sizeHint() const override;   //   needed?
+    // QSize sizeHint() const override;   //   needed?
 
     uint8_t                _feature_code;
     DDCA_MCCS_Version_Spec _vspec;
