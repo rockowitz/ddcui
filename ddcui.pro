@@ -38,15 +38,17 @@ SOURCES += \
     feature_value_widgets/value_std_widget.cpp 
 
 SOURCES += \
+    table_model_view/feature_table_model.cpp \
+    table_model_view/feature_value_tableitem_abstract_editor.cpp \
+    table_model_view/feature_value_tableitem_cb_editor.cpp \
+    table_model_view/feature_value_tableitem_cont_editor.cpp \
+    table_model_view/feature_value_tableitem_delegate.cpp
+
+SOURCES += \
     QtWaitingSpinner/waitingspinnerwidget.cpp \
     feature_item_model.cpp \
     feature_list_widget.cpp \
-    feature_selection_dialog.cpp \
-    feature_table_model.cpp \
-    feature_value_tableitem_abstract_editor.cpp \
-    feature_value_tableitem_cb_editor.cpp \
-    feature_value_tableitem_cont_editor.cpp \
-    feature_value_tableitem_delegate.cpp \
+    feature_selection_dialog.cpp \ 
     feature_widget.cpp \
     feature_widget_basic.cpp \
     main.cpp \
@@ -73,16 +75,18 @@ HEADERS += \
     feature_value_widgets/value_std_widget.h 
 
 HEADERS += \
+    table_model_view/feature_table_model.h \
+    table_model_view/feature_value_tableitem_abstract_editor.h \
+    table_model_view/feature_value_tableitem_cb_editor.h \
+    table_model_view/feature_value_tableitem_cont_editor.h \
+    table_model_view/feature_value_tableitem_delegate.h
+
+HEADERS += \
     QtWaitingSpinner/waitingspinnerwidget.h \
-    ddcui_globals.h \
+    base/ddcui_globals.h \
     feature_item_model.h \
     feature_list_widget.h \
     feature_selection_dialog.h \
-    feature_table_model.h \
-    feature_value_tableitem_abstract_editor.h \
-    feature_value_tableitem_cb_editor.h \
-    feature_value_tableitem_cont_editor.h \
-    feature_value_tableitem_delegate.h \
     feature_widget.h \
     feature_widget_basic.h \
     mainwindow.h \

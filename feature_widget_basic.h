@@ -6,8 +6,8 @@
 // #include <QtWidgets/QLabel>
 // #include <QtWidgets/QHBoxLayout>
 
+#include "base/ddcui_globals.h"
 #include "nongui/feature_value.h"
-#include "ddcui_globals.h"
 #include "feature_value_widgets/value_abstract_widget.h"
 
 // Like FeatureWidget, but derives only from QWidget, not QListWidgetItem

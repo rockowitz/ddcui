@@ -9,19 +9,20 @@
 
 #include "QtWaitingSpinner/waitingspinnerwidget.h"
 
-#include "feature_item_model.h"
-#include "feature_table_model.h"
-#include "feature_value_tableitem_delegate.h"
+#include "feature_value_widgets/value_stacked_widget.h"
+
+#include "table_model_view/feature_table_model.h"
+#include "table_model_view/feature_value_tableitem_delegate.h"
+
 #include "feature_selection_dialog.h"
 #include "monitor.h"
 #include "ui_mainwindow2.h"
 #include "vcplineitem.h"
-#include "feature_value_widgets/value_stacked_widget.h"
-// #include "inmemoryfile.h"
 #include "feature_widget_basic.h"
-
+#include "feature_item_model.h"
 
 #include "mainwindow.h"
+
 
 using namespace std;
 

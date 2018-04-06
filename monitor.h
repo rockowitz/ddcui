@@ -9,12 +9,14 @@
 
 #include <ddcutil_c_api.h>
 
-#include "feature_item_model.h"
-#include "feature_table_model.h"
-#include "feature_list_widget.h"
-#include "misc.h"
 #include "nongui/vcprequest.h"
 #include "nongui/vcpthread.h"
+
+#include "table_model_view/feature_table_model.h"
+
+#include "feature_item_model.h"
+#include "feature_list_widget.h"
+#include "misc.h"
 
 
 // Represets a single display

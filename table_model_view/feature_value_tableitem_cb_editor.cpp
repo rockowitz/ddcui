@@ -1,5 +1,7 @@
 /* feature_value_tableitem_cb_editor.cpp */
 
+#include "../table_model_view/feature_value_tableitem_cb_editor.h"
+
 #include <stdio.h>
 #include <string.h>
 #include <iostream>
@@ -12,7 +14,6 @@
 
 #include <ddcutil_c_api.h>
 
-#include "feature_value_tableitem_cb_editor.h"
 
 
 FeatureValueTableItemCbEditor::FeatureValueTableItemCbEditor(QWidget *parent) :

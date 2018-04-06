@@ -5,6 +5,7 @@
 
 #include "nongui/feature_base_model.h"
 #include "nongui/feature_value.h"
+
 #include "feature_widget.h"
 
 #include "feature_list_widget.h"

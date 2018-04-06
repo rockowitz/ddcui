@@ -27,8 +27,10 @@
 #endif
 #include <iostream>
 
-#include "feature_list_widget.h"
 #include "feature_value_widgets/value_std_widget.h"
+
+#include "feature_list_widget.h"
+
 
 QT_BEGIN_NAMESPACE
 

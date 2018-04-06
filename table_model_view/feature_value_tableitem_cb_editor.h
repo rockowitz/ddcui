@@ -6,8 +6,8 @@
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QComboBox>
 
-#include "nongui/feature_value.h"
 #include "feature_value_tableitem_abstract_editor.h"
+#include "nongui/feature_value.h"
 
 
 class FeatureValueTableItemCbEditor : public FeatureValueTableItemAbstractEditor

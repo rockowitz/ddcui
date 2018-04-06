@@ -4,12 +4,12 @@
 
 #include <QtWidgets>
 
-#include "feature_widget.h"
-
 #include "feature_value_widgets/value_cont_widget.h"
 #include "feature_value_widgets/value_nc_widget.h"
 #include "feature_value_widgets/value_std_widget.h"
 #include "feature_value_widgets/value_stacked_widget.h"
+
+#include "feature_widget.h"
 
 
 FeatureWidget::FeatureWidget(QListWidget *parent) :

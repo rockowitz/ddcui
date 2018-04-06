@@ -5,8 +5,8 @@
 
 #include <QtWidgets>
 
+#include "base/ddcui_globals.h"
 #include "nongui/feature_value.h"
-#include "ddcui_globals.h"
 #include "feature_value_widgets/value_abstract_widget.h"
 
 class FeatureWidget :
