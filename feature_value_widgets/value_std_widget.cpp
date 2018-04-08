@@ -14,9 +14,9 @@
 ValueStdWidget::ValueStdWidget(QWidget *parent):
         ValueBaseWidget(parent)
 {
-    _cls                    = metaObject()->className();
+    _cls                    = strdup(metaObject()->className());
 
-    printf("(%s::%s) Starting\n", _cls, __func__);  fflush(stdout);
+    // printf("(%s::%s) Starting\n", _cls, __func__);  fflush(stdout);
     _valueField = new QLabel();
 
     QSizePolicy* sizePolicy = new QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
@@ -51,7 +51,8 @@ void ValueStdWidget::setCurrentValue(uint16_t newval) {
 }
 
     void ValueStdWidget::paintEvent(QPaintEvent *event) {
-                printf("(%s::%s) Starting\n", _cls, __func__);  fflush(stdout);
+                // printf("(%s::%s) Starting\n", _cls, __func__);  fflush(stdout);
+#ifdef DEBUG
                 const QRect rect = event->rect();
                 // const QRegion = event->region();
                 int x;
@@ -59,8 +60,8 @@ void ValueStdWidget::setCurrentValue(uint16_t newval) {
                 int width;
                 int height;
                 rect.getRect(&x, &y, &width, &height);
-                printf("(%s::%s) event rectangle: x:%d, y:%d, width:%d, height:%d\n",
-                       _cls, __func__, x, y, width, height);  fflush(stdout);
-
+                printf("(ValueStdWidget::%s) event rectangle: x:%d, y:%d, width:%d, height:%d\n",
+                       __func__, x, y, width, height);  fflush(stdout);
+#endif
                 this->ValueBaseWidget::paintEvent(event);
     }

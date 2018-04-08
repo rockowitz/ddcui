@@ -3,6 +3,7 @@
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QStackedWidget>
+#include <QtGui/QPaintEvent>
 
 #include "feature_value_widgets/value_std_widget.h"
 #include "feature_value_widgets/value_cont_widget.h"
@@ -14,7 +15,7 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent):
     ValueBaseWidget(parent)
     // QStackedWidget(parent)       //
 {
-   _cls                    = metaObject()->className();
+   _cls                    = strdup(metaObject()->className());
 
     // this->setObjectName(QString::fromUtf8("value_stacked_widget"));   // ambiguous
     // setGeometry(QRect(209,6, 181, 20));
@@ -48,17 +49,17 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
     ValueBaseWidget::setFeatureValue(fv);
 
     if (fv._feature_flags & DDCA_STD_CONT) {
-        printf("(%s::%s) DDCA_STD_CONT\n", _cls, __func__); fflush(stdout);
+        // printf("(ValueStackedWidget::%s) DDCA_STD_CONT\n", __func__); fflush(stdout);
         _stacked->setCurrentIndex(_pageno_cont);
         _cur_stacked_widget = _contWidget;
     }
     else if (fv._feature_flags & DDCA_SIMPLE_NC) {
-       printf("(%s::%s) DDCA_SIMPLE_NC\n", _cls, __func__); fflush(stdout);
+       // printf("(ValueStackedWidget::%s) DDCA_SIMPLE_NC\n", __func__); fflush(stdout);
         _stacked->setCurrentIndex(_pageno_nc);
         _cur_stacked_widget = _ncWidget;
     }
     else {
-       printf("(%s::%s) default case, _stdWidget\n", _cls, __func__); fflush(stdout);
+       // printf("(ValueStackedWidget::%s) default case, _stdWidget\n",  __func__); fflush(stdout);
         _stacked->setCurrentIndex(_pageno_std);
         _cur_stacked_widget = _stdWidget;
     }
@@ -82,7 +83,7 @@ uint16_t ValueStackedWidget::getCurrentValue() {
 
 
 void ValueStackedWidget::paintEvent(QPaintEvent *event) {
-            printf("(%s::%s) Starting\n", _cls, __func__);  fflush(stdout);
+            // printf("(%s::%s) Starting\n", _cls, __func__);  fflush(stdout);
             const QRect rect = event->rect();
             // const QRegion = event->region();
             int x;
@@ -90,8 +91,9 @@ void ValueStackedWidget::paintEvent(QPaintEvent *event) {
             int width;
             int height;
             rect.getRect(&x, &y, &width, &height);
-            printf("(%s::%s) event rectangle: x:%d, y:%d, width:%d, height:%d\n",
-                   _cls, __func__, x, y, width, height);  fflush(stdout);
+            // _cls points to base class name, not this class
+            // printf("(ValueStackedWidget::%s) event rectangle: x:%d, y:%d, width:%d, height:%d\n",
+            //       __func__, x, y, width, height);  fflush(stdout);
 
             this->ValueBaseWidget::paintEvent(event);
 }

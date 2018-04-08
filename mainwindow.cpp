@@ -4,6 +4,8 @@
 
 #include <QtGui/QFont>
 #include <QtWidgets/QMessageBox>
+#include <QtCore/QThread>
+#include <QtWidgets/QWidget>
 
 #include <ddcutil_c_api.h>
 
@@ -20,6 +22,7 @@
 #include "vcplineitem.h"
 #include "feature_widget_basic.h"
 #include "feature_item_model.h"
+#include "features_scrollarea_view.h"
 
 #include "mainwindow.h"
 
@@ -30,7 +33,10 @@ using namespace std;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
+    // , PageChangeObserver()
 {
+   _cls = metaObject()->className();
+
     ui->setupUi(this);
 
     cout << "After setupUI()" << endl;
@@ -41,10 +47,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->mainToolBar->addWidget( _toolbarDisplayCB);
     ui->capabilities_plainText->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
     ui->moninfoPlainText->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
-    initDisplaySelector();
-    feature_selector = new FeatureSelector();
 
-#ifdef NO
+
+
+#ifdef DEBUG
     cout << "============> Children of centralWidget: " << endl;
     QObjectList  childs = ui->centralWidget->children();
     for (int ndx = 0; ndx < childs.size(); ndx++) {
@@ -57,6 +63,7 @@ MainWindow::MainWindow(QWidget *parent) :
         delete curobj;  // works
 
     }
+#endif
 #ifdef DOESNT_WORK
     QObject * item = nullptr;
     while((item == childs.takeAt(0))) {
@@ -64,8 +71,7 @@ MainWindow::MainWindow(QWidget *parent) :
     }
 #endif
 
-    _views_StackedWidget = new QStackedWidget(ui->centralWidget);
-    _views_StackedWidget->setObjectName("views_StackedWidget");
+
 
     QWidget* page0 = new QWidget();
     page0->setObjectName("page_moninfo");
@@ -81,6 +87,10 @@ MainWindow::MainWindow(QWidget *parent) :
     QWidget * page2 = new QScrollArea();
     page2->setObjectName("featureWidgetScrollArea");
 
+    _views_StackedWidget = new QStackedWidget(ui->centralWidget);
+    _views_StackedWidget->setObjectName("views_StackedWidget");
+
+
 
     _views_StackedWidget->addWidget(page0);
     _views_StackedWidget->addWidget(page1);
@@ -89,9 +99,11 @@ MainWindow::MainWindow(QWidget *parent) :
     QVBoxLayout * layout = new QVBoxLayout();
     layout->addWidget(_views_StackedWidget);
 
+    initDisplaySelector();
+    feature_selector = new FeatureSelector();
+
 
     // ui->MainWindow.centralWidget->setLayout(layout);
-#endif
 
 }
 
@@ -100,7 +112,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-QSizePolicy pageSizePolicy() {
+static QSizePolicy pageSizePolicy() {
     QSizePolicy policy(QSizePolicy::MinimumExpanding,QSizePolicy::MinimumExpanding);
     policy.setHorizontalStretch(1);
     policy.setVerticalStretch(1);
@@ -117,89 +129,125 @@ QSizePolicy tableWidgetSizePolicy() {
     return policy;
 }
 
-void MainWindow::initDisplaySelector() {
-   //  ui->displaySelectorComboBox->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-   //  ui->displaySelectorComboBox->setMinimumContentsLength(28);   // 2 + 3 + 3 + 3 + 13
 
-    Qt::WindowModality modality = Qt::ApplicationModal;   // alt WindowModal, ApplicationModal, NonModal
-    WaitingSpinnerWidget* spinner = new WaitingSpinnerWidget(
-                                           modality,
-                                           this,       // parent
-                                           true);       /// centerOnParent
-    spinner->start(); // starts spinning
+QWidget * initListWidget(
+      Monitor *         curMonitor,
+      int               ndx,         // monitor index number
+      FeatureBaseModel* baseModel,
+      QStackedWidget *  stackedWidget)
+{
+   FeatureItemModel * listModel = new FeatureItemModel(baseModel);
 
-    _dlist = ddca_get_display_info_list();
-    for (int ndx = 0; ndx < _dlist->ct; ndx++) {
-        printf("(%s) Processing display %d\n", __func__, ndx);  fflush(stdout);
-        QString mfg_id = _dlist->info[ndx].mfg_id;
-        QString model_name = _dlist->info[ndx].model_name;
-        QString s = QString::number(ndx+1) + ":  " + mfg_id + " - " + model_name;
-        // ui->displaySelectorComboBox->addItem(s, QVariant(ndx+1));
-        _toolbarDisplayCB->addItem(s, QVariant(ndx+1));
-
-        Monitor * curMonitor = new Monitor(&_dlist->info[ndx]);
-        monitors.append(curMonitor);
-
-        cout << "(initDisplaySelector) Starting vcp thread" << endl;
-        curMonitor->_requestQueue = new VcpRequestQueue();
-        FeatureBaseModel * baseModel = new FeatureBaseModel();
-        baseModel->setObjectName(QString::asprintf("baseModel-%d",ndx));
-        FeatureItemModel * listModel = new FeatureItemModel(baseModel);
-
-        // FeatureListWidget * listWidget = ui->feature_listWidget;   // WRONG  -need separate instance for each monitor
+   // FeatureListWidget * listWidget = ui->feature_listWidget;   // WRONG  -need separate instance for each monitor
 
 
-        // page_list_widget/vcp_feature_listwidget
+   // page_list_widget/vcp_feature_listwidget
 #ifdef REF
-        QWidget *page_list_widget;
-        QListWidget *feature_listWidget;
-        int _pageno_list_widget;
+   QWidget *page_list_widget;
+   QListWidget *feature_listWidget;
+   int _pageno_list_widget;
 #endif
-        QWidget * page_listWidget =  new QWidget();
-        page_listWidget->setObjectName(QString::asprintf("page_listWidget-%d",ndx));
-        curMonitor->_page_listWidget = page_listWidget;
-        page_listWidget->setSizePolicy(pageSizePolicy());
-        page_listWidget->setMinimumSize(QSize(700,0));
+   QWidget * page_listWidget =  new QWidget();
+   page_listWidget->setObjectName(QString::asprintf("page_listWidget-%d",ndx));
+   curMonitor->_page_listWidget = page_listWidget;
+   page_listWidget->setSizePolicy(pageSizePolicy());
+   page_listWidget->setMinimumSize(QSize(700,0));
 
 #ifdef PER_MONITOR_FEATURE_SCROLLAREA
-        QWidget * page_scrollArea = new QWidget();
-        page_scrollArea->setObjectName(QString::asprintf("page_scrollArea-%d", ndx));
-        curMonitor->_page_scrollArea = page_scrollArea;
-        page_scrollArea->setSizePolicy(pageSizePolicy());
-        page_scrollArea->setMinimumSize(QSize(700,0));
+   QWidget * page_scrollArea = new QWidget();
+   page_scrollArea->setObjectName(QString::asprintf("page_scrollArea-%d", ndx));
+   curMonitor->_page_scrollArea = page_scrollArea;
+   page_scrollArea->setSizePolicy(pageSizePolicy());
+   page_scrollArea->setMinimumSize(QSize(700,0));
 #endif
 
-        // TODO: size, font, etc
+   // TODO: size, font, etc
 
-        // feature_listWidget = new QListWidget(page_list_widget);
-       //  FeatureListWidget * listWidget = ui->feature_listWidget;
-        FeatureListWidget * featureListWidget= new FeatureListWidget(curMonitor->_page_listWidget);
-        featureListWidget->setObjectName(QString::asprintf("featureListWidget-%d",ndx));
-        featureListWidget->setModel(baseModel);
+   // feature_listWidget = new QListWidget(page_list_widget);
+  //  FeatureListWidget * listWidget = ui->feature_listWidget;
+   FeatureListWidget * featureListWidget= new FeatureListWidget(curMonitor->_page_listWidget);
+   featureListWidget->setObjectName(QString::asprintf("featureListWidget-%d",ndx));
+   featureListWidget->setModel(baseModel);
 
-        // works
-        // QString on1 = featureListWidget->objectName();
-        // std::string on2 = on1.toStdString();
-        // const char * on3 = on2.c_str();
+   // works
+   // QString on1 = featureListWidget->objectName();
+   // std::string on2 = on1.toStdString();
+   // const char * on3 = on2.c_str();
 
-        std::string on2 =  featureListWidget->objectName().toStdString();
+   std::string on2 =  featureListWidget->objectName().toStdString();
 
-        // fails
-        // const char * on3 = featureListWidget->objectName().toStdString().c_str();
-        // must be separate step.  why?
-        const char * on3 = on2.c_str();
+   // fails
+   // const char * on3 = featureListWidget->objectName().toStdString().c_str();
+   // must be separate step.  why?
+   const char * on3 = on2.c_str();
 
-        printf("(MainWindow::%s) Allocated FeatureListWidget. objectName = %s\n", __func__, on3); fflush(stdout);
-        featureListWidget->setSizePolicy(tableWidgetSizePolicy());
-        curMonitor->_featureListWidget = featureListWidget;
+   printf("(MainWindow::%s) Allocated FeatureListWidget. objectName = %s\n", __func__, on3); fflush(stdout);
+   featureListWidget->setSizePolicy(tableWidgetSizePolicy());
+   curMonitor->_featureListWidget = featureListWidget;
 
-        QHBoxLayout *hLayout = new QHBoxLayout(page_listWidget);
-        hLayout->setSpacing(6);
-        hLayout->setContentsMargins(11,11,11,11);
-        hLayout->addWidget(featureListWidget);
+   QHBoxLayout *hLayout = new QHBoxLayout(page_listWidget);
+   hLayout->setSpacing(6);
+   hLayout->setContentsMargins(11,11,11,11);
+   hLayout->addWidget(featureListWidget);
 
-        curMonitor->_pageno_listWidget = ui->views_stackedWidget->count();
-        ui->views_stackedWidget->addWidget(page_listWidget);
+   curMonitor->_pageno_listWidget = stackedWidget->count();
+   stackedWidget->addWidget(page_listWidget);
+
+   QObject::connect(baseModel,  SIGNAL(signalStartInitialLoad()),
+                    listModel,  SLOT(  startInitialLoad()));
+   QObject::connect(baseModel,  SIGNAL(signalEndInitialLoad()),
+                    listModel,  SLOT(  endInitialLoad()));
+
+   // *** Connect baseModel to ListWidget ***
+
+    qRegisterMetaType<FeatureValue>("FeatureValue");
+    QObject::connect(baseModel,         SIGNAL(signalStartInitialLoad()),
+                     featureListWidget, SLOT(  startInitialLoad()));
+    QObject::connect(baseModel,         SIGNAL(signalEndInitialLoad()),
+                     featureListWidget, SLOT(  endInitialLoad()));
+    QObject::connect(baseModel,         SIGNAL(signalFeatureAdded(FeatureValue)),    // char is a built-in QMetaType, uint8_t is not
+                     featureListWidget, SLOT(  featureAdded(FeatureValue)));
+    QObject::connect(baseModel,         SIGNAL(signalFeatureUpdated(char)),
+                     featureListWidget, SLOT(  featureUpdated(char)));
+
+    // Use Qt5 function pointers
+    QObject::connect(baseModel,         &FeatureBaseModel::signalFeatureAdded,
+                     featureListWidget, &FeatureListWidget::featureAdded);
+
+    // use directly coded observers  - DISABLED slots now working
+    // baseModel->addFeatureChangeObserver(featureListWidget);
+
+    curMonitor->setFeatureItemModel(listModel);
+
+   return page_listWidget;
+
+}
+
+
+void initTableView(
+      Monitor *         curMonitor,
+      FeatureBaseModel* baseModel,
+      QStackedWidget *  stackedWidget)
+{
+
+   FeatureTableModel * tableModel = new FeatureTableModel(baseModel);
+   QObject::connect(baseModel,  SIGNAL(signalStartInitialLoad()),
+                    tableModel, SLOT(  startInitialLoad()));
+   QObject::connect(baseModel,  SIGNAL(signalEndInitialLoad()),
+                    tableModel, SLOT(  endInitialLoad()));
+
+   curMonitor->setFeatureTableModel(tableModel);
+
+}
+
+
+// Ugh: class method to locate the showCentralWidgetByWidget slot
+
+QWidget * MainWindow::initFeaturesScrollArea(
+      Monitor *         curMonitor,
+      FeatureBaseModel* baseModel,
+      QStackedWidget *  stackedWidget)
+{
 
 #ifdef PER_MONITOR_FEATURE_SCROLLAREA
         ValueStdWidget * mock1 = new ValueStdWidget();
@@ -218,43 +266,162 @@ void MainWindow::initDisplaySelector() {
         ui->views_stackedWidget->addWidget(page_scrollArea);
 #endif
 
-        QObject::connect(baseModel,  SIGNAL(signalStartInitialLoad()),
-                         listModel,  SLOT(startInitialLoad()));
-        QObject::connect(baseModel,  SIGNAL(signalEndInitialLoad()),
-                         listModel,  SLOT(endInitialLoad()));
+        //
+        // Per-monitor permanent scroll area
+        //
 
-        QObject::connect(baseModel,  SIGNAL(signalVcpRequest(VcpRequest*)),
-                         curMonitor, SLOT(putVcpRequest(VcpRequest*)));
+        printf("(MainWindow::%s) Allocating per-monitor features scrollarea page\n", __func__); fflush(stdout);
+        QScrollArea *   featuresScrollArea = new QScrollArea();
+        FeaturesScrollAreaContents * scrollAreaContents = new FeaturesScrollAreaContents();
+        scrollAreaContents->setObjectName("created in initDisplaySelector");
+        QVBoxLayout* vboxLayout = new QVBoxLayout();
+        vboxLayout->setObjectName("created in initDisplaySelector");
+        scrollAreaContents->setLayout(vboxLayout);
+
+        curMonitor->_page_features_scrollarea   = featuresScrollArea;
+        curMonitor->_featuresScrollAreaContents = scrollAreaContents;  // n. constructor sets the layout
+
+        // TODO: include monitor number in name
 
 
-        FeatureTableModel * tableModel = new FeatureTableModel(baseModel);
-        QObject::connect(baseModel,  SIGNAL(signalStartInitialLoad()),
-                         tableModel, SLOT(startInitialLoad()));
-        QObject::connect(baseModel,  SIGNAL(signalEndInitialLoad()),
-                         tableModel, SLOT(endInitialLoad()));
+        featuresScrollArea->setWidget(scrollAreaContents);
+        scrollAreaContents->setContainingScrollArea(featuresScrollArea);
+
+        int pageno = stackedWidget->count();
+        curMonitor->_pageno_features_scrollarea = pageno;
+        stackedWidget->addWidget(featuresScrollArea);
+
+        featuresScrollArea->setObjectName(QString::asprintf("page_features_scrollarea-%d", pageno));
+        scrollAreaContents->setObjectName(QString::asprintf("featuresScrollAreaContents-%d", pageno));
+
+        // probably premature
+        // printf("(%s) Setting current index %d\n",  __func__, pageno); fflush(stdout);
+        stackedWidget->setCurrentIndex(pageno);
 
 
-        QObject::connect(baseModel,  SIGNAL(signalStartInitialLoad()),
-                         featureListWidget, SLOT(startInitialLoad()));
-        QObject::connect(baseModel,  SIGNAL(signalEndInitialLoad()),
-                         featureListWidget, SLOT(endInitialLoad()));
 
-        qRegisterMetaType<FeatureValue>("FeatureValue");
-        printf("====> (MainWindow::%s) Connecting baseModel signalFeatureAdded to listWidget featureAdded\n", __func__); fflush(stdout);
-        QObject::connect(baseModel,  SIGNAL(signalFeatureAdded(FeatureValue)),    // char is a built-in QMetaType, uint8_t is not
-                         featureListWidget, SLOT(featureAdded(FeatureValue)));
-        QObject::connect(baseModel,  SIGNAL(signalFeatureUpdated(char)),
-                         featureListWidget, SLOT(featureUpdated(char)));
+        // *** Connect base model to scroll area ***
+
+        QObject::connect(baseModel,          SIGNAL(signalStartInitialLoad()),
+                         scrollAreaContents, SLOT(  startInitialLoad()));
+        QObject::connect(baseModel,          SIGNAL(signalEndInitialLoad()),
+                         scrollAreaContents, SLOT(  endInitialLoad()));
+        QObject::connect(baseModel,          SIGNAL(signalFeatureAdded(FeatureValue)),    // char is a built-in QMetaType, uint8_t is not
+                         scrollAreaContents, SLOT(  featureAdded(FeatureValue)));
+        QObject::connect(baseModel,          SIGNAL(signalFeatureUpdated(char)),
+                         scrollAreaContents, SLOT(  featureUpdated(char)));
 
         // Use Qt5 function pointers
-        QObject::connect(baseModel,         &FeatureBaseModel::signalFeatureAdded,
-                         featureListWidget, &FeatureListWidget::featureAdded);
+        QObject::connect(baseModel,          &FeatureBaseModel::signalFeatureAdded,
+                         scrollAreaContents, &FeaturesScrollAreaContents::featureAdded);
 
-        // use directly coded observers  - DISABLED slots now working
-        // baseModel->addFeatureChangeObserver(featureListWidget);
+        QObject::connect(baseModel,          &FeatureBaseModel::signalFeatureUpdated,
+                         scrollAreaContents, &FeaturesScrollAreaContents::featureUpdated);
 
-        curMonitor->setFeatureItemModel(listModel);
-        curMonitor->setFeatureTableModel(tableModel);
+        // not working, try old mechanism
+        // now it's working, sigh
+        QObject::connect(scrollAreaContents, &FeaturesScrollAreaContents::showCentralWidgetByWidget,
+                         this,               &MainWindow::showCentralWidgetByWidget);
+
+        QObject::connect(scrollAreaContents, SIGNAL(showCentralWidgetByWidget(QWidget*)),
+                         this,               SLOT(  showCentralWidgetByWidget(QWidget*)) );
+
+        // slots not working, but observer is triggered
+        // scrollAreaContents->addPageChangeObserver(this);
+
+        // *** End scroll area connections
+
+   return featuresScrollArea;
+}
+
+
+void initFeaturesScrollAreaView(
+      Monitor *         curMonitor,
+      FeatureBaseModel* baseModel,
+      QStackedWidget *  stackedWidget)
+{
+   printf("(%s) _views_StackedWidget=%p\n", __func__, stackedWidget); fflush(stdout);
+
+   FeaturesScrollAreaView * featuresView =
+            new FeaturesScrollAreaView(
+                    curMonitor,
+                    baseModel,
+                    stackedWidget);
+   curMonitor->_featuresScrollAreaView = featuresView;
+
+   QObject::connect(baseModel,          SIGNAL(signalEndInitialLoad()),
+                    featuresView,       SLOT(  onEndInitialLoad()));
+
+      // QObject::connect(baseModel,          &FeatureBaseModel::signalEndInitialLoad,
+      //                  featuresView,       &FeaturesScrollAreaView::onEndInitialLoad);
+
+}
+
+
+
+void MainWindow::initDisplaySelector() {
+   //  ui->displaySelectorComboBox->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+   //  ui->displaySelectorComboBox->setMinimumContentsLength(28);   // 2 + 3 + 3 + 3 + 13
+
+    Qt::WindowModality modality = Qt::ApplicationModal;   // alt WindowModal, ApplicationModal, NonModal
+    WaitingSpinnerWidget* spinner = new WaitingSpinnerWidget(
+                                           modality,
+                                           this,       // parent
+                                           true);       /// centerOnParent
+    spinner->start(); // starts spinning
+
+    _dlist = ddca_get_display_info_list();
+    for (int ndx = 0; ndx < _dlist->ct; ndx++) {
+        printf("(%s) Processing display %d\n", __func__, ndx);  fflush(stdout);
+
+        // Add entry for monitor in display selector combo box
+        QString mfg_id     = _dlist->info[ndx].mfg_id;
+        QString model_name = _dlist->info[ndx].model_name;
+        QString s = QString::number(ndx+1) + ":  " + mfg_id + " - " + model_name;
+        // ui->displaySelectorComboBox->addItem(s, QVariant(ndx+1));
+        _toolbarDisplayCB->addItem(s, QVariant(ndx+1));
+
+        // Create Monitor instance, initialize data structures
+        Monitor * curMonitor = new Monitor(&_dlist->info[ndx]);
+        monitors.append(curMonitor);
+
+        curMonitor->_requestQueue = new VcpRequestQueue();
+        FeatureBaseModel * baseModel = new FeatureBaseModel();
+        baseModel->setObjectName(QString::asprintf("baseModel-%d",ndx));
+
+        // ListWidget
+
+        initListWidget(
+              curMonitor,
+              ndx,
+              baseModel,
+              ui->views_stackedWidget
+              );
+
+        initTableView(
+              curMonitor,
+              baseModel,
+              ui->views_stackedWidget
+              );
+
+        initFeaturesScrollArea(
+              curMonitor,
+              baseModel,
+              ui->views_stackedWidget
+              );
+
+        initFeaturesScrollAreaView(
+              curMonitor,
+              baseModel,
+              ui->views_stackedWidget
+              );
+
+
+        QObject::connect(baseModel,  SIGNAL(signalVcpRequest(VcpRequest*)),
+                         curMonitor, SLOT(  putVcpRequest(VcpRequest*)));
+
+        curMonitor->_baseModel = baseModel;
+
         VcpThread * curThread = new VcpThread(NULL,
                                               curMonitor->_displayInfo,
                                               curMonitor->_requestQueue,
@@ -262,8 +429,11 @@ void MainWindow::initDisplaySelector() {
         curThread->start();
         vcp_threads.append(curThread);
     }
+
     // ui->displaySelectorComboBox->setCurrentIndex(0);
     _toolbarDisplayCB->setCurrentIndex(0);
+
+    // Set message in status bar
     QString msg = QString("Detected ") + QString::number(_dlist->ct) + QString(" displays.");
     ui->statusBar->showMessage(msg);
     spinner->stop();
@@ -331,6 +501,7 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
     }
     monitor->_requestQueue->put(new VcpEndInitialLoadRequest);
 
+    // wrong location - should stop when last response received
     spinner->stop();
 }
 
@@ -594,7 +765,7 @@ void MainWindow::on_actionFeaturesListWidget_triggered()
     loadMonitorFeatures(monitor);
 
     // TO FIX:
-    FeatureListWidget * lwidget = monitor->_featureListWidget;
+    // FeatureListWidget * lwidget = monitor->_featureListWidget;  // unused
     // lview->setModel(monitor->_listModel);
 
     // TO FIX:
@@ -613,7 +784,7 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
     // int monitorNdx = ui->displaySelectorComboBox->currentIndex();
     int monitorNdx = _toolbarDisplayCB->currentIndex();
     Monitor * monitor = monitors[monitorNdx];
-    // loadMonitorFeatures(monitor);
+    loadMonitorFeatures(monitor);
 
     // TO FIX:
     // FeatureListWidget * lwidget = monitor->_featureListWidget;
@@ -668,6 +839,11 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
         mock7->setFeatureValue(*fv7);
 
     QVBoxLayout * vLayout = new QVBoxLayout();
+    // will it work here?  yes
+    ui->featuresScrollAreaContents->setLayout(vLayout);
+    // will it work here?  NO, FAIL-3 - even later take and reset
+    // ui->featuresScrollArea->setWidget(ui->featuresScrollAreaContents);  // ALT-2
+
 
     vLayout->addWidget(mock4);
     vLayout->addWidget(mock3);
@@ -677,20 +853,78 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
     // vLayout->addWidget(mock1);
     // vLayout->addWidget(mock2);
 
-    ui->featuresScrollAreaContents->setLayout(vLayout);
+    // ok here:
+    // ui->featuresScrollAreaContents->setLayout(vLayout);
 
     // From doc for void QScrollArea::setWidget(QWidget *widget)
     // Note that You must add the layout of widget before you call this function;
     // if you add it later, the widget will not be visible - regardless of when you
     // show() the scroll area. In this case, you can also not show() the widget later.
 
-
+    // works here
     ui->featuresScrollArea->setWidget(ui->featuresScrollAreaContents);  // ALT-2
 
+    // take and reset when original setWidget comes before addWidget fails
+    QWidget * tempWidget = ui->featuresScrollArea->takeWidget();  // FAIL -3
+    printf("===> after takeWidget(), scroll area widget now: %p\n",
+           ui->featuresScrollArea->widget());
+    ui->featuresScrollArea->setWidget(tempWidget);  // FAIL - 3
+    printf("===> after setWidget(), scroll area widget now: %p\n",
+           ui->featuresScrollArea->widget());
 
-    printf("(%s) ui->_pageno_scrollarea=%d\n", __func__, ui->_pageno_scrollarea); fflush(stdout);
+
+
+    printf("(%s)  ================>  ui->_pageno_scrollarea=%d\n", __func__, ui->_pageno_scrollarea); fflush(stdout);
     ui->views_stackedWidget->setCurrentIndex(ui->_pageno_scrollarea);
     ui->views_stackedWidget->show();
+
+
+#ifdef NO
+    // wrong location
+    printf("(MainWindow::%s) ===========> Setting current index %d\n", __func__,
+           monitor->_pageno_features_scrollarea);
+    QThread::sleep(4);
+
+    ui->views_stackedWidget->setCurrentIndex(monitor->_pageno_features_scrollarea);
+#endif
+
+}
+
+void MainWindow::showCentralWidgetPage(int pageno) {
+   printf("(%s::%s) ===========> Setting current index, pageno = %d\n", _cls, __func__,
+          pageno);  fflush(stdout);
+   ui->views_stackedWidget->setCurrentIndex(pageno);
+   ui->views_stackedWidget->show();
+}
+
+void MainWindow::showCentralWidgetByWidget(QWidget * pageWidget) {
+   printf("(%s::%s) ===========> Setting current index, pageWidget object name = %s\n", _cls, __func__,
+          "dummy"  /* pageWidget->objectName() */);   // utf-8
+   fflush(stdout);
+
+   int pageno = ui->views_stackedWidget->indexOf(pageWidget);
+   if (pageno < 0) {
+      printf("(%s::%s) page for widget not found\n", _cls, __func__); fflush(stdout);
+   }
+   else {
+      printf("(%s::%s) widget page number: %d\n", _cls, __func__, pageno); fflush(stdout);
+      ui->views_stackedWidget->setCurrentWidget(pageWidget);
+      ui->views_stackedWidget->show();
+   }
+}
+
+
+void MainWindow::pageChanged(int pageno) {
+    printf("(%s::%s) pageno: %d\n", _cls, __func__, pageno); fflush(stdout);
+   //  std::cout << "    objectName: " << objectName.toStdString() << std::endl;
+    showCentralWidgetPage(pageno);
+}
+
+
+void MainWindow::pageChangedByWidget(QWidget * widget) {
+    printf("(%s::%s) widget=%p\n", _cls, __func__, widget); fflush(stdout);
+   //  std::cout << "    objectName: " << objectName.toStdString() << std::endl;
+    showCentralWidgetByWidget(widget);
 }
 
 

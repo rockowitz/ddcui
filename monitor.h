@@ -11,13 +11,16 @@
 
 #include "nongui/vcprequest.h"
 #include "nongui/vcpthread.h"
+#include "nongui/feature_base_model.h"
 
 #include "table_model_view/feature_table_model.h"
 
 #include "feature_item_model.h"
 #include "feature_list_widget.h"
 #include "misc.h"
+#include "features_scroll_area_contents.h"
 
+class FeaturesScrollAreaView;
 
 // Represents a single display
 
@@ -35,17 +38,25 @@ public:
 
     FeatureItemModel    *_listModel;
     FeatureTableModel   *_tableModel;
+    FeatureBaseModel *   _baseModel;
+
     VcpRequestQueue*     _requestQueue;
     DDCA_Display_Info   *_displayInfo;
     DDCA_Display_Handle _dh;
     // VcpThread        _vcpThread;
 
     QWidget *           _page_listWidget;
-    QWidget *           _page_scrollArea;
+    // QWidget *           _page_scrollArea;
     int                 _pageno_listWidget;
-    int                 _pageno_scrollArea;
+    // int                 _pageno_scrollArea;
     FeatureListWidget * _featureListWidget;
 
+    // FeaturesScrollArea is per-monitor
+    QScrollArea *                 _page_features_scrollarea;
+    FeaturesScrollAreaContents *  _featuresScrollAreaContents;
+    int                           _pageno_features_scrollarea;
+
+    FeaturesScrollAreaView *     _featuresScrollAreaView;
 
     const char * _cls;    // className
 

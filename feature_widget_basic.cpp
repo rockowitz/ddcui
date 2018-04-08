@@ -113,8 +113,8 @@ FeatureWidgetBasic::FeatureWidgetBasic(QWidget *parent) :
 
 
 void FeatureWidgetBasic::setFeatureValue(FeatureValue &fv) {
-    printf("(FeatureWidgetBasic::%s)", __func__); fflush(stdout);
-    fv.report();
+    // printf("(FeatureWidgetBasic::%s)", __func__); fflush(stdout);
+    // fv.report();
     _feature_code  = fv._feature_code;
     _feature_flags = fv._feature_flags;
     _vspec         = fv._vspec;
@@ -179,7 +179,7 @@ void FeatureWidgetBasic::setCurrentValue(uint16_t newval) {
 QSize FeatureWidgetBasic::sizeHint() const {
     int w = 500;
     int h = 20;
-    printf("(%s::%s) Returning (%d,%d)\n", _cls, __func__, w, h);  fflush(stdout);
+    // printf("(%s::%s) Returning (%d,%d)\n", _cls, __func__, w, h);  fflush(stdout);
     return QSize(w,h);    // ???
 }
 

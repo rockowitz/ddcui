@@ -87,7 +87,7 @@ public:
     ~Ui_MainWindow();
 
     void setupUi();
-    void retranslateUi();
+    void retranslateFeatureSelectionDialog();
 
    
 // namespace Ui_MainWindow {

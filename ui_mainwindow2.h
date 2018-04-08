@@ -30,7 +30,7 @@
 #include "feature_value_widgets/value_std_widget.h"
 
 #include "feature_list_widget.h"
-#include "features_scroll_area.h"
+#include "features_scroll_area_contents.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -46,8 +46,9 @@ public:
 
     QAction *actionFeaturesListWidget;        // for ListWidget
     QAction *actionFeaturesListView;
-    QAction *actionFeaturesScrollArea;
     QAction *actionFeaturesTableView;
+    QAction *actionFeaturesScrollArea;
+    QAction *actionFeaturesScrollAreaMock;
 
     QAction *actionFeatureSelection;
     QAction *actionShowUnsupportedFeatures;
@@ -93,15 +94,15 @@ public:
     // or should this be per monitor?
 
     QWidget *     featuresScrollAreaContents;
-    FeaturesScrollArea * featuresScrollArea;
+    QScrollArea * featuresScrollArea;
 
     // QWidget *     page_features_scrollarea;   // OK - 1
-    FeaturesScrollArea * page_features_scrollarea;      // ALT - 2
+    QScrollArea *    page_features_scrollarea;      // ALT - 2
 
     int           _pageno_scrollarea;
 
     QHBoxLayout *horizontalLayout;
-    QLabel *label;
+    // QLabel *label;
     QMenuBar *menuBar;
     QMenu *menuView;
     QMenu *menuDisplays;
@@ -147,6 +148,9 @@ private:
         actionFeaturesScrollArea = new QAction(MainWindow);
         actionFeaturesScrollArea->setObjectName(QString::fromUtf8("actionFeaturesScrollArea"));
 
+        actionFeaturesScrollAreaMock = new QAction(MainWindow);
+        actionFeaturesScrollAreaMock->setObjectName(QString::fromUtf8("actionFeaturesScrollAreaMock"));
+
 
         // Options->Feature Selection Dialog Actions
 
@@ -173,7 +177,20 @@ private:
         actionFeatureSelectionDialog->setObjectName(QString::fromUtf8("actionFeatureSelectionDialog"));
     }
 
-private:
+
+    void retranslateFeatureSelectionDialog()
+    {
+       actionFeatureSelection->setText(QApplication::translate("MainWindow", "Feature Selection", 0));
+       actionShowUnsupportedFeatures->setText(QApplication::translate("MainWindow", "Show Unsupported Features", 0));
+       actionKnown->setText(QApplication::translate("MainWindow", "Known", 0));
+       actionScan->setText(QApplication::translate("MainWindow", "Scan", 0));
+       actionColor->setText(QApplication::translate("MainWindow", "Color", 0));
+       actionProfile->setText(QApplication::translate("MainWindow", "Profile", 0));
+       actionManufacturer->setText(QApplication::translate("MainWindow", "Manufacturer", 0));
+       actionFeatureSelectionDialog->setText(QApplication::translate("MainWindow", "&Feature Selection", 0));
+    }
+
+
     void setupMenus(QMainWindow *MainWindow)
     {
        // Menu Bar
@@ -183,16 +200,22 @@ private:
 
        menuView = new QMenu(menuBar);
        menuView->setObjectName(QString::fromUtf8("menuView"));
+       menuView->setTitle(    QApplication::translate("MainWindow", "&View", 0));
 
        menuDisplays = new QMenu(menuBar);
        menuDisplays->setObjectName(QString::fromUtf8("menuDisplays"));
+       menuDisplays->setTitle(QApplication::translate("MainWindow", "Disp&lays", 0));
 
        menuHelp = new QMenu(menuBar);
        menuHelp->setObjectName(QString::fromUtf8("menuHelp"));
+       menuHelp->setTitle(    QApplication::translate("MainWindow", "Help", 0));
+
        menuOptions = new QMenu(menuBar);
        menuOptions->setObjectName(QString::fromUtf8("menuOptions"));
-       MainWindow->setMenuBar(menuBar);
+       menuOptions->setTitle( QApplication::translate("MainWindow", "Optio&ns", 0));
+       menuOptions->addAction(actionFeatureSelectionDialog);
 
+       MainWindow->setMenuBar(menuBar);
 
        // Menu Bar actions
        menuBar->addAction(menuView->menuAction());
@@ -206,11 +229,21 @@ private:
        menuView->addAction(actionFeaturesListView);
        menuView->addAction(actionFeaturesTableView);
        menuView->addAction(actionFeaturesScrollArea);
+       menuView->addAction(actionFeaturesScrollAreaMock);
 
+       actionMonitorSummary->setText(    QApplication::translate("MainWindow", "&Monitor Summary", 0));
+       actionCapabilities->setText(      QApplication::translate("MainWindow", "&Capabilities", 0));
+       actionFeaturesListWidget->setText(QApplication::translate("MainWindow", "&Features - ListWidget", 0));
+       actionFeaturesListView->setText(  QApplication::translate("MainWindow", "&Features - ListView",   0));
+       actionFeaturesTableView->setText( QApplication::translate("MainWindow", "F&eatures - TableView",  0));
+       actionFeaturesScrollArea->setText(QApplication::translate("MainWindow", "Features - &ScrollArea", 0));
+       actionFeaturesScrollAreaMock->setText(
+                                         QApplication::translate("MainWindow", "Features - &MockScrollArea", 0));
        menuHelp->addAction(actionAbout);
        menuHelp->addAction(actionAboutQt);
 
-       menuOptions->addAction(actionFeatureSelectionDialog);
+       actionAbout->setText(QApplication::translate(  "MainWindow", "&About ddcui", 0));
+       actionAboutQt->setText(QApplication::translate("MainWindow", "About &Qt", 0));
 
 
        // Tool Bar
@@ -370,6 +403,21 @@ private:
        tableWidget->setSizePolicy(sizePolicy3);
        tableWidget->setMinimumSize(QSize(581, 0));
        tableWidget->setColumnCount(5);
+
+
+       // Set header titles
+       QTableWidgetItem * tableWidgetItem = NULL;
+       tableWidgetItem = tableWidget->horizontalHeaderItem(0);
+       tableWidgetItem->setText(QApplication::translate("MainWindow", "Code", 0));
+       tableWidgetItem = tableWidget->horizontalHeaderItem(1);
+       tableWidgetItem->setText(QApplication::translate("MainWindow", "Name", 0));
+       tableWidgetItem = tableWidget->horizontalHeaderItem(2);
+       tableWidgetItem->setText(QApplication::translate("MainWindow", "Type", 0));
+       tableWidgetItem = tableWidget->horizontalHeaderItem(3);
+       tableWidgetItem->setText(QApplication::translate("MainWindow", "RW", 0));
+       tableWidgetItem = tableWidget->horizontalHeaderItem(4);
+       tableWidgetItem->setText(QApplication::translate("MainWindow", "Value", 0));
+
        views_stackedWidget->addWidget(page_table_item);
        _pageno_table_item = pagectr++;
 
@@ -429,9 +477,10 @@ private:
        font1.setPointSize(10);
        vcp_listView->setFont(font1);
 
-       label = new QLabel(page_list_view);
+       QLabel* label = new QLabel(page_list_view);
        label->setObjectName(QString::fromUtf8("label"));
        label->setGeometry(QRect(268, 6, 342, 17));
+       label->setText(QApplication::translate("MainWindow", "Header line for page_list_view containing vcp_listView", 0));
 
        views_stackedWidget->addWidget(page_list_view);
        _pageno_list_view = pagectr++;
@@ -464,7 +513,7 @@ private:
 #endif
 
        // page_features_scrollarea = new QWidget();   // OK - 1
-       page_features_scrollarea = new FeaturesScrollArea();  // ALT - 2
+       page_features_scrollarea = new QScrollArea();  // ALT - 2
        page_features_scrollarea->setObjectName(QString::fromUtf8("page_features_scrollarea"));
 
        featuresScrollAreaContents = new QWidget();    // ALT - 2
@@ -495,6 +544,7 @@ private:
     }
 
 
+
 public:
     void setupUi(QMainWindow *MainWindow)
     {
@@ -516,57 +566,17 @@ public:
 
         setupMenus(MainWindow);
 
-        retranslateUi(MainWindow);
+        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "ddcutil - mainWindow", 0));
+        retranslateFeatureSelectionDialog();
 
         views_stackedWidget->setCurrentIndex(0);
 
         QMetaObject::connectSlotsByName(MainWindow);
+
+        std::cout << "(setupUi) Done" << std::endl;
     } // setupUi
 
 
-    void retranslateUi(QMainWindow *MainWindow)
-    {
-        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "ddcutil - mainWindow", 0));
-        actionAbout->setText(QApplication::translate("MainWindow", "&About ddcui", 0));
-        actionAboutQt->setText(QApplication::translate("MainWindow", "About &Qt", 0));
-
-        actionMonitorSummary->setText(QApplication::translate("MainWindow", "&Monitor Summary", 0));
-        actionCapabilities->setText(QApplication::translate("MainWindow", "&Capabilities", 0));
-
-        actionFeaturesListWidget->setText(QApplication::translate("MainWindow", "&Features - ListWidget", 0));
-        actionFeaturesScrollArea->setText(QApplication::translate("MainWindow", "Features - &ScrollArea", 0));
-        actionFeaturesListView->setText(  QApplication::translate("MainWindow", "&Features - ListView",   0));
-        actionFeaturesTableView->setText( QApplication::translate("MainWindow", "F&eatures - TableView",  0));
-
-        actionFeatureSelection->setText(QApplication::translate("MainWindow", "Feature Selection", 0));
-        actionShowUnsupportedFeatures->setText(QApplication::translate("MainWindow", "Show Unsupported Features", 0));
-        actionKnown->setText(QApplication::translate("MainWindow", "Known", 0));
-        actionScan->setText(QApplication::translate("MainWindow", "Scan", 0));
-        actionColor->setText(QApplication::translate("MainWindow", "Color", 0));
-        actionProfile->setText(QApplication::translate("MainWindow", "Profile", 0));
-        actionManufacturer->setText(QApplication::translate("MainWindow", "Manufacturer", 0));
-        actionFeatureSelectionDialog->setText(QApplication::translate("MainWindow", "&Feature Selection", 0));
-
-
-
-        QTableWidgetItem *___qtablewidgetitem = tableWidget->horizontalHeaderItem(0);
-        ___qtablewidgetitem->setText(QApplication::translate("MainWindow", "Code", 0));
-        QTableWidgetItem *___qtablewidgetitem1 = tableWidget->horizontalHeaderItem(1);
-        ___qtablewidgetitem1->setText(QApplication::translate("MainWindow", "Name", 0));
-        QTableWidgetItem *___qtablewidgetitem2 = tableWidget->horizontalHeaderItem(2);
-        ___qtablewidgetitem2->setText(QApplication::translate("MainWindow", "Type", 0));
-        QTableWidgetItem *___qtablewidgetitem3 = tableWidget->horizontalHeaderItem(3);
-        ___qtablewidgetitem3->setText(QApplication::translate("MainWindow", "RW", 0));
-        QTableWidgetItem *___qtablewidgetitem4 = tableWidget->horizontalHeaderItem(4);
-        ___qtablewidgetitem4->setText(QApplication::translate("MainWindow", "Value", 0));
-
-        label->setText(QApplication::translate("MainWindow", "Header line for page_list_view containing vcp_listView", 0));
-
-        menuView->setTitle(    QApplication::translate("MainWindow", "&View", 0));
-        menuDisplays->setTitle(QApplication::translate("MainWindow", "Disp&lays", 0));
-        menuHelp->setTitle(    QApplication::translate("MainWindow", "Help", 0));
-        menuOptions->setTitle( QApplication::translate("MainWindow", "Optio&ns", 0));
-    } // retranslateUi
 
 };
 

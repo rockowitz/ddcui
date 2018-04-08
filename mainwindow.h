@@ -14,13 +14,14 @@
 
 #include "misc.h"
 #include "monitor.h"
+#include "page_change_observer.h"
 
 namespace Ui {
 class MainWindow;
 }
 
 
-class MainWindow : public QMainWindow
+class MainWindow : public QMainWindow, public PageChangeObserver
 {
     Q_OBJECT
 
@@ -48,10 +49,19 @@ public:
     QPlainTextEdit * _moninfoPlainText = nullptr;
     QTableView *     _vcp_tableview = nullptr;
 
+    void pageChanged(int pageno) override;
+    void pageChangedByWidget(QWidget * widget) override;
+
+    const char * _cls;
 
 private:
     DDCA_Feature_Subset_Id _feature_list_id = DDCA_SUBSET_KNOWN;
     QVector<VcpThread*> vcp_threads;
+
+    QWidget * initFeaturesScrollArea(
+          Monitor *         curMonitor,
+          FeatureBaseModel* baseModel,
+          QStackedWidget *  stackedWidget);
 
 private slots:
     void on_actionAbout_triggered();
@@ -72,6 +82,11 @@ private slots:
 
     void on_vcpTableView_clicked(const QModelIndex &index);
     void on_vcpTableView_doubleClicked(const QModelIndex &index);
+
+    void showCentralWidgetPage(int pageno);
+    void showCentralWidgetByWidget(QWidget * pageWidget);
+
+
 
 private:
     Ui::MainWindow *ui;

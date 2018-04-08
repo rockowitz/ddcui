@@ -44,8 +44,8 @@ void VcpThread::getvcp(uint8_t feature_code) {
 
     DDCA_Status ddcrc = ddca_open_display(this->_dref, &dh);
     if (ddcrc != 0) {
-        rpt_ddca_status(__func__, "ddca_open_display", ddcrc);
-        // how to handle?
+          rpt_ddca_status(__func__, "ddca_open_display", ddcrc);
+          // how to handle?
     }
 
 #ifdef FUTURE
@@ -67,6 +67,7 @@ void VcpThread::getvcp(uint8_t feature_code) {
     if (ddcrc == 0) {
         ddcrc = ddca_get_non_table_vcp_value(dh, feature_code, &valrec);
         if (ddcrc != 0) {
+           if (ddcrc != DDCRC_REPORTED_UNSUPPORTED)
             rpt_ddca_status(__func__, "ddca_get_nontable_vcp_value", ddcrc);
             // how to handle?
         }
@@ -271,7 +272,7 @@ void VcpThread::run() {
         case VcpRequestType::RQGetVcp:
         {
             VcpGetRequest* getRqst = static_cast<VcpGetRequest*>(rqst);
-            printf("(VcpThread::run) VcpGetRequest. feature_code=0x%02x\n", getRqst->_featureCode);
+            // printf("(VcpThread::run) VcpGetRequest. feature_code=0x%02x\n", getRqst->_featureCode);
             getvcp(getRqst->_featureCode);
             break;
         }

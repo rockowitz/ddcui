@@ -29,6 +29,7 @@ SOURCES += \
     nongui/vcprequest.cpp \
     nongui/vcpthread.cpp
 
+
 SOURCES += \
     feature_value_widgets/value_abstract_widget.cpp \
     feature_value_widgets/value_base_widget.cpp \
@@ -51,11 +52,13 @@ SOURCES += \
     feature_selection_dialog.cpp \ 
     feature_widget.cpp \
     feature_widget_basic.cpp \
-    features_scroll_area.cpp \
+    features_scroll_area_contents.cpp \
+    page_change_observer.cpp \
     main.cpp \
     mainwindow.cpp \
     monitor.cpp \
-    vcplineitem.cpp
+    vcplineitem.cpp \
+    features_scrollarea_view.cpp
 
 # SOURCES += \
 #     c_feature_widget.cpp
@@ -66,6 +69,7 @@ HEADERS += \
     nongui/feature_value.h \
     nongui/vcprequest.h \
     nongui/vcpthread.h
+
 
 HEADERS += \
     feature_value_widgets/value_abstract_widget.h \
@@ -90,12 +94,14 @@ HEADERS += \
     feature_selection_dialog.h \
     feature_widget.h \
     feature_widget_basic.h \
-    features_scroll_area.h \
+    features_scroll_area_contents.h \
+    page_change_observer.h \
     mainwindow.h \
     misc.h \
     monitor.h \
     ui_mainwindow2.h \
-    vcplineitem.h
+    vcplineitem.h \
+    features_scrollarea_view.h
 
 # HEADERS += \
 #     c_feature_widget.h

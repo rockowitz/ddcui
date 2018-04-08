@@ -1,4 +1,4 @@
-/* features_scroll_area.h
+/* features_scroll_area_contents.h
  *
  * <copyright>
  * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
@@ -21,38 +21,58 @@
  * </endcopyright>
  */
 
-#ifndef FEATURES_SCROLL_AREA_H_
-#define FEATURES_SCROLL_AREA_H_
-
-#include <QtWidgets/QScrollArea>
+#ifndef FEATURES_SCROLL_AREA_CONTENTS_H_
+#define FEATURES_SCROLL_AREA_CONTENTS_H_
 
 #include "nongui/feature_value.h"
 #include "nongui/feature_base_model.h"
+#include "feature_widget_basic.h"
+#include "page_change_observer.h"
 
-class FeaturesScrollArea : public QScrollArea {
+class QVBoxLayout;
+class QScrollArea;
+
+class FeaturesScrollAreaContents : public QWidget {
 
    Q_OBJECT
 
 public:
-   FeaturesScrollArea(QWidget *parent = Q_NULLPTR);
-   virtual ~FeaturesScrollArea();
+   FeaturesScrollAreaContents(QWidget *parent = Q_NULLPTR);
+   virtual ~FeaturesScrollAreaContents();
 
    void setModel(FeatureBaseModel * baseModel);
 
+   void setContainingScrollArea(QScrollArea * scrollArea);
+
    const char * _cls;    // className
+
+   void addPageChangeObserver(PageChangeObserver * observer);
+   void notifyPageChangeObservers(int pageno);
+
+   QVector<PageChangeObserver*> * _pageChangeObservers;
+
+
+signals:
+void showCentralWidgetByWidget(QWidget * widget);
+// void showCentralWidgetByPageno(int pageno);
 
 
 
 public slots:
 
-   void featureAdded(FeatureValue& fv);
+   void featureAdded(FeatureValue fv);
    void featureUpdated(char feature_code);
    void startInitialLoad(void);
    void endInitialLoad();
 
 private:
-   FeatureBaseModel * _baseModel;
+   FeatureBaseModel * _baseModel = NULL;
+   QScrollArea *      _containingScrollArea = NULL;
+   // QVBoxLayout *      _curLayout = NULL;
+
+   // quick and dirty for now, eventually replace by hash
+   FeatureWidgetBasic * _widgets[256] = {0};
 
 };
 
-#endif /* FEATURES_SCROLL_AREA_H_ */
+#endif /* FEATURES_SCROLL_AREA_CONTENTS_H_ */

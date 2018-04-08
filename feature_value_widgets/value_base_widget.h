@@ -3,7 +3,7 @@
 #ifndef VALUE_BASE_WIDGET_H
 #define VALUE_BASE_WIDGET_H
 
-#include <QtCore/QSize>
+// #include <QtCore/QSize>
 
 #include <ddcutil_c_api.h>
 
@@ -33,8 +33,8 @@ public:
     uint8_t                _sl;
     DDCA_Feature_Flags     _feature_flags;  // should this be here or looked up?
 
-
-    const char * _cls;
+protected:
+    char * _cls;
 
 signals:
 

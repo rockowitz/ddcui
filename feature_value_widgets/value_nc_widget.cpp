@@ -19,7 +19,8 @@
 ValueNcWidget::ValueNcWidget(QWidget *parent):
         ValueBaseWidget(parent)
 {
-    printf("============> (ValueNcWidget::ValueNcWidget)\n" ); fflush(stdout);
+   _cls                    = strdup(metaObject()->className());
+    // printf("(ValueNcWidget::ValueNcWidget) Starting.\n" ); fflush(stdout);
 
     _cb = new QComboBox();
 
@@ -35,7 +36,7 @@ ValueNcWidget::ValueNcWidget(QWidget *parent):
 void ValueNcWidget::setFeatureValue(const FeatureValue &fv) {
     ValueBaseWidget::setFeatureValue(fv);
 
-    printf("============> (ValueNcWidget::setFeatureValue)\n" ); fflush(stdout);
+    // printf("(ValueNcWidget::setFeatureValue) Starting\n" ); fflush(stdout);
 
     DDCA_Status rc = 0;
     DDCA_Feature_Value_Table value_table;
@@ -46,7 +47,7 @@ void ValueNcWidget::setFeatureValue(const FeatureValue &fv) {
     }
     else {
         // - set values in combo box
-        printf("(%s) Setting combo box values. value_table=%p\n", __func__, value_table);
+        // printf("(%s) Setting combo box values. value_table=%p\n", __func__, value_table);
         DDCA_Feature_Value_Entry * cur = value_table;
 
         if (cur) {

@@ -6,7 +6,7 @@ ValueBaseWidget::ValueBaseWidget(QWidget *parent)
     // : ValueAbstractWidget(parent)
 {
    // will this get subclass name or "ValueBaseWidget"?  ValueBaseWidget
-   _cls                    = metaObject()->className();
+   _cls                    = strdup(metaObject()->className());
 }
 
 
