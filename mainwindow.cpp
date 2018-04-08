@@ -773,8 +773,9 @@ void MainWindow::on_actionFeaturesListWidget_triggered()
     ui->views_stackedWidget->show();
 }
 
-
-void MainWindow::on_actionFeaturesScrollArea_triggered()
+#ifdef OLD
+// Keep copy while refactoring
+void MainWindow::on_actionFeaturesScrollArea_triggered_old()
 {
     printf("=================== (MainWindow::%s) Starting\n", __func__);  fflush(stdout);
     // if (_curView != View::FeaturesView) {
@@ -889,6 +890,116 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
 #endif
 
 }
+#endif
+
+
+void MainWindow::on_actionFeaturesScrollAreaMock_triggered()
+{
+    printf("(MainWindow::%s) Starting\n", __func__);  fflush(stdout);
+    // int monitorNdx = _toolbarDisplayCB->currentIndex();
+    // Monitor * monitor = monitors[monitorNdx];
+    //  loadMonitorFeatures(monitor);
+
+    // N. using single page for all monitors
+    ui->views_stackedWidget->setCurrentIndex(ui->_pageno_scrollarea);
+
+    ValueStdWidget * mock1 = new ValueStdWidget();
+        DDCA_MCCS_Version_Spec vspec1 = {2,0};
+        DDCA_Non_Table_Vcp_Value val1 = {0, 254, 0, 20};
+        DDCA_Feature_Flags flags1 = DDCA_RW | DDCA_STD_CONT;
+        FeatureValue * fv1 = new FeatureValue(0x22, vspec1, flags1, val1);
+        mock1->setFeatureValue(*fv1);
+
+    ValueContWidget * mock2 = new ValueContWidget();
+        DDCA_Non_Table_Vcp_Value val2 = {0, 100, 0, 50};
+        DDCA_Feature_Flags flags2 = DDCA_RW | DDCA_STD_CONT;
+        FeatureValue * fv2 = new FeatureValue(0x10, vspec1, flags2, val2);
+        mock2->setFeatureValue(*fv2);
+
+    ValueStackedWidget * mock3 = new ValueStackedWidget();
+        DDCA_Non_Table_Vcp_Value val3 = {0, 80, 0, 30};
+        DDCA_Feature_Flags flags3 = DDCA_RW | DDCA_STD_CONT;
+        FeatureValue * fv3 = new FeatureValue(0x10, vspec1, flags3, val3);
+        mock3->setFeatureValue(*fv3);
+
+    ValueStackedWidget * mock4 = new ValueStackedWidget();
+        DDCA_Feature_Flags flags4 = DDCA_RW | DDCA_COMPLEX_CONT;
+        FeatureValue * fv4 = new FeatureValue(0x10, vspec1, flags4, val3);
+        mock4->setFeatureValue(*fv4);
+
+    FeatureWidgetBasic * mock5 = new FeatureWidgetBasic();
+        mock5->setFeatureValue(*fv4);
+        printf("mock5:\n");  mock5->dbgrpt();  fflush(stdout);
+
+    FeatureWidgetBasic * mock6 = new FeatureWidgetBasic();
+            mock6->setFeatureValue(*fv3);
+
+    FeatureWidgetBasic * mock7 = new FeatureWidgetBasic();
+        DDCA_Non_Table_Vcp_Value val7 = {0, 0, 0, 4};
+        DDCA_Feature_Flags flags7 = DDCA_RW | DDCA_SIMPLE_NC;
+        FeatureValue * fv7 = new FeatureValue(0x60, vspec1, flags7, val7);
+        mock7->setFeatureValue(*fv7);
+
+    QVBoxLayout * vLayout = new QVBoxLayout();
+    // will it work here?  yes
+    ui->featuresScrollAreaContents->setLayout(vLayout);
+    // will it work here?  NO, FAIL-3 - even later take and reset
+    // ui->featuresScrollArea->setWidget(ui->featuresScrollAreaContents);  // ALT-2
+
+
+    vLayout->addWidget(mock4);
+    vLayout->addWidget(mock3);
+    vLayout->addWidget(mock5);
+    vLayout->addWidget(mock7);
+    vLayout->addWidget(mock6);
+
+    // ok here:
+    // ui->featuresScrollAreaContents->setLayout(vLayout);
+
+    // From doc for void QScrollArea::setWidget(QWidget *widget)
+    // Note that You must add the layout of widget before you call this function;
+    // if you add it later, the widget will not be visible - regardless of when you
+    // show() the scroll area. In this case, you can also not show() the widget later.
+
+    // works here
+    ui->featuresScrollArea->setWidget(ui->featuresScrollAreaContents);  // ALT-2
+
+    // take and reset when original setWidget comes before addWidget fails
+    QWidget * tempWidget = ui->featuresScrollArea->takeWidget();  // FAIL -3
+    printf("===> after takeWidget(), scroll area widget now: %p\n",
+           ui->featuresScrollArea->widget());
+    ui->featuresScrollArea->setWidget(tempWidget);  // FAIL - 3
+    printf("===> after setWidget(), scroll area widget now: %p\n",
+           ui->featuresScrollArea->widget());
+
+    printf("(%s) ui->_pageno_scrollarea=%d\n", __func__, ui->_pageno_scrollarea); fflush(stdout);
+    ui->views_stackedWidget->setCurrentIndex(ui->_pageno_scrollarea);
+    ui->views_stackedWidget->show();
+
+
+#ifdef NO
+    // wrong location
+    printf("(MainWindow::%s) ===========> Setting current index %d\n", __func__,
+           monitor->_pageno_features_scrollarea);
+    QThread::sleep(4);
+
+    ui->views_stackedWidget->setCurrentIndex(monitor->_pageno_features_scrollarea);
+#endif
+
+}
+
+
+
+void MainWindow::on_actionFeaturesScrollArea_triggered()
+{
+    printf("(MainWindow::%s) Starting\n", __func__);  fflush(stdout);
+    int monitorNdx = _toolbarDisplayCB->currentIndex();
+    Monitor * monitor = monitors[monitorNdx];
+    loadMonitorFeatures(monitor);
+}
+
+
+
 
 void MainWindow::showCentralWidgetPage(int pageno) {
    printf("(%s::%s) ===========> Setting current index, pageno = %d\n", _cls, __func__,

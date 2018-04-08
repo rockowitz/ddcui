@@ -78,6 +78,8 @@ private slots:
     void on_actionFeaturesTableView_triggered();
     void on_actionFeaturesListView_triggered();
     void on_actionFeaturesListWidget_triggered();
+    // void on_actionFeaturesScrollArea_triggered_old();
+    void on_actionFeaturesScrollAreaMock_triggered();
     void on_actionFeaturesScrollArea_triggered();
 
     void on_vcpTableView_clicked(const QModelIndex &index);
