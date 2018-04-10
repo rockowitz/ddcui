@@ -85,8 +85,8 @@ void FeatureValueTableItemContEditor::setCurValue(ushort curval) {
 
 void FeatureValueTableItemContEditor::paintEvent(QPaintEvent *event)  {
     // printf("============> (FeatureValueTableItemContEditor::paintEvent)\n" ); fflush(stdout);
-    QRect rect = event->rect();
-    QRegion region = event->region();
+    // QRect rect = event->rect();       // unused
+    // QRegion region = event->region(); // unused
 }
 
 

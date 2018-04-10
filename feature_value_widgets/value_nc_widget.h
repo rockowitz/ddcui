@@ -23,6 +23,9 @@ public:
     int findItem(uint8_t sl_value);
 
     QComboBox *_cb;
+
+private slots:
+    void combobox_activated(int index);
 };
 
 #endif // VALUE_NC_WIDGET_H

@@ -1,5 +1,9 @@
 /* value_stacked_widget.cpp */
 
+#include <assert.h>
+#include <string.h>
+#include <stdio.h>
+
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QStackedWidget>
@@ -36,11 +40,36 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent):
 
     // ???
     QVBoxLayout * layout = new QVBoxLayout;
+    layout->setContentsMargins(0,0,0,0);
     layout->addWidget(_stacked);
     setLayout(layout);
 
+    int m_left, m_right, m_top, m_bottom;
+    getContentsMargins(&m_left, &m_top, &m_right, &m_bottom);
+    printf("(ValueStackedWidget::ValueStackedWidget) margins: left=%d, top=%d, right=%d, bottom=%d)\n",
+           m_left, m_right, m_top, m_bottom);
+
+    this->setStyleSheet("background-color:red;");
+
     _stacked->setCurrentIndex(_pageno_selected);
     _cur_stacked_widget = _stdWidget;
+
+    ValueStackedWidget * curWidget = this;  // still treated as ValueBaseWidget* in SIGNAL/SLOT versions
+
+    QWidget::connect(_contWidget, &ValueContWidget::featureValueChanged,
+                     curWidget,        &ValueStackedWidget::onContainedWidgetChanged);
+
+    QWidget::connect(_ncWidget, &ValueContWidget::featureValueChanged,
+                     this,        &ValueStackedWidget::onContainedWidgetChanged);
+
+
+    QWidget::connect(_ncWidget, SIGNAL(featureValueChanged(   uint8_t, uint8_t, uint8_t)),
+                     curWidget,      SLOT(onContainedWidgetChanged(uint8_t, uint8_t, uint8_t)));
+
+
+    QWidget::connect(_ncWidget, SIGNAL(featureValueChanged(   uint8_t, uint8_t, uint8_t)),
+                      curWidget,     SLOT(onContainedWidgetChanged(uint8_t, uint8_t, uint8_t)));
+
 }
 
 
@@ -81,7 +110,7 @@ uint16_t ValueStackedWidget::getCurrentValue() {
 //     return QSize(100,50);    // ???
 // }
 
-
+#ifdef OLD
 void ValueStackedWidget::paintEvent(QPaintEvent *event) {
             // printf("(%s::%s) Starting\n", _cls, __func__);  fflush(stdout);
             const QRect rect = event->rect();
@@ -97,3 +126,17 @@ void ValueStackedWidget::paintEvent(QPaintEvent *event) {
 
             this->ValueBaseWidget::paintEvent(event);
 }
+#endif
+
+
+void  ValueStackedWidget::onContainedWidgetChanged(uint8_t feature_code, uint8_t sh, uint8_t sl) {
+   printf("(%s::%s) feature_code=0x%02x, sh=0x%02x, sl=0x%02x\n",
+          _cls, __func__, feature_code, sh, sl);  fflush(stdout);
+   assert(feature_code == _feature_code);
+   emit featureValueChanged(feature_code, sh, sl);
+   emit stackedFeatureValueChanged(feature_code, sh, sl);
+}
+
+
+
+

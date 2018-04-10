@@ -15,16 +15,20 @@ class Monitor;
 class FeaturesScrollAreaView : public QObject
 {
     Q_OBJECT
+
 public:
     explicit FeaturesScrollAreaView(
             Monitor *          monitor,    // needed?  complicates dependency order?
             FeatureBaseModel * model,
-            QStackedWidget * centralStackedWidget,
-            QObject *parent = nullptr);
+            QStackedWidget *   centralStackedWidget,
+            QObject *          parent = nullptr);
 
     QStackedWidget *   _centralStackedWidget;
     FeatureBaseModel * _baseModel;
     Monitor *          _monitor;
+
+private:
+    const char * _cls;
 
 signals:
     void signalVcpRequest(VcpRequest * rqst);  // used to call into monitor
@@ -35,7 +39,7 @@ public slots:
     // void featureAdded(FeatureValue fv);
     // void featureUpdated(char feature_code);
 
-
+    void onUIValueChanged(uint8_t feature_code, uint8_t sh, uint8_t sl);
 };
 
 #endif // FEATURES_SCROLLAREA_VIEW_H

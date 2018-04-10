@@ -9,22 +9,37 @@
 
 #include "ddcutil_c_api.h"
 
+#include "base/ddcui_globals.h"
 
 
 ValueStdWidget::ValueStdWidget(QWidget *parent):
         ValueBaseWidget(parent)
 {
-    _cls                    = strdup(metaObject()->className());
+    _cls = strdup(metaObject()->className());
 
     // printf("(%s::%s) Starting\n", _cls, __func__);  fflush(stdout);
     _valueField = new QLabel();
+    _valueField->setAlignment(Qt::AlignLeft);
+    _valueField->setFrameStyle(QFrame::Sunken | QFrame::Panel);
+    // _valueField->setFixedSize(400,10);
 
     QSizePolicy* sizePolicy = new QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
     // _cb->setHorizontalStretch(0);
     _valueField->setSizePolicy(*sizePolicy);
     QHBoxLayout * layout = new QHBoxLayout();
+    layout->setContentsMargins(0,0,0,0);
     layout->addWidget(_valueField);
     setLayout(layout);
+
+    // int m_left, m_right, m_top, m_bottom;
+    // getContentsMargins(&m_left, &m_top, &m_right, &m_bottom);
+    // printf("(ValueStdWidget::ValueStdWidget) margins after set: left=%d, top=%d, right=%d, bottom=%d)\n",
+    //        m_left, m_right, m_top, m_bottom);
+
+    if (debugLayout) {
+       this->setStyleSheet("background-color:magenta;");
+       // _valueField->setStyleSheet("background-color:fuschia;");
+    }
 }
 
 void ValueStdWidget::setValueField() {

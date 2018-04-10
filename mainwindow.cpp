@@ -16,6 +16,7 @@
 #include "table_model_view/feature_table_model.h"
 #include "table_model_view/feature_value_tableitem_delegate.h"
 
+#include "base/ddcui_globals.h"
 #include "feature_selection_dialog.h"
 #include "monitor.h"
 #include "ui_mainwindow2.h"
@@ -941,6 +942,7 @@ void MainWindow::on_actionFeaturesScrollAreaMock_triggered()
         mock7->setFeatureValue(*fv7);
 
     QVBoxLayout * vLayout = new QVBoxLayout();
+    vLayout->setMargin(0);
     // will it work here?  yes
     ui->featuresScrollAreaContents->setLayout(vLayout);
     // will it work here?  NO, FAIL-3 - even later take and reset
@@ -953,6 +955,8 @@ void MainWindow::on_actionFeaturesScrollAreaMock_triggered()
     vLayout->addWidget(mock7);
     vLayout->addWidget(mock6);
 
+    vLayout->setContentsMargins(0,0,0,0);
+
     // ok here:
     // ui->featuresScrollAreaContents->setLayout(vLayout);
 
@@ -963,6 +967,9 @@ void MainWindow::on_actionFeaturesScrollAreaMock_triggered()
 
     // works here
     ui->featuresScrollArea->setWidget(ui->featuresScrollAreaContents);  // ALT-2
+
+    if (debugLayout)
+    ui->featuresScrollAreaContents->setStyleSheet("background-color:beige;");
 
     // take and reset when original setWidget comes before addWidget fails
     QWidget * tempWidget = ui->featuresScrollArea->takeWidget();  // FAIL -3

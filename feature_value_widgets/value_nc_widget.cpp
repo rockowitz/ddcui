@@ -2,6 +2,7 @@
 
 #include "feature_value_widgets/value_nc_widget.h"
 
+#include <assert.h>
 #include <stdio.h>
 #include <string.h>
 #include <iostream>
@@ -11,6 +12,8 @@
 #include <QtGui/QRegion>
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QLayout>
+
+#include "base/ddcui_globals.h"
 
 #include <ddcutil_c_api.h>
 
@@ -22,14 +25,34 @@ ValueNcWidget::ValueNcWidget(QWidget *parent):
    _cls                    = strdup(metaObject()->className());
     // printf("(ValueNcWidget::ValueNcWidget) Starting.\n" ); fflush(stdout);
 
+   QFont nonMonoFont;
+   nonMonoFont.setPointSize(9);
+
     _cb = new QComboBox();
 
     QSizePolicy* sizePolicy = new QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     // _cb->setHorizontalStretch(0);
     _cb->setSizePolicy(*sizePolicy);
+    _cb->setFont(nonMonoFont);
+    // _cb->setFrameStyle(QFrame::Sunken | QFrame::Panel);   // not a method
+    _cb->setStyleSheet("background-color:white;");
+
     QHBoxLayout * layout = new QHBoxLayout();
     layout->addWidget(_cb);
+    layout->addStretch(1);
+    layout->setContentsMargins(0,0,0,0);
     setLayout(layout);
+
+    int m_left, m_right, m_top, m_bottom;
+    getContentsMargins(&m_left, &m_top, &m_right, &m_bottom);
+    // printf("(ValueNcWidget::ValueNcWidget) margins: left=%d, top=%d, right=%d, bottom=%d)\n",
+    //        m_left, m_right, m_top, m_bottom);
+    if (debugLayout)
+       this->setStyleSheet("background-color:cyan;");
+
+    QObject::connect(_cb,  SIGNAL(activated(int)),
+                     this, SLOT(combobox_activated(int)) );
+
 }
 
 
@@ -103,4 +126,27 @@ uint16_t ValueNcWidget::getCurrentValue() {
     uint16_t result = (_sh << 8) | _sl;
     return result;
 }
+
+void ValueNcWidget::combobox_activated(int index) {
+   printf("(%s::%s) index=%d\n", _cls, __func__, index); fflush(stdout);
+   int ndx = _cb->currentIndex();
+   assert(ndx == index);
+
+   QVariant qv = _cb->itemData(ndx);
+   uint i = qv.toUInt();
+   uint8_t new_sh = 0;
+   uint8_t new_sl = i & 0xff;
+
+   if (new_sh != _sh || new_sl != _sl) {
+      printf("(%s::%s) Value changed.  New sl: %u\n", _cls, __func__, new_sl); fflush(stdout);
+      emit featureValueChanged(_feature_code, 0, new_sl);
+      _sh = 0;
+      _sl = new_sl;
+   }
+   else {
+      printf("(%s::%s) Value not changed.\n", _cls, __func__); fflush(stdout);
+   }
+
+}
+
 

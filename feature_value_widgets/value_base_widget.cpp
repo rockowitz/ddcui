@@ -1,12 +1,33 @@
 /* value_base_widget.cpp */
 
 #include "feature_value_widgets/value_base_widget.h"
+#include "feature_value_widgets/value_abstract_widget.h"
+
+#include <QtCore/QMargins>
 
 ValueBaseWidget::ValueBaseWidget(QWidget *parent)
-    // : ValueAbstractWidget(parent)
+     : ValueAbstractWidget(parent)
 {
    // will this get subclass name or "ValueBaseWidget"?  ValueBaseWidget
    _cls                    = strdup(metaObject()->className());
+
+   // setFrameStyle(QFrame::Box);
+   // int m_left, m_right, m_top, m_bottom;
+   // getContentsMargins(&m_left, &m_top, &m_right, &m_bottom);
+   // printf("(ValueBaseWidget::ValueBaseWidget) Before reset, margins: left=%d, top=%d, right=%d, bottom=%d)\n",
+   //        m_left, m_top, m_right, m_bottom);
+   // returns 1,1,1,1
+   //                 l  t  r   b
+   setContentsMargins(0, 0, 20, 0);
+   // getContentsMargins(&m_left, &m_top, &m_right, &m_bottom);
+   // printf("(ValueBaseWidget::ValueBaseWidget) After reset, margins: left=%d, top=%d, right=%d, bottom=%d)\n",
+   //        m_left, m_top, m_right, m_bottom);
+
+
+   //QMargins margins = contentsMargins();
+   //printf("(ValueBaseWidget::ValueBaseWidget) margins: left=%d, top=%d, right=%d, bottom=%d)\n",
+   //       margins.m_left, margins.m_top, margins.m_right, margins.m_bottom);
+
 }
 
 

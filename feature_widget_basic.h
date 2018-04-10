@@ -9,6 +9,7 @@
 #include "base/ddcui_globals.h"
 #include "nongui/feature_value.h"
 #include "feature_value_widgets/value_abstract_widget.h"
+#include "feature_value_widgets/value_stacked_widget.h"
 
 // Like FeatureWidget, but derives only from QWidget, not QListWidgetItem
 
@@ -17,7 +18,7 @@ class QHBoxLayout;
 
 
 class FeatureWidgetBasic :
-        public QFrame
+        public QWidget         // QFrame
 {
     Q_OBJECT
 
@@ -48,6 +49,10 @@ public:
 signals:
 
 public slots:
+void onInternalValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl);
+
+signals:
+void valueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl);
 
 protected:
 
@@ -60,7 +65,7 @@ private:
     QLabel*   _featureNameField;
     QLabel*   _featureRwField;
     QLabel*   _featureTypeField;
-    ValueAbstractWidget * _valueWidget;
+    ValueStackedWidget * _valueWidget;
 
 #ifdef ALT
     QStackedWidget * _featureValueStackedWidget; 

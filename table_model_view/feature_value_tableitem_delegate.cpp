@@ -41,7 +41,7 @@ void FeatureValueTableItemDelegate::paint(
     // printf("=====> (FeatureValueTableItemDelegate::paint)\n");
     // Todo: also test if its a type of feature value we know how to edit
     bool canconvert = index.data(FeatureValueRole).canConvert<FeatureValue>();
-    int col = index.column();
+    // int col = index.column(); // unused
     // printf("===> (FeatureValueTableItemDelegate::paint) canconvert=%d, col=%d\n", canconvert, col); fflush(stdout);
     if ( canconvert && index.column() == 4) {
         // printf("=====> (FeatureValueTableItemDelegate::paint) FeatureValue case\n"); fflush(stdout);
@@ -49,8 +49,8 @@ void FeatureValueTableItemDelegate::paint(
         // fv.report();
         if (fv._feature_flags & (DDCA_CONT | DDCA_SIMPLE_NC)) {
             // printf("    continuous feature\n");  fflush(stdout);
-            int maxval = fv._mh << 8 | fv._ml;
-            int curval = fv._sh << 8 | fv._sl;
+            // int maxval = fv._mh << 8 | fv._ml;  // unused
+            // int curval = fv._sh << 8 | fv._sl;  // unused
             QStyleOptionViewItem myOption = option;
             myOption.displayAlignment = Qt::AlignLeft;
 #ifdef PROGRESS_BAR
@@ -224,7 +224,7 @@ QSize FeatureValueTableItemDelegate::sizeHint(
     printf("=====> (FeatureValueTableItemDelegate::sizeHint)\n"); fflush(stdout);
     QSize qsz;
     if (index.data().canConvert<FeatureValue>()) {
-        FeatureValue fv = qvariant_cast<FeatureValue>(index.data());
+        // FeatureValue fv = qvariant_cast<FeatureValue>(index.data()); // unused
         // return featureValue.sizeHint(); // ??? why is size hint in model?
                 qsz = QSize(20,100);
       printf("=====> (FeatureValueTableItemDelegate::sizeHint) returning bogus value %d,%d\n", qsz.width(), qsz.height());

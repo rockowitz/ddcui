@@ -44,6 +44,8 @@ FeaturesScrollAreaContents::FeaturesScrollAreaContents(QWidget * parent) :
    // connect(this, SIGNAL(showCentralWidgetByWidget(QWidget *)),
    //         qApp, SLOT(aboutQt()));
 
+   // layout()->setContentsMargins(0,0,0,0); // no layout defined
+   setStyleSheet("background-color:aqua;");
 }
 
 FeaturesScrollAreaContents::~FeaturesScrollAreaContents() {
@@ -63,7 +65,7 @@ void FeaturesScrollAreaContents::setContainingScrollArea(QScrollArea * scrollAre
 void FeaturesScrollAreaContents::featureAdded(FeatureValue fv)
 {
    printf("(%s::%s)\n", _cls, __func__);  fflush(stdout);
-   fv.report();
+   // fv.report();
 
    FeatureWidgetBasic * newTableEntry = new FeatureWidgetBasic();
    newTableEntry->setFeatureValue(fv);

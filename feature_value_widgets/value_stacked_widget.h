@@ -16,6 +16,8 @@ class QStackedWidget;
 
 class ValueStackedWidget : public ValueBaseWidget
 {
+   Q_OBJECT
+
 public:
     explicit ValueStackedWidget(QWidget *parent = nullptr);
 
@@ -25,7 +27,15 @@ public:
 
     // QSize sizeHint() const override;
 
-    void paintEvent(QPaintEvent *event) override;
+    // void paintEvent(QPaintEvent *event) override;
+
+    // ugly hack
+    ValueContWidget * _contWidget;
+    ValueNcWidget   * _ncWidget;
+    ValueStdWidget  * _stdWidget;
+
+signals:
+    void stackedFeatureValueChanged(uint8_t feature_code, uint8_t sh, uint8_t sl);
 
 private:
     QStackedWidget * _stacked;
@@ -36,9 +46,9 @@ private:
     int  _pageno_nc;
     int  _pageno_selected;
 
-    ValueContWidget * _contWidget;
-    ValueNcWidget   * _ncWidget;
-    ValueStdWidget  * _stdWidget;
+    private slots:
+    void onContainedWidgetChanged(uint8_t feature_code, uint8_t sh, uint8_t sl);
+
 };
 
 #endif // VALUE_STACKED_WIDGET_H

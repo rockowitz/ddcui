@@ -4,6 +4,7 @@
 #define VALUE_BASE_WIDGET_H
 
 // #include <QtCore/QSize>
+#include <QtWidgets/QFrame>
 
 #include <ddcutil_c_api.h>
 
@@ -37,6 +38,9 @@ protected:
     char * _cls;
 
 signals:
+// compiler warning: signals may not be declared virtual
+void featureValueChanged(uint8_t feature_code, uint8_t sh, uint8_t sl);
+// virtual void featureValueChanged(uint16_t val);
 
 public slots:
 };

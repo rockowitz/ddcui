@@ -3,6 +3,7 @@
 #include <QtWidgets/QScrollArea>
 #include <stdio.h>
 
+#include "base/ddcui_globals.h"
 #include "features_scrollarea_view.h"
 #include "features_scroll_area_contents.h"
 #include "monitor.h"
@@ -11,10 +12,12 @@
 FeaturesScrollAreaView::FeaturesScrollAreaView(
         Monitor *          monitor,
         FeatureBaseModel * model,
-        QStackedWidget * centralStackedWidget,
-        QObject *parent) :
-    QObject(parent)
+        QStackedWidget *   centralStackedWidget,
+        QObject *          parent)
+    : QObject(parent)
 {
+    _cls  = metaObject()->className();
+
     _monitor = monitor;
     _centralStackedWidget = centralStackedWidget;
     _baseModel = model;
@@ -22,7 +25,8 @@ FeaturesScrollAreaView::FeaturesScrollAreaView(
 }
 
 
-static QSizePolicy pageSizePolicy() {
+// static   // unused
+QSizePolicy pageSizePolicy() {
     QSizePolicy policy(QSizePolicy::MinimumExpanding,QSizePolicy::MinimumExpanding);
     policy.setHorizontalStretch(1);
     policy.setVerticalStretch(1);
@@ -47,13 +51,23 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
     scrollAreaContents->setObjectName("scrollAreaContents local to onEndInitialLoad");
     QVBoxLayout * vLayout  = new QVBoxLayout();
     vLayout->setObjectName("vLayout in onEndInitLoad");
+    vLayout->setMargin(0);
+    if (debugLayout) {
+       scrollAreaContents->setStyleSheet("background-color:chartreuse;");
+    }
 
     int ct = 0;
     for (int feature_code = 0; feature_code < 256; feature_code++) {
          FeatureValue * fv =  _baseModel->modelVcpValueFind(feature_code);
          if (fv) {
              FeatureWidgetBasic * w = new FeatureWidgetBasic();
+             if (debugLayout) {
+                // gets applied to the widgets inside w, not to w itself
+                w->setStyleSheet("background-color:brown;");
+             }
              w->setFeatureValue(*fv);
+             QObject::connect(w ,   &FeatureWidgetBasic::valueChanged,
+                              this, &FeaturesScrollAreaView::onUIValueChanged);
              vLayout->addWidget(w);
              ct++;
          }
@@ -65,10 +79,22 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
     scrollArea->setWidget(scrollAreaContents);
 
     // printf("Calling _centralStackedWidget->addWidget()\n"); fflush(stdout);
-    int pageno = _centralStackedWidget->addWidget(scrollArea);
+    /* int pageno = */ _centralStackedWidget->addWidget(scrollArea);
     // _centralStackedWidget->hide();    // no effect
     // _centralStackedWidget->setCurrentIndex(pageno);
     _centralStackedWidget->setCurrentWidget(scrollArea);
     _centralStackedWidget->show();
     printf("(FeatuesScrollAreaView::%s) Done.  feature count: %d\n", __func__, ct);  fflush(stdout);
 }
+
+void FeaturesScrollAreaView::onUIValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl) {
+   printf("(%s::%s) feature_code = 0x%02x, sh=0x%02x, sl=0x%02x\n", _cls, __func__,
+          featureCode, sh, sl);
+   VcpRequest * rqst = new VcpSetRequest(featureCode, sl);   // n.b. ignoring sh
+   emit signalVcpRequest(rqst);  // used to call into monitor
+}
+
+
+
+
+
