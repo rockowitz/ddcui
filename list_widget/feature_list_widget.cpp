@@ -6,9 +6,8 @@
 #include "nongui/feature_base_model.h"
 #include "nongui/feature_value.h"
 
-#include "feature_widget.h"
-
-#include "feature_list_widget.h"
+#include "list_widget/feature_widget.h"
+#include "list_widget/feature_list_widget.h"
 
 using namespace std;
 

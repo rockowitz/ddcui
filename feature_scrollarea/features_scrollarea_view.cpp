@@ -1,3 +1,5 @@
+#include "feature_scrollarea/features_scrollarea_view.h"
+
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QStackedWidget>
 #include <QtWidgets/QScrollArea>
@@ -6,9 +8,10 @@
 #include "base/ddcui_globals.h"
 #include "base/debug_utils.h"
 
-#include "features_scrollarea_view.h"
-#include "features_scroll_area_contents.h"
 #include "monitor.h"
+
+#include "feature_scrollarea/features_scroll_area_contents.h"
+
 
 bool dimensionReportShown = false;
 

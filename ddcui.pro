@@ -52,18 +52,28 @@ SOURCES += \
     table_model_view/feature_value_tableitem_delegate.cpp
 
 SOURCES += \
+    feature_scrollarea/feature_widget_basic.cpp \
+    feature_scrollarea/features_scroll_area_contents.cpp \
+    feature_scrollarea/page_change_observer.cpp \
+    feature_scrollarea/features_scrollarea_view.cpp
+
+SOURCES += \
+    feature_selection/feature_selection_dialog.cpp
+
+SOURCES += \
+    list_model_view/feature_item_model.cpp
+
+SOURCES += \
+    list_widget/feature_list_widget.cpp \
+    list_widget/feature_widget.cpp
+
+SOURCES += \
     QtWaitingSpinner/waitingspinnerwidget.cpp \
-    feature_item_model.cpp \
-    feature_list_widget.cpp \
-    feature_selection/feature_selection_dialog.cpp \
-    feature_widget.cpp \
-    feature_widget_basic.cpp \
-    features_scroll_area_contents.cpp \
-    page_change_observer.cpp \
-    main.cpp \
-    mainwindow.cpp \
     monitor.cpp \
-    features_scrollarea_view.cpp
+    mainwindow.cpp \
+    main.cpp
+
+
 
 #   vcplineitem.cpp \
 
@@ -71,6 +81,7 @@ SOURCES += \
 #     c_feature_widget.cpp
 
 HEADERS += \
+    base/ddcui_globals.h \
     base/debug_utils.h \
     nongui/feature_base_model.h \
     nongui/feature_change_observer.h \
@@ -80,7 +91,6 @@ HEADERS += \
     nongui/simple_feature_value_observer.h \
     nongui/simple_feature_value_subject.h \
     nongui/simple_feature_value.h
-
 
 HEADERS += \
     feature_value_widgets/value_abstract_widget.h \
@@ -99,20 +109,28 @@ HEADERS += \
     table_model_view/feature_value_tableitem_delegate.h
 
 HEADERS += \
-    QtWaitingSpinner/waitingspinnerwidget.h \
-    base/ddcui_globals.h \
-    feature_item_model.h \
-    feature_list_widget.h \
+    feature_scrollarea/feature_widget_basic.h \
+    feature_scrollarea/features_scroll_area_contents.h \
+    feature_scrollarea/page_change_observer.h \
+    feature_scrollarea/features_scrollarea_view.h
+
+HEADERS += \
     feature_selection/feature_selection_dialog.h \
-    feature_widget.h \
-    feature_widget_basic.h \
-    features_scroll_area_contents.h \
-    page_change_observer.h \
-    mainwindow.h \
-    misc.h \
+    feature_selection/feature_selector.h
+
+HEADERS += \
+   list_model_view/feature_item_model.h
+
+HEADERS += \
+    list_widget/feature_list_widget.h \
+    list_widget/feature_widget.h
+
+HEADERS += \
+    QtWaitingSpinner/waitingspinnerwidget.h \
     monitor.h \
-    ui_mainwindow2.h \
-    features_scrollarea_view.h
+    mainwindow.h \
+    ui_mainwindow2.h
+
 
 #     vcplineitem.h \
 

@@ -4,7 +4,7 @@
 // Manages the scroll area that provides a view onto the current feature settings
 // of a monitor
 
-#include <QObject>
+#include <QtCore/QObject>
 
 #include "nongui/feature_base_model.h"
 // #include "monitor.h"

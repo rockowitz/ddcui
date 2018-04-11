@@ -26,6 +26,7 @@
 
 #include "nongui/feature_value.h"
 #include "nongui/feature_base_model.h"
+
 #include "feature_widget_basic.h"
 #include "page_change_observer.h"
 

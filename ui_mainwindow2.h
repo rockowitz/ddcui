@@ -29,8 +29,8 @@
 
 #include "feature_value_widgets/value_std_widget.h"
 
-#include "feature_list_widget.h"
-#include "features_scroll_area_contents.h"
+#include "list_widget/feature_list_widget.h"
+#include "feature_scrollarea/features_scroll_area_contents.h"
 
 
 QT_BEGIN_NAMESPACE

@@ -10,7 +10,7 @@
 #include "feature_value_widgets/value_std_widget.h"
 #include "feature_value_widgets/value_stacked_widget.h"
 
-#include "feature_widget.h"
+#include "list_widget/feature_widget.h"
 
 static bool debug = false;
 

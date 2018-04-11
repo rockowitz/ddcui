@@ -10,7 +10,7 @@
 #include "nongui/feature_base_model.h"
 #include "nongui/feature_change_observer.h"
 
-#include "feature_widget.h"
+#include "list_widget/feature_widget.h"
 
 
 class FeatureListWidget : public QListWidget

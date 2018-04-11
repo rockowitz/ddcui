@@ -12,9 +12,9 @@
 
 #include <ddcutil_types.h>
 
-#include "misc.h"
+#include "feature_scrollarea/page_change_observer.h"
+#include "feature_selection/feature_selector.h"
 #include "monitor.h"
-#include "page_change_observer.h"
 
 namespace Ui {
 class MainWindow;

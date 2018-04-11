@@ -15,10 +15,10 @@
 
 #include "table_model_view/feature_table_model.h"
 
-#include "feature_item_model.h"
-#include "feature_list_widget.h"
-#include "misc.h"
-#include "features_scroll_area_contents.h"
+#include "feature_scrollarea/features_scroll_area_contents.h"
+#include "feature_selection/feature_selector.h"
+#include "list_model_view/feature_item_model.h"
+#include "list_widget/feature_list_widget.h"
 
 class FeaturesScrollAreaView;
 

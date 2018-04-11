@@ -15,6 +15,7 @@
 
 #include "feature_widget_basic.h"
 
+
 static bool dimensionReportShown = false;
 
 FeatureWidgetBasic::FeatureWidgetBasic(QWidget *parent) :

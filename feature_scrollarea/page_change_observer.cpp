@@ -1,4 +1,4 @@
-#include "page_change_observer.h"
+#include "feature_scrollarea/page_change_observer.h"
 
 #include <string.h>
 #include <stdio.h>

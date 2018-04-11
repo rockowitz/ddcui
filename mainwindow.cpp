@@ -21,11 +21,11 @@
 #include "monitor.h"
 #include "ui_mainwindow2.h"
 // #include "vcplineitem.h"
-#include "feature_widget_basic.h"
-#include "feature_item_model.h"
-#include "features_scrollarea_view.h"
-
 #include "mainwindow.h"
+
+#include "feature_scrollarea/feature_widget_basic.h"
+#include "feature_scrollarea/features_scrollarea_view.h"
+#include "list_model_view/feature_item_model.h"
 
 
 using namespace std;
