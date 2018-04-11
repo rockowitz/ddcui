@@ -13,6 +13,9 @@
 using namespace std;
 
 
+static bool debugMain    = false;
+static bool debugSignals = false;
+
 FeatureListWidget::FeatureListWidget(QWidget * parent):
     QListWidget(parent)
 {
@@ -21,7 +24,9 @@ FeatureListWidget::FeatureListWidget(QWidget * parent):
 
 
 void FeatureListWidget::setModel(FeatureBaseModel * baseModel) {
-    printf("(FeatureListWidget::%s)\n", __func__); fflush(stdout);
+    if (debugMain)
+        printf("(FeatureListWidget::%s)\n", __func__); fflush(stdout);
+
     _baseModel = baseModel;
 }
 
@@ -57,7 +62,9 @@ FeatureWidget * FeatureListWidget::getFeatureItem(uint8_t feature_code) {
 
 
 void FeatureListWidget::addFeature(FeatureValue * fv) {
-    printf("(%s::%s)\n", _cls, __func__); fflush(stdout);
+    if (debugMain)
+        printf("(%s::%s)\n", _cls, __func__); fflush(stdout);
+
     FeatureWidget * itemWidget = new FeatureWidget();
     itemWidget->setFeatureValue(*fv);
     // printf("(%s::%s) Calling addItem()...\n", _cls, __func__); fflush(stdout);
@@ -80,7 +87,8 @@ void FeatureListWidget::updateFeature(FeatureValue * fv) {
 // DDCA_MCCS_Version_Spec mccsVersionSpec();
 
 void  FeatureListWidget::startInitialLoad(void) {
-    printf("FeatureListWidget::%s)\n", __func__); fflush(stdout);
+    if (debugMain)
+        printf("FeatureListWidget::%s)\n", __func__); fflush(stdout);
 
     // setUpdatesEnabled(true); // no effect
     // show();                  // no effect
@@ -88,9 +96,11 @@ void  FeatureListWidget::startInitialLoad(void) {
 }
 
 void   FeatureListWidget::endInitialLoad(void) {
-    printf("(FeatureListWidget::%s)\n", __func__); fflush(stdout);
-    // printf("   count: %d\n", count()); fflush(stdout);
-    dbgrpt();
+    if (debugMain) {
+        printf("(FeatureListWidget::%s)\n", __func__); fflush(stdout);
+        // printf("   count: %d\n", count()); fflush(stdout);
+        dbgrpt();
+    }
 
     setUpdatesEnabled(true);
     show();
@@ -106,11 +116,14 @@ void   FeatureListWidget::endInitialLoad(void) {
 
 // slot
 void  FeatureListWidget::featureAdded(FeatureValue fv) {
-    printf("FeatureListWidget::%s) feature_code=0x%02x\n", __func__, fv._feature_code); fflush(stdout);
-    // a QListWidget is not a QWidget - but is is a QObject
-    QString objname = QListWidget::objectName();
-    std::cout << "        objectname: " << objname.toStdString() << std::endl;
-    // printf("(FeatureListWidget::%s) _baseModel=%p\n", __func__, _baseModel);
+   if (debugSignals) {
+        printf("FeatureListWidget::%s) feature_code=0x%02x\n", __func__, fv._feature_code); fflush(stdout);
+        // a QListWidget is not a QWidget - but is is a QObject
+        QString objname = QListWidget::objectName();
+        std::cout << "        objectname: " << objname.toStdString() << std::endl;
+        // printf("(FeatureListWidget::%s) _baseModel=%p\n", __func__, _baseModel);
+    }
+
     FeatureValue * fv2 = _baseModel->modelVcpValueFind(fv._feature_code);
     assert(fv2);
     addFeature(&fv);
@@ -118,7 +131,8 @@ void  FeatureListWidget::featureAdded(FeatureValue fv) {
 }
 
 void   FeatureListWidget::featureUpdated(char feature_code) {
-    printf("FeatureListWidget::%s) feature_code=0x%02x\n", __func__, feature_code); fflush(stdout);
+    if (debugSignals)
+        printf("FeatureListWidget::%s) feature_code=0x%02x\n", __func__, feature_code); fflush(stdout);
 
     FeatureValue * fv = _baseModel->modelVcpValueFind(feature_code);
     assert(fv);
@@ -138,7 +152,8 @@ void    FeatureListWidget::featureChangedObserver(uint8_t feature_code) {
 
 // #ifdef NO_FEATURE_CHANGED
 void    FeatureListWidget::featureChanged(uint8_t feature_code)  {
-     printf("FeatureListWidget::%s) feature_code=0x%02x\n", __func__, feature_code); fflush(stdout);
+     if (debugSignals)
+         printf("FeatureListWidget::%s) feature_code=0x%02x\n", __func__, feature_code); fflush(stdout);
      FeatureValue * fv = _baseModel->modelVcpValueFind(feature_code);
      assert(fv);
      addFeature(fv);
@@ -147,9 +162,11 @@ void    FeatureListWidget::featureChanged(uint8_t feature_code)  {
 // #endif
 
 void FeatureListWidget::paintEvent(QPaintEvent *event) {
-     printf("(%s::%s)\n", _cls, __func__); fflush(stdout);
+     if (debugMain)
+         printf("(%s::%s)\n", _cls, __func__); fflush(stdout);
      // QListWidget::paintEvent(event);
-     printf("(%s::%s) Calling update() for %d FeatureWidget instances\n", _cls, __func__, count()); fflush(stdout);
+     if (debugSignals)
+         printf("(%s::%s) Calling update() for %d FeatureWidget instances\n", _cls, __func__, count()); fflush(stdout);
 
      for (int ndx = 0; ndx < count(); ndx++) {
          FeatureWidget * curItem = (FeatureWidget*) item(ndx);  // ???

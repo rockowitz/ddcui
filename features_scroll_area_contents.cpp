@@ -27,9 +27,17 @@
 
 #include <QtWidgets/QVBoxLayout>
 
+#include "base/ddcui_globals.h"
+#include "base/debug_utils.h"
+
 #include "feature_value_widgets/value_stacked_widget.h"
 #include "feature_widget_basic.h"
 #include "features_scroll_area_contents.h"
+
+
+static bool dimensionReportShown = false;
+static bool debugMain = false;
+static bool debugSignals = false;
 
 FeaturesScrollAreaContents::FeaturesScrollAreaContents(QWidget * parent) :
     QWidget(parent)
@@ -45,7 +53,8 @@ FeaturesScrollAreaContents::FeaturesScrollAreaContents(QWidget * parent) :
    //         qApp, SLOT(aboutQt()));
 
    // layout()->setContentsMargins(0,0,0,0); // no layout defined
-   setStyleSheet("background-color:aqua;");
+   if (debugLayout)
+     setStyleSheet("background-color:aqua;");
 }
 
 FeaturesScrollAreaContents::~FeaturesScrollAreaContents() {
@@ -64,12 +73,16 @@ void FeaturesScrollAreaContents::setContainingScrollArea(QScrollArea * scrollAre
 
 void FeaturesScrollAreaContents::featureAdded(FeatureValue fv)
 {
-   printf("(%s::%s)\n", _cls, __func__);  fflush(stdout);
-   // fv.report();
+   if (debugMain) {
+       printf("(%s::%s)\n", _cls, __func__);  fflush(stdout);
+       // fv.report();
+   }
 
    FeatureWidgetBasic * newTableEntry = new FeatureWidgetBasic();
    newTableEntry->setFeatureValue(fv);
-   newTableEntry->dbgrpt();
+
+   if (debugMain)
+       newTableEntry->dbgrpt();
 
    layout()->addWidget(newTableEntry);
    _widgets[fv._feature_code] = newTableEntry;
@@ -77,7 +90,8 @@ void FeaturesScrollAreaContents::featureAdded(FeatureValue fv)
 
 void FeaturesScrollAreaContents::featureUpdated(char feature_code)
 {
-   printf("(%s::%s)\n", _cls, __func__);  fflush(stdout);
+   if (debugMain)
+       printf("(%s::%s)\n", _cls, __func__);  fflush(stdout);
    // get the current value for the feature
    // find the entry in _widgets
    // set value in the widget
@@ -111,9 +125,11 @@ void FeaturesScrollAreaContents::addPageChangeObserver(PageChangeObserver * obse
 
 void FeaturesScrollAreaContents::notifyPageChangeObservers(int pageno) {
    int ct = _pageChangeObservers->count();
-   printf("(%s) Starting ct=%d\n", __func__, ct);  fflush(stdout);
+   if (debugSignals)
+       printf("(%s) Starting ct=%d\n", __func__, ct);  fflush(stdout);
    for (int ndx = 0; ndx < ct; ndx++) {
-           printf("(%s) Notifying observer\n", __func__);  fflush(stdout);
+          if (debugSignals)
+              printf("(%s) Notifying observer\n", __func__);  fflush(stdout);
            PageChangeObserver*  observer = _pageChangeObservers->at(ndx);
            observer->pageChangedByWidget(_containingScrollArea);
    }

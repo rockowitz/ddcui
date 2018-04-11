@@ -23,11 +23,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    base/debug_utils.cpp \
     nongui/feature_base_model.cpp \
-    nongui/feature_change_observer.cpp \
     nongui/feature_value.cpp \
     nongui/vcprequest.cpp \
-    nongui/vcpthread.cpp
+    nongui/vcpthread.cpp \
+    nongui/simple_feature_value_observer.cpp \
+    nongui/simple_feature_value_subject.cpp \
+    nongui/simple_feature_value.cpp
+
+#     nongui/feature_change_observer.cpp \
 
 
 SOURCES += \
@@ -35,6 +40,7 @@ SOURCES += \
     feature_value_widgets/value_base_widget.cpp \
     feature_value_widgets/value_cont_widget.cpp \
     feature_value_widgets/value_nc_widget.cpp \
+    feature_value_widgets/value_reset_widget.cpp \
     feature_value_widgets/value_stacked_widget.cpp \
     feature_value_widgets/value_std_widget.cpp 
 
@@ -64,11 +70,15 @@ SOURCES += \
 #     c_feature_widget.cpp
 
 HEADERS += \
+    base/debug_utils.h \
     nongui/feature_base_model.h \
     nongui/feature_change_observer.h \
     nongui/feature_value.h \
     nongui/vcprequest.h \
-    nongui/vcpthread.h
+    nongui/vcpthread.h \
+    nongui/simple_feature_value_observer.h \
+    nongui/simple_feature_value_subject.h \
+    nongui/simple_feature_value.h
 
 
 HEADERS += \
@@ -76,6 +86,7 @@ HEADERS += \
     feature_value_widgets/value_base_widget.h \
     feature_value_widgets/value_cont_widget.h \
     feature_value_widgets/value_nc_widget.h \
+    feature_value_widgets/value_reset_widget.h \
     feature_value_widgets/value_stacked_widget.h \
     feature_value_widgets/value_std_widget.h 
 

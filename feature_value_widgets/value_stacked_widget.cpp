@@ -9,14 +9,25 @@
 #include <QtWidgets/QStackedWidget>
 #include <QtGui/QPaintEvent>
 
+#include "base/ddcui_globals.h"
+#include "base/debug_utils.h"
+
+#include "nongui/simple_feature_value.h"
+#include "nongui/simple_feature_value_subject.h"
+
 #include "feature_value_widgets/value_std_widget.h"
 #include "feature_value_widgets/value_cont_widget.h"
 #include "feature_value_widgets/value_nc_widget.h"
 
 #include "feature_value_widgets/value_stacked_widget.h"
 
+static bool dimensionReportShown = false;
+
+static bool debugSignals = false;
+
 ValueStackedWidget::ValueStackedWidget(QWidget *parent):
-    ValueBaseWidget(parent)
+    ValueBaseWidget(parent)  , SimpleFeatureValueSubject()
+
     // QStackedWidget(parent)       //
 {
    _cls                    = strdup(metaObject()->className());
@@ -24,19 +35,22 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent):
     // this->setObjectName(QString::fromUtf8("value_stacked_widget"));   // ambiguous
     // setGeometry(QRect(209,6, 181, 20));
 
-    _contWidget = new ValueContWidget();
-    _ncWidget   = new ValueNcWidget();
-    _stdWidget  = new ValueStdWidget();
+    _contWidget  = new ValueContWidget();
+    _ncWidget    = new ValueNcWidget();
+    _stdWidget   = new ValueStdWidget();
+    _resetWidget = new ValueResetWidget();
 
-    _pageno_cont = 0;
-    _pageno_nc   = 1;
-    _pageno_std  = 2;
+    _pageno_cont  = 0;
+    _pageno_nc    = 1;
+    _pageno_std   = 2;
+    _pageno_reset = 3;
     _pageno_selected = _pageno_std;    // default
 
     _stacked = new QStackedWidget();
     _stacked->addWidget(_contWidget);
     _stacked->addWidget(_ncWidget);
     _stacked->addWidget(_stdWidget);
+    _stacked->addWidget(_resetWidget);
 
     // ???
     QVBoxLayout * layout = new QVBoxLayout;
@@ -44,31 +58,38 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent):
     layout->addWidget(_stacked);
     setLayout(layout);
 
-    int m_left, m_right, m_top, m_bottom;
-    getContentsMargins(&m_left, &m_top, &m_right, &m_bottom);
-    printf("(ValueStackedWidget::ValueStackedWidget) margins: left=%d, top=%d, right=%d, bottom=%d)\n",
-           m_left, m_right, m_top, m_bottom);
+    if (!dimensionReportShown && debugLayout) {
+        printf("-------------------------------------------->\n"); fflush(stdout);
+        reportWidgetDimensions(this, _cls, __func__);
+        // dimensionReportShown = true;
+    }
 
-    this->setStyleSheet("background-color:red;");
+    if (debugLayout)
+       this->setStyleSheet("background-color:red;");
 
     _stacked->setCurrentIndex(_pageno_selected);
     _cur_stacked_widget = _stdWidget;
 
     ValueStackedWidget * curWidget = this;  // still treated as ValueBaseWidget* in SIGNAL/SLOT versions
 
-    QWidget::connect(_contWidget, &ValueContWidget::featureValueChanged,
-                     curWidget,        &ValueStackedWidget::onContainedWidgetChanged);
+    QWidget::connect(_contWidget,  &ValueContWidget::featureValueChanged,
+                     curWidget,    &ValueStackedWidget::onContainedWidgetChanged);
 
-    QWidget::connect(_ncWidget, &ValueContWidget::featureValueChanged,
-                     this,        &ValueStackedWidget::onContainedWidgetChanged);
+    QWidget::connect(_ncWidget,    &ValueContWidget::featureValueChanged,
+                     this,         &ValueStackedWidget::onContainedWidgetChanged);
 
+    QWidget::connect(_resetWidget, &ValueResetWidget::featureValueChanged,
+                     this,         &ValueStackedWidget::onContainedWidgetChanged);
 
+#ifdef WORKS
     QWidget::connect(_ncWidget, SIGNAL(featureValueChanged(   uint8_t, uint8_t, uint8_t)),
                      curWidget,      SLOT(onContainedWidgetChanged(uint8_t, uint8_t, uint8_t)));
 
 
     QWidget::connect(_ncWidget, SIGNAL(featureValueChanged(   uint8_t, uint8_t, uint8_t)),
                       curWidget,     SLOT(onContainedWidgetChanged(uint8_t, uint8_t, uint8_t)));
+#endif
+
 
 }
 
@@ -77,12 +98,26 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent):
 void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
     ValueBaseWidget::setFeatureValue(fv);
 
-    if (fv._feature_flags & DDCA_STD_CONT) {
+    // alt, test for PRESET, then xb0 (settings) or normal
+    if ( fv._feature_code == 0x04 ||    // Restore factory defaults
+         fv._feature_code == 0x05 ||    // Restore factory brightness/contrast defaults
+         fv._feature_code == 0x06 ||    // Restore factory geometry defaults
+         fv._feature_code == 0x08 ||    // Restore factory color defaults
+         fv._feature_code == 0x0a )     // Restore factory TV defaults
+    {
+       _stacked->setCurrentIndex(_pageno_reset);
+       _cur_stacked_widget = _resetWidget;
+    }
+
+    else if (fv._feature_flags & DDCA_STD_CONT) {
         // printf("(ValueStackedWidget::%s) DDCA_STD_CONT\n", __func__); fflush(stdout);
         _stacked->setCurrentIndex(_pageno_cont);
         _cur_stacked_widget = _contWidget;
     }
-    else if (fv._feature_flags & DDCA_SIMPLE_NC) {
+    else if ( (fv._feature_flags & DDCA_SIMPLE_NC) &&
+              (fv._feature_flags & DDCA_WRITABLE)
+            )
+    {
        // printf("(ValueStackedWidget::%s) DDCA_SIMPLE_NC\n", __func__); fflush(stdout);
         _stacked->setCurrentIndex(_pageno_nc);
         _cur_stacked_widget = _ncWidget;
@@ -130,11 +165,21 @@ void ValueStackedWidget::paintEvent(QPaintEvent *event) {
 
 
 void  ValueStackedWidget::onContainedWidgetChanged(uint8_t feature_code, uint8_t sh, uint8_t sl) {
-   printf("(%s::%s) feature_code=0x%02x, sh=0x%02x, sl=0x%02x\n",
-          _cls, __func__, feature_code, sh, sl);  fflush(stdout);
+   if (debugSignals)
+       printf("(%s::%s) feature_code=0x%02x, sh=0x%02x, sl=0x%02x\n",
+              _cls, __func__, feature_code, sh, sl);  fflush(stdout);
    assert(feature_code == _feature_code);
-   emit featureValueChanged(feature_code, sh, sl);
+
+   // if (debugSignals)
+       // printf("(%s::%s) Calling emit featureValueChanged()\n", _cls, __func__);  fflush(stdout);
+   // emit featureValueChanged(feature_code, sh, sl);
+   if (debugSignals)
+       printf("(%s::%s) Calling emit stackedFeatureValueChanged()\n", _cls, __func__);  fflush(stdout);
    emit stackedFeatureValueChanged(feature_code, sh, sl);
+
+   // printf("(%s::%s) Calling simpleFeatueValueNotify() \n", _cls, __func__);  fflush(stdout);
+   // simpleFeatureValueNotify(SimpleFeatureValue(feature_code, sh, sl));
+
 }
 
 

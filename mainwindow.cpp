@@ -353,8 +353,15 @@ void initFeaturesScrollAreaView(
    QObject::connect(baseModel,          SIGNAL(signalEndInitialLoad()),
                     featuresView,       SLOT(  onEndInitialLoad()));
 
+
+
       // QObject::connect(baseModel,          &FeatureBaseModel::signalEndInitialLoad,
       //                  featuresView,       &FeaturesScrollAreaView::onEndInitialLoad);
+
+   QObject::connect(featuresView, &FeaturesScrollAreaView::signalVcpRequest,
+                    curMonitor,   &Monitor::putVcpRequest);
+
+
 
 }
 

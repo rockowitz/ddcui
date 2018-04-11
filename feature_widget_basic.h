@@ -19,6 +19,7 @@ class QHBoxLayout;
 
 class FeatureWidgetBasic :
         public QWidget         // QFrame
+        , public SimpleFeatureValueObserver
 {
     Q_OBJECT
 
@@ -45,6 +46,9 @@ public:
     const char * _cls;    // className
 
     QSize sizeHint() const override;
+
+
+    void simpleFeatureValueChanged(SimpleFeatureValue fv) override;   // SimpleFeatureValueObserver
 
 signals:
 

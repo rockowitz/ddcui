@@ -20,7 +20,7 @@ ValueStdWidget::ValueStdWidget(QWidget *parent):
     // printf("(%s::%s) Starting\n", _cls, __func__);  fflush(stdout);
     _valueField = new QLabel();
     _valueField->setAlignment(Qt::AlignLeft);
-    _valueField->setFrameStyle(QFrame::Sunken | QFrame::Panel);
+    // _valueField->setFrameStyle(QFrame::Sunken | QFrame::Panel);  // now set in ValueBaseWidget
     // _valueField->setFixedSize(400,10);
 
     QSizePolicy* sizePolicy = new QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);

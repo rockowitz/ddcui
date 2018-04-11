@@ -6,6 +6,8 @@
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 
+#include "base/debug_utils.h"
+
 #include "feature_value_widgets/value_cont_widget.h"
 #include "feature_value_widgets/value_nc_widget.h"
 #include "feature_value_widgets/value_std_widget.h"
@@ -13,6 +15,7 @@
 
 #include "feature_widget_basic.h"
 
+static bool dimensionReportShown = false;
 
 FeatureWidgetBasic::FeatureWidgetBasic(QWidget *parent) :
    QWidget(parent)              //         QFrame(parent)
@@ -113,10 +116,28 @@ FeatureWidgetBasic::FeatureWidgetBasic(QWidget *parent) :
     _layout->addStretch(1);
 
     _layout->setContentsMargins(0,0,0,0);
+    // removes space between all fields except field type <-> value
+    // _layout->setSpacing(0);  // adjusts space between each horizontal item, no effect on above/below
+    // _layout->setSpacing(50);
 
+    // eliminating vlayout restores horizontal spacing between all fields.  why?
+#ifdef UNNEEDED
+    QVBoxLayout * vlayout = new QVBoxLayout();
+    vlayout->addLayout(_layout);
+    vlayout->setSpacing(0);
+    vlayout->setContentsMargins(0,0,0,0);
+    setLayout(vlayout);
+#endif
     setLayout(_layout);
+
     if (debugLayout)
-    this->setStyleSheet("background-color:orange;");
+        this->setStyleSheet("background-color:orange;");
+
+    if (!dimensionReportShown && debugLayout) {
+        printf("-------------------------------------------->\n"); fflush(stdout);
+        reportWidgetDimensions(this, _cls, __func__);
+        // dimensionReportShown = true;
+    }
 
   // use ValueBaseWidget or ValueStackedWidget?
     // won't compile
@@ -138,6 +159,9 @@ FeatureWidgetBasic::FeatureWidgetBasic(QWidget *parent) :
 
     QObject::connect( _valueWidget, SIGNAL( featureValueChanged(uint8_t, uint8_t, uint8_t)),
                       this,         SLOT(onInternalValueChanged(uint8_t, uint8_t, uint8_t)));
+
+    // signals/slots not working, try hardcoding
+    _valueWidget->addSimpleFeatureValueObserver(this);
 }
 
 
@@ -232,10 +256,15 @@ void FeatureWidgetBasic::dbgrpt() const {
 
 void FeatureWidgetBasic::onInternalValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl) {
    printf("(%s::%s) feature_code = 0x%02x, sh=0x%02x, sl=0x%02x\n", _cls, __func__,
-          featureCode, sh, sl);
+          featureCode, sh, sl); fflush(stdout);
    assert(featureCode == _feature_code);
    emit valueChanged(featureCode, sh, sl);
 }
 
+// SimpleFeatureValueObserver
+void FeatureWidgetBasic::simpleFeatureValueChanged(SimpleFeatureValue fv) {
+   printf("(%s::%s) feature_code = 0x%02x, sh=0x%02x, sl=0x%02x\n", _cls, __func__,
+          fv.featureCode, fv.hiByte, fv.loByte); fflush(stdout);
+}
 
 

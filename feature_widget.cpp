@@ -2,7 +2,8 @@
 
 #include "assert.h"
 
-#include <QtWidgets>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QHBoxLayout>
 
 #include "feature_value_widgets/value_cont_widget.h"
 #include "feature_value_widgets/value_nc_widget.h"
@@ -11,6 +12,7 @@
 
 #include "feature_widget.h"
 
+static bool debug = false;
 
 FeatureWidget::FeatureWidget(QListWidget *parent) :
  //   QWidget(parent)
@@ -99,8 +101,11 @@ FeatureWidget::FeatureWidget(QListWidget *parent) :
 
 
 void FeatureWidget::setFeatureValue(FeatureValue &fv) {
-    printf("(FeatureWidget::%s)", __func__); fflush(stdout);
-    fv.report();
+    if (debug) {
+        printf("(FeatureWidget::%s)", __func__); fflush(stdout);
+        fv.report();
+    }
+
     _feature_code  = fv._feature_code;
     _feature_flags = fv._feature_flags;
     _vspec         = fv._vspec;

@@ -8,7 +8,9 @@
 
 #include "nongui/feature_value.h"
 
-class ValueAbstractWidget : public QWidget    //  public QFrame
+class ValueAbstractWidget :
+   // public QWidget
+      public QFrame
 {
     Q_OBJECT
 

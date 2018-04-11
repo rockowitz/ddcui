@@ -14,10 +14,11 @@
 #include <QtWidgets/QLayout>
 
 #include "base/ddcui_globals.h"
+#include "base/debug_utils.h"
 
 #include <ddcutil_c_api.h>
 
-
+static bool dimensionReportShown = false;
 
 ValueNcWidget::ValueNcWidget(QWidget *parent):
         ValueBaseWidget(parent)
@@ -26,7 +27,7 @@ ValueNcWidget::ValueNcWidget(QWidget *parent):
     // printf("(ValueNcWidget::ValueNcWidget) Starting.\n" ); fflush(stdout);
 
    QFont nonMonoFont;
-   nonMonoFont.setPointSize(9);
+   nonMonoFont.setPointSize(8);
 
     _cb = new QComboBox();
 
@@ -34,6 +35,7 @@ ValueNcWidget::ValueNcWidget(QWidget *parent):
     // _cb->setHorizontalStretch(0);
     _cb->setSizePolicy(*sizePolicy);
     _cb->setFont(nonMonoFont);
+    _cb->setMaximumHeight(20);
     // _cb->setFrameStyle(QFrame::Sunken | QFrame::Panel);   // not a method
     _cb->setStyleSheet("background-color:white;");
 
@@ -43,10 +45,12 @@ ValueNcWidget::ValueNcWidget(QWidget *parent):
     layout->setContentsMargins(0,0,0,0);
     setLayout(layout);
 
-    int m_left, m_right, m_top, m_bottom;
-    getContentsMargins(&m_left, &m_top, &m_right, &m_bottom);
-    // printf("(ValueNcWidget::ValueNcWidget) margins: left=%d, top=%d, right=%d, bottom=%d)\n",
-    //        m_left, m_right, m_top, m_bottom);
+    if (!dimensionReportShown && debugLayout) {
+        printf("-------------------------------------------->\n"); fflush(stdout);
+        reportWidgetDimensions(this, _cls, __func__);
+        // dimensionReportShown = true;
+    }
+
     if (debugLayout)
        this->setStyleSheet("background-color:cyan;");
 

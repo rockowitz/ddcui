@@ -3,11 +3,14 @@
 #ifndef FEATURE_WIDGET_H
 #define FEATURE_WIDGET_H
 
-#include <QtWidgets>
+// #include <QtWidgets/QHBoxLayout>
 
 #include "base/ddcui_globals.h"
 #include "nongui/feature_value.h"
 #include "feature_value_widgets/value_abstract_widget.h"
+
+class QLabel;
+class QHBoxLayout;
 
 class FeatureWidget :
         public QWidget,

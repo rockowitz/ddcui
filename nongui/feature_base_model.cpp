@@ -14,6 +14,9 @@
 
 using namespace std;
 
+static bool debugModel = false;
+static bool debugSignals = false;
+
 FeatureBaseModel::FeatureBaseModel()
 {
     _cls                    = metaObject()->className();
@@ -104,16 +107,19 @@ void   FeatureBaseModel::modelVcpValueSet(
                    DDCA_Feature_Metadata                metadata,
                    DDCA_Non_Table_Vcp_Value *           feature_value)
 {
-    printf("(%s::%s) feature_code=0x%02x, mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x\n",
-           _cls, __func__, feature_code,
-           feature_value->mh, feature_value->ml, feature_value->sh, feature_value->sl);
+    if (debugModel)
+        printf("(%s::%s) feature_code=0x%02x, mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x\n",
+              _cls, __func__, feature_code,
+               feature_value->mh, feature_value->ml, feature_value->sh, feature_value->sl);
     int ndx = modelVcpValueIndex(feature_code);
     // printf("(%s) ndx=%d\n", __func__, ndx);  fflush(stdout);
     // FIXME: HACK AROUND LOGIC ERROR
     // MAY DO A FULL LOAD MULTIPLE TIMES, E.G if switch table type
     // assert(ndx < 0);
     if (ndx < 0) {
-        printf("(%s) Creating new FeatureValue\n", __func__); fflush(stdout);
+        if (debugModel)
+            printf("(%s) Creating new FeatureValue\n", __func__); fflush(stdout);
+
         FeatureValue * fv = new FeatureValue();
         fv->_feature_code    = feature_code;
         fv->_vspec          = metadata.vspec;
@@ -125,7 +131,8 @@ void   FeatureBaseModel::modelVcpValueSet(
         fv->_value          = *feature_value;
 
         _featureValues->append(fv);
-        printf("(%s::%s) Emitting signalFeatureAdded()\n", _cls, __func__); fflush(stdout);
+        if (debugSignals)
+            printf("(%s::%s) Emitting signalFeatureAdded()\n", _cls, __func__); fflush(stdout);
         emit signalFeatureAdded(*fv);
         // notifyFeatureChangedObservers(feature_code);
         notifyFeatureChangeObservers(feature_code);
@@ -158,12 +165,15 @@ void   FeatureBaseModel::modelVcpValueUpdate(
                    uint8_t                              sh,
                    uint8_t                              sl)
 {
-    printf("(%s::%s) feature_code=0x%02x, sh=0x%02x, sl=0x%02x\n",
-           _cls, __func__, feature_code, sh, sl); fflush(stdout);
+    if (debugModel)
+        printf("(%s::%s) feature_code=0x%02x, sh=0x%02x, sl=0x%02x\n",
+               _cls, __func__, feature_code, sh, sl); fflush(stdout);
     int ndx = modelVcpValueIndex(feature_code);
     // printf("(%s) ndx=%d\n", __func__, ndx);  fflush(stdout);
     assert (ndx >= 0);
-    printf("(%s) Modifying existing FeatureValue\n", __func__); fflush(stdout);
+    if (debugModel)
+        printf("(%s) Modifying existing FeatureValue\n", __func__); fflush(stdout);
+
     FeatureValue * fv =  _featureValues->at(ndx);
     fv->_sh             = sh;
     fv->_sl             = sl;
@@ -224,7 +234,8 @@ void  FeatureBaseModel::addFeatureChangeObserver(FeatureChangeObserver* observer
 
 
 void FeatureBaseModel::notifyFeatureChangeObservers(uint8_t feature_code) {
-    printf("(%s::%s) Disabled\n", _cls, __func__);  fflush(stdout);
+    if (debugSignals)
+        printf("(%s::%s) Disabled\n", _cls, __func__);  fflush(stdout);
 #ifdef DISABLED
     int ct = _featureChangeObservers->count();
     printf("(%s) Starting ct=%d\n", __func__, ct);  fflush(stdout);

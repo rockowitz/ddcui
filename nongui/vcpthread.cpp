@@ -9,6 +9,8 @@
 
 using namespace std;
 
+static bool debugThread;
+
 VcpThread::VcpThread(
         QObject*            parent,
         DDCA_Display_Info * dinfo,
@@ -145,13 +147,13 @@ void VcpThread::getvcp(uint8_t feature_code) {
 void VcpThread::setvcp(uint8_t feature_code, uint8_t sl) {
     // printf("(VcpThread::setvcp) Starting. feature_code=0x%02x\n", feature_code);
     DDCA_Display_Handle         dh;
-    DDCA_Non_Table_Vcp_Value    valrec;
-    valrec.sh = 0;     // only setting low byte
-    valrec.sl = sl;
-    valrec.mh = 0;  //hack
-    valrec.ml = 0;   // hack
+    //  DDCA_Non_Table_Vcp_Value    valrec; // unused
+    // valrec.sh = 0;     // only setting low byte
+    // valrec.sl = sl;
+    // valrec.mh = 0;  //hack
+    // valrec.ml = 0;   // hack
 
-    DDCA_Feature_Metadata  finfo;
+    // DDCA_Feature_Metadata  finfo;    // unused
 
     DDCA_Status ddcrc = ddca_open_display(this->_dref, &dh);
     if (ddcrc != 0) {
@@ -236,7 +238,7 @@ void VcpThread::startInitialLoad(void) {
 // Process RQEndInitialLoad
 void VcpThread::endInitialLoad(void) {
         printf("(VcpThread::EndInitialLoad)\n");  fflush(stdout);
-        _baseModel->report();
+        // _baseModel->report();
         // _baseModel->endResetModel();
         _baseModel->modelEndInitialLoad();
 }
@@ -279,8 +281,9 @@ void VcpThread::run() {
         case VcpRequestType::RQSetVcp:
         {
             VcpSetRequest* setRqst = static_cast<VcpSetRequest*>(rqst);
-            printf("(VcpThread::run) RQSetVcp. feature code=0x%02x, newval=%d\n",
-                   setRqst->_featureCode, setRqst->_newval);  fflush(stdout);
+            if (debugThread)
+                printf("(VcpThread::run) RQSetVcp. feature code=0x%02x, newval=%d\n",
+                       setRqst->_featureCode, setRqst->_newval);  fflush(stdout);
             setvcp(setRqst->_featureCode, setRqst->_newval & 0xff);
             break;
         }

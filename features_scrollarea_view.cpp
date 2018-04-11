@@ -4,10 +4,13 @@
 #include <stdio.h>
 
 #include "base/ddcui_globals.h"
+#include "base/debug_utils.h"
+
 #include "features_scrollarea_view.h"
 #include "features_scroll_area_contents.h"
 #include "monitor.h"
 
+bool dimensionReportShown = false;
 
 FeaturesScrollAreaView::FeaturesScrollAreaView(
         Monitor *          monitor,
@@ -52,8 +55,10 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
     QVBoxLayout * vLayout  = new QVBoxLayout();
     vLayout->setObjectName("vLayout in onEndInitLoad");
     vLayout->setMargin(0);
+    vLayout->setSpacing(0);    // <=== CONTROLS SPACING BETWEEN ROWS
     if (debugLayout) {
        scrollAreaContents->setStyleSheet("background-color:chartreuse;");
+       _centralStackedWidget->setStyleSheet("background-color:chocolate:");
     }
 
     int ct = 0;
@@ -83,13 +88,23 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
     // _centralStackedWidget->hide();    // no effect
     // _centralStackedWidget->setCurrentIndex(pageno);
     _centralStackedWidget->setCurrentWidget(scrollArea);
+
+
+    if (!dimensionReportShown && debugLayout) {
+       printf("-------------------------------------------->\n"); fflush(stdout);
+       reportWidgetDimensions(scrollAreaContents, _cls, __func__);
+        printf("-------------------------------------------->\n"); fflush(stdout);
+        reportWidgetDimensions(_centralStackedWidget, _cls, __func__);
+        // dimensionReportShown = true;
+    }
+
     _centralStackedWidget->show();
     printf("(FeatuesScrollAreaView::%s) Done.  feature count: %d\n", __func__, ct);  fflush(stdout);
 }
 
 void FeaturesScrollAreaView::onUIValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl) {
    printf("(%s::%s) feature_code = 0x%02x, sh=0x%02x, sl=0x%02x\n", _cls, __func__,
-          featureCode, sh, sl);
+          featureCode, sh, sl); fflush(stdout);
    VcpRequest * rqst = new VcpSetRequest(featureCode, sl);   // n.b. ignoring sh
    emit signalVcpRequest(rqst);  // used to call into monitor
 }

@@ -9,8 +9,10 @@
 #include <QtWidgets/QHBoxLayout>
 // #include <QtWidgets/QVBoxLayout>
 
+#include "base/ddcui_globals.h"
 #include "value_cont_widget.h"
 
+static bool debugSignals = false;
 
 ValueContWidget::ValueContWidget(QWidget *parent):
     ValueBaseWidget(parent)
@@ -35,23 +37,27 @@ ValueContWidget::ValueContWidget(QWidget *parent):
     _curSlider->setFocusPolicy(Qt::StrongFocus);
     _curSlider->setTickPosition(QSlider::TicksBelow);   // alt TicksBothSides
     _curSlider->setSingleStep(1);
-    _curSlider->setFixedSize(200,20);
+    _curSlider->setFixedSize(200,18);
+    if (debugLayout)
     _curSlider->setStyleSheet("background-color:pink;");
 
     _curSpinBox = new QSpinBox();
     _curSpinBox->setSingleStep(1);
-    _curSpinBox->setFixedSize(40,20);
+    _curSpinBox->setFixedSize(45,18);
+    if (debugLayout)
     _curSpinBox->setStyleSheet("background-color:green;");
 
     _maxTitle = new QLabel("Max:");
-    _maxTitle->setFixedSize(40,20);
+    _maxTitle->setFixedSize(35,20);
     _maxTitle->setFont(nonMonoValueFont);
+    if (debugLayout)
     _maxTitle->setStyleSheet("background-color:cyan;");
 
     _maxValue = new QLabel();
     _maxValue->setFont(monoValueFont);
     _maxValue->setFrameStyle(QFrame::Sunken | QFrame::Panel);
-    _maxValue->setFixedSize(25,20);
+    _maxValue->setFixedSize(30,20);
+    if (debugLayout)
     _maxValue->setStyleSheet("background-color:blue;");
 
 
@@ -83,6 +89,7 @@ ValueContWidget::ValueContWidget(QWidget *parent):
     layout->setContentsMargins(0,0,0,0);
     setLayout(layout);
 
+    if (debugLayout)
     this->setStyleSheet("background-color:yellow;");
 
     // int m_left, m_right, m_top, m_bottom;
@@ -132,7 +139,8 @@ uint16_t ValueContWidget::getCurrentValue() {
 }
 
 void ValueContWidget::onSliderValueChanged(int value) {
-   printf("(%s::%s) value=%d\n", _cls, __func__, value); fflush(stdout);
+   if (debugSignals)
+       printf("(%s::%s) value=%d\n", _cls, __func__, value); fflush(stdout);
 }
 
 void ValueContWidget::onSliderReleased() {
@@ -141,16 +149,19 @@ void ValueContWidget::onSliderReleased() {
 
    uint8_t sh = (curval >> 8) & 0xff;
    uint8_t sl = curval & 0xff;
-   printf("(%s::%s) sh=9x%02x, sl=0x%02x \n", _cls, __func__, sh, sl); fflush(stdout);
+   if (debugSignals)
+       printf("(%s::%s) sh=9x%02x, sl=0x%02x \n", _cls, __func__, sh, sl); fflush(stdout);
    emit featureValueChanged(_feature_code, sh, sl);
 }
 
 void ValueContWidget::onSpinBoxValueChanged(int value) {
-   printf("(%s::%s) value=%d\n", _cls, __func__, value); fflush(stdout);
+   if (debugSignals)
+       printf("(%s::%s) value=%d\n", _cls, __func__, value); fflush(stdout);
 }
 
 void ValueContWidget::onSpinBoxEditingFinished() {
-   printf("(%s::%s) \n", _cls, __func__); fflush(stdout);
+   if (debugSignals)
+       printf("(%s::%s) \n", _cls, __func__); fflush(stdout);
 }
 
 

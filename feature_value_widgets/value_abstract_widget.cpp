@@ -2,8 +2,8 @@
 
 // #ifdef NO
 ValueAbstractWidget::ValueAbstractWidget(QWidget *parent)
-  : QWidget(parent)
-  // : QFrame(parent)
+  // : QWidget(parent)
+     : QFrame(parent)
 {
 
 }

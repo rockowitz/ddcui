@@ -1,20 +1,22 @@
 #ifndef VALUE_STACKED_WIDGET_H
 #define VALUE_STACKED_WIDGET_H
 
+#include "nongui/simple_feature_value.h"
+#include "nongui/simple_feature_value_subject.h"
+
 #include "value_abstract_widget.h"
 #include "value_base_widget.h"
 #include "value_std_widget.h"
 #include "value_cont_widget.h"
 #include "value_nc_widget.h"
+#include "value_reset_widget.h"
 
-// #include <QtWidgets/QWidget>
-// #include <QtWidgets/QStackedWidget>
 
 class QWidget;
 class QPaintEvent;
 class QStackedWidget;
 
-class ValueStackedWidget : public ValueBaseWidget
+class ValueStackedWidget : public ValueBaseWidget, public SimpleFeatureValueSubject
 {
    Q_OBJECT
 
@@ -26,13 +28,7 @@ public:
     uint16_t getCurrentValue() override;
 
     // QSize sizeHint() const override;
-
     // void paintEvent(QPaintEvent *event) override;
-
-    // ugly hack
-    ValueContWidget * _contWidget;
-    ValueNcWidget   * _ncWidget;
-    ValueStdWidget  * _stdWidget;
 
 signals:
     void stackedFeatureValueChanged(uint8_t feature_code, uint8_t sh, uint8_t sl);
@@ -44,9 +40,15 @@ private:
     int  _pageno_std;
     int  _pageno_cont;
     int  _pageno_nc;
+    int  _pageno_reset;
     int  _pageno_selected;
 
-    private slots:
+    ValueContWidget  * _contWidget;
+    ValueNcWidget    * _ncWidget;
+    ValueResetWidget * _resetWidget;
+    ValueStdWidget   * _stdWidget;
+
+private slots:
     void onContainedWidgetChanged(uint8_t feature_code, uint8_t sh, uint8_t sl);
 
 };

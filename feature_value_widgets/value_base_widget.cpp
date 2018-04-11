@@ -28,6 +28,8 @@ ValueBaseWidget::ValueBaseWidget(QWidget *parent)
    //printf("(ValueBaseWidget::ValueBaseWidget) margins: left=%d, top=%d, right=%d, bottom=%d)\n",
    //       margins.m_left, margins.m_top, margins.m_right, margins.m_bottom);
 
+   // try setting frame style at this level,
+   setFrameStyle(QFrame::Sunken | QFrame::Panel);
 }
 
 
