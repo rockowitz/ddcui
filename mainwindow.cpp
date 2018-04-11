@@ -17,10 +17,10 @@
 #include "table_model_view/feature_value_tableitem_delegate.h"
 
 #include "base/ddcui_globals.h"
-#include "feature_selection_dialog.h"
+#include "feature_selection/feature_selection_dialog.h"
 #include "monitor.h"
 #include "ui_mainwindow2.h"
-#include "vcplineitem.h"
+// #include "vcplineitem.h"
 #include "feature_widget_basic.h"
 #include "feature_item_model.h"
 #include "features_scrollarea_view.h"

@@ -55,7 +55,7 @@ SOURCES += \
     QtWaitingSpinner/waitingspinnerwidget.cpp \
     feature_item_model.cpp \
     feature_list_widget.cpp \
-    feature_selection_dialog.cpp \ 
+    feature_selection/feature_selection_dialog.cpp \
     feature_widget.cpp \
     feature_widget_basic.cpp \
     features_scroll_area_contents.cpp \
@@ -63,8 +63,9 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     monitor.cpp \
-    vcplineitem.cpp \
     features_scrollarea_view.cpp
+
+#   vcplineitem.cpp \
 
 # SOURCES += \
 #     c_feature_widget.cpp
@@ -102,7 +103,7 @@ HEADERS += \
     base/ddcui_globals.h \
     feature_item_model.h \
     feature_list_widget.h \
-    feature_selection_dialog.h \
+    feature_selection/feature_selection_dialog.h \
     feature_widget.h \
     feature_widget_basic.h \
     features_scroll_area_contents.h \
@@ -111,8 +112,9 @@ HEADERS += \
     misc.h \
     monitor.h \
     ui_mainwindow2.h \
-    vcplineitem.h \
     features_scrollarea_view.h
+
+#     vcplineitem.h \
 
 # HEADERS += \
 #     c_feature_widget.h
@@ -120,7 +122,7 @@ HEADERS += \
 #   mainwindow.ui \
 
 FORMS += \
-    featureselectiondialog.ui
+    feature_selection/featureselectiondialog.ui
 
 # FORMS += \
 #     c_feature_widget.ui
