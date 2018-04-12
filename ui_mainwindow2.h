@@ -62,13 +62,17 @@ public:
     QWidget *centralWidget;   
     QStackedWidget *views_stackedWidget;
 
+#ifdef OLD
+    // MONINFO_OLD
     QWidget *page_moninfo;
     QPlainTextEdit *moninfoPlainText;
     int     _pageno_moninfo;
 
+
     QWidget *page_capabilities;
     QPlainTextEdit *capabilities_plainText;
     int _pageno_capabilities;
+#endif
 
     QWidget *page_vcp;
     QListWidget *vcpListWidget;
@@ -294,6 +298,8 @@ private:
 
        int pagectr = 0;
 
+#ifdef OLD_NON_MONITOR_SPECIFIC
+       // MONINFO_OLD
        // Layout stacked widget page: page_moninfo, contains moninfoPlainText
        page_moninfo = new QWidget();
        page_moninfo->setObjectName(QString::fromUtf8("page_moninfo"));
@@ -331,8 +337,10 @@ private:
        // pageMoninfoLayout->setContentsMargins(11, 11, 11, 11);
        pageMoninfoLayout->setObjectName(QString::fromUtf8("pageMoninfoLayout"));
        pageMoninfoLayout->addWidget(moninfoPlainText);
+#endif
 
 
+#ifdef OLD_NON_MONITOR_SPECIFIC
        // Layout stacked widget page page_capabilities, contains capabilities_plainText
        page_capabilities = new QWidget();
        page_capabilities->setObjectName(QString::fromUtf8("page_capabilities"));
@@ -359,7 +367,7 @@ private:
        // pageCapabilitiesLayout->setContentsMargins(11, 11, 11, 11);
        pageCapabilitiesLayout->setObjectName(QString::fromUtf8("pageCapabilitiesLayout"));
        pageCapabilitiesLayout->addWidget(capabilities_plainText);
-
+#endif
 
        // Layout stacked widget page page_vcp, contains vcp_listWidget
        page_vcp = new QWidget();

@@ -28,6 +28,7 @@ class QWidget;
 class QFrame;
 class QLabel;
 
+void reportWidgetChildren(QWidget * w);
 void reportLabelDimensions( QLabel  * l, const char * className, const char * funcName);
 void reportFrameDimensions( QFrame  * f, const char * className, const char * funcName);
 void reportWidgetDimensions(QWidget * w, const char * className, const char * funcName);

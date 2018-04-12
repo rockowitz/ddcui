@@ -34,6 +34,22 @@
 #include <QtWidgets/QLabel>
 
 
+void reportWidgetChildren(QWidget * w) {
+    printf("============> Children of widget: \n");  fflush(stdout);
+    QObjectList  childs = w->children();
+    for (int ndx = 0; ndx < childs.size(); ndx++) {
+        QObject* curobj = childs.at(ndx);
+        QString name   = curobj->objectName();
+       // cout << "Child: " << QString("xxx") <<  endl;   // no match for operator<<
+        QByteArray ba = name.toLatin1();
+        const char * s = ba.data();
+        printf("   Child: %s\n", s); fflush(stdout);
+    }
+}
+
+
+
+
 
 void reportWidgetDimensions(QWidget * w, const char * className, const char * funcName) {
     // printf("(%s) ========================================> \n", __func__); fflush(stdout);

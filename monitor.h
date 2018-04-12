@@ -6,6 +6,7 @@
 #include <QtCore/QHash>
 #include <QtCore/QObject>
 #include <QtCore/QString>
+#include <QtWidgets/QPlainTextEdit>
 
 #include <ddcutil_c_api.h>
 
@@ -36,19 +37,28 @@ public:
     void setFeatureItemModel(FeatureItemModel * listModel);      // ALT
     void setFeatureTableModel(FeatureTableModel * tableModel);
 
-    FeatureItemModel    *_listModel;
-    FeatureTableModel   *_tableModel;
+    FeatureItemModel *   _listModel;
+    FeatureTableModel *  _tableModel;
     FeatureBaseModel *   _baseModel;
 
     VcpRequestQueue*     _requestQueue;
-    DDCA_Display_Info   *_displayInfo;
-    DDCA_Display_Handle _dh;
+    DDCA_Display_Info *  _displayInfo;
+    DDCA_Display_Handle  _dh;
     // VcpThread        _vcpThread;
 
+    // new way
+    QWidget *           _page_moninfo;
+    int                 _pageno_moninfo;
+    QPlainTextEdit *    _moninfoPlainText;
+
+    QWidget *           _page_capabilities;
+    int                 _pageno_capabilities;
+    QPlainTextEdit *    _capabilitiesPlainText;
+
     QWidget *           _page_listWidget;
-    // QWidget *           _page_scrollArea;
+    // QWidget *        _page_scrollArea;
     int                 _pageno_listWidget;
-    // int                 _pageno_scrollArea;
+    // int              _pageno_scrollArea;
     FeatureListWidget * _featureListWidget;
 
     // FeaturesScrollArea is per-monitor

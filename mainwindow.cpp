@@ -46,39 +46,20 @@ MainWindow::MainWindow(QWidget *parent) :
     _toolbarDisplayCB = new QComboBox();
     ui->mainToolBar->addWidget( toolbarDisplayLabel);
     ui->mainToolBar->addWidget( _toolbarDisplayCB);
+
+#ifdef OLD
     ui->capabilities_plainText->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
+
     ui->moninfoPlainText->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
-
-
-
-#ifdef DEBUG
-    cout << "============> Children of centralWidget: " << endl;
-    QObjectList  childs = ui->centralWidget->children();
-    for (int ndx = 0; ndx < childs.size(); ndx++) {
-        QObject* curobj = childs.at(ndx);
-        QString name   = curobj->objectName();
-       // cout << "Child: " << QString("xxx") <<  endl;   // no match for operator<<
-        QByteArray ba = name.toLatin1();
-        const char * s = ba.data();
-        printf("   Child: %s\n", s); fflush(stdout);
-        delete curobj;  // works
-
-    }
-#endif
-#ifdef DOESNT_WORK
-    QObject * item = nullptr;
-    while((item == childs.takeAt(0))) {
-        delete item;
-    }
 #endif
 
-
-
+#ifdef OLD
     QWidget* page0 = new QWidget();
     page0->setObjectName("page_moninfo");
     _moninfoPlainText = new QPlainTextEdit();
     page0->setObjectName("moninfoPlainTextEdit");
     // how to add _moninfoPlainText to page0?
+#endif
 
     QWidget* page1 = new QWidget();
     page1->setObjectName("page_table_view");
@@ -92,8 +73,9 @@ MainWindow::MainWindow(QWidget *parent) :
     _views_StackedWidget->setObjectName("views_StackedWidget");
 
 
-
+#ifdef OLD
     _views_StackedWidget->addWidget(page0);
+#endif
     _views_StackedWidget->addWidget(page1);
     _views_StackedWidget->addWidget(page2);
 
@@ -367,6 +349,110 @@ void initFeaturesScrollAreaView(
 
 
 
+QWidget * initMonitorInfoWidget(
+      Monitor *         curMonitor,
+      int               ndx,         // monitor index number
+      QStackedWidget *  stackedWidget)
+
+{
+   // TODO: CLEAN UP AND SIMPLIFY!
+
+   QSizePolicy sizePolicy1(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+   sizePolicy1.setHorizontalStretch(1);
+   sizePolicy1.setVerticalStretch(1);
+   // sizePolicy1.setHeightForWidth(centralWidget->sizePolicy().hasHeightForWidth());
+   sizePolicy1.setHeightForWidth(false);
+
+    // Layout stacked widget page: page_moninfo, contains moninfoPlainText
+    QWidget * page_moninfo = new QWidget();
+    page_moninfo->setObjectName(QString::asprintf("page_moninfo-%d", ndx));
+
+    QPlainTextEdit *moninfoPlainText;
+
+    // sizePolicy1.setHeightForWidth(page_moninfo->sizePolicy().hasHeightForWidth());
+    page_moninfo->setSizePolicy(sizePolicy1);
+
+    moninfoPlainText = new QPlainTextEdit(page_moninfo);
+    moninfoPlainText->setObjectName(QString::asprintf("moninfoPlainText-%d", ndx));
+    moninfoPlainText->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
+
+    moninfoPlainText->setGeometry(QRect(6, 6, 700, 191));   // was 574,191
+    // sizePolicy1.setHeightForWidth(moninfoPlainText->sizePolicy().hasHeightForWidth());
+    moninfoPlainText->setSizePolicy(sizePolicy1);
+    moninfoPlainText->setMaximumSize(QSize(2000, 16777215));   // 574->2000
+    moninfoPlainText->setLineWrapMode(QPlainTextEdit::NoWrap);
+    moninfoPlainText->setReadOnly(true);
+
+    // AMEN!
+    QHBoxLayout *
+    pageMoninfoLayout = new QHBoxLayout(page_moninfo);
+    pageMoninfoLayout->setSpacing(6);
+    // pageMoninfoLayout->setContentsMargins(11, 11, 11, 11);
+    pageMoninfoLayout->setObjectName(QString::fromUtf8("pageMoninfoLayout"));
+    pageMoninfoLayout->addWidget(moninfoPlainText);
+
+    int pageno_moninfo = stackedWidget->count();
+    stackedWidget->addWidget(page_moninfo);
+
+    curMonitor->_page_moninfo = page_moninfo;
+    curMonitor->_pageno_moninfo = pageno_moninfo;
+    curMonitor->_moninfoPlainText = moninfoPlainText;  // should not need var in Monitor
+    return page_moninfo;
+}
+
+
+QWidget * initCapabilitiesWidget(
+      Monitor *         curMonitor,
+      int               ndx,         // monitor index number
+      QStackedWidget *  stackedWidget)
+
+{
+   QWidget* page_capabilities;
+   QPlainTextEdit * capabilities_plainText;
+
+   QSizePolicy sizePolicy1(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+   sizePolicy1.setHorizontalStretch(1);
+   sizePolicy1.setVerticalStretch(1);
+   // sizePolicy1.setHeightForWidth(centralWidget->sizePolicy().hasHeightForWidth());
+   sizePolicy1.setHeightForWidth(false);
+
+
+   // Layout stacked widget page page_capabilities, contains capabilities_plainText
+   page_capabilities = new QWidget();
+   page_capabilities->setObjectName(QString::fromUtf8("page_capabilities"));
+   // sizePolicy1.setHeightForWidth(page_capabilities->sizePolicy().hasHeightForWidth());
+   page_capabilities->setSizePolicy(sizePolicy1);
+   capabilities_plainText = new QPlainTextEdit(page_capabilities);
+   capabilities_plainText->setObjectName(QString::fromUtf8("capabilities_plainText"));
+   capabilities_plainText->setGeometry(QRect(16, 6, 700, 231));   // was 574,231
+   // QSizePolicy sizePolicy2(QSizePolicy::Expanding, QSizePolicy::Expanding);
+   // sizePolicy2.setHorizontalStretch(1);
+   // sizePolicy2.setVerticalStretch(1);       // was 0
+   // sizePolicy2.setHeightForWidth(capabilities_plainText->sizePolicy().hasHeightForWidth());
+   capabilities_plainText->setSizePolicy(sizePolicy1);     // was sizePolicy1
+   capabilities_plainText->setMaximumSize(QSize(2000, 16777215));  // was 574
+   capabilities_plainText->setReadOnly(true);
+   capabilities_plainText->setCenterOnScroll(false);
+
+   // AMEN!
+   QHBoxLayout *
+   pageCapabilitiesLayout = new QHBoxLayout(page_capabilities);
+   pageCapabilitiesLayout->setSpacing(6);
+   // pageCapabilitiesLayout->setContentsMargins(11, 11, 11, 11);
+   pageCapabilitiesLayout->setObjectName(QString::fromUtf8("pageCapabilitiesLayout"));
+   pageCapabilitiesLayout->addWidget(capabilities_plainText);
+
+   int pageno_capabilities = stackedWidget->count();
+   stackedWidget->addWidget(page_capabilities);
+
+   curMonitor->_page_capabilities = page_capabilities;
+   curMonitor->_pageno_capabilities = pageno_capabilities;
+   curMonitor->_capabilitiesPlainText = capabilities_plainText;  // should not need var in Monitor
+   return page_capabilities;
+
+
+}
+
 void MainWindow::initDisplaySelector() {
    //  ui->displaySelectorComboBox->setSizeAdjustPolicy(QComboBox::AdjustToContents);
    //  ui->displaySelectorComboBox->setMinimumContentsLength(28);   // 2 + 3 + 3 + 3 + 13
@@ -397,7 +483,16 @@ void MainWindow::initDisplaySelector() {
         FeatureBaseModel * baseModel = new FeatureBaseModel();
         baseModel->setObjectName(QString::asprintf("baseModel-%d",ndx));
 
-        // ListWidget
+        initMonitorInfoWidget(
+              curMonitor,
+              ndx,         // monitor index number
+              ui->views_stackedWidget);
+
+        initCapabilitiesWidget(
+              curMonitor,
+              ndx,         // monitor index number
+              ui->views_stackedWidget);
+
 
         initListWidget(
               curMonitor,
@@ -634,14 +729,22 @@ void MainWindow::on_actionCapabilities_triggered()
         cout << caps_report << endl;
 
 
-        // write to widget
-        ui->capabilities_plainText->setPlainText(caps_report);
-        QFont fixedFont("Courier");
-        ui->capabilities_plainText->setFont(fixedFont);
-        free(caps_report);
+        // #define OLD_WAY
+        #ifdef OLD_WAY
+            QPlainTextEdit * capabilitiesPlainText = ui->capabilitiesPlainText;
+            int pageno = 0;
+        #else
+            Monitor * monitor = monitors[monitorNdx];
+            QPlainTextEdit * capabilitiesPlainText = monitor->_capabilitiesPlainText;
+            int pageno = monitor->_pageno_capabilities;
+        #endif
+            capabilitiesPlainText->setPlainText(caps_report);
+            free(caps_report);
+            QFont fixedFont("Courier");
+            capabilitiesPlainText->setFont(fixedFont);
 
         // show widget
-        ui->views_stackedWidget->setCurrentIndex(1);    // need proper constants
+        ui->views_stackedWidget->setCurrentIndex(pageno);    // need proper constants
          ui->views_stackedWidget->show();
     }
 
@@ -667,12 +770,22 @@ void MainWindow::on_actionMonitorSummary_triggered()
     ddca_set_output_level(saved_ol);
     char * s = ddca_end_capture();
 
-    ui->moninfoPlainText->setPlainText(s);
+// #define OLD_WAY
+#ifdef OLD_WAY
+    QPlainTextEdit * moninfoPlainText = ui->moninfoPlainText;
+    int pageno = 0;
+#else
+    Monitor * monitor = monitors[monitorNdx];
+    QPlainTextEdit * moninfoPlainText = monitor->_moninfoPlainText;
+    int pageno = monitor->_pageno_moninfo;
+#endif
+    moninfoPlainText->setPlainText(s);
     free(s);
     QFont fixedFont("Courier");
-    ui->moninfoPlainText->setFont(fixedFont);
+    moninfoPlainText->setFont(fixedFont);
 
-    ui->views_stackedWidget->setCurrentIndex(0);    // need proper constants
+    ui->views_stackedWidget->setCurrentIndex(pageno);
+
     ui->views_stackedWidget->show();
 }
 
