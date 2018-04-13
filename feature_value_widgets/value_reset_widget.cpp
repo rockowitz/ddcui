@@ -46,23 +46,13 @@ ValueResetWidget::ValueResetWidget(QWidget *parent):
     layout->setContentsMargins(0,0,0,0);
     setLayout(layout);
 
-
-    if (!dimensionReportShown && debugLayout) {
-#ifdef OLD
-        int m_left, m_right, m_top, m_bottom;
-        getContentsMargins(&m_left, &m_top, &m_right, &m_bottom);
-        printf("(ValueResetWidget::ValueResetWidget) margins: left=%d, top=%d, right=%d, bottom=%d)\n",
-               m_left, m_right, m_top, m_bottom);
-#endif
+    if (!dimensionReportShown  /* && debugLayout */) {
         printf("-------------------------------------------->\n"); fflush(stdout);
         reportWidgetDimensions(this, _cls, __func__);
-        // dimensionReportShown = true;
+        dimensionReportShown = true;
     }
-
-
     if (debugLayout)
        this->setStyleSheet("background-color:cyan;");
-
 
     // QObject::connect(_resetButton,  &QAbstractButton::released),
     //                  this,          &ValueResetWidget::on_resetButton_pressed );

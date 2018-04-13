@@ -46,11 +46,7 @@ FeatureWidgetBasic::FeatureWidgetBasic(QWidget *parent) :
     // sizePolicy1.setHeightForWidth(centralWidget->sizePolicy().hasHeightForWidth());
     fixedSizePolicy.setHeightForWidth(false);
 
-
-
     /* Feature Code */
-    // int codeLabelStartX = 10;
-    // int codeLabelLen = 10;
     _featureCodeField = new QLabel();
     _featureCodeField->setObjectName(QString::fromUtf8("featureCode"));
  // _featureCodeField->setGeometry( QRect(codeLabelStartX,0, codeLabelLen,10));
@@ -61,7 +57,6 @@ FeatureWidgetBasic::FeatureWidgetBasic(QWidget *parent) :
     _featureCodeField->setFrameStyle(QFrame::Sunken | QFrame::Panel);
 
     /* Feature Name */
-    // int nameLabelStartX = codeLabelStartX + codeLabelLen + 10;
     _featureNameField = new QLabel();
     _featureNameField->setObjectName(QString::fromUtf8("featureName"));
   //  _featureNameField->setGeometry((QRect(nameLabelStartX,0,59,19)));
@@ -104,8 +99,8 @@ FeatureWidgetBasic::FeatureWidgetBasic(QWidget *parent) :
 #endif
 
     _valueWidget = new ValueStackedWidget();
-    _valueWidget->setSizePolicy(fixedSizePolicy);
-    _valueWidget->setFixedWidth(400);
+    // _valueWidget->setSizePolicy(fixedSizePolicy);
+    // _valueWidget->setFixedWidth(400);
 
     _layout = new QHBoxLayout();
     _layout->addWidget(_featureCodeField);
@@ -137,7 +132,7 @@ FeatureWidgetBasic::FeatureWidgetBasic(QWidget *parent) :
     if (!dimensionReportShown && debugLayout) {
         printf("-------------------------------------------->\n"); fflush(stdout);
         reportWidgetDimensions(this, _cls, __func__);
-        // dimensionReportShown = true;
+        dimensionReportShown = true;
     }
 
   // use ValueBaseWidget or ValueStackedWidget?

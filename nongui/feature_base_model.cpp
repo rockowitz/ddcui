@@ -182,6 +182,7 @@ void   FeatureBaseModel::modelVcpValueUpdate(
     fv->_value.sl = sl;
 
     emit signalFeatureUpdated(feature_code);
+    emit signalFeatureUpdated3(feature_code, sh, sl);
 }
 
 

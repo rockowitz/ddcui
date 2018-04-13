@@ -7,6 +7,8 @@
 #include <QtCore/QObject>
 
 #include "nongui/feature_base_model.h"
+#include "feature_scrollarea/feature_widget_basic.h"
+
 // #include "monitor.h"
 
 class QStackedWidget;
@@ -30,6 +32,9 @@ public:
 private:
     const char * _cls;
 
+    // quick and dirty for now, eventually replace by hash
+    FeatureWidgetBasic * _widgets[256] = {0};
+
 signals:
     void signalVcpRequest(VcpRequest * rqst);  // used to call into monitor
 
@@ -40,6 +45,8 @@ public slots:
     // void featureUpdated(char feature_code);
 
     void onUIValueChanged(uint8_t feature_code, uint8_t sh, uint8_t sl);
+
+    void onModelValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl);
 };
 
 #endif // FEATURES_SCROLLAREA_VIEW_H

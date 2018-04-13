@@ -13,6 +13,7 @@
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QLayout>
 
+
 #include "base/ddcui_globals.h"
 #include "base/debug_utils.h"
 
@@ -29,6 +30,9 @@ ValueNcWidget::ValueNcWidget(QWidget *parent):
    QFont nonMonoFont;
    nonMonoFont.setPointSize(8);
 
+   QFont nonMonoFont9;
+   nonMonoFont9.setPointSize(9);
+
     _cb = new QComboBox();
 
     QSizePolicy* sizePolicy = new QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -36,19 +40,33 @@ ValueNcWidget::ValueNcWidget(QWidget *parent):
     _cb->setSizePolicy(*sizePolicy);
     _cb->setFont(nonMonoFont);
     _cb->setMaximumHeight(20);
+    // whatever the size, large or small, causes big gap between RW and feature value
+    _cb->setMaximumWidth(320);
     // _cb->setFrameStyle(QFrame::Sunken | QFrame::Panel);   // not a method
     _cb->setStyleSheet("background-color:white;");
+
+    _applyButton  = new QPushButton("Apply");
+    _cancelButton = new QPushButton("Cancel");
+    _applyButton->setMaximumSize(55,20);
+    _applyButton->setSizePolicy(*sizePolicy);
+    _applyButton->setFont(nonMonoFont9);
+    _cancelButton->setMaximumSize(55,20);
+    _cancelButton->setSizePolicy(*sizePolicy);
+    _cancelButton->setFont(nonMonoFont9);
+
 
     QHBoxLayout * layout = new QHBoxLayout();
     layout->addWidget(_cb);
     layout->addStretch(1);
+    layout->addWidget(_applyButton);
+    layout->addWidget(_cancelButton);
     layout->setContentsMargins(0,0,0,0);
     setLayout(layout);
 
     if (!dimensionReportShown && debugLayout) {
         printf("-------------------------------------------->\n"); fflush(stdout);
         reportWidgetDimensions(this, _cls, __func__);
-        // dimensionReportShown = true;
+        dimensionReportShown = true;
     }
 
     if (debugLayout)
@@ -82,7 +100,7 @@ void ValueNcWidget::setFeatureValue(const FeatureValue &fv) {
                 // printf("(%s) value code: 0x%02x, value_name: %s\n",
                 //        __func__, cur->value_code, cur->value_name);  fflush(stdout);
                 QString s;
-                s.sprintf("%s (0x%02x)", cur->value_name, cur->value_code);
+                s.sprintf("x%02x - %s", cur->value_code, cur->value_name);
                 _cb->addItem(s, QVariant(cur->value_code));
                 cur++;
             }

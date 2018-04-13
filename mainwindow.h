@@ -46,9 +46,10 @@ public:
     QComboBox * _toolbarDisplayCB;
 
     QStackedWidget * _views_StackedWidget;
+#ifdef OLD
     QPlainTextEdit * _moninfoPlainText = nullptr;
     QTableView *     _vcp_tableview = nullptr;
-
+#endif
     void pageChanged(int pageno) override;
     void pageChangedByWidget(QWidget * widget) override;
 

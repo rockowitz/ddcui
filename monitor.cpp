@@ -9,7 +9,8 @@
 #include "nongui/feature_value.h"
 
 
-Monitor::Monitor(DDCA_Display_Info * display_info)
+Monitor::Monitor(DDCA_Display_Info * display_info, int monitorNumber)
+    : _monitorNumber(monitorNumber)
 {
     _displayInfo = display_info;
     _cls         = metaObject()->className();

@@ -10,6 +10,7 @@
 #include "value_cont_widget.h"
 #include "value_nc_widget.h"
 #include "value_reset_widget.h"
+#include "value_2button_widget.h"
 
 
 class QWidget;
@@ -41,12 +42,14 @@ private:
     int  _pageno_cont;
     int  _pageno_nc;
     int  _pageno_reset;
+    int  _pageno_2button;
     int  _pageno_selected;
 
-    ValueContWidget  * _contWidget;
-    ValueNcWidget    * _ncWidget;
-    ValueResetWidget * _resetWidget;
-    ValueStdWidget   * _stdWidget;
+    ValueContWidget    * _contWidget;
+    ValueNcWidget      * _ncWidget;
+    ValueResetWidget   * _resetWidget;
+    Value2ButtonWidget * _2ButtonWidget;
+    ValueStdWidget     * _stdWidget;
 
 private slots:
     void onContainedWidgetChanged(uint8_t feature_code, uint8_t sh, uint8_t sl);

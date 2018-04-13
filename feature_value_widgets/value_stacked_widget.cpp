@@ -35,15 +35,17 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent):
     // this->setObjectName(QString::fromUtf8("value_stacked_widget"));   // ambiguous
     // setGeometry(QRect(209,6, 181, 20));
 
-    _contWidget  = new ValueContWidget();
-    _ncWidget    = new ValueNcWidget();
-    _stdWidget   = new ValueStdWidget();
-    _resetWidget = new ValueResetWidget();
+    _contWidget    = new ValueContWidget();
+    _ncWidget      = new ValueNcWidget();
+    _stdWidget     = new ValueStdWidget();
+    _resetWidget   = new ValueResetWidget();
+    _2ButtonWidget = new Value2ButtonWidget();
 
-    _pageno_cont  = 0;
-    _pageno_nc    = 1;
-    _pageno_std   = 2;
-    _pageno_reset = 3;
+    _pageno_cont    = 0;
+    _pageno_nc      = 1;
+    _pageno_std     = 2;
+    _pageno_reset   = 3;
+    _pageno_2button = 4;
     _pageno_selected = _pageno_std;    // default
 
     _stacked = new QStackedWidget();
@@ -51,6 +53,7 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent):
     _stacked->addWidget(_ncWidget);
     _stacked->addWidget(_stdWidget);
     _stacked->addWidget(_resetWidget);
+    _stacked->addWidget(_2ButtonWidget);
 
     // ???
     QVBoxLayout * layout = new QVBoxLayout;
@@ -61,7 +64,7 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent):
     if (!dimensionReportShown && debugLayout) {
         printf("-------------------------------------------->\n"); fflush(stdout);
         reportWidgetDimensions(this, _cls, __func__);
-        // dimensionReportShown = true;
+        dimensionReportShown = true;
     }
 
     if (debugLayout)
@@ -107,6 +110,17 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
     {
        _stacked->setCurrentIndex(_pageno_reset);
        _cur_stacked_widget = _resetWidget;
+    }
+
+    else if (fv._feature_code == 0xb0) {
+       printf("(%s::%s) B0\n", _cls, __func__);
+       _2ButtonWidget->setButtonDetail(
+             QString("Store"),
+             1,
+             QString("Restore"),
+             2);
+       _stacked->setCurrentIndex(_pageno_2button);
+       _cur_stacked_widget = _2ButtonWidget;
     }
 
     else if (fv._feature_flags & DDCA_STD_CONT) {

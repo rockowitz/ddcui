@@ -3,8 +3,9 @@
 #ifndef VALUE_NC_WIDGET_H
 #define VALUE_NC_WIDGET_H
 
-#include <QWidget>
+#include <QtWidgets/QWidget>
 #include <QtWidgets/QComboBox>
+#include <QtWidgets/QPushButton>
 
 #include "feature_value_widgets/value_base_widget.h"
 
@@ -22,7 +23,9 @@ public:
 
     int findItem(uint8_t sl_value);
 
-    QComboBox *_cb;
+    QComboBox *   _cb;
+    QPushButton * _applyButton;
+    QPushButton * _cancelButton;
 
 private slots:
     void combobox_activated(int index);

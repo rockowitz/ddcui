@@ -88,12 +88,19 @@ void FeaturesScrollAreaContents::featureAdded(FeatureValue fv)
    _widgets[fv._feature_code] = newTableEntry;
 }
 
+// Unused!
 void FeaturesScrollAreaContents::featureUpdated(char feature_code)
 {
    if (debugMain)
        printf("(%s::%s)\n", _cls, __func__);  fflush(stdout);
    // get the current value for the feature
+
+   FeatureValue * fv  = _baseModel->modelVcpValueFind(feature_code);
+
    // find the entry in _widgets
+   _widgets[feature_code];
+
+
    // set value in the widget
 }
 

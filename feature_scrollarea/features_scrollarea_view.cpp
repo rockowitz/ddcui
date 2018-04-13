@@ -35,7 +35,7 @@ FeaturesScrollAreaView::FeaturesScrollAreaView(
 QSizePolicy pageSizePolicy() {
     QSizePolicy policy(QSizePolicy::MinimumExpanding,QSizePolicy::MinimumExpanding);
     policy.setHorizontalStretch(1);
-    policy.setVerticalStretch(1);
+    policy.setVerticalStretch(0);
     policy.setHeightForWidth(false);
     return policy;
 }
@@ -44,6 +44,11 @@ QSizePolicy pageSizePolicy() {
 
 void FeaturesScrollAreaView::onEndInitialLoad(void) {
    printf("(FeatuesScrollAreaView::%s) Starting\n", __func__);  fflush(stdout);
+   if (_monitor->_curFeaturesView != Monitor::FEATURES_VIEW_SCROLLAREA_VIEW) {
+      printf("(%s::%s) Not FEATURES_VIEW_SCROLLAREA, skipping\n", _cls, __func__);  fflush(stdout);
+      return;
+   }
+
 
     // QStackedWidget *   _centralStackedWidget;
     // FeatureBaseModel * _baseModel;
@@ -52,7 +57,9 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
     FeaturesScrollAreaContents * scrollAreaContents = new FeaturesScrollAreaContents();
     // no effect:
     // scrollAreaContents->setSizePolicy(pageSizePolicy());
-    // scrollAreaContents->setMinimumSize(QSize(700,0));
+
+    // screws things up, value block forced right and truncated
+    // scrollAreaContents->setMinimumSize(QSize(900,0));
 
     scrollAreaContents->setObjectName("scrollAreaContents local to onEndInitialLoad");
     QVBoxLayout * vLayout  = new QVBoxLayout();
@@ -77,6 +84,7 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
              QObject::connect(w ,   &FeatureWidgetBasic::valueChanged,
                               this, &FeaturesScrollAreaView::onUIValueChanged);
              vLayout->addWidget(w);
+             _widgets[feature_code] = w;
              ct++;
          }
     }
@@ -85,6 +93,14 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
     scrollAreaContents->setLayout(vLayout);
     // printf("Calling scrollArea->setWidget()\n"); fflush(stdout);
     scrollArea->setWidget(scrollAreaContents);
+
+    // QObject::connect(_baseModel,   &FeatureBaseModel::signalFeatureUpdated,
+    //                  scrollAreaContents, &FeaturesScrollAreaContents::featureUpdated);
+
+    QObject::connect(_baseModel, &FeatureBaseModel::signalFeatureUpdated3,
+                     this,       &FeaturesScrollAreaView::onModelValueChanged);
+
+
 
     // printf("Calling _centralStackedWidget->addWidget()\n"); fflush(stdout);
     /* int pageno = */ _centralStackedWidget->addWidget(scrollArea);
@@ -111,6 +127,22 @@ void FeaturesScrollAreaView::onUIValueChanged(uint8_t featureCode, uint8_t sh, u
    VcpRequest * rqst = new VcpSetRequest(featureCode, sl);   // n.b. ignoring sh
    emit signalVcpRequest(rqst);  // used to call into monitor
 }
+
+
+void FeaturesScrollAreaView::onModelValueChanged(
+      uint8_t featureCode, uint8_t sh, uint8_t sl)
+{
+   printf("(%s::%s) feature_code = 0x%02x, sh=0x%02x, sl=0x%02x\n", _cls, __func__,
+          featureCode, sh, sl); fflush(stdout);
+
+   // find the entry in _widgets
+   FeatureWidgetBasic * curWidget = _widgets[featureCode];
+
+   // set value in the widget
+   uint16_t newval = sh << 8 | sl;
+   curWidget->setCurrentValue(newval);
+}
+
 
 
 

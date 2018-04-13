@@ -56,7 +56,7 @@ void reportWidgetDimensions(QWidget * w, const char * className, const char * fu
     int m_left, m_right, m_top, m_bottom;
     w->getContentsMargins(&m_left, &m_top, &m_right, &m_bottom);
     printf("(%s::%s) margins: left=%d, top=%d, right=%d, bottom=%d)\n",
-           className, funcName, m_left, m_right, m_top, m_bottom);
+           className, funcName, m_left, m_top, m_right, m_bottom);
 
     QSize baseSize = w->baseSize();
     printf("baseSize:        %d,%d\n",  baseSize.width(), baseSize.height());

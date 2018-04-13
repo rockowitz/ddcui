@@ -14,6 +14,7 @@
 class QSlider;
 class QSpinBox;
 class QLabel;
+class QPushButton;
 
 
 class ValueContWidget : public ValueBaseWidget
@@ -32,6 +33,19 @@ public:
     QLabel*     _maxTitle;
     QLabel*     _maxValue;
 
+    QPushButton * _applyButton;
+    QPushButton * _cancelButton;
+
+
+protected:
+    void focusInEvent(QFocusEvent * event);
+    void focusOutEvent(QFocusEvent * event);
+
+    // void leaveEvent(QEvent * event);
+
+private:
+    uint16_t _newval;
+
 private slots:
 
     void onSliderValueChanged(int value);
@@ -41,6 +55,11 @@ private slots:
     void onSpinBoxValueChanged(int value);
 
     void onSpinBoxEditingFinished();
+
+    void onApplyButtonClicked(bool checked);
+
+    void onCancelButtonClicked(bool checked);
+
 };
 
 #endif // VALUE_CONT_WIDGET_H

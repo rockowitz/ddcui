@@ -14,10 +14,9 @@
 #include "nongui/vcpthread.h"
 #include "nongui/feature_base_model.h"
 
-#include "table_model_view/feature_table_model.h"
-
-#include "feature_scrollarea/features_scroll_area_contents.h"
 #include "feature_selection/feature_selector.h"
+#include "table_model_view/feature_table_model.h"
+#include "feature_scrollarea/features_scroll_area_contents.h"
 #include "list_model_view/feature_item_model.h"
 #include "list_widget/feature_list_widget.h"
 
@@ -27,15 +26,28 @@ class FeaturesScrollAreaView;
 
 class Monitor : public QObject
 {
-    Q_OBJECT   // causes undefined reference to vtable
+    Q_OBJECT
 
 public:
-    Monitor(DDCA_Display_Info * display_info);
+
+    enum FeaturesView {
+       FEATURES_VIEW_SCROLLAREA_VIEW,
+       FEATURES_VIEW_SCROLLAREA_MOCK,
+       FEATURES_VIEW_TABLEVIEW,
+       FEATURES_VIEW_TABLEWIDGET,
+       FEATURES_VIEW_LISTVIEW,
+       FEATURES_VIEW_LISTWIDGET,
+       FEATURES_VIEW_UNSET
+    };
+
+    Monitor(DDCA_Display_Info * display_info, int monitorNumber);
     ~Monitor();
 
     DDCA_Feature_List getFeatureList(DDCA_Feature_Subset_Id);
     void setFeatureItemModel(FeatureItemModel * listModel);      // ALT
     void setFeatureTableModel(FeatureTableModel * tableModel);
+
+    const int _monitorNumber = -1;    // 1 based
 
     FeatureItemModel *   _listModel;
     FeatureTableModel *  _tableModel;
@@ -46,7 +58,6 @@ public:
     DDCA_Display_Handle  _dh;
     // VcpThread        _vcpThread;
 
-    // new way
     QWidget *           _page_moninfo;
     int                 _pageno_moninfo;
     QPlainTextEdit *    _moninfoPlainText;
@@ -55,18 +66,55 @@ public:
     int                 _pageno_capabilities;
     QPlainTextEdit *    _capabilitiesPlainText;
 
-    QWidget *           _page_listWidget;
-    // QWidget *        _page_scrollArea;
-    int                 _pageno_listWidget;
-    // int              _pageno_scrollArea;
-    FeatureListWidget * _featureListWidget;
 
-    // FeaturesScrollArea is per-monitor
-    QScrollArea *                 _page_features_scrollarea;
-    FeaturesScrollAreaContents *  _featuresScrollAreaContents;
-    int                           _pageno_features_scrollarea;
+    FeaturesView       _curFeaturesView = FEATURES_VIEW_UNSET;
 
-    FeaturesScrollAreaView *     _featuresScrollAreaView;
+#ifdef UNUSED
+    QWidget *           page_vcp;
+    QListWidget *       vcpListWidget;
+    int                 _pageno_vcp;
+#endif
+
+    // FEATURES_VIEW_LISTWIDGET, initListWidget()
+    QWidget *           _page_listWidget   = NULL;
+    FeatureListWidget * _featureListWidget = NULL;
+    int                 _pageno_listWidget = -1;
+
+
+#ifdef UNUSED
+    QWidget *page_list_widget;
+    // QListWidget *feature_listWidget;
+    FeatureListWidget * feature_listWidget;
+    int _pageno_list_widget;
+#endif
+
+
+    // FEATURES_VIEW_LISTVIEW
+    QWidget *           page_list_view   = NULL;
+    QListView *         vcp_listView     = NULL;
+    int                _pageno_list_view = -1;
+
+    // FEATURES_VIEW_TABLEWIDGET
+    // init function defined, but no action
+    QWidget *      page_table_item     = NULL;
+    QTableWidget * tableWidget         = NULL;
+    int            _pageno_table_item  = -1;
+
+    // FEATURES_VIEW_TABLEVIEW
+    QWidget *      _page_table_view   = NULL;
+    QTableView *   _vcp_tableView     = NULL;
+    int            _pageno_table_view = -1;
+
+    // QScrollArea *                 _page_features_scrollarea;
+    // FeaturesScrollAreaContents *  _featuresScrollAreaContents;
+    // int                           _pageno_features_scrollarea;
+
+
+    // FEATURES_VIEW_SCROLLAREAVIEW
+    // When using FeaturesScrollAreaView, do not allocate a permanent
+    // QScrollArea and contents.  These must be created dynamically
+    // each time features are loaded.
+    FeaturesScrollAreaView *     _featuresScrollAreaView = NULL;
 
     const char * _cls;    // className
 

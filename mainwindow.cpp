@@ -11,6 +11,7 @@
 
 #include "QtWaitingSpinner/waitingspinnerwidget.h"
 
+#include "base/debug_utils.h"
 #include "feature_value_widgets/value_stacked_widget.h"
 
 #include "table_model_view/feature_table_model.h"
@@ -40,68 +41,131 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->setupUi(this);
 
-    cout << "After setupUI()" << endl;
-
-    QLabel* toolbarDisplayLabel = new QLabel("Display:  ");
+    QLabel* toolbarDisplayLabel = new QLabel("&Display:  ");
     _toolbarDisplayCB = new QComboBox();
+    toolbarDisplayLabel->setBuddy(_toolbarDisplayCB);
     ui->mainToolBar->addWidget( toolbarDisplayLabel);
     ui->mainToolBar->addWidget( _toolbarDisplayCB);
 
-#ifdef OLD
-    ui->capabilities_plainText->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
-
-    ui->moninfoPlainText->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
-#endif
-
-#ifdef OLD
-    QWidget* page0 = new QWidget();
-    page0->setObjectName("page_moninfo");
-    _moninfoPlainText = new QPlainTextEdit();
-    page0->setObjectName("moninfoPlainTextEdit");
-    // how to add _moninfoPlainText to page0?
-#endif
-
-    QWidget* page1 = new QWidget();
-    page1->setObjectName("page_table_view");
-    _vcp_tableview = new QTableView();
-    _vcp_tableview->setObjectName("vcpTableView");
-
-    QWidget * page2 = new QScrollArea();
-    page2->setObjectName("featureWidgetScrollArea");
-
-    _views_StackedWidget = new QStackedWidget(ui->centralWidget);
-    _views_StackedWidget->setObjectName("views_StackedWidget");
-
-
-#ifdef OLD
-    _views_StackedWidget->addWidget(page0);
-#endif
-    _views_StackedWidget->addWidget(page1);
-    _views_StackedWidget->addWidget(page2);
-
-    QVBoxLayout * layout = new QVBoxLayout();
-    layout->addWidget(_views_StackedWidget);
-
+    reportWidgetChildren(ui->viewsStackedWidget);
     initDisplaySelector();
     feature_selector = new FeatureSelector();
-
-
-    // ui->MainWindow.centralWidget->setLayout(layout);
-
+    reportWidgetChildren(ui->viewsStackedWidget);
 }
+
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
 
-static QSizePolicy pageSizePolicy() {
+
+// Initialization for monitor info, capabilities are identical
+
+void initPlaintextWidget(
+      const char *          name,
+      int                   monitorNumber,
+      QStackedWidget *      stackedWidget,
+      QWidget **            page_loc,
+      int *                 pageno_loc,
+      QPlainTextEdit **     pagePlainText_loc
+
+)
+{
+   // TODO: CLEAN UP AND SIMPLIFY!
+
+     QSizePolicy sizePolicy1(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+     sizePolicy1.setHorizontalStretch(1);
+     sizePolicy1.setVerticalStretch(1);
+     // sizePolicy1.setHeightForWidth(centralWidget->sizePolicy().hasHeightForWidth());
+     sizePolicy1.setHeightForWidth(false);
+
+      // Layout stacked widget page: page_widget, contains moninfoPlainText
+      QWidget * page_widget = new QWidget();
+
+
+      QPlainTextEdit *plainTextWidget;
+
+      // sizePolicy1.setHeightForWidth(page_widget->sizePolicy().hasHeightForWidth());
+      page_widget->setSizePolicy(sizePolicy1);
+
+      plainTextWidget = new QPlainTextEdit(page_widget);
+      plainTextWidget->setObjectName(QString::asprintf("plainTextWidget-%s-%d", name, monitorNumber));
+      plainTextWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
+
+      plainTextWidget->setGeometry(QRect(6, 6, 700, 191));   // was 574,191
+      // sizePolicy1.setHeightForWidth(plainTextWidget->sizePolicy().hasHeightForWidth());
+      plainTextWidget->setSizePolicy(sizePolicy1);
+      plainTextWidget->setMaximumSize(QSize(2000, 16777215));   // 574->2000
+      plainTextWidget->setLineWrapMode(QPlainTextEdit::NoWrap);
+      plainTextWidget->setReadOnly(true);
+
+      // AMEN!
+      QHBoxLayout *
+      pageMoninfoLayout = new QHBoxLayout(page_widget);
+      pageMoninfoLayout->setSpacing(6);
+      // pageMoninfoLayout->setContentsMargins(11, 11, 11, 11);
+      pageMoninfoLayout->setObjectName(QString::asprintf("pageLayout-%s-%d", name, monitorNumber));
+      pageMoninfoLayout->addWidget(plainTextWidget);
+
+      int pageno_widget = stackedWidget->count();
+      stackedWidget->addWidget(page_widget);
+
+      page_widget->setObjectName(
+            QString::asprintf("page_widget-%s-%d-pageno-%d", name, monitorNumber, pageno_widget));
+
+      *page_loc          = page_widget;
+      *pageno_loc        = pageno_widget;
+      *pagePlainText_loc = plainTextWidget;
+}
+
+QWidget * initMonitorInfoWidget(
+      Monitor *         curMonitor,
+      QStackedWidget *  stackedWidget)
+
+{
+   initPlaintextWidget(
+         "MonitorInfo",
+         curMonitor->_monitorNumber,              // 1 based
+         stackedWidget,
+         &curMonitor->_page_moninfo,
+         &curMonitor->_pageno_moninfo,
+         &curMonitor->_moninfoPlainText);
+
+    return curMonitor->_page_moninfo;
+}
+
+
+QWidget * initCapabilitiesWidget(
+      Monitor *         curMonitor,
+      QStackedWidget *  stackedWidget)
+{
+   initPlaintextWidget(
+         "Capabilities",
+         curMonitor->_monitorNumber,              // 1 based
+         stackedWidget,
+         &curMonitor->_page_capabilities,
+         &curMonitor->_pageno_capabilities,
+         &curMonitor->_capabilitiesPlainText);
+
+   return curMonitor->_page_capabilities;
+
+}
+
+
+
+
+#ifdef CONFLICT
+see features_scrollarea_view.cpp
+// static
+QSizePolicy pageSizePolicy() {
     QSizePolicy policy(QSizePolicy::MinimumExpanding,QSizePolicy::MinimumExpanding);
     policy.setHorizontalStretch(1);
     policy.setVerticalStretch(1);
     policy.setHeightForWidth(false);
     return policy;
 }
+#endif
 
 
 QSizePolicy tableWidgetSizePolicy() {
@@ -113,13 +177,119 @@ QSizePolicy tableWidgetSizePolicy() {
 }
 
 
-QWidget * initListWidget(
+#ifdef NO
+// really listWidget
+
+// initialization for model/view variant listview
+
+QWidget * initListView(
       Monitor *         curMonitor,
-      int               ndx,         // monitor index number
+      int               monitorNumber,         // monitor index number
       FeatureBaseModel* baseModel,
       QStackedWidget *  stackedWidget)
 {
-   FeatureItemModel * listModel = new FeatureItemModel(baseModel);
+   // Layout stacked widget page page_list_widget, contains vcp_feature_listwidget
+   #ifdef REF
+   QWidget *page_list_widget;
+   QListWidget *feature_listWidget;
+   int _pageno_list_widget;
+   #endif
+
+   QWidget * page_list_widget = new QWidget();
+   page_list_widget->setObjectName(QString::fromUtf8("page_list_widget"));
+
+   // TODO: size, font, etc
+
+   // feature_listWidget = new QListWidget(page_list_widget);
+   FeatureListWidget * feature_listWidget = new FeatureListWidget(page_list_widget);
+   feature_listWidget->setObjectName(QString::fromUtf8("feature_listWidget"));
+
+   int pageno  = stackedWidget->count();
+   stackedWidget->addWidget(page_list_widget);
+
+   curMonitor->page_list_widget   = page_list_widget;
+   curMonitor->feature_listWidget = feature_listWidget;
+   curMonitor->_pageno_listWidget = pageno;
+}
+#endif
+
+
+
+QWidget * initListView(
+      Monitor *         curMonitor,
+      int               monitorNumber,         // monitor index number
+      FeatureBaseModel* baseModel,
+      QStackedWidget *  stackedWidget)
+{
+    FeatureItemModel * listModel = new FeatureItemModel(baseModel);
+
+    // Layout stacked widget page page_list_view, contains vcp_listview
+    QWidget * page_list_view = new QWidget();
+    page_list_view->setObjectName(QString::fromUtf8("page_list_view"));
+
+   QSizePolicy sizePolicy5(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+   sizePolicy5.setHorizontalStretch(0);
+   sizePolicy5.setVerticalStretch(0);
+   sizePolicy5.setHeightForWidth(page_list_view->sizePolicy().hasHeightForWidth());
+   page_list_view->setSizePolicy(sizePolicy5);
+
+   QFont font;
+   font.setFamily(QString::fromUtf8("LM Mono 9"));
+   font.setPointSize(9);
+   page_list_view->setFont(font);
+
+   QListView * vcp_listView = new QListView(page_list_view);
+   vcp_listView->setObjectName(QString::fromUtf8("vcp_listView"));
+
+   vcp_listView->setGeometry(QRect(6, 6, 256, 192));
+   sizePolicy5.setHeightForWidth(vcp_listView->sizePolicy().hasHeightForWidth());
+   vcp_listView->setSizePolicy(sizePolicy5);
+   QFont font1;
+   font1.setFamily(QString::fromUtf8("Monospace"));
+   font1.setPointSize(10);
+   vcp_listView->setFont(font1);
+
+   QLabel* label = new QLabel(page_list_view);
+   label->setObjectName(QString::fromUtf8("label"));
+   label->setGeometry(QRect(268, 6, 342, 17));
+   label->setText(QApplication::translate("MainWindow", "Header line for page_list_view containing vcp_listView", 0));
+
+   int pageno = stackedWidget->count();
+   stackedWidget->addWidget(page_list_view);
+
+   // These  connects belong are for listModel, not listWidget
+   QObject::connect(baseModel,  SIGNAL(signalStartInitialLoad()),
+                    listModel,  SLOT(  startInitialLoad()));
+   QObject::connect(baseModel,  SIGNAL(signalEndInitialLoad()),
+                    listModel,  SLOT(  endInitialLoad()));
+
+   curMonitor->setFeatureItemModel(listModel);
+
+   curMonitor->_pageno_list_view = pageno;
+   curMonitor->page_list_view    = page_list_view;
+   curMonitor->vcp_listView      = vcp_listView;
+
+   return page_list_view;
+}
+
+
+
+
+// stackedwidget page contains:
+//     a PageListWidget, extends QList Widget
+//        contains FeatureWidget, extends QListWidgetItem, Widget
+//
+// sets curMonitor-> page_listWidget
+//                ->_featureListWidget
+//                ->_pageno_listWidget
+
+QWidget * initListWidget(
+      Monitor *         curMonitor,
+      int               monitorNumber,         // monitor index number
+      FeatureBaseModel* baseModel,
+      QStackedWidget *  stackedWidget)
+{
+  // FeatureItemModel * listModel = new FeatureItemModel(baseModel);
 
    // FeatureListWidget * listWidget = ui->feature_listWidget;   // WRONG  -need separate instance for each monitor
 
@@ -130,15 +300,26 @@ QWidget * initListWidget(
    QListWidget *feature_listWidget;
    int _pageno_list_widget;
 #endif
+
    QWidget * page_listWidget =  new QWidget();
-   page_listWidget->setObjectName(QString::asprintf("page_listWidget-%d",ndx));
-   curMonitor->_page_listWidget = page_listWidget;
-   page_listWidget->setSizePolicy(pageSizePolicy());
+
+   // which?
+   QSizePolicy sizePolicy3(QSizePolicy::Expanding, QSizePolicy::Expanding);
+   sizePolicy3.setHorizontalStretch(1);
+   sizePolicy3.setVerticalStretch(1);
+   // sizePolicy3.setHeightForWidth(page_vcp->sizePolicy().hasHeightForWidth());
+   sizePolicy3.setHeightForWidth(false);
+   // WHICH?
+   page_listWidget->setSizePolicy(sizePolicy3);
+   // page_listWidget->setSizePolicy(pageSizePolicy());
    page_listWidget->setMinimumSize(QSize(700,0));
+
+   curMonitor->_page_listWidget = page_listWidget;
+
 
 #ifdef PER_MONITOR_FEATURE_SCROLLAREA
    QWidget * page_scrollArea = new QWidget();
-   page_scrollArea->setObjectName(QString::asprintf("page_scrollArea-%d", ndx));
+   page_scrollArea->setObjectName(QString::asprintf("page_scrollArea-%d", monitorNumber));
    curMonitor->_page_scrollArea = page_scrollArea;
    page_scrollArea->setSizePolicy(pageSizePolicy());
    page_scrollArea->setMinimumSize(QSize(700,0));
@@ -149,22 +330,15 @@ QWidget * initListWidget(
    // feature_listWidget = new QListWidget(page_list_widget);
   //  FeatureListWidget * listWidget = ui->feature_listWidget;
    FeatureListWidget * featureListWidget= new FeatureListWidget(curMonitor->_page_listWidget);
-   featureListWidget->setObjectName(QString::asprintf("featureListWidget-%d",ndx));
+   featureListWidget->setObjectName(QString::asprintf("featureListWidget-%d",monitorNumber));
    featureListWidget->setModel(baseModel);
 
-   // works
-   // QString on1 = featureListWidget->objectName();
-   // std::string on2 = on1.toStdString();
-   // const char * on3 = on2.c_str();
-
    std::string on2 =  featureListWidget->objectName().toStdString();
-
-   // fails
-   // const char * on3 = featureListWidget->objectName().toStdString().c_str();
+   // fails: const char * on3 = featureListWidget->objectName().toStdString().c_str();
    // must be separate step.  why?
    const char * on3 = on2.c_str();
-
    printf("(MainWindow::%s) Allocated FeatureListWidget. objectName = %s\n", __func__, on3); fflush(stdout);
+
    featureListWidget->setSizePolicy(tableWidgetSizePolicy());
    curMonitor->_featureListWidget = featureListWidget;
 
@@ -175,11 +349,14 @@ QWidget * initListWidget(
 
    curMonitor->_pageno_listWidget = stackedWidget->count();
    stackedWidget->addWidget(page_listWidget);
+   page_listWidget->setObjectName(
+         QString::asprintf("page_listWidget-%d-pageno-%d",monitorNumber, curMonitor->_pageno_listWidget));
 
-   QObject::connect(baseModel,  SIGNAL(signalStartInitialLoad()),
-                    listModel,  SLOT(  startInitialLoad()));
-   QObject::connect(baseModel,  SIGNAL(signalEndInitialLoad()),
-                    listModel,  SLOT(  endInitialLoad()));
+   // These  connects belong are for listModel, not listWidget
+//   QObject::connect(baseModel,  SIGNAL(signalStartInitialLoad()),
+//                    listModel,  SLOT(  startInitialLoad()));
+//   QObject::connect(baseModel,  SIGNAL(signalEndInitialLoad()),
+//                    listModel,  SLOT(  endInitialLoad()));
 
    // *** Connect baseModel to ListWidget ***
 
@@ -200,20 +377,90 @@ QWidget * initListWidget(
     // use directly coded observers  - DISABLED slots now working
     // baseModel->addFeatureChangeObserver(featureListWidget);
 
-    curMonitor->setFeatureItemModel(listModel);
+    // listModel, not listWidget
+    // curMonitor->setFeatureItemModel(listModel);
+
 
    return page_listWidget;
 
 }
 
+// initialization for QTableWidget variant
+
+void initTableWidget(
+      Monitor *         curMonitor,
+      FeatureBaseModel* baseModel,
+      QStackedWidget *  stackedWidget)
+{
+   // Layout stacked widget page page_table_item, contains tableWidget
+
+   QSizePolicy  sizePolicy1 = QSizePolicy();    // probably should take from elsewhere
+   QSizePolicy  sizePolicy3 = QSizePolicy();    // probably should take from elsewhere
+
+   QWidget *
+   page_table_item = new QWidget();
+   page_table_item->setObjectName(QString::fromUtf8("page_table_item"));
+
+   sizePolicy1.setHeightForWidth(page_table_item->sizePolicy().hasHeightForWidth());
+   page_table_item->setSizePolicy(sizePolicy1);
+
+   QTableWidget *
+   tableWidget = new QTableWidget(page_table_item);
+   if (tableWidget->columnCount() < 5)
+       tableWidget->setColumnCount(5);
+   QTableWidgetItem *__qtablewidgetitem = new QTableWidgetItem();
+   tableWidget->setHorizontalHeaderItem(0, __qtablewidgetitem);
+   QTableWidgetItem *__qtablewidgetitem1 = new QTableWidgetItem();
+   tableWidget->setHorizontalHeaderItem(1, __qtablewidgetitem1);
+   QTableWidgetItem *__qtablewidgetitem2 = new QTableWidgetItem();
+   tableWidget->setHorizontalHeaderItem(2, __qtablewidgetitem2);
+   QTableWidgetItem *__qtablewidgetitem3 = new QTableWidgetItem();
+   tableWidget->setHorizontalHeaderItem(3, __qtablewidgetitem3);
+   QTableWidgetItem *__qtablewidgetitem4 = new QTableWidgetItem();
+   tableWidget->setHorizontalHeaderItem(4, __qtablewidgetitem4);
+   tableWidget->setObjectName(QString::fromUtf8("tableWidget"));
+   tableWidget->setGeometry(QRect(0, -9, 751, 251));
+
+   // sizePolicy3.setHeightForWidth(tableWidget->sizePolicy().hasHeightForWidth());
+   tableWidget->setSizePolicy(sizePolicy3);
+   tableWidget->setMinimumSize(QSize(581, 0));
+   tableWidget->setColumnCount(5);
+
+
+   // Set header titles
+   QTableWidgetItem * tableWidgetItem = NULL;
+   tableWidgetItem = tableWidget->horizontalHeaderItem(0);
+   tableWidgetItem->setText(QApplication::translate("MainWindow", "Code", 0));
+   tableWidgetItem = tableWidget->horizontalHeaderItem(1);
+   tableWidgetItem->setText(QApplication::translate("MainWindow", "Name", 0));
+   tableWidgetItem = tableWidget->horizontalHeaderItem(2);
+   tableWidgetItem->setText(QApplication::translate("MainWindow", "Type", 0));
+   tableWidgetItem = tableWidget->horizontalHeaderItem(3);
+   tableWidgetItem->setText(QApplication::translate("MainWindow", "RW", 0));
+   tableWidgetItem = tableWidget->horizontalHeaderItem(4);
+   tableWidgetItem->setText(QApplication::translate("MainWindow", "Value", 0));
+
+
+   int pageno = stackedWidget->count();
+   stackedWidget->addWidget(page_table_item);
+
+   curMonitor->_pageno_table_item = pageno;
+   curMonitor->page_table_item    = page_table_item;
+   curMonitor->tableWidget        = tableWidget;
+}
+
+
+// Initialization for Model/View Table variant
 
 void initTableView(
       Monitor *         curMonitor,
       FeatureBaseModel* baseModel,
       QStackedWidget *  stackedWidget)
 {
+   int monitorNumber = curMonitor->_monitorNumber;
 
    FeatureTableModel * tableModel = new FeatureTableModel(baseModel);
+
    QObject::connect(baseModel,  SIGNAL(signalStartInitialLoad()),
                     tableModel, SLOT(  startInitialLoad()));
    QObject::connect(baseModel,  SIGNAL(signalEndInitialLoad()),
@@ -221,51 +468,82 @@ void initTableView(
 
    curMonitor->setFeatureTableModel(tableModel);
 
+   QSizePolicy sizePolicy1(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+   sizePolicy1.setHorizontalStretch(1);
+   sizePolicy1.setVerticalStretch(1);
+   // sizePolicy1.setHeightForWidth(centralWidget->sizePolicy().hasHeightForWidth());
+   sizePolicy1.setHeightForWidth(false);
+
+   // Layout stacked widget page page_table_view, contains vcp_tableView
+   QWidget * page_table_view = new QWidget();
+
+   // sizePolicy1.setHeightForWidth(page_table_view->sizePolicy().hasHeightForWidth());
+   page_table_view->setSizePolicy(sizePolicy1);
+
+   QHBoxLayout *
+   horizontalLayout = new QHBoxLayout(page_table_view);
+   horizontalLayout->setSpacing(6);
+   horizontalLayout->setContentsMargins(11, 11, 11, 11);
+   horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
+
+   QTableView *
+   vcp_tableView = new QTableView(page_table_view);
+
+   QSizePolicy sizePolicy4(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
+   sizePolicy4.setHorizontalStretch(1);
+   sizePolicy4.setVerticalStretch(1);
+   // sizePolicy4.setHeightForWidth(vcp_tableView->sizePolicy().hasHeightForWidth());
+   sizePolicy4.setHeightForWidth(false);
+   vcp_tableView->setSizePolicy(sizePolicy4);
+   vcp_tableView->setMinimumSize(QSize(700, 0));     // was 561,0
+
+   vcp_tableView->setSelectionMode(QAbstractItemView::NoSelection);
+   vcp_tableView->setSortingEnabled(false);
+
+   horizontalLayout->addWidget(vcp_tableView);
+
+   int pageno = stackedWidget->count();
+
+   page_table_view->setObjectName(QString::asprintf("page_table_view-%d-pageno-%d",
+         monitorNumber, pageno));
+   vcp_tableView->setObjectName(QString::asprintf("vcp_tableView-%d-pageno-%d",
+         monitorNumber, pageno));
+
+   stackedWidget->addWidget(page_table_view);
+   curMonitor->_pageno_table_view = pageno;
+   curMonitor->_page_table_view = page_table_view;
+   curMonitor->_vcp_tableView = vcp_tableView;
+
 }
 
-
+#ifdef UNUSED
 // Ugh: class method to locate the showCentralWidgetByWidget slot
+
+// Sets curMonitor->_page_features_scrollarea
+//      curMonitor->_featuresScrollAreaContents
+//                  _pageno features scroll area
 
 QWidget * MainWindow::initFeaturesScrollArea(
       Monitor *         curMonitor,
       FeatureBaseModel* baseModel,
       QStackedWidget *  stackedWidget)
 {
-
-#ifdef PER_MONITOR_FEATURE_SCROLLAREA
-        ValueStdWidget * mock1 = new ValueStdWidget();
-
-        DDCA_Non_Table_Vcp_Value val1 = {0, 254, 0, 20};
-        DDCA_Feature_Flags flags1 = DDCA_RW | DDCA_STD_CONT;
-        DDCA_MCCS_Version_Spec vspec1 = {2,0};
-        FeatureValue * fv1 = new FeatureValue(0x22, vspec1, flags1, val1);
-        mock1->setFeatureValue(*fv1);
-
-        QVBoxLayout * vLayout = new QVBoxLayout(page_scrollArea);
-        vLayout->addWidget(mock1);
-        // vLayout->addWidget(mock2);
-
-        curMonitor->_pageno_scrollArea = ui->views_stackedWidget->count();
-        ui->views_stackedWidget->addWidget(page_scrollArea);
-#endif
-
         //
         // Per-monitor permanent scroll area
         //
 
         printf("(MainWindow::%s) Allocating per-monitor features scrollarea page\n", __func__); fflush(stdout);
+
+
         QScrollArea *   featuresScrollArea = new QScrollArea();
+
         FeaturesScrollAreaContents * scrollAreaContents = new FeaturesScrollAreaContents();
-        scrollAreaContents->setObjectName("created in initDisplaySelector");
         QVBoxLayout* vboxLayout = new QVBoxLayout();
         vboxLayout->setObjectName("created in initDisplaySelector");
         scrollAreaContents->setLayout(vboxLayout);
 
         curMonitor->_page_features_scrollarea   = featuresScrollArea;
         curMonitor->_featuresScrollAreaContents = scrollAreaContents;  // n. constructor sets the layout
-
-        // TODO: include monitor number in name
-
 
         featuresScrollArea->setWidget(scrollAreaContents);
         scrollAreaContents->setContainingScrollArea(featuresScrollArea);
@@ -274,7 +552,8 @@ QWidget * MainWindow::initFeaturesScrollArea(
         curMonitor->_pageno_features_scrollarea = pageno;
         stackedWidget->addWidget(featuresScrollArea);
 
-        featuresScrollArea->setObjectName(QString::asprintf("page_features_scrollarea-%d", pageno));
+        featuresScrollArea->setObjectName(
+            QString::asprintf("features_scrollarea-%d-pageno-%d", curMonitor->_monitorNumber,pageno));
         scrollAreaContents->setObjectName(QString::asprintf("featuresScrollAreaContents-%d", pageno));
 
         // probably premature
@@ -316,7 +595,11 @@ QWidget * MainWindow::initFeaturesScrollArea(
 
    return featuresScrollArea;
 }
+#endif
 
+
+// Sets curMonitor->featuresScrollAreaView
+// on endInitialLoad, creates new scrollarea, scrollareacontents, does not set them in Monitor
 
 void initFeaturesScrollAreaView(
       Monitor *         curMonitor,
@@ -344,114 +627,9 @@ void initFeaturesScrollAreaView(
                     curMonitor,   &Monitor::putVcpRequest);
 
 
-
 }
 
 
-
-QWidget * initMonitorInfoWidget(
-      Monitor *         curMonitor,
-      int               ndx,         // monitor index number
-      QStackedWidget *  stackedWidget)
-
-{
-   // TODO: CLEAN UP AND SIMPLIFY!
-
-   QSizePolicy sizePolicy1(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
-   sizePolicy1.setHorizontalStretch(1);
-   sizePolicy1.setVerticalStretch(1);
-   // sizePolicy1.setHeightForWidth(centralWidget->sizePolicy().hasHeightForWidth());
-   sizePolicy1.setHeightForWidth(false);
-
-    // Layout stacked widget page: page_moninfo, contains moninfoPlainText
-    QWidget * page_moninfo = new QWidget();
-    page_moninfo->setObjectName(QString::asprintf("page_moninfo-%d", ndx));
-
-    QPlainTextEdit *moninfoPlainText;
-
-    // sizePolicy1.setHeightForWidth(page_moninfo->sizePolicy().hasHeightForWidth());
-    page_moninfo->setSizePolicy(sizePolicy1);
-
-    moninfoPlainText = new QPlainTextEdit(page_moninfo);
-    moninfoPlainText->setObjectName(QString::asprintf("moninfoPlainText-%d", ndx));
-    moninfoPlainText->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
-
-    moninfoPlainText->setGeometry(QRect(6, 6, 700, 191));   // was 574,191
-    // sizePolicy1.setHeightForWidth(moninfoPlainText->sizePolicy().hasHeightForWidth());
-    moninfoPlainText->setSizePolicy(sizePolicy1);
-    moninfoPlainText->setMaximumSize(QSize(2000, 16777215));   // 574->2000
-    moninfoPlainText->setLineWrapMode(QPlainTextEdit::NoWrap);
-    moninfoPlainText->setReadOnly(true);
-
-    // AMEN!
-    QHBoxLayout *
-    pageMoninfoLayout = new QHBoxLayout(page_moninfo);
-    pageMoninfoLayout->setSpacing(6);
-    // pageMoninfoLayout->setContentsMargins(11, 11, 11, 11);
-    pageMoninfoLayout->setObjectName(QString::fromUtf8("pageMoninfoLayout"));
-    pageMoninfoLayout->addWidget(moninfoPlainText);
-
-    int pageno_moninfo = stackedWidget->count();
-    stackedWidget->addWidget(page_moninfo);
-
-    curMonitor->_page_moninfo = page_moninfo;
-    curMonitor->_pageno_moninfo = pageno_moninfo;
-    curMonitor->_moninfoPlainText = moninfoPlainText;  // should not need var in Monitor
-    return page_moninfo;
-}
-
-
-QWidget * initCapabilitiesWidget(
-      Monitor *         curMonitor,
-      int               ndx,         // monitor index number
-      QStackedWidget *  stackedWidget)
-
-{
-   QWidget* page_capabilities;
-   QPlainTextEdit * capabilities_plainText;
-
-   QSizePolicy sizePolicy1(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
-   sizePolicy1.setHorizontalStretch(1);
-   sizePolicy1.setVerticalStretch(1);
-   // sizePolicy1.setHeightForWidth(centralWidget->sizePolicy().hasHeightForWidth());
-   sizePolicy1.setHeightForWidth(false);
-
-
-   // Layout stacked widget page page_capabilities, contains capabilities_plainText
-   page_capabilities = new QWidget();
-   page_capabilities->setObjectName(QString::fromUtf8("page_capabilities"));
-   // sizePolicy1.setHeightForWidth(page_capabilities->sizePolicy().hasHeightForWidth());
-   page_capabilities->setSizePolicy(sizePolicy1);
-   capabilities_plainText = new QPlainTextEdit(page_capabilities);
-   capabilities_plainText->setObjectName(QString::fromUtf8("capabilities_plainText"));
-   capabilities_plainText->setGeometry(QRect(16, 6, 700, 231));   // was 574,231
-   // QSizePolicy sizePolicy2(QSizePolicy::Expanding, QSizePolicy::Expanding);
-   // sizePolicy2.setHorizontalStretch(1);
-   // sizePolicy2.setVerticalStretch(1);       // was 0
-   // sizePolicy2.setHeightForWidth(capabilities_plainText->sizePolicy().hasHeightForWidth());
-   capabilities_plainText->setSizePolicy(sizePolicy1);     // was sizePolicy1
-   capabilities_plainText->setMaximumSize(QSize(2000, 16777215));  // was 574
-   capabilities_plainText->setReadOnly(true);
-   capabilities_plainText->setCenterOnScroll(false);
-
-   // AMEN!
-   QHBoxLayout *
-   pageCapabilitiesLayout = new QHBoxLayout(page_capabilities);
-   pageCapabilitiesLayout->setSpacing(6);
-   // pageCapabilitiesLayout->setContentsMargins(11, 11, 11, 11);
-   pageCapabilitiesLayout->setObjectName(QString::fromUtf8("pageCapabilitiesLayout"));
-   pageCapabilitiesLayout->addWidget(capabilities_plainText);
-
-   int pageno_capabilities = stackedWidget->count();
-   stackedWidget->addWidget(page_capabilities);
-
-   curMonitor->_page_capabilities = page_capabilities;
-   curMonitor->_pageno_capabilities = pageno_capabilities;
-   curMonitor->_capabilitiesPlainText = capabilities_plainText;  // should not need var in Monitor
-   return page_capabilities;
-
-
-}
 
 void MainWindow::initDisplaySelector() {
    //  ui->displaySelectorComboBox->setSizeAdjustPolicy(QComboBox::AdjustToContents);
@@ -463,6 +641,8 @@ void MainWindow::initDisplaySelector() {
                                            this,       // parent
                                            true);       /// centerOnParent
     spinner->start(); // starts spinning
+    QString msg = QString("Loading display information... ");
+    ui->statusBar->showMessage(msg);
 
     _dlist = ddca_get_display_info_list();
     for (int ndx = 0; ndx < _dlist->ct; ndx++) {
@@ -472,11 +652,12 @@ void MainWindow::initDisplaySelector() {
         QString mfg_id     = _dlist->info[ndx].mfg_id;
         QString model_name = _dlist->info[ndx].model_name;
         QString s = QString::number(ndx+1) + ":  " + mfg_id + " - " + model_name;
+        int monitorNumber = ndx+1;
         // ui->displaySelectorComboBox->addItem(s, QVariant(ndx+1));
-        _toolbarDisplayCB->addItem(s, QVariant(ndx+1));
+        _toolbarDisplayCB->addItem(s, QVariant(monitorNumber));
 
         // Create Monitor instance, initialize data structures
-        Monitor * curMonitor = new Monitor(&_dlist->info[ndx]);
+        Monitor * curMonitor = new Monitor(&_dlist->info[ndx], monitorNumber);
         monitors.append(curMonitor);
 
         curMonitor->_requestQueue = new VcpRequestQueue();
@@ -485,38 +666,41 @@ void MainWindow::initDisplaySelector() {
 
         initMonitorInfoWidget(
               curMonitor,
-              ndx,         // monitor index number
-              ui->views_stackedWidget);
+              ui->viewsStackedWidget);
 
         initCapabilitiesWidget(
               curMonitor,
-              ndx,         // monitor index number
-              ui->views_stackedWidget);
-
+              ui->viewsStackedWidget);
 
         initListWidget(
               curMonitor,
-              ndx,
+              monitorNumber,
               baseModel,
-              ui->views_stackedWidget
+              ui->viewsStackedWidget
+              );
+
+        initTableWidget(
+              curMonitor,
+              baseModel,
+              ui->viewsStackedWidget
               );
 
         initTableView(
               curMonitor,
               baseModel,
-              ui->views_stackedWidget
+              ui->viewsStackedWidget
               );
 
-        initFeaturesScrollArea(
-              curMonitor,
-              baseModel,
-              ui->views_stackedWidget
-              );
+//        initFeaturesScrollArea(
+//              curMonitor,
+//              baseModel,
+//              ui->viewsStackedWidget
+//              );
 
         initFeaturesScrollAreaView(
               curMonitor,
               baseModel,
-              ui->views_stackedWidget
+              ui->viewsStackedWidget
               );
 
 
@@ -537,7 +721,7 @@ void MainWindow::initDisplaySelector() {
     _toolbarDisplayCB->setCurrentIndex(0);
 
     // Set message in status bar
-    QString msg = QString("Detected ") + QString::number(_dlist->ct) + QString(" displays.");
+    msg = QString("Detected ") + QString::number(_dlist->ct) + QString(" displays.");
     ui->statusBar->showMessage(msg);
     spinner->stop();
 }
@@ -579,6 +763,8 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
                                            Qt::ApplicationModal,    // alt WindowModal, ApplicationModal, NonModal
                                            this,       // parent
                                            true);       /// centerOnParent
+    QString msg = QString("Reading monitor features...");
+    ui->statusBar->showMessage(msg);
     spinner->start();
 
     DDCA_Feature_List feature_list = monitor->getFeatureList(feature_selector->feature_list_id);
@@ -609,63 +795,6 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
 }
 
 
-// TEMP - try stuffing some dummy items into list
-// was iftested out in on_action_features_triggered()
-#ifdef NO
-VcpLineItem * item1 = new VcpLineItem(ui->vcp_listWidget);
-item1->setFeatureCode(0x10);
-item1->setFeatureName(QString("brightness"));
-item1->setFeatureRW(QString("RW"));
-item1->setFeatureMccsType(QString("C"));
-
-VcpLineItem * item2 = new VcpLineItem(ui->vcp_listWidget);
-item2->setFeatureCode(0x12);
-item2->setFeatureName(QString("Contrast"));
-item2->setFeatureRW(QString("RW"));
-item2->setFeatureMccsType(QString("C"));
-
-cout << ui->page_vcp->objectName().toStdString() << endl;
-
-// ui->vcp_listWidget->addItem(item1);
-//    ui->vcp_listWidget->addItem(item2);
-
-
-// QObject * parentObject = item1->parent;
-// QString pname = QString("none");
-// if (parentObject)
-//    pname = parentObject->objectName;
-
-if (item1->parent())
-   cout << "item1->parent->objectName():  none"  << endl;
-else
-   cout << "item1->parent->objectName(): " << item1->parent()->objectName().toStdString() << endl;
-// cout << "item1->parentWidget->objectName(): " << item1->parentWidget()->objectName().toStdString() << endl;
-
-
-// show widget
-ui->views_stackedWidget->setCurrentIndex(2);    // need proper constants
-ui->views_stackedWidget->show();
-#endif
-
-
-#ifdef OLD_NAME
-void MainWindow::on_actionFeatures_triggered()
-{
-    if (m_curView != View::FeaturesView) {
-       m_curView = View::FeaturesView;
-       // ???
-    }
-    int monitorNdx = ui->displaySelectorComboBox->currentIndex();
-    Monitor * monitor = monitors[monitorNdx];
-    loadMonitorFeatures(monitor);
-
-    QListView * lview = ui->vcp_listView;
-    lview->setModel(monitor->_listModel);
-
-    ui->views_stackedWidget->setCurrentIndex(5);
-    ui->views_stackedWidget->show();
-}
-#endif
 
 
 void MainWindow::reportDdcApiError(QString funcname, int rc) const {
@@ -677,6 +806,38 @@ void MainWindow::reportDdcApiError(QString funcname, int rc) const {
      // emsg = new QErrorMessage(this);
      // emsg->showMessage("oy vey");
 
+}
+
+
+
+// Action: Monitor
+
+void MainWindow::on_actionMonitorSummary_triggered()
+{
+    std::cout << "(MainWindow::on_actionMonitorSummary_triggered()" << endl;
+
+    int monitorNdx = _toolbarDisplayCB->currentIndex();
+
+    ddca_start_capture(DDCA_CAPTURE_NOOPTS);
+    DDCA_Display_Info * dinfo = &_dlist->info[monitorNdx];
+    DDCA_Output_Level saved_ol = ddca_get_output_level();
+    ddca_set_output_level(DDCA_OL_VERBOSE);
+    ddca_dbgrpt_display_info(dinfo, 0);
+    ddca_set_output_level(saved_ol);
+    char * s = ddca_end_capture();
+
+
+    Monitor * monitor = monitors[monitorNdx];
+    QPlainTextEdit * moninfoPlainText = monitor->_moninfoPlainText;
+    int pageno = monitor->_pageno_moninfo;
+    moninfoPlainText->setPlainText(s);
+    free(s);
+    QFont fixedFont("Courier");
+    moninfoPlainText->setFont(fixedFont);
+
+    ui->viewsStackedWidget->setCurrentIndex(pageno);
+
+    ui->viewsStackedWidget->show();
 }
 
 
@@ -693,7 +854,7 @@ void MainWindow::on_actionCapabilities_triggered()
     int monitorNdx = _toolbarDisplayCB->currentIndex();
     DDCA_Display_Info * dinfo = &_dlist->info[monitorNdx];
     DDCA_Display_Ref dref = dinfo->dref;
-    DDCA_Display_Handle dh;
+    DDCA_Display_Handle dh = NULL;
     DDCA_Status rc = ddca_open_display(dref,&dh);
     if (rc != 0) {
         reportDdcApiError("ddca_open_display", rc);
@@ -729,65 +890,30 @@ void MainWindow::on_actionCapabilities_triggered()
         cout << caps_report << endl;
 
 
-        // #define OLD_WAY
-        #ifdef OLD_WAY
-            QPlainTextEdit * capabilitiesPlainText = ui->capabilitiesPlainText;
-            int pageno = 0;
-        #else
             Monitor * monitor = monitors[monitorNdx];
             QPlainTextEdit * capabilitiesPlainText = monitor->_capabilitiesPlainText;
             int pageno = monitor->_pageno_capabilities;
-        #endif
             capabilitiesPlainText->setPlainText(caps_report);
             free(caps_report);
             QFont fixedFont("Courier");
             capabilitiesPlainText->setFont(fixedFont);
 
         // show widget
-        ui->views_stackedWidget->setCurrentIndex(pageno);    // need proper constants
-         ui->views_stackedWidget->show();
+        ui->viewsStackedWidget->setCurrentIndex(pageno);    // need proper constants
+         ui->viewsStackedWidget->show();
     }
 
     // }
 
+    if (dh) {
+       rc = ddca_close_display(dh);
+       if (rc != 0)
+          reportDdcApiError("ddca_open_display", rc);
+    }
+
     return;
 }
 
-
-// Action: Monitor
-
-void MainWindow::on_actionMonitorSummary_triggered()
-{
-    std::cout << "(MainWindow::on_actionMonitorSummary_triggered()" << endl;
-
-    int monitorNdx = _toolbarDisplayCB->currentIndex();
-
-    ddca_start_capture(DDCA_CAPTURE_NOOPTS);
-    DDCA_Display_Info * dinfo = &_dlist->info[monitorNdx];
-    DDCA_Output_Level saved_ol = ddca_get_output_level();
-    ddca_set_output_level(DDCA_OL_VERBOSE);
-    ddca_dbgrpt_display_info(dinfo, 0);
-    ddca_set_output_level(saved_ol);
-    char * s = ddca_end_capture();
-
-// #define OLD_WAY
-#ifdef OLD_WAY
-    QPlainTextEdit * moninfoPlainText = ui->moninfoPlainText;
-    int pageno = 0;
-#else
-    Monitor * monitor = monitors[monitorNdx];
-    QPlainTextEdit * moninfoPlainText = monitor->_moninfoPlainText;
-    int pageno = monitor->_pageno_moninfo;
-#endif
-    moninfoPlainText->setPlainText(s);
-    free(s);
-    QFont fixedFont("Courier");
-    moninfoPlainText->setFont(fixedFont);
-
-    ui->views_stackedWidget->setCurrentIndex(pageno);
-
-    ui->views_stackedWidget->show();
-}
 
 
 // Actions:  Feature Selection
@@ -823,10 +949,12 @@ void MainWindow::on_actionFeaturesTableView_triggered()
 {
     printf("(=============> MainWindow::on_actionFeatures_TableView_triggered)\n");
     // int monitorNdx = ui->displaySelectorComboBox->currentIndex();
-        int monitorNdx = _toolbarDisplayCB->currentIndex();
+    int monitorNdx = _toolbarDisplayCB->currentIndex();
     Monitor * monitor = monitors[monitorNdx];
+    monitor->_curFeaturesView = Monitor::FEATURES_VIEW_TABLEVIEW;
     loadMonitorFeatures(monitor);
-    QTableView * tview = ui->vcp_tableView;
+
+    QTableView * tview = monitor->_vcp_tableView;
     tview->setModel(monitor->_tableModel);
     tview->setColumnWidth(0,40);   // feature code
     tview->setColumnWidth(1, 200);  // feature name
@@ -848,28 +976,33 @@ void MainWindow::on_actionFeaturesTableView_triggered()
     tview->setSelectionBehavior(QAbstractItemView::SelectItems);
     tview->setSelectionMode(QAbstractItemView::SingleSelection);
 
-    ui->views_stackedWidget->setCurrentIndex(4);
-    ui->views_stackedWidget->show();
+    int pageno = monitor->_pageno_table_view;
+    // ui->viewsStackedWidget->setCurrentIndex(pageno);  // alt setCurrentWidget(tview)
+    ui->viewsStackedWidget->setCurrentWidget(tview);
+    ui->viewsStackedWidget->show();
 }
 
 
 void MainWindow::on_actionFeaturesListView_triggered()
 {
     std::cout << "(MainWindow::on_actionFeaturesListView()" << endl;
-    if (_curView != View::FeaturesView) {
-       _curView = View::FeaturesView;
-       // ???
-    }
+    // if (_curView != View::FeaturesView) {
+    //    _curView = View::FeaturesView;
+    //    // ???
+    // }
     // int monitorNdx = ui->displaySelectorComboBox->currentIndex();
     int monitorNdx = _toolbarDisplayCB->currentIndex();
     Monitor * monitor = monitors[monitorNdx];
+    monitor->_curFeaturesView = Monitor::FEATURES_VIEW_LISTVIEW;
     loadMonitorFeatures(monitor);
 
-    QListView * lview = ui->vcp_listView;
+    QListView * lview = monitor->vcp_listView;
     lview->setModel(monitor->_listModel);
 
-    ui->views_stackedWidget->setCurrentIndex(5);
-    ui->views_stackedWidget->show();
+    int pageno = monitor->_pageno_list_view;         // ???
+    ui->viewsStackedWidget->setCurrentIndex(pageno);
+
+    ui->viewsStackedWidget->show();
 }
 
 
@@ -883,6 +1016,7 @@ void MainWindow::on_actionFeaturesListWidget_triggered()
     // int monitorNdx = ui->displaySelectorComboBox->currentIndex();
     int monitorNdx = _toolbarDisplayCB->currentIndex();
     Monitor * monitor = monitors[monitorNdx];
+    monitor->_curFeaturesView = Monitor::FEATURES_VIEW_LISTWIDGET;
     loadMonitorFeatures(monitor);
 
     // TO FIX:
@@ -890,139 +1024,15 @@ void MainWindow::on_actionFeaturesListWidget_triggered()
     // lview->setModel(monitor->_listModel);
 
     // TO FIX:
-    ui->views_stackedWidget->setCurrentIndex(monitor->_pageno_listWidget);
-    ui->views_stackedWidget->show();
+    ui->viewsStackedWidget->setCurrentIndex(monitor->_pageno_listWidget);
+    ui->viewsStackedWidget->show();
 }
 
-#ifdef OLD
-// Keep copy while refactoring
-void MainWindow::on_actionFeaturesScrollArea_triggered_old()
-{
-    printf("=================== (MainWindow::%s) Starting\n", __func__);  fflush(stdout);
-    // if (_curView != View::FeaturesView) {
-    //    _curView = View::FeaturesView;
-    //    // ???
-    // }
-    // int monitorNdx = ui->displaySelectorComboBox->currentIndex();
-    int monitorNdx = _toolbarDisplayCB->currentIndex();
-    Monitor * monitor = monitors[monitorNdx];
-    loadMonitorFeatures(monitor);
-
-    // TO FIX:
-    // FeatureListWidget * lwidget = monitor->_featureListWidget;
-    // lview->setModel(monitor->_listModel);
-
-    // Add some dummy data
-
-    // ISSUE: Get per-monitor page?
-    // For per-monitor page
-    // ui->views_stackedWidget->setCurrentIndex(monitor->_pageno_scrollArea);
-    // Single page for all monitors
-    ui->views_stackedWidget->setCurrentIndex(ui->_pageno_scrollarea);
-
-
-    ValueStdWidget * mock1 = new ValueStdWidget();
-        DDCA_MCCS_Version_Spec vspec1 = {2,0};
-        DDCA_Non_Table_Vcp_Value val1 = {0, 254, 0, 20};
-        DDCA_Feature_Flags flags1 = DDCA_RW | DDCA_STD_CONT;
-        FeatureValue * fv1 = new FeatureValue(0x22, vspec1, flags1, val1);
-        mock1->setFeatureValue(*fv1);
-
-    ValueContWidget * mock2 = new ValueContWidget();
-        DDCA_Non_Table_Vcp_Value val2 = {0, 100, 0, 50};
-        DDCA_Feature_Flags flags2 = DDCA_RW | DDCA_STD_CONT;
-        FeatureValue * fv2 = new FeatureValue(0x10, vspec1, flags2, val2);
-        mock2->setFeatureValue(*fv2);
-
-
-    ValueStackedWidget * mock3 = new ValueStackedWidget();
-        DDCA_Non_Table_Vcp_Value val3 = {0, 80, 0, 30};
-        DDCA_Feature_Flags flags3 = DDCA_RW | DDCA_STD_CONT;
-        FeatureValue * fv3 = new FeatureValue(0x10, vspec1, flags3, val3);
-        mock3->setFeatureValue(*fv3);
-
-    ValueStackedWidget * mock4 = new ValueStackedWidget();
-        DDCA_Feature_Flags flags4 = DDCA_RW | DDCA_COMPLEX_CONT;
-        FeatureValue * fv4 = new FeatureValue(0x10, vspec1, flags4, val3);
-        mock4->setFeatureValue(*fv4);
-
-
-    FeatureWidgetBasic * mock5 = new FeatureWidgetBasic();
-        mock5->setFeatureValue(*fv4);
-        printf("mock5:\n");  mock5->dbgrpt();  fflush(stdout);
-
-    FeatureWidgetBasic * mock6 = new FeatureWidgetBasic();
-            mock6->setFeatureValue(*fv3);
-
-    FeatureWidgetBasic * mock7 = new FeatureWidgetBasic();
-        DDCA_Non_Table_Vcp_Value val7 = {0, 0, 0, 4};
-        DDCA_Feature_Flags flags7 = DDCA_RW | DDCA_SIMPLE_NC;
-        FeatureValue * fv7 = new FeatureValue(0x60, vspec1, flags7, val7);
-        mock7->setFeatureValue(*fv7);
-
-    QVBoxLayout * vLayout = new QVBoxLayout();
-    // will it work here?  yes
-    ui->featuresScrollAreaContents->setLayout(vLayout);
-    // will it work here?  NO, FAIL-3 - even later take and reset
-    // ui->featuresScrollArea->setWidget(ui->featuresScrollAreaContents);  // ALT-2
-
-
-    vLayout->addWidget(mock4);
-    vLayout->addWidget(mock3);
-    vLayout->addWidget(mock5);
-    vLayout->addWidget(mock7);
-    vLayout->addWidget(mock6);
-    // vLayout->addWidget(mock1);
-    // vLayout->addWidget(mock2);
-
-    // ok here:
-    // ui->featuresScrollAreaContents->setLayout(vLayout);
-
-    // From doc for void QScrollArea::setWidget(QWidget *widget)
-    // Note that You must add the layout of widget before you call this function;
-    // if you add it later, the widget will not be visible - regardless of when you
-    // show() the scroll area. In this case, you can also not show() the widget later.
-
-    // works here
-    ui->featuresScrollArea->setWidget(ui->featuresScrollAreaContents);  // ALT-2
-
-    // take and reset when original setWidget comes before addWidget fails
-    QWidget * tempWidget = ui->featuresScrollArea->takeWidget();  // FAIL -3
-    printf("===> after takeWidget(), scroll area widget now: %p\n",
-           ui->featuresScrollArea->widget());
-    ui->featuresScrollArea->setWidget(tempWidget);  // FAIL - 3
-    printf("===> after setWidget(), scroll area widget now: %p\n",
-           ui->featuresScrollArea->widget());
-
-
-
-    printf("(%s)  ================>  ui->_pageno_scrollarea=%d\n", __func__, ui->_pageno_scrollarea); fflush(stdout);
-    ui->views_stackedWidget->setCurrentIndex(ui->_pageno_scrollarea);
-    ui->views_stackedWidget->show();
-
-
-#ifdef NO
-    // wrong location
-    printf("(MainWindow::%s) ===========> Setting current index %d\n", __func__,
-           monitor->_pageno_features_scrollarea);
-    QThread::sleep(4);
-
-    ui->views_stackedWidget->setCurrentIndex(monitor->_pageno_features_scrollarea);
-#endif
-
-}
-#endif
 
 
 void MainWindow::on_actionFeaturesScrollAreaMock_triggered()
 {
     printf("(MainWindow::%s) Starting\n", __func__);  fflush(stdout);
-    // int monitorNdx = _toolbarDisplayCB->currentIndex();
-    // Monitor * monitor = monitors[monitorNdx];
-    //  loadMonitorFeatures(monitor);
-
-    // N. using single page for all monitors
-    ui->views_stackedWidget->setCurrentIndex(ui->_pageno_scrollarea);
 
     ValueStdWidget * mock1 = new ValueStdWidget();
         DDCA_MCCS_Version_Spec vspec1 = {2,0};
@@ -1061,13 +1071,14 @@ void MainWindow::on_actionFeaturesScrollAreaMock_triggered()
         FeatureValue * fv7 = new FeatureValue(0x60, vspec1, flags7, val7);
         mock7->setFeatureValue(*fv7);
 
+    FeaturesScrollAreaContents * featuresScrollAreaContents =
+          new FeaturesScrollAreaContents();
+
     QVBoxLayout * vLayout = new QVBoxLayout();
     vLayout->setMargin(0);
-    // will it work here?  yes
-    ui->featuresScrollAreaContents->setLayout(vLayout);
+    featuresScrollAreaContents->setLayout(vLayout);   // ok
     // will it work here?  NO, FAIL-3 - even later take and reset
     // ui->featuresScrollArea->setWidget(ui->featuresScrollAreaContents);  // ALT-2
-
 
     vLayout->addWidget(mock4);
     vLayout->addWidget(mock3);
@@ -1077,44 +1088,25 @@ void MainWindow::on_actionFeaturesScrollAreaMock_triggered()
 
     vLayout->setContentsMargins(0,0,0,0);
 
-    // ok here:
-    // ui->featuresScrollAreaContents->setLayout(vLayout);
+    // ui->featuresScrollAreaContents->setLayout(vLayout);  // ok here
 
     // From doc for void QScrollArea::setWidget(QWidget *widget)
     // Note that You must add the layout of widget before you call this function;
     // if you add it later, the widget will not be visible - regardless of when you
     // show() the scroll area. In this case, you can also not show() the widget later.
 
-    // works here
-    ui->featuresScrollArea->setWidget(ui->featuresScrollAreaContents);  // ALT-2
+    QScrollArea * page_features_scrollarea = new QScrollArea();
+
+    page_features_scrollarea->setWidget(featuresScrollAreaContents);  // ALT-2
+
 
     if (debugLayout)
-    ui->featuresScrollAreaContents->setStyleSheet("background-color:beige;");
+       featuresScrollAreaContents->setStyleSheet("background-color:beige;");
 
-    // take and reset when original setWidget comes before addWidget fails
-    QWidget * tempWidget = ui->featuresScrollArea->takeWidget();  // FAIL -3
-    printf("===> after takeWidget(), scroll area widget now: %p\n",
-           ui->featuresScrollArea->widget());
-    ui->featuresScrollArea->setWidget(tempWidget);  // FAIL - 3
-    printf("===> after setWidget(), scroll area widget now: %p\n",
-           ui->featuresScrollArea->widget());
-
-    printf("(%s) ui->_pageno_scrollarea=%d\n", __func__, ui->_pageno_scrollarea); fflush(stdout);
-    ui->views_stackedWidget->setCurrentIndex(ui->_pageno_scrollarea);
-    ui->views_stackedWidget->show();
-
-
-#ifdef NO
-    // wrong location
-    printf("(MainWindow::%s) ===========> Setting current index %d\n", __func__,
-           monitor->_pageno_features_scrollarea);
-    QThread::sleep(4);
-
-    ui->views_stackedWidget->setCurrentIndex(monitor->_pageno_features_scrollarea);
-#endif
-
+    ui->viewsStackedWidget->addWidget(page_features_scrollarea);
+    ui->viewsStackedWidget->setCurrentWidget(page_features_scrollarea);
+    ui->viewsStackedWidget->show();
 }
-
 
 
 void MainWindow::on_actionFeaturesScrollArea_triggered()
@@ -1122,6 +1114,7 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
     printf("(MainWindow::%s) Starting\n", __func__);  fflush(stdout);
     int monitorNdx = _toolbarDisplayCB->currentIndex();
     Monitor * monitor = monitors[monitorNdx];
+    monitor->_curFeaturesView = Monitor::FEATURES_VIEW_SCROLLAREA_VIEW;
     loadMonitorFeatures(monitor);
 }
 
@@ -1131,8 +1124,8 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
 void MainWindow::showCentralWidgetPage(int pageno) {
    printf("(%s::%s) ===========> Setting current index, pageno = %d\n", _cls, __func__,
           pageno);  fflush(stdout);
-   ui->views_stackedWidget->setCurrentIndex(pageno);
-   ui->views_stackedWidget->show();
+   ui->viewsStackedWidget->setCurrentIndex(pageno);
+   ui->viewsStackedWidget->show();
 }
 
 void MainWindow::showCentralWidgetByWidget(QWidget * pageWidget) {
@@ -1140,14 +1133,14 @@ void MainWindow::showCentralWidgetByWidget(QWidget * pageWidget) {
           "dummy"  /* pageWidget->objectName() */);   // utf-8
    fflush(stdout);
 
-   int pageno = ui->views_stackedWidget->indexOf(pageWidget);
+   int pageno = ui->viewsStackedWidget->indexOf(pageWidget);
    if (pageno < 0) {
       printf("(%s::%s) page for widget not found\n", _cls, __func__); fflush(stdout);
    }
    else {
       printf("(%s::%s) widget page number: %d\n", _cls, __func__, pageno); fflush(stdout);
-      ui->views_stackedWidget->setCurrentWidget(pageWidget);
-      ui->views_stackedWidget->show();
+      ui->viewsStackedWidget->setCurrentWidget(pageWidget);
+      ui->viewsStackedWidget->show();
    }
 }
 

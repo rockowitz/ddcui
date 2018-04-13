@@ -41,6 +41,7 @@ SOURCES += \
     feature_value_widgets/value_cont_widget.cpp \
     feature_value_widgets/value_nc_widget.cpp \
     feature_value_widgets/value_reset_widget.cpp \
+    feature_value_widgets/value_2button_widget.cpp \
     feature_value_widgets/value_stacked_widget.cpp \
     feature_value_widgets/value_std_widget.cpp 
 
@@ -98,6 +99,7 @@ HEADERS += \
     feature_value_widgets/value_cont_widget.h \
     feature_value_widgets/value_nc_widget.h \
     feature_value_widgets/value_reset_widget.h \
+    feature_value_widgets/value_2button_widget.h \
     feature_value_widgets/value_stacked_widget.h \
     feature_value_widgets/value_std_widget.h 
 

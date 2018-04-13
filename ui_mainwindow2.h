@@ -60,7 +60,7 @@ public:
     QAction *actionFeatureSelectionDialog;
 
     QWidget *centralWidget;   
-    QStackedWidget *views_stackedWidget;
+    QStackedWidget *viewsStackedWidget;
 
 #ifdef OLD
     // MONINFO_OLD
@@ -72,7 +72,7 @@ public:
     QWidget *page_capabilities;
     QPlainTextEdit *capabilities_plainText;
     int _pageno_capabilities;
-#endif
+
 
     QWidget *page_vcp;
     QListWidget *vcpListWidget;
@@ -104,6 +104,7 @@ public:
     QScrollArea *    page_features_scrollarea;      // ALT - 2
 
     int           _pageno_scrollarea;
+#endif
 
     QHBoxLayout *horizontalLayout;
     // QLabel *label;
@@ -279,273 +280,25 @@ private:
        centralWidget->setMaximumSize(QSize(2000, 16777215));
        centralWidget->setSizeIncrement(QSize(10, 10));
 
-       views_stackedWidget = new QStackedWidget(centralWidget);
-       views_stackedWidget->setObjectName(QString::fromUtf8("views_stackedWidget"));
+       viewsStackedWidget = new QStackedWidget(centralWidget);
+       viewsStackedWidget->setObjectName(QString::fromUtf8("views_stackedWidget"));
 
-       views_stackedWidget->setGeometry(QRect(2, 42, 780, 300));
+       viewsStackedWidget->setGeometry(QRect(2, 42, 780, 300));
        // sizePolicy1.setHeightForWidth(views_stackedWidget->sizePolicy().hasHeightForWidth());
-       views_stackedWidget->setSizePolicy(sizePolicy1);
-       views_stackedWidget->setFrameShape(QFrame::Panel);
-       views_stackedWidget->setFrameShadow(QFrame::Sunken);
+       viewsStackedWidget->setSizePolicy(sizePolicy1);
+       viewsStackedWidget->setFrameShape(QFrame::Panel);
+       viewsStackedWidget->setFrameShadow(QFrame::Sunken);
 
        QHBoxLayout *
        centralWidgetLayout = new QHBoxLayout(centralWidget);
        centralWidgetLayout->setSpacing(6);
        // centralWidgetLayout->setContentsMargins(11, 11, 11, 11);
        centralWidgetLayout->setObjectName(QString::fromUtf8("centralWidgetLayout"));
-       centralWidgetLayout->addWidget(views_stackedWidget);
+       centralWidgetLayout->addWidget(viewsStackedWidget);
 
 
-       int pagectr = 0;
+       // int pagectr = 0;
 
-#ifdef OLD_NON_MONITOR_SPECIFIC
-       // MONINFO_OLD
-       // Layout stacked widget page: page_moninfo, contains moninfoPlainText
-       page_moninfo = new QWidget();
-       page_moninfo->setObjectName(QString::fromUtf8("page_moninfo"));
-
-       // sizePolicy1.setHeightForWidth(page_moninfo->sizePolicy().hasHeightForWidth());
-       page_moninfo->setSizePolicy(sizePolicy1);
-
-       moninfoPlainText = new QPlainTextEdit(page_moninfo);
-       moninfoPlainText->setObjectName(QString::fromUtf8("moninfoPlainText"));
-
-       moninfoPlainText->setGeometry(QRect(6, 6, 700, 191));   // was 574,191
-       // sizePolicy1.setHeightForWidth(moninfoPlainText->sizePolicy().hasHeightForWidth());
-       moninfoPlainText->setSizePolicy(sizePolicy1);
-       moninfoPlainText->setMaximumSize(QSize(2000, 16777215));   // 574->2000
-       moninfoPlainText->setLineWrapMode(QPlainTextEdit::NoWrap);
-       moninfoPlainText->setReadOnly(true);
-
-       views_stackedWidget->addWidget(page_moninfo);
-       _pageno_moninfo = pagectr++;
-
-         //             std::cout << "(setupUi) Wolf 5" << std::endl;
-#ifdef NO
-       QHBoxLayout *
-       moninfoLayout = new QHBoxLayout(views_stackedWidget);  // views_StackedWidget already has a layout
-       // moninfoLayout->setContentsMargins(11, 11, 11, 11);
-       moninfoLayout->setObjectName(QString::fromUtf8("moninfoLayout"));
-       moninfoLayout->addWidget(page_moninfo);
-#endif
-           //           std::cout << "(setupUi) Wolf 6" << std::endl;
-
-       // AMEN!
-       QHBoxLayout *
-       pageMoninfoLayout = new QHBoxLayout(page_moninfo);
-       pageMoninfoLayout->setSpacing(6);
-       // pageMoninfoLayout->setContentsMargins(11, 11, 11, 11);
-       pageMoninfoLayout->setObjectName(QString::fromUtf8("pageMoninfoLayout"));
-       pageMoninfoLayout->addWidget(moninfoPlainText);
-#endif
-
-
-#ifdef OLD_NON_MONITOR_SPECIFIC
-       // Layout stacked widget page page_capabilities, contains capabilities_plainText
-       page_capabilities = new QWidget();
-       page_capabilities->setObjectName(QString::fromUtf8("page_capabilities"));
-       // sizePolicy1.setHeightForWidth(page_capabilities->sizePolicy().hasHeightForWidth());
-       page_capabilities->setSizePolicy(sizePolicy1);
-       capabilities_plainText = new QPlainTextEdit(page_capabilities);
-       capabilities_plainText->setObjectName(QString::fromUtf8("capabilities_plainText"));
-       capabilities_plainText->setGeometry(QRect(16, 6, 700, 231));   // was 574,231
-       // QSizePolicy sizePolicy2(QSizePolicy::Expanding, QSizePolicy::Expanding);
-       // sizePolicy2.setHorizontalStretch(1);
-       // sizePolicy2.setVerticalStretch(1);       // was 0
-       // sizePolicy2.setHeightForWidth(capabilities_plainText->sizePolicy().hasHeightForWidth());
-       capabilities_plainText->setSizePolicy(sizePolicy1);     // was sizePolicy1
-       capabilities_plainText->setMaximumSize(QSize(2000, 16777215));  // was 574
-       capabilities_plainText->setReadOnly(true);
-       capabilities_plainText->setCenterOnScroll(false);
-       views_stackedWidget->addWidget(page_capabilities);
-       _pageno_capabilities = pagectr++;
-
-       // AMEN!
-       QHBoxLayout *
-       pageCapabilitiesLayout = new QHBoxLayout(page_capabilities);
-       pageCapabilitiesLayout->setSpacing(6);
-       // pageCapabilitiesLayout->setContentsMargins(11, 11, 11, 11);
-       pageCapabilitiesLayout->setObjectName(QString::fromUtf8("pageCapabilitiesLayout"));
-       pageCapabilitiesLayout->addWidget(capabilities_plainText);
-#endif
-
-       // Layout stacked widget page page_vcp, contains vcp_listWidget
-       page_vcp = new QWidget();
-       page_vcp->setObjectName(QString::fromUtf8("page_vcp"));
-       QSizePolicy sizePolicy3(QSizePolicy::Expanding, QSizePolicy::Expanding);
-       sizePolicy3.setHorizontalStretch(1);
-       sizePolicy3.setVerticalStretch(1);
-       // sizePolicy3.setHeightForWidth(page_vcp->sizePolicy().hasHeightForWidth());
-       sizePolicy3.setHeightForWidth(false);
-       page_vcp->setSizePolicy(sizePolicy3);
-       vcpListWidget = new QListWidget(page_vcp);
-       vcpListWidget->setObjectName(QString::fromUtf8("vcpListWidget"));
-       vcpListWidget->setGeometry(QRect(5, 1, 771, 251));
-       // sizePolicy3.setHeightForWidth(vcp_listWidget->sizePolicy().hasHeightForWidth());
-       vcpListWidget->setSizePolicy(sizePolicy3);
-       views_stackedWidget->addWidget(page_vcp);
-       _pageno_vcp = pagectr++;
-
-
-       // Layout stacked widget page page_table_item, contains tableWidget
-       page_table_item = new QWidget();
-       page_table_item->setObjectName(QString::fromUtf8("page_table_item"));
-       sizePolicy1.setHeightForWidth(page_table_item->sizePolicy().hasHeightForWidth());
-       page_table_item->setSizePolicy(sizePolicy1);
-       tableWidget = new QTableWidget(page_table_item);
-       if (tableWidget->columnCount() < 5)
-           tableWidget->setColumnCount(5);
-       QTableWidgetItem *__qtablewidgetitem = new QTableWidgetItem();
-       tableWidget->setHorizontalHeaderItem(0, __qtablewidgetitem);
-       QTableWidgetItem *__qtablewidgetitem1 = new QTableWidgetItem();
-       tableWidget->setHorizontalHeaderItem(1, __qtablewidgetitem1);
-       QTableWidgetItem *__qtablewidgetitem2 = new QTableWidgetItem();
-       tableWidget->setHorizontalHeaderItem(2, __qtablewidgetitem2);
-       QTableWidgetItem *__qtablewidgetitem3 = new QTableWidgetItem();
-       tableWidget->setHorizontalHeaderItem(3, __qtablewidgetitem3);
-       QTableWidgetItem *__qtablewidgetitem4 = new QTableWidgetItem();
-       tableWidget->setHorizontalHeaderItem(4, __qtablewidgetitem4);
-       tableWidget->setObjectName(QString::fromUtf8("tableWidget"));
-       tableWidget->setGeometry(QRect(0, -9, 751, 251));
-       // sizePolicy3.setHeightForWidth(tableWidget->sizePolicy().hasHeightForWidth());
-       tableWidget->setSizePolicy(sizePolicy3);
-       tableWidget->setMinimumSize(QSize(581, 0));
-       tableWidget->setColumnCount(5);
-
-
-       // Set header titles
-       QTableWidgetItem * tableWidgetItem = NULL;
-       tableWidgetItem = tableWidget->horizontalHeaderItem(0);
-       tableWidgetItem->setText(QApplication::translate("MainWindow", "Code", 0));
-       tableWidgetItem = tableWidget->horizontalHeaderItem(1);
-       tableWidgetItem->setText(QApplication::translate("MainWindow", "Name", 0));
-       tableWidgetItem = tableWidget->horizontalHeaderItem(2);
-       tableWidgetItem->setText(QApplication::translate("MainWindow", "Type", 0));
-       tableWidgetItem = tableWidget->horizontalHeaderItem(3);
-       tableWidgetItem->setText(QApplication::translate("MainWindow", "RW", 0));
-       tableWidgetItem = tableWidget->horizontalHeaderItem(4);
-       tableWidgetItem->setText(QApplication::translate("MainWindow", "Value", 0));
-
-       views_stackedWidget->addWidget(page_table_item);
-       _pageno_table_item = pagectr++;
-
-
-       // Layout stacked widget page page_table_view, contains vcp_tableView
-       page_table_view = new QWidget();
-       page_table_view->setObjectName(QString::fromUtf8("page_table_view"));
-
-       // sizePolicy1.setHeightForWidth(page_table_view->sizePolicy().hasHeightForWidth());
-       page_table_view->setSizePolicy(sizePolicy1);
-
-       horizontalLayout = new QHBoxLayout(page_table_view);
-       horizontalLayout->setSpacing(6);
-       horizontalLayout->setContentsMargins(11, 11, 11, 11);
-       horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
-
-       vcp_tableView = new QTableView(page_table_view);
-       vcp_tableView->setObjectName(QString::fromUtf8("vcp_tableView"));
-
-       QSizePolicy sizePolicy4(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
-       sizePolicy4.setHorizontalStretch(1);
-       sizePolicy4.setVerticalStretch(1);
-       // sizePolicy4.setHeightForWidth(vcp_tableView->sizePolicy().hasHeightForWidth());
-       sizePolicy4.setHeightForWidth(false);
-       vcp_tableView->setSizePolicy(sizePolicy4);
-       vcp_tableView->setMinimumSize(QSize(700, 0));     // was 561,0
-       vcp_tableView->setSelectionMode(QAbstractItemView::NoSelection);
-       vcp_tableView->setSortingEnabled(false);
-
-       horizontalLayout->addWidget(vcp_tableView);
-       views_stackedWidget->addWidget(page_table_view);
-       _pageno_table_view = pagectr++;
-
-
-       // Layout stacked widget page page_list_view, contains vcp_listview
-       page_list_view = new QWidget();
-       page_list_view->setObjectName(QString::fromUtf8("page_list_view"));
-
-       QSizePolicy sizePolicy5(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
-       sizePolicy5.setHorizontalStretch(0);
-       sizePolicy5.setVerticalStretch(0);
-       sizePolicy5.setHeightForWidth(page_list_view->sizePolicy().hasHeightForWidth());
-       page_list_view->setSizePolicy(sizePolicy5);
-       QFont font;
-       font.setFamily(QString::fromUtf8("LM Mono 9"));
-       font.setPointSize(9);
-       page_list_view->setFont(font);
-
-       vcp_listView = new QListView(page_list_view);
-       vcp_listView->setObjectName(QString::fromUtf8("vcp_listView"));
-
-       vcp_listView->setGeometry(QRect(6, 6, 256, 192));
-       sizePolicy5.setHeightForWidth(vcp_listView->sizePolicy().hasHeightForWidth());
-       vcp_listView->setSizePolicy(sizePolicy5);
-       QFont font1;
-       font1.setFamily(QString::fromUtf8("Monospace"));
-       font1.setPointSize(10);
-       vcp_listView->setFont(font1);
-
-       QLabel* label = new QLabel(page_list_view);
-       label->setObjectName(QString::fromUtf8("label"));
-       label->setGeometry(QRect(268, 6, 342, 17));
-       label->setText(QApplication::translate("MainWindow", "Header line for page_list_view containing vcp_listView", 0));
-
-       views_stackedWidget->addWidget(page_list_view);
-       _pageno_list_view = pagectr++;
-
-
-       // Layout stacked widget page page_list_widget, contains vcp_feature_listwidget
-#ifdef REF
-       QWidget *page_list_widget;
-       QListWidget *feature_listWidget;
-       int _pageno_list_widget;
-#endif
-       page_list_widget = new QWidget();
-       page_list_widget->setObjectName(QString::fromUtf8("page_list_widget"));
-
-       // TODO: size, font, etc
-
-       // feature_listWidget = new QListWidget(page_list_widget);
-       feature_listWidget = new FeatureListWidget(page_list_widget);
-       feature_listWidget->setObjectName(QString::fromUtf8("feature_listWidget"));
-
-       views_stackedWidget->addWidget(page_list_widget);
-       _pageno_list_widget = pagectr++;
-
-
-#ifdef REF
-       // or should this be per monitor?
-       QWidget *page_features_scrollarea;
-       QWidget * featuresScrollAreaContents;
-       int _pageno_scrollarea;
-#endif
-
-       // page_features_scrollarea = new QWidget();   // OK - 1
-       page_features_scrollarea = new QScrollArea();  // ALT - 2
-       page_features_scrollarea->setObjectName(QString::fromUtf8("page_features_scrollarea"));
-
-       featuresScrollAreaContents = new QWidget();    // ALT - 2
-       // featuresScrollAreaContents->setObjectName(QString::fromUtf8("featuresScrollAreaContents"));
-
-       // try eliminating wrapping the "real" Widget in a page widget
-       // featuresScrollAreaContents = page_features_scrollarea;   // OK - 1
-
-       featuresScrollArea = page_features_scrollarea;  // ALT - 2
-
-
-
-       // featuresScrollArea = new QScrollArea(page_features_scrollarea);
-       // featuresScrollArea->setObjectName(QString::fromUtf8("featuresScrollArea"));
-
-       // NO: see doc for void QScrollArea::setWidget(QWidget *widget)
-       // featuresScrollArea->setWidget(featuresScrollAreaContents); // ALT - 2
-
-
-       // views_stackedWidget->addWidget(page_features_scrollarea_contents);
-
-       views_stackedWidget->addWidget(page_features_scrollarea);
-       _pageno_scrollarea = pagectr++;
-       printf("(%s) _pageno_scrollarea=%d\n", __func__, _pageno_scrollarea); fflush(stdout);
 
 
        MainWindow->setCentralWidget(centralWidget);
@@ -561,6 +314,7 @@ public:
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
         MainWindow->resize(800, 400);
 
+        // set MainWindow size policy
         QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         sizePolicy.setHorizontalStretch(1);
         sizePolicy.setVerticalStretch(1);
@@ -577,7 +331,7 @@ public:
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "ddcutil - mainWindow", 0));
         retranslateFeatureSelectionDialog();
 
-        views_stackedWidget->setCurrentIndex(0);
+        viewsStackedWidget->setCurrentIndex(0);
 
         QMetaObject::connectSlotsByName(MainWindow);
 

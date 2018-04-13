@@ -18,7 +18,7 @@ ValueBaseWidget::ValueBaseWidget(QWidget *parent)
    //        m_left, m_top, m_right, m_bottom);
    // returns 1,1,1,1
    //                 l  t  r   b
-   setContentsMargins(0, 0, 20, 0);
+   setContentsMargins(0, 0, 0, 0);
    // getContentsMargins(&m_left, &m_top, &m_right, &m_bottom);
    // printf("(ValueBaseWidget::ValueBaseWidget) After reset, margins: left=%d, top=%d, right=%d, bottom=%d)\n",
    //        m_left, m_top, m_right, m_bottom);
