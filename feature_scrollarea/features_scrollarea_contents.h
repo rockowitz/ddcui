@@ -1,4 +1,4 @@
-/* features_scroll_area_contents.h
+/* features_scrollarea_contents.h
  *
  * <copyright>
  * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
