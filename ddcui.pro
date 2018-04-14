@@ -46,6 +46,7 @@ SOURCES += \
     feature_value_widgets/value_std_widget.cpp 
 
 SOURCES += \
+    table_model_view/table_model_view_ui.cpp \
     table_model_view/feature_table_model.cpp \
     table_model_view/feature_value_tableitem_abstract_editor.cpp \
     table_model_view/feature_value_tableitem_cb_editor.cpp \
@@ -53,6 +54,10 @@ SOURCES += \
     table_model_view/feature_value_tableitem_delegate.cpp
 
 SOURCES += \
+    table_widget/table_widget_ui.cpp
+
+SOURCES += \
+    feature_scrollarea/features_scrollarea_ui.cpp \
     feature_scrollarea/feature_widget_basic.cpp \
     feature_scrollarea/features_scroll_area_contents.cpp \
     feature_scrollarea/page_change_observer.cpp \
@@ -62,9 +67,11 @@ SOURCES += \
     feature_selection/feature_selection_dialog.cpp
 
 SOURCES += \
+    list_model_view/list_model_view_ui.cpp \
     list_model_view/feature_item_model.cpp
 
 SOURCES += \
+    list_widget/list_widget_ui.cpp \
     list_widget/feature_list_widget.cpp \
     list_widget/feature_widget.cpp
 
@@ -104,6 +111,7 @@ HEADERS += \
     feature_value_widgets/value_std_widget.h 
 
 HEADERS += \
+    table_model_view/table_model_view_ui.h \
     table_model_view/feature_table_model.h \
     table_model_view/feature_value_tableitem_abstract_editor.h \
     table_model_view/feature_value_tableitem_cb_editor.h \
@@ -111,6 +119,10 @@ HEADERS += \
     table_model_view/feature_value_tableitem_delegate.h
 
 HEADERS += \
+    table_widget/table_widget_ui.h
+
+HEADERS += \
+    feature_scrollarea/features_scrollarea_ui.h \
     feature_scrollarea/feature_widget_basic.h \
     feature_scrollarea/features_scroll_area_contents.h \
     feature_scrollarea/page_change_observer.h \
@@ -121,9 +133,11 @@ HEADERS += \
     feature_selection/feature_selector.h
 
 HEADERS += \
+   list_model_view/list_model_view_ui.h \
    list_model_view/feature_item_model.h
 
 HEADERS += \
+    list_widget/list_widget_ui.h \
     list_widget/feature_list_widget.h \
     list_widget/feature_widget.h
 
