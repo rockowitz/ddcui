@@ -67,7 +67,7 @@ SOURCES += \
 SOURCES += \
     feature_scrollarea/features_scrollarea_ui.cpp \
     feature_scrollarea/feature_widget_basic.cpp \
-    feature_scrollarea/features_scroll_area_contents.cpp \
+    feature_scrollarea/features_scrollarea_contents.cpp \
     feature_scrollarea/page_change_observer.cpp \
     feature_scrollarea/features_scrollarea_view.cpp
 
@@ -143,7 +143,7 @@ HEADERS += \
 HEADERS += \
     feature_scrollarea/features_scrollarea_ui.h \
     feature_scrollarea/feature_widget_basic.h \
-    feature_scrollarea/features_scroll_area_contents.h \
+    feature_scrollarea/features_scrollarea_contents.h \
     feature_scrollarea/page_change_observer.h \
     feature_scrollarea/features_scrollarea_view.h
 

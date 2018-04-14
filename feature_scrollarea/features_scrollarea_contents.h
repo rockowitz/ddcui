@@ -21,8 +21,8 @@
  * </endcopyright>
  */
 
-#ifndef FEATURES_SCROLL_AREA_CONTENTS_H_
-#define FEATURES_SCROLL_AREA_CONTENTS_H_
+#ifndef FEATURES_SCROLLAREA_CONTENTS_H_
+#define FEATURES_SCROLLAREA_CONTENTS_H_
 
 #include "nongui/feature_value.h"
 #include "nongui/feature_base_model.h"
@@ -76,4 +76,4 @@ private:
 
 };
 
-#endif /* FEATURES_SCROLL_AREA_CONTENTS_H_ */
+#endif /* FEATURES_SCROLLAREA_CONTENTS_H_ */

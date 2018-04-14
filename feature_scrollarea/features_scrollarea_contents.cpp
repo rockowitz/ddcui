@@ -32,7 +32,7 @@
 #include "feature_value_widgets/value_stacked_widget.h"
 #include "feature_widget_basic.h"
 
-#include "features_scroll_area_contents.h"
+#include "features_scrollarea_contents.h"
 
 
 // static bool dimensionReportShown = false;

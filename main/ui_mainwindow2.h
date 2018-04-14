@@ -4,7 +4,7 @@
 #define UI_MAINWINDOW2_H
 
 #include <QtCore/QVariant>
-#include <QtWidgets/QtWidgets>
+// #include <QtWidgets/QtWidgets>
 #ifdef OLD
 #include <QtGui/QAction>
 #include <QtGui/QApplication>
@@ -29,10 +29,10 @@
 
 #include "base/debug_utils.h"
 
-#include "feature_value_widgets/value_std_widget.h"
+// #include "feature_value_widgets/value_std_widget.h"
 
-#include "list_widget/feature_list_widget.h"
-#include "feature_scrollarea/features_scroll_area_contents.h"
+// #include "list_widget/feature_list_widget.h"
+// #include "feature_scrollarea/features_scroll_area_contents.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -61,56 +61,14 @@ public:
     QAction *actionManufacturer;
     QAction *actionFeatureSelectionDialog;
 
-#ifdef OLD
+#define COMBINED_CENTRAL_WIDGET
+#ifndef COMBINED_CENTRAL_WIDGET
     QWidget *centralWidget;
 #else
     QStackedWidget * centralWidget;
 #endif
     QStackedWidget *viewsStackedWidget;
 
-#ifdef OLD
-    // MONINFO_OLD
-    QWidget *page_moninfo;
-    QPlainTextEdit *moninfoPlainText;
-    int     _pageno_moninfo;
-
-
-    QWidget *page_capabilities;
-    QPlainTextEdit *capabilities_plainText;
-    int _pageno_capabilities;
-
-
-    QWidget *page_vcp;
-    QListWidget *vcpListWidget;
-    int _pageno_vcp;
-
-    QWidget *page_table_item;
-    QTableWidget *tableWidget;
-    int _pageno_table_item;
-
-    QWidget *page_table_view;
-    int _pageno_table_view;
-    QTableView *vcp_tableView;
-
-    QWidget *page_list_view;
-    QListView *vcp_listView;
-    int _pageno_list_view;
-
-    QWidget *page_list_widget;
-    // QListWidget *feature_listWidget;
-    FeatureListWidget * feature_listWidget;
-    int _pageno_list_widget;
-
-    // or should this be per monitor?
-
-    QWidget *     featuresScrollAreaContents;
-    QScrollArea * featuresScrollArea;
-
-    // QWidget *     page_features_scrollarea;   // OK - 1
-    QScrollArea *    page_features_scrollarea;      // ALT - 2
-
-    int           _pageno_scrollarea;
-#endif
 
     QHBoxLayout *horizontalLayout;
     // QLabel *label;
@@ -272,7 +230,7 @@ private:
     void layoutCentralWidget(QMainWindow *MainWindow)
     {     //       std::cout << "(setupUi) Wolf 1" << std::endl;
 
-#ifdef OLD
+#ifndef COMBINED_CENTRAL_WIDGET
        centralWidget = new QWidget(MainWindow);
        centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
        viewsStackedWidget = new QStackedWidget(centralWidget);
@@ -294,16 +252,13 @@ private:
        centralWidget->setMaximumSize(QSize(2000, 16777215));
        centralWidget->setSizeIncrement(QSize(10, 10));
 
-
-#ifdef OLD
+       viewsStackedWidget->setFrameShape(QFrame::Panel);
+       viewsStackedWidget->setFrameShadow(QFrame::Sunken);
+#ifndef COMBINED_CENTRAL_WIDGET
        viewsStackedWidget->setGeometry(QRect(2, 42, 780, 300));
        // sizePolicy1.setHeightForWidth(views_stackedWidget->sizePolicy().hasHeightForWidth());
        viewsStackedWidget->setSizePolicy(sizePolicy1);
-#endif
-       viewsStackedWidget->setFrameShape(QFrame::Panel);
-       viewsStackedWidget->setFrameShadow(QFrame::Sunken);
 
-#ifdef OLD
        QHBoxLayout *
        centralWidgetLayout = new QHBoxLayout(centralWidget);
        centralWidgetLayout->setSpacing(6);
@@ -318,7 +273,6 @@ private:
        // printf("(%s) Number of widgets contained by viewsStackedWidget: %d\n",
        //        __func__, viewsStackedWidget->count() );  fflush(stdout);
     }
-
 
 
 public:

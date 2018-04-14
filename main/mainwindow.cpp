@@ -1,42 +1,43 @@
 /* mainwindow.cpp */
 
-#include "main/mainwindow.h"
-
 #include <iostream>
 
-#include <QtGui/QFont>
-#include <QtWidgets/QMessageBox>
 #include <QtCore/QThread>
+#include <QtGui/QFont>
 #include <QtWidgets/QWidget>
+#include <QtWidgets/QMessageBox>
 
 #include <ddcutil_c_api.h>
 
+#include "imported/QtWaitingSpinner/waitingspinnerwidget.h"
+
+#include "base/ddcui_globals.h"
 #include "base/debug_utils.h"
+#include "base/monitor.h"
 
 #include "nongui/vcpthread.h"    // includes vcprequest.h
 
-#include "feature_value_widgets/value_stacked_widget.h"
+#include "feature_selection/feature_selection_dialog.h"
 
-#include "table_model_view/feature_table_model.h"
-#include "table_model_view/feature_value_tableitem_delegate.h"
-
-#include "list_widget/list_widget_ui.h"
-#include "list_model_view/list_model_view_ui.h"
-#include "feature_scrollarea/features_scrollarea_ui.h"
-#include "table_model_view/table_model_view_ui.h"
-#include "table_widget/table_widget_ui.h"
+#include "monitor_desc/monitor_desc_actions.h"
 #include "monitor_desc/monitor_desc_ui.h"
 
+#include "feature_value_widgets/value_stacked_widget.h"
 
-#include "base/ddcui_globals.h"
-#include "feature_selection/feature_selection_dialog.h"
-#include "base/monitor.h"
 #include "feature_scrollarea/feature_widget_basic.h"
+#include "feature_scrollarea/features_scrollarea_contents.h"
+#include "feature_scrollarea/features_scrollarea_ui.h"
 #include "feature_scrollarea/features_scrollarea_view.h"
-#include "imported/QtWaitingSpinner/waitingspinnerwidget.h"
 #include "list_model_view/feature_item_model.h"
+#include "list_model_view/list_model_view_ui.h"
+#include "list_widget/list_widget_ui.h"
+#include "table_model_view/feature_table_model.h"
+#include "table_model_view/feature_value_tableitem_delegate.h"
+#include "table_model_view/table_model_view_ui.h"
+#include "table_widget/table_widget_ui.h"
+
 #include "main/ui_mainwindow2.h"
-#include "monitor_desc/monitor_desc_actions.h"
+#include "main/mainwindow.h"
 
 
 using namespace std;

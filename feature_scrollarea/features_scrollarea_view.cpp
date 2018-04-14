@@ -9,7 +9,7 @@
 #include "base/ddcui_globals.h"
 #include "base/debug_utils.h"
 
-#include "feature_scrollarea/features_scroll_area_contents.h"
+#include "features_scrollarea_contents.h"
 
 
 bool dimensionReportShown = false;
