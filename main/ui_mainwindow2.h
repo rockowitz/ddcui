@@ -61,7 +61,11 @@ public:
     QAction *actionManufacturer;
     QAction *actionFeatureSelectionDialog;
 
-    QWidget *centralWidget;   
+#ifdef OLD
+    QWidget *centralWidget;
+#else
+    QStackedWidget * centralWidget;
+#endif
     QStackedWidget *viewsStackedWidget;
 
 #ifdef OLD
@@ -268,8 +272,16 @@ private:
     void layoutCentralWidget(QMainWindow *MainWindow)
     {     //       std::cout << "(setupUi) Wolf 1" << std::endl;
 
+#ifdef OLD
        centralWidget = new QWidget(MainWindow);
        centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
+       viewsStackedWidget = new QStackedWidget(centralWidget);
+       viewsStackedWidget->setObjectName(QString::fromUtf8("views_stackedWidget"));
+#else
+       centralWidget = new QStackedWidget(MainWindow);
+       centralWidget->setObjectName(QString::fromUtf8("centralWidget/views_stackedWidget"));
+       viewsStackedWidget = centralWidget;
+#endif
 
        QSizePolicy sizePolicy1(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
        sizePolicy1.setHorizontalStretch(1);
@@ -282,21 +294,23 @@ private:
        centralWidget->setMaximumSize(QSize(2000, 16777215));
        centralWidget->setSizeIncrement(QSize(10, 10));
 
-       viewsStackedWidget = new QStackedWidget(centralWidget);
-       viewsStackedWidget->setObjectName(QString::fromUtf8("views_stackedWidget"));
 
+#ifdef OLD
        viewsStackedWidget->setGeometry(QRect(2, 42, 780, 300));
        // sizePolicy1.setHeightForWidth(views_stackedWidget->sizePolicy().hasHeightForWidth());
        viewsStackedWidget->setSizePolicy(sizePolicy1);
+#endif
        viewsStackedWidget->setFrameShape(QFrame::Panel);
        viewsStackedWidget->setFrameShadow(QFrame::Sunken);
 
+#ifdef OLD
        QHBoxLayout *
        centralWidgetLayout = new QHBoxLayout(centralWidget);
        centralWidgetLayout->setSpacing(6);
        // centralWidgetLayout->setContentsMargins(11, 11, 11, 11);
        centralWidgetLayout->setObjectName(QString::fromUtf8("centralWidgetLayout"));
        centralWidgetLayout->addWidget(viewsStackedWidget);
+#endif
 
        MainWindow->setCentralWidget(centralWidget);
        // reportWidgetChildren(centralWidget, "Children of centralWidget:");
