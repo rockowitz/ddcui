@@ -1,7 +1,7 @@
-/* debug_utils.h
+/* monitor_desc_ui.h
  *
  * <copyright>
- * Copyright (C) 2014-2015 Sanford Rockowitz <rockowitz@minsoft.com>
+ * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
  *
  * Licensed under the GNU General Public License Version 2
  *
@@ -21,17 +21,22 @@
  * </endcopyright>
  */
 
-#ifndef BASE_DEBUG_UTILS_H_
-#define BASE_DEBUG_UTILS_H_
+#ifndef MONITOR_DESC_UI_H_
+#define MONITOR_DESC_UI_H_
+
+// class MonitorDescUI {
+// };
 
 class QWidget;
-class QFrame;
-class QLabel;
+class Monitor;
+class QStackedWidget;
 
-void reportWidgetChildren(QWidget * w, const char * msg = nullptr);
-void reportLabelDimensions( QLabel  * l, const char * className, const char * funcName);
-void reportFrameDimensions( QFrame  * f, const char * className, const char * funcName);
-void reportWidgetDimensions(QWidget * w, const char * className, const char * funcName);
+QWidget * initMonitorInfoWidget(
+      Monitor *         curMonitor,
+      QStackedWidget *  stackedWidget);
 
+QWidget * initCapabilitiesWidget(
+      Monitor *         curMonitor,
+      QStackedWidget *  stackedWidget);
 
-#endif /* BASE_DEBUG_UTILS_H_ */
+#endif /* MONITOR_DESC_UI_H_ */

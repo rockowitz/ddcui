@@ -1,5 +1,7 @@
 /* mainwindow.cpp */
 
+#include "main/mainwindow.h"
+
 #include <iostream>
 
 #include <QtGui/QFont>
@@ -9,9 +11,10 @@
 
 #include <ddcutil_c_api.h>
 
-#include "QtWaitingSpinner/waitingspinnerwidget.h"
-
 #include "base/debug_utils.h"
+
+#include "nongui/vcpthread.h"    // includes vcprequest.h
+
 #include "feature_value_widgets/value_stacked_widget.h"
 
 #include "table_model_view/feature_table_model.h"
@@ -22,18 +25,18 @@
 #include "feature_scrollarea/features_scrollarea_ui.h"
 #include "table_model_view/table_model_view_ui.h"
 #include "table_widget/table_widget_ui.h"
+#include "monitor_desc/monitor_desc_ui.h"
 
 
 #include "base/ddcui_globals.h"
 #include "feature_selection/feature_selection_dialog.h"
-#include "monitor.h"
-#include "ui_mainwindow2.h"
-// #include "vcplineitem.h"
-#include "mainwindow.h"
-
+#include "base/monitor.h"
 #include "feature_scrollarea/feature_widget_basic.h"
 #include "feature_scrollarea/features_scrollarea_view.h"
+#include "imported/QtWaitingSpinner/waitingspinnerwidget.h"
 #include "list_model_view/feature_item_model.h"
+#include "main/ui_mainwindow2.h"
+#include "monitor_desc/monitor_desc_actions.h"
 
 
 using namespace std;
@@ -54,10 +57,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->mainToolBar->addWidget( toolbarDisplayLabel);
     ui->mainToolBar->addWidget( _toolbarDisplayCB);
 
-    reportWidgetChildren(ui->viewsStackedWidget);
+    reportWidgetChildren(ui->viewsStackedWidget,
+                         "Children of viewsStackedWidget, before initDisplaySelector():");
     initDisplaySelector();
     feature_selector = new FeatureSelector();
-    reportWidgetChildren(ui->viewsStackedWidget);
+    reportWidgetChildren(ui->viewsStackedWidget,
+                         "Children of viewsStackedWidget, after initDisplaySelector():");
 }
 
 
@@ -65,100 +70,6 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
-
-
-// Initialization for monitor info, capabilities are identical
-
-void initPlaintextWidget(
-      const char *          name,
-      int                   monitorNumber,
-      QStackedWidget *      stackedWidget,
-      QWidget **            page_loc,
-      int *                 pageno_loc,
-      QPlainTextEdit **     pagePlainText_loc
-
-)
-{
-   // TODO: CLEAN UP AND SIMPLIFY!
-
-     QSizePolicy sizePolicy1(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
-     sizePolicy1.setHorizontalStretch(1);
-     sizePolicy1.setVerticalStretch(1);
-     // sizePolicy1.setHeightForWidth(centralWidget->sizePolicy().hasHeightForWidth());
-     sizePolicy1.setHeightForWidth(false);
-
-      // Layout stacked widget page: page_widget, contains moninfoPlainText
-      QWidget * page_widget = new QWidget();
-
-
-      QPlainTextEdit *plainTextWidget;
-
-      // sizePolicy1.setHeightForWidth(page_widget->sizePolicy().hasHeightForWidth());
-      page_widget->setSizePolicy(sizePolicy1);
-
-      plainTextWidget = new QPlainTextEdit(page_widget);
-      plainTextWidget->setObjectName(QString::asprintf("plainTextWidget-%s-%d", name, monitorNumber));
-      plainTextWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
-
-      plainTextWidget->setGeometry(QRect(6, 6, 700, 191));   // was 574,191
-      // sizePolicy1.setHeightForWidth(plainTextWidget->sizePolicy().hasHeightForWidth());
-      plainTextWidget->setSizePolicy(sizePolicy1);
-      plainTextWidget->setMaximumSize(QSize(2000, 16777215));   // 574->2000
-      plainTextWidget->setLineWrapMode(QPlainTextEdit::NoWrap);
-      plainTextWidget->setReadOnly(true);
-
-      // AMEN!
-      QHBoxLayout *
-      pageMoninfoLayout = new QHBoxLayout(page_widget);
-      pageMoninfoLayout->setSpacing(6);
-      // pageMoninfoLayout->setContentsMargins(11, 11, 11, 11);
-      pageMoninfoLayout->setObjectName(QString::asprintf("pageLayout-%s-%d", name, monitorNumber));
-      pageMoninfoLayout->addWidget(plainTextWidget);
-
-      int pageno_widget = stackedWidget->count();
-      stackedWidget->addWidget(page_widget);
-
-      page_widget->setObjectName(
-            QString::asprintf("page_widget-%s-%d-pageno-%d", name, monitorNumber, pageno_widget));
-
-      *page_loc          = page_widget;
-      *pageno_loc        = pageno_widget;
-      *pagePlainText_loc = plainTextWidget;
-}
-
-QWidget * initMonitorInfoWidget(
-      Monitor *         curMonitor,
-      QStackedWidget *  stackedWidget)
-
-{
-   initPlaintextWidget(
-         "MonitorInfo",
-         curMonitor->_monitorNumber,              // 1 based
-         stackedWidget,
-         &curMonitor->_page_moninfo,
-         &curMonitor->_pageno_moninfo,
-         &curMonitor->_moninfoPlainText);
-
-    return curMonitor->_page_moninfo;
-}
-
-
-QWidget * initCapabilitiesWidget(
-      Monitor *         curMonitor,
-      QStackedWidget *  stackedWidget)
-{
-   initPlaintextWidget(
-         "Capabilities",
-         curMonitor->_monitorNumber,              // 1 based
-         stackedWidget,
-         &curMonitor->_page_capabilities,
-         &curMonitor->_pageno_capabilities,
-         &curMonitor->_capabilitiesPlainText);
-
-   return curMonitor->_page_capabilities;
-
-}
-
 
 
 
@@ -362,14 +273,8 @@ void MainWindow::on_actionMonitorSummary_triggered()
 
     int monitorNdx = _toolbarDisplayCB->currentIndex();
 
-    ddca_start_capture(DDCA_CAPTURE_NOOPTS);
     DDCA_Display_Info * dinfo = &_dlist->info[monitorNdx];
-    DDCA_Output_Level saved_ol = ddca_get_output_level();
-    ddca_set_output_level(DDCA_OL_VERBOSE);
-    ddca_dbgrpt_display_info(dinfo, 0);
-    ddca_set_output_level(saved_ol);
-    char * s = ddca_end_capture();
-
+    char * s = capture_display_info_report(dinfo);
 
     Monitor * monitor = monitors[monitorNdx];
     QPlainTextEdit * moninfoPlainText = monitor->_moninfoPlainText;
@@ -389,73 +294,34 @@ void MainWindow::on_actionMonitorSummary_triggered()
 
 void MainWindow::on_actionCapabilities_triggered()
 {
-    char * caps = NULL;
-    char * caps_report = NULL;
-    DDCA_Capabilities * parsed_caps;
-    // if (m_curView != View::CapabilitiesView) {
     _curView = View::CapabilitiesView;
-    // int monitorNdx = ui->displaySelectorComboBox->currentIndex();
+
     int monitorNdx = _toolbarDisplayCB->currentIndex();
     DDCA_Display_Info * dinfo = &_dlist->info[monitorNdx];
     DDCA_Display_Ref dref = dinfo->dref;
-    DDCA_Display_Handle dh = NULL;
-    DDCA_Status rc = ddca_open_display(dref,&dh);
-    if (rc != 0) {
-        reportDdcApiError("ddca_open_display", rc);
-        // put up dialog box?
-    }
-    if (rc == 0) {
-        rc = ddca_get_capabilities_string(dh, &caps);
-        if (rc != 0) {
-            // do something
-            // QString msg = "ddca_get_capabilities_string() returned " + QString::number(rc) + " - " + ddca_rc_name(rc);
-            // ui->statusBar->showMessage(msg);
-            reportDdcApiError(QString("ddca_get_capabilities_string"), rc);
-            // goto bye;
-        }
-    }
-    if (rc == 0) {
-        rc = ddca_parse_capabilities_string(caps, &parsed_caps);
-        if (rc != 0) {
-            // do something
-            reportDdcApiError("ddca_parse_capabilities_string", rc);
-        }
-    }
-    if (rc == 0) {
-        // wrap in collector
-        DDCA_Output_Level saved_ol = ddca_get_output_level();
-        ddca_set_output_level(DDCA_OL_VERBOSE);
-        ddca_start_capture(DDCA_CAPTURE_NOOPTS);
-        ddca_report_parsed_capabilities(parsed_caps, 0);
-        caps_report = ddca_end_capture();
-        ddca_set_output_level(saved_ol);
+    char * caps_report = NULL;
 
+    DDCA_Status ddcrc = capture_capabilities_report(dref, &caps_report);
+    if (ddcrc != 0) {
+        reportDdcApiError("ddca_open_display", ddcrc);
+        printf("(%s::%s) capture_capabilites_report returned %d\n", _cls, __func__, ddcrc);
+    }
+    else {
         cout << "Parsed capabilities: " << endl;
         cout << caps_report << endl;
 
-
-            Monitor * monitor = monitors[monitorNdx];
-            QPlainTextEdit * capabilitiesPlainText = monitor->_capabilitiesPlainText;
-            int pageno = monitor->_pageno_capabilities;
-            capabilitiesPlainText->setPlainText(caps_report);
-            free(caps_report);
-            QFont fixedFont("Courier");
-            capabilitiesPlainText->setFont(fixedFont);
+        Monitor * monitor = monitors[monitorNdx];
+        QPlainTextEdit * capabilitiesPlainText = monitor->_capabilitiesPlainText;
+        int pageno = monitor->_pageno_capabilities;
+        capabilitiesPlainText->setPlainText(caps_report);
+        free(caps_report);
+        QFont fixedFont("Courier");
+        capabilitiesPlainText->setFont(fixedFont);
 
         // show widget
         ui->viewsStackedWidget->setCurrentIndex(pageno);    // need proper constants
-         ui->viewsStackedWidget->show();
+        ui->viewsStackedWidget->show();
     }
-
-    // }
-
-    if (dh) {
-       rc = ddca_close_display(dh);
-       if (rc != 0)
-          reportDdcApiError("ddca_open_display", rc);
-    }
-
-    return;
 }
 
 
@@ -498,31 +364,17 @@ void MainWindow::on_actionFeaturesTableView_triggered()
     monitor->_curFeaturesView = Monitor::FEATURES_VIEW_TABLEVIEW;
     loadMonitorFeatures(monitor);
 
-    QTableView * tview = monitor->_vcp_tableView;
-    tview->setModel(monitor->_tableModel);
-    tview->setColumnWidth(0,40);   // feature code
-    tview->setColumnWidth(1, 200);  // feature name
-    tview->setColumnWidth(2, 40);   // C/NC/T
-    tview->setColumnWidth(3, 30);   //  RW/WO/RO
-    tview->setColumnWidth(4, 400);  // feature value
-
-    printf("(=============> MainWindow::on_actionFeatures_TableView_triggered) Before editing config\n");
-
-    tview->setItemDelegateForColumn(4, new FeatureValueTableItemDelegate);
-    tview->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::SelectedClicked);
 
     // connect(tview, SIGNAL(cellClicked(int,int)),
     //         this,  SLOT  (cell_clicked(int,int)));
 
-    connect(tview, SIGNAL(clicked(QModelIndex)),
-            this,  SLOT(on_vcpTableView_clicked(QModelIndex)));
+    connect(monitor->_vcp_tableView, SIGNAL(clicked(QModelIndex)),
+            this,                    SLOT(on_vcpTableView_clicked(QModelIndex)));
 
-    tview->setSelectionBehavior(QAbstractItemView::SelectItems);
-    tview->setSelectionMode(QAbstractItemView::SingleSelection);
 
     int pageno = monitor->_pageno_table_view;
     // ui->viewsStackedWidget->setCurrentIndex(pageno);  // alt setCurrentWidget(tview)
-    ui->viewsStackedWidget->setCurrentWidget(tview);
+    ui->viewsStackedWidget->setCurrentWidget(monitor->_page_table_view);
     ui->viewsStackedWidget->show();
 }
 
@@ -535,9 +387,6 @@ void MainWindow::on_actionFeaturesListView_triggered()
     Monitor * monitor = monitors[monitorNdx];
     monitor->_curFeaturesView = Monitor::FEATURES_VIEW_LISTVIEW;
     loadMonitorFeatures(monitor);
-
-    QListView * lview = monitor->vcp_listView;
-    lview->setModel(monitor->_listModel);
 
     int pageno = monitor->_pageno_list_view;         // ???
     ui->viewsStackedWidget->setCurrentIndex(pageno);

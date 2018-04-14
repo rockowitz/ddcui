@@ -3,24 +3,28 @@
 #ifndef MONITOR_H
 #define MONITOR_H
 
-#include <QtCore/QHash>
 #include <QtCore/QObject>
-#include <QtCore/QString>
-#include <QtWidgets/QPlainTextEdit>
+#include <QtCore/QHash>
 
 #include <ddcutil_c_api.h>
 
-#include "nongui/vcprequest.h"
-#include "nongui/vcpthread.h"
-#include "nongui/feature_base_model.h"
+class QListView;
+class QListWidget;
+class QPlainTextEdit;
+class QTableView;
+class QTableWidget;
+class QWidget;
+// class QHash;  // incomplete type
 
-#include "feature_selection/feature_selector.h"
-#include "table_model_view/feature_table_model.h"
-#include "feature_scrollarea/features_scroll_area_contents.h"
-#include "list_model_view/feature_item_model.h"
-#include "list_widget/feature_list_widget.h"
-
+class FeatureBaseModel;
+class FeatureItemModel;
+class FeatureListWidget;
 class FeaturesScrollAreaView;
+class FeaturesScrollAreaView;
+class FeatureTableModel;
+class VcpRequest;
+class VcpRequestQueue;
+
 
 // Represents a single display
 
@@ -65,7 +69,6 @@ public:
     QWidget *           _page_capabilities;
     int                 _pageno_capabilities;
     QPlainTextEdit *    _capabilitiesPlainText;
-
 
     FeaturesView       _curFeaturesView = FEATURES_VIEW_UNSET;
 

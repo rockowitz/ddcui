@@ -26,9 +26,10 @@
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QStackedWidget>
 
-#include "monitor.h"
-
+#include "feature_list_widget.h"
 #include "list_widget_ui.h"
+#include "../base/monitor.h"
+
 
 //ListWidgetUI::ListWidgetUI() {
 //   // TODO Auto-generated constructor stub

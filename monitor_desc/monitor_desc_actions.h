@@ -1,7 +1,7 @@
-/* debug_utils.h
+/* monitor_desc_actions.h
  *
  * <copyright>
- * Copyright (C) 2014-2015 Sanford Rockowitz <rockowitz@minsoft.com>
+ * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
  *
  * Licensed under the GNU General Public License Version 2
  *
@@ -21,17 +21,16 @@
  * </endcopyright>
  */
 
-#ifndef BASE_DEBUG_UTILS_H_
-#define BASE_DEBUG_UTILS_H_
+#ifndef MONITOR_DESC_ACTIONS_H_
+#define MONITOR_DESC_ACTIONS_H_
 
-class QWidget;
-class QFrame;
-class QLabel;
+// class MonitorDescActions {
+// };
 
-void reportWidgetChildren(QWidget * w, const char * msg = nullptr);
-void reportLabelDimensions( QLabel  * l, const char * className, const char * funcName);
-void reportFrameDimensions( QFrame  * f, const char * className, const char * funcName);
-void reportWidgetDimensions(QWidget * w, const char * className, const char * funcName);
+#include "ddcutil_c_api.h"
 
+char * capture_display_info_report(DDCA_Display_Info * dinfo);
 
-#endif /* BASE_DEBUG_UTILS_H_ */
+DDCA_Status capture_capabilities_report(DDCA_Display_Ref dref, char ** caps_report_loc);
+
+#endif /* MONITOR_DESC_ACTIONS_H_ */

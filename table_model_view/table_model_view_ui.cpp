@@ -1,8 +1,5 @@
 /* table_model_view_ui.cpp
  *
- * Created on: Apr 13, 2018
- *     Author: rock
- *
  * <copyright>
  * Copyright (C) 2014-2015 Sanford Rockowitz <rockowitz@minsoft.com>
  *
@@ -31,9 +28,10 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QTableView>
 
-#include "monitor.h"
-
+#include "feature_table_model.h"
+#include "feature_value_tableitem_delegate.h"
 #include "table_model_view_ui.h"
+#include "../base/monitor.h"
 
 
 // Initialization for Model/View Table variant
@@ -94,6 +92,21 @@ void initTableView(
          monitorNumber, pageno));
    vcp_tableView->setObjectName(QString::asprintf("vcp_tableView-%d-pageno-%d",
          monitorNumber, pageno));
+
+   QTableView * tview = vcp_tableView;
+   tview->setModel(tableModel);
+   tview->setColumnWidth(0,40);   // feature code
+   tview->setColumnWidth(1, 200);  // feature name
+   tview->setColumnWidth(2, 40);   // C/NC/T
+   tview->setColumnWidth(3, 30);   //  RW/WO/RO
+   tview->setColumnWidth(4, 400);  // feature value
+
+   printf("(%s) Before editing config\n", __func__); fflush(stdout);
+
+   tview->setItemDelegateForColumn(4, new FeatureValueTableItemDelegate);
+   tview->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::SelectedClicked);
+   tview->setSelectionBehavior(QAbstractItemView::SelectItems);
+    tview->setSelectionMode(QAbstractItemView::SingleSelection);
 
    stackedWidget->addWidget(page_table_view);
    curMonitor->_pageno_table_view = pageno;

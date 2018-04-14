@@ -27,6 +27,8 @@
 #endif
 #include <iostream>
 
+#include "base/debug_utils.h"
+
 #include "feature_value_widgets/value_std_widget.h"
 
 #include "list_widget/feature_list_widget.h"
@@ -185,14 +187,14 @@ private:
 
     void retranslateFeatureSelectionDialog()
     {
-       actionFeatureSelection->setText(QApplication::translate("MainWindow", "Feature Selection", 0));
+       actionFeatureSelection->setText(       QApplication::translate("MainWindow", "Feature Selection", 0));
        actionShowUnsupportedFeatures->setText(QApplication::translate("MainWindow", "Show Unsupported Features", 0));
-       actionKnown->setText(QApplication::translate("MainWindow", "Known", 0));
-       actionScan->setText(QApplication::translate("MainWindow", "Scan", 0));
-       actionColor->setText(QApplication::translate("MainWindow", "Color", 0));
-       actionProfile->setText(QApplication::translate("MainWindow", "Profile", 0));
-       actionManufacturer->setText(QApplication::translate("MainWindow", "Manufacturer", 0));
-       actionFeatureSelectionDialog->setText(QApplication::translate("MainWindow", "&Feature Selection", 0));
+       actionKnown->setText(                  QApplication::translate("MainWindow", "Known", 0));
+       actionScan->setText(                   QApplication::translate("MainWindow", "Scan", 0));
+       actionColor->setText(                  QApplication::translate("MainWindow", "Color", 0));
+       actionProfile->setText(                QApplication::translate("MainWindow", "Profile", 0));
+       actionManufacturer->setText(           QApplication::translate("MainWindow", "Manufacturer", 0));
+       actionFeatureSelectionDialog->setText( QApplication::translate("MainWindow", "&Feature Selection", 0));
     }
 
 
@@ -296,12 +298,11 @@ private:
        centralWidgetLayout->setObjectName(QString::fromUtf8("centralWidgetLayout"));
        centralWidgetLayout->addWidget(viewsStackedWidget);
 
-
-       // int pagectr = 0;
-
-
-
        MainWindow->setCentralWidget(centralWidget);
+       // reportWidgetChildren(centralWidget, "Children of centralWidget:");
+       // reportWidgetChildren(viewsStackedWidget, "Children of viewsStackedWidget:");
+       // printf("(%s) Number of widgets contained by viewsStackedWidget: %d\n",
+       //        __func__, viewsStackedWidget->count() );  fflush(stdout);
     }
 
 

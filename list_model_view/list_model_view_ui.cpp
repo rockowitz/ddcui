@@ -21,17 +21,16 @@
  * </endcopyright>
  */
 
-
-#include "list_model_view_ui.h"
-
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QSizePolicy>
 #include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QStackedWidget>
 #include <QtWidgets/QLabel>
+#include <QtWidgets/QSizePolicy>
+#include <QtWidgets/QStackedWidget>
+#include <QtWidgets/QListView>
 
-#include "monitor.h"
-
+#include "feature_item_model.h"
+#include "list_model_view_ui.h"
+#include "../base/monitor.h"
 
 
 QWidget * initListView(
@@ -44,7 +43,7 @@ QWidget * initListView(
 
     // Layout stacked widget page page_list_view, contains vcp_listview
     QWidget * page_list_view = new QWidget();
-    page_list_view->setObjectName(QString::fromUtf8("page_list_view"));
+
 
    QSizePolicy sizePolicy5(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
    sizePolicy5.setHorizontalStretch(0);
@@ -58,7 +57,6 @@ QWidget * initListView(
    page_list_view->setFont(font);
 
    QListView * vcp_listView = new QListView(page_list_view);
-   vcp_listView->setObjectName(QString::fromUtf8("vcp_listView"));
 
    vcp_listView->setGeometry(QRect(6, 6, 256, 192));
    sizePolicy5.setHeightForWidth(vcp_listView->sizePolicy().hasHeightForWidth());
@@ -76,6 +74,13 @@ QWidget * initListView(
    int pageno = stackedWidget->count();
    stackedWidget->addWidget(page_list_view);
 
+   page_list_view->setObjectName(
+         QString::asprintf("page_list_view-%d-pageno-%d", monitorNumber, pageno));
+   vcp_listView->setObjectName(
+         QString::asprintf("vcp_listView-%d-pageno-%d", monitorNumber, pageno));
+
+   vcp_listView->setModel(listModel);
+
    // These  connects belong are for listModel, not listWidget
    QObject::connect(baseModel,  SIGNAL(signalStartInitialLoad()),
                     listModel,  SLOT(  startInitialLoad()));
@@ -83,7 +88,6 @@ QWidget * initListView(
                     listModel,  SLOT(  endInitialLoad()));
 
    curMonitor->setFeatureItemModel(listModel);
-
    curMonitor->_pageno_list_view = pageno;
    curMonitor->page_list_view    = page_list_view;
    curMonitor->vcp_listView      = vcp_listView;

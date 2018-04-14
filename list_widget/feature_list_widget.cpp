@@ -13,7 +13,7 @@ using namespace std;
 
 
 static bool debugMain    = false;
-static bool debugSignals = false;
+static bool debugSignals = true;
 
 FeatureListWidget::FeatureListWidget(QWidget * parent):
     QListWidget(parent)

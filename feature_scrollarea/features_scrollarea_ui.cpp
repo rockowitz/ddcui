@@ -27,11 +27,10 @@
 #include <QtWidgets/QStackedWidget>
 #include <QtWidgets/QLabel>
 
-#include "monitor.h"
-
 #include "features_scrollarea_view.h"
 
 #include "features_scrollarea_ui.h"
+#include "../base/monitor.h"
 
 
 

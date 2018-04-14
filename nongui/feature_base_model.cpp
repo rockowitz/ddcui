@@ -134,8 +134,7 @@ void   FeatureBaseModel::modelVcpValueSet(
         if (debugSignals)
             printf("(%s::%s) Emitting signalFeatureAdded()\n", _cls, __func__); fflush(stdout);
         emit signalFeatureAdded(*fv);
-        // notifyFeatureChangedObservers(feature_code);
-        notifyFeatureChangeObservers(feature_code);
+        // notifyFeatureChangeObservers(feature_code);   // alternative
     }
     else {
 // #ifdef OLD

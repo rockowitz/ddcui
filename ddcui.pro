@@ -23,7 +23,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    base/debug_utils.cpp \
+    imported/QtWaitingSpinner/waitingspinnerwidget.cpp
+
+SOURCES += \
+    base/debug_utils.cpp
+
+SOURCES += \
     nongui/feature_base_model.cpp \
     nongui/feature_value.cpp \
     nongui/vcprequest.cpp \
@@ -34,6 +39,9 @@ SOURCES += \
 
 #     nongui/feature_change_observer.cpp \
 
+SOURCES += \
+    monitor_desc/monitor_desc_ui.cpp \
+    monitor_desc/monitor_desc_actions.cpp
 
 SOURCES += \
     feature_value_widgets/value_abstract_widget.cpp \
@@ -76,10 +84,9 @@ SOURCES += \
     list_widget/feature_widget.cpp
 
 SOURCES += \
-    QtWaitingSpinner/waitingspinnerwidget.cpp \
-    monitor.cpp \
-    mainwindow.cpp \
-    main.cpp
+    main/monitor.cpp \
+    main/mainwindow.cpp \
+    main/main.cpp
 
 
 
@@ -88,9 +95,17 @@ SOURCES += \
 # SOURCES += \
 #     c_feature_widget.cpp
 
+# Each group of header files depends only on the groups above it.
+
+HEADERS += \
+    imported/QtWaitingSpinner/waitingspinnerwidget.h
+
 HEADERS += \
     base/ddcui_globals.h \
     base/debug_utils.h \
+    base/monitor.h
+
+HEADERS += \
     nongui/feature_base_model.h \
     nongui/feature_change_observer.h \
     nongui/feature_value.h \
@@ -99,6 +114,10 @@ HEADERS += \
     nongui/simple_feature_value_observer.h \
     nongui/simple_feature_value_subject.h \
     nongui/simple_feature_value.h
+
+HEADERS += \
+    monitor_desc/monitor_desc_ui.h \
+    monitor_desc/monitor_desc_actions.h
 
 HEADERS += \
     feature_value_widgets/value_abstract_widget.h \
@@ -142,10 +161,8 @@ HEADERS += \
     list_widget/feature_widget.h
 
 HEADERS += \
-    QtWaitingSpinner/waitingspinnerwidget.h \
-    monitor.h \
-    mainwindow.h \
-    ui_mainwindow2.h
+    main/mainwindow.h \
+    main/ui_mainwindow2.h
 
 
 #     vcplineitem.h \
@@ -161,8 +178,8 @@ FORMS += \
 # FORMS += \
 #     c_feature_widget.ui
 
-FORMS += \
-    featureitem.ui
+# FORMS += \
+#     featureitem.ui
 
 unix: CONFIG += link_pkgconfig
 unix: PKGCONFIG += ddcutil

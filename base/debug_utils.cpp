@@ -34,17 +34,22 @@
 #include <QtWidgets/QLabel>
 
 
-void reportWidgetChildren(QWidget * w) {
-    printf("============> Children of widget: \n");  fflush(stdout);
+void reportWidgetChildren(QWidget * w, const char * msg) {
+   if (msg)
+      puts(msg);
+   else
+      printf("============> Children of widget: \n");  // fflush(stdout);
     QObjectList  childs = w->children();
     for (int ndx = 0; ndx < childs.size(); ndx++) {
         QObject* curobj = childs.at(ndx);
         QString name   = curobj->objectName();
+        const char *  clsName = curobj->metaObject()->className();
        // cout << "Child: " << QString("xxx") <<  endl;   // no match for operator<<
         QByteArray ba = name.toLatin1();
         const char * s = ba.data();
-        printf("   Child: %s\n", s); fflush(stdout);
+        printf("   Child: %s, type:%s\n", s, clsName);  // fflush(stdout);
     }
+    fflush(stdout);
 }
 
 

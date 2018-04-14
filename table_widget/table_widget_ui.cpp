@@ -31,10 +31,8 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QTableWidget>
 
-#include "monitor.h"
-
-
 #include "table_widget_ui.h"
+#include "../base/monitor.h"
 
 
 QSizePolicy tableWidgetSizePolicy() {

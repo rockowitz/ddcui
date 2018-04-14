@@ -7,8 +7,8 @@
 
 #include <ddcutil_c_api.h>
 
+#include "../main/mainwindow.h"
 #include "feature_selector.h"
-#include "mainwindow.h"
 
 namespace Ui {
 class FeatureSelectionDialog;

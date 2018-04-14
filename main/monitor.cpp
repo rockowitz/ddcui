@@ -1,11 +1,13 @@
 /* monitor.cpp */
 
+#include "base/monitor.h"
+
 #include <assert.h>
 #include <string.h>
 
 #include <QtCore/QVector>
 
-#include "monitor.h"
+#include "nongui/vcpthread.h"    // includes vcprequest.h
 #include "nongui/feature_value.h"
 
 

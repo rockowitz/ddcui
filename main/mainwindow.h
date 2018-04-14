@@ -12,9 +12,11 @@
 
 #include <ddcutil_types.h>
 
+#include "base/monitor.h"
 #include "feature_scrollarea/page_change_observer.h"
 #include "feature_selection/feature_selector.h"
-#include "monitor.h"
+
+class VcpThread;
 
 namespace Ui {
 class MainWindow;
