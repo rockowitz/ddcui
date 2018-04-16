@@ -62,7 +62,9 @@ void showCentralWidgetByWidget(QWidget * widget);
 public slots:
 
    void featureAdded(FeatureValue fv);
+#ifdef OLD
    void featureUpdated(char feature_code);
+#endif
    void startInitialLoad(void);
    void endInitialLoad();
 

@@ -118,7 +118,7 @@ QVariant FeatureTableModel::data(const QModelIndex &index, int role) const
     FeatureValue * fv = _baseModel->modelVcpValueAt(rowNdx);
     // printf("Retrieved feature value. fv->_feature_code=0x%02x\n", fv->_feature_code);
 
-    bool editable = (this->flags(index) & Qt::ItemIsEditable);
+    // bool editable = (this->flags(index) & Qt::ItemIsEditable);   // unused
     // cout << "(FeatureTableModel::data) Index: " << index.row() << "," << index.column() << ", role:" << role
     // ..      << " editable: " << editable << ", feature_code: " << fv->_feature_code << endl;
     if (index.column() == 4) {

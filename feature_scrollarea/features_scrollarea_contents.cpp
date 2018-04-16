@@ -88,6 +88,7 @@ void FeaturesScrollAreaContents::featureAdded(FeatureValue fv)
    _widgets[fv._feature_code] = newTableEntry;
 }
 
+#ifdef OLD
 // Unused!
 void FeaturesScrollAreaContents::featureUpdated(char feature_code)
 {
@@ -103,6 +104,7 @@ void FeaturesScrollAreaContents::featureUpdated(char feature_code)
 
    // set value in the widget
 }
+#endif
 
 void FeaturesScrollAreaContents::startInitialLoad(void)
 {

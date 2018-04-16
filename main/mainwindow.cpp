@@ -102,7 +102,7 @@ void MainWindow::initDisplaySelector() {
     QString msg = QString("Loading display information... ");
     ui->statusBar->showMessage(msg);
 
-    _dlist = ddca_get_display_info_list();
+    // _dlist = ddca_get_display_info_list();
     DDCA_Status ddcrc = ddca_get_display_info_list2(
                             false,         // don't include invalid displays
                             &_dlist);
@@ -111,8 +111,12 @@ void MainWindow::initDisplaySelector() {
         printf("(%s) Processing display %d\n", __func__, ndx);  fflush(stdout);
 
         // Add entry for monitor in display selector combo box
+#ifdef OLD
         QString mfg_id     = _dlist->info[ndx].mfg_id;
         QString model_name = _dlist->info[ndx].model_name;
+#endif
+        QString mfg_id     = _dlist->info[ndx].mmid.mfg_id;
+        QString model_name = _dlist->info[ndx].mmid.model_name;
         QString s = QString::number(ndx+1) + ":  " + mfg_id + " - " + model_name;
         int monitorNumber = ndx+1;
         // ui->displaySelectorComboBox->addItem(s, QVariant(ndx+1));
@@ -378,7 +382,7 @@ void MainWindow::on_actionFeaturesTableView_triggered()
             this,                    SLOT(on_vcpTableView_clicked(QModelIndex)));
 
 
-    int pageno = monitor->_pageno_table_view;
+    // int pageno = monitor->_pageno_table_view;
     // ui->viewsStackedWidget->setCurrentIndex(pageno);  // alt setCurrentWidget(tview)
     ui->viewsStackedWidget->setCurrentWidget(monitor->_page_table_view);
     ui->viewsStackedWidget->show();
