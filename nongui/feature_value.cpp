@@ -14,7 +14,7 @@
 FeatureValue::FeatureValue(
         uint8_t                  feature_code,
         DDCA_MCCS_Version_Spec   vspec,
-        DDCA_Monitor_Model_Key *  mmid,
+        DDCA_Monitor_Model_Key * mmid,
         DDCA_Feature_Flags       feature_flags,
         DDCA_Non_Table_Vcp_Value val)  // use DDCA_Non_Table_Value or individual bytes?
 {

@@ -64,7 +64,8 @@ QVariant FeatureItemModel::data(const QModelIndex &index, int role) const
     switch(role) {
     case(Qt::DisplayRole):
     {
-        char * s_name = ddca_feature_name_by_vspec(fv->_feature_code, fv->_vspec);
+        char * s_name = ddca_feature_name_by_vspec(
+                           fv->_feature_code, fv->_vspec, &fv->_mmid);
 
 
         char * s_formatted = NULL;

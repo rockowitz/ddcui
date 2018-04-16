@@ -86,7 +86,7 @@ void ValueNcWidget::setFeatureValue(const FeatureValue &fv) {
     DDCA_Status rc = 0;
     DDCA_Feature_Value_Table value_table;
     // - get list of values for combo box
-    rc = ddca_get_simple_sl_value_table_by_vspec(_feature_code, _vspec, &value_table);
+    rc = ddca_get_simple_sl_value_table_by_vspec(_feature_code, _vspec, _mmid, &value_table);
     if (rc != 0) {
         printf("ddca_get_simple_sl_value_table() returned %d\n", rc);
     }

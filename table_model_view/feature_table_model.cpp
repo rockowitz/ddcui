@@ -147,7 +147,7 @@ QVariant FeatureTableModel::data(const QModelIndex &index, int role) const
         }
         case 1:                 // feature name
         {
-            char * feature_name = ddca_feature_name_by_vspec(fv->_feature_code, fv->_vspec);
+            char * feature_name = ddca_feature_name_by_vspec(fv->_feature_code, fv->_vspec, &fv->_mmid);
             result = QVariant(QString(feature_name));
             break;
         }

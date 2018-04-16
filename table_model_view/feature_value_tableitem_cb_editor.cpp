@@ -47,7 +47,8 @@ void FeatureValueTableItemCbEditor::setFeatureValue(const FeatureValue &fv) {
     // rc = ddca_get_feature_info_by_vcp_version(_fv._feature_code, mccs_id, &info);
     DDCA_Feature_Value_Table value_table;
     // - get list of values for combo box
-    rc = ddca_get_simple_sl_value_table_by_vspec(_fv._feature_code, _fv._vspec, &value_table);
+    rc = ddca_get_simple_sl_value_table_by_vspec(
+            _fv._feature_code, _fv._vspec, &_fv._mmid, &value_table);
     if (rc != 0) {
         printf("ddca_get_simple_sl_value_table() returned %d\n", rc);
     }
