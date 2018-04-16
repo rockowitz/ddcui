@@ -27,6 +27,7 @@ public:
 
     uint8_t                _feature_code;
     DDCA_MCCS_Version_Spec _vspec;
+    DDCA_Monitor_Model_Key * _mmid;
     DDCA_Non_Table_Vcp_Value   _value;    // use this or individual bytes? DDCA_Non_Table_Value needed for get_formatted_value call
     uint8_t                _mh;
     uint8_t                _ml;

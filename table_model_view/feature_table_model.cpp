@@ -190,7 +190,12 @@ QVariant FeatureTableModel::data(const QModelIndex &index, int role) const
                 }
                 else {
                     char * formatted_value = NULL;
-                    DDCA_Status rc = ddca_format_non_table_vcp_value(fv->_feature_code, fv->_vspec, &fv->_value, &formatted_value);
+                    DDCA_Status rc = ddca_format_non_table_vcp_value(
+                                         fv->_feature_code,
+                                         fv->_vspec,
+                                         &fv->_mmid,
+                                         &fv->_value,
+                                         &formatted_value);
                     if (rc == 0)
                        result = QVariant(QString(formatted_value));
                     else

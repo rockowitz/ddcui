@@ -24,6 +24,7 @@ class FeatureBaseModel : public QObject
 public:
     FeatureBaseModel();
 
+
     // void setMonitor(Monitor * monitor);
 
     FeatureValue * modelVcpValueFind(uint8_t feature_code);

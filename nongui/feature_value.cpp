@@ -5,6 +5,7 @@
 
 #include <string.h>
 #include "ddcutil_types.h"
+#include "ddcutil_c_api.h"
 
 
 // FeatureValue::FeatureValue() {}
@@ -12,11 +13,16 @@
 FeatureValue::FeatureValue(
         uint8_t                  feature_code,
         DDCA_MCCS_Version_Spec   vspec,
+        DDCA_Monitor_Model_Key *  mmid,
         DDCA_Feature_Flags       feature_flags,
         DDCA_Non_Table_Vcp_Value val)  // use DDCA_Non_Table_Value or individual bytes?
 {
     _feature_code    = feature_code;
     _vspec           = vspec;
+    if (mmid)
+       _mmid            = *mmid;
+    else
+       _mmid         = ddca_mmid_undefined_value();
     _feature_flags   = feature_flags;
     _mh              = val.mh;
     _ml              = val.ml;
@@ -34,5 +40,13 @@ void FeatureValue::report() {
     printf("   _ml:             0x%02x\n", _ml);
     printf("   _sh:             0x%02x\n", _sh);
     printf("   _sl:             0x%02x\n", _sl);
+    if (_mmid.defined) {
+       printf("   _mmid->mfg_id:       %s\n", _mmid.mfg_id);
+       printf("   _mmid->model_name:   %s\n", _mmid.model_name);
+       printf("   _mmid->product_code: %u\n", _mmid.product_code);
+    }
+    else {
+       printf("   _mmid:          Not set\n");
+    }
     fflush(stdout);
 }

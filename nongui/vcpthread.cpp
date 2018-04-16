@@ -23,6 +23,10 @@ VcpThread::VcpThread(
     _baseModel    = baseModel;
     _requestQueue = requestQueue;
     // open the display, raise exception if error
+
+
+    ddca_dbgrpt_display_info(dinfo, 4);
+    ddca_dbgrpt_display_ref(_dref, 4);
 }
 
 
@@ -100,7 +104,7 @@ void VcpThread::getvcp(uint8_t feature_code) {
        // should this be here?
        // ddcrc = ddca_get_simplified_feature_info(feature_code, _dinfo->vcp_version,&finfo);
        // ddcrc = ddca_get_simplified_feature_info_by_display(dh, feature_code, &finfo);
-       ddcrc = ddca_get_feature_metadata_by_display(dh, feature_code,false, &finfo);
+       ddcrc = ddca_get_feature_metadata_by_display(feature_code, dh, false, &finfo);
        if (ddcrc != 0) {
            rpt_ddca_status(__func__, "ddca_get_feature_metadata",  ddcrc);
            cout << "ddca_get_feature_metadata() returned " << ddcrc << endl;

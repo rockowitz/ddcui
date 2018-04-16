@@ -44,7 +44,12 @@ ValueStdWidget::ValueStdWidget(QWidget *parent):
 
 void ValueStdWidget::setValueField() {
     char * s_formatted = NULL;
-    DDCA_Status rc = ddca_format_non_table_vcp_value(_feature_code, _vspec, &_value, &s_formatted);
+    DDCA_Status rc = ddca_format_non_table_vcp_value(
+          _feature_code,
+          _vspec,
+          _mmid,
+          &_value,
+          &s_formatted);
     if (rc != 0)
         s_formatted = (char*) "invalid formatted value";   // explicit cast to avoid compiler warning
 

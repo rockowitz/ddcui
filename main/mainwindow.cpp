@@ -1,5 +1,6 @@
 /* mainwindow.cpp */
 
+#include "assert.h"
 #include <iostream>
 
 #include <QtCore/QThread>
@@ -102,6 +103,10 @@ void MainWindow::initDisplaySelector() {
     ui->statusBar->showMessage(msg);
 
     _dlist = ddca_get_display_info_list();
+    DDCA_Status ddcrc = ddca_get_display_info_list2(
+                            false,         // don't include invalid displays
+                            &_dlist);
+    assert(ddcrc == 0);
     for (int ndx = 0; ndx < _dlist->ct; ndx++) {
         printf("(%s) Processing display %d\n", __func__, ndx);  fflush(stdout);
 
@@ -428,24 +433,24 @@ void MainWindow::on_actionFeaturesScrollAreaMock_triggered()
         DDCA_MCCS_Version_Spec vspec1 = {2,0};
         DDCA_Non_Table_Vcp_Value val1 = {0, 254, 0, 20};
         DDCA_Feature_Flags flags1 = DDCA_RW | DDCA_STD_CONT;
-        FeatureValue * fv1 = new FeatureValue(0x22, vspec1, flags1, val1);
+        FeatureValue * fv1 = new FeatureValue(0x22, vspec1, NULL, flags1, val1);
         mock1->setFeatureValue(*fv1);
 
     ValueContWidget * mock2 = new ValueContWidget();
         DDCA_Non_Table_Vcp_Value val2 = {0, 100, 0, 50};
         DDCA_Feature_Flags flags2 = DDCA_RW | DDCA_STD_CONT;
-        FeatureValue * fv2 = new FeatureValue(0x10, vspec1, flags2, val2);
+        FeatureValue * fv2 = new FeatureValue(0x10, vspec1, NULL, flags2, val2);
         mock2->setFeatureValue(*fv2);
 
     ValueStackedWidget * mock3 = new ValueStackedWidget();
         DDCA_Non_Table_Vcp_Value val3 = {0, 80, 0, 30};
         DDCA_Feature_Flags flags3 = DDCA_RW | DDCA_STD_CONT;
-        FeatureValue * fv3 = new FeatureValue(0x10, vspec1, flags3, val3);
+        FeatureValue * fv3 = new FeatureValue(0x10, vspec1, NULL, flags3, val3);
         mock3->setFeatureValue(*fv3);
 
     ValueStackedWidget * mock4 = new ValueStackedWidget();
         DDCA_Feature_Flags flags4 = DDCA_RW | DDCA_COMPLEX_CONT;
-        FeatureValue * fv4 = new FeatureValue(0x10, vspec1, flags4, val3);
+        FeatureValue * fv4 = new FeatureValue(0x10, vspec1, NULL, flags4, val3);
         mock4->setFeatureValue(*fv4);
 
     FeatureWidgetBasic * mock5 = new FeatureWidgetBasic();
@@ -458,7 +463,7 @@ void MainWindow::on_actionFeaturesScrollAreaMock_triggered()
     FeatureWidgetBasic * mock7 = new FeatureWidgetBasic();
         DDCA_Non_Table_Vcp_Value val7 = {0, 0, 0, 4};
         DDCA_Feature_Flags flags7 = DDCA_RW | DDCA_SIMPLE_NC;
-        FeatureValue * fv7 = new FeatureValue(0x60, vspec1, flags7, val7);
+        FeatureValue * fv7 = new FeatureValue(0x60, vspec1, NULL, flags7, val7);
         mock7->setFeatureValue(*fv7);
 
     FeaturesScrollAreaContents * featuresScrollAreaContents =
