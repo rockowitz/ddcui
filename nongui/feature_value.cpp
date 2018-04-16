@@ -3,6 +3,7 @@
 // #include <QMetaType>
 #include "nongui/feature_value.h"
 
+#include "assert.h"
 #include <string.h>
 #include "ddcutil_types.h"
 #include "ddcutil_c_api.h"
@@ -22,7 +23,9 @@ FeatureValue::FeatureValue(
     if (mmid)
        _mmid            = *mmid;
     else
-       _mmid         = ddca_mmid_undefined_value();
+       //  _mmid         = ddca_mmid_undefined_value();
+       _mmid             = DDCA_UNDEFINED_MONITOR_MODEL_KEY;
+
     _feature_flags   = feature_flags;
     _mh              = val.mh;
     _ml              = val.ml;
