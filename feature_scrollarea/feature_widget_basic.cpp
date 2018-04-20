@@ -165,21 +165,29 @@ void FeatureWidgetBasic::setFeatureValue(FeatureValue &fv) {
     // printf("(FeatureWidgetBasic::%s)", __func__); fflush(stdout);
     // fv.report();
     _feature_code  = fv._feature_code;
-    _feature_flags = fv._feature_flags;
-    _vspec         = fv._vspec;
+    // _feature_flags = fv._feature_flags;
+    // _vspec         = fv._vspec;
+
+    // _feature_flags = fv._finfo.feature_flags;
+    // _vspec         = fv._finfo.vspec;
+
+    _feature_flags = fv.flags();
+    _vspec         = fv.vspec();
+
+    // printf("(%s::%s) _feature_flags = 0x%08x, fv._feature_flags = 0x%08x, fv._finfo
+    assert(_feature_flags == fv._feature_flags);
+    assert(_feature_flags == fv._finfo.feature_flags);
 
     // need to save value here?
-    _mh = fv._mh;
-    _ml = fv._ml;
-    _sh = fv._sh;
-    _sl = fv._sl;
-
-
-
+    _mh = fv._value.mh;
+    _ml = fv._value.ml;
+    _sh = fv._value.sh;
+    _sl = fv._value.sl;
 
     _featureCodeField->setText(QString::asprintf("x%02x", _feature_code) );
 
-    char * fname = ddca_get_feature_name(_feature_code);
+    // char * fname = ddca_get_feature_name(_feature_code);
+    char * fname = fv.finfo().feature_name;
     _featureNameField->setText(QString::fromUtf8(fname));
 
     QString s_rw;
@@ -201,19 +209,6 @@ void FeatureWidgetBasic::setFeatureValue(FeatureValue &fv) {
         assert(_feature_flags & DDCA_TABLE);
         _featureTypeField->setText(QString("T"));
     }
-
-#ifdef OLD
-    if (_feature_flags & DDCA_STD_CONT) {
-        _featureTypeField->setText(QString("C"));
-        _valueWidget = new ValueContWidget();
-    }
-    else if (_feature_flags & DDCA_SIMPLE_NC) {
-        _valueWidget = new ValueNcWidget();
-    }
-    else {
-        _valueWidget = new ValueStdWidget();
-    }
-#endif
 
     _valueWidget->setFeatureValue(fv);
     _layout->addWidget(_valueWidget);

@@ -35,8 +35,10 @@ ValueBaseWidget::ValueBaseWidget(QWidget *parent)
 
 void ValueBaseWidget::setFeatureValue(const FeatureValue &fv) {
     _feature_code    = fv._feature_code;
-    _vspec           = fv._vspec;
-    _feature_flags   = fv._feature_flags;
+    // _vspec           = fv._vspec;
+    // _feature_flags   = fv._feature_flags;
+    _vspec           = fv.vspec();
+    _feature_flags   = fv.flags();
     _mh              = fv._value.mh;
     _ml              = fv._value.ml;
     _sh              = fv._value.sh;

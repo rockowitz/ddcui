@@ -42,7 +42,7 @@ void initFeaturesScrollAreaView(
       FeatureBaseModel* baseModel,
       QStackedWidget *  stackedWidget)
 {
-   printf("(%s) _views_StackedWidget=%p\n", __func__, stackedWidget); fflush(stdout);
+   printf("(%s) --------------------------> _views_StackedWidget=%p\n", __func__, stackedWidget); fflush(stdout);
 
    FeaturesScrollAreaView * featuresView =
             new FeaturesScrollAreaView(
@@ -54,6 +54,13 @@ void initFeaturesScrollAreaView(
    QObject::connect(baseModel,          SIGNAL(signalEndInitialLoad()),
                     featuresView,       SLOT(  onEndInitialLoad()));
 
+   // requires no-arg constructor, copy constructor
+   qRegisterMetaType<DdcError>("DdcError");
+   // qRegisterMetaType<DdcError&>("DdcError&");
+   QObject::connect(baseModel,     &FeatureBaseModel::signalDdcError,
+                    featuresView,  &FeaturesScrollAreaView::onModelDdcError);
+   // QObject::connect(baseModel,     SIGNAL(signalDdcError( DdcError&)),
+   //                  featuresView,  SLOT(  onModelDdcError(DdcError&)));
 
 
       // QObject::connect(baseModel,          &FeatureBaseModel::signalEndInitialLoad,

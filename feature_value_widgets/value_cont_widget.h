@@ -46,6 +46,9 @@ protected:
 private:
     uint16_t _newval;
 
+    QTimer* _spinBoxTimer;
+    bool    _guiChange = false;
+
 private slots:
 
     void onSliderValueChanged(int value);
@@ -53,6 +56,8 @@ private slots:
     void onSliderReleased();
 
     void onSpinBoxValueChanged(int value);
+
+    void onSpinBoxTimedOut();
 
     void onSpinBoxEditingFinished();
 

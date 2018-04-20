@@ -13,36 +13,73 @@
 
 FeatureValue::FeatureValue(
         uint8_t                  feature_code,
+        DDCA_Display_Ref         dref,
+        DDCA_Feature_Metadata    finfo,
         DDCA_MCCS_Version_Spec   vspec,
         DDCA_Monitor_Model_Key * mmid,
         DDCA_Feature_Flags       feature_flags,
         DDCA_Non_Table_Vcp_Value val)  // use DDCA_Non_Table_Value or individual bytes?
 {
     _feature_code    = feature_code;
+    _dref            = dref;
+    _finfo           = finfo;
     _vspec           = vspec;
     if (mmid)
        _mmid            = *mmid;
     else
-       //  _mmid         = ddca_mmid_undefined_value();
        _mmid             = DDCA_UNDEFINED_MONITOR_MODEL_KEY;
 
     _feature_flags   = feature_flags;
-    _mh              = val.mh;
-    _ml              = val.ml;
-    _sh              = val.sh;
-    _sl              = val.sl;
+
+    assert(_feature_code  == _finfo.feature_code);
+    assert(_feature_flags == _finfo.feature_flags);
+    // assert(_vspec         == _finfo.vspec);   // no operator== for DDCA_MCCS_Version_Spec
+
+  //   _mh              = val.mh;
+  //   _ml              = val.ml;
+  //   _sh              = val.sh;
+  //   _sl              = val.sl;
     _value           = val;
+    // assert(false);
 }
+
+DDCA_Display_Ref         FeatureValue::dref()   const {
+   return _dref;
+}
+
+
+DDCA_MCCS_Version_Spec   FeatureValue::vspec()  const {
+   return _finfo.vspec;
+}
+
+DDCA_Feature_Metadata    FeatureValue::finfo()  const {
+   return _finfo;
+}
+
+DDCA_Feature_Flags       FeatureValue::flags()  const {
+   return _finfo.feature_flags;
+}
+
+DDCA_Non_Table_Vcp_Value FeatureValue::val()    const {
+   return _value;
+}
+
+DDCA_Monitor_Model_Key   FeatureValue::mmid()   const {
+   return _mmid;
+}
+
+
 
 void FeatureValue::report() {
     printf("(FeatureValue::report) FeatureValue:\n");
     printf("   _feature_code:   0x%02x\n", _feature_code);
+  //printf("   _dref:           %s\n",    ddca_dref_repr(_dref));
     printf("   _vspec:          %d.%d\n", _vspec.major, _vspec.minor);
     printf("   _feature_flags:  0x%04x\n", _feature_flags);
-    printf("   _mh:             0x%02x\n", _mh);
-    printf("   _ml:             0x%02x\n", _ml);
-    printf("   _sh:             0x%02x\n", _sh);
-    printf("   _sl:             0x%02x\n", _sl);
+    printf("   _value.mh:             0x%02x\n", _value.mh);
+    printf("   _value.ml:             0x%02x\n", _value.ml);
+    printf("   _value.sh:             0x%02x\n", _value.sh);
+    printf("   _value.sl:             0x%02x\n", _value.sl);
     if (_mmid.defined) {
        printf("   _mmid->mfg_id:       %s\n", _mmid.mfg_id);
        printf("   _mmid->model_name:   %s\n", _mmid.model_name);

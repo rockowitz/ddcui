@@ -6,6 +6,7 @@
 
 #include <QtCore/QObject>
 
+#include "nongui/ddc_error.h"
 #include "nongui/feature_base_model.h"
 #include "feature_scrollarea/feature_widget_basic.h"
 
@@ -47,6 +48,7 @@ public slots:
     void onUIValueChanged(uint8_t feature_code, uint8_t sh, uint8_t sl);
 
     void onModelValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl);
-};
 
+   void onModelDdcError(DdcError erec);
+};
 #endif // FEATURES_SCROLLAREA_VIEW_H

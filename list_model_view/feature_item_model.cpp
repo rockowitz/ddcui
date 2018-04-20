@@ -65,13 +65,15 @@ QVariant FeatureItemModel::data(const QModelIndex &index, int role) const
     case(Qt::DisplayRole):
     {
         char * s_name = ddca_feature_name_by_vspec(
-                           fv->_feature_code, fv->_vspec, &fv->_mmid);
+                           fv->_feature_code,
+                           fv->vspec(),      // fv->_vspec,
+                           &fv->_mmid);
 
 
         char * s_formatted = NULL;
         DDCA_Status rc = ddca_format_non_table_vcp_value(
                              fv->_feature_code,
-                             fv->_vspec,
+                             fv->vspec(),       // fv->_vspec,
                              &fv->_mmid,
                              &fv->_value,
                              &s_formatted);

@@ -5,6 +5,9 @@
 
 #include <ddcutil_status_codes.h>
 
+#include <QtCore/QString>
+
+#include "nongui/ddc_error.h"
 #include "nongui/vcpthread.h"
 
 using namespace std;
@@ -30,9 +33,22 @@ VcpThread::VcpThread(
 }
 
 
-void VcpThread::rpt_ddca_status(const char * caller_name, const char *ddca_func_name, int ddcrc) {
-    printf("(%s::%s) %s() returned %d - %s\n",
-           cls, caller_name, ddca_func_name, ddcrc, ddca_rc_name(ddcrc));
+void VcpThread::rpt_ddca_status(
+      uint8_t      feature_code,
+      const char * caller_name,
+      const char * ddca_func_name,
+      DDCA_Status  ddcrc)
+{
+    printf("(VcpThread::%s) %s() returned %d - %s\n",
+           caller_name, ddca_func_name, ddcrc, ddca_rc_name(ddcrc));
+    QString msg = "generic error msg";
+    // emit signalDdcError(0, msg);
+    DdcError erec(feature_code, ddca_func_name, ddcrc);
+    // just call function, no need to signal:
+    // postDdcError(erec);
+    _baseModel->onDdcError(erec);
+
+    // postError(msg);
     fflush(stdout);
 }
 
@@ -44,37 +60,24 @@ void VcpThread::getvcp(uint8_t feature_code) {
     DDCA_Non_Table_Vcp_Value              valrec;
     DDCA_Feature_Metadata                 finfo;
 
-    // char *                      formatted_value = NULL;
-    // DDCA_Version_Feature_Info*  feature_info = NULL;
-    // char *                      feature_name = NULL;
-
     DDCA_Status ddcrc = ddca_open_display(this->_dref, &dh);
     if (ddcrc != 0) {
-          rpt_ddca_status(__func__, "ddca_open_display", ddcrc);
+          rpt_ddca_status(0, __func__, "ddca_open_display", ddcrc);
           // how to handle?
     }
 
-#ifdef FUTURE
-        DDCA_Any_Vcp_Value * valrec;
-        ddcrc = ddca_get_any_vcp_value(dh, feature_code, DDCA_UNSET_VCP_VALUE_TYPE_PARM, &valrec);
-        if (ddcrc != 0) {
-            cout << "ddca_get_any_vcp_value() returned " << ddcrc << endl;
-            // how to handle?
-        }
-        else {
-            printf("ddca_get_any_vcp_value() returned:\n");
-            printf("  opcode:   0x%92x\n", valrec->opcode);
-            printf("  value_type:  %d\n", valrec->value_type);
-            if (valrec->value_type )
-
-        }
-#endif
-
     if (ddcrc == 0) {
+       QString msg;
+       //  msg.sprintf("Reading feature 0x%02x",feature_code);
+       //  _baseModel->setStatusMsg(msg);
+       _baseModel->setStatusMsg(msg.sprintf("Reading feature 0x%02x",feature_code));
+
         ddcrc = ddca_get_non_table_vcp_value(dh, feature_code, &valrec);
+        printf("(%s::%s) feature_code=0x%02x, ddca_get_non_table_vcp_value() returned %d - %s\n",
+               _cls, __func__, feature_code, ddcrc, ddca_rc_name(ddcrc));  fflush(stdout);
         if (ddcrc != 0) {
            if (ddcrc != DDCRC_REPORTED_UNSUPPORTED)
-            rpt_ddca_status(__func__, "ddca_get_nontable_vcp_value", ddcrc);
+            rpt_ddca_status(feature_code, __func__, "ddca_get_nontable_vcp_value", ddcrc);
             // how to handle?
         }
         else {
@@ -84,62 +87,23 @@ void VcpThread::getvcp(uint8_t feature_code) {
         }
     }
 
-#ifdef NOT_HERE
-    if (ddcrc == 0) {
-        ddcrc = ddca_get_formatted_vcp_value(dh, feature_code, &formatted_value);
-        if (ddcrc != 0) {
-            cout << "ddca_get_formatted_vcp_value() returned " << ddcrc << endl;
-            // how to handle?
-            printf("ddca_get_formatted_vcp_value() returned %d - %s - %s\n",
-                   ddcrc, ddca_rc_name(ddcrc), ddca_rc_desc(ddcrc));
-        }
-        else {
-                printf("(VcpThread::getvcp) formatted_value = |%s|\n", formatted_value);
-                // cout << formatted_value << endl;
-        }
-    }
-#endif
-
     if (ddcrc == 0) {
        // should this be here?
-       // ddcrc = ddca_get_simplified_feature_info(feature_code, _dinfo->vcp_version,&finfo);
-       // ddcrc = ddca_get_simplified_feature_info_by_display(dh, feature_code, &finfo);
        ddcrc = ddca_get_feature_metadata_by_dh(feature_code, dh, false, &finfo);
        if (ddcrc != 0) {
-           rpt_ddca_status(__func__, "ddca_get_feature_metadata",  ddcrc);
+           rpt_ddca_status(feature_code, __func__, "ddca_get_feature_metadata",  ddcrc);
            cout << "ddca_get_feature_metadata() returned " << ddcrc << endl;
        }
     }
 
-#ifdef ELSEWHERE
     if (ddcrc == 0) {
-        feature_name = ddca_get_feature_name(feature_code);
-        if (!feature_name) {
-            printf("ddca_get_feature_name(0x%02x) failed.", feature_code);
-            feature_name = (char *) "<missing>";
-        }
+        _baseModel->modelVcpValueSet(feature_code, this->_dref, finfo, &valrec);
     }
-#endif
-
-#ifdef OLD
-    if (ddcrc == 0) {
-       QString fv = QString(formatted_value);
-       QString qname = QString(feature_name);
-       // cout << "fv: " << fv << std::endl;
-       _baseModel->modelVcpValueSet(feature_code, vspec, feature_info, qname, &valrec, fv);
-
-       free(formatted_value);
-       // do not free feature_name, it is part of ddcutil internal data structure
-    }
-#endif
-
-    if (ddcrc == 0) {
-        _baseModel->modelVcpValueSet(feature_code, finfo, &valrec);
-    }
+    _baseModel->setFeatureChecked(feature_code);
 
     ddcrc = ddca_close_display(dh);
     if (ddcrc != 0) {
-        rpt_ddca_status(__func__, "ddca_close_display", ddcrc);
+        rpt_ddca_status(0, __func__, "ddca_close_display", ddcrc);
         // how to handle?
     }
 
@@ -166,8 +130,8 @@ void VcpThread::setvcp(uint8_t feature_code, uint8_t sl) {
     }
 
     ddca_enable_verify(true);
-    uint8_t verified_hi_byte = 0;
-    uint8_t verified_lo_byte = 0;
+    // uint8_t verified_hi_byte = 0;   // unused
+    // uint8_t verified_lo_byte = 0;   // unused
 
     // need to update mh, ml, use a valrec
     // ddcrc = ddca_set_non_table_vcp_value_verify(dh, feature_code, 0, sl, &verified_hi_byte, &verified_lo_byte);
@@ -177,6 +141,7 @@ void VcpThread::setvcp(uint8_t feature_code, uint8_t sl) {
                __func__, ddcrc, ddca_rc_name(ddcrc)); fflush(stdout);
         // cout << "ddca_set_raw_vcp_value() returned " << ddcrc << endl;
         // how to handle?
+        rpt_ddca_status(feature_code, __func__, "ddca_set_non_table_vcp_value", ddcrc);
 
         if ( strcmp(ddca_rc_name(ddcrc), "DDCRC_VERIFY") == 0)  {
             printf("(VcpThread::%s) Verification failed\n", __func__);
@@ -193,6 +158,23 @@ void VcpThread::setvcp(uint8_t feature_code, uint8_t sl) {
 
             // undefined reference to VcpThread::postError(Qstring)
             // emit postError(QString("Verification failed"));
+
+// #ifdef MAY_NOT_BE_NEEDED
+            DDCA_Non_Table_Vcp_Value              valrec;
+                DDCA_Status
+                ddcrc2 = ddca_get_non_table_vcp_value(dh, feature_code, &valrec);
+                if (ddcrc2 != 0) {
+                    rpt_ddca_status(feature_code, __func__, "ddca_get_nontable_vcp_value", ddcrc);
+                    // how to handle?
+                }
+                else {
+                    // printf("ddca_get_nontable_vcp_value() returned:\n");
+                    // printf("  opcode:   0x%02x, mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x\n",
+                    //        feature_code, valrec.mh, valrec.ml, valrec.sh, valrec.sl);
+                   _baseModel->modelVcpValueUpdate(feature_code, valrec.sh, valrec.sl);
+                }
+// #endif
+
        }
     }
 
@@ -215,7 +197,7 @@ void VcpThread::setvcp(uint8_t feature_code, uint8_t sl) {
         _baseModel->modelVcpValueUpdate(feature_code, 0, sl);
     }
     else if (ddcrc == DDCRC_VERIFY) {
-        _baseModel->modelVcpValueUpdate(feature_code, verified_hi_byte, verified_lo_byte);
+      //   _baseModel->modelVcpValueUpdate(feature_code, verified_hi_byte, verified_lo_byte);
     }
 
 
@@ -245,6 +227,8 @@ void VcpThread::endInitialLoad(void) {
         // _baseModel->report();
         // _baseModel->endResetModel();
         _baseModel->modelEndInitialLoad();
+       // emit signalStatusMsg(QString("Loading complete"));
+        _baseModel->setStatusMsg(QString("Loading complete"));
 }
 
 

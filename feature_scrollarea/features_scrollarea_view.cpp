@@ -3,11 +3,15 @@
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QStackedWidget>
 #include <QtWidgets/QScrollArea>
+#include <QtWidgets/QMessageBox>
+
 #include <stdio.h>
 
 #include "../base/monitor.h"
 #include "base/ddcui_globals.h"
 #include "base/debug_utils.h"
+
+#include "nongui/ddc_error.h"
 
 #include "features_scrollarea_contents.h"
 
@@ -72,7 +76,7 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
 
     int ct = 0;
     for (int feature_code = 0; feature_code < 256; feature_code++) {
-         FeatureValue * fv =  _baseModel->modelVcpValueFind(feature_code);
+         FeatureValue * fv =  _baseModel->modelVcpValueFilteredFind(feature_code);
          if (fv) {
              FeatureWidgetBasic * w = new FeatureWidgetBasic();
              if (debugLayout) {
@@ -142,6 +146,22 @@ void FeaturesScrollAreaView::onModelValueChanged(
    curWidget->setCurrentValue(newval);
 }
 
+
+void FeaturesScrollAreaView::onModelDdcError(DdcError erec) {
+   printf("(%s::%s) erec=%s\n", _cls, __func__, erec.srepr() );    fflush(stdout);
+   QMessageBox * msgBox = new QMessageBox();
+   // msgBox.setText("Oy");
+   QString detail = erec.repr();
+   // detailed text adds details button
+   // msgBox.setDetailedText(detail);
+   // how to position over application?
+   msgBox->setText(detail);
+   msgBox->setIcon(QMessageBox::Warning);
+   msgBox->setModal(true);
+   msgBox->setWindowTitle("Error Setting Feature Value");
+   msgBox->exec();
+   // msgBox.open();
+}
 
 
 

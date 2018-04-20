@@ -21,9 +21,10 @@ ValueStdWidget::ValueStdWidget(QWidget *parent):
     _valueField = new QLabel();
     _valueField->setAlignment(Qt::AlignLeft);
     // _valueField->setFrameStyle(QFrame::Sunken | QFrame::Panel);  // now set in ValueBaseWidget
-    // _valueField->setFixedSize(400,10);
+    _valueField->setFixedSize(400,10);
 
-    QSizePolicy* sizePolicy = new QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+    // QSizePolicy* sizePolicy = new QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+    QSizePolicy* sizePolicy = new QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     // _cb->setHorizontalStretch(0);
     _valueField->setSizePolicy(*sizePolicy);
     QHBoxLayout * layout = new QHBoxLayout();

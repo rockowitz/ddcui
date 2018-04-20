@@ -28,9 +28,11 @@ SOURCES += \
     imported/QtWaitingSpinner/waitingspinnerwidget.cpp
 
 SOURCES += \
-    base/debug_utils.cpp
+    base/debug_utils.cpp \
+    base/feature_selector.cpp
 
 SOURCES += \
+    nongui/ddc_error.cpp \
     nongui/feature_base_model.cpp \
     nongui/feature_value.cpp \
     nongui/vcprequest.cpp \
@@ -76,6 +78,7 @@ SOURCES += \
 SOURCES += \
     feature_selection/feature_selection_dialog.cpp
 
+
 SOURCES += \
     list_model_view/list_model_view_ui.cpp \
     list_model_view/feature_item_model.cpp
@@ -105,9 +108,11 @@ HEADERS += \
 HEADERS += \
     base/ddcui_globals.h \
     base/debug_utils.h \
+    base/feature_selector.h \
     base/monitor.h
 
 HEADERS += \
+    nongui/ddc_error.h \
     nongui/feature_base_model.h \
     nongui/feature_change_observer.h \
     nongui/feature_value.h \
@@ -150,8 +155,8 @@ HEADERS += \
     feature_scrollarea/features_scrollarea_view.h
 
 HEADERS += \
-    feature_selection/feature_selection_dialog.h \
-    feature_selection/feature_selector.h
+    feature_selection/feature_selection_dialog.h
+
 
 HEADERS += \
    list_model_view/list_model_view_ui.h \

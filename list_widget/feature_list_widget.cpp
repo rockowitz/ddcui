@@ -76,7 +76,7 @@ void FeatureListWidget::updateFeature(FeatureValue * fv) {
     FeatureWidget * itemWidget = getFeatureItem(fv->_feature_code);
     assert(itemWidget);
 
-    uint16_t newval = (fv->_sh << 8) | fv->_sl;
+    uint16_t newval = (fv->_value.sh << 8) | fv->_value.sl;
     itemWidget->setCurrentValue(newval);
     // signal paint event?
 }

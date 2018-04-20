@@ -27,6 +27,9 @@ public:
     QPushButton * _applyButton;
     QPushButton * _cancelButton;
 
+private:
+    bool _guiChange = false;
+
 private slots:
     void combobox_activated(int index);
 };

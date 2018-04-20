@@ -7,8 +7,10 @@
 
 #include <ddcutil_c_api.h>
 
-#include "../main/mainwindow.h"
-#include "feature_selector.h"
+#include "base/feature_selector.h"
+
+#include "main/mainwindow.h"
+
 
 namespace Ui {
 class FeatureSelectionDialog;
@@ -21,6 +23,10 @@ class FeatureSelectionDialog : public QDialog  // was QDialog
 public:
     explicit FeatureSelectionDialog(QWidget *parent, FeatureSelector* featureSelector);   // was QWidget
     ~FeatureSelectionDialog();
+
+signals:
+    void featureSelectionAccepted(DDCA_Feature_Subset_Id feature_list);
+
 
 private slots:
     void on_known_radioButton_clicked(bool checked);

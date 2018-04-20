@@ -8,6 +8,7 @@
 
 #include "ddcutil_types.h"
 
+#include "base/monitor.h"
 #include "nongui/feature_value.h"
 
 #include "nongui/feature_base_model.h"
@@ -17,11 +18,13 @@ using namespace std;
 static bool debugModel = false;
 static bool debugSignals = false;
 
-FeatureBaseModel::FeatureBaseModel()
+FeatureBaseModel::FeatureBaseModel(Monitor * monitor)
 {
     _cls                    = metaObject()->className();
+    _monitor                = monitor;
     _featureValues          = new QVector<FeatureValue*>();
     _featureChangeObservers = new QVector<FeatureChangeObserver*>;
+    ddca_feature_list_clear(&_featuresChecked);
 }
 
 
@@ -68,6 +71,15 @@ FeatureValue * FeatureBaseModel::modelVcpValueFind(uint8_t feature_code) {
     return result;
 }
 
+FeatureValue * FeatureBaseModel::modelVcpValueFilteredFind(uint8_t feature_code) {
+   FeatureValue * result = NULL;
+   if (ddca_feature_list_contains(&_featuresToShow, feature_code)) {
+      result = modelVcpValueFind(feature_code);
+   }
+   return result;
+}
+
+
 /** Returns a #FeatureValue instance based on its location in
  * #_featureValues
  *
@@ -104,6 +116,7 @@ int FeatureBaseModel::modelVcpValueCount(void) const {
  */
 void   FeatureBaseModel::modelVcpValueSet(
                    uint8_t                              feature_code,
+                   DDCA_Display_Ref                     dref,
                    DDCA_Feature_Metadata                metadata,
                    DDCA_Non_Table_Vcp_Value *           feature_value)
 {
@@ -120,15 +133,26 @@ void   FeatureBaseModel::modelVcpValueSet(
         if (debugModel)
             printf("(%s) Creating new FeatureValue\n", __func__); fflush(stdout);
 
+#ifdef OLD
         FeatureValue * fv = new FeatureValue();
-        fv->_feature_code    = feature_code;
+        fv->_feature_code   = feature_code;
         fv->_vspec          = metadata.vspec;
         fv->_feature_flags  = metadata.feature_flags,
-        fv->_mh             = feature_value->mh;
-        fv->_ml             = feature_value->ml;
-        fv->_sh             = feature_value->sh;
-        fv->_sl             = feature_value->sl;
+        // fv->_mh             = feature_value->mh;
+        // fv->_ml             = feature_value->ml;
+        // fv->_sh             = feature_value->sh;
+        // fv->_sl             = feature_value->sl;
         fv->_value          = *feature_value;
+#endif
+        FeatureValue * fv = new FeatureValue(
+                                   feature_code,
+                                   dref,
+                                   metadata,
+                                   metadata.vspec,
+                                   metadata.mmid,
+                                   metadata.feature_flags,
+                                   *feature_value);
+
 
         _featureValues->append(fv);
         if (debugSignals)
@@ -144,8 +168,8 @@ void   FeatureBaseModel::modelVcpValueSet(
         // need to test _mh = 255, _ml = 0 ?
         // fv->_mh             = feature_value->mh;
         // fv->_ml             = feature_value->ml;
-        fv->_sh             = feature_value->sh;
-        fv->_sl             = feature_value->sl;
+        // fv->_sh             = feature_value->sh;
+        // fv->_sl             = feature_value->sl;
 
         // TODO: free old values
 
@@ -174,8 +198,8 @@ void   FeatureBaseModel::modelVcpValueUpdate(
         printf("(%s) Modifying existing FeatureValue\n", __func__); fflush(stdout);
 
     FeatureValue * fv =  _featureValues->at(ndx);
-    fv->_sh             = sh;
-    fv->_sl             = sl;
+    // fv->_sh             = sh;
+    // fv->_sl             = sl;
 
     fv->_value.sh = sh;
     fv->_value.sl = sl;
@@ -183,6 +207,17 @@ void   FeatureBaseModel::modelVcpValueUpdate(
     emit signalFeatureUpdated(feature_code);
     emit signalFeatureUpdated3(feature_code, sh, sl);
 }
+
+
+void  FeatureBaseModel::onDdcError(
+      DdcError& erec)
+{
+   printf("(%s::%s) erec=%s\n", _cls, __func__,
+          erec.srepr() );    fflush(stdout);
+   // emit signalModelError(featureCode, msg);
+   emit  signalDdcError(erec);
+}
+
 
 
 
@@ -195,6 +230,36 @@ void FeatureBaseModel::modelMccsVersionSet(
 DDCA_MCCS_Version_Spec FeatureBaseModel::mccsVersionSpec() {
     return _vspec;
 }
+
+void FeatureBaseModel::setFeatureList(DDCA_Feature_List featureList) {
+   _featuresToShow = featureList;
+
+   DDCA_Feature_List unchecked_features =
+         ddca_feature_list_minus(&_featuresToShow, &_featuresChecked);
+
+   cout << "Unchecked features: " << endl;
+   for (int ndx = 0; ndx <= 255; ndx++) {
+       if ( ddca_feature_list_contains(&unchecked_features, (uint8_t) ndx))
+           printf("%02x ", ndx);
+   }
+   cout << endl;
+
+   _monitor->_requestQueue->put(new VcpStartInitialLoadRequest);
+
+   for (int ndx = 0; ndx <= 255; ndx++) {
+       uint8_t vcp_code = (uint8_t) ndx;
+       if ( ddca_feature_list_contains(&unchecked_features, vcp_code)) {
+           _monitor->_requestQueue->put( new VcpGetRequest(vcp_code));
+       }
+   }
+   _monitor->_requestQueue->put(new VcpEndInitialLoadRequest);
+}
+
+
+void FeatureBaseModel::setFeatureChecked(uint8_t featureCode) {
+   ddca_feature_list_add(&_featuresChecked, featureCode);
+}
+
 
 
 /** Debugging function to report the contents of the current 
@@ -209,10 +274,10 @@ void FeatureBaseModel::report() {
         // printf("   feature_code: 0x%02x\n", fv->_feature_code);
         printf("   code=0x%02x, mh=0x%02x, ml-0x%02x, sh=0x%02x, sl=0x%02x\n",
                fv->_feature_code,
-               fv->_mh,
-               fv->_ml,
-               fv->_sh,
-               fv->_sl);
+               fv->_value.mh,
+               fv->_value.ml,
+               fv->_value.sh,
+               fv->_value.sl);
     }
 }
 
@@ -225,6 +290,11 @@ void  FeatureBaseModel::modelStartInitialLoad(void) {
 void  FeatureBaseModel::modelEndInitialLoad(void) {
     cout << "(FeatureBaseModel::modelEndInitialLoad()" << endl;
     signalEndInitialLoad();
+}
+
+void  FeatureBaseModel::setStatusMsg(QString msg) {
+   // printf("(%s::%s) msg=%s\n", _cls, __func__, msg.toLatin1().data());  fflush(stdout);
+   emit signalStatusMsg(msg);
 }
 
 

@@ -147,7 +147,8 @@ QVariant FeatureTableModel::data(const QModelIndex &index, int role) const
         }
         case 1:                 // feature name
         {
-            char * feature_name = ddca_feature_name_by_vspec(fv->_feature_code, fv->_vspec, &fv->_mmid);
+            // char * feature_name = ddca_feature_name_by_vspec(fv->_feature_code, fv->_vspec, &fv->_mmid);
+            char * feature_name = fv->finfo().feature_name;
             result = QVariant(QString(feature_name));
             break;
         }
@@ -192,7 +193,7 @@ QVariant FeatureTableModel::data(const QModelIndex &index, int role) const
                     char * formatted_value = NULL;
                     DDCA_Status rc = ddca_format_non_table_vcp_value(
                                          fv->_feature_code,
-                                         fv->_vspec,
+                                         fv->vspec(),   // fv->_vspec,
                                          &fv->_mmid,
                                          &fv->_value,
                                          &formatted_value);
@@ -239,7 +240,7 @@ bool FeatureTableModel::setData(const QModelIndex &index, const QVariant &value,
     if (value.canConvert<FeatureValue>()) {
        FeatureValue fv = value.value<FeatureValue>();
        fv.report();
-       VcpSetRequest * rqst = new VcpSetRequest(fv._feature_code, fv._sl);
+       VcpSetRequest * rqst = new VcpSetRequest(fv._feature_code, fv._value.sl);
        emit _baseModel->signalVcpRequest(rqst);
     }
 

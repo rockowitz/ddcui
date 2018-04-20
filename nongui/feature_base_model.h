@@ -7,11 +7,15 @@
 
 #include "ddcutil_types.h"
 
+#include "ddc_error.h"
 #include "feature_change_observer.h"
 #include "feature_value.h"
 #include "vcprequest.h"
 
 typedef void (*NotifyFeatureChanged)(uint8_t feature_code);
+
+
+class Monitor;
 
 
 /** The UI independent portion of the QT feature data model.
@@ -22,17 +26,20 @@ class FeatureBaseModel : public QObject
     Q_OBJECT
 
 public:
-    FeatureBaseModel();
+    FeatureBaseModel(Monitor * monitor);
 
 
     // void setMonitor(Monitor * monitor);
 
     FeatureValue * modelVcpValueFind(uint8_t feature_code);
+
+    FeatureValue * modelVcpValueFilteredFind(uint8_t feature_code);
     FeatureValue * modelVcpValueAt(int ndx) const;
     int            modelVcpValueCount(void) const;
 
     void           modelVcpValueSet(
                        uint8_t                              feature_code,
+                       DDCA_Display_Ref                     dref,
                        DDCA_Feature_Metadata                metadata,
                        // DDCA_MCCS_Version_Spec               vspec,
                        // DDCA_Simplified_Version_Feature_Info feature_flags,
@@ -48,6 +55,7 @@ public:
 
     void          modelStartInitialLoad(void);
     void          modelEndInitialLoad(void);
+    void          setStatusMsg(QString msg);
 
     void          report();
 
@@ -56,6 +64,13 @@ public:
 
     const char * _cls;    // className
 
+    Monitor *         _monitor;
+    DDCA_Feature_List _featuresToShow;
+    DDCA_Feature_List _featuresChecked;
+
+    void setFeatureList(DDCA_Feature_List featureList);
+    void setFeatureChecked(uint8_t featureCode);
+
 signals:
     void signalStartInitialLoad(void);
     void signalEndInitialLoad(void);
@@ -63,6 +78,15 @@ signals:
     void signalFeatureUpdated(char feature_code);
     void signalFeatureUpdated3(uint8_t feature_code, uint8_t sh, uint8_t sl);
     void signalVcpRequest(VcpRequest * rqst);  // used to call into monitor
+    void signalModelError(uint8_t featureCode, QString msg);
+    void signalDdcError(DdcError erec);
+    void signalStatusMsg(QString msg);
+
+public slots:
+
+
+    void onDdcError(DdcError& erec);
+
 
 protected:
     void notifyFeatureChangeObservers(uint8_t feature_code) ;

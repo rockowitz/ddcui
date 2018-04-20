@@ -10,9 +10,11 @@
 
 using namespace std;
 
-FeatureSelectionDialog::FeatureSelectionDialog(QWidget *parent, FeatureSelector * featureSelector) :   // was QWidget
-    QDialog(parent),
-    ui(new Ui::FeatureSelectionDialog)
+FeatureSelectionDialog::FeatureSelectionDialog(
+      QWidget *         parent,
+      FeatureSelector * featureSelector
+   ) :  QDialog(parent),
+        ui(new Ui::FeatureSelectionDialog)
 {
     cout << "(FeatureSelectionDialog)\n";
     printf("(FeatureSelectonDialog) featureSelector = %p\n", featureSelector);
@@ -26,14 +28,17 @@ FeatureSelectionDialog::FeatureSelectionDialog(QWidget *parent, FeatureSelector 
         curButton = ui->known_radioButton;
         break;
     case DDCA_SUBSET_COLOR:
-                curButton = ui->color_radioButton;
+        curButton = ui->color_radioButton;
         break;
     case DDCA_SUBSET_PROFILE:
-                curButton = ui->profile_RadioButton;
+        curButton = ui->profile_RadioButton;
         break;
     case DDCA_SUBSET_MFG:
-                curButton = ui->mfg_RadioButton;
+        curButton = ui->mfg_RadioButton;
         break;
+    case DDCA_SUBSET_UNSET:
+       assert(false);
+       break;
     }
     curButton->setChecked(true);
 
@@ -45,6 +50,7 @@ FeatureSelectionDialog::~FeatureSelectionDialog()
 {
     delete ui;
 }
+
 
 void FeatureSelectionDialog::setFeatureSet(int fsid) {
 
@@ -93,6 +99,7 @@ void FeatureSelectionDialog::on_include_table_checkBox_stateChanged(int arg1)
 
 void FeatureSelectionDialog::on_buttonBox_accepted()
 {
+    printf("(FeatureSelectionDialog::%s)\n",  __func__); fflush(stdout);
     // which button is currently clicked?
     DDCA_Feature_Subset_Id feature_list;
     if (ui->color_radioButton->isChecked())
@@ -110,6 +117,8 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
 
     // this->_mainWindow->set_feature_list_id(feature_list);
     this->_feature_selector->feature_list_id = feature_list;
+
+    emit featureSelectionAccepted(feature_list);
 
     // todo:
     // show_unsupported and show-table check boces

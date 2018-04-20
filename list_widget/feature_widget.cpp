@@ -107,12 +107,13 @@ void FeatureWidget::setFeatureValue(FeatureValue &fv) {
     }
 
     _feature_code  = fv._feature_code;
-    _feature_flags = fv._feature_flags;
-    _vspec         = fv._vspec;
+    _feature_flags = fv.flags();     // fv._feature_flags;
+    _vspec         = fv.vspec();     // fv._vspec;
 
     _featureCodeField->setText(QString::asprintf("x%02x", _feature_code) );
 
-    char * fname = ddca_get_feature_name(_feature_code);
+    // char * fname = ddca_get_feature_name(_feature_code);
+    char * fname = fv.finfo().feature_name;
     _featureNameField->setText(QString::fromUtf8(fname));
 
     QString s_rw;

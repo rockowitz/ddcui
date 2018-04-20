@@ -27,6 +27,7 @@
 #endif
 #include <iostream>
 
+#include "base/ddcui_globals.h"
 #include "base/debug_utils.h"
 
 // #include "feature_value_widgets/value_std_widget.h"
@@ -102,24 +103,25 @@ private:
         actionCapabilities = new QAction(MainWindow);
         actionCapabilities->setObjectName(QString::fromUtf8("actionCapabilities"));
 
-        actionFeaturesListWidget = new QAction(MainWindow);
-        actionFeaturesListWidget->setObjectName(QString::fromUtf8("actionFeaturesListWidget"));
+        if (enableAltFeatures) {
+           actionFeaturesListWidget = new QAction(MainWindow);
+           actionFeaturesListWidget->setObjectName(QString::fromUtf8("actionFeaturesListWidget"));
 
-        actionFeaturesListView = new QAction(MainWindow);
-        actionFeaturesListView->setObjectName(QString::fromUtf8("actionFeaturesListView"));
+           actionFeaturesListView = new QAction(MainWindow);
+           actionFeaturesListView->setObjectName(QString::fromUtf8("actionFeaturesListView"));
 
-        actionFeatureSelection = new QAction(MainWindow);
-        actionFeatureSelection->setObjectName(QString::fromUtf8("actionFeatureSelection"));
+           actionFeaturesTableView = new QAction(MainWindow);
+           actionFeaturesTableView->setObjectName(QString::fromUtf8("actionFeaturesTableView"));
 
-        actionFeaturesTableView = new QAction(MainWindow);
-        actionFeaturesTableView->setObjectName(QString::fromUtf8("actionFeaturesTableView"));
+           actionFeaturesScrollAreaMock = new QAction(MainWindow);
+           actionFeaturesScrollAreaMock->setObjectName(QString::fromUtf8("actionFeaturesScrollAreaMock"));
+        }
 
         actionFeaturesScrollArea = new QAction(MainWindow);
         actionFeaturesScrollArea->setObjectName(QString::fromUtf8("actionFeaturesScrollArea"));
 
-        actionFeaturesScrollAreaMock = new QAction(MainWindow);
-        actionFeaturesScrollAreaMock->setObjectName(QString::fromUtf8("actionFeaturesScrollAreaMock"));
-
+        actionFeatureSelection = new QAction(MainWindow);
+        actionFeatureSelection->setObjectName(QString::fromUtf8("actionFeatureSelection"));
 
         // Options->Feature Selection Dialog Actions
 
@@ -194,20 +196,30 @@ private:
 
        menuView->addAction(actionMonitorSummary);
        menuView->addAction(actionCapabilities);
+       if (enableAltFeatures) {
        menuView->addAction(actionFeaturesListWidget);
        menuView->addAction(actionFeaturesListView);
        menuView->addAction(actionFeaturesTableView);
+       }
        menuView->addAction(actionFeaturesScrollArea);
+       if (enableAltFeatures) {
        menuView->addAction(actionFeaturesScrollAreaMock);
+       }
 
        actionMonitorSummary->setText(    QApplication::translate("MainWindow", "&Monitor Summary", 0));
        actionCapabilities->setText(      QApplication::translate("MainWindow", "&Capabilities", 0));
-       actionFeaturesListWidget->setText(QApplication::translate("MainWindow", "&Features - ListWidget", 0));
-       actionFeaturesListView->setText(  QApplication::translate("MainWindow", "&Features - ListView",   0));
-       actionFeaturesTableView->setText( QApplication::translate("MainWindow", "F&eatures - TableView",  0));
-       actionFeaturesScrollArea->setText(QApplication::translate("MainWindow", "Features - &ScrollArea", 0));
-       actionFeaturesScrollAreaMock->setText(
-                                         QApplication::translate("MainWindow", "Features - &MockScrollArea", 0));
+       if (enableAltFeatures) {
+          actionFeaturesListWidget->setText(QApplication::translate("MainWindow", "&Features - ListWidget", 0));
+          actionFeaturesListView->setText(  QApplication::translate("MainWindow", "&Features - ListView",   0));
+          actionFeaturesTableView->setText( QApplication::translate("MainWindow", "F&eatures - TableView",  0));
+
+          actionFeaturesScrollAreaMock->setText(
+                                            QApplication::translate("MainWindow", "Features - &MockScrollArea", 0));
+          actionFeaturesScrollArea->setText(QApplication::translate("MainWindow", "Features - &ScrollArea", 0));
+       }
+       else {
+          actionFeaturesScrollArea->setText(QApplication::translate("MainWindow", "&Features", 0));
+       }
        menuHelp->addAction(actionAbout);
        menuHelp->addAction(actionAboutQt);
 

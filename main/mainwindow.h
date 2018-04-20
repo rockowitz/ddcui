@@ -12,6 +12,8 @@
 
 #include <ddcutil_types.h>
 
+#include "base/ddcui_globals.h"
+
 // #include "base/monitor.h"
 #include "feature_scrollarea/page_change_observer.h"
 // #include "feature_selection/feature_selector.h"
@@ -20,6 +22,8 @@ class VcpThread;
 class FeatureSelector;
 class Monitor;
 class FeatureBaseModel;
+class WaitingSpinnerWidget;
+class QMessageBox;
 
 namespace Ui {
 class MainWindow;
@@ -60,14 +64,30 @@ public:
 
     const char * _cls;
 
+signals:
+    void featureSelectionChanged();
+
+public slots:
+    void longRunningTaskStart();
+    void longRunningTaskEnd();
+
+    void setStatusMsg(QString msg);
+
 private:
     DDCA_Feature_Subset_Id _feature_list_id = DDCA_SUBSET_KNOWN;
     QVector<VcpThread*> vcp_threads;
+
+    WaitingSpinnerWidget* _spinner;
+    QMessageBox*          _loadingMsgBox;
+
 
     QWidget * initFeaturesScrollArea(
           Monitor *         curMonitor,
           FeatureBaseModel* baseModel,
           QStackedWidget *  stackedWidget);
+
+    void featureSelectionDone();
+
 
 private slots:
     void on_actionAbout_triggered();
@@ -79,6 +99,11 @@ private slots:
     void on_actionCapabilities_triggered();
 
     void on_actionFeatureSelectionDialog_triggered();
+    void on_actionFeatureSelectionDialog_accepted();
+    void actionFeatureSelectionDialog_destroyed(QObject * obj);
+
+    void featureSelectionAccepted(DDCA_Feature_Subset_Id feature_list);
+
     void on_actionFeatureSelection_triggered();
 
     void on_actionFeaturesTableView_triggered();

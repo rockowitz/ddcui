@@ -49,8 +49,8 @@ void FeatureValueTableItemContEditor::setFeatureValue(const FeatureValue &fv) {
     printf("============> (FeatureValueTableItemContEditor::setFeatureValue)\n" ); fflush(stdout);
     _fv = fv;
 
-    int maxval = _fv._mh << 8 | _fv._ml;
-    int curval = _fv._sh << 8 | _fv._sl;
+    int maxval = _fv._value.mh << 8 | _fv._value.ml;
+    int curval = _fv._value.sh << 8 | _fv._value.sl;
 
     _curSlider->setTickInterval(maxval/10);
     // _curSlider->setRange(0, maxVal);
@@ -69,15 +69,15 @@ void FeatureValueTableItemContEditor::setFeatureValue(const FeatureValue &fv) {
 FeatureValue FeatureValueTableItemContEditor::featureValue() {
     printf("============> (FeatureValueTableItemContEditor::featureValue)\n" ); fflush(stdout);
     int curval = _curSlider->value();
-    _fv._sh = curval >> 8;
-    _fv._sl = curval & 0xff;
+    _fv._value.sh = curval >> 8;
+    _fv._value.sl = curval & 0xff;
     return _fv;
 }
 
 
 void FeatureValueTableItemContEditor::setCurValue(ushort curval) {
-    _fv._sh = curval >> 8;
-    _fv._sl = curval & 0xff;
+    _fv._value.sh = curval >> 8;
+    _fv._value.sl = curval & 0xff;
     _curSpinBox->setValue(curval);
     _curSlider->setValue(curval);
 }

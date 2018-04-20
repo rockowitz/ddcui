@@ -53,18 +53,38 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->setupUi(this);
 
+    _spinner = new WaitingSpinnerWidget(
+                                           Qt::ApplicationModal,    // alt WindowModal, ApplicationModal, NonModal
+                                           this,       // parent
+                                           true);       /// centerOnParent
+    _loadingMsgBox = new QMessageBox(this);
+    _loadingMsgBox->setText("Loading...");
+    _loadingMsgBox->setStandardButtons(QMessageBox::NoButton);
+    _loadingMsgBox->setWindowModality(Qt::WindowModal);
+    // _loadingMsgBox->setWindowFlags( Qt::FramelessWindowHint );  // msg box does not display
+
+
     QLabel* toolbarDisplayLabel = new QLabel("&Display:  ");
     _toolbarDisplayCB = new QComboBox();
+    _toolbarDisplayCB->setStyleSheet("background-color:white;");
     toolbarDisplayLabel->setBuddy(_toolbarDisplayCB);
     ui->mainToolBar->addWidget( toolbarDisplayLabel);
     ui->mainToolBar->addWidget( _toolbarDisplayCB);
 
-    reportWidgetChildren(ui->viewsStackedWidget,
-                         "Children of viewsStackedWidget, before initDisplaySelector():");
+    // reportWidgetChildren(ui->viewsStackedWidget,
+    //                      "Children of viewsStackedWidget, before initDisplaySelector():");
     initDisplaySelector();
     feature_selector = new FeatureSelector();
     reportWidgetChildren(ui->viewsStackedWidget,
                          "Children of viewsStackedWidget, after initDisplaySelector():");
+
+    // Register metatypes for primitive types here.
+    // Metatypes for classes are registered with the class definition.
+    qRegisterMetaType<uint8_t>("uint8_t");
+
+     QObject::connect(
+        this,     &MainWindow::featureSelectionChanged,
+        this,     &MainWindow::on_actionFeaturesScrollArea_triggered);
 }
 
 
@@ -93,12 +113,7 @@ void MainWindow::initDisplaySelector() {
    //  ui->displaySelectorComboBox->setSizeAdjustPolicy(QComboBox::AdjustToContents);
    //  ui->displaySelectorComboBox->setMinimumContentsLength(28);   // 2 + 3 + 3 + 3 + 13
 
-    Qt::WindowModality modality = Qt::ApplicationModal;   // alt WindowModal, ApplicationModal, NonModal
-    WaitingSpinnerWidget* spinner = new WaitingSpinnerWidget(
-                                           modality,
-                                           this,       // parent
-                                           true);       /// centerOnParent
-    spinner->start(); // starts spinning
+   longRunningTaskStart();
     QString msg = QString("Loading display information... ");
     ui->statusBar->showMessage(msg);
 
@@ -127,7 +142,7 @@ void MainWindow::initDisplaySelector() {
         monitors.append(curMonitor);
 
         curMonitor->_requestQueue = new VcpRequestQueue();
-        FeatureBaseModel * baseModel = new FeatureBaseModel();
+        FeatureBaseModel * baseModel = new FeatureBaseModel(curMonitor);
         baseModel->setObjectName(QString::asprintf("baseModel-%d",ndx));
 
         initMonitorInfoWidget(
@@ -138,30 +153,34 @@ void MainWindow::initDisplaySelector() {
               curMonitor,
               ui->viewsStackedWidget);
 
-        initListWidget(
-              curMonitor,
-              monitorNumber,
-              baseModel,
-              ui->viewsStackedWidget
-              );
+        if (enableAltFeatures) {
 
-        initTableWidget(
-              curMonitor,
-              baseModel,
-              ui->viewsStackedWidget
-              );
+           initListWidget(
+                 curMonitor,
+                 monitorNumber,
+                 baseModel,
+                 ui->viewsStackedWidget
+                 );
 
-        initTableView(
-              curMonitor,
-              baseModel,
-              ui->viewsStackedWidget
-              );
+           initTableWidget(
+                 curMonitor,
+                 baseModel,
+                 ui->viewsStackedWidget
+                 );
 
-//        initFeaturesScrollArea(
-//              curMonitor,
-//              baseModel,
-//              ui->viewsStackedWidget
-//              );
+           initTableView(
+                 curMonitor,
+                 baseModel,
+                 ui->viewsStackedWidget
+                 );
+
+   //        initFeaturesScrollArea(
+   //              curMonitor,
+   //              baseModel,
+   //              ui->viewsStackedWidget
+   //              );
+
+        }
 
         initFeaturesScrollAreaView(
               curMonitor,
@@ -173,12 +192,21 @@ void MainWindow::initDisplaySelector() {
         QObject::connect(baseModel,  SIGNAL(signalVcpRequest(VcpRequest*)),
                          curMonitor, SLOT(  putVcpRequest(VcpRequest*)));
 
+        QObject::connect(baseModel, &FeatureBaseModel::signalStartInitialLoad,
+                         this,      &MainWindow::longRunningTaskStart);
+        QObject::connect(baseModel, &FeatureBaseModel::signalEndInitialLoad,
+                         this,      &MainWindow::longRunningTaskEnd);
+
+
         curMonitor->_baseModel = baseModel;
 
         VcpThread * curThread = new VcpThread(NULL,
                                               curMonitor->_displayInfo,
                                               curMonitor->_requestQueue,
                                               baseModel);
+        QObject::connect(baseModel,   &FeatureBaseModel::signalStatusMsg,
+                         this,        &MainWindow::setStatusMsg);
+
         curThread->start();
         vcp_threads.append(curThread);
     }
@@ -189,7 +217,7 @@ void MainWindow::initDisplaySelector() {
     // Set message in status bar
     msg = QString("Detected ") + QString::number(_dlist->ct) + QString(" displays.");
     ui->statusBar->showMessage(msg);
-    spinner->stop();
+    longRunningTaskEnd();
 }
 
 
@@ -221,25 +249,47 @@ void MainWindow::on_actionAbout_Qt_triggered()
     QMessageBox::aboutQt(this, "About Qt");
 }
 
+void MainWindow::longRunningTaskStart() {
+   // needs counter
+   printf("(%s::%s)\n", _cls, __func__);  fflush(stdout);
+   // _spinner->start();
+   _loadingMsgBox->show();
+}
+
+void MainWindow::longRunningTaskEnd() {
+   printf("(%s::%s)\n", _cls, __func__);  fflush(stdout);
+   // _spinner->stop();
+   _loadingMsgBox->hide();
+}
+
+void MainWindow::setStatusMsg(QString msg) {
+   // printf("(%s::%s) msg: %s\n", _cls, __func__, msg.toLatin1().data());  fflush(stdout);
+   statusBar()->showMessage(msg,30);
+}
+
 
 void MainWindow::loadMonitorFeatures(Monitor * monitor) {
-
-
-    WaitingSpinnerWidget* spinner = new WaitingSpinnerWidget(
-                                           Qt::ApplicationModal,    // alt WindowModal, ApplicationModal, NonModal
-                                           this,       // parent
-                                           true);       /// centerOnParent
     QString msg = QString("Reading monitor features...");
     ui->statusBar->showMessage(msg);
-    spinner->start();
 
-    DDCA_Feature_List feature_list = monitor->getFeatureList(feature_selector->feature_list_id);
-
+    DDCA_Feature_List features_to_show = monitor->getFeatureList(feature_selector->feature_list_id);
     cout << "feature_list_id: " << feature_selector->feature_list_id << ",  Feature ids: " << endl;
     for (int ndx = 0; ndx <= 255; ndx++) {
-        if ( ddca_feature_list_contains(&feature_list, (uint8_t) ndx)) {
+        if ( ddca_feature_list_contains(&features_to_show, (uint8_t) ndx))
             printf("%02x ", ndx);
-        }
+    }
+    cout << endl;
+
+    monitor->_baseModel->setFeatureList(features_to_show);
+
+#ifdef MOVED
+    DDCA_Feature_List unchecked_features =
+          ddca_feature_list_minus(&features_to_show, &monitor->_baseModel->_featuresChecked);
+
+    cout << "Unchecked features: " << endl;
+    for (int ndx = 0; ndx <= 255; ndx++) {
+        if ( ddca_feature_list_contains(&unchecked_features, (uint8_t) ndx))
+            printf("%02x ", ndx);
     }
     cout << endl;
 
@@ -247,16 +297,13 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
 
     for (int ndx = 0; ndx <= 255; ndx++) {
         uint8_t vcp_code = (uint8_t) ndx;
-        if ( ddca_feature_list_contains(&feature_list, vcp_code)) {
-            // printf("%02x ");
-
+        if ( ddca_feature_list_contains(&unchecked_features, vcp_code)) {
             monitor->_requestQueue->put( new VcpGetRequest(vcp_code));
         }
     }
     monitor->_requestQueue->put(new VcpEndInitialLoadRequest);
+#endif
 
-    // wrong location - should stop when last response received
-    spinner->stop();
 }
 
 
@@ -281,6 +328,7 @@ void MainWindow::on_actionMonitorSummary_triggered()
 {
     std::cout << "(MainWindow::on_actionMonitorSummary_triggered()" << endl;
 
+
     int monitorNdx = _toolbarDisplayCB->currentIndex();
 
     DDCA_Display_Info * dinfo = &_dlist->info[monitorNdx];
@@ -294,6 +342,7 @@ void MainWindow::on_actionMonitorSummary_triggered()
     QFont fixedFont("Courier");
     moninfoPlainText->setFont(fixedFont);
 
+    _curView = View::MonitorView;
     ui->viewsStackedWidget->setCurrentIndex(pageno);
 
     ui->viewsStackedWidget->show();
@@ -350,8 +399,46 @@ void MainWindow::on_actionFeatureSelectionDialog_triggered()
         cout << "(on_actionFeatureSelectionDialog_triggered)" << endl;
 
        FeatureSelectionDialog* fsd = new FeatureSelectionDialog(this, this->feature_selector);
-       fsd->show();
+       // signal not found in FeatureSelectionDialog
+       // now this one is working, why?
+       QObject::connect(fsd,      &FeatureSelectionDialog::accepted,
+                        this,     &MainWindow::on_actionFeatureSelectionDialog_accepted);
+
+       QObject::connect(fsd,      &FeatureSelectionDialog::destroyed,
+                        this,     &MainWindow::actionFeatureSelectionDialog_destroyed);
+
+       QObject::connect(fsd,     &FeatureSelectionDialog::featureSelectionAccepted,
+                        this,    &MainWindow::featureSelectionAccepted);
+
+       fsd->exec();
 }
+
+
+void MainWindow::featureSelectionDone() {
+   printf("(%s::%s)\n", _cls, __func__);
+   if (_curView == FeaturesView) {
+      printf("%s::%s) Signaling \n", _cls, __func__);
+      emit featureSelectionChanged();
+   }
+
+}
+
+
+void MainWindow::on_actionFeatureSelectionDialog_accepted()
+{
+   printf("%s::%s)\n", _cls, __func__);
+   featureSelectionDone();
+}
+
+void MainWindow::actionFeatureSelectionDialog_destroyed(QObject * obj)
+{
+   printf("%s::%s)\n", _cls, __func__);
+}
+
+void MainWindow::featureSelectionAccepted(DDCA_Feature_Subset_Id feature_list) {
+   printf("%s::%s) feature_list=%d\n", _cls, __func__, feature_list);
+}
+
 
 DDCA_Feature_Subset_Id MainWindow::feature_list_id() const {
     return this->_feature_list_id;
@@ -433,28 +520,48 @@ void MainWindow::on_actionFeaturesScrollAreaMock_triggered()
 {
     printf("(MainWindow::%s) Starting\n", __func__);  fflush(stdout);
 
+    Monitor * monitor = monitors[0];
+    DDCA_Display_Ref dref = monitor->_displayInfo->dref;
+
+
     ValueStdWidget * mock1 = new ValueStdWidget();
         DDCA_MCCS_Version_Spec vspec1 = {2,0};
         DDCA_Non_Table_Vcp_Value val1 = {0, 254, 0, 20};
         DDCA_Feature_Flags flags1 = DDCA_RW | DDCA_STD_CONT;
-        FeatureValue * fv1 = new FeatureValue(0x22, vspec1, NULL, flags1, val1);
+        DDCA_Feature_Metadata * md1 = (DDCA_Feature_Metadata*)calloc(1,sizeof(DDCA_Feature_Metadata));
+        md1->feature_code = 0x22;
+        md1->feature_desc =  (char*) "Description of feature X22";
+        md1->feature_flags = flags1;
+        md1->feature_name  = (char*) "Feature X22";
+        memcpy(md1->marker, DDCA_FEATURE_METADATA_MARKER, 4);
+        md1->mmid = NULL;
+        md1->sl_values = NULL;
+        md1->vspec = vspec1;
+
+        FeatureValue * fv1 = new FeatureValue(0x22, dref, *md1, vspec1, NULL, flags1, val1);
         mock1->setFeatureValue(*fv1);
 
     ValueContWidget * mock2 = new ValueContWidget();
         DDCA_Non_Table_Vcp_Value val2 = {0, 100, 0, 50};
         DDCA_Feature_Flags flags2 = DDCA_RW | DDCA_STD_CONT;
-        FeatureValue * fv2 = new FeatureValue(0x10, vspec1, NULL, flags2, val2);
+        DDCA_Feature_Metadata * md2 = (DDCA_Feature_Metadata*) calloc(1, sizeof(DDCA_Feature_Metadata));
+        memcpy(md2, md1, sizeof(DDCA_Feature_Metadata));
+        md2->feature_flags = flags2;
+        FeatureValue * fv2 = new FeatureValue(0x10, dref, *md2, vspec1, NULL, flags2, val2);
         mock2->setFeatureValue(*fv2);
 
     ValueStackedWidget * mock3 = new ValueStackedWidget();
         DDCA_Non_Table_Vcp_Value val3 = {0, 80, 0, 30};
         DDCA_Feature_Flags flags3 = DDCA_RW | DDCA_STD_CONT;
-        FeatureValue * fv3 = new FeatureValue(0x10, vspec1, NULL, flags3, val3);
+        FeatureValue * fv3 = new FeatureValue(0x10, dref, *md2, vspec1, NULL, flags3, val3);
         mock3->setFeatureValue(*fv3);
 
     ValueStackedWidget * mock4 = new ValueStackedWidget();
         DDCA_Feature_Flags flags4 = DDCA_RW | DDCA_COMPLEX_CONT;
-        FeatureValue * fv4 = new FeatureValue(0x10, vspec1, NULL, flags4, val3);
+        DDCA_Feature_Metadata * md4 = (DDCA_Feature_Metadata*) calloc(1, sizeof(DDCA_Feature_Metadata));
+        memcpy(md4, md2, sizeof(DDCA_Feature_Metadata));
+        md4->feature_flags = flags4;
+        FeatureValue * fv4 = new FeatureValue(0x10, dref, *md4, vspec1, NULL, flags4, val3);
         mock4->setFeatureValue(*fv4);
 
     FeatureWidgetBasic * mock5 = new FeatureWidgetBasic();
@@ -467,7 +574,20 @@ void MainWindow::on_actionFeaturesScrollAreaMock_triggered()
     FeatureWidgetBasic * mock7 = new FeatureWidgetBasic();
         DDCA_Non_Table_Vcp_Value val7 = {0, 0, 0, 4};
         DDCA_Feature_Flags flags7 = DDCA_RW | DDCA_SIMPLE_NC;
-        FeatureValue * fv7 = new FeatureValue(0x60, vspec1, NULL, flags7, val7);
+
+        DDCA_Feature_Metadata * md7 = (DDCA_Feature_Metadata*)  calloc(1,sizeof(DDCA_Feature_Metadata));
+        md7->feature_code = 0x60;
+        md7->feature_desc = (char*) "Description of feature X22";
+        md7->feature_flags = flags7;
+        md7->feature_name  =  (char *) "Input Source";
+        memcpy(md1->marker, DDCA_FEATURE_METADATA_MARKER, 4);
+        md7->mmid = NULL;
+        // doesn't compile, to address if I ever really need the mock data again
+        // md7->sl_values = {{0x01, "Input 1"},{0x02, "Input 2"}};
+        md7->vspec = vspec1;
+
+
+        FeatureValue * fv7 = new FeatureValue(0x60, dref, *md7, vspec1, NULL, flags7, val7);
         mock7->setFeatureValue(*fv7);
 
     FeaturesScrollAreaContents * featuresScrollAreaContents =
@@ -510,11 +630,29 @@ void MainWindow::on_actionFeaturesScrollAreaMock_triggered()
 
 void MainWindow::on_actionFeaturesScrollArea_triggered()
 {
-    printf("(MainWindow::%s) Starting\n", __func__);  fflush(stdout);
+    printf("(MainWindow::%s) Desired view: %d, features view: %d, feature list: \n",
+          __func__, View::FeaturesView, Monitor::FEATURES_VIEW_SCROLLAREA_VIEW);  fflush(stdout);
+    this->feature_selector->dbgrpt();
+
     int monitorNdx = _toolbarDisplayCB->currentIndex();
     Monitor * monitor = monitors[monitorNdx];
-    monitor->_curFeaturesView = Monitor::FEATURES_VIEW_SCROLLAREA_VIEW;
-    loadMonitorFeatures(monitor);
+    printf("(MainWindow::%s) Current view: %d, features view: %d, feature list:\n",
+          __func__, _curView, monitor->_curFeaturesView);  fflush(stdout);
+    monitor->_curFeatureSelector.dbgrpt();
+
+    // TODO Combine View, features view
+    if (_curView                     != View::FeaturesView                     ||
+        monitor->_curFeaturesView    != Monitor::FEATURES_VIEW_SCROLLAREA_VIEW ||
+        monitor->_curFeatureSelector != *feature_selector )
+    {
+       loadMonitorFeatures(monitor);
+       _curView = View::FeaturesView;
+       monitor->_curFeaturesView = Monitor::FEATURES_VIEW_SCROLLAREA_VIEW;
+       monitor->_curFeatureSelector   = *feature_selector;
+    }
+    else {
+       printf("(%s::%s) Unchanged view and feature set, no need to load\n", _cls, __func__);
+    }
 }
 
 

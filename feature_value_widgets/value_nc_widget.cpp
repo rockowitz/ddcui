@@ -21,6 +21,7 @@
 
 static bool dimensionReportShown = false;
 
+
 ValueNcWidget::ValueNcWidget(QWidget *parent):
         ValueBaseWidget(parent)
 {
@@ -45,21 +46,28 @@ ValueNcWidget::ValueNcWidget(QWidget *parent):
     // _cb->setFrameStyle(QFrame::Sunken | QFrame::Panel);   // not a method
     _cb->setStyleSheet("background-color:white;");
 
-    _applyButton  = new QPushButton("Apply");
-    _cancelButton = new QPushButton("Cancel");
-    _applyButton->setMaximumSize(55,20);
-    _applyButton->setSizePolicy(*sizePolicy);
-    _applyButton->setFont(nonMonoFont9);
-    _cancelButton->setMaximumSize(55,20);
-    _cancelButton->setSizePolicy(*sizePolicy);
-    _cancelButton->setFont(nonMonoFont9);
-
+    if (useApplyCancel) {
+       _applyButton  = new QPushButton("Apply");
+       _cancelButton = new QPushButton("Cancel");
+       _applyButton->setMaximumSize(55,20);
+       _applyButton->setSizePolicy(*sizePolicy);
+       _applyButton->setFont(nonMonoFont9);
+       _cancelButton->setMaximumSize(55,20);
+       _cancelButton->setSizePolicy(*sizePolicy);
+       _cancelButton->setFont(nonMonoFont9);
+    }
 
     QHBoxLayout * layout = new QHBoxLayout();
+    layout->addSpacing(5);
     layout->addWidget(_cb);
     layout->addStretch(1);
-    layout->addWidget(_applyButton);
-    layout->addWidget(_cancelButton);
+    if (useApplyCancel) {
+       layout->addWidget(_applyButton);
+       layout->addWidget(_cancelButton);
+    }
+    else {
+       layout->addSpacing(10);
+    }
     layout->setContentsMargins(0,0,0,0);
     setLayout(layout);
 
@@ -81,7 +89,10 @@ ValueNcWidget::ValueNcWidget(QWidget *parent):
 void ValueNcWidget::setFeatureValue(const FeatureValue &fv) {
     ValueBaseWidget::setFeatureValue(fv);
 
-    // printf("(ValueNcWidget::setFeatureValue) Starting\n" ); fflush(stdout);
+    printf("(ValueNcWidget::setFeatureValue) Starting. feature 0x%02x, new sl=x%02x\n",
+           _feature_code, fv._value.sl ); fflush(stdout);
+
+    _guiChange = false;
 
     DDCA_Status rc = 0;
     DDCA_Feature_Value_Table value_table;
@@ -112,14 +123,21 @@ void ValueNcWidget::setFeatureValue(const FeatureValue &fv) {
             _cb->setCurrentIndex(cur_ndx);
         }
         else {
-            printf("(FeatureValueTableItemCbEditor::%s) Unable to find value 0x%02x\n", __func__, _sl);
+            printf("(%s::%s) Unable to find value 0x%02x\n", _cls, __func__, _sl);
         }
     }
+    _guiChange=true;
 }
 
 
 void ValueNcWidget::setCurrentValue(uint16_t newval) {
+   printf("(%s::%s) Starting. feature 0x%02x, newval=x%04x\n",
+          _cls, __func__, _feature_code, newval ); fflush(stdout);
+
+   _guiChange = false;
+
     ValueBaseWidget::setCurrentValue(newval);
+
 
     // - set current value in combo box
     int cur_ndx = findItem(_sl);
@@ -129,6 +147,7 @@ void ValueNcWidget::setCurrentValue(uint16_t newval) {
     else {
         printf("(FeatureValueTableItemCbEditor::%s) Unable to find value 0x%02x\n", __func__, _sl);
     }
+    _guiChange = true;
 }
 
 
@@ -150,7 +169,8 @@ uint16_t ValueNcWidget::getCurrentValue() {
 }
 
 void ValueNcWidget::combobox_activated(int index) {
-   printf("(%s::%s) index=%d\n", _cls, __func__, index); fflush(stdout);
+   printf("(%s::%s) feature 0x%02x, index=%d\n",
+          _cls, __func__, _feature_code, index); fflush(stdout);
    int ndx = _cb->currentIndex();
    assert(ndx == index);
 
@@ -160,15 +180,16 @@ void ValueNcWidget::combobox_activated(int index) {
    uint8_t new_sl = i & 0xff;
 
    if (new_sh != _sh || new_sl != _sl) {
-      printf("(%s::%s) Value changed.  New sl: %u\n", _cls, __func__, new_sl); fflush(stdout);
-      emit featureValueChanged(_feature_code, 0, new_sl);
+      printf("(%s::%s) Value changed.  New sl: %u, _guiChange=%d\n",
+            _cls, __func__, new_sl, _guiChange); fflush(stdout);
+      if (_guiChange)
+         emit featureValueChanged(_feature_code, 0, new_sl);
       _sh = 0;
       _sl = new_sl;
    }
    else {
       printf("(%s::%s) Value not changed.\n", _cls, __func__); fflush(stdout);
    }
-
 }
 
 

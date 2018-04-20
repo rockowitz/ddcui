@@ -38,7 +38,7 @@ ValueResetWidget::ValueResetWidget(QWidget *parent):
     _resetButton->setSizePolicy(*sizePolicy);
     _resetButton->setFont(nonMonoFont);
     // _cb->setFrameStyle(QFrame::Sunken | QFrame::Panel);   // not a method
-    // _resetButton->setStyleSheet("background-color:white;");
+    _resetButton->setStyleSheet("background-color:white;");
 
     QHBoxLayout * layout = new QHBoxLayout();
     layout->addWidget(_resetButton);

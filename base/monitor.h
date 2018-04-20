@@ -6,7 +6,10 @@
 #include <QtCore/QObject>
 #include <QtCore/QHash>
 
+#include <ddcutil_types.h>
 #include <ddcutil_c_api.h>
+
+#include "base/feature_selector.h"
 
 class QListView;
 class QListWidget;
@@ -60,6 +63,7 @@ public:
     VcpRequestQueue*     _requestQueue;
     DDCA_Display_Info *  _displayInfo;
     DDCA_Display_Handle  _dh;
+    // DDCA_Display_Ref     _dref;    // use _displayInfo->dref
     // VcpThread        _vcpThread;
 
     QWidget *           _page_moninfo;
@@ -71,6 +75,8 @@ public:
     QPlainTextEdit *    _capabilitiesPlainText;
 
     FeaturesView       _curFeaturesView = FEATURES_VIEW_UNSET;
+    // DDCA_Feature_Subset_Id _curFeatureSet = DDCA_SUBSET_UNSET;
+    FeatureSelector    _curFeatureSelector;
 
 #ifdef UNUSED
     QWidget *           page_vcp;
@@ -83,14 +89,12 @@ public:
     FeatureListWidget * _featureListWidget = NULL;
     int                 _pageno_listWidget = -1;
 
-
 #ifdef UNUSED
     QWidget *page_list_widget;
     // QListWidget *feature_listWidget;
     FeatureListWidget * feature_listWidget;
     int _pageno_list_widget;
 #endif
-
 
     // FEATURES_VIEW_LISTVIEW
     QWidget *           page_list_view   = NULL;
