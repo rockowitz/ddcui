@@ -26,6 +26,9 @@ public:
     // QSize sizeHint() const override;   //   needed?
 
     uint8_t                _feature_code;
+    DDCA_Display_Ref       _dref;
+    DDCA_Feature_Metadata  _finfo;
+
     DDCA_MCCS_Version_Spec _vspec;
     DDCA_Monitor_Model_Key * _mmid;
     DDCA_Non_Table_Vcp_Value   _value;    // use this or individual bytes? DDCA_Non_Table_Value needed for get_formatted_value call

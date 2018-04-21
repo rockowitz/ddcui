@@ -8,8 +8,8 @@ const int FeatureValueRole  = Qt::UserRole+1;  // DisplayRole, EditorRole, .. et
 
 const int FeatureWidgetType = QListWidgetItem::UserType+1;
 
-const bool debugLayout = false;
-const bool useApplyCancel = false;
+const bool debugLayout       = false;
+const bool useApplyCancel    = false;
 const bool enableAltFeatures = false;
 
 #endif // DDCUI_GLOBALS_H

@@ -7,7 +7,8 @@
 
 #include <stdio.h>
 
-#include "../base/monitor.h"
+#include "base/vertical_scroll_area.h"
+#include "base/monitor.h"
 #include "base/ddcui_globals.h"
 #include "base/debug_utils.h"
 
@@ -34,17 +35,6 @@ FeaturesScrollAreaView::FeaturesScrollAreaView(
 }
 
 
-// static   // unused
-QSizePolicy pageSizePolicy() {
-    QSizePolicy policy(QSizePolicy::MinimumExpanding,QSizePolicy::MinimumExpanding);
-    policy.setHorizontalStretch(1);
-    policy.setVerticalStretch(0);
-    policy.setHeightForWidth(false);
-    return policy;
-}
-
-
-
 void FeaturesScrollAreaView::onEndInitialLoad(void) {
    printf("(FeatuesScrollAreaView::%s) Starting\n", __func__);  fflush(stdout);
    if (_monitor->_curFeaturesView != Monitor::FEATURES_VIEW_SCROLLAREA_VIEW) {
@@ -52,19 +42,19 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
       return;
    }
 
-
-    // QStackedWidget *   _centralStackedWidget;
-    // FeatureBaseModel * _baseModel;
-
     QScrollArea * scrollArea = new QScrollArea();
+    // causes extra space between C/NC/T column and value column
+    // VerticalScrollArea * scrollArea = new VerticalScrollArea();
+
     FeaturesScrollAreaContents * scrollAreaContents = new FeaturesScrollAreaContents();
-    // no effect:
+    scrollAreaContents->setObjectName("scrollAreaContents local to onEndInitialLoad");
+
+    // no effect, only applies if no layout is set
     // scrollAreaContents->setSizePolicy(pageSizePolicy());
 
     // screws things up, value block forced right and truncated
     // scrollAreaContents->setMinimumSize(QSize(900,0));
 
-    scrollAreaContents->setObjectName("scrollAreaContents local to onEndInitialLoad");
     QVBoxLayout * vLayout  = new QVBoxLayout();
     vLayout->setObjectName("vLayout in onEndInitLoad");
     vLayout->setMargin(0);
@@ -92,9 +82,7 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
          }
     }
 
-    // printf("Calling scrollAreaContents->setLayout()\n"); fflush(stdout);
     scrollAreaContents->setLayout(vLayout);
-    // printf("Calling scrollArea->setWidget()\n"); fflush(stdout);
     scrollArea->setWidget(scrollAreaContents);
 
     // QObject::connect(_baseModel,   &FeatureBaseModel::signalFeatureUpdated,
@@ -104,18 +92,16 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
                      this,       &FeaturesScrollAreaView::onModelValueChanged);
 
 
-
-    // printf("Calling _centralStackedWidget->addWidget()\n"); fflush(stdout);
     /* int pageno = */ _centralStackedWidget->addWidget(scrollArea);
     // _centralStackedWidget->hide();    // no effect
-    // _centralStackedWidget->setCurrentIndex(pageno);
     _centralStackedWidget->setCurrentWidget(scrollArea);
 
-
     if (!dimensionReportShown && debugLayout) {
-       printf("-------------------------------------------->\n"); fflush(stdout);
-       reportWidgetDimensions(scrollAreaContents, _cls, __func__);
-        printf("-------------------------------------------->\n"); fflush(stdout);
+        printf("(%s::%s) ---------------------> scrollAreaContents in QScrollArea\n",    _cls, __func__);
+        reportWidgetDimensions(scrollAreaContents,    _cls, __func__);
+        printf("(%s::%s) ---------------------> QScrollArea in _centralStackedWidget\n", _cls, __func__);
+        reportWidgetDimensions(scrollArea,            _cls, __func__);
+        printf("(%s::%s) ---------------------> centralStackedWidget\n",                 _cls, __func__);
         reportWidgetDimensions(_centralStackedWidget, _cls, __func__);
         // dimensionReportShown = true;
     }
@@ -123,6 +109,7 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
     _centralStackedWidget->show();
     printf("(FeatuesScrollAreaView::%s) Done.  feature count: %d\n", __func__, ct);  fflush(stdout);
 }
+
 
 void FeaturesScrollAreaView::onUIValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl) {
    printf("(%s::%s) feature_code = 0x%02x, sh=0x%02x, sl=0x%02x\n", _cls, __func__,

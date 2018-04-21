@@ -123,13 +123,13 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
        _cur_stacked_widget = _2ButtonWidget;
     }
 
-    else if (fv._feature_flags & DDCA_STD_CONT) {
+    else if (fv.flags() & DDCA_STD_CONT) {
         // printf("(ValueStackedWidget::%s) DDCA_STD_CONT\n", __func__); fflush(stdout);
         _stacked->setCurrentIndex(_pageno_cont);
         _cur_stacked_widget = _contWidget;
     }
-    else if ( (fv._feature_flags & DDCA_SIMPLE_NC) &&
-              (fv._feature_flags & DDCA_WRITABLE)
+    else if ( (fv.flags() & DDCA_SIMPLE_NC) &&
+              (fv.flags() & DDCA_WRITABLE)
             )
     {
        // printf("(ValueStackedWidget::%s) DDCA_SIMPLE_NC\n", __func__); fflush(stdout);

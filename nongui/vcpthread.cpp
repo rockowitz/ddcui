@@ -52,6 +52,39 @@ void VcpThread::rpt_ddca_status(
     fflush(stdout);
 }
 
+// Process RQCapabilities
+void VcpThread::capabilities() {
+   printf("(VcpThread::capabilities) Starting. \n");
+   DDCA_Display_Handle                   dh;
+
+   DDCA_Status ddcrc = ddca_open_display(this->_dref, &dh);
+   if (ddcrc != 0) {
+         rpt_ddca_status(0, __func__, "ddca_open_display", ddcrc);
+         // how to handle?
+   }
+
+   char * caps;
+   DDCA_Capabilities * parsed_caps;
+   if (ddcrc == 0) {
+         ddcrc = ddca_get_capabilities_string(dh, &caps);
+     }
+     if (ddcrc == 0) {
+         ddcrc = ddca_parse_capabilities_string(caps, &parsed_caps);
+     }
+
+   // how to report failure?
+
+
+
+   ddcrc = ddca_close_display(dh);
+   if (ddcrc != 0) {
+       rpt_ddca_status(0, __func__, "ddca_close_display", ddcrc);
+       // how to handle?
+   }
+
+   printf("(VcpThread::capabilities) Done\n");
+}
+
 
 // Process RQGetVcp
 void VcpThread::getvcp(uint8_t feature_code) {
@@ -280,6 +313,9 @@ void VcpThread::run() {
             break;
         case VcpRequestType::RQEndInitialLoad:
             endInitialLoad();
+            break;
+        case VcpRequestType::RQCapabilities:
+            capabilities();
             break;
         default:
             cout << "Unexpected request type: " << rqstType << endl;

@@ -22,7 +22,7 @@ FeatureSelectionDialog::FeatureSelectionDialog(
     // this->_local_fsid = mainWindow->feature_list_id();
     ui->setupUi(this);
     QRadioButton * curButton;
-    this->_local_fsid = featureSelector->feature_list_id;
+    this->_local_fsid = featureSelector->_featureListId;
     switch(_local_fsid) {
     case DDCA_SUBSET_KNOWN:
         curButton = ui->known_radioButton;
@@ -116,7 +116,7 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
         feature_list = DDCA_SUBSET_KNOWN;    // should never occur
 
     // this->_mainWindow->set_feature_list_id(feature_list);
-    this->_feature_selector->feature_list_id = feature_list;
+    this->_feature_selector->_featureListId = feature_list;
 
     emit featureSelectionAccepted(feature_list);
 

@@ -175,8 +175,6 @@ void FeatureWidgetBasic::setFeatureValue(FeatureValue &fv) {
     _vspec         = fv.vspec();
 
     // printf("(%s::%s) _feature_flags = 0x%08x, fv._feature_flags = 0x%08x, fv._finfo
-    assert(_feature_flags == fv._feature_flags);
-    assert(_feature_flags == fv._finfo.feature_flags);
 
     // need to save value here?
     _mh = fv._value.mh;

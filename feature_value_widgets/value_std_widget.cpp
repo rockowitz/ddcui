@@ -1,15 +1,14 @@
 /* value_std_widget.cpp */
 
-
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtCore/QRect>
 
-#include "feature_value_widgets/value_std_widget.h"
-
 #include "ddcutil_c_api.h"
 
 #include "base/ddcui_globals.h"
+
+#include "value_std_widget.h"
 
 
 ValueStdWidget::ValueStdWidget(QWidget *parent):
@@ -45,10 +44,9 @@ ValueStdWidget::ValueStdWidget(QWidget *parent):
 
 void ValueStdWidget::setValueField() {
     char * s_formatted = NULL;
-    DDCA_Status rc = ddca_format_non_table_vcp_value(
+    DDCA_Status rc = ddca_format_non_table_vcp_value_by_dref(
           _feature_code,
-          _vspec,
-          _mmid,
+          _dref,
           &_value,
           &s_formatted);
     if (rc != 0)

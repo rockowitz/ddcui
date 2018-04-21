@@ -1,6 +1,5 @@
 /* value_nc_widget.cpp */
 
-#include "feature_value_widgets/value_nc_widget.h"
 
 #include <assert.h>
 #include <stdio.h>
@@ -13,13 +12,16 @@
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QLayout>
 
-
 #include "base/ddcui_globals.h"
 #include "base/debug_utils.h"
+
+#include "value_nc_widget.h"
+
 
 #include <ddcutil_c_api.h>
 
 static bool dimensionReportShown = false;
+static bool debugWidget = false;
 
 
 ValueNcWidget::ValueNcWidget(QWidget *parent):
@@ -37,7 +39,7 @@ ValueNcWidget::ValueNcWidget(QWidget *parent):
     _cb = new QComboBox();
 
     QSizePolicy* sizePolicy = new QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    // _cb->setHorizontalStretch(0);
+    sizePolicy->setControlType(QSizePolicy::ComboBox);
     _cb->setSizePolicy(*sizePolicy);
     _cb->setFont(nonMonoFont);
     _cb->setMaximumHeight(20);
@@ -47,6 +49,7 @@ ValueNcWidget::ValueNcWidget(QWidget *parent):
     _cb->setStyleSheet("background-color:white;");
 
     if (useApplyCancel) {
+       sizePolicy->setControlType(QSizePolicy::PushButton);
        _applyButton  = new QPushButton("Apply");
        _cancelButton = new QPushButton("Cancel");
        _applyButton->setMaximumSize(55,20);
@@ -72,7 +75,7 @@ ValueNcWidget::ValueNcWidget(QWidget *parent):
     setLayout(layout);
 
     if (!dimensionReportShown && debugLayout) {
-        printf("-------------------------------------------->\n"); fflush(stdout);
+        printf("ValueNcWidget dimensions\n"); fflush(stdout);
         reportWidgetDimensions(this, _cls, __func__);
         dimensionReportShown = true;
     }
@@ -82,26 +85,29 @@ ValueNcWidget::ValueNcWidget(QWidget *parent):
 
     QObject::connect(_cb,  SIGNAL(activated(int)),
                      this, SLOT(combobox_activated(int)) );
-
 }
 
 
 void ValueNcWidget::setFeatureValue(const FeatureValue &fv) {
     ValueBaseWidget::setFeatureValue(fv);
 
-    printf("(ValueNcWidget::setFeatureValue) Starting. feature 0x%02x, new sl=x%02x\n",
-           _feature_code, fv._value.sl ); fflush(stdout);
+    if (debugWidget)
+       printf("(ValueNcWidget::setFeatureValue) Starting. feature 0x%02x, new sl=x%02x\n",
+              _feature_code, fv._value.sl ); fflush(stdout);
 
     _guiChange = false;
 
-    DDCA_Status rc = 0;
     DDCA_Feature_Value_Table value_table;
+    value_table = fv._finfo.sl_values;
+#ifdef OLD
+    DDCA_Status rc = 0;
     // - get list of values for combo box
     rc = ddca_get_simple_sl_value_table_by_vspec(_feature_code, _vspec, _mmid, &value_table);
     if (rc != 0) {
         printf("ddca_get_simple_sl_value_table() returned %d\n", rc);
     }
     else {
+#endif
         // - set values in combo box
         // printf("(%s) Setting combo box values. value_table=%p\n", __func__, value_table);
         DDCA_Feature_Value_Entry * cur = value_table;
@@ -125,7 +131,9 @@ void ValueNcWidget::setFeatureValue(const FeatureValue &fv) {
         else {
             printf("(%s::%s) Unable to find value 0x%02x\n", _cls, __func__, _sl);
         }
+#ifdef OLD
     }
+#endif
     _guiChange=true;
 }
 
@@ -137,7 +145,6 @@ void ValueNcWidget::setCurrentValue(uint16_t newval) {
    _guiChange = false;
 
     ValueBaseWidget::setCurrentValue(newval);
-
 
     // - set current value in combo box
     int cur_ndx = findItem(_sl);

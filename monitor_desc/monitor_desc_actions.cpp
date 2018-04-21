@@ -52,7 +52,6 @@ capture_capabilities_report(
    char * caps_report = NULL;
    DDCA_Capabilities * parsed_caps;
 
-
    DDCA_Display_Handle dh = NULL;
    DDCA_Status rc = ddca_open_display(dref,&dh);
    if (rc == 0) {

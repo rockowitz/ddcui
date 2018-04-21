@@ -272,8 +272,8 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
     QString msg = QString("Reading monitor features...");
     ui->statusBar->showMessage(msg);
 
-    DDCA_Feature_List features_to_show = monitor->getFeatureList(feature_selector->feature_list_id);
-    cout << "feature_list_id: " << feature_selector->feature_list_id << ",  Feature ids: " << endl;
+    DDCA_Feature_List features_to_show = monitor->getFeatureList(feature_selector->_featureListId);
+    cout << "feature_list_id: " << feature_selector->_featureListId << ",  Feature ids: " << endl;
     for (int ndx = 0; ndx <= 255; ndx++) {
         if ( ddca_feature_list_contains(&features_to_show, (uint8_t) ndx))
             printf("%02x ", ndx);
@@ -538,7 +538,7 @@ void MainWindow::on_actionFeaturesScrollAreaMock_triggered()
         md1->sl_values = NULL;
         md1->vspec = vspec1;
 
-        FeatureValue * fv1 = new FeatureValue(0x22, dref, *md1, vspec1, NULL, flags1, val1);
+        FeatureValue * fv1 = new FeatureValue(0x22, dref, *md1, val1);
         mock1->setFeatureValue(*fv1);
 
     ValueContWidget * mock2 = new ValueContWidget();
@@ -547,13 +547,14 @@ void MainWindow::on_actionFeaturesScrollAreaMock_triggered()
         DDCA_Feature_Metadata * md2 = (DDCA_Feature_Metadata*) calloc(1, sizeof(DDCA_Feature_Metadata));
         memcpy(md2, md1, sizeof(DDCA_Feature_Metadata));
         md2->feature_flags = flags2;
-        FeatureValue * fv2 = new FeatureValue(0x10, dref, *md2, vspec1, NULL, flags2, val2);
+        FeatureValue * fv2 = new FeatureValue(0x10, dref, *md2, val2);
         mock2->setFeatureValue(*fv2);
 
     ValueStackedWidget * mock3 = new ValueStackedWidget();
         DDCA_Non_Table_Vcp_Value val3 = {0, 80, 0, 30};
         DDCA_Feature_Flags flags3 = DDCA_RW | DDCA_STD_CONT;
-        FeatureValue * fv3 = new FeatureValue(0x10, dref, *md2, vspec1, NULL, flags3, val3);
+        md2->feature_flags = flags3;
+        FeatureValue * fv3 = new FeatureValue(0x10, dref, *md2, val3);
         mock3->setFeatureValue(*fv3);
 
     ValueStackedWidget * mock4 = new ValueStackedWidget();
@@ -561,7 +562,7 @@ void MainWindow::on_actionFeaturesScrollAreaMock_triggered()
         DDCA_Feature_Metadata * md4 = (DDCA_Feature_Metadata*) calloc(1, sizeof(DDCA_Feature_Metadata));
         memcpy(md4, md2, sizeof(DDCA_Feature_Metadata));
         md4->feature_flags = flags4;
-        FeatureValue * fv4 = new FeatureValue(0x10, dref, *md4, vspec1, NULL, flags4, val3);
+        FeatureValue * fv4 = new FeatureValue(0x10, dref, *md4, val3);
         mock4->setFeatureValue(*fv4);
 
     FeatureWidgetBasic * mock5 = new FeatureWidgetBasic();
@@ -587,7 +588,7 @@ void MainWindow::on_actionFeaturesScrollAreaMock_triggered()
         md7->vspec = vspec1;
 
 
-        FeatureValue * fv7 = new FeatureValue(0x60, dref, *md7, vspec1, NULL, flags7, val7);
+        FeatureValue * fv7 = new FeatureValue(0x60, dref, *md7, val7);
         mock7->setFeatureValue(*fv7);
 
     FeaturesScrollAreaContents * featuresScrollAreaContents =

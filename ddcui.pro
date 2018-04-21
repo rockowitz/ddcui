@@ -27,7 +27,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     imported/QtWaitingSpinner/waitingspinnerwidget.cpp
 
+
 SOURCES += \
+    base/vertical_scroll_area.cpp \
     base/debug_utils.cpp \
     base/feature_selector.cpp
 
@@ -105,7 +107,9 @@ SOURCES += \
 HEADERS += \
     imported/QtWaitingSpinner/waitingspinnerwidget.h
 
+
 HEADERS += \
+    base/vertical_scroll_area.h \
     base/ddcui_globals.h \
     base/debug_utils.h \
     base/feature_selector.h \

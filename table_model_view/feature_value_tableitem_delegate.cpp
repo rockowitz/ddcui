@@ -47,7 +47,7 @@ void FeatureValueTableItemDelegate::paint(
         // printf("=====> (FeatureValueTableItemDelegate::paint) FeatureValue case\n"); fflush(stdout);
         FeatureValue fv = qvariant_cast<FeatureValue>(index.data(FeatureValueRole));
         // fv.report();
-        if (fv._feature_flags & (DDCA_CONT | DDCA_SIMPLE_NC)) {
+        if (fv.flags() & (DDCA_CONT | DDCA_SIMPLE_NC)) {
             // printf("    continuous feature\n");  fflush(stdout);
             // int maxval = fv._mh << 8 | fv._ml;  // unused
             // int curval = fv._sh << 8 | fv._sl;  // unused
@@ -124,7 +124,7 @@ QWidget *FeatureValueTableItemDelegate::createEditor(
         fv.report();
 
         QWidget* edwidget = nullptr;
-        if (fv._feature_flags & DDCA_CONT) {
+        if (fv.flags() & DDCA_CONT) {
            FeatureValueTableItemContEditor *editor = new FeatureValueTableItemContEditor(parent);
            editor->setFeatureValue(fv);
            edwidget = editor;
@@ -136,7 +136,7 @@ QWidget *FeatureValueTableItemDelegate::createEditor(
            //         this,   &FeatureValueTableItemDelegate::commitAndCloseEditor);
 
         }
-        else if (fv._feature_flags & DDCA_SIMPLE_NC) {
+        else if (fv.flags() & DDCA_SIMPLE_NC) {
             FeatureValueTableItemCbEditor * editor = new FeatureValueTableItemCbEditor(parent);
             editor->setFeatureValue(fv);
             edwidget = editor;
@@ -194,8 +194,6 @@ void FeatureValueTableItemDelegate::setModelData(
     FeatureValue fv = fv_editor->featureValue();
     printf("(FeatureValueTableItemDelegate::setModelData) Calling setModelData() directly\n"); fflush(stdout);
     model->setData(index,  QVariant::fromValue(fv_editor->featureValue()));
-
-
 
     printf("(FeatureValueTableItemDelegate::setModelData) index=(%d,%d)\n",
            index.row(), index.column()); fflush(stdout);

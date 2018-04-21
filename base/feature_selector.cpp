@@ -28,9 +28,9 @@
 #include "feature_selector.h"
 
 bool FeatureSelector::operator==(const FeatureSelector &other) const {
-   return (feature_list_id         == other.feature_list_id      &&
-           includeTableFeatures    == other.includeTableFeatures &&
-           showUnsupportedFeatures == other.showUnsupportedFeatures);
+   return (_featureListId         == other._featureListId      &&
+           _includeTableFeatures    == other._includeTableFeatures &&
+           _showUnsupportedFeatures == other._showUnsupportedFeatures);
 }
 
 bool FeatureSelector::operator!=(const FeatureSelector &other) const {
@@ -38,8 +38,8 @@ bool FeatureSelector::operator!=(const FeatureSelector &other) const {
 }
 
 void FeatureSelector::dbgrpt() {
-   printf("   feature_list_id:          %d - %s\n", feature_list_id, ddca_feature_list_id_name(feature_list_id));
-   printf("   includeTableFeatures:     %d\n", includeTableFeatures);
-   printf("   showUnsupportedFeatures:  %d\n", showUnsupportedFeatures);
+   printf("   feature_list_id:          %d - %s\n", _featureListId, ddca_feature_list_id_name(_featureListId));
+   printf("   includeTableFeatures:     %d\n", _includeTableFeatures);
+   printf("   showUnsupportedFeatures:  %d\n", _showUnsupportedFeatures);
    fflush(stdout);
 }

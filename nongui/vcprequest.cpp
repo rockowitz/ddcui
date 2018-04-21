@@ -12,6 +12,13 @@ VcpRequest::~VcpRequest() {
 }
 
 
+VcpCapRequest::VcpCapRequest()
+    : VcpRequest::VcpRequest(VcpRequestType::RQCapabilities)
+{
+}
+
+
+
 VcpGetRequest::VcpGetRequest(DDCA_Vcp_Feature_Code feature_code)
     : VcpRequest::VcpRequest(VcpRequestType::RQGetVcp)
 {

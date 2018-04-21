@@ -133,27 +133,11 @@ void   FeatureBaseModel::modelVcpValueSet(
         if (debugModel)
             printf("(%s) Creating new FeatureValue\n", __func__); fflush(stdout);
 
-#ifdef OLD
-        FeatureValue * fv = new FeatureValue();
-        fv->_feature_code   = feature_code;
-        fv->_vspec          = metadata.vspec;
-        fv->_feature_flags  = metadata.feature_flags,
-        // fv->_mh             = feature_value->mh;
-        // fv->_ml             = feature_value->ml;
-        // fv->_sh             = feature_value->sh;
-        // fv->_sl             = feature_value->sl;
-        fv->_value          = *feature_value;
-#endif
         FeatureValue * fv = new FeatureValue(
                                    feature_code,
                                    dref,
                                    metadata,
-                                   metadata.vspec,
-                                   metadata.mmid,
-                                   metadata.feature_flags,
                                    *feature_value);
-
-
         _featureValues->append(fv);
         if (debugSignals)
             printf("(%s::%s) Emitting signalFeatureAdded()\n", _cls, __func__); fflush(stdout);

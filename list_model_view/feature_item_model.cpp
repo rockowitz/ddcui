@@ -64,39 +64,40 @@ QVariant FeatureItemModel::data(const QModelIndex &index, int role) const
     switch(role) {
     case(Qt::DisplayRole):
     {
-        char * s_name = ddca_feature_name_by_vspec(
-                           fv->_feature_code,
-                           fv->vspec(),      // fv->_vspec,
-                           &fv->_mmid);
+        char * s_name = NULL;
+        ddca_feature_name_by_dref(
+                           fv->featureCode(),
+                           fv->dref(),
+                           &s_name);
 
 
         char * s_formatted = NULL;
-        DDCA_Status rc = ddca_format_non_table_vcp_value(
-                             fv->_feature_code,
-                             fv->vspec(),       // fv->_vspec,
-                             &fv->_mmid,
+        DDCA_Status rc = ddca_format_non_table_vcp_value_by_dref(
+                             fv->featureCode(),
+                             fv->dref(),
                              &fv->_value,
                              &s_formatted);
         if (rc != 0)
             s_formatted = (char*) "invalid formatted value";   // explicit cast to avoid compiler warning
 
+        DDCA_Feature_Flags flags = fv->flags();
         char * s_rw = NULL;
-        if (fv->_feature_flags & DDCA_RW)
+        if (flags & DDCA_RW)
             s_rw = (char*) "RW";
-        else if (fv->_feature_flags & DDCA_RO)
+        else if (flags & DDCA_RO)
             s_rw = (char*)  "RO";
         else {
-            assert (fv->_feature_flags & DDCA_WO) ;
+            assert (flags & DDCA_WO) ;
             s_rw = (char*) "WO";
         }
 
         char * s_mccs_type = NULL;
-        if (fv->_feature_flags & DDCA_CONT)
+        if (flags & DDCA_CONT)
             s_mccs_type =(char*)  "C";
-        else if (fv->_feature_flags & DDCA_NC)
+        else if (flags & DDCA_NC)
             s_mccs_type = (char*) "NC";
         else {
-            assert ( fv->_feature_flags & DDCA_TABLE) ;
+            assert ( flags & DDCA_TABLE) ;
             s_mccs_type =(char*)  "T";
         }
 
@@ -106,6 +107,8 @@ QVariant FeatureItemModel::data(const QModelIndex &index, int role) const
         printf("(FeatureItemModel::data) buffer=|%s|\n", buffer);
 
         result = QString(buffer);
+        free(s_name);
+        free(s_formatted);
         break;
     }
     case(Qt::UserRole):     // probably some constant UserRole+n
@@ -117,6 +120,7 @@ QVariant FeatureItemModel::data(const QModelIndex &index, int role) const
 
     // FIXME: Implement me!
     // return QVariant();
+
     return result;
 }
 

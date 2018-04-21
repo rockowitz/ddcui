@@ -12,7 +12,7 @@
 #include <ddcutil_c_api.h>
 
 
-enum VcpRequestType {RQGetVcp, RQSetVcp, RQStartInitialLoad, RQEndInitialLoad};
+enum VcpRequestType {RQGetVcp, RQSetVcp, RQStartInitialLoad, RQEndInitialLoad, RQCapabilities};
 
 /* VcpRequest classes */
 
@@ -25,6 +25,14 @@ public:
     VcpRequestType _type;
 };
 
+
+class VcpCapRequest: public VcpRequest {
+public:
+    VcpCapRequest();
+    ~VcpCapRequest();
+
+    DDCA_Vcp_Feature_Code _featureCode;
+};
 
 class VcpGetRequest: public VcpRequest {
 public:

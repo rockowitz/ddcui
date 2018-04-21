@@ -39,7 +39,7 @@ public:
 
     void           modelVcpValueSet(
                        uint8_t                              feature_code,
-                       DDCA_Display_Ref                     dref,
+                       DDCA_Display_Ref                     dref,   // unnecessary, can get from monitor
                        DDCA_Feature_Metadata                metadata,
                        // DDCA_MCCS_Version_Spec               vspec,
                        // DDCA_Simplified_Version_Feature_Info feature_flags,

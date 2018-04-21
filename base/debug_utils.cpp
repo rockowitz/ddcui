@@ -32,42 +32,79 @@
 #include <QtGui/QRegion>
 #include <QtCore/QMargins>
 #include <QtWidgets/QLabel>
+#include <QtCore/QString>
 
 
 void reportWidgetChildren(QWidget * w, const char * msg) {
-   if (msg)
-      puts(msg);
-   else
-      printf("============> Children of widget: \n");  // fflush(stdout);
+    if (msg)
+        puts(msg);
     QObjectList  childs = w->children();
     for (int ndx = 0; ndx < childs.size(); ndx++) {
         QObject* curobj = childs.at(ndx);
         QString name   = curobj->objectName();
         const char *  clsName = curobj->metaObject()->className();
-       // cout << "Child: " << QString("xxx") <<  endl;   // no match for operator<<
-        QByteArray ba = name.toLatin1();
-        const char * s = ba.data();
-        printf("   Child: %s, type:%s\n", s, clsName);  // fflush(stdout);
+        printf("   Child: %s, type:%s\n", name.toLatin1().data(), clsName);
     }
     fflush(stdout);
 }
 
 
+void reportWidgetDimensions(
+      QWidget *    w,
+      const char * className,
+      const char * funcName)
+   //   QString * msg = nullptr)
+{
+    // if (msg)
+    //    printf("%s\n", msg->toLatin1().data());
+    printf("(%s::%s) Dimensions:\n", className, funcName);
+
+    QSize sz = w->baseSize();
+    printf("baseSize:             %d,%d\n",  sz.width(), sz.height());
+
+    sz = w->sizeIncrement();
+    printf("sizeIncrement:        %d,%d\n", sz.width(), sz.height());
+
+    // QSize minimumSize   = w->minimumSize();
+    //    printf("minimumSize:    %d,%d\n",  minimumSize.width(), minimumSize.height());
+    printf("minimumSize:          %d,%d\n",  w->minimumWidth(), w->minimumHeight());
+
+    sz  = w->minimumSizeHint();
+    printf("minimumSizeHint:      %d,%d\n",  sz.width(), sz.height());
+
+    // QSize maximumSize   = w->maximumSize();
+    printf("maximumSize:          %d,%d\n",  w->maximumWidth(), w->maximumHeight());
+
+    // sz = w->size();
+    // size of widget excluding any window frame
+    printf("size:                 %d,%d\n",  w->width(), w->height());
+
+    // recommended widget size
+    sz = w->sizeHint();
+    printf("sizeHint:             %d,%d\n",  sz.width(), sz.height());
+
+    // size of the widget including any window frame
+    QSize frameSize     = w->frameSize();
+    printf("frameSize:             %d,%d\n",  frameSize.width(), frameSize.height());
 
 
-
-void reportWidgetDimensions(QWidget * w, const char * className, const char * funcName) {
-    // printf("(%s) ========================================> \n", __func__); fflush(stdout);
     int m_left, m_right, m_top, m_bottom;
     w->getContentsMargins(&m_left, &m_top, &m_right, &m_bottom);
-    printf("(%s::%s) margins: left=%d, top=%d, right=%d, bottom=%d)\n",
-           className, funcName, m_left, m_top, m_right, m_bottom);
+    printf("(margins:              left=%d, top=%d, right=%d, bottom=%d)\n",
+           m_left, m_top, m_right, m_bottom);
 
-    QSize baseSize = w->baseSize();
-    printf("baseSize:        %d,%d\n",  baseSize.width(), baseSize.height());
+    QMargins contentsMargins = w->contentsMargins();
+    printf("contentsMargins: left: %d, top: %d, right: %d, bottom: %d\n",
+           contentsMargins.left(), contentsMargins.top(), contentsMargins.right(), contentsMargins.bottom() );
 
+    printf("hasHeightForWidth:     %s\n", (w->hasHeightForWidth()) ? "True" : "False");
+    printf("updatesEnabled:        %s\n", (w->updatesEnabled()) ? "True" : "False");
+    printf("visible:               %s\n", (w->isVisible()) ? "True" : "False");
+    printf("hidden:                %s\n", (w->isHidden()) ? "True" : "False");
+
+#ifdef USELESS
     QRect childrenRect = w->childrenRect();
-    printf("childrenRect:    x: %d, y: %d, width: %d, height: %d\n",
+    printf("childrenRect:          x: %d, y: %d, width: %d, height: %d\n",
            childrenRect.x(), childrenRect.y(), childrenRect.width(), childrenRect.height());
 
     // specifies a clip region for a painter
@@ -77,23 +114,6 @@ void reportWidgetDimensions(QWidget * w, const char * className, const char * fu
     printf("frameGeometry:   x: %d, y: %d, width: %d, height: %d\n",
            frameGeometry.x(), frameGeometry.y(), frameGeometry.width(), frameGeometry.height());
 
-    // size of the widget including any window frame
-    QSize frameSize     = w->frameSize();
-    printf("frameSize:       %d,%d\n",  frameSize.width(), frameSize.height());
-
-
-    QSize maximumSize   = w->maximumSize();
-    printf("maximumSize:     %d,%d\n",  maximumSize.width(), maximumSize.height());
-    // int   maximumWidth = w->maximumWidth();
-    // int   maximumHeight = w->maximumHeight();
-
-     QSize minimumSize   = w->minimumSize();
-     printf("minimumSize:    %d,%d\n",  minimumSize.width(), minimumSize.height());
-     // int   minimumWidth = w->minimumWidth();
-
-     QSize minimumSizeHint   = w->minimumSizeHint();
-     printf("minimumSizeHint:%d,%d\n",  minimumSizeHint.width(), minimumSizeHint.height());
-
      QRect normalGeometry = w->normalGeometry();
      printf("normalGeometry: x: %d, y: %d, width: %d, height: %d\n",
             normalGeometry.x(), normalGeometry.y(), normalGeometry.width(), normalGeometry.height());
@@ -102,24 +122,11 @@ void reportWidgetDimensions(QWidget * w, const char * className, const char * fu
      printf("rect:           x: %d, y: %d, width: %d, height: %d\n",
             rect.x(), rect.y(), rect.width(), rect.height());
 
-     QSize size = w->size();
-     printf("size:           %d,%d\n",  size.width(), size.height());
-     // int width = w->width();
-     // int height = w->height();
-
-     QSize sizeHint = w->sizeHint();
-     printf("sizeHint:       %d,%d\n",  sizeHint.width(), sizeHint.height());
-
-     QMargins contentsMargins = w->contentsMargins();
-     printf("contentsMargins: left: %d, top: %d, right: %d, bottom: %d\n",
-            contentsMargins.left(), contentsMargins.top(), contentsMargins.right(), contentsMargins.bottom() );
-
      QRect    contentsRect    = w->contentsRect();
      printf("contentsRect:   x: %d, y: %d, width: %d, height: %d\n",
             contentsRect.x(), contentsRect.y(), contentsRect.width(), contentsRect.height());
+#endif
 
-     bool     hasHeightForWidth = w->hasHeightForWidth();
-     printf("hasHeightForWidth: %s\n", (hasHeightForWidth) ? "True" : "False");
 
      QLayout * lay = w->layout();
      if (lay) {
@@ -128,14 +135,14 @@ void reportWidgetDimensions(QWidget * w, const char * className, const char * fu
         printf("layoutContentsMargins: left: %d, top: %d, right: %d, bottom: %d\n",
                layoutContentsMargins.left(), layoutContentsMargins.top(),
                layoutContentsMargins.right(), layoutContentsMargins.bottom() );
-
+#ifdef NOT_USEFUL
         QRect    layoutContentsRect  = lay->contentsRect();
         printf("layoutContentsRect: x: %d, y: %d, width: %d, height: %d\n",
                layoutContentsRect.x(), layoutContentsRect.y(), layoutContentsRect.width(), layoutContentsRect.height());
-
+#endif
         // spacing between the widgets inside the layout
         int layoutSpacing = lay->spacing();
-        printf("layout spacing: %d\n", layoutSpacing);
+        printf("layout spacing:        %d\n", layoutSpacing);
      }
      else {
         printf("No layout set\n");
@@ -143,6 +150,7 @@ void reportWidgetDimensions(QWidget * w, const char * className, const char * fu
      fflush(stdout);
 
 }
+
 
 void reportFrameDimensions(QFrame * f, const char * className, const char * funcName) {
    printf("(%s::%s) Frame Dimension Information: \n", className, funcName); fflush(stdout);
@@ -153,6 +161,7 @@ void reportFrameDimensions(QFrame * f, const char * className, const char * func
 
    reportWidgetDimensions(f, className, funcName);
 }
+
 
 void reportLabelDimensions(QLabel * label, const char * className, const char * funcName) {
    printf("(%s::%s) Label Dimension Information: \n", className, funcName); fflush(stdout);

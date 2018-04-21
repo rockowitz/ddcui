@@ -130,6 +130,8 @@ QVariant FeatureTableModel::data(const QModelIndex &index, int role) const
     // roles seen: 0, 1, 6,7,8,9,10,257
     QVariant result = QVariant();
 
+    DDCA_Feature_Flags flags = fv->flags();
+
     switch(role) {
     case Qt::DisplayRole:          //   0
     case Qt::EditRole:             //   2
@@ -154,24 +156,24 @@ QVariant FeatureTableModel::data(const QModelIndex &index, int role) const
         }
         case 2:                 // mccs type
         {
-            if (fv->_feature_flags & DDCA_CONT)
+            if (fv->flags() & DDCA_CONT)
                 result = QString("C");
-            else if (fv->_feature_flags & DDCA_NC)
+            else if (flags & DDCA_NC)
                 result = QString("NC");
             else {
-                assert ( fv->_feature_flags & DDCA_TABLE) ;
+                assert ( flags & DDCA_TABLE) ;
                 result = QString("T");
             }
             break;
         }
         case 3:               // RW,RO,WO
         {
-            if (fv->_feature_flags & DDCA_RW)
+            if (flags & DDCA_RW)
                 result = QString("RW");
-            else if (fv->_feature_flags & DDCA_RO)
+            else if (flags & DDCA_RO)
                 result = QString("RO");
             else {
-                assert (fv->_feature_flags & DDCA_WO) ;
+                assert (flags & DDCA_WO) ;
                 result = QString("WO");
             }
             break;
@@ -186,15 +188,14 @@ QVariant FeatureTableModel::data(const QModelIndex &index, int role) const
             else {
                 // printf("(FeatureTableModel::data) col 4, Setting QVariant as String\n"); fflush(stdout);
                 // this will vary with display vs edit role
-                if (fv->_feature_flags & DDCA_WO) {
+                if (flags & DDCA_WO) {
                     result = QVariant(QString(""));
                 }
                 else {
                     char * formatted_value = NULL;
-                    DDCA_Status rc = ddca_format_non_table_vcp_value(
-                                         fv->_feature_code,
-                                         fv->vspec(),   // fv->_vspec,
-                                         &fv->_mmid,
+                    DDCA_Status rc = ddca_format_non_table_vcp_value_by_dref(
+                                         fv->featureCode(),
+                                         fv->dref(),
                                          &fv->_value,
                                          &formatted_value);
                     if (rc == 0)
@@ -266,7 +267,7 @@ Qt::ItemFlags FeatureTableModel::flags(const QModelIndex &index) const
     if ( index.column() == 4) {
         // TODO: check feature flags to see if editable
         FeatureValue * fv = _baseModel->modelVcpValueAt(index.row() );
-        if (fv->_feature_flags & DDCA_WRITABLE) {
+        if (fv->flags() & DDCA_WRITABLE) {
             // printf("   returning editable\n");
             result = Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsEnabled;
         }
