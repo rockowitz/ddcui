@@ -54,35 +54,38 @@ void VcpThread::rpt_ddca_status(
 
 // Process RQCapabilities
 void VcpThread::capabilities() {
-   printf("(VcpThread::capabilities) Starting. \n");
-   DDCA_Display_Handle                   dh;
+   printf("(VcpThread::capabilities) Starting. dref=%s\n", ddca_dref_repr(this->_dref));
+   DDCA_Display_Handle dh;
+   char *              caps = NULL;
+   DDCA_Capabilities * parsed_caps = NULL;
 
+   // need better way to report failure
    DDCA_Status ddcrc = ddca_open_display(this->_dref, &dh);
    if (ddcrc != 0) {
          rpt_ddca_status(0, __func__, "ddca_open_display", ddcrc);
          // how to handle?
    }
-
-   char * caps;
-   DDCA_Capabilities * parsed_caps;
    if (ddcrc == 0) {
-         ddcrc = ddca_get_capabilities_string(dh, &caps);
-     }
-     if (ddcrc == 0) {
+      ddcrc = ddca_get_capabilities_string(dh, &caps);
+      if (ddcrc != 0) {
+         rpt_ddca_status(0, __func__, "ddca_get_capabilities_string", ddcrc);
+      }
+      else {
          ddcrc = ddca_parse_capabilities_string(caps, &parsed_caps);
-     }
+         if (ddcrc != 0)
+            rpt_ddca_status(0, __func__, "ddca_parse_capabilities_string", ddcrc);
+      }
 
-   // how to report failure?
-
-
-
-   ddcrc = ddca_close_display(dh);
-   if (ddcrc != 0) {
-       rpt_ddca_status(0, __func__, "ddca_close_display", ddcrc);
-       // how to handle?
+      // how to report failure?
+      ddcrc = ddca_close_display(dh);
+      if (ddcrc != 0) {
+          rpt_ddca_status(0, __func__, "ddca_close_display", ddcrc);
+          // how to handle?
+      }
    }
+   _baseModel->setCapabilities(ddcrc, caps, parsed_caps);
 
-   printf("(VcpThread::capabilities) Done\n");
+   printf("(VcpThread::capabilities) Done. dref=%s\n", ddca_dref_repr(this->_dref));
 }
 
 

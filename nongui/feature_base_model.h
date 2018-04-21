@@ -57,6 +57,11 @@ public:
     void          modelEndInitialLoad(void);
     void          setStatusMsg(QString msg);
 
+    void          setCapabilities(
+                     DDCA_Status          ddcrc,
+                     char *               capabilities_string,
+                     DDCA_Capabilities *  parsed_capabilities);
+
     void          report();
 
     // void  addFeatureChangedObserver(NotifyFeatureChanged func);
@@ -70,6 +75,10 @@ public:
 
     void setFeatureList(DDCA_Feature_List featureList);
     void setFeatureChecked(uint8_t featureCode);
+
+    DDCA_Status         _caps_status = 0;
+    char *              _caps_string = NULL;
+    DDCA_Capabilities * _parsed_caps = NULL;
 
 signals:
     void signalStartInitialLoad(void);

@@ -209,6 +209,8 @@ void MainWindow::initDisplaySelector() {
 
         curThread->start();
         vcp_threads.append(curThread);
+
+        curMonitor->_requestQueue->put(new VcpCapRequest());
     }
 
     // ui->displaySelectorComboBox->setCurrentIndex(0);
@@ -360,7 +362,9 @@ void MainWindow::on_actionCapabilities_triggered()
     DDCA_Display_Ref dref = dinfo->dref;
     char * caps_report = NULL;
 
-    DDCA_Status ddcrc = capture_capabilities_report(dref, &caps_report);
+    Monitor * monitor = monitors.at(monitorNdx);
+
+    DDCA_Status ddcrc = capture_capabilities_report(monitor, dref, &caps_report);
     if (ddcrc != 0) {
         reportDdcApiError("ddca_open_display", ddcrc);
         printf("(%s::%s) capture_capabilites_report returned %d\n", _cls, __func__, ddcrc);

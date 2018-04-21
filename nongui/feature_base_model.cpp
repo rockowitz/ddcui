@@ -193,6 +193,20 @@ void   FeatureBaseModel::modelVcpValueUpdate(
 }
 
 
+// This really belongs in Monitor
+void FeatureBaseModel::setCapabilities(
+                 DDCA_Status          ddcrc,
+                 char *               capabilities_string,
+                 DDCA_Capabilities *  parsed_capabilities)
+{
+   printf("(%s::%s) capabilities_string=|%s|\n",
+          _cls, __func__, capabilities_string);  fflush(stdout);
+   _caps_status = ddcrc;
+   _caps_string = capabilities_string;
+   _parsed_caps = parsed_capabilities;
+}
+
+
 void  FeatureBaseModel::onDdcError(
       DdcError& erec)
 {

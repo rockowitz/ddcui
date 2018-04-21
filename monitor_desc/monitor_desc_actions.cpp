@@ -25,6 +25,9 @@
 
 #include "ddcutil_c_api.h"
 
+#include "base/monitor.h"
+#include "nongui/feature_base_model.h"
+
 #include "monitor_desc_actions.h"
 
 char *
@@ -43,6 +46,7 @@ capture_display_info_report(
 
 DDCA_Status
 capture_capabilities_report(
+      Monitor *         monitor,
       DDCA_Display_Ref  dref,
       char **           caps_report_loc)
 {
@@ -51,15 +55,28 @@ capture_capabilities_report(
    char * caps = NULL;
    char * caps_report = NULL;
    DDCA_Capabilities * parsed_caps;
+   DDCA_Status rc = 0;
 
+#ifdef OLD
    DDCA_Display_Handle dh = NULL;
-   DDCA_Status rc = ddca_open_display(dref,&dh);
+   rc = ddca_open_display(dref,&dh);
    if (rc == 0) {
        rc = ddca_get_capabilities_string(dh, &caps);
    }
    if (rc == 0) {
        rc = ddca_parse_capabilities_string(caps, &parsed_caps);
    }
+#endif
+
+   // Hacky.  Need to handle async, wait if caps not yet fetched
+   rc = monitor->_baseModel->_caps_status;
+   if (rc == 0) {
+      caps = monitor->_baseModel->_caps_string;
+      parsed_caps = monitor->_baseModel->_parsed_caps;
+   }
+
+
+
    if (rc == 0) {
        DDCA_Monitor_Model_Key mmid = ddca_monitor_model_key_from_dref(dref);
        // wrap in collector
@@ -76,9 +93,11 @@ capture_capabilities_report(
    if (caps)
       free(caps);
 
+#ifdef OLD
    if (dh) {
       rc = ddca_close_display(dh);
    }
+#endif
 
    return rc;
   }

@@ -29,8 +29,16 @@
 
 #include "ddcutil_c_api.h"
 
-char * capture_display_info_report(DDCA_Display_Info * dinfo);
+#include "base/monitor.h"
 
-DDCA_Status capture_capabilities_report(DDCA_Display_Ref dref, char ** caps_report_loc);
+char *
+capture_display_info_report(
+      DDCA_Display_Info * dinfo);
+
+DDCA_Status
+capture_capabilities_report(
+      Monitor *        monitor,
+      DDCA_Display_Ref dref,
+      char **          caps_report_loc);
 
 #endif /* MONITOR_DESC_ACTIONS_H_ */
