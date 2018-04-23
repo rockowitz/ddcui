@@ -17,14 +17,14 @@ class QHBoxLayout;
 class FeatureBaseModel;
 
 
-class FeatureWidgetBasic :
+class FeatureWidget :
         public QWidget         // QFrame
         , public SimpleFeatureValueObserver
 {
     Q_OBJECT
 
 public:
-    explicit FeatureWidgetBasic(QWidget *parent = nullptr);
+    explicit FeatureWidget(QWidget *parent = nullptr);
 
     // FeatureWidgetBasic(FeatureValue *fv, QWidget *parent=nullptr);
 

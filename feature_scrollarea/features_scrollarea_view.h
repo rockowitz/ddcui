@@ -6,9 +6,9 @@
 
 #include <QtCore/QObject>
 
+#include "feature_widget.h"
 #include "nongui/ddc_error.h"
 #include "nongui/feature_base_model.h"
-#include "feature_scrollarea/feature_widget_basic.h"
 
 // #include "monitor.h"
 
@@ -34,7 +34,7 @@ private:
     const char * _cls;
 
     // quick and dirty for now, eventually replace by hash
-    FeatureWidgetBasic * _widgets[256] = {0};
+    FeatureWidget * _widgets[256] = {0};
 
 signals:
     void signalVcpRequest(VcpRequest * rqst);  // used to call into monitor

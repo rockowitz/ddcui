@@ -68,7 +68,7 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
     for (int feature_code = 0; feature_code < 256; feature_code++) {
          FeatureValue * fv =  _baseModel->modelVcpValueFilteredFind(feature_code);
          if (fv) {
-             FeatureWidgetBasic * w = new FeatureWidgetBasic();
+             FeatureWidget * w = new FeatureWidget();
              if (debugLayout) {
                 // gets applied to the widgets inside w, not to w itself
                 w->setStyleSheet("background-color:brown;");
@@ -76,7 +76,7 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
              w->setBaseModel(_baseModel);    // hack to get at DDCA_Capabilities, must precede setFeatureValue()
              w->setFeatureValue(*fv);
 
-             QObject::connect(w ,   &FeatureWidgetBasic::valueChanged,
+             QObject::connect(w ,   &FeatureWidget::valueChanged,
                               this, &FeaturesScrollAreaView::onUIValueChanged);
              vLayout->addWidget(w);
              _widgets[feature_code] = w;
@@ -128,7 +128,7 @@ void FeaturesScrollAreaView::onModelValueChanged(
           featureCode, sh, sl); fflush(stdout);
 
    // find the entry in _widgets
-   FeatureWidgetBasic * curWidget = _widgets[featureCode];
+   FeatureWidget * curWidget = _widgets[featureCode];
 
    // set value in the widget
    uint16_t newval = sh << 8 | sl;

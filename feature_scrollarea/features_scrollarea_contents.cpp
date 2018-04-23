@@ -30,9 +30,8 @@
 #include "base/ddcui_globals.h"
 #include "base/debug_utils.h"
 #include "feature_value_widgets/value_stacked_widget.h"
-#include "feature_widget_basic.h"
-
 #include "features_scrollarea_contents.h"
+#include "feature_widget.h"
 
 
 // static bool dimensionReportShown = false;
@@ -78,7 +77,7 @@ void FeaturesScrollAreaContents::featureAdded(FeatureValue fv)
        // fv.report();
    }
 
-   FeatureWidgetBasic * newTableEntry = new FeatureWidgetBasic();
+   FeatureWidget * newTableEntry = new FeatureWidget();
    newTableEntry->setFeatureValue(fv);
 
    if (debugMain)

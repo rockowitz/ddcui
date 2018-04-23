@@ -26,7 +26,6 @@
 
 #include "feature_value_widgets/value_stacked_widget.h"
 
-#include "feature_scrollarea/feature_widget_basic.h"
 #include "feature_scrollarea/features_scrollarea_contents.h"
 #include "feature_scrollarea/features_scrollarea_ui.h"
 #include "feature_scrollarea/features_scrollarea_view.h"
@@ -40,6 +39,8 @@
 
 #include "main/ui_mainwindow2.h"
 #include "main/mainwindow.h"
+
+#include "../feature_scrollarea/feature_widget.h"
 #include "../option_dialogs/feature_selection_dialog.h"
 #include "../option_dialogs/other_options_dialog.h"
 
@@ -663,14 +664,14 @@ void MainWindow::on_actionFeaturesScrollAreaMock_triggered()
         FeatureValue * fv4 = new FeatureValue(0x10, dref, *md4, val3);
         mock4->setFeatureValue(*fv4);
 
-    FeatureWidgetBasic * mock5 = new FeatureWidgetBasic();
+    FeatureWidget * mock5 = new FeatureWidget();
         mock5->setFeatureValue(*fv4);
         printf("mock5:\n");  mock5->dbgrpt();  fflush(stdout);
 
-    FeatureWidgetBasic * mock6 = new FeatureWidgetBasic();
+    FeatureWidget * mock6 = new FeatureWidget();
             mock6->setFeatureValue(*fv3);
 
-    FeatureWidgetBasic * mock7 = new FeatureWidgetBasic();
+    FeatureWidget * mock7 = new FeatureWidget();
         DDCA_Non_Table_Vcp_Value val7 = {0, 0, 0, 4};
         DDCA_Feature_Flags flags7 = DDCA_RW | DDCA_SIMPLE_NC;
 

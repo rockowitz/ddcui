@@ -24,10 +24,10 @@
 #ifndef FEATURES_SCROLLAREA_CONTENTS_H_
 #define FEATURES_SCROLLAREA_CONTENTS_H_
 
+#include "feature_widget.h"
 #include "nongui/feature_value.h"
 #include "nongui/feature_base_model.h"
 
-#include "feature_widget_basic.h"
 #include "page_change_observer.h"
 
 class QVBoxLayout;
@@ -74,7 +74,7 @@ private:
    // QVBoxLayout *      _curLayout = NULL;
 
    // quick and dirty for now, eventually replace by hash
-   FeatureWidgetBasic * _widgets[256] = {0};
+   FeatureWidget * _widgets[256] = {0};
 
 };
 

@@ -1,5 +1,7 @@
 /* feature_widget_basic.cpp */
 
+#include "feature_widget.h"
+
 #include "assert.h"
 
 #include <QtWidgets/QVBoxLayout>
@@ -15,12 +17,11 @@
 #include "feature_value_widgets/value_std_widget.h"
 #include "feature_value_widgets/value_stacked_widget.h"
 
-#include "feature_widget_basic.h"
 
 
 static bool dimensionReportShown = false;
 
-FeatureWidgetBasic::FeatureWidgetBasic(QWidget *parent) :
+FeatureWidget::FeatureWidget(QWidget *parent) :
    QWidget(parent)              //         QFrame(parent)
 {
     _cls = metaObject()->className();
@@ -143,14 +144,14 @@ FeatureWidgetBasic::FeatureWidgetBasic(QWidget *parent) :
     //                   this,         &FeatureWidgetBasic::onInternalValueChanged);
 
     QObject::connect(_valueWidget, &ValueStackedWidget::featureValueChanged,
-                     this,         &FeatureWidgetBasic::onInternalValueChanged);
+                     this,         &FeatureWidget::onInternalValueChanged);
 
     QObject::connect(_valueWidget, &ValueStackedWidget::stackedFeatureValueChanged,
-                     this,         &FeatureWidgetBasic::onInternalValueChanged);
+                     this,         &FeatureWidget::onInternalValueChanged);
 
 
     QObject::connect(_valueWidget, &ValueBaseWidget::featureValueChanged,
-                     this,         &FeatureWidgetBasic::onInternalValueChanged);
+                     this,         &FeatureWidget::onInternalValueChanged);
 
     QObject::connect( _valueWidget, SIGNAL( featureValueChanged(uint8_t, uint8_t, uint8_t)),
                       this,         SLOT(onInternalValueChanged(uint8_t, uint8_t, uint8_t)));
@@ -163,7 +164,7 @@ FeatureWidgetBasic::FeatureWidgetBasic(QWidget *parent) :
 }
 
 
-void FeatureWidgetBasic::setFeatureValue(FeatureValue &fv) {
+void FeatureWidget::setFeatureValue(FeatureValue &fv) {
     // printf("(FeatureWidgetBasic::%s)", __func__); fflush(stdout);
     // fv.report();
     _feature_code  = fv._feature_code;
@@ -217,16 +218,16 @@ void FeatureWidgetBasic::setFeatureValue(FeatureValue &fv) {
 }
 
 
-void FeatureWidgetBasic::setCurrentValue(uint16_t newval) {
+void FeatureWidget::setCurrentValue(uint16_t newval) {
     _valueWidget->setCurrentValue(newval);
 }
 
 // must occur before setFeatureValue
-void FeatureWidgetBasic::setBaseModel(FeatureBaseModel * model) {  // hack for accessing model->_parsed_caps
+void FeatureWidget::setBaseModel(FeatureBaseModel * model) {  // hack for accessing model->_parsed_caps
     _baseModel = model;
 }
 
-QSize FeatureWidgetBasic::sizeHint() const {
+QSize FeatureWidget::sizeHint() const {
     int w = 700;
     int h = 10;
     // printf("(%s::%s) Returning (%d,%d)\n", _cls, __func__, w, h);  fflush(stdout);
@@ -235,7 +236,7 @@ QSize FeatureWidgetBasic::sizeHint() const {
 
 
 #ifdef NO
-void FeatureWidgetBasic::paintEvent(QPaintEvent *event) {
+void FeatureWidget::paintEvent(QPaintEvent *event) {
      printf("%s::%s)\n", _cls, __func__); fflush(stdout);
      QFrame::paintEvent(event);
      _featureCodeField->update();  // causes separate X window - NO NOT THIS
@@ -244,14 +245,14 @@ void FeatureWidgetBasic::paintEvent(QPaintEvent *event) {
 
 
 
-void FeatureWidgetBasic::dbgrpt() const {
+void FeatureWidget::dbgrpt() const {
     std::string on1 = objectName().toStdString();
     const char * objname = on1.c_str();
     printf("%-20s code: 0x%02x, flags: 0x%04x, mh: 0x%02x, ml: 0x%02x, sh: 0x%02x, sl 0x%02x\n",
            objname, _feature_code, _feature_flags, _mh, _ml, _sh, _sl);
 }
 
-void FeatureWidgetBasic::onInternalValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl) {
+void FeatureWidget::onInternalValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl) {
    printf("(%s::%s) feature_code = 0x%02x, sh=0x%02x, sl=0x%02x\n", _cls, __func__,
           featureCode, sh, sl); fflush(stdout);
    assert(featureCode == _feature_code);
@@ -259,7 +260,7 @@ void FeatureWidgetBasic::onInternalValueChanged(uint8_t featureCode, uint8_t sh,
 }
 
 // SimpleFeatureValueObserver
-void FeatureWidgetBasic::simpleFeatureValueChanged(SimpleFeatureValue fv) {
+void FeatureWidget::simpleFeatureValueChanged(SimpleFeatureValue fv) {
    printf("(%s::%s) feature_code = 0x%02x, sh=0x%02x, sl=0x%02x\n", _cls, __func__,
           fv.featureCode, fv.hiByte, fv.loByte); fflush(stdout);
 }
