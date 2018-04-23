@@ -7,10 +7,10 @@
 
 #include <ddcutil_c_api.h>
 
+#include "feature_widget_extended.h"
 #include "nongui/feature_base_model.h"
 #include "nongui/feature_change_observer.h"
 
-#include "list_widget/feature_widget.h"
 
 
 class FeatureListWidget : public QListWidget
@@ -57,7 +57,7 @@ protected:
 
 private:
     int             findFeatureItem(uint8_t feature_code);
-    FeatureWidget * getFeatureItem(uint8_t feature_code) ;
+    FeatureWidgetExtended * getFeatureItem(uint8_t feature_code) ;
     void            addFeature(FeatureValue * fv);
     void            updateFeature(FeatureValue * fv);
 

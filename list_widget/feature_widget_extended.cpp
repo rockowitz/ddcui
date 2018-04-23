@@ -1,5 +1,7 @@
 /* feature_widget.cpp */
 
+#include "feature_widget_extended.h"
+
 #include "assert.h"
 
 #include <QtWidgets/QLabel>
@@ -10,11 +12,10 @@
 #include "feature_value_widgets/value_std_widget.h"
 #include "feature_value_widgets/value_stacked_widget.h"
 
-#include "list_widget/feature_widget.h"
 
 static bool debug = false;
 
-FeatureWidget::FeatureWidget(QListWidget *parent) :
+FeatureWidgetExtended::FeatureWidgetExtended(QListWidget *parent) :
  //   QWidget(parent)
   //   QWidgetItem(nullptr)
       QListWidgetItem(parent, FeatureWidgetType)
@@ -100,7 +101,7 @@ FeatureWidget::FeatureWidget(QListWidget *parent) :
 }
 
 
-void FeatureWidget::setFeatureValue(FeatureValue &fv) {
+void FeatureWidgetExtended::setFeatureValue(FeatureValue &fv) {
     if (debug) {
         printf("(FeatureWidget::%s)", __func__); fflush(stdout);
         fv.report();
@@ -154,13 +155,13 @@ void FeatureWidget::setFeatureValue(FeatureValue &fv) {
 }
 
 
-void FeatureWidget::setCurrentValue(uint16_t newval) {
+void FeatureWidgetExtended::setCurrentValue(uint16_t newval) {
     _valueWidget->setCurrentValue(newval);
 }
 
 
 #ifdef NO
-void FeatureWidget::paintEvent(QPaintEvent *event) {
+void FeatureWidgetExtended::paintEvent(QPaintEvent *event) {
      printf("%s::%s)\n", _cls, __func__); fflush(stdout);
      // QWidget::paintEvent(event);
      _featureCodeField->update();  // causes separate X window - NO NOT THIS
@@ -168,7 +169,7 @@ void FeatureWidget::paintEvent(QPaintEvent *event) {
 #endif
 
 
-void FeatureWidget::dbgrpt() const {
+void FeatureWidgetExtended::dbgrpt() const {
     std::string on1 = objectName().toStdString();
     const char * objname = on1.c_str();
     printf("%-20s code: 0x%02x, flags: 0x%04x, mh: 0x%02x, ml: 0x%02x, sh: 0x%02x, sl 0x%02x\n",

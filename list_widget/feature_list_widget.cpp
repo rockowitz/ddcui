@@ -6,8 +6,8 @@
 #include "nongui/feature_base_model.h"
 #include "nongui/feature_value.h"
 
-#include "list_widget/feature_widget.h"
 #include "list_widget/feature_list_widget.h"
+#include "feature_widget_extended.h"
 
 using namespace std;
 
@@ -34,7 +34,7 @@ int FeatureListWidget::findFeatureItem(uint8_t feature_code) {
     int result = -1;
 
     for (int ndx = 0; ndx < count(); ndx++) {
-        FeatureWidget * curItem = (FeatureWidget*) item(ndx);  // ???
+        FeatureWidgetExtended * curItem = (FeatureWidgetExtended*) item(ndx);  // ???
         if (curItem->_feature_code == feature_code) {
             result = ndx;
             break;
@@ -45,11 +45,11 @@ int FeatureListWidget::findFeatureItem(uint8_t feature_code) {
 }
 
 
-FeatureWidget * FeatureListWidget::getFeatureItem(uint8_t feature_code) {
-    FeatureWidget * result = NULL;
+FeatureWidgetExtended * FeatureListWidget::getFeatureItem(uint8_t feature_code) {
+    FeatureWidgetExtended * result = NULL;
 
     for (int ndx = 0; ndx < count(); ndx++) {
-        FeatureWidget * curItem = (FeatureWidget *) item(ndx);
+        FeatureWidgetExtended * curItem = (FeatureWidgetExtended *) item(ndx);
         if (curItem->_feature_code == feature_code) {
             result = curItem;
             break;
@@ -64,7 +64,7 @@ void FeatureListWidget::addFeature(FeatureValue * fv) {
     if (debugMain)
         printf("(%s::%s)\n", _cls, __func__); fflush(stdout);
 
-    FeatureWidget * itemWidget = new FeatureWidget();
+    FeatureWidgetExtended * itemWidget = new FeatureWidgetExtended();
     itemWidget->setFeatureValue(*fv);
     // printf("(%s::%s) Calling addItem()...\n", _cls, __func__); fflush(stdout);
     addItem(itemWidget);
@@ -73,7 +73,7 @@ void FeatureListWidget::addFeature(FeatureValue * fv) {
 
 
 void FeatureListWidget::updateFeature(FeatureValue * fv) {
-    FeatureWidget * itemWidget = getFeatureItem(fv->_feature_code);
+    FeatureWidgetExtended * itemWidget = getFeatureItem(fv->_feature_code);
     assert(itemWidget);
 
     uint16_t newval = (fv->_value.sh << 8) | fv->_value.sl;
@@ -106,7 +106,7 @@ void   FeatureListWidget::endInitialLoad(void) {
     update();
 #ifdef NO
     for (int ndx = 0; ndx < count(); ndx++) {
-        FeatureWidget * curItem = (FeatureWidget*) item(ndx);  // ???
+        FeatureWidgetExtended * curItem = (FeatureWidgetExtended*) item(ndx);  // ???
         curItem->show();
     }
 #endif
@@ -168,7 +168,7 @@ void FeatureListWidget::paintEvent(QPaintEvent *event) {
          printf("(%s::%s) Calling update() for %d FeatureWidget instances\n", _cls, __func__, count()); fflush(stdout);
 
      for (int ndx = 0; ndx < count(); ndx++) {
-         FeatureWidget * curItem = (FeatureWidget*) item(ndx);  // ???
+         FeatureWidgetExtended * curItem = (FeatureWidgetExtended*) item(ndx);  // ???
          // printf("(%s::%s) Calling update() for FeatureWidget %d\n", _cls, __func__, ndx); fflush(stdout);
          curItem->setUpdatesEnabled(true);  // no effect
          // curItem->setVisible(true);   // fills screen with empty window for each feature
@@ -184,7 +184,7 @@ void  FeatureListWidget::dbgrpt() const {
     const char * objname = on1.c_str();
     printf("FeatureListWidget: %-20s contains %d ListWidgets\n", objname, count());
     for (int ndx = 0; ndx < count(); ndx++) {
-        FeatureWidget * curItem = (FeatureWidget*) item(ndx);
+        FeatureWidgetExtended * curItem = (FeatureWidgetExtended*) item(ndx);
         curItem->dbgrpt();
     }
     fflush(stdout);

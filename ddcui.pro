@@ -85,7 +85,7 @@ SOURCES += \
 SOURCES += \
     list_widget/list_widget_ui.cpp \
     list_widget/feature_list_widget.cpp \
-    list_widget/feature_widget.cpp
+    list_widget/feature_widget_extended.cpp
 
 SOURCES += \
     option_dialogs/feature_selection_dialog.cpp \
@@ -168,7 +168,7 @@ HEADERS += \
 HEADERS += \
     list_widget/list_widget_ui.h \
     list_widget/feature_list_widget.h \
-    list_widget/feature_widget.h
+    list_widget/feature_widget_extended.h
 
 HEADERS += \
     option_dialogs/feature_selection_dialog.h \

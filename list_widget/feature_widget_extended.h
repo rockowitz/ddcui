@@ -11,16 +11,16 @@
 class QLabel;
 class QHBoxLayout;
 
-class FeatureWidget :
+class FeatureWidgetExtended :
         public QWidget,
         public QListWidgetItem     // n. does not inherit from QWidget
 {
     Q_OBJECT
 
 public:
-    explicit FeatureWidget(QListWidget *parent = nullptr);
+    explicit FeatureWidgetExtended(QListWidget *parent = nullptr);
 
-    FeatureWidget(FeatureValue *fv, QWidget *parent=nullptr);
+    FeatureWidgetExtended(FeatureValue *fv, QWidget *parent=nullptr);
 
     void setFeatureValue(FeatureValue &fv);
 
