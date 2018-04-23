@@ -21,7 +21,7 @@ class FeatureSelectionDialog : public QDialog  // was QDialog
     Q_OBJECT
 
 public:
-    explicit FeatureSelectionDialog(QWidget *parent, FeatureSelector* featureSelector);   // was QWidget
+    explicit FeatureSelectionDialog(QWidget *parent, FeatureSelector* featureSelector);
     ~FeatureSelectionDialog();
 
 signals:
@@ -40,6 +40,8 @@ private slots:
     void on_profile_RadioButton_clicked();
 
     void on_color_radioButton_clicked();
+
+    void on_capabilities_checkbox_stateChanged(int arg1);
 
     void on_show_unsupported_checkBox_stateChanged(int arg1);
 

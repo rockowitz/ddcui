@@ -34,6 +34,7 @@ ValueBaseWidget::ValueBaseWidget(QWidget *parent)
 
 
 void ValueBaseWidget::setFeatureValue(const FeatureValue &fv) {
+   printf("(%s::%s) feature_code=0x%02x\n", _cls, __func__, fv.featureCode()); fflush(stdout);
     _feature_code    = fv.featureCode();
     _dref            = fv.dref();
     _finfo           = fv.finfo();
@@ -46,6 +47,13 @@ void ValueBaseWidget::setFeatureValue(const FeatureValue &fv) {
     _sh              = fv._value.sh;
     _sl              = fv._value.sl;
     _value           = fv._value;
+}
+
+// hack to give ValueNcWidget access to parsed capabilities
+void ValueBaseWidget::setBaseModel(FeatureBaseModel * model) {
+   printf("(%s::%s) feature_code=0x%02x, model=%p\n",
+         _cls, __func__, _feature_code, model); fflush(stdout);
+   _baseModel = model;
 }
 
 

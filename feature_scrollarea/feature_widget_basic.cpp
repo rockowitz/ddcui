@@ -8,6 +8,8 @@
 
 #include "base/debug_utils.h"
 
+#include "nongui/feature_base_model.h"
+
 #include "feature_value_widgets/value_cont_widget.h"
 #include "feature_value_widgets/value_nc_widget.h"
 #include "feature_value_widgets/value_std_widget.h"
@@ -208,7 +210,9 @@ void FeatureWidgetBasic::setFeatureValue(FeatureValue &fv) {
         _featureTypeField->setText(QString("T"));
     }
 
+    _valueWidget->setBaseModel(_baseModel);
     _valueWidget->setFeatureValue(fv);
+
     _layout->addWidget(_valueWidget);
 }
 
@@ -217,6 +221,10 @@ void FeatureWidgetBasic::setCurrentValue(uint16_t newval) {
     _valueWidget->setCurrentValue(newval);
 }
 
+// must occur before setFeatureValue
+void FeatureWidgetBasic::setBaseModel(FeatureBaseModel * model) {  // hack for accessing model->_parsed_caps
+    _baseModel = model;
+}
 
 QSize FeatureWidgetBasic::sizeHint() const {
     int w = 700;

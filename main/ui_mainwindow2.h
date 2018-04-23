@@ -56,6 +56,7 @@ public:
     QAction *actionProfile;
     QAction *actionManufacturer;
     QAction *actionFeatureSelectionDialog;
+    QAction *actionOtherOptionsDialog;
 
 #define COMBINED_CENTRAL_WIDGET
 #ifndef COMBINED_CENTRAL_WIDGET
@@ -67,14 +68,14 @@ public:
 
 
     QHBoxLayout *horizontalLayout;
-    // QLabel *label;
-    QMenuBar *menuBar;
-    QMenu *menuView;
-    QMenu *menuDisplays;
-    QMenu *menuHelp;
-    QMenu *menuOptions;
-    QToolBar *mainToolBar;
-    QStatusBar *statusBar;
+    // QLabel   *label;
+    QMenuBar    *menuBar;
+    QMenu       *menuView;
+    // QMenu    *menuDisplays;
+    QMenu       *menuHelp;
+    QMenu       *menuOptions;
+    QToolBar    *mainToolBar;
+    QStatusBar  *statusBar;
 
 private:
     void initActions(QMainWindow * MainWindow){
@@ -139,8 +140,12 @@ private:
         actionManufacturer = new QAction(MainWindow);
         actionManufacturer->setObjectName(QString::fromUtf8("actionManufacturer"));
 
+        // Options Menu Actions
         actionFeatureSelectionDialog = new QAction(MainWindow);
         actionFeatureSelectionDialog->setObjectName(QString::fromUtf8("actionFeatureSelectionDialog"));
+
+        actionOtherOptionsDialog = new QAction(MainWindow);
+        actionOtherOptionsDialog->setObjectName(QString::fromUtf8("actionOtherOptionsDialog"));
     }
 
 
@@ -154,6 +159,8 @@ private:
        actionProfile->setText(                QApplication::translate("MainWindow", "Profile", 0));
        actionManufacturer->setText(           QApplication::translate("MainWindow", "Manufacturer", 0));
        actionFeatureSelectionDialog->setText( QApplication::translate("MainWindow", "&Feature Selection", 0));
+
+       actionOtherOptionsDialog->setText(     QApplication::translate("MainWindow", "&Other Options", 0));
     }
 
 
@@ -168,26 +175,28 @@ private:
        menuView->setObjectName(QString::fromUtf8("menuView"));
        menuView->setTitle(    QApplication::translate("MainWindow", "&View", 0));
 
-       menuDisplays = new QMenu(menuBar);
-       menuDisplays->setObjectName(QString::fromUtf8("menuDisplays"));
-       menuDisplays->setTitle(QApplication::translate("MainWindow", "Disp&lays", 0));
-
-       menuHelp = new QMenu(menuBar);
-       menuHelp->setObjectName(QString::fromUtf8("menuHelp"));
-       menuHelp->setTitle(    QApplication::translate("MainWindow", "Help", 0));
+       // menuDisplays = new QMenu(menuBar);
+       // menuDisplays->setObjectName(QString::fromUtf8("menuDisplays"));
+       // menuDisplays->setTitle(QApplication::translate("MainWindow", "Disp&lays", 0));
 
        menuOptions = new QMenu(menuBar);
        menuOptions->setObjectName(QString::fromUtf8("menuOptions"));
        menuOptions->setTitle( QApplication::translate("MainWindow", "Optio&ns", 0));
        menuOptions->addAction(actionFeatureSelectionDialog);
+       menuOptions->addAction(actionOtherOptionsDialog);
+
+       menuHelp = new QMenu(menuBar);
+       menuHelp->setObjectName(QString::fromUtf8("menuHelp"));
+       menuHelp->setTitle(    QApplication::translate("MainWindow", "Help", 0));
+
 
        MainWindow->setMenuBar(menuBar);
 
        // Menu Bar actions
        menuBar->addAction(menuView->menuAction());
-       menuBar->addAction(menuDisplays->menuAction());
-       menuBar->addAction(menuHelp->menuAction());
+       // menuBar->addAction(menuDisplays->menuAction());
        menuBar->addAction(menuOptions->menuAction());
+       menuBar->addAction(menuHelp->menuAction());
 
        menuView->addAction(actionMonitorSummary);
        menuView->addAction(actionCapabilities);

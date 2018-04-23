@@ -73,7 +73,9 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
                 // gets applied to the widgets inside w, not to w itself
                 w->setStyleSheet("background-color:brown;");
              }
+             w->setBaseModel(_baseModel);    // hack to get at DDCA_Capabilities, must precede setFeatureValue()
              w->setFeatureValue(*fv);
+
              QObject::connect(w ,   &FeatureWidgetBasic::valueChanged,
                               this, &FeaturesScrollAreaView::onUIValueChanged);
              vLayout->addWidget(w);

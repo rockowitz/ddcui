@@ -13,6 +13,7 @@
 #include <ddcutil_types.h>
 
 #include "base/ddcui_globals.h"
+#include "base/other_options_state.h"
 
 // #include "base/monitor.h"
 #include "feature_scrollarea/page_change_observer.h"
@@ -20,6 +21,7 @@
 
 class VcpThread;
 class FeatureSelector;
+class OtherOptionsState;
 class Monitor;
 class FeatureBaseModel;
 class WaitingSpinnerWidget;
@@ -36,6 +38,7 @@ class MainWindow : public QMainWindow, public PageChangeObserver
 
 public:
     enum View {
+        NoView,
         MonitorView,
         CapabilitiesView,
         FeaturesView
@@ -48,7 +51,8 @@ public:
 
     DDCA_Feature_Subset_Id feature_list_id() const;
     void set_feature_list_id(DDCA_Feature_Subset_Id feature_list_id);
-    FeatureSelector * feature_selector;
+    FeatureSelector *   feature_selector = NULL;
+    OtherOptionsState * _otherOptionsState = NULL;
 
     QVector<Monitor*> monitors;
 
@@ -66,6 +70,9 @@ public:
 
 signals:
     void featureSelectionChanged();
+    void signalMonitorSummaryView();
+    void signalCapabilitiesView();
+    void signalFeaturesView();
 
 public slots:
     void longRunningTaskStart();
@@ -95,6 +102,9 @@ private slots:
 
     // void on_actionFeatures_triggered();
 
+    void displaySelectorCombobox_currentIndexChanged(int index);
+    // void displaySelectorCombobox_activated(int index);
+
     void on_actionMonitorSummary_triggered();
     void on_actionCapabilities_triggered();
 
@@ -105,6 +115,11 @@ private slots:
     void featureSelectionAccepted(DDCA_Feature_Subset_Id feature_list);
 
     void on_actionFeatureSelection_triggered();
+
+    void on_actionOtherOptionsDialog_triggered();
+    void on_actionOtherOptionsDialog_accepted();
+    void on_actionOtherOptionsDialog_ncValuesSourceChanged(NcValuesSource valuesSource);
+
 
     void on_actionFeaturesTableView_triggered();
     void on_actionFeaturesListView_triggered();
@@ -128,8 +143,10 @@ private:
     void loadMonitorFeatures(Monitor * monitor) ;
 
     DDCA_Display_Info_List * _dlist ;
-    int                      _curDisplayIndex = 0;
-    View                     _curView = MonitorView;
+    int                      _curDisplayIndex = -1;
+    View                     _curView = NoView;
+
+
 };
 
 #endif // MAINWINDOW_H

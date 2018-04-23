@@ -11,6 +11,7 @@
 #include "nongui/feature_value.h"
 #include "value_abstract_widget.h"
 
+class FeatureBaseModel;
 
 class ValueBaseWidget : public ValueAbstractWidget
 {
@@ -37,6 +38,10 @@ public:
     uint8_t                _sh;
     uint8_t                _sl;
     DDCA_Feature_Flags     _feature_flags;  // should this be here or looked up?
+
+    // hack:
+    FeatureBaseModel * _baseModel;
+    void setBaseModel(FeatureBaseModel * model);
 
 protected:
     char * _cls;

@@ -1,10 +1,11 @@
-/* feature_widge_basict.h - Custom widget for displaying/editing a VCP feature */
+/* feature_widget_basic.h - Custom widget for displaying/editing a VCP feature */
 
 #ifndef FEATURE_WIDGET_BASIC_H
 #define FEATURE_WIDGET_BASIC_H
 
 #include "base/ddcui_globals.h"
 #include "nongui/feature_value.h"
+
 #include "feature_value_widgets/value_abstract_widget.h"
 #include "feature_value_widgets/value_stacked_widget.h"
 
@@ -12,6 +13,8 @@
 
 class QLabel;
 class QHBoxLayout;
+
+class FeatureBaseModel;
 
 
 class FeatureWidgetBasic :
@@ -28,6 +31,8 @@ public:
     void setFeatureValue(FeatureValue &fv);
 
     void setCurrentValue(uint16_t newval);
+
+    void setBaseModel(FeatureBaseModel * model);  // hack for accessing model->_parsed_caps
 
     void dbgrpt() const;
 
@@ -46,6 +51,8 @@ public:
 
 
     void simpleFeatureValueChanged(SimpleFeatureValue fv) override;   // SimpleFeatureValueObserver
+
+    FeatureBaseModel * _baseModel = nullptr;
 
 signals:
 

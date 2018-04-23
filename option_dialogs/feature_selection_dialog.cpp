@@ -1,11 +1,12 @@
 /* feature_selection_dialog.cpp */
 
+#include "../option_dialogs/feature_selection_dialog.h"
+
 #include <assert.h>
 #include <stdio.h>
 #include <iostream>
 
 #include "ui_featureselectiondialog.h"
-#include "feature_selection_dialog.h"
 
 
 using namespace std;
@@ -41,6 +42,10 @@ FeatureSelectionDialog::FeatureSelectionDialog(
        break;
     }
     curButton->setChecked(true);
+
+    ui->include_table_checkBox->setChecked(   featureSelector->_includeTableFeatures);
+    ui->show_unsupported_checkBox->setChecked(featureSelector->_showUnsupportedFeatures);
+    ui->capabilities_checkbox->setChecked(    featureSelector->_respectCapabilities);
 
     this->_feature_selector = featureSelector;
 
@@ -87,10 +92,16 @@ void FeatureSelectionDialog::on_color_radioButton_clicked()
   setFeatureSet(DDCA_SUBSET_COLOR);
 }
 
+void FeatureSelectionDialog::on_capabilities_checkbox_stateChanged(int arg1)
+{
+   cout << "(on_capabilities_checkBox_stateChanged) arg1 = " << arg1 << endl;
+}
+
 void FeatureSelectionDialog::on_show_unsupported_checkBox_stateChanged(int arg1)
 {
-   cout << "(on_show_unpported_checkBox_StateChanged) arg1 = " << arg1 << endl;
+   cout << "(on_show_unpported_checkBox_stateChanged) arg1 = " << arg1 << endl;
 }
+
 
 void FeatureSelectionDialog::on_include_table_checkBox_stateChanged(int arg1)
 {
@@ -117,6 +128,10 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
 
     // this->_mainWindow->set_feature_list_id(feature_list);
     this->_feature_selector->_featureListId = feature_list;
+
+    _feature_selector->_includeTableFeatures    = ui->include_table_checkBox->isChecked();
+    _feature_selector->_showUnsupportedFeatures = ui->show_unsupported_checkBox->isChecked();
+    _feature_selector->_respectCapabilities     = ui->capabilities_checkbox->isChecked();
 
     emit featureSelectionAccepted(feature_list);
 

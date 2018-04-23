@@ -27,11 +27,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     imported/QtWaitingSpinner/waitingspinnerwidget.cpp
 
-
 SOURCES += \
-    base/vertical_scroll_area.cpp \
+    base/ddca_utils.cpp \
     base/debug_utils.cpp \
-    base/feature_selector.cpp
+    base/feature_selector.cpp \
+    base/global_state.cpp \
+    base/vertical_scroll_area.cpp \
 
 SOURCES += \
     nongui/ddc_error.cpp \
@@ -78,10 +79,6 @@ SOURCES += \
     feature_scrollarea/features_scrollarea_view.cpp
 
 SOURCES += \
-    feature_selection/feature_selection_dialog.cpp
-
-
-SOURCES += \
     list_model_view/list_model_view_ui.cpp \
     list_model_view/feature_item_model.cpp
 
@@ -89,6 +86,10 @@ SOURCES += \
     list_widget/list_widget_ui.cpp \
     list_widget/feature_list_widget.cpp \
     list_widget/feature_widget.cpp
+
+SOURCES += \
+    option_dialogs/feature_selection_dialog.cpp \
+    option_dialogs/other_options_dialog.cpp
 
 SOURCES += \
     main/monitor.cpp \
@@ -107,13 +108,15 @@ SOURCES += \
 HEADERS += \
     imported/QtWaitingSpinner/waitingspinnerwidget.h
 
-
 HEADERS += \
-    base/vertical_scroll_area.h \
+    base/ddca_utils.h \
     base/ddcui_globals.h \
     base/debug_utils.h \
     base/feature_selector.h \
-    base/monitor.h
+    base/global_state.h \
+    base/monitor.h \
+    base/other_options_state.h \
+    base/vertical_scroll_area.h
 
 HEADERS += \
     nongui/ddc_error.h \
@@ -133,12 +136,12 @@ HEADERS += \
 HEADERS += \
     feature_value_widgets/value_abstract_widget.h \
     feature_value_widgets/value_base_widget.h \
+    feature_value_widgets/value_std_widget.h \
     feature_value_widgets/value_cont_widget.h \
     feature_value_widgets/value_nc_widget.h \
     feature_value_widgets/value_reset_widget.h \
     feature_value_widgets/value_2button_widget.h \
-    feature_value_widgets/value_stacked_widget.h \
-    feature_value_widgets/value_std_widget.h 
+    feature_value_widgets/value_stacked_widget.h
 
 HEADERS += \
     table_model_view/table_model_view_ui.h \
@@ -159,10 +162,6 @@ HEADERS += \
     feature_scrollarea/features_scrollarea_view.h
 
 HEADERS += \
-    feature_selection/feature_selection_dialog.h
-
-
-HEADERS += \
    list_model_view/list_model_view_ui.h \
    list_model_view/feature_item_model.h
 
@@ -172,9 +171,12 @@ HEADERS += \
     list_widget/feature_widget.h
 
 HEADERS += \
+    option_dialogs/feature_selection_dialog.h \
+    option_dialogs/other_options_dialog.h
+
+HEADERS += \
     main/mainwindow.h \
     main/ui_mainwindow2.h
-
 
 #     vcplineitem.h \
 
@@ -184,7 +186,8 @@ HEADERS += \
 #   mainwindow.ui \
 
 FORMS += \
-    feature_selection/featureselectiondialog.ui
+    option_dialogs/feature_selection_dialog.ui \
+    option_dialogs/other_options_dialog.ui
 
 # FORMS += \
 #     c_feature_widget.ui

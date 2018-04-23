@@ -53,7 +53,7 @@
      <x>30</x>
      <y>70</y>
      <width>364</width>
-     <height>192</height>
+     <height>220</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -96,6 +96,13 @@
      </widget>
     </item>
     <item>
+     <widget class="QCheckBox" name="capabilities_checkbox">
+      <property name="text">
+       <string>Respect Reported Capabilities</string>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="QCheckBox" name="show_unsupported_checkBox">
       <property name="text">
        <string>Include Unsupported Features</string>
@@ -107,6 +114,9 @@
     </item>
     <item>
      <widget class="QCheckBox" name="include_table_checkBox">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="font">
        <font>
         <strikeout>true</strikeout>

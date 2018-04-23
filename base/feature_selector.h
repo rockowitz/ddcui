@@ -12,6 +12,7 @@ public:
     DDCA_Feature_Subset_Id _featureListId           = DDCA_SUBSET_KNOWN;
     bool                   _showUnsupportedFeatures = false;
     bool                   _includeTableFeatures    = false;
+    bool                   _respectCapabilities     = false;
 
     bool operator==(const FeatureSelector& sel2) const;
     bool operator!=(const FeatureSelector& sel2) const;

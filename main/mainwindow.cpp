@@ -18,7 +18,8 @@
 
 #include "nongui/vcpthread.h"    // includes vcprequest.h
 
-#include "feature_selection/feature_selection_dialog.h"
+#include "base/other_options_state.h"
+#include "base/global_state.h"
 
 #include "monitor_desc/monitor_desc_actions.h"
 #include "monitor_desc/monitor_desc_ui.h"
@@ -39,6 +40,8 @@
 
 #include "main/ui_mainwindow2.h"
 #include "main/mainwindow.h"
+#include "../option_dialogs/feature_selection_dialog.h"
+#include "../option_dialogs/other_options_dialog.h"
 
 
 using namespace std;
@@ -66,6 +69,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QLabel* toolbarDisplayLabel = new QLabel("&Display:  ");
     _toolbarDisplayCB = new QComboBox();
+    _toolbarDisplayCB->setObjectName("displaySelectorCombobox");
     _toolbarDisplayCB->setStyleSheet("background-color:white;");
     toolbarDisplayLabel->setBuddy(_toolbarDisplayCB);
     ui->mainToolBar->addWidget( toolbarDisplayLabel);
@@ -74,7 +78,10 @@ MainWindow::MainWindow(QWidget *parent) :
     // reportWidgetChildren(ui->viewsStackedWidget,
     //                      "Children of viewsStackedWidget, before initDisplaySelector():");
     initDisplaySelector();
-    feature_selector = new FeatureSelector();
+    feature_selector   = new FeatureSelector();
+    GlobalState& globalState = GlobalState::instance();
+    _otherOptionsState = new OtherOptionsState;
+    globalState._otherOptionsState = _otherOptionsState;
     reportWidgetChildren(ui->viewsStackedWidget,
                          "Children of viewsStackedWidget, after initDisplaySelector():");
 
@@ -82,9 +89,14 @@ MainWindow::MainWindow(QWidget *parent) :
     // Metatypes for classes are registered with the class definition.
     qRegisterMetaType<uint8_t>("uint8_t");
 
+    qRegisterMetaType<NcValuesSource>("NcValuesSource");
+
      QObject::connect(
         this,     &MainWindow::featureSelectionChanged,
         this,     &MainWindow::on_actionFeaturesScrollArea_triggered);
+
+     // connect for OtherOptions
+
 }
 
 
@@ -213,8 +225,27 @@ void MainWindow::initDisplaySelector() {
         curMonitor->_requestQueue->put(new VcpCapRequest());
     }
 
-    // ui->displaySelectorComboBox->setCurrentIndex(0);
     _toolbarDisplayCB->setCurrentIndex(0);
+
+    connect(_toolbarDisplayCB, SIGNAL(currentIndexChanged(int)),
+            this,              SLOT(  displaySelectorCombobox_currentIndexChanged(int)));
+
+#ifdef UNNEEDED
+    connect(_toolbarDisplayCB, SIGNAL(activated(int)),
+            this,              SLOT(  displaySelectorCombobox_activated(int)));
+#endif
+
+    // connect(_toolbarDisplayCB, qOverload<int>::of(&QComboBox::currentIndexChanged),
+    //         this               &MainWindow::displaySelectorCombobox_currentIndexChanged);
+
+    connect(this,      &MainWindow::signalMonitorSummaryView,
+            this,      &MainWindow::on_actionMonitorSummary_triggered);
+
+    connect(this,      &MainWindow::signalCapabilitiesView,
+            this,      &MainWindow::on_actionCapabilities_triggered);
+
+    connect(this,      &MainWindow::signalFeaturesView,
+            this,      &MainWindow::on_actionFeaturesScrollArea_triggered);
 
     // Set message in status bar
     msg = QString("Detected ") + QString::number(_dlist->ct) + QString(" displays.");
@@ -275,6 +306,20 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
     ui->statusBar->showMessage(msg);
 
     DDCA_Feature_List features_to_show = monitor->getFeatureList(feature_selector->_featureListId);
+    char * s = ddca_feature_list_string(&features_to_show, NULL, (char*) " ");
+    printf("(%s::%s) features_to_show: %s\n", _cls, __func__, s);
+    free(s);
+
+    if (feature_selector->_respectCapabilities) {
+       // need to test _parsed_caps is valid
+       DDCA_Feature_List caps_features =
+             ddca_feature_list_from_capabilities(monitor->_baseModel->_parsed_caps);
+       char * s = ddca_feature_list_string(&caps_features, NULL, (char*) " ");
+       printf("(%s::%s) Capabilities features: %s\n", _cls, __func__, s);
+       free(s);
+       features_to_show = ddca_feature_list_and(&features_to_show, &caps_features);
+    }
+
     cout << "feature_list_id: " << feature_selector->_featureListId << ",  Feature ids: " << endl;
     for (int ndx = 0; ndx <= 255; ndx++) {
         if ( ddca_feature_list_contains(&features_to_show, (uint8_t) ndx))
@@ -282,6 +327,7 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
     }
     cout << endl;
 
+    // causes async feature reads in VcpThread, then load feature values from model into widgets
     monitor->_baseModel->setFeatureList(features_to_show);
 
 #ifdef MOVED
@@ -321,6 +367,30 @@ void MainWindow::reportDdcApiError(QString funcname, int rc) const {
      // emsg->showMessage("oy vey");
 
 }
+
+
+void MainWindow::displaySelectorCombobox_currentIndexChanged(int index) {
+   printf("(%s::%s) index=%d\n", _cls, __func__, index); fflush(stdout);
+   switch(_curView) {
+   case MonitorView:
+      emit signalMonitorSummaryView();
+      break;
+   case CapabilitiesView:
+      emit signalCapabilitiesView();
+      break;
+   case FeaturesView:
+      emit signalFeaturesView();
+      break;
+   case NoView:
+      break;
+   }
+}
+
+#ifdef UNNEEDED
+void MainWindow::displaySelectorCombobox_activated(int index) {
+   printf("(%s::%s) index=%d\n", _cls, __func__, index); fflush(stdout);
+}
+#endif
 
 
 
@@ -442,6 +512,30 @@ void MainWindow::actionFeatureSelectionDialog_destroyed(QObject * obj)
 void MainWindow::featureSelectionAccepted(DDCA_Feature_Subset_Id feature_list) {
    printf("%s::%s) feature_list=%d\n", _cls, __func__, feature_list);
 }
+
+void MainWindow::on_actionOtherOptionsDialog_triggered()
+{
+        // display dialog box for selecting features
+        cout << "(on_actionOtherOptionsDialog_triggered)" << endl;
+
+       OtherOptionsDialog* dialog = new OtherOptionsDialog(this->_otherOptionsState, this);
+       QObject::connect(dialog,   &OtherOptionsDialog::ncValuesSourceChanged,
+                        this,     &MainWindow::on_actionOtherOptionsDialog_ncValuesSourceChanged);
+       dialog->exec();
+}
+
+
+
+void MainWindow::on_actionOtherOptionsDialog_accepted()
+{
+   printf("%s::%s)\n", _cls, __func__); fflush(stdout);
+}
+
+void MainWindow::on_actionOtherOptionsDialog_ncValuesSourceChanged(NcValuesSource valuesSource )
+{
+   printf("%s::%s) valuesSource=%d\n", _cls, __func__, valuesSource); fflush(stdout);
+}
+
 
 
 DDCA_Feature_Subset_Id MainWindow::feature_list_id() const {
@@ -647,10 +741,12 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
 
     // TODO Combine View, features view
     if (_curView                     != View::FeaturesView                     ||
+        _curDisplayIndex             != monitorNdx                             ||
         monitor->_curFeaturesView    != Monitor::FEATURES_VIEW_SCROLLAREA_VIEW ||
         monitor->_curFeatureSelector != *feature_selector )
     {
        loadMonitorFeatures(monitor);
+       _curDisplayIndex = monitorNdx;
        _curView = View::FeaturesView;
        monitor->_curFeaturesView = Monitor::FEATURES_VIEW_SCROLLAREA_VIEW;
        monitor->_curFeatureSelector   = *feature_selector;
