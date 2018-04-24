@@ -6,9 +6,11 @@
 #include <QtCore/QVector>
 #include <QtCore/QByteArray>
 
-#include "ddcutil_types.h"
+#include <ddcutil_types.h>
 
 #include "base/monitor.h"
+#include "base/ddca_utils.h"
+
 #include "nongui/feature_value.h"
 
 #include "nongui/feature_base_model.h"
@@ -53,14 +55,6 @@ int FeatureBaseModel::modelVcpValueIndex(uint8_t feature_code) {
  */
 FeatureValue * FeatureBaseModel::modelVcpValueFind(uint8_t feature_code) {
     FeatureValue * result = NULL;
-    // printf("(FeatureBaseModel::%s) this=%p\n", __func__, this); fflush(stdout);
-
-    //    QString qobjname = objectName();
-    //    std::string str_objname = qobjname.toStdString();
-    //    const char * objname = str_objname.c_str();
-    //    printf("(FeatureBaseModel::%s) objectName=%s\n", __func__, objname); fflush(stdout);
-
-    // printf("(FeatureBaseModel::%s) _featureValues=%p\n", __func__, _featureValues); fflush(stdout);
     for (int ndx = 0; ndx < _featureValues->count(); ndx++) {
         FeatureValue * cur = _featureValues->at(ndx);
         if (cur->_feature_code == feature_code) {
@@ -133,10 +127,15 @@ void   FeatureBaseModel::modelVcpValueSet(
         if (debugModel)
             printf("(%s) Creating new FeatureValue\n", __func__); fflush(stdout);
 
+        DDCA_Cap_Vcp * cap_vcp = NULL;
+        if (_parsed_caps)
+           cap_vcp = ddcutil_find_cap_vcp(_parsed_caps, feature_code);
+
         FeatureValue * fv = new FeatureValue(
                                    feature_code,
                                    dref,
                                    metadata,
+                                   cap_vcp,
                                    *feature_value);
         _featureValues->append(fv);
         if (debugSignals)
@@ -150,10 +149,6 @@ void   FeatureBaseModel::modelVcpValueSet(
         FeatureValue * fv =  _featureValues->at(ndx);
        // FeatureValue * fv = modelVcpValueAt(ndx);
         // need to test _mh = 255, _ml = 0 ?
-        // fv->_mh             = feature_value->mh;
-        // fv->_ml             = feature_value->ml;
-        // fv->_sh             = feature_value->sh;
-        // fv->_sl             = feature_value->sl;
 
         // TODO: free old values
 
@@ -182,9 +177,6 @@ void   FeatureBaseModel::modelVcpValueUpdate(
         printf("(%s) Modifying existing FeatureValue\n", __func__); fflush(stdout);
 
     FeatureValue * fv =  _featureValues->at(ndx);
-    // fv->_sh             = sh;
-    // fv->_sl             = sl;
-
     fv->_value.sh = sh;
     fv->_value.sl = sl;
 
@@ -194,10 +186,11 @@ void   FeatureBaseModel::modelVcpValueUpdate(
 
 
 // This really belongs in Monitor
-void FeatureBaseModel::setCapabilities(
-                 DDCA_Status          ddcrc,
-                 char *               capabilities_string,
-                 DDCA_Capabilities *  parsed_capabilities)
+void
+FeatureBaseModel::setCapabilities(
+      DDCA_Status          ddcrc,
+      char *               capabilities_string,
+      DDCA_Capabilities *  parsed_capabilities)
 {
    printf("(%s::%s) capabilities_string=|%s|\n",
           _cls, __func__, capabilities_string);  fflush(stdout);
@@ -215,8 +208,6 @@ void  FeatureBaseModel::onDdcError(
    // emit signalModelError(featureCode, msg);
    emit  signalDdcError(erec);
 }
-
-
 
 
 void FeatureBaseModel::modelMccsVersionSet(
@@ -264,7 +255,7 @@ void FeatureBaseModel::setFeatureChecked(uint8_t featureCode) {
  *  #FeatureBaseModel instance. 
  */
 // TODO: report feature_info, feature_name
-void FeatureBaseModel::report() {
+void FeatureBaseModel::dbgrpt() {
     printf("(FeatureBaseModel::report)\n");
     int ct = _featureValues->count();
     for (int ndx = 0; ndx < ct; ndx++) {

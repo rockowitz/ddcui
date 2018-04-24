@@ -58,7 +58,7 @@ public:
 
     QComboBox * _toolbarDisplayCB;
 
-    QStackedWidget * _views_StackedWidget;
+    // QStackedWidget * _views_StackedWidget;   // used?
 #ifdef OLD
     QPlainTextEdit * _moninfoPlainText = nullptr;
     QTableView *     _vcp_tableview = nullptr;
@@ -87,11 +87,12 @@ private:
     WaitingSpinnerWidget* _spinner;
     QMessageBox*          _loadingMsgBox;
 
-
+#ifdef OLD
     QWidget * initFeaturesScrollArea(
           Monitor *         curMonitor,
           FeatureBaseModel* baseModel,
           QStackedWidget *  stackedWidget);
+#endif
 
     void featureSelectionDone();
 

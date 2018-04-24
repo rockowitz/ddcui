@@ -9,7 +9,7 @@
 #include "feature_value_widgets/value_abstract_widget.h"
 #include "feature_value_widgets/value_stacked_widget.h"
 
-// Like FeatureWidget, but derives only from QWidget, not QListWidgetItem
+// Like FeatureWidgetExtended, but derives only from QWidget, not QListWidgetItem
 
 class QLabel;
 class QHBoxLayout;
@@ -53,6 +53,10 @@ public:
     void simpleFeatureValueChanged(SimpleFeatureValue fv) override;   // SimpleFeatureValueObserver
 
     FeatureBaseModel * _baseModel = nullptr;
+
+    bool isSimpleNc();
+
+    void setNcValuesSource(NcValuesSource newsrc);
 
 signals:
 

@@ -32,6 +32,7 @@ SOURCES += \
     base/debug_utils.cpp \
     base/feature_selector.cpp \
     base/global_state.cpp \
+    base/other_options_state.cpp \
     base/vertical_scroll_area.cpp \
 
 SOURCES += \

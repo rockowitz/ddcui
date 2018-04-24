@@ -121,7 +121,7 @@ QWidget *FeatureValueTableItemDelegate::createEditor(
     // to do, check for kind of FeatureValue
     if ( canconvert && col == 4) {
         FeatureValue fv = qvariant_cast<FeatureValue>(index.data(FeatureValueRole));
-        fv.report();
+        fv.dbgrpt();
 
         QWidget* edwidget = nullptr;
         if (fv.flags() & DDCA_CONT) {
@@ -197,7 +197,7 @@ void FeatureValueTableItemDelegate::setModelData(
 
     printf("(FeatureValueTableItemDelegate::setModelData) index=(%d,%d)\n",
            index.row(), index.column()); fflush(stdout);
-        fv.report(); fflush(stdout);
+        fv.dbgrpt(); fflush(stdout);
     // how to determine if used editor?
     if (index.data().canConvert<FeatureValue>()) {
         printf("(FeatureValueTableItemDelegate::setModelData) FeatureValue case\n"); fflush(stdout);

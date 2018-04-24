@@ -57,7 +57,7 @@ FeaturesScrollAreaContents::FeaturesScrollAreaContents(QWidget * parent) :
 }
 
 FeaturesScrollAreaContents::~FeaturesScrollAreaContents() {
-   // TODO Auto-generated destructor stub
+   // TODO IMPLEMENT!!!
 }
 
 void FeaturesScrollAreaContents::setModel(FeatureBaseModel * baseModel) {

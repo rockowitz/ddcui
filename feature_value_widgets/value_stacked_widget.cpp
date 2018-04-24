@@ -70,6 +70,7 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent):
     if (debugLayout)
        this->setStyleSheet("background-color:red;");
 
+    _pageno_selected = _pageno_std;
     _stacked->setCurrentIndex(_pageno_selected);
     _cur_stacked_widget = _stdWidget;
 
@@ -120,12 +121,14 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
              QString("Restore"),
              2);
        _stacked->setCurrentIndex(_pageno_2button);
+       _pageno_selected = _pageno_2button;
        _cur_stacked_widget = _2ButtonWidget;
     }
 
     else if (fv.flags() & DDCA_STD_CONT) {
         // printf("(ValueStackedWidget::%s) DDCA_STD_CONT\n", __func__); fflush(stdout);
         _stacked->setCurrentIndex(_pageno_cont);
+        _pageno_selected = _pageno_cont;
         _cur_stacked_widget = _contWidget;
     }
     else if ( (fv.flags() & DDCA_SIMPLE_NC) &&
@@ -134,11 +137,13 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
     {
        // printf("(ValueStackedWidget::%s) DDCA_SIMPLE_NC\n", __func__); fflush(stdout);
         _stacked->setCurrentIndex(_pageno_nc);
+        _pageno_selected = _pageno_nc;
         _cur_stacked_widget = _ncWidget;
     }
     else {
        // printf("(ValueStackedWidget::%s) default case, _stdWidget\n",  __func__); fflush(stdout);
         _stacked->setCurrentIndex(_pageno_std);
+        _pageno_selected = _pageno_std;
         _cur_stacked_widget = _stdWidget;
     }
     _cur_stacked_widget->setFeatureValue(fv);
@@ -196,6 +201,19 @@ void  ValueStackedWidget::onContainedWidgetChanged(uint8_t feature_code, uint8_t
 
 }
 
+bool ValueStackedWidget::isSimpleNc() {
+   bool result = (_pageno_selected == _pageno_nc);
+   printf("(%s::%s) _pageno_selected=%d, _pageno_nc=%d, returning: %d\n",
+         _cls, __func__, _pageno_selected, _pageno_nc, result); fflush(stdout);
+   return result;
+}
 
+void ValueStackedWidget::setNcValuesSource(NcValuesSource newsrc) {
+   printf("(%s::%s) newsrc = %d, _pageno_selected=%d, _pageno_nc=%d \n",
+         _cls, __func__, newsrc, _pageno_selected, _pageno_nc); fflush(stdout);
+   if (_pageno_selected == _pageno_nc) {
+      _ncWidget->reloadComboBox(newsrc);
+   }
+}
 
 

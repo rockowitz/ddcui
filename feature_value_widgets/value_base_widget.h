@@ -29,6 +29,7 @@ public:
     uint8_t                _feature_code;
     DDCA_Display_Ref       _dref;
     DDCA_Feature_Metadata  _finfo;
+    DDCA_Cap_Vcp *         _cap_vcp;
 
     DDCA_MCCS_Version_Spec _vspec;
     DDCA_Monitor_Model_Key * _mmid;

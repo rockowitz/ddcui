@@ -7,6 +7,8 @@
 
 #include <stdio.h>
 
+#include "base/global_state.h"
+#include "base/other_options_state.h"
 #include "base/vertical_scroll_area.h"
 #include "base/monitor.h"
 #include "base/ddcui_globals.h"
@@ -34,6 +36,10 @@ FeaturesScrollAreaView::FeaturesScrollAreaView(
 
 }
 
+void FeaturesScrollAreaView::freeContents(void) {
+   // TODO
+}
+
 
 void FeaturesScrollAreaView::onEndInitialLoad(void) {
    printf("(FeatuesScrollAreaView::%s) Starting\n", __func__);  fflush(stdout);
@@ -41,6 +47,9 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
       printf("(%s::%s) Not FEATURES_VIEW_SCROLLAREA, skipping\n", _cls, __func__);  fflush(stdout);
       return;
    }
+
+   // TODO:
+   // free existing QScrollArea, QScrollAreaContents
 
     QScrollArea * scrollArea = new QScrollArea();
     // causes extra space between C/NC/T column and value column
@@ -100,14 +109,17 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
 
     if (!dimensionReportShown && debugLayout) {
         printf("(%s::%s) ---------------------> scrollAreaContents in QScrollArea\n",    _cls, __func__);
-        reportWidgetDimensions(scrollAreaContents,    _cls, __func__);
+        reportWidgetDimensions(scrollAreaContents,    _cls, __func__, "scrollAreaContents in QScrollArea");
         printf("(%s::%s) ---------------------> QScrollArea in _centralStackedWidget\n", _cls, __func__);
-        reportWidgetDimensions(scrollArea,            _cls, __func__);
+        reportWidgetDimensions(scrollArea,            _cls, __func__, "QScrollArea in _centralStackedWidget");
         printf("(%s::%s) ---------------------> centralStackedWidget\n",                 _cls, __func__);
-        reportWidgetDimensions(_centralStackedWidget, _cls, __func__);
+        reportWidgetDimensions(_centralStackedWidget, _cls, __func__, "centralStackedWidget");
         // dimensionReportShown = true;
     }
 
+    GlobalState& globalState = GlobalState::instance();
+    _curNcValuesSource = globalState._otherOptionsState->ncValuesSource;
+    _scrollAreaContents = scrollAreaContents;
     _centralStackedWidget->show();
     printf("(FeatuesScrollAreaView::%s) Done.  feature count: %d\n", __func__, ct);  fflush(stdout);
 }
@@ -133,6 +145,40 @@ void FeaturesScrollAreaView::onModelValueChanged(
    // set value in the widget
    uint16_t newval = sh << 8 | sl;
    curWidget->setCurrentValue(newval);
+}
+
+
+void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc) {
+   printf("(%s::%s) newsrc=%d - %s, _curNcValuesSource=%d - %s\n",
+          _cls, __func__,
+          newsrc,             (char*) ncValuesSourceName(newsrc),
+          _curNcValuesSource, (char*) ncValuesSourceName(_curNcValuesSource));  fflush(stdout);
+
+   if (newsrc != _curNcValuesSource) {
+      // reportWidgetChildren(_scrollAreaContents, (const char *) "Children of FeatuersScrollAreaView");
+
+      QObjectList  childs = _scrollAreaContents->children();
+      for (int ndx = 0; ndx < childs.size(); ndx++) {
+          QObject* curobj = childs.at(ndx);
+          QString name   = curobj->objectName();
+          const char *  clsName = curobj->metaObject()->className();
+          printf("   Child: %s, type:%s\n", name.toLatin1().data(), clsName); fflush(stdout);
+
+          // Both .inherits() and dyamic_cast work
+         //  if (curobj->inherits("FeatureWidget"))
+         //      printf("(%s::%s) inherits()\n", _cls, __func__); fflush(stdout);
+
+          FeatureWidget * curWidget = dynamic_cast<FeatureWidget*>(curobj);
+          if (curWidget) {
+             printf("(%s::%s) dynamic_cast succeeded\n", _cls, __func__); fflush(stdout);
+             if (curWidget->isSimpleNc()) {
+                printf("(%s::%s) feature_code=0x%02x\n", _cls, __func__, curWidget->_feature_code); fflush(stdout);
+                curWidget->setNcValuesSource(newsrc);
+             }
+          }
+      }
+      _curNcValuesSource = newsrc;
+   }
 }
 
 

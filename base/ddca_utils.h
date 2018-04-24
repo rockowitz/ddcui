@@ -40,7 +40,7 @@ ddcutil_merge_feature_values(
 DDCA_Cap_Vcp *
 ddcutil_find_cap_vcp(
       DDCA_Capabilities * parsed_caps,
-      uint8_t feature_code);
+      uint8_t             feature_code);
 
 
 void

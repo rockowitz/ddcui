@@ -1,4 +1,4 @@
-/* other_options_state.h
+/* other_options_source.cpp
  *
  * <copyright>
  * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
@@ -21,32 +21,18 @@
  * </endcopyright>
  */
 
-#ifndef OTHER_OPTIONS_STATE_H_
-#define OTHER_OPTIONS_STATE_H_
+#include "other_options_state.h"
 
-#include <QtCore/QObject>
+char *
+ncValuesSourceName(NcValuesSource source)
+{
+     char * result = NULL;
 
-// move inside class?
-typedef enum {
-   NcValuesFromMccs,
-   NcValuesFromCapabilities,
-   NcValuesFromBoth,
-   NcValuesSourceUnset
-} NcValuesSource;
-
-
-class OtherOptionsState : public QObject {
-   Q_OBJECT
-
-public:
-   static const NcValuesSource DefaultNcValuesSource = NcValuesFromMccs;
-
-
-
-   NcValuesSource ncValuesSource = DefaultNcValuesSource;    //  NcValuesFromMccs;
-
-};
-
-char * ncValuesSourceName(NcValuesSource source) ;
-
-#endif /* OPTIONS_STATE_H_ */
+     switch(source) {
+     case NcValuesFromMccs:         result = (char*) "NcValuesSourceFromMccs";   break;
+     case NcValuesFromCapabilities: result = (char*) "NcValuesFromCapabilities"; break;
+     case NcValuesFromBoth:         result = (char*) "NcValuesFromBoth";         break;
+     case NcValuesSourceUnset:      result = (char*) "NcValuesSourceUnset";      break;
+     }
+     return result;
+}

@@ -177,6 +177,8 @@ void FeatureWidget::setFeatureValue(FeatureValue &fv) {
     _feature_flags = fv.flags();
     _vspec         = fv.vspec();
 
+    setObjectName(QString::asprintf("FeatureWidget-0x%02x", _feature_code));
+
     // printf("(%s::%s) _feature_flags = 0x%08x, fv._feature_flags = 0x%08x, fv._finfo
 
     // need to save value here?
@@ -265,4 +267,13 @@ void FeatureWidget::simpleFeatureValueChanged(SimpleFeatureValue fv) {
           fv.featureCode, fv.hiByte, fv.loByte); fflush(stdout);
 }
 
+bool FeatureWidget::isSimpleNc() {
+   bool result = _valueWidget->isSimpleNc();
+   printf("(%s::%s) returning: %d \n", _cls, __func__, result); fflush(stdout);
+   return result;
+}
 
+void FeatureWidget::setNcValuesSource(NcValuesSource newsrc) {
+   printf("(%s::%s) newsrc = %d \n", _cls, __func__, newsrc); fflush(stdout);
+   _valueWidget->setNcValuesSource(newsrc);
+}

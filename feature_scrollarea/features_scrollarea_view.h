@@ -14,6 +14,7 @@
 
 class QStackedWidget;
 class Monitor;
+class FeaturesScrollAreaContents;
 
 class FeaturesScrollAreaView : public QObject
 {
@@ -30,11 +31,18 @@ public:
     FeatureBaseModel * _baseModel;
     Monitor *          _monitor;
 
+    NcValuesSource    _curNcValuesSource;  // how to properly intialize?
+    FeaturesScrollAreaContents * _scrollAreaContents = NULL;
+
+    void freeContents(void);    // private?
+
 private:
     const char * _cls;
 
     // quick and dirty for now, eventually replace by hash
     FeatureWidget * _widgets[256] = {0};
+
+
 
 signals:
     void signalVcpRequest(VcpRequest * rqst);  // used to call into monitor
@@ -50,5 +58,7 @@ public slots:
     void onModelValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl);
 
    void onModelDdcError(DdcError erec);
+
+   void onNcValuesSourceChanged(NcValuesSource newsrc);
 };
 #endif // FEATURES_SCROLLAREA_VIEW_H

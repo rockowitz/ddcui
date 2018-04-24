@@ -151,6 +151,9 @@ void ValueNcWidget::setFeatureValue(const FeatureValue &fv) {
 }
 
 DDCA_Feature_Value_Entry * ValueNcWidget::getComboBoxEntries(NcValuesSource mode) {
+   printf("(%s::%s) newSource=%d-%s\n",
+         _cls, __func__,
+         mode, ncValuesSourceName(mode) );  fflush(stdout);
    // modes:
    //   metadata only (normal)
    //   CapsOnly  capabilities, with names from metadata if available
@@ -158,10 +161,10 @@ DDCA_Feature_Value_Entry * ValueNcWidget::getComboBoxEntries(NcValuesSource mode
    DDCA_Feature_Value_Entry * entries = _finfo.sl_values;
    if (mode != NcValuesFromMccs) {
       Nc_Values_Merge_Mode merge_mode = (mode==NcValuesFromCapabilities) ? CapsOnly : CapsPlusMccs;
-      DDCA_Capabilities * parsed_caps = _baseModel->_parsed_caps;
-      DDCA_Cap_Vcp * cap_vcp = ddcutil_find_cap_vcp(parsed_caps, _feature_code);
+      // DDCA_Capabilities * parsed_caps = _baseModel->_parsed_caps;
+      // DDCA_Cap_Vcp * cap_vcp = ddcutil_find_cap_vcp(parsed_caps, _feature_code);
       entries = ddcutil_merge_feature_values(
-             cap_vcp,                // DDCA_Cap_Vcp *
+             _cap_vcp,                // DDCA_Cap_Vcp *
              entries,               // DDCA_Feature_Value_Table
              merge_mode);           // Nc_Values_Merge_Mode
    }
@@ -169,33 +172,50 @@ DDCA_Feature_Value_Entry * ValueNcWidget::getComboBoxEntries(NcValuesSource mode
 }
 
 
-   void ValueNcWidget::loadComboBox(NcValuesSource mode) {
-      DDCA_Feature_Value_Entry * cur = getComboBoxEntries(mode);
+void ValueNcWidget::loadComboBox(NcValuesSource mode) {
+   printf("(%s::%s) newSource=%d-%s\n",
+         _cls, __func__,
+         mode, ncValuesSourceName(mode) );  fflush(stdout);
 
-      if (cur) {
-          while (cur->value_name) {
-              // printf("(%s) value code: 0x%02x, value_name: %s\n",
-              //        __func__, cur->value_code, cur->value_name);  fflush(stdout);
-              QString s;
-              s.sprintf("x%02x - %s", cur->value_code, cur->value_name);
-              _cb->addItem(s, QVariant(cur->value_code));
-              cur++;
-          }
-      }
-
-      // - set current value in combo box
-      int cur_ndx = findItem(_sl);
-      if (cur_ndx >= 0) {
-          _cb->setCurrentIndex(cur_ndx);
-      }
-      else {
-          printf("(%s::%s) Unable to find value 0x%02x\n", _cls, __func__, _sl);
-          // TODO: add generated entry for observed value
-      }
+   // In case we're called to reload the combobox values, delete existing values
+   for (int ndx = _cb->count()-1; ndx >= 0; ndx--) {
+      _cb->removeItem(ndx);
    }
+
+   DDCA_Feature_Value_Entry * cur = getComboBoxEntries(mode);
+   if (cur) {
+       while (cur->value_name) {
+           // printf("(%s) value code: 0x%02x, value_name: %s\n",
+           //        __func__, cur->value_code, cur->value_name);  fflush(stdout);
+           QString s;
+           s.sprintf("x%02x - %s", cur->value_code, cur->value_name);
+           _cb->addItem(s, QVariant(cur->value_code));
+           cur++;
+       }
+   }
+
+   // - set current value in combo box
+   int cur_ndx = findItem(_sl);
+   if (cur_ndx >= 0) {
+       _cb->setCurrentIndex(cur_ndx);
+   }
+   else {
+       printf("(%s::%s) Unable to find value 0x%02x\n", _cls, __func__, _sl);
+       // TODO: add generated entry for observed value
+       QString s;
+       s.sprintf("x%02x - Unrecognized value", _sl);
+       _cb->addItem(s, QVariant(_sl));
+       cur_ndx = _cb->count()-1;
+       _cb->setCurrentIndex(cur_ndx);
+   }
+}
 
 
 void ValueNcWidget::reloadComboBox(NcValuesSource newSource) {
+   printf("(%s::%s) newSource=%d-%s, _curNcValuesSource=%d-%s\n",
+         _cls, __func__,
+         newSource, ncValuesSourceName(newSource),
+         _curNcValuesSource, ncValuesSourceName(_curNcValuesSource) );  fflush(stdout);
    if (newSource != _curNcValuesSource) {
       _guiChange = false;
       loadComboBox(newSource);

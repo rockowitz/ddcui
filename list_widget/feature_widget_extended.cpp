@@ -104,7 +104,7 @@ FeatureWidgetExtended::FeatureWidgetExtended(QListWidget *parent) :
 void FeatureWidgetExtended::setFeatureValue(FeatureValue &fv) {
     if (debug) {
         printf("(FeatureWidget::%s)", __func__); fflush(stdout);
-        fv.report();
+        fv.dbgrpt();
     }
 
     _feature_code  = fv._feature_code;

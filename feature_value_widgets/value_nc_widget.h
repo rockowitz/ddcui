@@ -33,7 +33,7 @@ public:
     void reloadComboBox(NcValuesSource newSource);
 
     // eventually make private:
-    NcValuesSource _curNcValuesSource;
+    NcValuesSource _curNcValuesSource = NcValuesSourceUnset;
 
 private:
     bool _guiChange = false;

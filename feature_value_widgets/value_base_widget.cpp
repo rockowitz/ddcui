@@ -38,6 +38,7 @@ void ValueBaseWidget::setFeatureValue(const FeatureValue &fv) {
     _feature_code    = fv.featureCode();
     _dref            = fv.dref();
     _finfo           = fv.finfo();
+    _cap_vcp         = fv._cap_vcp;
     // _vspec           = fv._vspec;
     // _feature_flags   = fv._feature_flags;
     _vspec           = fv.vspec();

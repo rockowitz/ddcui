@@ -52,11 +52,11 @@ void reportWidgetChildren(QWidget * w, const char * msg) {
 void reportWidgetDimensions(
       QWidget *    w,
       const char * className,
-      const char * funcName)
-   //   QString * msg = nullptr)
+      const char * funcName,
+      const char * msg = nullptr)
 {
-    // if (msg)
-    //    printf("%s\n", msg->toLatin1().data());
+    if (msg)
+       printf("%s\n", msg);
     printf("(%s::%s) Dimensions:\n", className, funcName);
 
     QSize sz = w->baseSize();

@@ -22,7 +22,9 @@ OtherOptionsDialog::OtherOptionsDialog(OtherOptionsState * state, QWidget *paren
         break;
     case NcValuesFromBoth:
        ui->bothNcValuesButton->setChecked(true);
-
+       break;
+    case NcValuesSourceUnset:
+       assert(false);
     }
 }
 

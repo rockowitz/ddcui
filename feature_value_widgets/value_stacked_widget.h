@@ -21,6 +21,9 @@ class ValueStackedWidget : public ValueBaseWidget, public SimpleFeatureValueSubj
 {
    Q_OBJECT
 
+
+
+
 public:
     explicit ValueStackedWidget(QWidget *parent = nullptr);
 
@@ -30,6 +33,9 @@ public:
 
     // QSize sizeHint() const override;
     // void paintEvent(QPaintEvent *event) override;
+
+    bool isSimpleNc();
+    void setNcValuesSource(NcValuesSource newsrc);
 
 signals:
     void stackedFeatureValueChanged(uint8_t feature_code, uint8_t sh, uint8_t sl);

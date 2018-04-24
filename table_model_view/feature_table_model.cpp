@@ -240,7 +240,7 @@ bool FeatureTableModel::setData(const QModelIndex &index, const QVariant &value,
     printf("(FeatureTableModel::setData) row=%d, role=%d\n", index.row(), role);
     if (value.canConvert<FeatureValue>()) {
        FeatureValue fv = value.value<FeatureValue>();
-       fv.report();
+       fv.dbgrpt();
        VcpSetRequest * rqst = new VcpSetRequest(fv._feature_code, fv._value.sl);
        emit _baseModel->signalVcpRequest(rqst);
     }

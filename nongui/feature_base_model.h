@@ -28,41 +28,49 @@ class FeatureBaseModel : public QObject
 public:
     FeatureBaseModel(Monitor * monitor);
 
+    FeatureValue *
+    modelVcpValueFind(uint8_t feature_code);
 
-    // void setMonitor(Monitor * monitor);
+    FeatureValue *
+    modelVcpValueFilteredFind(uint8_t feature_code);
 
-    FeatureValue * modelVcpValueFind(uint8_t feature_code);
+    FeatureValue *
+    modelVcpValueAt(int ndx) const;
 
-    FeatureValue * modelVcpValueFilteredFind(uint8_t feature_code);
-    FeatureValue * modelVcpValueAt(int ndx) const;
-    int            modelVcpValueCount(void) const;
+    int
+    modelVcpValueCount(void) const;
 
-    void           modelVcpValueSet(
-                       uint8_t                              feature_code,
-                       DDCA_Display_Ref                     dref,   // unnecessary, can get from monitor
-                       DDCA_Feature_Metadata                metadata,
-                       // DDCA_MCCS_Version_Spec               vspec,
-                       // DDCA_Simplified_Version_Feature_Info feature_flags,
-                       DDCA_Non_Table_Vcp_Value *           feature_value);
+    void
+    modelVcpValueSet(
+          uint8_t                              feature_code,
+          DDCA_Display_Ref                     dref,   // unnecessary, can get from monitor
+          DDCA_Feature_Metadata                metadata,
+          DDCA_Non_Table_Vcp_Value *           feature_value);
 
-    void           modelVcpValueUpdate(
-                       uint8_t                              feature_code,
-                       uint8_t                              sh,
-                       uint8_t                              sl);
+    void
+    modelVcpValueUpdate(
+          uint8_t                              feature_code,
+          uint8_t                              sh,
+          uint8_t                              sl);
 
-    void modelMccsVersionSet(DDCA_MCCS_Version_Spec    vspec);
-    DDCA_MCCS_Version_Spec mccsVersionSpec();
+    void
+    modelMccsVersionSet(
+          DDCA_MCCS_Version_Spec    vspec);
+
+    DDCA_MCCS_Version_Spec
+    mccsVersionSpec();
 
     void          modelStartInitialLoad(void);
     void          modelEndInitialLoad(void);
     void          setStatusMsg(QString msg);
 
-    void          setCapabilities(
-                     DDCA_Status          ddcrc,
-                     char *               capabilities_string,
-                     DDCA_Capabilities *  parsed_capabilities);
+    void
+    setCapabilities(
+          DDCA_Status          ddcrc,
+          char *               capabilities_string,
+          DDCA_Capabilities *  parsed_capabilities);
 
-    void          report();
+    void          dbgrpt();
 
     // void  addFeatureChangedObserver(NotifyFeatureChanged func);
     void addFeatureChangeObserver(FeatureChangeObserver *observer);
@@ -92,8 +100,6 @@ signals:
     void signalStatusMsg(QString msg);
 
 public slots:
-
-
     void onDdcError(DdcError& erec);
 
 
