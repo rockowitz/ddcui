@@ -32,7 +32,9 @@ public:
 
     void setCurrentValue(uint16_t newval);
 
+#ifdef NOT_NEEDED
     void setBaseModel(FeatureBaseModel * model);  // hack for accessing model->_parsed_caps
+#endif
 
     void dbgrpt() const;
 
@@ -52,7 +54,9 @@ public:
 
     void simpleFeatureValueChanged(SimpleFeatureValue fv) override;   // SimpleFeatureValueObserver
 
+#ifdef NOT_NEEDED
     FeatureBaseModel * _baseModel = nullptr;
+#endif
 
     bool isSimpleNc();
 

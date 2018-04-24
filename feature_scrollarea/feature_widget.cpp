@@ -213,7 +213,9 @@ void FeatureWidget::setFeatureValue(FeatureValue &fv) {
         _featureTypeField->setText(QString("T"));
     }
 
+#ifdef NOT_NEEDED
     _valueWidget->setBaseModel(_baseModel);
+#endif
     _valueWidget->setFeatureValue(fv);
 
     _layout->addWidget(_valueWidget);
@@ -224,10 +226,12 @@ void FeatureWidget::setCurrentValue(uint16_t newval) {
     _valueWidget->setCurrentValue(newval);
 }
 
+#ifdef NOT_NEEDED
 // must occur before setFeatureValue
 void FeatureWidget::setBaseModel(FeatureBaseModel * model) {  // hack for accessing model->_parsed_caps
     _baseModel = model;
 }
+#endif
 
 QSize FeatureWidget::sizeHint() const {
     int w = 700;

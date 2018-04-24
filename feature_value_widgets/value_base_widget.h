@@ -40,9 +40,11 @@ public:
     uint8_t                _sl;
     DDCA_Feature_Flags     _feature_flags;  // should this be here or looked up?
 
+#ifdef NOT_NEEDED
     // hack:
     FeatureBaseModel * _baseModel;
     void setBaseModel(FeatureBaseModel * model);
+#endif
 
 protected:
     char * _cls;

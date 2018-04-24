@@ -50,12 +50,14 @@ void ValueBaseWidget::setFeatureValue(const FeatureValue &fv) {
     _value           = fv._value;
 }
 
+#ifdef UNNEEDED
 // hack to give ValueNcWidget access to parsed capabilities
 void ValueBaseWidget::setBaseModel(FeatureBaseModel * model) {
    printf("(%s::%s) feature_code=0x%02x, model=%p\n",
          _cls, __func__, _feature_code, model); fflush(stdout);
    _baseModel = model;
 }
+#endif
 
 
 void ValueBaseWidget::setCurrentValue(uint16_t newval) {

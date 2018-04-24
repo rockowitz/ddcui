@@ -1,0 +1,7 @@
+#!/bin/sh
+
+ls > temp.ctl
+sed -i '/temp./d' temp.ctl
+listfiles temp.ctl temp.lst
+prt temp.lst -char lpt -lmar 5 -duplex -printer lj1320
+
