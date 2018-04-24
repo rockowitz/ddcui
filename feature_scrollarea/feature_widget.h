@@ -41,11 +41,11 @@ public:
     uint8_t   _feature_code;
     QString*  _feature_name;
     DDCA_Version_Feature_Flags   _feature_flags;      // uint16_t
-    DDCA_MCCS_Version_Spec _vspec;
-    uint8_t   _mh;
-    uint8_t   _ml;
-    uint8_t   _sh;
-    uint8_t   _sl;
+    //  DDCA_MCCS_Version_Spec _vspec;
+    // uint8_t   _mh;
+    // uint8_t   _ml;
+    // uint8_t   _sh;
+    // uint8_t   _sl;
 
     const char * _cls;    // className
 

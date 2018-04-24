@@ -18,7 +18,6 @@
 #include "feature_value_widgets/value_stacked_widget.h"
 
 
-
 static bool dimensionReportShown = false;
 
 FeatureWidget::FeatureWidget(QWidget *parent) :
@@ -168,24 +167,18 @@ void FeatureWidget::setFeatureValue(FeatureValue &fv) {
     // printf("(FeatureWidgetBasic::%s)", __func__); fflush(stdout);
     // fv.report();
     _feature_code  = fv._feature_code;
-    // _feature_flags = fv._feature_flags;
-    // _vspec         = fv._vspec;
-
-    // _feature_flags = fv._finfo.feature_flags;
-    // _vspec         = fv._finfo.vspec;
-
     _feature_flags = fv.flags();
-    _vspec         = fv.vspec();
+    // _vspec         = fv.vspec();
 
     setObjectName(QString::asprintf("FeatureWidget-0x%02x", _feature_code));
 
     // printf("(%s::%s) _feature_flags = 0x%08x, fv._feature_flags = 0x%08x, fv._finfo
 
     // need to save value here?
-    _mh = fv._value.mh;
-    _ml = fv._value.ml;
-    _sh = fv._value.sh;
-    _sl = fv._value.sl;
+    // _mh = fv._value.mh;
+    // _ml = fv._value.ml;
+    // _sh = fv._value.sh;
+    // _sl = fv._value.sl;
 
     _featureCodeField->setText(QString::asprintf("x%02x", _feature_code) );
 
@@ -254,8 +247,10 @@ void FeatureWidget::paintEvent(QPaintEvent *event) {
 void FeatureWidget::dbgrpt() const {
     std::string on1 = objectName().toStdString();
     const char * objname = on1.c_str();
-    printf("%-20s code: 0x%02x, flags: 0x%04x, mh: 0x%02x, ml: 0x%02x, sh: 0x%02x, sl 0x%02x\n",
-           objname, _feature_code, _feature_flags, _mh, _ml, _sh, _sl);
+    // printf("%-20s code: 0x%02x, flags: 0x%04x, mh: 0x%02x, ml: 0x%02x, sh: 0x%02x, sl 0x%02x\n",
+    //        objname, _feature_code, _feature_flags, _mh, _ml, _sh, _sl);
+    printf("%-20s code: 0x%02x, flags: 0x%04x\n",
+           objname, _feature_code, _feature_flags);
 }
 
 void FeatureWidget::onInternalValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl) {
