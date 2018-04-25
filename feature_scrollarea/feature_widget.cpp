@@ -1,8 +1,6 @@
-/* feature_widget_basic.cpp */
+/* feature_widget.cpp */
 
-#include "feature_widget.h"
-
-#include "assert.h"
+#include <assert.h>
 
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QHBoxLayout>
@@ -17,6 +15,7 @@
 #include "feature_value_widgets/value_std_widget.h"
 #include "feature_value_widgets/value_stacked_widget.h"
 
+#include "feature_widget.h"
 
 static bool dimensionReportShown = false;
 

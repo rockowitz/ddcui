@@ -1,7 +1,7 @@
-/* feature_Widget.h - Custom widget for displaying/editing a VCP feature */
+/* feature_widget_extended.h - Custom widget for displaying/editing a VCP feature */
 
-#ifndef FEATURE_WIDGET_H
-#define FEATURE_WIDGET_H
+#ifndef FEATURE_WIDGET_EXTENDED_H
+#define FEATURE_WIDGET_EXTENDED_H
 
 #include "base/ddcui_globals.h"
 #include "nongui/feature_value.h"
@@ -64,4 +64,4 @@ private:
 
 };
 
-#endif // FEATURE_WIDGET_H
+#endif // FEATURE_WIDGET_EXTENDED_H

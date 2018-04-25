@@ -1,6 +1,4 @@
-/* feature_widget.cpp */
-
-#include "feature_widget_extended.h"
+/* feature_widget_extended.cpp */
 
 #include "assert.h"
 
@@ -12,6 +10,7 @@
 #include "feature_value_widgets/value_std_widget.h"
 #include "feature_value_widgets/value_stacked_widget.h"
 
+#include "feature_widget_extended.h"
 
 static bool debug = false;
 
