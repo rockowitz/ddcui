@@ -29,59 +29,46 @@ public:
     // FeatureWidgetBasic(FeatureValue *fv, QWidget *parent=nullptr);
 
     void setFeatureValue(FeatureValue &fv);
-
     void setCurrentValue(uint16_t newval);
-
-#ifdef NOT_NEEDED
-    void setBaseModel(FeatureBaseModel * model);  // hack for accessing model->_parsed_caps
-#endif
 
     void dbgrpt() const;
 
-    uint8_t   _feature_code;
-    QString*  _feature_name;
-    DDCA_Version_Feature_Flags   _feature_flags;      // uint16_t
-    //  DDCA_MCCS_Version_Spec _vspec;
-    // uint8_t   _mh;
-    // uint8_t   _ml;
-    // uint8_t   _sh;
-    // uint8_t   _sl;
-
-    const char * _cls;    // className
-
     QSize sizeHint() const override;
 
-
     void simpleFeatureValueChanged(SimpleFeatureValue fv) override;   // SimpleFeatureValueObserver
+    bool isSimpleNc();
+    void setNcValuesSource(NcValuesSource newsrc);
 
 #ifdef NOT_NEEDED
+    void setBaseModel(FeatureBaseModel * model);  // hack for accessing model->_parsed_caps
     FeatureBaseModel * _baseModel = nullptr;
 #endif
-
-    bool isSimpleNc();
-
-    void setNcValuesSource(NcValuesSource newsrc);
 
 signals:
 
 public slots:
-void onInternalValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl);
+    void onInternalValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl);
 
 signals:
-void valueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl);
+    void valueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl);
 
 protected:
 
     // void paintEvent(QPaintEvent *event) override;
 
 private:
-    QHBoxLayout *_layout;
+    const char *        _cls;    // className
 
-    QLabel*   _featureCodeField;
-    QLabel*   _featureNameField;
-    QLabel*   _featureRwField;
-    QLabel*   _featureTypeField;
-    ValueStackedWidget * _valueWidget;
+    uint8_t             _feature_code;
+    QString*            _feature_name;
+    DDCA_Version_Feature_Flags  _feature_flags;      // uint16_t
+
+    QHBoxLayout*        _layout;
+    QLabel*             _featureCodeField;
+    QLabel*             _featureNameField;
+    QLabel*             _featureRwField;
+    QLabel*             _featureTypeField;
+    ValueStackedWidget* _valueWidget;
 
 #ifdef ALT
     QStackedWidget * _featureValueStackedWidget; 

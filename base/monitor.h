@@ -74,8 +74,8 @@ public:
     int                 _pageno_capabilities;
     QPlainTextEdit *    _capabilitiesPlainText;
 
-    FeaturesView       _curFeaturesView = FEATURES_VIEW_UNSET;
-    FeatureSelector    _curFeatureSelector;
+    FeaturesView        _curFeaturesView = FEATURES_VIEW_UNSET;
+    FeatureSelector     _curFeatureSelector;
 
 // *** Begin Alternative Central Widgets ***
 

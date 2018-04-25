@@ -162,9 +162,9 @@ void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc) {
       QObjectList  childs = _scrollAreaContents->children();
       for (int ndx = 0; ndx < childs.size(); ndx++) {
           QObject* curobj = childs.at(ndx);
-          QString name   = curobj->objectName();
-          const char *  clsName = curobj->metaObject()->className();
-          printf("   Child: %s, type:%s\n", name.toLatin1().data(), clsName); fflush(stdout);
+          // QString name   = curobj->objectName();
+          // const char *  clsName = curobj->metaObject()->className();
+          // printf("   Child: %s, type:%s\n", name.toLatin1().data(), clsName); fflush(stdout);
 
           // Both .inherits() and dyamic_cast work
          //  if (curobj->inherits("FeatureWidget"))
@@ -172,9 +172,9 @@ void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc) {
 
           FeatureWidget * curWidget = dynamic_cast<FeatureWidget*>(curobj);
           if (curWidget) {
-             printf("(%s::%s) dynamic_cast succeeded\n", _cls, __func__); fflush(stdout);
+             // printf("(%s::%s) dynamic_cast succeeded\n", _cls, __func__); fflush(stdout);
              if (curWidget->isSimpleNc()) {
-                printf("(%s::%s) feature_code=0x%02x\n", _cls, __func__, curWidget->_feature_code); fflush(stdout);
+                // printf("(%s::%s) feature_code=0x%02x\n", _cls, __func__, curWidget->_feature_code); fflush(stdout);
                 curWidget->setNcValuesSource(newsrc);
              }
           }
@@ -199,8 +199,4 @@ void FeaturesScrollAreaView::onModelDdcError(DdcError erec) {
    msgBox->exec();
    // msgBox.open();
 }
-
-
-
-
 

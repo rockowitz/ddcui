@@ -50,12 +50,12 @@ using namespace std;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    _ui(new Ui::MainWindow)
     // , PageChangeObserver()
 {
    _cls = metaObject()->className();
 
-    ui->setupUi(this);
+    _ui->setupUi(this);
 
     _spinner = new WaitingSpinnerWidget(
                                            Qt::ApplicationModal,    // alt WindowModal, ApplicationModal, NonModal
@@ -84,18 +84,16 @@ MainWindow::MainWindow(QWidget *parent) :
     _toolbarDisplayCB->setObjectName("displaySelectorCombobox");
     _toolbarDisplayCB->setStyleSheet("background-color:white;");
     toolbarDisplayLabel->setBuddy(_toolbarDisplayCB);
-    ui->mainToolBar->addWidget( toolbarDisplayLabel);
-    ui->mainToolBar->addWidget( _toolbarDisplayCB);
+    _ui->mainToolBar->addWidget( toolbarDisplayLabel);
+    _ui->mainToolBar->addWidget( _toolbarDisplayCB);
 
-    // reportWidgetChildren(ui->centralWidget,
-    //                      "Children of centralWidget, before initDisplaySelector():");
+    // reportWidgetChildren(ui->centralWidget, "Children of centralWidget, before initMonitors():");
     initMonitors();
-    feature_selector   = new FeatureSelector();
+    _feature_selector   = new FeatureSelector();
     GlobalState& globalState = GlobalState::instance();
     _otherOptionsState = new OtherOptionsState;
     globalState._otherOptionsState = _otherOptionsState;
-    reportWidgetChildren(ui->centralWidget,
-                         "Children of centralWidget, after initDisplaySelector():");
+    // reportWidgetChildren(_ui->centralWidget, "Children of centralWidget, after initMonitors():");
 
     // Register metatypes for primitive types here.
     // Metatypes for classes are registered with the class definition.
@@ -114,7 +112,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    delete ui;
+    delete _ui;
 }
 
 
@@ -124,7 +122,7 @@ void MainWindow::initMonitors() {
 
    longRunningTaskStart();
     QString msg = QString("Loading display information... ");
-    ui->statusBar->showMessage(msg);
+    _ui->statusBar->showMessage(msg);
 
     // _dlist = ddca_get_display_info_list();
     DDCA_Status ddcrc = ddca_get_display_info_list2(
@@ -148,7 +146,7 @@ void MainWindow::initMonitors() {
 
         // Create Monitor instance, initialize data structures
         Monitor * curMonitor = new Monitor(&_dlist->info[ndx], monitorNumber);
-        monitors.append(curMonitor);
+        _monitors.append(curMonitor);
 
         curMonitor->_requestQueue = new VcpRequestQueue();
         FeatureBaseModel * baseModel = new FeatureBaseModel(curMonitor);
@@ -156,11 +154,11 @@ void MainWindow::initMonitors() {
 
         initMonitorInfoWidget(
               curMonitor,
-              ui->centralWidget);
+              _ui->centralWidget);
 
         initCapabilitiesWidget(
               curMonitor,
-              ui->centralWidget);
+              _ui->centralWidget);
 
         if (enableAltFeatures) {
 
@@ -168,19 +166,19 @@ void MainWindow::initMonitors() {
                  curMonitor,
                  monitorNumber,
                  baseModel,
-                 ui->centralWidget
+                 _ui->centralWidget
                  );
 
            initTableWidget(
                  curMonitor,
                  baseModel,
-                 ui->centralWidget
+                 _ui->centralWidget
                  );
 
            initTableView(
                  curMonitor,
                  baseModel,
-                 ui->centralWidget
+                 _ui->centralWidget
                  );
 
    //        initFeaturesScrollArea(
@@ -194,7 +192,7 @@ void MainWindow::initMonitors() {
         initFeaturesScrollAreaView(
               curMonitor,
               baseModel,
-              ui->centralWidget
+              _ui->centralWidget
               );
 
 
@@ -217,7 +215,7 @@ void MainWindow::initMonitors() {
                          this,        &MainWindow::setStatusMsg);
 
         curThread->start();
-        vcp_threads.append(curThread);
+        _vcp_threads.append(curThread);
 
         // asynchronously get capabilities for current monitor
         curMonitor->_requestQueue->put(new VcpCapRequest());
@@ -247,7 +245,7 @@ void MainWindow::initMonitors() {
 
     // Set message in status bar
     msg = QString("Detected ") + QString::number(_dlist->ct) + QString(" displays.");
-    ui->statusBar->showMessage(msg);
+    _ui->statusBar->showMessage(msg);
     longRunningTaskEnd();
 }
 
@@ -276,100 +274,11 @@ void MainWindow::setStatusMsg(QString msg) {
 
 
 
-// *** About ***
-
-void MainWindow::on_actionAbout_triggered()
-{
-    QString ddcutil_version = ddca_ddcutil_version_string();
-    uint8_t build_opts = ddca_build_options();
-    QString ans1 = (build_opts & DDCA_BUILT_WITH_ADL) ? "true" : "false";
-    QString ans2 = (build_opts & DDCA_BUILT_WITH_USB) ? "true" : "false";
-
-    // QMessageBox mbox;
-    // mbox.setText("About ddcutil");
-
-    QString msg = "";
-    msg = msg + "ddcui version:    " + "0.0.0" + "\n\n";
-    msg = msg + "ddcutil version:  " + ddcutil_version + "\n";
-    msg = msg + "   Built with support for ADL connected monitors: " + ans1 + "\n";
-    msg = msg + "   Built with support for USB connected monitors: " + ans2;
-    // mbox.setInformativeText(msg);
-    // mbox.exec();
-    // QMessageBox::information(this, "..", msg);
-    QMessageBox::about(this, "About ddcui", msg);
-}
-
-void MainWindow::on_actionAbout_Qt_triggered()
-{
-    QMessageBox::aboutQt(this, "About Qt");
-}
-
-
-
-
-void MainWindow::loadMonitorFeatures(Monitor * monitor) {
-    printf("(%s::%s) monitor=%p\n", _cls, __func__, monitor); fflush(stdout);
-    monitor->dbgrpt();
-    QString msg = QString("Reading monitor features...");
-    ui->statusBar->showMessage(msg);
-    printf("(%s::%s) After showMessages()\n", _cls, __func__); fflush(stdout);
-
-    DDCA_Feature_List features_to_show = monitor->getFeatureList(feature_selector->_featureListId);
-    char * s = ddca_feature_list_string(&features_to_show, NULL, (char*) " ");
-    printf("(%s::%s) features_to_show: %s\n", _cls, __func__, s); fflush(stdout);
-    free(s);
-
-    if (feature_selector->_respectCapabilities) {
-       // need to test _parsed_caps is valid
-       DDCA_Feature_List caps_features =
-             ddca_feature_list_from_capabilities(monitor->_baseModel->_parsed_caps);
-       char * s = ddca_feature_list_string(&caps_features, NULL, (char*) " ");
-       printf("(%s::%s) Capabilities features: %s\n", _cls, __func__, s); fflush(stdout);
-       free(s);
-       features_to_show = ddca_feature_list_and(&features_to_show, &caps_features);
-    }
-
-    cout << "feature_list_id: " << feature_selector->_featureListId << ",  Feature ids: " << endl;
-    for (int ndx = 0; ndx <= 255; ndx++) {
-        if ( ddca_feature_list_contains(&features_to_show, (uint8_t) ndx))
-            printf("%02x ", ndx);
-    }
-    cout << endl;
-
-    // causes async feature reads in VcpThread, then load feature values from model into widgets
-    monitor->_baseModel->setFeatureList(features_to_show);
-
-#ifdef MOVED
-    DDCA_Feature_List unchecked_features =
-          ddca_feature_list_minus(&features_to_show, &monitor->_baseModel->_featuresChecked);
-
-    cout << "Unchecked features: " << endl;
-    for (int ndx = 0; ndx <= 255; ndx++) {
-        if ( ddca_feature_list_contains(&unchecked_features, (uint8_t) ndx))
-            printf("%02x ", ndx);
-    }
-    cout << endl;
-
-    monitor->_requestQueue->put(new VcpStartInitialLoadRequest);
-
-    for (int ndx = 0; ndx <= 255; ndx++) {
-        uint8_t vcp_code = (uint8_t) ndx;
-        if ( ddca_feature_list_contains(&unchecked_features, vcp_code)) {
-            monitor->_requestQueue->put( new VcpGetRequest(vcp_code));
-        }
-    }
-    monitor->_requestQueue->put(new VcpEndInitialLoadRequest);
-#endif
-
-    printf("(%s::%s) Done\n", _cls, __func__); fflush(stdout);
-}
-
-
 
 
 void MainWindow::reportDdcApiError(QString funcname, int rc) const {
      QString msg = funcname + "() returned " + QString::number(rc) + " - " + ddca_rc_name(rc);
-     ui->statusBar->showMessage(msg);
+     _ui->statusBar->showMessage(msg);
 
      // QErrorMessage * emsg;
      // invalid conversion from const QWidget* to QWidget*
@@ -418,7 +327,7 @@ void MainWindow::on_actionMonitorSummary_triggered()
     DDCA_Display_Info * dinfo = &_dlist->info[monitorNdx];
     char * s = capture_display_info_report(dinfo);
 
-    Monitor * monitor = monitors[monitorNdx];
+    Monitor * monitor = _monitors[monitorNdx];
     QPlainTextEdit * moninfoPlainText = monitor->_moninfoPlainText;
     int pageno = monitor->_pageno_moninfo;
     moninfoPlainText->setPlainText(s);
@@ -427,9 +336,9 @@ void MainWindow::on_actionMonitorSummary_triggered()
     moninfoPlainText->setFont(fixedFont);
 
     _curView = View::MonitorView;
-    ui->centralWidget->setCurrentIndex(pageno);
+    _ui->centralWidget->setCurrentIndex(pageno);
 
-    ui->centralWidget->show();
+    _ui->centralWidget->show();
 }
 
 
@@ -444,7 +353,7 @@ void MainWindow::on_actionCapabilities_triggered()
     DDCA_Display_Ref dref = dinfo->dref;
     char * caps_report = NULL;
 
-    Monitor * monitor = monitors.at(monitorNdx);
+    Monitor * monitor = _monitors.at(monitorNdx);
 
     DDCA_Status ddcrc = capture_capabilities_report(monitor, dref, &caps_report);
     if (ddcrc != 0) {
@@ -455,7 +364,7 @@ void MainWindow::on_actionCapabilities_triggered()
         cout << "Parsed capabilities: " << endl;
         cout << caps_report << endl;
 
-        Monitor * monitor = monitors[monitorNdx];
+        Monitor * monitor = _monitors[monitorNdx];
         QPlainTextEdit * capabilitiesPlainText = monitor->_capabilitiesPlainText;
         int pageno = monitor->_pageno_capabilities;
         capabilitiesPlainText->setPlainText(caps_report);
@@ -464,22 +373,81 @@ void MainWindow::on_actionCapabilities_triggered()
         capabilitiesPlainText->setFont(fixedFont);
 
         // show widget
-        ui->centralWidget->setCurrentIndex(pageno);    // need proper constants
-        ui->centralWidget->show();
+        _ui->centralWidget->setCurrentIndex(pageno);    // need proper constants
+        _ui->centralWidget->show();
     }
 }
 
 
-// Features slots
+// Features Slots - Common Functions
 
-// Actions: Feature Views
+
+void MainWindow::loadMonitorFeatures(Monitor * monitor) {
+    printf("(%s::%s) monitor=%p\n", _cls, __func__, monitor); fflush(stdout);
+    monitor->dbgrpt();
+    QString msg = QString("Reading monitor features...");
+    _ui->statusBar->showMessage(msg);
+    printf("(%s::%s) After showMessages()\n", _cls, __func__); fflush(stdout);
+
+    DDCA_Feature_List features_to_show = monitor->getFeatureList(_feature_selector->_featureListId);
+    char * s = ddca_feature_list_string(&features_to_show, NULL, (char*) " ");
+    printf("(%s::%s) features_to_show: %s\n", _cls, __func__, s); fflush(stdout);
+    free(s);
+
+    if (_feature_selector->_respectCapabilities) {
+       // need to test _parsed_caps is valid
+       DDCA_Feature_List caps_features =
+             ddca_feature_list_from_capabilities(monitor->_baseModel->_parsed_caps);
+       char * s = ddca_feature_list_string(&caps_features, NULL, (char*) " ");
+       printf("(%s::%s) Capabilities features: %s\n", _cls, __func__, s); fflush(stdout);
+       free(s);
+       features_to_show = ddca_feature_list_and(&features_to_show, &caps_features);
+    }
+
+    cout << "feature_list_id: " << _feature_selector->_featureListId << ",  Feature ids: " << endl;
+    for (int ndx = 0; ndx <= 255; ndx++) {
+        if ( ddca_feature_list_contains(&features_to_show, (uint8_t) ndx))
+            printf("%02x ", ndx);
+    }
+    cout << endl;
+
+    // causes async feature reads in VcpThread, then load feature values from model into widgets
+    monitor->_baseModel->setFeatureList(features_to_show);
+
+#ifdef MOVED
+    DDCA_Feature_List unchecked_features =
+          ddca_feature_list_minus(&features_to_show, &monitor->_baseModel->_featuresChecked);
+
+    cout << "Unchecked features: " << endl;
+    for (int ndx = 0; ndx <= 255; ndx++) {
+        if ( ddca_feature_list_contains(&unchecked_features, (uint8_t) ndx))
+            printf("%02x ", ndx);
+    }
+    cout << endl;
+
+    monitor->_requestQueue->put(new VcpStartInitialLoadRequest);
+
+    for (int ndx = 0; ndx <= 255; ndx++) {
+        uint8_t vcp_code = (uint8_t) ndx;
+        if ( ddca_feature_list_contains(&unchecked_features, vcp_code)) {
+            monitor->_requestQueue->put( new VcpGetRequest(vcp_code));
+        }
+    }
+    monitor->_requestQueue->put(new VcpEndInitialLoadRequest);
+#endif
+
+    printf("(%s::%s) Done\n", _cls, __func__); fflush(stdout);
+}
+
+
+// Features slots - Alternative feature views
 
 void MainWindow::on_actionFeaturesTableView_triggered()
 {
     printf("(=============> MainWindow::on_actionFeatures_TableView_triggered)\n");
     // int monitorNdx = ui->displaySelectorComboBox->currentIndex();
     int monitorNdx = _toolbarDisplayCB->currentIndex();
-    Monitor * monitor = monitors[monitorNdx];
+    Monitor * monitor = _monitors[monitorNdx];
     monitor->_curFeaturesView = Monitor::FEATURES_VIEW_TABLEVIEW;
     loadMonitorFeatures(monitor);
 
@@ -493,8 +461,8 @@ void MainWindow::on_actionFeaturesTableView_triggered()
 
     // int pageno = monitor->_pageno_table_view;
     // ui->centralWidget->setCurrentIndex(pageno);  // alt setCurrentWidget(tview)
-    ui->centralWidget->setCurrentWidget(monitor->_page_table_view);
-    ui->centralWidget->show();
+    _ui->centralWidget->setCurrentWidget(monitor->_page_table_view);
+    _ui->centralWidget->show();
 }
 
 
@@ -503,14 +471,14 @@ void MainWindow::on_actionFeaturesListView_triggered()
     std::cout << "(MainWindow::on_actionFeaturesListView()" << endl;
 
     int monitorNdx = _toolbarDisplayCB->currentIndex();
-    Monitor * monitor = monitors[monitorNdx];
+    Monitor * monitor = _monitors[monitorNdx];
     monitor->_curFeaturesView = Monitor::FEATURES_VIEW_LISTVIEW;
     loadMonitorFeatures(monitor);
 
     int pageno = monitor->_pageno_list_view;         // ???
-    ui->centralWidget->setCurrentIndex(pageno);
+    _ui->centralWidget->setCurrentIndex(pageno);
 
-    ui->centralWidget->show();
+    _ui->centralWidget->show();
 }
 
 
@@ -523,7 +491,7 @@ void MainWindow::on_actionFeaturesListWidget_triggered()
     // }
     // int monitorNdx = ui->displaySelectorComboBox->currentIndex();
     int monitorNdx = _toolbarDisplayCB->currentIndex();
-    Monitor * monitor = monitors[monitorNdx];
+    Monitor * monitor = _monitors[monitorNdx];
     monitor->_curFeaturesView = Monitor::FEATURES_VIEW_LISTWIDGET;
     loadMonitorFeatures(monitor);
 
@@ -532,17 +500,16 @@ void MainWindow::on_actionFeaturesListWidget_triggered()
     // lview->setModel(monitor->_listModel);
 
     // TO FIX:
-    ui->centralWidget->setCurrentIndex(monitor->_pageno_listWidget);
-    ui->centralWidget->show();
+    _ui->centralWidget->setCurrentIndex(monitor->_pageno_listWidget);
+    _ui->centralWidget->show();
 }
-
 
 
 void MainWindow::on_actionFeaturesScrollAreaMock_triggered()
 {
     printf("(MainWindow::%s) Starting\n", __func__);  fflush(stdout);
 
-    Monitor * monitor = monitors[0];
+    Monitor * monitor = _monitors[0];
     DDCA_Display_Ref dref = monitor->_displayInfo->dref;
 
 
@@ -645,20 +612,22 @@ void MainWindow::on_actionFeaturesScrollAreaMock_triggered()
     if (debugLayout)
        featuresScrollAreaContents->setStyleSheet("background-color:beige;");
 
-    ui->centralWidget->addWidget(page_features_scrollarea);
-    ui->centralWidget->setCurrentWidget(page_features_scrollarea);
-    ui->centralWidget->show();
+    _ui->centralWidget->addWidget(page_features_scrollarea);
+    _ui->centralWidget->setCurrentWidget(page_features_scrollarea);
+    _ui->centralWidget->show();
 }
 
+
+// Features slots - FeaturesScrollArea
 
 void MainWindow::on_actionFeaturesScrollArea_triggered()
 {
     printf("(MainWindow::%s) Desired view: %d, features view: %d, feature list: \n",
           __func__, View::FeaturesView, Monitor::FEATURES_VIEW_SCROLLAREA_VIEW);  fflush(stdout);
-    this->feature_selector->dbgrpt();
+    this->_feature_selector->dbgrpt();
 
     int monitorNdx = _toolbarDisplayCB->currentIndex();
-    Monitor * monitor = monitors[monitorNdx];
+    Monitor * monitor = _monitors[monitorNdx];
     printf("(MainWindow::%s) Current view: %d, features view: %d, feature list:\n",
           __func__, _curView, monitor->_curFeaturesView);  fflush(stdout);
     monitor->_curFeatureSelector.dbgrpt();
@@ -667,13 +636,13 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
     if (_curView                     != View::FeaturesView                     ||
         _curDisplayIndex             != monitorNdx                             ||
         monitor->_curFeaturesView    != Monitor::FEATURES_VIEW_SCROLLAREA_VIEW ||
-        monitor->_curFeatureSelector != *feature_selector )
+        monitor->_curFeatureSelector != *_feature_selector )
     {
        loadMonitorFeatures(monitor);
        _curDisplayIndex = monitorNdx;
        _curView = View::FeaturesView;
        monitor->_curFeaturesView = Monitor::FEATURES_VIEW_SCROLLAREA_VIEW;
-       monitor->_curFeatureSelector   = *feature_selector;
+       monitor->_curFeatureSelector   = *_feature_selector;
     }
     else {
        printf("(%s::%s) Unchanged view and feature set, no need to load\n", _cls, __func__);
@@ -681,9 +650,9 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
 }
 
 
-
 //
 // Options Menu Slots
+//
 
 // Feature Selection slots
 
@@ -700,7 +669,7 @@ void MainWindow::on_actionFeatureSelectionDialog_triggered()
         // display dialog box for selecting features
         cout << "(on_actionFeatureSelectionDialog_triggered)" << endl;
 
-       FeatureSelectionDialog* fsd = new FeatureSelectionDialog(this, this->feature_selector);
+       FeatureSelectionDialog* fsd = new FeatureSelectionDialog(this, this->_feature_selector);
        // signal not found in FeatureSelectionDialog
        // now this one is working, why?
        QObject::connect(fsd,      &FeatureSelectionDialog::accepted,
@@ -745,7 +714,7 @@ void MainWindow::featureSelectionAccepted(DDCA_Feature_Subset_Id feature_list) {
 #endif
 
 
-// Actions: OtherOptions
+// OtherOptions slots
 
 void MainWindow::on_actionOtherOptionsDialog_triggered()
 {
@@ -764,11 +733,10 @@ void MainWindow::on_actionOtherOptionsDialog_ncValuesSourceChanged(NcValuesSourc
 
    if (_curView == FeaturesView  )   {  // need also check if  FeaturesScrollAreaView
       int monitorNdx = _toolbarDisplayCB->currentIndex();
-      Monitor * monitor = monitors[monitorNdx];
+      Monitor * monitor = _monitors[monitorNdx];
       // or emit signal?
       monitor->_featuresScrollAreaView->onNcValuesSourceChanged(valuesSource);
    }
-
 }
 
 #ifdef UNUSED
@@ -790,14 +758,46 @@ void MainWindow::set_feature_list_id(DDCA_Feature_Subset_Id feature_list_id) {
 #endif
 
 
+//
+// Help Menu Slots
+//
+
+void MainWindow::on_actionAbout_triggered()
+{
+    QString ddcutil_version = ddca_ddcutil_version_string();
+    uint8_t build_opts = ddca_build_options();
+    QString ans1 = (build_opts & DDCA_BUILT_WITH_ADL) ? "true" : "false";
+    QString ans2 = (build_opts & DDCA_BUILT_WITH_USB) ? "true" : "false";
+
+    // QMessageBox mbox;
+    // mbox.setText("About ddcutil");
+
+    QString msg = "";
+    msg = msg + "ddcui version:    " + "0.0.0" + "\n\n";
+    msg = msg + "ddcutil version:  " + ddcutil_version + "\n";
+    msg = msg + "   Built with support for ADL connected monitors: " + ans1 + "\n";
+    msg = msg + "   Built with support for USB connected monitors: " + ans2;
+    // mbox.setInformativeText(msg);
+    // mbox.exec();
+    // QMessageBox::information(this, "..", msg);
+    QMessageBox::about(this, "About ddcui", msg);
+}
+
+void MainWindow::on_actionAbout_Qt_triggered()
+{
+    QMessageBox::aboutQt(this, "About Qt");
+}
 
 
+//
+// Misc Slots
+//
 
 void MainWindow::showCentralWidgetPage(int pageno) {
    printf("(%s::%s) ===========> Setting current index, pageno = %d\n", _cls, __func__,
           pageno);  fflush(stdout);
-   ui->centralWidget->setCurrentIndex(pageno);
-   ui->centralWidget->show();
+   _ui->centralWidget->setCurrentIndex(pageno);
+   _ui->centralWidget->show();
 }
 
 void MainWindow::showCentralWidgetByWidget(QWidget * pageWidget) {
@@ -805,14 +805,14 @@ void MainWindow::showCentralWidgetByWidget(QWidget * pageWidget) {
           "dummy"  /* pageWidget->objectName() */);   // utf-8
    fflush(stdout);
 
-   int pageno = ui->centralWidget->indexOf(pageWidget);
+   int pageno = _ui->centralWidget->indexOf(pageWidget);
    if (pageno < 0) {
       printf("(%s::%s) page for widget not found\n", _cls, __func__); fflush(stdout);
    }
    else {
       printf("(%s::%s) widget page number: %d\n", _cls, __func__, pageno); fflush(stdout);
-      ui->centralWidget->setCurrentWidget(pageWidget);
-      ui->centralWidget->show();
+      _ui->centralWidget->setCurrentWidget(pageWidget);
+      _ui->centralWidget->show();
    }
 }
 

@@ -27,9 +27,8 @@ VcpThread::VcpThread(
     _requestQueue = requestQueue;
     // open the display, raise exception if error
 
-
-    ddca_dbgrpt_display_info(dinfo, 4);
-    ddca_dbgrpt_display_ref(_dref, 4);
+    // ddca_dbgrpt_display_info(dinfo, 4);
+    // ddca_dbgrpt_display_ref(_dref, 4);
 }
 
 

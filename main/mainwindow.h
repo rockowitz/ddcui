@@ -113,19 +113,18 @@ private:
     void featureSelectionDone();
 
     const char *             _cls;
-    Ui::MainWindow*          ui;
+    Ui::MainWindow*          _ui;
     DDCA_Display_Info_List * _dlist ;
     int                      _curDisplayIndex = -1;
     View                     _curView = NoView;
     QComboBox *              _toolbarDisplayCB;
-    FeatureSelector *        feature_selector = NULL;
+    FeatureSelector *        _feature_selector = NULL;
     OtherOptionsState *      _otherOptionsState = NULL;
-    QVector<Monitor*>        monitors;
+    QVector<Monitor*>        _monitors;
     DDCA_Feature_Subset_Id   _feature_list_id = DDCA_SUBSET_KNOWN;
-    QVector<VcpThread*>      vcp_threads;
-    WaitingSpinnerWidget*   _spinner;
-    QMessageBox*            _loadingMsgBox;
-
+    QVector<VcpThread*>      _vcp_threads;
+    WaitingSpinnerWidget*    _spinner;
+    QMessageBox*             _loadingMsgBox;
 };
 
 #endif // MAINWINDOW_H

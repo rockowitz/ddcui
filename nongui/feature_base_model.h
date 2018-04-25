@@ -102,7 +102,6 @@ signals:
 public slots:
     void onDdcError(DdcError& erec);
 
-
 protected:
     void notifyFeatureChangeObservers(uint8_t feature_code) ;
 

@@ -248,7 +248,7 @@ void FeatureWidget::dbgrpt() const {
     const char * objname = on1.c_str();
     // printf("%-20s code: 0x%02x, flags: 0x%04x, mh: 0x%02x, ml: 0x%02x, sh: 0x%02x, sl 0x%02x\n",
     //        objname, _feature_code, _feature_flags, _mh, _ml, _sh, _sl);
-    printf("%-20s code: 0x%02x, flags: 0x%04x\n",
+    printf("%-20s code: 0x%02x, feature code: 0x%02x, flags: 0x%04x\n",
            objname, _feature_code, _feature_flags);
 }
 

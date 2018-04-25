@@ -27,10 +27,10 @@
 #include <QtWidgets/QStackedWidget>
 #include <QtWidgets/QLabel>
 
-#include "features_scrollarea_view.h"
+#include "base/monitor.h"
 
+#include "features_scrollarea_view.h"
 #include "features_scrollarea_ui.h"
-#include "../base/monitor.h"
 
 
 
@@ -42,7 +42,7 @@ void initFeaturesScrollAreaView(
       FeatureBaseModel* baseModel,
       QStackedWidget *  stackedWidget)
 {
-   printf("(%s) --------------------------> _views_StackedWidget=%p\n", __func__, stackedWidget); fflush(stdout);
+   // printf("(%s) stackedWidget=%p\n", __func__, stackedWidget); fflush(stdout);
 
    FeaturesScrollAreaView * featuresView =
             new FeaturesScrollAreaView(
@@ -56,20 +56,17 @@ void initFeaturesScrollAreaView(
 
    // requires no-arg constructor, copy constructor
    qRegisterMetaType<DdcError>("DdcError");
-   // qRegisterMetaType<DdcError&>("DdcError&");
    QObject::connect(baseModel,     &FeatureBaseModel::signalDdcError,
                     featuresView,  &FeaturesScrollAreaView::onModelDdcError);
+
    // QObject::connect(baseModel,     SIGNAL(signalDdcError( DdcError&)),
    //                  featuresView,  SLOT(  onModelDdcError(DdcError&)));
 
-
-      // QObject::connect(baseModel,          &FeatureBaseModel::signalEndInitialLoad,
-      //                  featuresView,       &FeaturesScrollAreaView::onEndInitialLoad);
+   // QObject::connect(baseModel,          &FeatureBaseModel::signalEndInitialLoad,
+   //                  featuresView,       &FeaturesScrollAreaView::onEndInitialLoad);
 
    QObject::connect(featuresView, &FeaturesScrollAreaView::signalVcpRequest,
                     curMonitor,   &Monitor::putVcpRequest);
-
-
 }
 
 
