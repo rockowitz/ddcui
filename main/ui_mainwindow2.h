@@ -79,10 +79,6 @@ public:
 
     // Other
     QStackedWidget * centralWidget;
-    QStackedWidget *viewsStackedWidget;    // to replace w centralWidget
-
-
-    QHBoxLayout *horizontalLayout;
 
 
 private:
@@ -254,7 +250,6 @@ private:
 
        centralWidget = new QStackedWidget(MainWindow);
        centralWidget->setObjectName(QString::fromUtf8("centralWidget/views_stackedWidget"));
-       viewsStackedWidget = centralWidget;
 
        QSizePolicy sizePolicy1(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
        sizePolicy1.setHorizontalStretch(1);
@@ -267,14 +262,13 @@ private:
        centralWidget->setMaximumSize(QSize(2000, 16777215));
        centralWidget->setSizeIncrement(QSize(10, 10));
 
-       viewsStackedWidget->setFrameShape(QFrame::Panel);
-       viewsStackedWidget->setFrameShadow(QFrame::Sunken);
+       centralWidget->setFrameShape(QFrame::Panel);
+       centralWidget->setFrameShadow(QFrame::Sunken);
 
        MainWindow->setCentralWidget(centralWidget);
        // reportWidgetChildren(centralWidget, "Children of centralWidget:");
-       // reportWidgetChildren(viewsStackedWidget, "Children of viewsStackedWidget:");
-       // printf("(%s) Number of widgets contained by viewsStackedWidget: %d\n",
-       //        __func__, viewsStackedWidget->count() );  fflush(stdout);
+       // printf("(%s) Number of widgets contained by centralWidget: %d\n",
+       //        __func__, centralWidget->count() );  fflush(stdout);
     }
 
 
@@ -303,7 +297,7 @@ public:
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "ddcutil - mainWindow", 0));
         retranslateFeatureSelectionDialog();
 
-        viewsStackedWidget->setCurrentIndex(0);
+        centralWidget->setCurrentIndex(0);
 
         QMetaObject::connectSlotsByName(MainWindow);
 

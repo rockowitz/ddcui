@@ -87,15 +87,15 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->mainToolBar->addWidget( toolbarDisplayLabel);
     ui->mainToolBar->addWidget( _toolbarDisplayCB);
 
-    // reportWidgetChildren(ui->viewsStackedWidget,
-    //                      "Children of viewsStackedWidget, before initDisplaySelector():");
+    // reportWidgetChildren(ui->centralWidget,
+    //                      "Children of centralWidget, before initDisplaySelector():");
     initMonitors();
     feature_selector   = new FeatureSelector();
     GlobalState& globalState = GlobalState::instance();
     _otherOptionsState = new OtherOptionsState;
     globalState._otherOptionsState = _otherOptionsState;
-    reportWidgetChildren(ui->viewsStackedWidget,
-                         "Children of viewsStackedWidget, after initDisplaySelector():");
+    reportWidgetChildren(ui->centralWidget,
+                         "Children of centralWidget, after initDisplaySelector():");
 
     // Register metatypes for primitive types here.
     // Metatypes for classes are registered with the class definition.
@@ -156,11 +156,11 @@ void MainWindow::initMonitors() {
 
         initMonitorInfoWidget(
               curMonitor,
-              ui->viewsStackedWidget);
+              ui->centralWidget);
 
         initCapabilitiesWidget(
               curMonitor,
-              ui->viewsStackedWidget);
+              ui->centralWidget);
 
         if (enableAltFeatures) {
 
@@ -168,25 +168,25 @@ void MainWindow::initMonitors() {
                  curMonitor,
                  monitorNumber,
                  baseModel,
-                 ui->viewsStackedWidget
+                 ui->centralWidget
                  );
 
            initTableWidget(
                  curMonitor,
                  baseModel,
-                 ui->viewsStackedWidget
+                 ui->centralWidget
                  );
 
            initTableView(
                  curMonitor,
                  baseModel,
-                 ui->viewsStackedWidget
+                 ui->centralWidget
                  );
 
    //        initFeaturesScrollArea(
    //              curMonitor,
    //              baseModel,
-   //              ui->viewsStackedWidget
+   //              ui->centralWidget
    //              );
 
         }
@@ -194,7 +194,7 @@ void MainWindow::initMonitors() {
         initFeaturesScrollAreaView(
               curMonitor,
               baseModel,
-              ui->viewsStackedWidget
+              ui->centralWidget
               );
 
 
@@ -427,9 +427,9 @@ void MainWindow::on_actionMonitorSummary_triggered()
     moninfoPlainText->setFont(fixedFont);
 
     _curView = View::MonitorView;
-    ui->viewsStackedWidget->setCurrentIndex(pageno);
+    ui->centralWidget->setCurrentIndex(pageno);
 
-    ui->viewsStackedWidget->show();
+    ui->centralWidget->show();
 }
 
 
@@ -464,8 +464,8 @@ void MainWindow::on_actionCapabilities_triggered()
         capabilitiesPlainText->setFont(fixedFont);
 
         // show widget
-        ui->viewsStackedWidget->setCurrentIndex(pageno);    // need proper constants
-        ui->viewsStackedWidget->show();
+        ui->centralWidget->setCurrentIndex(pageno);    // need proper constants
+        ui->centralWidget->show();
     }
 }
 
@@ -492,9 +492,9 @@ void MainWindow::on_actionFeaturesTableView_triggered()
 
 
     // int pageno = monitor->_pageno_table_view;
-    // ui->viewsStackedWidget->setCurrentIndex(pageno);  // alt setCurrentWidget(tview)
-    ui->viewsStackedWidget->setCurrentWidget(monitor->_page_table_view);
-    ui->viewsStackedWidget->show();
+    // ui->centralWidget->setCurrentIndex(pageno);  // alt setCurrentWidget(tview)
+    ui->centralWidget->setCurrentWidget(monitor->_page_table_view);
+    ui->centralWidget->show();
 }
 
 
@@ -508,9 +508,9 @@ void MainWindow::on_actionFeaturesListView_triggered()
     loadMonitorFeatures(monitor);
 
     int pageno = monitor->_pageno_list_view;         // ???
-    ui->viewsStackedWidget->setCurrentIndex(pageno);
+    ui->centralWidget->setCurrentIndex(pageno);
 
-    ui->viewsStackedWidget->show();
+    ui->centralWidget->show();
 }
 
 
@@ -532,8 +532,8 @@ void MainWindow::on_actionFeaturesListWidget_triggered()
     // lview->setModel(monitor->_listModel);
 
     // TO FIX:
-    ui->viewsStackedWidget->setCurrentIndex(monitor->_pageno_listWidget);
-    ui->viewsStackedWidget->show();
+    ui->centralWidget->setCurrentIndex(monitor->_pageno_listWidget);
+    ui->centralWidget->show();
 }
 
 
@@ -645,9 +645,9 @@ void MainWindow::on_actionFeaturesScrollAreaMock_triggered()
     if (debugLayout)
        featuresScrollAreaContents->setStyleSheet("background-color:beige;");
 
-    ui->viewsStackedWidget->addWidget(page_features_scrollarea);
-    ui->viewsStackedWidget->setCurrentWidget(page_features_scrollarea);
-    ui->viewsStackedWidget->show();
+    ui->centralWidget->addWidget(page_features_scrollarea);
+    ui->centralWidget->setCurrentWidget(page_features_scrollarea);
+    ui->centralWidget->show();
 }
 
 
@@ -796,8 +796,8 @@ void MainWindow::set_feature_list_id(DDCA_Feature_Subset_Id feature_list_id) {
 void MainWindow::showCentralWidgetPage(int pageno) {
    printf("(%s::%s) ===========> Setting current index, pageno = %d\n", _cls, __func__,
           pageno);  fflush(stdout);
-   ui->viewsStackedWidget->setCurrentIndex(pageno);
-   ui->viewsStackedWidget->show();
+   ui->centralWidget->setCurrentIndex(pageno);
+   ui->centralWidget->show();
 }
 
 void MainWindow::showCentralWidgetByWidget(QWidget * pageWidget) {
@@ -805,14 +805,14 @@ void MainWindow::showCentralWidgetByWidget(QWidget * pageWidget) {
           "dummy"  /* pageWidget->objectName() */);   // utf-8
    fflush(stdout);
 
-   int pageno = ui->viewsStackedWidget->indexOf(pageWidget);
+   int pageno = ui->centralWidget->indexOf(pageWidget);
    if (pageno < 0) {
       printf("(%s::%s) page for widget not found\n", _cls, __func__); fflush(stdout);
    }
    else {
       printf("(%s::%s) widget page number: %d\n", _cls, __func__, pageno); fflush(stdout);
-      ui->viewsStackedWidget->setCurrentWidget(pageWidget);
-      ui->viewsStackedWidget->show();
+      ui->centralWidget->setCurrentWidget(pageWidget);
+      ui->centralWidget->show();
    }
 }
 
