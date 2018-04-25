@@ -58,9 +58,10 @@ MainWindow::MainWindow(QWidget *parent) :
     _ui->setupUi(this);
 
     _spinner = new WaitingSpinnerWidget(
-                                           Qt::ApplicationModal,    // alt WindowModal, ApplicationModal, NonModal
-                                           this,       // parent
-                                           true);       /// centerOnParent
+                      Qt::ApplicationModal,    // alt WindowModal, ApplicationModal, NonModal
+                      nullptr,      // parent   - if set to this, spinning widget does not display
+                      true,      // centerOnParent
+                      true);     // disableParentWhenSpinning
     _loadingMsgBox = new QMessageBox(this);
     _loadingMsgBox->setText("Loading...");
     _loadingMsgBox->setStandardButtons(QMessageBox::NoButton);
@@ -256,15 +257,14 @@ void MainWindow::initMonitors() {
 void MainWindow::longRunningTaskStart() {
    // needs counter
    printf("(%s::%s)\n", _cls, __func__);  fflush(stdout);
-   // _spinner->start();
-   _loadingMsgBox->show();
-   // _loadingMsgBox->exec();
+   _spinner->start();
+   // _loadingMsgBox->show();
 }
 
 void MainWindow::longRunningTaskEnd() {
    printf("(%s::%s)\n", _cls, __func__);  fflush(stdout);
-   // _spinner->stop();
-   _loadingMsgBox->hide();
+   _spinner->stop();
+   // _loadingMsgBox->hide();
 }
 
 void MainWindow::setStatusMsg(QString msg) {
