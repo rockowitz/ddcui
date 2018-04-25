@@ -25,14 +25,6 @@
 
 #include "feature_value_widgets/value_stacked_widget.h"
 
-#include "list_model_view/feature_item_model.h"
-#include "list_model_view/list_model_view_ui.h"
-#include "list_widget/list_widget_ui.h"
-#include "table_model_view/feature_table_model.h"
-#include "table_model_view/feature_value_tableitem_delegate.h"
-#include "table_model_view/table_model_view_ui.h"
-#include "table_widget/table_widget_ui.h"
-
 #include "feature_scrollarea/feature_widget.h"
 #include "feature_scrollarea/features_scrollarea_contents.h"
 #include "feature_scrollarea/features_scrollarea_ui.h"
@@ -43,6 +35,13 @@
 
 #include "main/ui_mainwindow2.h"
 #include "main/mainwindow.h"
+#include "../alt/list_model_view/feature_item_model.h"
+#include "../alt/list_model_view/list_model_view_ui.h"
+#include "../alt/list_widget/list_widget_ui.h"
+#include "../alt/table_model_view/feature_table_model.h"
+#include "../alt/table_model_view/feature_value_tableitem_delegate.h"
+#include "../alt/table_model_view/table_model_view_ui.h"
+#include "../alt/table_widget/table_widget_ui.h"
 
 
 using namespace std;

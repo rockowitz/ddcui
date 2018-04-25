@@ -1,10 +1,10 @@
 /* feature_value_tableitem_editor.cpp */
 
+#include "alt/table_model_view/feature_value_tableitem_editor.h"
+
 #include <stdio.h>
 #include <string.h>
 #include <iostream>
-
-#include "feature_value_tableitem_editor.h"
 
 
 FeatureValueTableItemEditor::FeatureValueTableItemEditor(QWidget *parent) : QWidget(parent)

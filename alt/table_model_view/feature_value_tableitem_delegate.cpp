@@ -1,6 +1,6 @@
 /* feature_value_tableitem_delegate.cpp */
 
-#include "../table_model_view/feature_value_tableitem_delegate.h"
+#include "alt/table_model_view/feature_value_tableitem_delegate.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -15,9 +15,9 @@
 #include "feature_value_widgets/value_stacked_widget.h"
 #include "feature_value_widgets/value_std_widget.h"
 
-#include "feature_value_tableitem_abstract_editor.h"
-#include "feature_value_tableitem_cb_editor.h"
-#include "feature_value_tableitem_cont_editor.h"
+#include "alt/table_model_view/feature_value_tableitem_abstract_editor.h"
+#include "alt/table_model_view/feature_value_tableitem_cb_editor.h"
+#include "alt/table_model_view/feature_value_tableitem_cont_editor.h"
 
 
 FeatureValueTableItemDelegate::FeatureValueTableItemDelegate()

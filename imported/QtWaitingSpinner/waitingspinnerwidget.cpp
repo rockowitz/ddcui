@@ -78,7 +78,7 @@ void WaitingSpinnerWidget::initialize() {
 }
 
 void WaitingSpinnerWidget::paintEvent(QPaintEvent *) {
-    printf("(WaitingSpinnerWidget::%s)\n", __func__); fflush(stdout);
+    // printf("(WaitingSpinnerWidget::%s)\n", __func__); fflush(stdout);
     updatePosition();
     QPainter painter(this);
     painter.fillRect(this->rect(), Qt::transparent);

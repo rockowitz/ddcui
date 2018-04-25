@@ -21,17 +21,19 @@
  * </endcopyright>
  */
 
+#include "alt/table_model_view/table_model_view_ui.h"
+
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QSizePolicy>
 #include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QStackedWidget>
 #include <QtWidgets/QLabel>
+#include <QtWidgets/QSizePolicy>
+#include <QtWidgets/QStackedWidget>
 #include <QtWidgets/QTableView>
 
-#include "feature_table_model.h"
-#include "feature_value_tableitem_delegate.h"
-#include "table_model_view_ui.h"
-#include "../base/monitor.h"
+#include "base/monitor.h"
+
+#include "alt/table_model_view/feature_table_model.h"
+#include "alt/table_model_view/feature_value_tableitem_delegate.h"
 
 
 // Initialization for Model/View Table variant

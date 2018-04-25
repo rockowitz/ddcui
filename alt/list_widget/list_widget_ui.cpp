@@ -22,13 +22,15 @@
  */
 
 
+#include "alt/list_widget/list_widget_ui.h"
+
 #include <QtWidgets/QSizePolicy>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QStackedWidget>
 
-#include "feature_list_widget.h"
-#include "list_widget_ui.h"
-#include "../base/monitor.h"
+#include "base/monitor.h"
+
+#include "alt/list_widget/feature_list_widget.h"
 
 
 //ListWidgetUI::ListWidgetUI() {

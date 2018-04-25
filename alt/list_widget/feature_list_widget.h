@@ -3,14 +3,14 @@
 #ifndef FEATURE_LIST_WIDGET_H
 #define FEATURE_LIST_WIDGET_H
 
+#include "alt/list_widget/feature_widget_extended.h"
+
 #include <QtWidgets/QWidget>
 
 #include <ddcutil_c_api.h>
 
-#include "feature_widget_extended.h"
 #include "nongui/feature_base_model.h"
 #include "nongui/feature_change_observer.h"
-
 
 
 class FeatureListWidget : public QListWidget

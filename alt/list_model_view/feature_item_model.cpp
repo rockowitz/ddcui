@@ -1,5 +1,7 @@
 /* feature_item_model.cpp */
 
+#include "alt/list_model_view/feature_item_model.h"
+
 #include "assert.h"
 #include <iostream>
 
@@ -10,7 +12,6 @@
 
 #include "nongui/feature_value.h"
 
-#include "feature_item_model.h"
 
 using namespace std;
 

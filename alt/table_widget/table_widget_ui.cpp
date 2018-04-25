@@ -1,10 +1,7 @@
 /* table_widget_ui.cpp
  *
- * Created on: Apr 13, 2018
- *     Author: rock
- *
  * <copyright>
- * Copyright (C) 2014-2015 Sanford Rockowitz <rockowitz@minsoft.com>
+ * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
  *
  * Licensed under the GNU General Public License Version 2
  *
@@ -24,6 +21,8 @@
  * </endcopyright>
  */
 
+#include "alt/table_widget/table_widget_ui.h"
+
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QSizePolicy>
 #include <QtWidgets/QHBoxLayout>
@@ -31,8 +30,7 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QTableWidget>
 
-#include "table_widget_ui.h"
-#include "../base/monitor.h"
+#include "base/monitor.h"
 
 
 QSizePolicy tableWidgetSizePolicy() {

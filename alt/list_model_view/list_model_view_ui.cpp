@@ -21,6 +21,8 @@
  * </endcopyright>
  */
 
+#include "alt/list_model_view/list_model_view_ui.h"
+
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
@@ -28,9 +30,9 @@
 #include <QtWidgets/QStackedWidget>
 #include <QtWidgets/QListView>
 
-#include "feature_item_model.h"
-#include "list_model_view_ui.h"
-#include "../base/monitor.h"
+#include "base/monitor.h"
+
+#include "alt/list_model_view/feature_item_model.h"
 
 
 QWidget * initListView(

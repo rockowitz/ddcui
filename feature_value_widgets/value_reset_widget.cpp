@@ -14,10 +14,12 @@
 #include <QtWidgets/QLayout>
 #include <QtWidgets/QPushButton>
 
+#include <ddcutil_c_api.h>
+
 #include "base/ddcui_globals.h"
 #include "base/debug_utils.h"
 
-#include <ddcutil_c_api.h>
+
 
 static bool dimensionReportShown = false;
 
@@ -30,7 +32,7 @@ ValueResetWidget::ValueResetWidget(QWidget *parent):
    QFont nonMonoFont;
    nonMonoFont.setPointSize(9);
 
-   _resetButton = new QPushButton("Reset");
+   _resetButton = new QPushButton("Restore");
    _resetButton->setMaximumSize(60,20);
 
     QSizePolicy* sizePolicy = new QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -47,7 +49,7 @@ ValueResetWidget::ValueResetWidget(QWidget *parent):
     setLayout(layout);
 
     if (!dimensionReportShown  /* && debugLayout */) {
-        printf("-------------------------------------------->\n"); fflush(stdout);
+        // printf("-------------------------------------------->\n"); fflush(stdout);
         reportWidgetDimensions(this, _cls, __func__);
         dimensionReportShown = true;
     }

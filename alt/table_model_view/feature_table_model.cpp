@@ -1,6 +1,6 @@
 /* feature_table_model.cpp */
 
-#include "../table_model_view/feature_table_model.h"
+#include "alt/table_model_view/feature_table_model.h"
 
 #include <assert.h>
 #include <iostream>
@@ -10,8 +10,8 @@
 
 #include "ddcutil_c_api.h"
 
-#include "../base/ddcui_globals.h"
-#include "../nongui/feature_value.h"
+#include "base/ddcui_globals.h"
+#include "nongui/feature_value.h"
 
 
 

@@ -62,15 +62,15 @@ SOURCES += \
     feature_value_widgets/value_std_widget.cpp 
 
 SOURCES += \
-    table_model_view/table_model_view_ui.cpp \
-    table_model_view/feature_table_model.cpp \
-    table_model_view/feature_value_tableitem_abstract_editor.cpp \
-    table_model_view/feature_value_tableitem_cb_editor.cpp \
-    table_model_view/feature_value_tableitem_cont_editor.cpp \
-    table_model_view/feature_value_tableitem_delegate.cpp
+    alt/table_model_view/table_model_view_ui.cpp \
+    alt/table_model_view/feature_table_model.cpp \
+    alt/table_model_view/feature_value_tableitem_abstract_editor.cpp \
+    alt/table_model_view/feature_value_tableitem_cb_editor.cpp \
+    alt/table_model_view/feature_value_tableitem_cont_editor.cpp \
+    alt/table_model_view/feature_value_tableitem_delegate.cpp
 
 SOURCES += \
-    table_widget/table_widget_ui.cpp
+    alt/table_widget/table_widget_ui.cpp
 
 SOURCES += \
     feature_scrollarea/features_scrollarea_ui.cpp \
@@ -80,13 +80,13 @@ SOURCES += \
     feature_scrollarea/features_scrollarea_view.cpp
 
 SOURCES += \
-    list_model_view/list_model_view_ui.cpp \
-    list_model_view/feature_item_model.cpp
+    alt/list_model_view/list_model_view_ui.cpp \
+    alt/list_model_view/feature_item_model.cpp
 
 SOURCES += \
-    list_widget/list_widget_ui.cpp \
-    list_widget/feature_list_widget.cpp \
-    list_widget/feature_widget_extended.cpp
+    alt/list_widget/list_widget_ui.cpp \
+    alt/list_widget/feature_list_widget.cpp \
+    alt/list_widget/feature_widget_extended.cpp
 
 SOURCES += \
     option_dialogs/feature_selection_dialog.cpp \
@@ -145,15 +145,15 @@ HEADERS += \
     feature_value_widgets/value_stacked_widget.h
 
 HEADERS += \
-    table_model_view/table_model_view_ui.h \
-    table_model_view/feature_table_model.h \
-    table_model_view/feature_value_tableitem_abstract_editor.h \
-    table_model_view/feature_value_tableitem_cb_editor.h \
-    table_model_view/feature_value_tableitem_cont_editor.h \
-    table_model_view/feature_value_tableitem_delegate.h
+    alt/table_model_view/table_model_view_ui.h \
+    alt/table_model_view/feature_table_model.h \
+    alt/table_model_view/feature_value_tableitem_abstract_editor.h \
+    alt/table_model_view/feature_value_tableitem_cb_editor.h \
+    alt/table_model_view/feature_value_tableitem_cont_editor.h \
+    alt/table_model_view/feature_value_tableitem_delegate.h
 
 HEADERS += \
-    table_widget/table_widget_ui.h
+    alt/table_widget/table_widget_ui.h
 
 HEADERS += \
     feature_scrollarea/features_scrollarea_ui.h \
@@ -163,13 +163,13 @@ HEADERS += \
     feature_scrollarea/features_scrollarea_view.h
 
 HEADERS += \
-   list_model_view/list_model_view_ui.h \
-   list_model_view/feature_item_model.h
+   alt/list_model_view/list_model_view_ui.h \
+   alt/list_model_view/feature_item_model.h
 
 HEADERS += \
-    list_widget/list_widget_ui.h \
-    list_widget/feature_list_widget.h \
-    list_widget/feature_widget_extended.h
+    alt/list_widget/list_widget_ui.h \
+    alt/list_widget/feature_list_widget.h \
+    alt/list_widget/feature_widget_extended.h
 
 HEADERS += \
     option_dialogs/feature_selection_dialog.h \

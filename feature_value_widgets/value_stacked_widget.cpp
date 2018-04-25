@@ -1,13 +1,15 @@
 /* value_stacked_widget.cpp */
 
+#include "feature_value_widgets/value_stacked_widget.h"
+
 #include <assert.h>
 #include <string.h>
 #include <stdio.h>
 
-#include <QtWidgets/QVBoxLayout>
+// #include <QtGui/QPaintEvent>
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QStackedWidget>
-#include <QtGui/QPaintEvent>
+#include <QtWidgets/QVBoxLayout>
 
 #include "base/ddcui_globals.h"
 #include "base/debug_utils.h"
@@ -19,18 +21,14 @@
 #include "feature_value_widgets/value_cont_widget.h"
 #include "feature_value_widgets/value_nc_widget.h"
 
-#include "feature_value_widgets/value_stacked_widget.h"
 
 static bool dimensionReportShown = false;
-
 static bool debugSignals = false;
 
 ValueStackedWidget::ValueStackedWidget(QWidget *parent):
     ValueBaseWidget(parent)  , SimpleFeatureValueSubject()
-
-    // QStackedWidget(parent)       //
 {
-   _cls                    = strdup(metaObject()->className());
+    _cls = strdup(metaObject()->className());
 
     // this->setObjectName(QString::fromUtf8("value_stacked_widget"));   // ambiguous
     // setGeometry(QRect(209,6, 181, 20));
@@ -62,7 +60,7 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent):
     setLayout(layout);
 
     if (!dimensionReportShown && debugLayout) {
-        printf("-------------------------------------------->\n"); fflush(stdout);
+        // printf("-------------------------------------------->\n"); fflush(stdout);
         reportWidgetDimensions(this, _cls, __func__);
         dimensionReportShown = true;
     }
@@ -94,9 +92,7 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent):
                       curWidget,     SLOT(onContainedWidgetChanged(uint8_t, uint8_t, uint8_t)));
 #endif
 
-
 }
-
 
 
 void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
@@ -114,7 +110,7 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
     }
 
     else if (fv._feature_code == 0xb0) {
-       printf("(%s::%s) B0\n", _cls, __func__);
+       // printf("(%s::%s) B0\n", _cls, __func__);
        _2ButtonWidget->setButtonDetail(
              QString("Store"),
              1,
@@ -126,7 +122,7 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
     }
 
     else if (fv.flags() & DDCA_STD_CONT) {
-        // printf("(ValueStackedWidget::%s) DDCA_STD_CONT\n", __func__); fflush(stdout);
+         // printf("(ValueStackedWidget::%s) DDCA_STD_CONT\n", __func__); fflush(stdout);
         _stacked->setCurrentIndex(_pageno_cont);
         _pageno_selected = _pageno_cont;
         _cur_stacked_widget = _contWidget;
@@ -135,17 +131,18 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
               (fv.flags() & DDCA_WRITABLE)
             )
     {
-       // printf("(ValueStackedWidget::%s) DDCA_SIMPLE_NC\n", __func__); fflush(stdout);
+        // printf("(ValueStackedWidget::%s) DDCA_SIMPLE_NC\n", __func__); fflush(stdout);
         _stacked->setCurrentIndex(_pageno_nc);
         _pageno_selected = _pageno_nc;
         _cur_stacked_widget = _ncWidget;
     }
     else {
-       // printf("(ValueStackedWidget::%s) default case, _stdWidget\n",  __func__); fflush(stdout);
+        // printf("(ValueStackedWidget::%s) default case, _stdWidget\n",  __func__); fflush(stdout);
         _stacked->setCurrentIndex(_pageno_std);
         _pageno_selected = _pageno_std;
         _cur_stacked_widget = _stdWidget;
     }
+
     _cur_stacked_widget->setFeatureValue(fv);
 }
 

@@ -3,10 +3,11 @@
 #ifndef FEATURE_VALUE_TABLEITEM_CB_EDITOR_H
 #define FEATURE_VALUE_TABLEITEM_CB_EDITOR_H
 
+#include "alt/table_model_view/feature_value_tableitem_abstract_editor.h"
+
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QComboBox>
 
-#include "feature_value_tableitem_abstract_editor.h"
 #include "nongui/feature_value.h"
 
 

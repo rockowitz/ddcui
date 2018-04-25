@@ -1,6 +1,6 @@
 /* feature_value_tableitem_cont_editor.cpp */
 
-#include "feature_value_tableitem_cont_editor.h"
+#include "alt/table_model_view/feature_value_tableitem_cont_editor.h"
 
 #include <iostream>
 #include <stdio.h>
@@ -10,7 +10,6 @@
 #include <QtGui/QPaintEvent>
 #include <QtGui/QRegion>
 #include <QtWidgets/QLayout>
-
 
 
 FeatureValueTableItemContEditor::FeatureValueTableItemContEditor(QWidget *parent) :

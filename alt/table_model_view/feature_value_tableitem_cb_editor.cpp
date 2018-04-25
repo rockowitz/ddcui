@@ -1,6 +1,6 @@
 /* feature_value_tableitem_cb_editor.cpp */
 
-#include "../table_model_view/feature_value_tableitem_cb_editor.h"
+#include "alt/table_model_view/feature_value_tableitem_cb_editor.h"
 
 #include <stdio.h>
 #include <string.h>

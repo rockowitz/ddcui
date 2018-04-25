@@ -1,16 +1,15 @@
 /* feature_list_widget.cpp */
 
+#include "alt/list_widget/feature_list_widget.h"
+
 #include <assert.h>
 #include <iostream>
-
 #include "nongui/feature_base_model.h"
 #include "nongui/feature_value.h"
 
-#include "list_widget/feature_list_widget.h"
-#include "feature_widget_extended.h"
+#include "alt/list_widget/feature_widget_extended.h"
 
 using namespace std;
-
 
 static bool debugMain    = false;
 static bool debugSignals = true;
