@@ -666,14 +666,19 @@ void MainWindow::on_actionFeatureSelection_triggered()
 
 void MainWindow::on_actionFeatureSelectionDialog_triggered()
 {
-        // display dialog box for selecting features
-        cout << "(on_actionFeatureSelectionDialog_triggered)" << endl;
+    // display dialog box for selecting features
+    cout << "(on_actionFeatureSelectionDialog_triggered)" << endl;
 
-       FeatureSelectionDialog* fsd = new FeatureSelectionDialog(this, this->_feature_selector);
-       // signal not found in FeatureSelectionDialog
-       // now this one is working, why?
-       QObject::connect(fsd,      &FeatureSelectionDialog::accepted,
-                        this,     &MainWindow::on_actionFeatureSelectionDialog_accepted);
+    // FeatureSelectionDialog*
+    if (fsd) {
+        fsd->useSelectorData();
+    }
+    else {
+        fsd = new FeatureSelectionDialog(this, this->_feature_selector);
+        // signal not found in FeatureSelectionDialog
+        // now this one is working, why?
+        QObject::connect(fsd,      &FeatureSelectionDialog::accepted,
+                         this,     &MainWindow::for_actionFeatureSelectionDialog_accepted);
 
 #ifdef UNUSED
        QObject::connect(fsd,      &FeatureSelectionDialog::destroyed,
@@ -682,8 +687,8 @@ void MainWindow::on_actionFeatureSelectionDialog_triggered()
        QObject::connect(fsd,     &FeatureSelectionDialog::featureSelectionAccepted,
                         this,    &MainWindow::featureSelectionAccepted);
 #endif
-
-       fsd->exec();
+    }
+    fsd->exec();
 }
 
 void MainWindow::featureSelectionDone() {
@@ -694,9 +699,12 @@ void MainWindow::featureSelectionDone() {
    }
 }
 
-void MainWindow::on_actionFeatureSelectionDialog_accepted()
+// named for_action... instead of on_action... to not use the connectSlotsByName naming convention
+// FeatureSelectionDialog not allocated at time connectSlotsByName() called, must use
+// explicit connect()
+void MainWindow::for_actionFeatureSelectionDialog_accepted()
 {
-   printf("%s::%s)\n", _cls, __func__);
+   // printf("%s::%s)\n", _cls, __func__);
    featureSelectionDone();
 }
 

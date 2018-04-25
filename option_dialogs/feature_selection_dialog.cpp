@@ -1,53 +1,61 @@
 /* feature_selection_dialog.cpp */
 
-#include "../option_dialogs/feature_selection_dialog.h"
-
 #include <assert.h>
 #include <stdio.h>
 #include <iostream>
 
 #include "ui_featureselectiondialog.h"
 
+#include "feature_selection_dialog.h"
+
 
 using namespace std;
+
+void FeatureSelectionDialog::useSelectorData()
+{
+   QRadioButton * curButton;
+   DDCA_Feature_Subset_Id local_fsid = _featureSelector->_featureListId;
+      switch(local_fsid) {
+      case DDCA_SUBSET_KNOWN:
+          curButton = ui->known_radioButton;
+          break;
+      case DDCA_SUBSET_COLOR:
+          curButton = ui->color_radioButton;
+          break;
+      case DDCA_SUBSET_PROFILE:
+          curButton = ui->profile_RadioButton;
+          break;
+      case DDCA_SUBSET_MFG:
+          curButton = ui->mfg_RadioButton;
+          break;
+      case DDCA_SUBSET_UNSET:
+         assert(false);
+         break;
+      }
+      curButton->setChecked(true);
+
+      ui->include_table_checkBox->setChecked(   _featureSelector->_includeTableFeatures);
+      ui->show_unsupported_checkBox->setChecked(_featureSelector->_showUnsupportedFeatures);
+      ui->capabilities_checkbox->setChecked(    _featureSelector->_respectCapabilities);
+}
+
 
 FeatureSelectionDialog::FeatureSelectionDialog(
       QWidget *         parent,
       FeatureSelector * featureSelector
    ) :  QDialog(parent),
-        ui(new Ui::FeatureSelectionDialog)
+        ui(new Ui::FeatureSelectionDialog),
+        _featureSelector(featureSelector)
+
 {
     cout << "(FeatureSelectionDialog)\n";
     printf("(FeatureSelectonDialog) featureSelector = %p\n", featureSelector);
     // this->_mainWindow = mainWindow;
     // this->_local_fsid = mainWindow->feature_list_id();
     ui->setupUi(this);
-    QRadioButton * curButton;
-    this->_local_fsid = featureSelector->_featureListId;
-    switch(_local_fsid) {
-    case DDCA_SUBSET_KNOWN:
-        curButton = ui->known_radioButton;
-        break;
-    case DDCA_SUBSET_COLOR:
-        curButton = ui->color_radioButton;
-        break;
-    case DDCA_SUBSET_PROFILE:
-        curButton = ui->profile_RadioButton;
-        break;
-    case DDCA_SUBSET_MFG:
-        curButton = ui->mfg_RadioButton;
-        break;
-    case DDCA_SUBSET_UNSET:
-       assert(false);
-       break;
-    }
-    curButton->setChecked(true);
+    useSelectorData();
 
-    ui->include_table_checkBox->setChecked(   featureSelector->_includeTableFeatures);
-    ui->show_unsupported_checkBox->setChecked(featureSelector->_showUnsupportedFeatures);
-    ui->capabilities_checkbox->setChecked(    featureSelector->_respectCapabilities);
-
-    this->_feature_selector = featureSelector;
+    // this->_feature_selector = featureSelector;
 
 }
 
@@ -56,7 +64,7 @@ FeatureSelectionDialog::~FeatureSelectionDialog()
     delete ui;
 }
 
-
+#ifdef UNUSED
 void FeatureSelectionDialog::setFeatureSet(int fsid) {
 
     cout << "(setFeatureSet) fsid=" << fsid << endl;
@@ -107,10 +115,11 @@ void FeatureSelectionDialog::on_include_table_checkBox_stateChanged(int arg1)
 {
    cout << "(on_include_table_checkBox_StateChanged) arg1 = " << arg1 << endl;
 }
+#endif
 
 void FeatureSelectionDialog::on_buttonBox_accepted()
 {
-    printf("(FeatureSelectionDialog::%s)\n",  __func__); fflush(stdout);
+    // printf("(FeatureSelectionDialog::%s)\n",  __func__); fflush(stdout);
     // which button is currently clicked?
     DDCA_Feature_Subset_Id feature_list;
     if (ui->color_radioButton->isChecked())
@@ -127,14 +136,13 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
         feature_list = DDCA_SUBSET_KNOWN;    // should never occur
 
     // this->_mainWindow->set_feature_list_id(feature_list);
-    this->_feature_selector->_featureListId = feature_list;
+    this->_featureSelector->_featureListId = feature_list;
 
-    _feature_selector->_includeTableFeatures    = ui->include_table_checkBox->isChecked();
-    _feature_selector->_showUnsupportedFeatures = ui->show_unsupported_checkBox->isChecked();
-    _feature_selector->_respectCapabilities     = ui->capabilities_checkbox->isChecked();
+    _featureSelector->_includeTableFeatures    = ui->include_table_checkBox->isChecked();
+    _featureSelector->_showUnsupportedFeatures = ui->show_unsupported_checkBox->isChecked();
+    _featureSelector->_respectCapabilities     = ui->capabilities_checkbox->isChecked();
+    // TODO: show_unsupported and show-table check boxes
 
     emit featureSelectionAccepted(feature_list);
-
-    // todo:
-    // show_unsupported and show-table check boces
 }
+

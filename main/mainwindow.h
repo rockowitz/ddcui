@@ -24,6 +24,7 @@ class Monitor;
 class FeatureBaseModel;
 class WaitingSpinnerWidget;
 class QMessageBox;
+class FeatureSelectionDialog;
 
 namespace Ui {
 class MainWindow;
@@ -76,7 +77,7 @@ private slots:
     void on_actionFeaturesScrollArea_triggered();
 
     // Options Menu
-    void on_actionFeatureSelectionDialog_accepted();
+    void for_actionFeatureSelectionDialog_accepted();
     void on_actionFeatureSelectionDialog_triggered();
 #ifdef UNUSED
     void actionFeatureSelectionDialog_destroyed(QObject * obj);
@@ -125,6 +126,8 @@ private:
     QVector<VcpThread*>      _vcp_threads;
     WaitingSpinnerWidget*    _spinner;
     QMessageBox*             _loadingMsgBox;
+
+    FeatureSelectionDialog* fsd;
 };
 
 #endif // MAINWINDOW_H
