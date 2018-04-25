@@ -70,7 +70,8 @@ void initPlaintextWidget(
       // sizePolicy1.setHeightForWidth(plainTextWidget->sizePolicy().hasHeightForWidth());
       plainTextWidget->setSizePolicy(sizePolicy1);
       plainTextWidget->setMaximumSize(QSize(2000, 16777215));   // 574->2000
-      plainTextWidget->setLineWrapMode(QPlainTextEdit::NoWrap);
+      // plainTextWidget->setLineWrapMode(QPlainTextEdit::NoWrap);
+      plainTextWidget->setLineWrapMode(QPlainTextEdit::WidgetWidth);
       plainTextWidget->setReadOnly(true);
 
       // AMEN!

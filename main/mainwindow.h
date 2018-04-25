@@ -15,9 +15,7 @@
 #include "base/ddcui_globals.h"
 #include "base/other_options_state.h"
 
-// #include "base/monitor.h"
 #include "feature_scrollarea/page_change_observer.h"
-// #include "feature_selection/feature_selector.h"
 
 class VcpThread;
 class FeatureSelector;
@@ -48,25 +46,13 @@ public:
     ~MainWindow();
 
     void reportDdcApiError(QString funcname, int rc) const;
-
-    DDCA_Feature_Subset_Id feature_list_id() const;
-    void set_feature_list_id(DDCA_Feature_Subset_Id feature_list_id);
-    FeatureSelector *   feature_selector = NULL;
-    OtherOptionsState * _otherOptionsState = NULL;
-
-    QVector<Monitor*> monitors;
-
-    QComboBox * _toolbarDisplayCB;
-
-    // QStackedWidget * _views_StackedWidget;   // used?
-#ifdef OLD
-    QPlainTextEdit * _moninfoPlainText = nullptr;
-    QTableView *     _vcp_tableview = nullptr;
-#endif
     void pageChanged(int pageno) override;
     void pageChangedByWidget(QWidget * widget) override;
 
-    const char * _cls;
+#ifdef UNUSED
+    DDCA_Feature_Subset_Id feature_list_id() const;
+    void set_feature_list_id(DDCA_Feature_Subset_Id feature_list_id);
+#endif
 
 signals:
     void featureSelectionChanged();
@@ -77,76 +63,68 @@ signals:
 public slots:
     void longRunningTaskStart();
     void longRunningTaskEnd();
-
     void setStatusMsg(QString msg);
 
-private:
-    DDCA_Feature_Subset_Id _feature_list_id = DDCA_SUBSET_KNOWN;
-    QVector<VcpThread*> vcp_threads;
-
-    WaitingSpinnerWidget* _spinner;
-    QMessageBox*          _loadingMsgBox;
-
-#ifdef OLD
-    QWidget * initFeaturesScrollArea(
-          Monitor *         curMonitor,
-          FeatureBaseModel* baseModel,
-          QStackedWidget *  stackedWidget);
-#endif
-
-    void featureSelectionDone();
-
-
 private slots:
-    void on_actionAbout_triggered();
-    void on_actionAbout_Qt_triggered();
-
-    // void on_actionFeatures_triggered();
-
-    void displaySelectorCombobox_currentIndexChanged(int index);
-    // void displaySelectorCombobox_activated(int index);
-
+    // View Menu
     void on_actionMonitorSummary_triggered();
     void on_actionCapabilities_triggered();
-
-    void on_actionFeatureSelectionDialog_triggered();
-    void on_actionFeatureSelectionDialog_accepted();
-    void actionFeatureSelectionDialog_destroyed(QObject * obj);
-
-    void featureSelectionAccepted(DDCA_Feature_Subset_Id feature_list);
-
-    void on_actionFeatureSelection_triggered();
-
-    void on_actionOtherOptionsDialog_triggered();
-    void on_actionOtherOptionsDialog_accepted();
-    void on_actionOtherOptionsDialog_ncValuesSourceChanged(NcValuesSource valuesSource);
-
-
     void on_actionFeaturesTableView_triggered();
     void on_actionFeaturesListView_triggered();
     void on_actionFeaturesListWidget_triggered();
-    // void on_actionFeaturesScrollArea_triggered_old();
     void on_actionFeaturesScrollAreaMock_triggered();
     void on_actionFeaturesScrollArea_triggered();
 
+    // Options Menu
+    void on_actionFeatureSelectionDialog_accepted();
+    void on_actionFeatureSelectionDialog_triggered();
+#ifdef UNUSED
+    void actionFeatureSelectionDialog_destroyed(QObject * obj);
+    void on_actionFeatureSelection_triggered();
+    void featureSelectionAccepted(DDCA_Feature_Subset_Id feature_list);
+#endif
+
+    void on_actionOtherOptionsDialog_triggered();
+    void on_actionOtherOptionsDialog_ncValuesSourceChanged(NcValuesSource valuesSource);
+#ifdef UNUSED
+    void on_actionOtherOptionsDialog_accepted();
+#endif
+
+    // Help Menu
+    void on_actionAbout_triggered();
+    void on_actionAbout_Qt_triggered();
+
+    // Tool Bar
+    void displaySelectorCombobox_currentIndexChanged(int index);
+    // void displaySelectorCombobox_activated(int index);
+
+   // Other
+#ifdef UNUSED
     void on_vcpTableView_clicked(const QModelIndex &index);
     void on_vcpTableView_doubleClicked(const QModelIndex &index);
+#endif
 
     void showCentralWidgetPage(int pageno);
     void showCentralWidgetByWidget(QWidget * pageWidget);
 
-
-
 private:
-    Ui::MainWindow *ui;
+    void initMonitors();
+    void loadMonitorFeatures(Monitor * monitor);
+    void featureSelectionDone();
 
-    void initDisplaySelector();
-    void loadMonitorFeatures(Monitor * monitor) ;
-
+    const char *             _cls;
+    Ui::MainWindow*          ui;
     DDCA_Display_Info_List * _dlist ;
     int                      _curDisplayIndex = -1;
     View                     _curView = NoView;
-
+    QComboBox *              _toolbarDisplayCB;
+    FeatureSelector *        feature_selector = NULL;
+    OtherOptionsState *      _otherOptionsState = NULL;
+    QVector<Monitor*>        monitors;
+    DDCA_Feature_Subset_Id   _feature_list_id = DDCA_SUBSET_KNOWN;
+    QVector<VcpThread*>      vcp_threads;
+    WaitingSpinnerWidget*   _spinner;
+    QMessageBox*            _loadingMsgBox;
 
 };
 

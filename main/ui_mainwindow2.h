@@ -36,9 +36,14 @@ QT_BEGIN_NAMESPACE
 class Ui_MainWindow
 {
 public:
-    QAction *actionAbout;
-    QAction *actionAboutQt;
 
+    // Menu Bar
+    QMenuBar    *menuBar;
+    QMenu       *menuView;
+    QMenu       *menuOptions;
+    QMenu       *menuHelp;
+
+    // View Menu
     QAction *actionMonitorSummary;
     QAction *actionCapabilities;
 
@@ -48,6 +53,7 @@ public:
     QAction *actionFeaturesScrollArea;
     QAction *actionFeaturesScrollAreaMock;
 
+    // Options Menu
     QAction *actionFeatureSelection;
     QAction *actionShowUnsupportedFeatures;
     QAction *actionKnown;
@@ -58,24 +64,26 @@ public:
     QAction *actionFeatureSelectionDialog;
     QAction *actionOtherOptionsDialog;
 
-#define COMBINED_CENTRAL_WIDGET
-#ifndef COMBINED_CENTRAL_WIDGET
-    QWidget *centralWidget;
-#else
+    // Help Menu
+    QAction *actionAbout;
+    QAction *actionAboutQt;
+
+
+    // Tool Bar
+    QToolBar    *mainToolBar;
+
+
+    // Status Bar
+    QStatusBar  *statusBar;
+
+
+    // Other
     QStackedWidget * centralWidget;
-#endif
-    QStackedWidget *viewsStackedWidget;
+    QStackedWidget *viewsStackedWidget;    // to replace w centralWidget
 
 
     QHBoxLayout *horizontalLayout;
-    // QLabel   *label;
-    QMenuBar    *menuBar;
-    QMenu       *menuView;
-    // QMenu    *menuDisplays;
-    QMenu       *menuHelp;
-    QMenu       *menuOptions;
-    QToolBar    *mainToolBar;
-    QStatusBar  *statusBar;
+
 
 private:
     void initActions(QMainWindow * MainWindow){
@@ -189,7 +197,6 @@ private:
        menuHelp->setObjectName(QString::fromUtf8("menuHelp"));
        menuHelp->setTitle(    QApplication::translate("MainWindow", "Help", 0));
 
-
        MainWindow->setMenuBar(menuBar);
 
        // Menu Bar actions
@@ -201,14 +208,12 @@ private:
        menuView->addAction(actionMonitorSummary);
        menuView->addAction(actionCapabilities);
        if (enableAltFeatures) {
-       menuView->addAction(actionFeaturesListWidget);
-       menuView->addAction(actionFeaturesListView);
-       menuView->addAction(actionFeaturesTableView);
+           menuView->addAction(actionFeaturesListWidget);
+           menuView->addAction(actionFeaturesListView);
+           menuView->addAction(actionFeaturesTableView);
+           menuView->addAction(actionFeaturesScrollAreaMock);
        }
        menuView->addAction(actionFeaturesScrollArea);
-       if (enableAltFeatures) {
-       menuView->addAction(actionFeaturesScrollAreaMock);
-       }
 
        actionMonitorSummary->setText(    QApplication::translate("MainWindow", "&Monitor Summary", 0));
        actionCapabilities->setText(      QApplication::translate("MainWindow", "&Capabilities", 0));
@@ -246,16 +251,10 @@ private:
     void layoutCentralWidget(QMainWindow *MainWindow)
     {     //       std::cout << "(setupUi) Wolf 1" << std::endl;
 
-#ifndef COMBINED_CENTRAL_WIDGET
-       centralWidget = new QWidget(MainWindow);
-       centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
-       viewsStackedWidget = new QStackedWidget(centralWidget);
-       viewsStackedWidget->setObjectName(QString::fromUtf8("views_stackedWidget"));
-#else
+
        centralWidget = new QStackedWidget(MainWindow);
        centralWidget->setObjectName(QString::fromUtf8("centralWidget/views_stackedWidget"));
        viewsStackedWidget = centralWidget;
-#endif
 
        QSizePolicy sizePolicy1(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
        sizePolicy1.setHorizontalStretch(1);
@@ -270,18 +269,6 @@ private:
 
        viewsStackedWidget->setFrameShape(QFrame::Panel);
        viewsStackedWidget->setFrameShadow(QFrame::Sunken);
-#ifndef COMBINED_CENTRAL_WIDGET
-       viewsStackedWidget->setGeometry(QRect(2, 42, 780, 300));
-       // sizePolicy1.setHeightForWidth(views_stackedWidget->sizePolicy().hasHeightForWidth());
-       viewsStackedWidget->setSizePolicy(sizePolicy1);
-
-       QHBoxLayout *
-       centralWidgetLayout = new QHBoxLayout(centralWidget);
-       centralWidgetLayout->setSpacing(6);
-       // centralWidgetLayout->setContentsMargins(11, 11, 11, 11);
-       centralWidgetLayout->setObjectName(QString::fromUtf8("centralWidgetLayout"));
-       centralWidgetLayout->addWidget(viewsStackedWidget);
-#endif
 
        MainWindow->setCentralWidget(centralWidget);
        // reportWidgetChildren(centralWidget, "Children of centralWidget:");

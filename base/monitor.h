@@ -125,7 +125,7 @@ public:
     // each time features are loaded.
     FeaturesScrollAreaView * _featuresScrollAreaView = NULL;
 
-
+    void dbgrpt();
 
 public slots:
     void putVcpRequest(VcpRequest * rqst);

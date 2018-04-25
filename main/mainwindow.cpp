@@ -14,21 +14,17 @@
 
 #include "base/ddcui_globals.h"
 #include "base/debug_utils.h"
+#include "base/global_state.h"
 #include "base/monitor.h"
+#include "base/other_options_state.h"
 
 #include "nongui/vcpthread.h"    // includes vcprequest.h
-
-#include "base/other_options_state.h"
-#include "base/global_state.h"
 
 #include "monitor_desc/monitor_desc_actions.h"
 #include "monitor_desc/monitor_desc_ui.h"
 
 #include "feature_value_widgets/value_stacked_widget.h"
 
-#include "feature_scrollarea/features_scrollarea_contents.h"
-#include "feature_scrollarea/features_scrollarea_ui.h"
-#include "feature_scrollarea/features_scrollarea_view.h"
 #include "list_model_view/feature_item_model.h"
 #include "list_model_view/list_model_view_ui.h"
 #include "list_widget/list_widget_ui.h"
@@ -37,12 +33,16 @@
 #include "table_model_view/table_model_view_ui.h"
 #include "table_widget/table_widget_ui.h"
 
+#include "feature_scrollarea/feature_widget.h"
+#include "feature_scrollarea/features_scrollarea_contents.h"
+#include "feature_scrollarea/features_scrollarea_ui.h"
+#include "feature_scrollarea/features_scrollarea_view.h"
+
+#include "option_dialogs/feature_selection_dialog.h"
+#include "option_dialogs/other_options_dialog.h"
+
 #include "main/ui_mainwindow2.h"
 #include "main/mainwindow.h"
-
-#include "../feature_scrollarea/feature_widget.h"
-#include "../option_dialogs/feature_selection_dialog.h"
-#include "../option_dialogs/other_options_dialog.h"
 
 
 using namespace std;
@@ -65,7 +65,18 @@ MainWindow::MainWindow(QWidget *parent) :
     _loadingMsgBox->setText("Loading...");
     _loadingMsgBox->setStandardButtons(QMessageBox::NoButton);
     _loadingMsgBox->setWindowModality(Qt::WindowModal);
-    // _loadingMsgBox->setWindowFlags( Qt::FramelessWindowHint );  // msg box does not display
+    // needs Qt::Dialog, o.w. does not appear
+    _loadingMsgBox->setWindowFlags( Qt::Dialog| Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);  // msg box does not display
+
+#ifdef ALT
+    _loadingMsgBox = new QMessageBox(
+                            QMessageBox::NoIcon,
+                            QString("Title"),
+                            QString("Loading2..."),
+                            Qt::NoButton,             // buttons
+                            this,                 // parent
+                            Qt::FramelessWindowHint | Qt::Dialog);
+#endif
 
 
     QLabel* toolbarDisplayLabel = new QLabel("&Display:  ");
@@ -78,7 +89,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // reportWidgetChildren(ui->viewsStackedWidget,
     //                      "Children of viewsStackedWidget, before initDisplaySelector():");
-    initDisplaySelector();
+    initMonitors();
     feature_selector   = new FeatureSelector();
     GlobalState& globalState = GlobalState::instance();
     _otherOptionsState = new OtherOptionsState;
@@ -107,22 +118,7 @@ MainWindow::~MainWindow()
 }
 
 
-
-#ifdef CONFLICT
-see features_scrollarea_view.cpp
-// static
-QSizePolicy pageSizePolicy() {
-    QSizePolicy policy(QSizePolicy::MinimumExpanding,QSizePolicy::MinimumExpanding);
-    policy.setHorizontalStretch(1);
-    policy.setVerticalStretch(1);
-    policy.setHeightForWidth(false);
-    return policy;
-}
-#endif
-
-
-
-void MainWindow::initDisplaySelector() {
+void MainWindow::initMonitors() {
    //  ui->displaySelectorComboBox->setSizeAdjustPolicy(QComboBox::AdjustToContents);
    //  ui->displaySelectorComboBox->setMinimumContentsLength(28);   // 2 + 3 + 3 + 3 + 13
 
@@ -223,6 +219,7 @@ void MainWindow::initDisplaySelector() {
         curThread->start();
         vcp_threads.append(curThread);
 
+        // asynchronously get capabilities for current monitor
         curMonitor->_requestQueue->put(new VcpCapRequest());
     }
 
@@ -255,6 +252,30 @@ void MainWindow::initDisplaySelector() {
 }
 
 
+//
+
+
+void MainWindow::longRunningTaskStart() {
+   // needs counter
+   printf("(%s::%s)\n", _cls, __func__);  fflush(stdout);
+   // _spinner->start();
+   _loadingMsgBox->show();
+   // _loadingMsgBox->exec();
+}
+
+void MainWindow::longRunningTaskEnd() {
+   printf("(%s::%s)\n", _cls, __func__);  fflush(stdout);
+   // _spinner->stop();
+   _loadingMsgBox->hide();
+}
+
+void MainWindow::setStatusMsg(QString msg) {
+   // printf("(%s::%s) msg: %s\n", _cls, __func__, msg.toLatin1().data());  fflush(stdout);
+   statusBar()->showMessage(msg,30);
+}
+
+
+
 // *** About ***
 
 void MainWindow::on_actionAbout_triggered()
@@ -283,32 +304,19 @@ void MainWindow::on_actionAbout_Qt_triggered()
     QMessageBox::aboutQt(this, "About Qt");
 }
 
-void MainWindow::longRunningTaskStart() {
-   // needs counter
-   printf("(%s::%s)\n", _cls, __func__);  fflush(stdout);
-   // _spinner->start();
-   _loadingMsgBox->show();
-}
 
-void MainWindow::longRunningTaskEnd() {
-   printf("(%s::%s)\n", _cls, __func__);  fflush(stdout);
-   // _spinner->stop();
-   _loadingMsgBox->hide();
-}
-
-void MainWindow::setStatusMsg(QString msg) {
-   // printf("(%s::%s) msg: %s\n", _cls, __func__, msg.toLatin1().data());  fflush(stdout);
-   statusBar()->showMessage(msg,30);
-}
 
 
 void MainWindow::loadMonitorFeatures(Monitor * monitor) {
+    printf("(%s::%s) monitor=%p\n", _cls, __func__, monitor); fflush(stdout);
+    monitor->dbgrpt();
     QString msg = QString("Reading monitor features...");
     ui->statusBar->showMessage(msg);
+    printf("(%s::%s) After showMessages()\n", _cls, __func__); fflush(stdout);
 
     DDCA_Feature_List features_to_show = monitor->getFeatureList(feature_selector->_featureListId);
     char * s = ddca_feature_list_string(&features_to_show, NULL, (char*) " ");
-    printf("(%s::%s) features_to_show: %s\n", _cls, __func__, s);
+    printf("(%s::%s) features_to_show: %s\n", _cls, __func__, s); fflush(stdout);
     free(s);
 
     if (feature_selector->_respectCapabilities) {
@@ -316,7 +324,7 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
        DDCA_Feature_List caps_features =
              ddca_feature_list_from_capabilities(monitor->_baseModel->_parsed_caps);
        char * s = ddca_feature_list_string(&caps_features, NULL, (char*) " ");
-       printf("(%s::%s) Capabilities features: %s\n", _cls, __func__, s);
+       printf("(%s::%s) Capabilities features: %s\n", _cls, __func__, s); fflush(stdout);
        free(s);
        features_to_show = ddca_feature_list_and(&features_to_show, &caps_features);
     }
@@ -353,6 +361,7 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
     monitor->_requestQueue->put(new VcpEndInitialLoadRequest);
 #endif
 
+    printf("(%s::%s) Done\n", _cls, __func__); fflush(stdout);
 }
 
 
@@ -394,13 +403,15 @@ void MainWindow::displaySelectorCombobox_activated(int index) {
 #endif
 
 
+//
+// View Menu Slots
+//
 
-// Action: Monitor
+// Monitor slots
 
 void MainWindow::on_actionMonitorSummary_triggered()
 {
     std::cout << "(MainWindow::on_actionMonitorSummary_triggered()" << endl;
-
 
     int monitorNdx = _toolbarDisplayCB->currentIndex();
 
@@ -422,7 +433,7 @@ void MainWindow::on_actionMonitorSummary_triggered()
 }
 
 
-// Action: Capabilities
+// Capabilities slots
 
 void MainWindow::on_actionCapabilities_triggered()
 {
@@ -459,103 +470,7 @@ void MainWindow::on_actionCapabilities_triggered()
 }
 
 
-
-// Actions:  Feature Selection
-
-void MainWindow::on_actionFeatureSelection_triggered()
-{
-    // display dialog box for selecting features
-    cout << "(on_actionFeatureSelection_triggered)" << endl;
-}
-
-void MainWindow::on_actionFeatureSelectionDialog_triggered()
-{
-        // display dialog box for selecting features
-        cout << "(on_actionFeatureSelectionDialog_triggered)" << endl;
-
-       FeatureSelectionDialog* fsd = new FeatureSelectionDialog(this, this->feature_selector);
-       // signal not found in FeatureSelectionDialog
-       // now this one is working, why?
-       QObject::connect(fsd,      &FeatureSelectionDialog::accepted,
-                        this,     &MainWindow::on_actionFeatureSelectionDialog_accepted);
-
-       QObject::connect(fsd,      &FeatureSelectionDialog::destroyed,
-                        this,     &MainWindow::actionFeatureSelectionDialog_destroyed);
-
-       QObject::connect(fsd,     &FeatureSelectionDialog::featureSelectionAccepted,
-                        this,    &MainWindow::featureSelectionAccepted);
-
-       fsd->exec();
-}
-
-
-void MainWindow::featureSelectionDone() {
-   printf("(%s::%s)\n", _cls, __func__);
-   if (_curView == FeaturesView) {
-      printf("%s::%s) Signaling \n", _cls, __func__);
-      emit featureSelectionChanged();
-   }
-
-}
-
-
-void MainWindow::on_actionFeatureSelectionDialog_accepted()
-{
-   printf("%s::%s)\n", _cls, __func__);
-   featureSelectionDone();
-}
-
-void MainWindow::actionFeatureSelectionDialog_destroyed(QObject * obj)
-{
-   printf("%s::%s)\n", _cls, __func__);
-}
-
-void MainWindow::featureSelectionAccepted(DDCA_Feature_Subset_Id feature_list) {
-   printf("%s::%s) feature_list=%d\n", _cls, __func__, feature_list);
-}
-
-void MainWindow::on_actionOtherOptionsDialog_triggered()
-{
-        // display dialog box for selecting features
-        cout << "(on_actionOtherOptionsDialog_triggered)" << endl;
-
-       OtherOptionsDialog* dialog = new OtherOptionsDialog(this->_otherOptionsState, this);
-       QObject::connect(dialog,   &OtherOptionsDialog::ncValuesSourceChanged,
-                        this,     &MainWindow::on_actionOtherOptionsDialog_ncValuesSourceChanged);
-       dialog->exec();
-}
-
-
-
-void MainWindow::on_actionOtherOptionsDialog_accepted()
-{
-   printf("%s::%s)\n", _cls, __func__); fflush(stdout);
-}
-
-void MainWindow::on_actionOtherOptionsDialog_ncValuesSourceChanged(NcValuesSource valuesSource )
-{
-   printf("%s::%s) valuesSource=%d\n", _cls, __func__, valuesSource); fflush(stdout);
-
-   if (_curView == FeaturesView  )   {  // need also check if  FeaturesScrollAreaView
-      int monitorNdx = _toolbarDisplayCB->currentIndex();
-      Monitor * monitor = monitors[monitorNdx];
-      // or emit signal?
-      monitor->_featuresScrollAreaView->onNcValuesSourceChanged(valuesSource);
-   }
-
-}
-
-
-
-DDCA_Feature_Subset_Id MainWindow::feature_list_id() const {
-    return this->_feature_list_id;
-}
-
-void MainWindow::set_feature_list_id(DDCA_Feature_Subset_Id feature_list_id) {
-    cout << "(set_feature_list_id) feature_list_id =" << feature_list_id <<endl;
-    this->_feature_list_id = feature_list_id;
-}
-
+// Features slots
 
 // Actions: Feature Views
 
@@ -767,6 +682,116 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
 
 
 
+//
+// Options Menu Slots
+
+// Feature Selection slots
+
+#ifdef UNUSED
+void MainWindow::on_actionFeatureSelection_triggered()
+{
+    // display dialog box for selecting features
+    cout << "(on_actionFeatureSelection_triggered)" << endl;
+}
+#endif
+
+void MainWindow::on_actionFeatureSelectionDialog_triggered()
+{
+        // display dialog box for selecting features
+        cout << "(on_actionFeatureSelectionDialog_triggered)" << endl;
+
+       FeatureSelectionDialog* fsd = new FeatureSelectionDialog(this, this->feature_selector);
+       // signal not found in FeatureSelectionDialog
+       // now this one is working, why?
+       QObject::connect(fsd,      &FeatureSelectionDialog::accepted,
+                        this,     &MainWindow::on_actionFeatureSelectionDialog_accepted);
+
+#ifdef UNUSED
+       QObject::connect(fsd,      &FeatureSelectionDialog::destroyed,
+                        this,     &MainWindow::actionFeatureSelectionDialog_destroyed);
+
+       QObject::connect(fsd,     &FeatureSelectionDialog::featureSelectionAccepted,
+                        this,    &MainWindow::featureSelectionAccepted);
+#endif
+
+       fsd->exec();
+}
+
+void MainWindow::featureSelectionDone() {
+   printf("(%s::%s)\n", _cls, __func__);
+   if (_curView == FeaturesView) {
+      printf("%s::%s) Signaling \n", _cls, __func__);
+      emit featureSelectionChanged();
+   }
+}
+
+void MainWindow::on_actionFeatureSelectionDialog_accepted()
+{
+   printf("%s::%s)\n", _cls, __func__);
+   featureSelectionDone();
+}
+
+#ifdef UNUSED
+void MainWindow::actionFeatureSelectionDialog_destroyed(QObject * obj)
+{
+   printf("%s::%s)\n", _cls, __func__);
+}
+#endif
+
+#ifdef UNUSED
+void MainWindow::featureSelectionAccepted(DDCA_Feature_Subset_Id feature_list) {
+   printf("%s::%s) feature_list=%d\n", _cls, __func__, feature_list);
+}
+#endif
+
+
+// Actions: OtherOptions
+
+void MainWindow::on_actionOtherOptionsDialog_triggered()
+{
+        // display dialog box for selecting features
+        cout << "(on_actionOtherOptionsDialog_triggered)" << endl;
+
+       OtherOptionsDialog* dialog = new OtherOptionsDialog(this->_otherOptionsState, this);
+       QObject::connect(dialog,   &OtherOptionsDialog::ncValuesSourceChanged,
+                        this,     &MainWindow::on_actionOtherOptionsDialog_ncValuesSourceChanged);
+       dialog->exec();
+}
+
+void MainWindow::on_actionOtherOptionsDialog_ncValuesSourceChanged(NcValuesSource valuesSource )
+{
+   printf("%s::%s) valuesSource=%d\n", _cls, __func__, valuesSource); fflush(stdout);
+
+   if (_curView == FeaturesView  )   {  // need also check if  FeaturesScrollAreaView
+      int monitorNdx = _toolbarDisplayCB->currentIndex();
+      Monitor * monitor = monitors[monitorNdx];
+      // or emit signal?
+      monitor->_featuresScrollAreaView->onNcValuesSourceChanged(valuesSource);
+   }
+
+}
+
+#ifdef UNUSED
+void MainWindow::on_actionOtherOptionsDialog_accepted()
+{
+   printf("%s::%s)\n", _cls, __func__); fflush(stdout);
+}
+
+DDCA_Feature_Subset_Id MainWindow::feature_list_id() const {
+    return this->_feature_list_id;
+}
+#endif
+
+#ifdef UNUSED
+void MainWindow::set_feature_list_id(DDCA_Feature_Subset_Id feature_list_id) {
+    cout << "(set_feature_list_id) feature_list_id =" << feature_list_id <<endl;
+    this->_feature_list_id = feature_list_id;
+}
+#endif
+
+
+
+
 
 void MainWindow::showCentralWidgetPage(int pageno) {
    printf("(%s::%s) ===========> Setting current index, pageno = %d\n", _cls, __func__,
@@ -807,7 +832,7 @@ void MainWindow::pageChangedByWidget(QWidget * widget) {
 
 
 
-
+#ifdef UNUSED
 void MainWindow::on_vcpTableView_clicked(const QModelIndex &index)
 {
     printf("-------------> (MainWindow::on_vcpTableView_clicked) row=%d, col=%d\n", index.row(), index.column() );
@@ -817,3 +842,4 @@ void MainWindow::on_vcpTableView_doubleClicked(const QModelIndex &index)
 {
      printf("----------> (MainWindow::on_vcpTableView_doubleClicked) row=%d, col=%d\n", index.row(), index.column() );
 }
+#endif

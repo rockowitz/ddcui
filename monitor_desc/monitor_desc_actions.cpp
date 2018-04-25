@@ -52,32 +52,17 @@ capture_capabilities_report(
 {
    *caps_report_loc = NULL;
 
-   char * caps = NULL;
-   char * caps_report = NULL;
-   DDCA_Capabilities * parsed_caps;
-   DDCA_Status rc = 0;
-
-#ifdef OLD
-   DDCA_Display_Handle dh = NULL;
-   rc = ddca_open_display(dref,&dh);
-   if (rc == 0) {
-       rc = ddca_get_capabilities_string(dh, &caps);
-   }
-   if (rc == 0) {
-       rc = ddca_parse_capabilities_string(caps, &parsed_caps);
-   }
-#endif
+   char *              caps        = NULL;
+   char *              caps_report = NULL;
+   DDCA_Capabilities * parsed_caps = NULL;
+   DDCA_Status         ddcrc       = 0;
 
    // Hacky.  Need to handle async, wait if caps not yet fetched
-   rc = monitor->_baseModel->_caps_status;
-   if (rc == 0) {
-      caps = monitor->_baseModel->_caps_string;
-      parsed_caps = monitor->_baseModel->_parsed_caps;
-   }
+   ddcrc = monitor->_baseModel->_caps_status;
+   if (ddcrc == 0) {
+       caps        = monitor->_baseModel->_caps_string;
+       parsed_caps = monitor->_baseModel->_parsed_caps;
 
-
-
-   if (rc == 0) {
        DDCA_Monitor_Model_Key mmid = ddca_monitor_model_key_from_dref(dref);
        // wrap in collector
        DDCA_Output_Level saved_ol = ddca_get_output_level();
@@ -93,11 +78,5 @@ capture_capabilities_report(
    if (caps)
       free(caps);
 
-#ifdef OLD
-   if (dh) {
-      rc = ddca_close_display(dh);
-   }
-#endif
-
-   return rc;
+   return ddcrc;
   }
