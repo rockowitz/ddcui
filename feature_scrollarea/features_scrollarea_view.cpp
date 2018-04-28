@@ -6,6 +6,7 @@
 #include <QtWidgets/QMessageBox>
 
 #include <stdio.h>
+#include <string.h>
 
 #include "base/global_state.h"
 #include "base/other_options_state.h"
@@ -187,15 +188,24 @@ void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc) {
 void FeaturesScrollAreaView::onModelDdcError(DdcError erec) {
    printf("(%s::%s) erec=%s\n", _cls, __func__, erec.srepr() );    fflush(stdout);
    QMessageBox * msgBox = new QMessageBox();
-   // msgBox.setText("Oy");
-   QString detail = erec.repr();
-   // detailed text adds details button
-   // msgBox.setDetailedText(detail);
-   // how to position over application?
-   msgBox->setText(detail);
+  //  if (strcmp(erec._ddcFunction.toLatin1().data(), "ddca_get_capabilities_string") == 0) {
+   if ( QString::compare(erec._ddcFunction, QString("ddca_get_capabilities_string")) == 0) {
+     msgBox->setText(QString("Error reading capabilities string"));
+     msgBox->setWindowTitle("DDC Error");
+   }
+   else {
+
+      // msgBox.setText("Oy");
+      QString detail = erec.repr();
+      // detailed text adds details button
+      // msgBox.setDetailedText(detail);
+      // how to position over application?
+      msgBox->setText(detail);
+
+      msgBox->setWindowTitle("Error Setting Feature Value");
+   }
    msgBox->setIcon(QMessageBox::Warning);
    msgBox->setModal(true);
-   msgBox->setWindowTitle("Error Setting Feature Value");
    msgBox->exec();
    // msgBox.open();
 }

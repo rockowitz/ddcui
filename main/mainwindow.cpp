@@ -617,7 +617,7 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
 
     if (!monitor->supportsDdc()) {
        QMessageBox::warning(this,
-                            "ddcutil",
+                            "ddcui",
                             "Display does not support DDC",
                             QMessageBox::Ok);
        on_actionMonitorSummary_triggered();

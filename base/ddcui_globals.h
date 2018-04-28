@@ -8,17 +8,15 @@ const int FeatureValueRole  = Qt::UserRole+1;  // DisplayRole, EditorRole, .. et
 
 const int FeatureWidgetType = QListWidgetItem::UserType+1;
 
-const bool debugSignals            = true;
-const bool debugValueWidgetSignals = false;
-const bool debugFeatureLists       = false;
-const bool debugFeatureSelection   = false;
-const bool debugLayout             = false;
+extern const bool debugSignals            ;
+extern const bool debugValueWidgetSignals ;
+extern const bool debugFeatureLists       ;
+extern const bool debugFeatureSelection   ;
+extern const bool debugLayout             ;
 
 const bool useApplyCancel    = false;
 const bool enableAltFeatures = false;
 
-
-// #define DDCMSG0(format, ...) ddcmsg(TRACE_GROUP, __func__, __LINE__, __FILE__, format, ##__VA_ARGS__)
 
 #define PRINTFCM(__FMT__, ...) \
    do { \

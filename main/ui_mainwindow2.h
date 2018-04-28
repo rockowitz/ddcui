@@ -285,7 +285,7 @@ public:
 
         setupMenus(MainWindow);
 
-        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "ddcutil - mainWindow", 0));
+        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "ddcui - Control Monitor Settings", 0));
         retranslateFeatureSelectionDialog();
 
         centralWidget->setCurrentIndex(0);

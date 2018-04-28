@@ -29,6 +29,7 @@ SOURCES += \
 
 SOURCES += \
     base/ddca_utils.cpp \
+    base/ddcui_globals.cpp \
     base/debug_utils.cpp \
     base/feature_selector.cpp \
     base/global_state.cpp \
