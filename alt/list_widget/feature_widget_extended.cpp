@@ -13,7 +13,7 @@
 #include "feature_value_widgets/value_stacked_widget.h"
 
 
-static bool debug = false;
+static bool debug = true;
 
 FeatureWidgetExtended::FeatureWidgetExtended(QListWidget *parent) :
  //   QWidget(parent)

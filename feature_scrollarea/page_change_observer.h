@@ -13,7 +13,6 @@ public:
 
     virtual void pageChanged(int pageno) = 0;
     virtual void pageChangedByWidget(QWidget * widget) = 0;
-
 };
 
 #endif // PAGE_CHANGE_OBSERVER_H

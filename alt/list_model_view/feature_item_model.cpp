@@ -2,7 +2,7 @@
 
 #include "alt/list_model_view/feature_item_model.h"
 
-#include "assert.h"
+#include <assert.h>
 #include <iostream>
 
 #include <QtCore/QByteArray>
@@ -65,13 +65,7 @@ QVariant FeatureItemModel::data(const QModelIndex &index, int role) const
     switch(role) {
     case(Qt::DisplayRole):
     {
-        char * s_name = NULL;
-        ddca_feature_name_by_dref(
-                           fv->featureCode(),
-                           fv->dref(),
-                           &s_name);
-
-
+        char * s_name = fv->_finfo.feature_name;
         char * s_formatted = NULL;
         DDCA_Status rc = ddca_format_non_table_vcp_value_by_dref(
                              fv->featureCode(),

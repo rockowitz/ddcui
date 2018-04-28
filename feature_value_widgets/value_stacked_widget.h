@@ -12,7 +12,6 @@
 #include "value_reset_widget.h"
 #include "value_2button_widget.h"
 
-
 class QWidget;
 class QPaintEvent;
 class QStackedWidget;
@@ -20,9 +19,6 @@ class QStackedWidget;
 class ValueStackedWidget : public ValueBaseWidget, public SimpleFeatureValueSubject
 {
    Q_OBJECT
-
-
-
 
 public:
     explicit ValueStackedWidget(QWidget *parent = nullptr);

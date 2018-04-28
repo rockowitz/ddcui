@@ -33,8 +33,8 @@ FeaturesScrollAreaView::FeaturesScrollAreaView(
     _monitor = monitor;
     _centralStackedWidget = centralStackedWidget;
     _baseModel = model;
-
 }
+
 
 void FeaturesScrollAreaView::freeContents(void) {
    // TODO
@@ -42,9 +42,9 @@ void FeaturesScrollAreaView::freeContents(void) {
 
 
 void FeaturesScrollAreaView::onEndInitialLoad(void) {
-   printf("(FeatuesScrollAreaView::%s) Starting\n", __func__);  fflush(stdout);
+   PRINTFCM("Starting");
    if (_monitor->_curFeaturesView != Monitor::FEATURES_VIEW_SCROLLAREA_VIEW) {
-      printf("(%s::%s) Not FEATURES_VIEW_SCROLLAREA, skipping\n", _cls, __func__);  fflush(stdout);
+      PRINTFCM("Not FEATURES_VIEW_SCROLLAREA, skipping");
       return;
    }
 

@@ -24,43 +24,34 @@
 #ifndef FEATURES_SCROLLAREA_CONTENTS_H_
 #define FEATURES_SCROLLAREA_CONTENTS_H_
 
-#include "feature_widget.h"
 #include "nongui/feature_value.h"
 #include "nongui/feature_base_model.h"
 
-#include "page_change_observer.h"
+#include "feature_scrollarea/feature_widget.h"
+#include "feature_scrollarea/page_change_observer.h"
 
-class QVBoxLayout;
 class QScrollArea;
+class QVBoxLayout;
+
 
 class FeaturesScrollAreaContents : public QWidget {
-
-   Q_OBJECT
+    Q_OBJECT
 
 public:
-   FeaturesScrollAreaContents(QWidget *parent = Q_NULLPTR);
-   virtual ~FeaturesScrollAreaContents();
+    FeaturesScrollAreaContents(QWidget *parent = Q_NULLPTR);
+    virtual ~FeaturesScrollAreaContents();
 
-   void setModel(FeatureBaseModel * baseModel);
+    void setModel(FeatureBaseModel * baseModel);
+    void setContainingScrollArea(QScrollArea * scrollArea);
 
-   void setContainingScrollArea(QScrollArea * scrollArea);
-
-   const char * _cls;    // className
-
-   void addPageChangeObserver(PageChangeObserver * observer);
-   void notifyPageChangeObservers(int pageno);
-
-   QVector<PageChangeObserver*> * _pageChangeObservers;
-
+    void addPageChangeObserver(PageChangeObserver * observer);
+    void notifyPageChangeObservers(int pageno);
 
 signals:
-void showCentralWidgetByWidget(QWidget * widget);
-// void showCentralWidgetByPageno(int pageno);
-
-
+    void showCentralWidgetByWidget(QWidget * widget);
+    // void showCentralWidgetByPageno(int pageno);
 
 public slots:
-
    void featureAdded(FeatureValue fv);
 #ifdef OLD
    void featureUpdated(char feature_code);
@@ -69,13 +60,13 @@ public slots:
    void endInitialLoad();
 
 private:
-   FeatureBaseModel * _baseModel = NULL;
-   QScrollArea *      _containingScrollArea = NULL;
-   // QVBoxLayout *      _curLayout = NULL;
+   const char *        _cls;    // className
+   FeatureBaseModel *  _baseModel = NULL;
+   QScrollArea *       _containingScrollArea = NULL;
+   QVector<PageChangeObserver*> * _pageChangeObservers;
 
    // quick and dirty for now, eventually replace by hash
    FeatureWidget * _widgets[256] = {0};
-
 };
 
 #endif /* FEATURES_SCROLLAREA_CONTENTS_H_ */

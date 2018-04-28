@@ -36,10 +36,6 @@ public:
 private:
    GlobalState();
    // No need for destructor.  Created once for life of the program.
-
-   // static GlobalState * _theOneAndOnly = nullptr;
-
-
 };
 
 #endif /* GLOBAL_STATE_H_ */

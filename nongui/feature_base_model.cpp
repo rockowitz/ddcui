@@ -6,8 +6,9 @@
 #include <QtCore/QVector>
 #include <QtCore/QByteArray>
 
-#include <ddcutil_types.h>
+#include <ddcutil_c_api.h>
 
+#include "base/ddcui_globals.h"
 #include "base/monitor.h"
 #include "base/ddca_utils.h"
 
@@ -18,7 +19,6 @@
 using namespace std;
 
 static bool debugModel = false;
-static bool debugSignals = false;
 
 FeatureBaseModel::FeatureBaseModel(Monitor * monitor)
 {
@@ -138,9 +138,11 @@ void   FeatureBaseModel::modelVcpValueSet(
                                    cap_vcp,
                                    *feature_value);
         _featureValues->append(fv);
-        if (debugSignals)
-            printf("(%s::%s) Emitting signalFeatureAdded()\n", _cls, __func__); fflush(stdout);
-        emit signalFeatureAdded(*fv);
+
+        // Not needed, only thing that matters is end initial load
+        // if (debugSignals)
+        //     printf("(%s::%s) Emitting signalFeatureAdded()\n", _cls, __func__); fflush(stdout);
+        // emit signalFeatureAdded(*fv);
         // notifyFeatureChangeObservers(feature_code);   // alternative
     }
     else {
@@ -224,14 +226,21 @@ void FeatureBaseModel::setFeatureList(DDCA_Feature_List featureList) {
    _featuresToShow = featureList;
 
    DDCA_Feature_List unchecked_features =
-         ddca_feature_list_minus(&_featuresToShow, &_featuresChecked);
+         ddca_feature_list_and_not(&_featuresToShow, &_featuresChecked);
 
+   if (debugFeatureLists) {
+       char * s = ddca_feature_list_string(&unchecked_features, NULL, (char*) " ");
+       PRINTFCM("Unchecked features: %s", s);
+   }
+
+#ifdef OLD
    cout << "Unchecked features: " << endl;
    for (int ndx = 0; ndx <= 255; ndx++) {
        if ( ddca_feature_list_contains(&unchecked_features, (uint8_t) ndx))
            printf("%02x ", ndx);
    }
    cout << endl;
+#endif
 
    _monitor->_requestQueue->put(new VcpStartInitialLoadRequest);
 
@@ -272,12 +281,12 @@ void FeatureBaseModel::dbgrpt() {
 
 
 void  FeatureBaseModel::modelStartInitialLoad(void) {
-    cout << "(FeatureBaseModel::modelStartInitialLoad()" << endl;
-    signalStartInitialLoad();
+    PRINTFCM("Emitting signalStartInitialLoad");
+    emit signalStartInitialLoad();
 }
 
 void  FeatureBaseModel::modelEndInitialLoad(void) {
-    cout << "(FeatureBaseModel::modelEndInitialLoad()" << endl;
+    PRINTFCM("Emitting signalEndInitialLoad");
     signalEndInitialLoad();
 }
 

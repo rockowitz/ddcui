@@ -41,10 +41,7 @@ class OtherOptionsState : public QObject {
 public:
    static const NcValuesSource DefaultNcValuesSource = NcValuesFromMccs;
 
-
-
    NcValuesSource ncValuesSource = DefaultNcValuesSource;    //  NcValuesFromMccs;
-
 };
 
 char * ncValuesSourceName(NcValuesSource source) ;

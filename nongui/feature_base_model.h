@@ -7,16 +7,14 @@
 
 #include "ddcutil_types.h"
 
-#include "ddc_error.h"
-#include "feature_change_observer.h"
-#include "feature_value.h"
-#include "vcprequest.h"
+#include "nongui/ddc_error.h"
+#include "nongui/feature_change_observer.h"
+#include "nongui/feature_value.h"
+#include "nongui/vcprequest.h"
 
 typedef void (*NotifyFeatureChanged)(uint8_t feature_code);
 
-
 class Monitor;
-
 
 /** The UI independent portion of the QT feature data model.
  *  Records all VCP values for a single monitor.
@@ -29,62 +27,45 @@ public:
     FeatureBaseModel(Monitor * monitor);
 
     FeatureValue *
-    modelVcpValueFind(uint8_t feature_code);
-
+         modelVcpValueFind(uint8_t feature_code);
     FeatureValue *
-    modelVcpValueFilteredFind(uint8_t feature_code);
-
+         modelVcpValueFilteredFind(uint8_t feature_code);
     FeatureValue *
-    modelVcpValueAt(int ndx) const;
-
-    int
-    modelVcpValueCount(void) const;
-
-    void
-    modelVcpValueSet(
-          uint8_t                              feature_code,
-          DDCA_Display_Ref                     dref,   // unnecessary, can get from monitor
-          DDCA_Feature_Metadata                metadata,
-          DDCA_Non_Table_Vcp_Value *           feature_value);
-
-    void
-    modelVcpValueUpdate(
-          uint8_t                              feature_code,
-          uint8_t                              sh,
-          uint8_t                              sl);
-
-    void
-    modelMccsVersionSet(
-          DDCA_MCCS_Version_Spec    vspec);
-
+         modelVcpValueAt(int ndx) const;
+    int  modelVcpValueCount(void) const;
+    void modelVcpValueSet(
+             uint8_t                     feature_code,
+             DDCA_Display_Ref            dref,   // unnecessary, can get from monitor
+             DDCA_Feature_Metadata       metadata,
+             DDCA_Non_Table_Vcp_Value *  feature_value);
+    void modelVcpValueUpdate(
+             uint8_t                     feature_code,
+             uint8_t                     sh,
+             uint8_t                     sl);
+    void modelMccsVersionSet(DDCA_MCCS_Version_Spec vspec);
     DDCA_MCCS_Version_Spec
-    mccsVersionSpec();
-
-    void          modelStartInitialLoad(void);
-    void          modelEndInitialLoad(void);
-    void          setStatusMsg(QString msg);
-
-    void
-    setCapabilities(
-          DDCA_Status          ddcrc,
-          char *               capabilities_string,
-          DDCA_Capabilities *  parsed_capabilities);
-
-    void          dbgrpt();
-
-    // void  addFeatureChangedObserver(NotifyFeatureChanged func);
+         mccsVersionSpec();
+    void modelStartInitialLoad(void);
+    void modelEndInitialLoad(void);
+    void setStatusMsg(QString msg);
+    void setCapabilities(
+             DDCA_Status          ddcrc,
+             char *               capabilities_string,
+             DDCA_Capabilities *  parsed_capabilities);
+    void dbgrpt();
+ // void addFeatureChangedObserver(NotifyFeatureChanged func);
     void addFeatureChangeObserver(FeatureChangeObserver *observer);
-
-    const char * _cls;    // className
-
-    Monitor *         _monitor;
-    DDCA_Feature_List _featuresToShow;
-    DDCA_Feature_List _featuresChecked;
-
     void setFeatureList(DDCA_Feature_List featureList);
     void setFeatureChecked(uint8_t featureCode);
 
-    DDCA_Status         _caps_status = 0;
+    // *** Public Member Variables ***
+    const char *        _cls;    // className
+
+    Monitor *           _monitor;
+    DDCA_Feature_List   _featuresToShow;
+    DDCA_Feature_List   _featuresChecked;
+
+    DDCA_Status         _caps_status = -999;    // a value that's undefined
     char *              _caps_string = NULL;
     DDCA_Capabilities * _parsed_caps = NULL;
 

@@ -23,20 +23,16 @@ public:
     uint16_t getCurrentValue() override;
 
     int findItem(uint8_t sl_value);
-
-    QComboBox *   _cb;
-    QPushButton * _applyButton;
-    QPushButton * _cancelButton;
-
     DDCA_Feature_Value_Entry * getComboBoxEntries(NcValuesSource mode);
     void loadComboBox(NcValuesSource mode);
     void reloadComboBox(NcValuesSource newSource);
 
-    // eventually make private:
-    NcValuesSource _curNcValuesSource = NcValuesSourceUnset;
-
 private:
-    bool _guiChange = false;
+    QComboBox *    _cb;
+    QPushButton *  _applyButton;
+    QPushButton *  _cancelButton;
+    NcValuesSource _curNcValuesSource = NcValuesSourceUnset;
+    bool           _guiChange = false;
 
 private slots:
     void combobox_activated(int index);

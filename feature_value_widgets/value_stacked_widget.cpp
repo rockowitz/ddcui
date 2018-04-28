@@ -23,7 +23,6 @@
 
 
 static bool dimensionReportShown = false;
-static bool debugSignals = false;
 
 ValueStackedWidget::ValueStackedWidget(QWidget *parent):
     ValueBaseWidget(parent)  , SimpleFeatureValueSubject()
@@ -91,12 +90,14 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent):
     QWidget::connect(_ncWidget, SIGNAL(featureValueChanged(   uint8_t, uint8_t, uint8_t)),
                       curWidget,     SLOT(onContainedWidgetChanged(uint8_t, uint8_t, uint8_t)));
 #endif
-
 }
 
 
 void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
-    ValueBaseWidget::setFeatureValue(fv);
+    PRINTFCMF(debugValueWidgetSignals, "Starting. feature code: 0x%02x", fv._feature_code);
+    // ValueBaseWidget::setFeatureValue(fv);
+    _featureCode = fv._feature_code;   // needed since not calling ValueBaseWidget::setFeatureValue()
+
 
     // alt, test for PRESET, then xb0 (settings) or normal
     if ( fv._feature_code == 0x04 ||    // Restore factory defaults
@@ -143,6 +144,7 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
         _cur_stacked_widget = _stdWidget;
     }
 
+    PRINTFCMF(debugValueWidgetSignals, "Calling _cur_stacked_widget->setFeatureValue()" );
     _cur_stacked_widget->setFeatureValue(fv);
 }
 
@@ -181,15 +183,16 @@ void ValueStackedWidget::paintEvent(QPaintEvent *event) {
 
 
 void  ValueStackedWidget::onContainedWidgetChanged(uint8_t feature_code, uint8_t sh, uint8_t sl) {
-   if (debugSignals)
+   if (debugValueWidgetSignals) {
        printf("(%s::%s) feature_code=0x%02x, sh=0x%02x, sl=0x%02x\n",
               _cls, __func__, feature_code, sh, sl);  fflush(stdout);
-   assert(feature_code == _feature_code);
+   }
+   assert(feature_code == _featureCode);
 
-   // if (debugSignals)
+   // if (debugValueWidgetSignals)
        // printf("(%s::%s) Calling emit featureValueChanged()\n", _cls, __func__);  fflush(stdout);
    // emit featureValueChanged(feature_code, sh, sl);
-   if (debugSignals)
+   if (debugValueWidgetSignals)
        printf("(%s::%s) Calling emit stackedFeatureValueChanged()\n", _cls, __func__);  fflush(stdout);
    emit stackedFeatureValueChanged(feature_code, sh, sl);
 
@@ -200,14 +203,15 @@ void  ValueStackedWidget::onContainedWidgetChanged(uint8_t feature_code, uint8_t
 
 bool ValueStackedWidget::isSimpleNc() {
    bool result = (_pageno_selected == _pageno_nc);
-   printf("(%s::%s) _pageno_selected=%d, _pageno_nc=%d, returning: %d\n",
-         _cls, __func__, _pageno_selected, _pageno_nc, result); fflush(stdout);
+   // printf("(%s::%s) _pageno_selected=%d, _pageno_nc=%d, returning: %d\n",
+   //       _cls, __func__, _pageno_selected, _pageno_nc, result); fflush(stdout);
    return result;
 }
 
 void ValueStackedWidget::setNcValuesSource(NcValuesSource newsrc) {
    printf("(%s::%s) newsrc = %d, _pageno_selected=%d, _pageno_nc=%d \n",
          _cls, __func__, newsrc, _pageno_selected, _pageno_nc); fflush(stdout);
+
    if (_pageno_selected == _pageno_nc) {
       _ncWidget->reloadComboBox(newsrc);
    }

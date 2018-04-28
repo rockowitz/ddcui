@@ -8,8 +8,8 @@
 ValueBaseWidget::ValueBaseWidget(QWidget *parent)
      : ValueAbstractWidget(parent)
 {
-   // will this get subclass name or "ValueBaseWidget"?  ValueBaseWidget
-   _cls                    = strdup(metaObject()->className());
+   // n. will be reset in subclass constructor
+   _cls = strdup(metaObject()->className());
 
    // setFrameStyle(QFrame::Box);
    // int m_left, m_right, m_top, m_bottom;
@@ -34,27 +34,24 @@ ValueBaseWidget::ValueBaseWidget(QWidget *parent)
 
 
 void ValueBaseWidget::setFeatureValue(const FeatureValue &fv) {
-   printf("(%s::%s) feature_code=0x%02x\n", _cls, __func__, fv.featureCode()); fflush(stdout);
-    _feature_code    = fv.featureCode();
-    _dref            = fv.dref();
-    _finfo           = fv.finfo();
-    _cap_vcp         = fv._cap_vcp;
-    // _vspec           = fv._vspec;
-    // _feature_flags   = fv._feature_flags;
-    _vspec           = fv.vspec();
-    _feature_flags   = fv.flags();
-    _mh              = fv._value.mh;
-    _ml              = fv._value.ml;
-    _sh              = fv._value.sh;
-    _sl              = fv._value.sl;
-    _value           = fv._value;
+    // printf("(ValueBaseWidget::%s) featureCode=0x%02x\n", __func__, fv.featureCode()); fflush(stdout);
+
+    _featureCode    = fv.featureCode();
+    _dref           = fv.dref();
+    _finfo          = fv.finfo();
+    _capVcp         = fv._cap_vcp;
+    _mh             = fv._value.mh;
+    _ml             = fv._value.ml;
+    _sh             = fv._value.sh;
+    _sl             = fv._value.sl;
 }
+
 
 #ifdef UNNEEDED
 // hack to give ValueNcWidget access to parsed capabilities
 void ValueBaseWidget::setBaseModel(FeatureBaseModel * model) {
    printf("(%s::%s) feature_code=0x%02x, model=%p\n",
-         _cls, __func__, _feature_code, model); fflush(stdout);
+         _cls, __func__, _featureCode, model); fflush(stdout);
    _baseModel = model;
 }
 #endif
@@ -63,8 +60,6 @@ void ValueBaseWidget::setBaseModel(FeatureBaseModel * model) {
 void ValueBaseWidget::setCurrentValue(uint16_t newval) {
     _sh = newval >> 8;
     _sl = newval & 0xff;
-    _value.sh = _sh;
-    _value.sl = _sl;
 }
 
 

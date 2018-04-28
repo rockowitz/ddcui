@@ -1,7 +1,7 @@
 #ifndef SIMPLE_FEATURE_VALUE_H
 #define SIMPLE_FEATURE_VALUE_H
 
-#include <QObject>
+#include <QtCore/QObject>
 
 class SimpleFeatureValue
 {
@@ -14,8 +14,6 @@ public:
     const uint8_t   featureCode;
     const uint8_t   hiByte;
     const uint8_t   loByte;
-
-
 };
 
 #endif // SIMPLE_FEATURE_VALUE_H

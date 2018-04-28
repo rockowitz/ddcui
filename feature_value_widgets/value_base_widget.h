@@ -9,7 +9,7 @@
 #include <ddcutil_c_api.h>
 
 #include "nongui/feature_value.h"
-#include "value_abstract_widget.h"
+#include "feature_value_widgets/value_abstract_widget.h"
 
 class FeatureBaseModel;
 
@@ -26,25 +26,14 @@ public:
 
     // QSize sizeHint() const override;   //   needed?
 
-    uint8_t                _feature_code;
+    uint8_t                _featureCode;
     DDCA_Display_Ref       _dref;
     DDCA_Feature_Metadata  _finfo;
-    DDCA_Cap_Vcp *         _cap_vcp;
-
-    DDCA_MCCS_Version_Spec _vspec;
-    DDCA_Monitor_Model_Key * _mmid;
-    DDCA_Non_Table_Vcp_Value   _value;    // use this or individual bytes? DDCA_Non_Table_Value needed for get_formatted_value call
+    DDCA_Cap_Vcp *         _capVcp;
     uint8_t                _mh;
     uint8_t                _ml;
     uint8_t                _sh;
     uint8_t                _sl;
-    DDCA_Feature_Flags     _feature_flags;  // should this be here or looked up?
-
-#ifdef NOT_NEEDED
-    // hack:
-    FeatureBaseModel * _baseModel;
-    void setBaseModel(FeatureBaseModel * model);
-#endif
 
 protected:
     char * _cls;

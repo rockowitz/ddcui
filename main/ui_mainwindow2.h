@@ -1,31 +1,17 @@
-/* ui_mainwindow2.h */
+/* ui_mainwindow2.h - Extracted from uic generated ui code */
 
 #ifndef UI_MAINWINDOW2_H
 #define UI_MAINWINDOW2_H
 
-#include <QtCore/QVariant>
-// #include <QtWidgets/QtWidgets>
-#ifdef OLD
-#include <QtGui/QAction>
-#include <QtGui/QApplication>
-#include <QtGui/QButtonGroup>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QHeaderView>
-#include <QtGui/QLabel>
-#include <QtGui/QListView>
-#include <QtGui/QListWidget>
-#include <QtGui/QMainWindow>
-#include <QtGui/QMenu>
-#include <QtGui/QMenuBar>
-#include <QtGui/QPlainTextEdit>
-#include <QtGui/QStackedWidget>
-#include <QtGui/QStatusBar>
-#include <QtGui/QTableView>
-#include <QtGui/QTableWidget>
-#include <QtGui/QToolBar>
-#include <QtGui/QWidget>
-#endif
 #include <iostream>
+
+#include <QtWidgets/QAction>
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QMenuBar>
+#include <QtWidgets/QStackedWidget>
+#include <QtWidgets/QStatusBar>
+#include <QtWidgets/QToolBar>
 
 #include "base/ddcui_globals.h"
 #include "base/debug_utils.h"
@@ -44,54 +30,42 @@ public:
     QMenu       *menuHelp;
 
     // View Menu
-    QAction *actionMonitorSummary;
-    QAction *actionCapabilities;
+    QAction     *actionMonitorSummary;
+    QAction     *actionCapabilities;
 
-    QAction *actionFeaturesListWidget;        // for ListWidget
-    QAction *actionFeaturesListView;
-    QAction *actionFeaturesTableView;
-    QAction *actionFeaturesScrollArea;
-    QAction *actionFeaturesScrollAreaMock;
+    QAction     *actionFeaturesListWidget;        // for ListWidget
+    QAction     *actionFeaturesListView;
+    QAction     *actionFeaturesTableView;
+    QAction     *actionFeaturesScrollArea;
+    QAction     *actionFeaturesScrollAreaMock;
 
     // Options Menu
-    QAction *actionFeatureSelection;
-    QAction *actionShowUnsupportedFeatures;
-    QAction *actionKnown;
-    QAction *actionScan;
-    QAction *actionColor;
-    QAction *actionProfile;
-    QAction *actionManufacturer;
-    QAction *actionFeatureSelectionDialog;
-    QAction *actionOtherOptionsDialog;
+    QAction     *actionFeatureSelection;
+    QAction     *actionShowUnsupportedFeatures;
+    QAction     *actionKnown;
+    QAction     *actionScan;
+    QAction     *actionColor;
+    QAction     *actionProfile;
+    QAction     *actionManufacturer;
+    QAction     *actionFeatureSelectionDialog;
+    QAction     *actionOtherOptionsDialog;
 
     // Help Menu
-    QAction *actionAbout;
-    QAction *actionAboutQt;
-
+    QAction     *actionAbout;
+    QAction     *actionAboutQt;
 
     // Tool Bar
     QToolBar    *mainToolBar;
 
-
     // Status Bar
     QStatusBar  *statusBar;
 
-
     // Other
-    QStackedWidget * centralWidget;
+    QStackedWidget *centralWidget;
 
 
 private:
     void initActions(QMainWindow * MainWindow){
-
-        // Help Menu Actions
-
-        actionAbout = new QAction(MainWindow);
-        actionAbout->setObjectName(QString::fromUtf8("actionAbout"));
-
-        actionAboutQt = new QAction(MainWindow);
-        actionAboutQt->setObjectName(QString::fromUtf8("actionAbout_Qt"));
-
 
         // View Menu Actions
         // n. QMetaObject::connectSlotsByName() depends on object name,
@@ -99,9 +73,11 @@ private:
 
         actionMonitorSummary = new QAction(MainWindow);
         actionMonitorSummary->setObjectName(QString::fromUtf8("actionMonitorSummary"));
+        actionMonitorSummary->setCheckable(true);
 
         actionCapabilities = new QAction(MainWindow);
         actionCapabilities->setObjectName(QString::fromUtf8("actionCapabilities"));
+        actionCapabilities->setCheckable(true);
 
         if (enableAltFeatures) {
            actionFeaturesListWidget = new QAction(MainWindow);
@@ -119,9 +95,20 @@ private:
 
         actionFeaturesScrollArea = new QAction(MainWindow);
         actionFeaturesScrollArea->setObjectName(QString::fromUtf8("actionFeaturesScrollArea"));
+        actionFeaturesScrollArea->setCheckable(true);
 
         actionFeatureSelection = new QAction(MainWindow);
         actionFeatureSelection->setObjectName(QString::fromUtf8("actionFeatureSelection"));
+
+        QActionGroup* viewGroup = new QActionGroup(MainWindow);
+        viewGroup->addAction(actionMonitorSummary);
+        viewGroup->addAction(actionCapabilities);
+        viewGroup->addAction(actionFeaturesScrollArea);
+        if (enableAltFeatures) {
+           // TODO
+        }
+        // actionMonitorSummary->setChecked(true);   // ???
+
 
         // Options->Feature Selection Dialog Actions
 
@@ -150,6 +137,13 @@ private:
 
         actionOtherOptionsDialog = new QAction(MainWindow);
         actionOtherOptionsDialog->setObjectName(QString::fromUtf8("actionOtherOptionsDialog"));
+
+        // Help Menu Actions
+
+        actionAbout = new QAction(MainWindow);
+        actionAbout->setObjectName(QString::fromUtf8("actionAbout"));
+        actionAboutQt = new QAction(MainWindow);
+        actionAboutQt->setObjectName(QString::fromUtf8("actionAbout_Qt"));
     }
 
 
@@ -245,16 +239,13 @@ private:
 
 
     void layoutCentralWidget(QMainWindow *MainWindow)
-    {     //       std::cout << "(setupUi) Wolf 1" << std::endl;
-
-
+    {
        centralWidget = new QStackedWidget(MainWindow);
        centralWidget->setObjectName(QString::fromUtf8("centralWidget/views_stackedWidget"));
 
        QSizePolicy sizePolicy1(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
        sizePolicy1.setHorizontalStretch(1);
        sizePolicy1.setVerticalStretch(1);
-       // sizePolicy1.setHeightForWidth(centralWidget->sizePolicy().hasHeightForWidth());
        sizePolicy1.setHeightForWidth(false);
        centralWidget->setSizePolicy(sizePolicy1);
 
@@ -275,7 +266,7 @@ private:
 public:
     void setupUi(QMainWindow *MainWindow)
     {
-        std::cout << "(setupUi) Starting" << std::endl;
+        // std::cout << "(setupUi) Starting" << std::endl;
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
         MainWindow->resize(800, 400);
@@ -299,9 +290,10 @@ public:
 
         centralWidget->setCurrentIndex(0);
 
+        printf("(Ui_MainWindow::setupUi) Calling connectSlotsByName()...\n"); fflush(stdout);
         QMetaObject::connectSlotsByName(MainWindow);
 
-        std::cout << "(setupUi) Done" << std::endl;
+        // std::cout << "(setupUi) Done" << std::endl;
     } // setupUi
 
 };

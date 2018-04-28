@@ -3,20 +3,20 @@
 #ifndef VALUE_ABSTRACT_WIDGET_H
 #define VALUE_ABSTRACT_WIDGET_H
 
-#include <QtWidgets/QWidget>
+// #include <QtWidgets/QWidget>
 #include <QtWidgets/QFrame>
 
 #include "nongui/feature_value.h"
 
 class ValueAbstractWidget :
-   // public QWidget
       public QFrame
 {
     Q_OBJECT
 
-public:
+protected:
     explicit ValueAbstractWidget(QWidget *parent = nullptr);   // should constructor exist for pure virtual class
 
+public:
     virtual void setFeatureValue(const FeatureValue &fv) = 0;
 
     virtual void setCurrentValue(uint16_t curval) = 0;

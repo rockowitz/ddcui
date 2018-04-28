@@ -37,7 +37,7 @@ capture_display_info_report(
     ddca_start_capture(DDCA_CAPTURE_NOOPTS);
     DDCA_Output_Level saved_ol = ddca_get_output_level();
     ddca_set_output_level(DDCA_OL_VERBOSE);
-    ddca_dbgrpt_display_info(dinfo, 0);
+    ddca_report_display_info(dinfo, 0);
     ddca_set_output_level(saved_ol);
     char * s = ddca_end_capture();
     return s;
@@ -56,12 +56,12 @@ capture_capabilities_report(
    ddcrc = monitor->_baseModel->_caps_status;
    if (ddcrc == 0) {
        DDCA_Capabilities *parsed_caps = monitor->_baseModel->_parsed_caps;
-       DDCA_Monitor_Model_Key mmid = ddca_monitor_model_key_from_dref(dref);
+       // DDCA_Monitor_Model_Key mmid = ddca_monitor_model_key_from_dref(dref);
        // wrap in collector
        DDCA_Output_Level saved_ol = ddca_get_output_level();
        ddca_set_output_level(DDCA_OL_VERBOSE);
        ddca_start_capture(DDCA_CAPTURE_NOOPTS);
-       ddca_report_parsed_capabilities(parsed_caps, &mmid, 0);
+       ddca_report_parsed_capabilities(parsed_caps, 0);
        char * caps_report = ddca_end_capture();
        ddca_set_output_level(saved_ol);
        *caps_report_loc = caps_report;

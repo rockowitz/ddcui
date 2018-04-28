@@ -21,22 +21,25 @@
  * </endcopyright>
  */
 
+#include "feature_scrollarea/features_scrollarea_contents.h"
+
 #include <assert.h>
 #include <string.h>
 #include <stdio.h>
 
 #include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QScrollArea>
 
 #include "base/ddcui_globals.h"
 #include "base/debug_utils.h"
+
 #include "feature_value_widgets/value_stacked_widget.h"
-#include "features_scrollarea_contents.h"
-#include "feature_widget.h"
+#include "feature_scrollarea/feature_widget.h"
 
 
 // static bool dimensionReportShown = false;
 static bool debugMain = false;
-static bool debugSignals = false;
+
 
 FeaturesScrollAreaContents::FeaturesScrollAreaContents(QWidget * parent) :
     QWidget(parent)
@@ -56,18 +59,20 @@ FeaturesScrollAreaContents::FeaturesScrollAreaContents(QWidget * parent) :
      setStyleSheet("background-color:aqua;");
 }
 
+
 FeaturesScrollAreaContents::~FeaturesScrollAreaContents() {
    // TODO IMPLEMENT!!!
 }
+
 
 void FeaturesScrollAreaContents::setModel(FeatureBaseModel * baseModel) {
    _baseModel = baseModel;
 }
 
+
 void FeaturesScrollAreaContents::setContainingScrollArea(QScrollArea * scrollArea) {
    _containingScrollArea = scrollArea;
 }
-
 
 
 void FeaturesScrollAreaContents::featureAdded(FeatureValue fv)
@@ -87,6 +92,7 @@ void FeaturesScrollAreaContents::featureAdded(FeatureValue fv)
    _widgets[fv._feature_code] = newTableEntry;
 }
 
+
 #ifdef OLD
 // Unused!
 void FeaturesScrollAreaContents::featureUpdated(char feature_code)
@@ -105,6 +111,7 @@ void FeaturesScrollAreaContents::featureUpdated(char feature_code)
 }
 #endif
 
+
 void FeaturesScrollAreaContents::startInitialLoad(void)
 {
    printf("(%s::%s)\n", _cls, __func__);  fflush(stdout);
@@ -115,7 +122,7 @@ void FeaturesScrollAreaContents::startInitialLoad(void)
 
 void FeaturesScrollAreaContents::endInitialLoad()
 {
-   printf("(%s::%s)\n", _cls, __func__);  fflush(stdout);
+   PRINTFCM("Executing");
    assert(_containingScrollArea);
 
    // _containingScrollArea->show();
@@ -131,17 +138,14 @@ void FeaturesScrollAreaContents::addPageChangeObserver(PageChangeObserver * obse
    _pageChangeObservers->append(observer);
 }
 
+
 void FeaturesScrollAreaContents::notifyPageChangeObservers(int pageno) {
    int ct = _pageChangeObservers->count();
-   if (debugSignals)
-       printf("(%s) Starting ct=%d\n", __func__, ct);  fflush(stdout);
+   PRINTFCMF(debugSignals, "Starting ct=%d", ct);
    for (int ndx = 0; ndx < ct; ndx++) {
-          if (debugSignals)
-              printf("(%s) Notifying observer\n", __func__);  fflush(stdout);
-           PageChangeObserver*  observer = _pageChangeObservers->at(ndx);
-           observer->pageChangedByWidget(_containingScrollArea);
+       PRINTFCMF(debugSignals, "Notifying observer");
+       PageChangeObserver*  observer = _pageChangeObservers->at(ndx);
+       observer->pageChangedByWidget(_containingScrollArea);
    }
 }
-
-
 

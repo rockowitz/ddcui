@@ -18,7 +18,7 @@ class FeatureBaseModel;
 
 
 class FeatureWidget :
-        public QWidget         // QFrame
+        public QWidget
         , public SimpleFeatureValueObserver
 {
     Q_OBJECT
@@ -43,8 +43,6 @@ public:
     void setBaseModel(FeatureBaseModel * model);  // hack for accessing model->_parsed_caps
     FeatureBaseModel * _baseModel = nullptr;
 #endif
-
-signals:
 
 public slots:
     void onInternalValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl);

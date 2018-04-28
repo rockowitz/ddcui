@@ -6,7 +6,6 @@
 #include <QtCore/QObject>
 #include <QtCore/QHash>
 
-#include <ddcutil_types.h>
 #include <ddcutil_c_api.h>
 
 #include "base/feature_selector.h"
@@ -17,7 +16,7 @@ class QPlainTextEdit;
 class QTableView;
 class QTableWidget;
 class QWidget;
-// class QHash;  // incomplete type
+// class QHash;  // incomplete type, need full #include <QtCore/QHash>
 
 class FeatureBaseModel;
 class FeatureItemModel;
@@ -51,17 +50,16 @@ public:
     ~Monitor();
 
     DDCA_Feature_List getFeatureList(DDCA_Feature_Subset_Id);
-    void setFeatureItemModel(FeatureItemModel * listModel);      // ALT
-    void setFeatureTableModel(FeatureTableModel * tableModel);
+    bool supportsDdc();
+    void dbgrpt();
 
-    const int _monitorNumber = -1;    // 1 based
+    const int            _monitorNumber = -1;    // 1 based
+    DDCA_Display_Info *  _displayInfo;
 
-    FeatureItemModel *   _listModel;
-    FeatureTableModel *  _tableModel;
     FeatureBaseModel *   _baseModel;
 
     VcpRequestQueue*     _requestQueue;
-    DDCA_Display_Info *  _displayInfo;
+
     DDCA_Display_Handle  _dh;
     // DDCA_Display_Ref  _dref;    // use _displayInfo->dref
     // VcpThread         _vcpThread;
@@ -77,7 +75,30 @@ public:
     FeaturesView        _curFeaturesView = FEATURES_VIEW_UNSET;
     FeatureSelector     _curFeatureSelector;
 
-// *** Begin Alternative Central Widgets ***
+    // FEATURES_VIEW_SCROLLAREAVIEW
+    // When using FeaturesScrollAreaView, do not allocate a permanent
+    // QScrollArea and contents.  These must be created dynamically
+    // each time features are loaded.
+    FeaturesScrollAreaView * _featuresScrollAreaView = NULL;
+
+
+public slots:
+        void putVcpRequest(VcpRequest * rqst);
+
+private:
+    const char *  _cls;    // className
+    QHash<DDCA_Feature_Subset_Id, DDCA_Feature_List> _features;
+
+
+// *** Begin Functions and Variables for Alternative Central Widgets ***
+
+public:
+    void setFeatureItemModel(FeatureItemModel * listModel);      // ALT
+    void setFeatureTableModel(FeatureTableModel * tableModel);
+
+    FeatureItemModel *   _listModel;   // for central widget alternative
+    FeatureTableModel *  _tableModel;
+
 
 #ifdef UNUSED
     QWidget *           page_vcp;
@@ -113,26 +134,11 @@ public:
     QTableView *        _vcp_tableView     = NULL;
     int                 _pageno_table_view = -1;
 
-    // *** End Alternative Central Widgets ***
-
     // QScrollArea *                 _page_features_scrollarea;
     // FeaturesScrollAreaContents *  _featuresScrollAreaContents;
     // int                           _pageno_features_scrollarea;
 
-    // FEATURES_VIEW_SCROLLAREAVIEW
-    // When using FeaturesScrollAreaView, do not allocate a permanent
-    // QScrollArea and contents.  These must be created dynamically
-    // each time features are loaded.
-    FeaturesScrollAreaView * _featuresScrollAreaView = NULL;
-
-    void dbgrpt();
-
-public slots:
-    void putVcpRequest(VcpRequest * rqst);
-
-private:
-    const char *  _cls;    // className
-    QHash<DDCA_Feature_Subset_Id, DDCA_Feature_List> _features;
+    // *** End Alternative Central Widgets ***
 };
 
 #endif // MONITOR_H

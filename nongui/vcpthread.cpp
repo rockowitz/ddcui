@@ -7,12 +7,13 @@
 
 #include <QtCore/QString>
 
+#include "base/ddcui_globals.h"
 #include "nongui/ddc_error.h"
 #include "nongui/vcpthread.h"
 
 using namespace std;
 
-static bool debugThread;
+static bool debugThread = false;
 
 VcpThread::VcpThread(
         QObject*            parent,
@@ -27,7 +28,7 @@ VcpThread::VcpThread(
     _requestQueue = requestQueue;
     // open the display, raise exception if error
 
-    // ddca_dbgrpt_display_info(dinfo, 4);
+    // ddca_report_display_info(dinfo, 4);
     // ddca_dbgrpt_display_ref(_dref, 4);
 }
 
@@ -40,6 +41,8 @@ void VcpThread::rpt_ddca_status(
 {
     printf("(VcpThread::%s) %s() returned %d - %s\n",
            caller_name, ddca_func_name, ddcrc, ddca_rc_name(ddcrc));
+    fflush(stdout);
+
     QString msg = "generic error msg";
     // emit signalDdcError(0, msg);
     DdcError erec(feature_code, ddca_func_name, ddcrc);
@@ -53,7 +56,7 @@ void VcpThread::rpt_ddca_status(
 
 // Process RQCapabilities
 void VcpThread::capabilities() {
-   printf("(VcpThread::capabilities) Starting. dref=%s\n", ddca_dref_repr(this->_dref));
+   PRINTFCMF(debugThread, "Starting. dref=%s", ddca_dref_repr(this->_dref));
    DDCA_Display_Handle dh;
    char *              caps = NULL;
    DDCA_Capabilities * parsed_caps = NULL;
@@ -84,7 +87,7 @@ void VcpThread::capabilities() {
    }
    _baseModel->setCapabilities(ddcrc, caps, parsed_caps);
 
-   printf("(VcpThread::capabilities) Done. dref=%s\n", ddca_dref_repr(this->_dref));
+   PRINTFCMF(debugThread, "Done. dref=%s", ddca_dref_repr(this->_dref));
 }
 
 
@@ -108,8 +111,8 @@ void VcpThread::getvcp(uint8_t feature_code) {
        _baseModel->setStatusMsg(msg.sprintf("Reading feature 0x%02x",feature_code));
 
         ddcrc = ddca_get_non_table_vcp_value(dh, feature_code, &valrec);
-        printf("(%s::%s) feature_code=0x%02x, ddca_get_non_table_vcp_value() returned %d - %s\n",
-               _cls, __func__, feature_code, ddcrc, ddca_rc_name(ddcrc));  fflush(stdout);
+        PRINTFCMF(debugThread, "feature_code=0x%02x, ddca_get_non_table_vcp_value() returned %d - %s",
+                  feature_code, ddcrc, ddca_rc_name(ddcrc));
         if (ddcrc != 0) {
            if (ddcrc != DDCRC_REPORTED_UNSUPPORTED)
             rpt_ddca_status(feature_code, __func__, "ddca_get_nontable_vcp_value", ddcrc);
@@ -141,7 +144,6 @@ void VcpThread::getvcp(uint8_t feature_code) {
         rpt_ddca_status(0, __func__, "ddca_close_display", ddcrc);
         // how to handle?
     }
-
     // printf("(VcpThread::getvcp) Done\n");
 }
 
@@ -150,13 +152,6 @@ void VcpThread::getvcp(uint8_t feature_code) {
 void VcpThread::setvcp(uint8_t feature_code, uint8_t sl) {
     // printf("(VcpThread::setvcp) Starting. feature_code=0x%02x\n", feature_code);
     DDCA_Display_Handle         dh;
-    //  DDCA_Non_Table_Vcp_Value    valrec; // unused
-    // valrec.sh = 0;     // only setting low byte
-    // valrec.sl = sl;
-    // valrec.mh = 0;  //hack
-    // valrec.ml = 0;   // hack
-
-    // DDCA_Feature_Metadata  finfo;    // unused
 
     DDCA_Status ddcrc = ddca_open_display(this->_dref, &dh);
     if (ddcrc != 0) {
@@ -172,13 +167,11 @@ void VcpThread::setvcp(uint8_t feature_code, uint8_t sl) {
     // ddcrc = ddca_set_non_table_vcp_value_verify(dh, feature_code, 0, sl, &verified_hi_byte, &verified_lo_byte);
     ddcrc = ddca_set_non_table_vcp_value(dh, feature_code, 0, sl);
     if (ddcrc != 0) {
-        printf("(VcpThread::%s) ddca_set_raw_vcp_value() returned %d - %s\n",
-               __func__, ddcrc, ddca_rc_name(ddcrc)); fflush(stdout);
-        // cout << "ddca_set_raw_vcp_value() returned " << ddcrc << endl;
+        PRINTFCM("ddca_set_raw_vcp_value() returned %d - %s", ddcrc, ddca_rc_name(ddcrc));
         // how to handle?
         rpt_ddca_status(feature_code, __func__, "ddca_set_non_table_vcp_value", ddcrc);
 
-        if ( strcmp(ddca_rc_name(ddcrc), "DDCRC_VERIFY") == 0)  {
+        if (ddcrc == DDCRC_VERIFY) {
             printf("(VcpThread::%s) Verification failed\n", __func__);
             // read current value
             // put up dialog box with:
@@ -187,14 +180,11 @@ void VcpThread::setvcp(uint8_t feature_code, uint8_t sl) {
             //   current value
 
             // Cannot create children for a parent in a different thread
-            // QMessageBox::critical(nullptr,
-            //                                    QString("Error"),      // title
-            //                                    QString("Verification failed"));
+            // QMessageBox::critical(nullptr, QString("Error"), QString("Verification failed"));
 
             // undefined reference to VcpThread::postError(Qstring)
             // emit postError(QString("Verification failed"));
 
-// #ifdef MAY_NOT_BE_NEEDED
             DDCA_Non_Table_Vcp_Value              valrec;
                 DDCA_Status
                 ddcrc2 = ddca_get_non_table_vcp_value(dh, feature_code, &valrec);
@@ -208,24 +198,8 @@ void VcpThread::setvcp(uint8_t feature_code, uint8_t sl) {
                     //        feature_code, valrec.mh, valrec.ml, valrec.sh, valrec.sl);
                    _baseModel->modelVcpValueUpdate(feature_code, valrec.sh, valrec.sl);
                 }
-// #endif
-
        }
     }
-
-#ifdef OLD
-    // should not be necessary for setvcp
-    if (ddcrc == 0) {
-
-       ddcrc = ddca_get_simplified_feature_info(feature_code, _dinfo->vcp_version,&finfo);
-       if (ddcrc != 0) {
-           cout << "ddca_get_simplified_feature_info() returned " << ddcrc << endl;
-           // how to handle?
-           printf("ddca_get_simplfied_feature_info() returned %d - %s - %s\n",
-                  ddcrc, ddca_rc_name(ddcrc), ddca_rc_desc(ddcrc));
-       }
-    }
-#endif
 
     if (ddcrc == 0) {
         // _baseModel->modelVcpValueSet(feature_code, _dinfo->vcp_version, finfo, &valrec);
@@ -234,7 +208,6 @@ void VcpThread::setvcp(uint8_t feature_code, uint8_t sl) {
     else if (ddcrc == DDCRC_VERIFY) {
       //   _baseModel->modelVcpValueUpdate(feature_code, verified_hi_byte, verified_lo_byte);
     }
-
 
     ddcrc = ddca_close_display(dh);
     if (ddcrc != 0) {
@@ -248,7 +221,7 @@ void VcpThread::setvcp(uint8_t feature_code, uint8_t sl) {
 
 // Process RQStartInitailLoad
 void VcpThread::startInitialLoad(void) {
-    printf("(VcpThread::StartInitialLoad)\n");  fflush(stdout);
+    PRINTFCMF(debugThread, "Executing");
     // _baseModel->beginResetModel();
     _baseModel->modelStartInitialLoad();
     _baseModel->modelMccsVersionSet(_dinfo->vcp_version);
@@ -258,42 +231,19 @@ void VcpThread::startInitialLoad(void) {
 
 // Process RQEndInitialLoad
 void VcpThread::endInitialLoad(void) {
-        printf("(VcpThread::EndInitialLoad)\n");  fflush(stdout);
-        // _baseModel->report();
-        // _baseModel->endResetModel();
-        _baseModel->modelEndInitialLoad();
-       // emit signalStatusMsg(QString("Loading complete"));
-        _baseModel->setStatusMsg(QString("Loading complete"));
+    PRINTFCMF(debugThread, "Starting");
+    // _baseModel->report();
+    // _baseModel->endResetModel();
+    _baseModel->modelEndInitialLoad();
+    // emit signalStatusMsg(QString("Loading complete"));
+    _baseModel->setStatusMsg(QString("Loading complete"));
 }
 
 
-
 void VcpThread::run() {
-
     forever {
         VcpRequest * rqst = this->_requestQueue->pop();
-
-        // temporarily, just write out request
-
-#ifdef OLD
-        VcpGetRequest* getRqst = static_cast<VcpGetRequest*>(rqst);
-        VcpSetRequest* setRqst = static_cast<VcpSetRequest*>(rqst);
-
-        if (getRqst) {
-            // cout << "VcpGetRequest.  feature_code = " << getRqst->feature_code << endl;
-            printf("(VcpThread::run) VcpGetRequest. feature_code=0x%02x\n", getRqst->feature_code);
-            getvcp(getRqst->feature_code);
-        }
-        else if (setRqst) {
-            cout << "VcpSetRequest.  feature_code = " << setRqst->feature_code<<
-                    "newval = " << setRqst->newval << endl;
-        }
-        else {
-            cout << "Unexpected request type" << endl;
-        }
-#endif
-        VcpRequestType rqstType = rqst->_type;
-        switch(rqstType) {
+        switch(rqst->_type) {
         case VcpRequestType::RQGetVcp:
         {
             VcpGetRequest* getRqst = static_cast<VcpGetRequest*>(rqst);
@@ -304,9 +254,9 @@ void VcpThread::run() {
         case VcpRequestType::RQSetVcp:
         {
             VcpSetRequest* setRqst = static_cast<VcpSetRequest*>(rqst);
-            if (debugThread)
-                printf("(VcpThread::run) RQSetVcp. feature code=0x%02x, newval=%d\n",
-                       setRqst->_featureCode, setRqst->_newval);  fflush(stdout);
+            // if (debugThread)
+            //     printf("(VcpThread::run) RQSetVcp. feature code=0x%02x, newval=%d\n",
+            //            setRqst->_featureCode, setRqst->_newval);  fflush(stdout);
             setvcp(setRqst->_featureCode, setRqst->_newval & 0xff);
             break;
         }
@@ -320,8 +270,8 @@ void VcpThread::run() {
             capabilities();
             break;
         default:
-            cout << "Unexpected request type: " << rqstType << endl;
-
+            cout << "Unexpected request type: " << rqst->_type << endl;
         }
     }
 }
+

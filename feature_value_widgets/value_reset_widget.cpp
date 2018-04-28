@@ -20,7 +20,6 @@
 #include "base/debug_utils.h"
 
 
-
 static bool dimensionReportShown = false;
 
 ValueResetWidget::ValueResetWidget(QWidget *parent):
@@ -48,7 +47,7 @@ ValueResetWidget::ValueResetWidget(QWidget *parent):
     layout->setContentsMargins(0,0,0,0);
     setLayout(layout);
 
-    if (!dimensionReportShown  /* && debugLayout */) {
+    if (!dimensionReportShown && debugLayout) {
         // printf("-------------------------------------------->\n"); fflush(stdout);
         reportWidgetDimensions(this, _cls, __func__);
         dimensionReportShown = true;
@@ -65,7 +64,9 @@ ValueResetWidget::ValueResetWidget(QWidget *parent):
 
 
 void ValueResetWidget::on_resetButton_pressed() {
-   printf("(%s::%s)\n", _cls, __func__); fflush(stdout);
-   emit featureValueChanged(_feature_code, 0, 1);
+   if (debugValueWidgetSignals) {
+       printf("(%s::%s)\n", _cls, __func__); fflush(stdout);
+   }
+   emit featureValueChanged(_featureCode, 0, 1);
 }
 

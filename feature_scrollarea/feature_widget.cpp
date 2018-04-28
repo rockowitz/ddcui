@@ -15,12 +15,13 @@
 #include "feature_value_widgets/value_std_widget.h"
 #include "feature_value_widgets/value_stacked_widget.h"
 
-#include "feature_widget.h"
+#include "feature_scrollarea/feature_widget.h"
+
 
 static bool dimensionReportShown = false;
 
 FeatureWidget::FeatureWidget(QWidget *parent) :
-   QWidget(parent)              //         QFrame(parent)
+   QWidget(parent)
 {
     _cls = metaObject()->className();
 

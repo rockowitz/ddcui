@@ -13,7 +13,6 @@
 #include "base/ddcui_globals.h"
 #include "value_cont_widget.h"
 
-static bool debugSignals = true;
 
 ValueContWidget::ValueContWidget(QWidget *parent):
     ValueBaseWidget(parent)
@@ -146,18 +145,18 @@ ValueContWidget::ValueContWidget(QWidget *parent):
       _applyButton->setEnabled(false);
       _cancelButton->setEnabled(false);
     }
-
 }
 
 
 void ValueContWidget::setFeatureValue(const FeatureValue &fv) {
+    PRINTFCMF(debugValueWidgetSignals, "Starting. feature code: 0x%02x", fv._feature_code);
     ValueBaseWidget::setFeatureValue(fv);
 
     int maxval = _mh << 8 | _ml;
     int curval = _sh << 8 | _sl;
 
-    if (debugSignals)
-        printf("(%s::%s) feature=0x%02x, curval=%d, maxval=%d\n", _cls, __func__, _feature_code, curval, maxval); fflush(stdout);
+    if (debugValueWidgetSignals)
+        printf("(%s::%s) feature=0x%02x, curval=%d, maxval=%d\n", _cls, __func__, _featureCode, curval, maxval); fflush(stdout);
 
     _guiChange = false;
 
@@ -187,9 +186,9 @@ void ValueContWidget::setCurrentValue(uint16_t newval) {
     _guiChange = false;
 
      int curval = _sh << 8 | _sl;
-     if (debugSignals)
+     if (debugValueWidgetSignals)
          printf("(%s::%s) feature=0x%02x, curval=%d\n",
-                _cls, __func__, _feature_code , curval);   fflush(stdout);
+                _cls, __func__, _featureCode , curval);   fflush(stdout);
 
     _curSpinBox->setValue(curval);
     _curSlider->setValue(curval);
@@ -205,26 +204,27 @@ void ValueContWidget::setCurrentValue(uint16_t newval) {
 
 uint16_t ValueContWidget::getCurrentValue() {
     int curval = _curSpinBox->value();
-
     _sh = (curval >> 8) & 0xff;
     _sl = curval & 0xff;
-
     uint16_t result = (_sh << 8) | _sl;
     return result;
 }
 
+
 void ValueContWidget::onSliderValueChanged(int value) {
-   if (debugSignals)
-       printf("(%s::%s) NO ACTION feature=0x%02x, value=%d\n", _cls, __func__, _feature_code, value); fflush(stdout);
+   if (debugValueWidgetSignals)
+       printf("(%s::%s) NO ACTION feature=0x%02x, value=%d\n", _cls, __func__, _featureCode, value); fflush(stdout);
 }
 
+
 void ValueContWidget::onSliderReleased() {
-   printf("(%s::%s) feature=0x%02x\n", _cls, __func__, _feature_code); fflush(stdout);
+   if (debugValueWidgetSignals)
+      printf("(%s::%s) feature=0x%02x\n", _cls, __func__, _featureCode); fflush(stdout);
    int newval = _curSpinBox->value();
 
    uint8_t new_sh = (newval >> 8) & 0xff;
    uint8_t new_sl = newval & 0xff;
-   // if (debugSignals)
+   // if (debugValueWidgetSignals)
    //     printf("(%s::%s) sh=0x%02x, sl=0x%02x \n", _cls, __func__, new_sh, new_sl); fflush(stdout);
 
    _newval = newval;
@@ -234,20 +234,20 @@ void ValueContWidget::onSliderReleased() {
    }
    else {
       if (_guiChange)
-         emit featureValueChanged(_feature_code, new_sh, new_sl);
+         emit featureValueChanged(_featureCode, new_sh, new_sl);
    }
-
 }
 
+
 void ValueContWidget::onSpinBoxValueChanged(int value) {
-   if (debugSignals)
+   if (debugValueWidgetSignals)
        printf("(%s::%s) feature=0x%02x, value=%d, _guiChange=%d\n",
-              _cls, __func__,   _feature_code, value, _guiChange); fflush(stdout);
+              _cls, __func__,   _featureCode, value, _guiChange); fflush(stdout);
 
    int newval = _curSpinBox->value();
    // uint8_t new_sh = (newval >> 8) & 0xff;
    // uint8_t new_sl = newval & 0xff;
-   // if (debugSignals)
+   // if (debugValueWidgetSignals)
    //    printf("(%s::%s) sh=0x%02x, sl=0x%02x \n", _cls, __func__, new_sh, new_sl); fflush(stdout);
    // emit featureValueChanged(_feature_code, new_sh, new_sl);
    _newval = newval;
@@ -266,25 +266,25 @@ void ValueContWidget::onSpinBoxValueChanged(int value) {
 }
 
 void ValueContWidget::onSpinBoxTimedOut() {
-   printf("(%s::%s) feature 0x%02x, _newval=%d, emitting featureValueChanged() \n", _cls, __func__, _feature_code, _newval); fflush(stdout);
+   printf("(%s::%s) feature 0x%02x, _newval=%d, emitting featureValueChanged() \n", _cls, __func__, _featureCode, _newval); fflush(stdout);
    uint8_t new_sh = (_newval >> 8) & 0xff;
    uint8_t new_sl = _newval & 0xff;
-   emit featureValueChanged(_feature_code, new_sh, new_sl);
+   emit featureValueChanged(_featureCode, new_sh, new_sl);
 
 }
 
 
 void ValueContWidget::onSpinBoxEditingFinished() {
-   if (debugSignals)
+   if (debugValueWidgetSignals)
        printf("(%s::%s) \n", _cls, __func__); fflush(stdout);
 }
 
 void  ValueContWidget::onApplyButtonClicked(bool checked) {
-   if (debugSignals)
+   if (debugValueWidgetSignals)
        printf("(%s::%s) \n", _cls, __func__); fflush(stdout);
    uint16_t oldval = _sh << 8 | _sl;
    if (_newval != oldval) {
-      emit featureValueChanged(_feature_code, _newval >> 8, _newval & 0xff);
+      emit featureValueChanged(_featureCode, _newval >> 8, _newval & 0xff);
    }
 
    // what to do while we're waiting for the update to apply or fail?
@@ -296,7 +296,7 @@ void  ValueContWidget::onApplyButtonClicked(bool checked) {
 }
 
 void  ValueContWidget::onCancelButtonClicked(bool checked) {
-   if (debugSignals)
+   if (debugValueWidgetSignals)
        printf("(%s::%s) \n", _cls, __func__); fflush(stdout);
    _applyButton->setEnabled(false);
    _cancelButton->setEnabled(false);
@@ -307,13 +307,13 @@ void  ValueContWidget::onCancelButtonClicked(bool checked) {
 
 // never triggered
 void ValueContWidget::focusOutEvent(QFocusEvent * event) {
-   if (debugSignals)
+   if (debugValueWidgetSignals)
        printf("(%s::%s) \n", _cls, __func__); fflush(stdout);
     ValueBaseWidget::focusOutEvent(event);
 }
 
 void ValueContWidget::focusInEvent(QFocusEvent * event) {
-   if (debugSignals)
+   if (debugValueWidgetSignals)
        printf("(%s::%s) \n", _cls, __func__); fflush(stdout);
     ValueBaseWidget::focusInEvent(event);
 }
@@ -325,12 +325,12 @@ void ValueContWidget::focusInEvent(QFocusEvent * event) {
 // called when mouse leaves the widget's screen space.
 // n. not when focus is lost
 void ValueContWidget::leaveEvent(QEvent * event) {
-   if (debugSignals)
+   if (debugValueWidgetSignals)
        printf("(%s::%s) \n", _cls, __func__); fflush(stdout);
    ValueBaseWidget::leaveEvent(event);
    uint16_t oldval = _sh << 8 | _sl;
    if (oldval != _newval) {
-      if (debugSignals)
+      if (debugValueWidgetSignals)
           printf("(%s::%s) Discarding changed value\n", _cls, __func__); fflush(stdout);
       _curSpinBox->setValue(oldval);
       _newval = oldval;

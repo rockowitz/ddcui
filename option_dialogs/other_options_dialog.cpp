@@ -1,6 +1,6 @@
 /* other_options_dialog.cpp */
 
-#include "../option_dialogs/other_options_dialog.h"
+#include "option_dialogs/other_options_dialog.h"
 
 #include <assert.h>
 

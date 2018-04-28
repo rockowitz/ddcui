@@ -15,9 +15,10 @@
 
 Monitor::Monitor(DDCA_Display_Info * display_info, int monitorNumber)
     : _monitorNumber(monitorNumber),
-      _displayInfo(display_info)
+      _displayInfo(display_info),
+      _cls(metaObject()->className())
 {
-    _cls         = metaObject()->className();
+    // _cls         = metaObject()->className();
 }
 
 
@@ -32,10 +33,8 @@ void Monitor::dbgrpt() {
 
 DDCA_Feature_List
 Monitor::getFeatureList(DDCA_Feature_Subset_Id feature_list_id) {
-   printf("Wolf 17\n");
-    printf("(%s::%s) feature_list_id=%d-%s\n",
-           _cls, __func__, feature_list_id, ddca_feature_list_id_name(feature_list_id));
-
+    // printf("(%s::%s) feature_list_id=%d-%s\n",
+    //       _cls, __func__, feature_list_id, ddca_feature_list_id_name(feature_list_id));
 
     bool include_table_features = false;    // TODO get from feature selection dialog
     DDCA_Status ddcrc = 0;
@@ -54,10 +53,16 @@ Monitor::getFeatureList(DDCA_Feature_Subset_Id feature_list_id) {
 }
 
 
-void Monitor::setFeatureItemModel(FeatureItemModel * model) {
-    this->_listModel = model;
+bool Monitor::supportsDdc() {
+   bool result = (_displayInfo->dispno != -1);   // dispno -1 if API found display invalid
+   if (result)
+      result = (_baseModel->_caps_status == 0 && _baseModel->_parsed_caps);  // got capabilities?
+   return result;
 }
 
+void Monitor::setFeatureItemModel(FeatureItemModel * model) {
+   _listModel = model;
+}
 
 void Monitor::setFeatureTableModel(FeatureTableModel * tableModel) {
     this->_tableModel = tableModel;

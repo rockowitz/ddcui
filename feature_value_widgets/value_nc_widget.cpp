@@ -1,28 +1,26 @@
 /* value_nc_widget.cpp */
 
+#include "feature_value_widgets/value_nc_widget.h"
 
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
+
 #include <iostream>
 
-#include <QtCore/QRect>
-#include <QtGui/QPaintEvent>
-#include <QtGui/QRegion>
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QLayout>
 
-#include "base/global_state.h"
+#include <ddcutil_c_api.h>
+
+#include "base/ddca_utils.h"
 #include "base/ddcui_globals.h"
 #include "base/debug_utils.h"
-#include "base/ddca_utils.h"
+#include "base/global_state.h"
 #include "base/other_options_state.h"
+
 #include "nongui/feature_base_model.h"
 
-#include "value_nc_widget.h"
-
-
-#include <ddcutil_c_api.h>
 
 static bool dimensionReportShown = false;
 static bool debugWidget = false;
@@ -93,55 +91,12 @@ ValueNcWidget::ValueNcWidget(QWidget *parent):
 
 
 void ValueNcWidget::setFeatureValue(const FeatureValue &fv) {
+    PRINTFCMF(debugWidget, "Starting. feature 0x%02x, new sl=x%02x\n",
+              fv._feature_code, fv._value.sl);
     ValueBaseWidget::setFeatureValue(fv);
-
-    if (debugWidget)
-       printf("(ValueNcWidget::setFeatureValue) Starting. feature 0x%02x, new sl=x%02x\n",
-              _feature_code, fv._value.sl ); fflush(stdout);
 
     _guiChange = false;
 
-#ifdef OLD
-    DDCA_Feature_Value_Table value_table;
-    value_table = fv._finfo.sl_values;
-#ifdef OLD
-    DDCA_Status rc = 0;
-    // - get list of values for combo box
-    rc = ddca_get_simple_sl_value_table_by_vspec(_feature_code, _vspec, _mmid, &value_table);
-    if (rc != 0) {
-        printf("ddca_get_simple_sl_value_table() returned %d\n", rc);
-    }
-    else {
-#endif
-        // - set values in combo box
-        // printf("(%s) Setting combo box values. value_table=%p\n", __func__, value_table);
-        DDCA_Feature_Value_Entry * cur = value_table;
-
-        if (cur) {
-            while (cur->value_name) {
-                // printf("(%s) value code: 0x%02x, value_name: %s\n",
-                //        __func__, cur->value_code, cur->value_name);  fflush(stdout);
-                QString s;
-                s.sprintf("x%02x - %s", cur->value_code, cur->value_name);
-                _cb->addItem(s, QVariant(cur->value_code));
-                cur++;
-            }
-        }
-
-        // - set current value in combo box
-        int cur_ndx = findItem(_sl);
-        if (cur_ndx >= 0) {
-            _cb->setCurrentIndex(cur_ndx);
-        }
-        else {
-            printf("(%s::%s) Unable to find value 0x%02x\n", _cls, __func__, _sl);
-        }
-#ifdef OLD
-    }
-#endif
-#endif
-
-    // NcValuesSource sourceMode = NcValuesFromMccs;
     GlobalState& globalState = GlobalState::instance();
     NcValuesSource sourceMode = globalState._otherOptionsState->ncValuesSource;
     _curNcValuesSource = sourceMode;
@@ -150,21 +105,15 @@ void ValueNcWidget::setFeatureValue(const FeatureValue &fv) {
     _guiChange=true;
 }
 
+
 DDCA_Feature_Value_Entry * ValueNcWidget::getComboBoxEntries(NcValuesSource mode) {
-   printf("(%s::%s) newSource=%d-%s\n",
-         _cls, __func__,
-         mode, ncValuesSourceName(mode) );  fflush(stdout);
-   // modes:
-   //   metadata only (normal)
-   //   CapsOnly  capabilities, with names from metadata if available
-   //   CapsPlusMCcs union(metdata, CapsOnly)
+   PRINTFCM("feature 0x%02x, newSource=%d-%s", _featureCode, mode, ncValuesSourceName(mode) );
+
    DDCA_Feature_Value_Entry * entries = _finfo.sl_values;
    if (mode != NcValuesFromMccs) {
       Nc_Values_Merge_Mode merge_mode = (mode==NcValuesFromCapabilities) ? CapsOnly : CapsPlusMccs;
-      // DDCA_Capabilities * parsed_caps = _baseModel->_parsed_caps;
-      // DDCA_Cap_Vcp * cap_vcp = ddcutil_find_cap_vcp(parsed_caps, _feature_code);
       entries = ddcutil_merge_feature_values(
-             _cap_vcp,                // DDCA_Cap_Vcp *
+             _capVcp,              // DDCA_Cap_Vcp *
              entries,               // DDCA_Feature_Value_Table
              merge_mode);           // Nc_Values_Merge_Mode
    }
@@ -173,9 +122,7 @@ DDCA_Feature_Value_Entry * ValueNcWidget::getComboBoxEntries(NcValuesSource mode
 
 
 void ValueNcWidget::loadComboBox(NcValuesSource mode) {
-   printf("(%s::%s) newSource=%d-%s\n",
-         _cls, __func__,
-         mode, ncValuesSourceName(mode) );  fflush(stdout);
+   PRINTFCM("feature 0x%02x, newSource=%d-%s", _featureCode, mode, ncValuesSourceName(mode) );
 
    // In case we're called to reload the combobox values, delete existing values
    for (int ndx = _cb->count()-1; ndx >= 0; ndx--) {
@@ -200,7 +147,7 @@ void ValueNcWidget::loadComboBox(NcValuesSource mode) {
        _cb->setCurrentIndex(cur_ndx);
    }
    else {
-       printf("(%s::%s) Unable to find value 0x%02x\n", _cls, __func__, _sl);
+       PRINTFCM("Unable to find value 0x%02x", _sl);
        // TODO: add generated entry for observed value
        QString s;
        s.sprintf("x%02x - Unrecognized value", _sl);
@@ -227,7 +174,7 @@ void ValueNcWidget::reloadComboBox(NcValuesSource newSource) {
 
 void ValueNcWidget::setCurrentValue(uint16_t newval) {
    printf("(%s::%s) Starting. feature 0x%02x, newval=x%04x\n",
-          _cls, __func__, _feature_code, newval ); fflush(stdout);
+          _cls, __func__, _featureCode, newval ); fflush(stdout);
 
    _guiChange = false;
 
@@ -241,6 +188,7 @@ void ValueNcWidget::setCurrentValue(uint16_t newval) {
     else {
         printf("(FeatureValueTableItemCbEditor::%s) Unable to find value 0x%02x\n", __func__, _sl);
     }
+
     _guiChange = true;
 }
 
@@ -264,7 +212,7 @@ uint16_t ValueNcWidget::getCurrentValue() {
 
 void ValueNcWidget::combobox_activated(int index) {
    printf("(%s::%s) feature 0x%02x, index=%d\n",
-          _cls, __func__, _feature_code, index); fflush(stdout);
+          _cls, __func__, _featureCode, index); fflush(stdout);
    int ndx = _cb->currentIndex();
    assert(ndx == index);
 
@@ -277,7 +225,7 @@ void ValueNcWidget::combobox_activated(int index) {
       printf("(%s::%s) Value changed.  New sl: %u, _guiChange=%d\n",
             _cls, __func__, new_sl, _guiChange); fflush(stdout);
       if (_guiChange)
-         emit featureValueChanged(_feature_code, 0, new_sl);
+         emit featureValueChanged(_featureCode, 0, new_sl);
       _sh = 0;
       _sl = new_sl;
    }

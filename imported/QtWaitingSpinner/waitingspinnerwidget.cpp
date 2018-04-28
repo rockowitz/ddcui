@@ -57,7 +57,7 @@ WaitingSpinnerWidget::WaitingSpinnerWidget(Qt::WindowModality modality,
 }
 
 void WaitingSpinnerWidget::initialize() {
-    printf("(WaitingSpinnerWidget::%s)\n", __func__); fflush(stdout);
+    // printf("(WaitingSpinnerWidget::%s)\n", __func__); fflush(stdout);
     _color = Qt::black;
     _roundness = 100.0;
     _minimumTrailOpacity = 3.14159265358979323846;
@@ -112,7 +112,7 @@ void WaitingSpinnerWidget::paintEvent(QPaintEvent *) {
 }
 
 void WaitingSpinnerWidget::start() {
-    printf("(WaitingSpinnerWidget::%s)\n", __func__); fflush(stdout);
+    // printf("(WaitingSpinnerWidget::%s)\n", __func__); fflush(stdout);
     updatePosition();
     _isSpinning = true;
     show();
@@ -128,7 +128,7 @@ void WaitingSpinnerWidget::start() {
 }
 
 void WaitingSpinnerWidget::stop() {
-    printf("(WaitingSpinnerWidget::%s)\n", __func__); fflush(stdout);
+    // printf("(WaitingSpinnerWidget::%s)\n", __func__); fflush(stdout);
     _isSpinning = false;
     hide();
 

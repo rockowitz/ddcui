@@ -17,14 +17,15 @@
 
 #include "feature_scrollarea/page_change_observer.h"
 
-class VcpThread;
-class FeatureSelector;
-class OtherOptionsState;
-class Monitor;
 class FeatureBaseModel;
-class WaitingSpinnerWidget;
-class QMessageBox;
 class FeatureSelectionDialog;
+class FeatureSelector;
+class Monitor;
+class OtherOptionsDialog;
+class OtherOptionsState;
+class QMessageBox;
+class VcpThread;
+class WaitingSpinnerWidget;
 
 namespace Ui {
 class MainWindow;
@@ -127,7 +128,8 @@ private:
     WaitingSpinnerWidget*    _spinner;
     QMessageBox*             _loadingMsgBox;
 
-    FeatureSelectionDialog* fsd;
+    FeatureSelectionDialog*  _fsd;
+    OtherOptionsDialog*      _ood;       // for future use
 };
 
 #endif // MAINWINDOW_H
