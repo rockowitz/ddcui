@@ -12,10 +12,10 @@
 
 #include <ddcutil_types.h>
 
+#include "../feature_scrollarea/unused/page_change_observer.h"
 #include "base/ddcui_globals.h"
 #include "base/other_options_state.h"
 
-#include "feature_scrollarea/page_change_observer.h"
 
 class FeatureBaseModel;
 class FeatureSelectionDialog;

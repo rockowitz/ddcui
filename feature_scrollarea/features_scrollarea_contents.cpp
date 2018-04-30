@@ -46,7 +46,7 @@ FeaturesScrollAreaContents::FeaturesScrollAreaContents(QWidget * parent) :
 {
    _cls = metaObject()->className();
 
-   _pageChangeObservers = new QVector<PageChangeObserver*>;
+  //  _pageChangeObservers = new QVector<PageChangeObserver*>;
 
    // setLayout(new QVBoxLayout());
 
@@ -125,15 +125,12 @@ void FeaturesScrollAreaContents::endInitialLoad()
    PRINTFCM("Executing");
    assert(_containingScrollArea);
 
-   // _containingScrollArea->show();
-
    emit showCentralWidgetByWidget(_containingScrollArea);
-   // emit showCentralWidgetByPageno(int pageno);
 
-   notifyPageChangeObservers(123);   // dummy value for now
+   // notifyPageChangeObservers(123);   // dummy value for now
 }
 
-
+#ifdef PAGE_CHANGE_OBSERVER
 void FeaturesScrollAreaContents::addPageChangeObserver(PageChangeObserver * observer) {
    _pageChangeObservers->append(observer);
 }
@@ -148,4 +145,5 @@ void FeaturesScrollAreaContents::notifyPageChangeObservers(int pageno) {
        observer->pageChangedByWidget(_containingScrollArea);
    }
 }
+#endif
 

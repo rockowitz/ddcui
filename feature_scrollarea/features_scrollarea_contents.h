@@ -28,7 +28,7 @@
 #include "nongui/feature_base_model.h"
 
 #include "feature_scrollarea/feature_widget.h"
-#include "feature_scrollarea/page_change_observer.h"
+#include "unused/page_change_observer.h"
 
 class QScrollArea;
 class QVBoxLayout;
@@ -44,8 +44,8 @@ public:
     void setModel(FeatureBaseModel * baseModel);
     void setContainingScrollArea(QScrollArea * scrollArea);
 
-    void addPageChangeObserver(PageChangeObserver * observer);
-    void notifyPageChangeObservers(int pageno);
+    // void addPageChangeObserver(PageChangeObserver * observer);
+    // void notifyPageChangeObservers(int pageno);
 
 signals:
     void showCentralWidgetByWidget(QWidget * widget);
