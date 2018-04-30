@@ -17,10 +17,10 @@
 
 #include "nongui/ddc_error.h"
 
-#include "features_scrollarea_contents.h"
+#include "feature_scrollarea/features_scrollarea_contents.h"
 
 
-bool dimensionReportShown = false;
+static bool dimensionReportShown = false;
 
 FeaturesScrollAreaView::FeaturesScrollAreaView(
         Monitor *          monitor,
@@ -83,9 +83,6 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
                 // gets applied to the widgets inside w, not to w itself
                 w->setStyleSheet("background-color:brown;");
              }
-#ifdef NOT_NEEED
-             w->setBaseModel(_baseModel);    // hack to get at DDCA_Capabilities, must precede setFeatureValue()
-#endif
              w->setFeatureValue(*fv);
 
              QObject::connect(w ,   &FeatureWidget::valueChanged,
@@ -117,20 +114,20 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
         reportWidgetDimensions(scrollArea,            _cls, __func__, "QScrollArea in _centralStackedWidget");
         printf("(%s::%s) ---------------------> centralStackedWidget\n",                 _cls, __func__);
         reportWidgetDimensions(_centralStackedWidget, _cls, __func__, "centralStackedWidget");
-        // dimensionReportShown = true;
+        dimensionReportShown = true;
     }
 
     GlobalState& globalState = GlobalState::instance();
     _curNcValuesSource = globalState._otherOptionsState->ncValuesSource;
     _scrollAreaContents = scrollAreaContents;
     _centralStackedWidget->show();
-    printf("(FeatuesScrollAreaView::%s) Done.  feature count: %d\n", __func__, ct);  fflush(stdout);
+
+    PRINTFCM("Done.  feature count: %d", ct);
 }
 
 
 void FeaturesScrollAreaView::onUIValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl) {
-   printf("(%s::%s) feature_code = 0x%02x, sh=0x%02x, sl=0x%02x\n", _cls, __func__,
-          featureCode, sh, sl); fflush(stdout);
+   PRINTFCM("feature_code = 0x%02x, sh=0x%02x, sl=0x%02x", featureCode, sh, sl);
    VcpRequest * rqst = new VcpSetRequest(featureCode, sl);   // n.b. ignoring sh
    emit signalVcpRequest(rqst);  // used to call into monitor
 }
@@ -139,8 +136,7 @@ void FeaturesScrollAreaView::onUIValueChanged(uint8_t featureCode, uint8_t sh, u
 void FeaturesScrollAreaView::onModelValueChanged(
       uint8_t featureCode, uint8_t sh, uint8_t sl)
 {
-   printf("(%s::%s) feature_code = 0x%02x, sh=0x%02x, sl=0x%02x\n", _cls, __func__,
-          featureCode, sh, sl); fflush(stdout);
+   PRINTFCM("feature_code = 0x%02x, sh=0x%02x, sl=0x%02x", featureCode, sh, sl);
 
    // find the entry in _widgets
    FeatureWidget * curWidget = _widgets[featureCode];
@@ -152,10 +148,9 @@ void FeaturesScrollAreaView::onModelValueChanged(
 
 
 void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc) {
-   printf("(%s::%s) newsrc=%d - %s, _curNcValuesSource=%d - %s\n",
-          _cls, __func__,
-          newsrc,             (char*) ncValuesSourceName(newsrc),
-          _curNcValuesSource, (char*) ncValuesSourceName(_curNcValuesSource));  fflush(stdout);
+   PRINTFCM("newsrc=%d - %s, _curNcValuesSource=%d - %s",
+            newsrc,             (char*) ncValuesSourceName(newsrc),
+            _curNcValuesSource, (char*) ncValuesSourceName(_curNcValuesSource));  fflush(stdout);
 
    if (newsrc != _curNcValuesSource) {
       // reportWidgetChildren(_scrollAreaContents, (const char *) "Children of FeatuersScrollAreaView");
@@ -186,7 +181,7 @@ void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc) {
 
 
 void FeaturesScrollAreaView::onModelDdcError(DdcError erec) {
-    printf("(%s::%s) erec=%s\n", _cls, __func__, erec.srepr() );    fflush(stdout);
+    PRINTFCM("erec=%s", erec.srepr() );
     QMessageBox * msgBox = new QMessageBox();
     //  if (strcmp(erec._ddcFunction.toLatin1().data(), "ddca_get_capabilities_string") == 0) {
     if ( QString::compare(erec._ddcFunction, QString("ddca_get_capabilities_string")) == 0) {

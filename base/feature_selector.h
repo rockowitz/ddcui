@@ -9,10 +9,10 @@ class FeatureSelector {
 public:
    //  FeatureSelector();
 
-    DDCA_Feature_Subset_Id _featureListId           = DDCA_SUBSET_KNOWN;
+    DDCA_Feature_Subset_Id _featureListId           = DDCA_SUBSET_COLOR;
     bool                   _showUnsupportedFeatures = false;
     bool                   _includeTableFeatures    = false;
-    bool                   _respectCapabilities     = false;
+    bool                   _respectCapabilities     = true;
 
     bool operator==(const FeatureSelector& sel2) const;
     bool operator!=(const FeatureSelector& sel2) const;

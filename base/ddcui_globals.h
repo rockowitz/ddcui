@@ -12,6 +12,7 @@ extern const bool debugSignals            ;
 extern const bool debugValueWidgetSignals ;
 extern const bool debugFeatureLists       ;
 extern const bool debugFeatureSelection   ;
+extern const bool debugNcValues;
 extern const bool debugLayout             ;
 
 const bool useApplyCancel    = false;

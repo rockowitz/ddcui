@@ -167,7 +167,7 @@ private:
        // Menu Bar
        menuBar = new QMenuBar(MainWindow);
        menuBar->setObjectName(QString::fromUtf8("menuBar"));
-       menuBar->setGeometry(QRect(0, 0, 800, 30));
+       // menuBar->setGeometry(QRect(0, 0, 800, 30));
 
        menuView = new QMenu(menuBar);
        menuView->setObjectName(QString::fromUtf8("menuView"));
@@ -249,8 +249,8 @@ private:
        sizePolicy1.setHeightForWidth(false);
        centralWidget->setSizePolicy(sizePolicy1);
 
-       centralWidget->setMinimumSize(QSize(600, 200));            // was 800,0
-       centralWidget->setMaximumSize(QSize(2000, 16777215));
+       centralWidget->setMinimumSize(QSize(740, 400));            // affected by contents width
+       // centralWidget->setMaximumSize(QSize(2000, 16777215));
        centralWidget->setSizeIncrement(QSize(10, 10));
 
        centralWidget->setFrameShape(QFrame::Panel);
@@ -269,7 +269,7 @@ public:
         // std::cout << "(setupUi) Starting" << std::endl;
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(800, 400);
+        // MainWindow->resize(800, 400);
 
         // set MainWindow size policy
         QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);

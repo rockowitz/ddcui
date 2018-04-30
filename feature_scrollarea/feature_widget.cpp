@@ -20,6 +20,21 @@
 
 static bool dimensionReportShown = false;
 
+void setupFeatureWidgetField(QLabel * w) {
+   // printf("(%s)\n", __func__);  fflush(stdout);
+   int fieldFrameStyle;
+   fieldFrameStyle = QFrame::Sunken | QFrame::Panel;
+   // fieldFrameStyle = QFrame::Plain | QFrame::Box;
+
+   w->setFrameStyle(fieldFrameStyle);
+   // w->setFrameStyle( QFrame::Sunken | QFrame::Panel );
+   // apparently contents margins is the size of the Panel/box
+    w->setContentsMargins(1,1,1,1);  // This is what kills the panel, when set to 0
+    w->setLineWidth(1);
+
+}
+
+
 FeatureWidget::FeatureWidget(QWidget *parent) :
    QWidget(parent)
 {
@@ -33,7 +48,7 @@ FeatureWidget::FeatureWidget(QWidget *parent) :
     // resize(400,20);
 
     QFont font;
-    font.setPointSize(9);
+    font.setPointSize(8);
     QWidget::setFont(font);
 
     QFont monoValueFont;
@@ -44,8 +59,14 @@ FeatureWidget::FeatureWidget(QWidget *parent) :
     QSizePolicy fixedSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
     fixedSizePolicy.setHorizontalStretch(0);    // needed?
     fixedSizePolicy.setVerticalStretch(0);
-    // sizePolicy1.setHeightForWidth(centralWidget->sizePolicy().hasHeightForWidth());
     fixedSizePolicy.setHeightForWidth(false);
+
+    QSizePolicy adjustableSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::Fixed);
+    fixedSizePolicy.setHorizontalStretch(1);    // needed?
+    fixedSizePolicy.setVerticalStretch(0);
+    fixedSizePolicy.setHeightForWidth(false);
+
+    // int fieldFrameStyle = QFrame::Sunken | QFrame::Panel;
 
     /* Feature Code */
     _featureCodeField = new QLabel();
@@ -55,17 +76,22 @@ FeatureWidget::FeatureWidget(QWidget *parent) :
     _featureCodeField->setSizePolicy(fixedSizePolicy);
     _featureCodeField->setFont(monoValueFont);
     _featureCodeField->setText(QString::fromUtf8("0x00"));    // dummy
-    _featureCodeField->setFrameStyle(QFrame::Sunken | QFrame::Panel);
+   // _featureCodeField->setFrameStyle(fieldFrameStyle);
+   //  _featureCodeField->setFrameStyle(QFrame::Sunken | QFrame::Panel);
+    setupFeatureWidgetField(_featureCodeField);
 
     /* Feature Name */
     _featureNameField = new QLabel();
     _featureNameField->setObjectName(QString::fromUtf8("featureName"));
   //  _featureNameField->setGeometry((QRect(nameLabelStartX,0,59,19)));
-    _featureNameField->setFixedWidth(200);
-    _featureNameField->setSizePolicy(fixedSizePolicy);
+    _featureNameField->setMinimumWidth(200);
+    _featureNameField->setSizePolicy(adjustableSizePolicy);
     _featureNameField->setFont(nonMonoValueFont);
     _featureNameField->setText(QString::fromUtf8("Dummy feature name"));    // dummy
-    _featureNameField->setFrameStyle(QFrame::Sunken | QFrame::Panel);
+   //  _featureCodeField->setFrameStyle(fieldFrameStyle);
+
+    setupFeatureWidgetField(_featureNameField);    // makes it impossible to set frame style
+    // _featureNameField->setFrameStyle(QFrame::Sunken | QFrame::Panel);
 
     /* RW/RO/WO */
     _featureRwField = new QLabel();
@@ -75,7 +101,9 @@ FeatureWidget::FeatureWidget(QWidget *parent) :
     _featureRwField->setFixedWidth(25);
     _featureRwField->setFont(nonMonoValueFont);
     _featureRwField->setText(QString::fromUtf8("RW"));    // dummy
-    _featureRwField->setFrameStyle(QFrame::Sunken | QFrame::Panel);
+   //  _featureCodeField->setFrameStyle(fieldFrameStyle);
+    // _featureRwField->setFrameStyle(QFrame::Sunken | QFrame::Panel);
+    setupFeatureWidgetField(_featureRwField);
 
     /* MCCS Type */
     _featureTypeField = new QLabel();
@@ -85,7 +113,9 @@ FeatureWidget::FeatureWidget(QWidget *parent) :
     _featureTypeField->setFixedWidth(25);
     _featureTypeField->setFont(nonMonoValueFont);
     _featureTypeField->setText(QString::fromUtf8("NC"));    // dummy
-    _featureTypeField->setFrameStyle(QFrame::Sunken | QFrame::Panel);
+   //  _featureCodeField->setFrameStyle(fieldFrameStyle);
+    // _featureTypeField->setFrameStyle(QFrame::Sunken | QFrame::Panel);
+    setupFeatureWidgetField(_featureTypeField);
 
 #ifdef ALT
     _featureValueStackedWidget = new QStackedWidget(this);

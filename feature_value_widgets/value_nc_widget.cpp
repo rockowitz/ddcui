@@ -32,8 +32,8 @@ ValueNcWidget::ValueNcWidget(QWidget *parent):
    _cls                    = strdup(metaObject()->className());
     // printf("(ValueNcWidget::ValueNcWidget) Starting.\n" ); fflush(stdout);
 
-   QFont nonMonoFont;
-   nonMonoFont.setPointSize(8);
+   QFont nonMonoFont8;
+   nonMonoFont8.setPointSize(8);
 
    QFont nonMonoFont9;
    nonMonoFont9.setPointSize(9);
@@ -43,7 +43,7 @@ ValueNcWidget::ValueNcWidget(QWidget *parent):
     QSizePolicy* sizePolicy = new QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     sizePolicy->setControlType(QSizePolicy::ComboBox);
     _cb->setSizePolicy(*sizePolicy);
-    _cb->setFont(nonMonoFont);
+    _cb->setFont(nonMonoFont8);
     _cb->setMaximumHeight(20);
     // whatever the size, large or small, causes big gap between RW and feature value
     _cb->setMaximumWidth(320);
@@ -107,7 +107,7 @@ void ValueNcWidget::setFeatureValue(const FeatureValue &fv) {
 
 
 DDCA_Feature_Value_Entry * ValueNcWidget::getComboBoxEntries(NcValuesSource mode) {
-   PRINTFCM("feature 0x%02x, newSource=%d-%s", _featureCode, mode, ncValuesSourceName(mode) );
+   PRINTFCMF(debugNcValues, "feature 0x%02x, newSource=%d-%s", _featureCode, mode, ncValuesSourceName(mode) );
 
    DDCA_Feature_Value_Entry * entries = _finfo.sl_values;
    if (mode != NcValuesFromMccs) {
@@ -122,7 +122,7 @@ DDCA_Feature_Value_Entry * ValueNcWidget::getComboBoxEntries(NcValuesSource mode
 
 
 void ValueNcWidget::loadComboBox(NcValuesSource mode) {
-   PRINTFCM("feature 0x%02x, newSource=%d-%s", _featureCode, mode, ncValuesSourceName(mode) );
+   PRINTFCMF(debugNcValues, "feature 0x%02x, newSource=%d-%s", _featureCode, mode, ncValuesSourceName(mode) );
 
    // In case we're called to reload the combobox values, delete existing values
    for (int ndx = _cb->count()-1; ndx >= 0; ndx--) {
@@ -159,8 +159,7 @@ void ValueNcWidget::loadComboBox(NcValuesSource mode) {
 
 
 void ValueNcWidget::reloadComboBox(NcValuesSource newSource) {
-   printf("(%s::%s) newSource=%d-%s, _curNcValuesSource=%d-%s\n",
-         _cls, __func__,
+   PRINTFCMF(debugNcValues, "newSource=%d-%s, _curNcValuesSource=%d-%s",
          newSource, ncValuesSourceName(newSource),
          _curNcValuesSource, ncValuesSourceName(_curNcValuesSource) );  fflush(stdout);
    if (newSource != _curNcValuesSource) {
@@ -173,8 +172,7 @@ void ValueNcWidget::reloadComboBox(NcValuesSource newSource) {
 }
 
 void ValueNcWidget::setCurrentValue(uint16_t newval) {
-   printf("(%s::%s) Starting. feature 0x%02x, newval=x%04x\n",
-          _cls, __func__, _featureCode, newval ); fflush(stdout);
+   PRINTFCM("Starting. feature 0x%02x, newval=x%04x", _featureCode, newval ); fflush(stdout);
 
    _guiChange = false;
 
@@ -186,7 +184,7 @@ void ValueNcWidget::setCurrentValue(uint16_t newval) {
         _cb->setCurrentIndex(cur_ndx);
     }
     else {
-        printf("(FeatureValueTableItemCbEditor::%s) Unable to find value 0x%02x\n", __func__, _sl);
+        PRINTFCM("Unable to find value 0x%02x", _sl);
     }
 
     _guiChange = true;
@@ -197,6 +195,7 @@ int ValueNcWidget::findItem(uint8_t sl_value) {
     int result = _cb->findData(QVariant(sl_value));
     return result;
 }
+
 
 uint16_t ValueNcWidget::getCurrentValue() {
     // get sl from combobox
@@ -211,8 +210,7 @@ uint16_t ValueNcWidget::getCurrentValue() {
 }
 
 void ValueNcWidget::combobox_activated(int index) {
-   printf("(%s::%s) feature 0x%02x, index=%d\n",
-          _cls, __func__, _featureCode, index); fflush(stdout);
+   PRINTFCM("feature 0x%02x, index=%d", _featureCode, index);
    int ndx = _cb->currentIndex();
    assert(ndx == index);
 
@@ -222,15 +220,14 @@ void ValueNcWidget::combobox_activated(int index) {
    uint8_t new_sl = i & 0xff;
 
    if (new_sh != _sh || new_sl != _sl) {
-      printf("(%s::%s) Value changed.  New sl: %u, _guiChange=%d\n",
-            _cls, __func__, new_sl, _guiChange); fflush(stdout);
+      PRINTFCM("Value changed.  New sl: %u, _guiChange=%d\n", new_sl, _guiChange);
       if (_guiChange)
          emit featureValueChanged(_featureCode, 0, new_sl);
       _sh = 0;
       _sl = new_sl;
    }
    else {
-      printf("(%s::%s) Value not changed.\n", _cls, __func__); fflush(stdout);
+      PRINTFCM("Value not changed.");
    }
 }
 
