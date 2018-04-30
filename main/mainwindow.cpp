@@ -491,7 +491,7 @@ void MainWindow::on_actionFeaturesScrollAreaMock_triggered()
 
 
     ValueStdWidget * mock1 = new ValueStdWidget();
-        DDCA_MCCS_Version_Spec vspec1 = {2,0};
+        // DDCA_MCCS_Version_Spec vspec1 = {2,0};
         DDCA_Non_Table_Vcp_Value val1 = {0, 254, 0, 20};
         DDCA_Feature_Flags flags1 = DDCA_RW | DDCA_STD_CONT;
         DDCA_Feature_Metadata * md1 = (DDCA_Feature_Metadata*)calloc(1,sizeof(DDCA_Feature_Metadata));
@@ -500,9 +500,9 @@ void MainWindow::on_actionFeaturesScrollAreaMock_triggered()
         md1->feature_flags = flags1;
         md1->feature_name  = (char*) "Feature X22";
         memcpy(md1->marker, DDCA_FEATURE_METADATA_MARKER, 4);
-        md1->mmid = NULL;
+        // md1->mmid = NULL;
         md1->sl_values = NULL;
-        md1->vspec = vspec1;
+        // md1->vspec = vspec1;
 
         FeatureValue * fv1 = new FeatureValue(0x22, dref, *md1, NULL, val1);
         mock1->setFeatureValue(*fv1);
@@ -548,10 +548,10 @@ void MainWindow::on_actionFeaturesScrollAreaMock_triggered()
         md7->feature_flags = flags7;
         md7->feature_name  =  (char *) "Input Source";
         memcpy(md1->marker, DDCA_FEATURE_METADATA_MARKER, 4);
-        md7->mmid = NULL;
+       // md7->mmid = NULL;
         // doesn't compile, to address if I ever really need the mock data again
         // md7->sl_values = {{0x01, "Input 1"},{0x02, "Input 2"}};
-        md7->vspec = vspec1;
+       //  md7->vspec = vspec1;
 
 
         FeatureValue * fv7 = new FeatureValue(0x60, dref, *md7, NULL, val7);
