@@ -65,6 +65,7 @@ FeatureValue * FeatureBaseModel::modelVcpValueFind(uint8_t feature_code) {
     return result;
 }
 
+
 FeatureValue * FeatureBaseModel::modelVcpValueFilteredFind(uint8_t feature_code) {
    FeatureValue * result = NULL;
    if (ddca_feature_list_contains(&_featuresToShow, feature_code)) {
@@ -115,9 +116,9 @@ void   FeatureBaseModel::modelVcpValueSet(
                    DDCA_Non_Table_Vcp_Value *           feature_value)
 {
     if (debugModel)
-        printf("(%s::%s) feature_code=0x%02x, mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x\n",
-              _cls, __func__, feature_code,
-               feature_value->mh, feature_value->ml, feature_value->sh, feature_value->sl);
+        PRINTFCM("feature_code=0x%02x, mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x",
+                 feature_code, feature_value->mh, feature_value->ml, feature_value->sh, feature_value->sl);
+
     int ndx = modelVcpValueIndex(feature_code);
     // printf("(%s) ndx=%d\n", __func__, ndx);  fflush(stdout);
     // FIXME: HACK AROUND LOGIC ERROR
@@ -125,7 +126,7 @@ void   FeatureBaseModel::modelVcpValueSet(
     // assert(ndx < 0);
     if (ndx < 0) {
         if (debugModel)
-            printf("(%s) Creating new FeatureValue\n", __func__); fflush(stdout);
+            PRINTFCM("Creating new FeatureValue");
 
         DDCA_Cap_Vcp * cap_vcp = NULL;
         if (_parsed_caps)
@@ -147,7 +148,7 @@ void   FeatureBaseModel::modelVcpValueSet(
     }
     else {
 // #ifdef OLD
-        printf("(%s::%s) Modifying existing FeatureValue\n", _cls, __func__); fflush(stdout);
+        PRINTFCM("Modifying existing FeatureValue");
         FeatureValue * fv =  _featureValues->at(ndx);
        // FeatureValue * fv = modelVcpValueAt(ndx);
         // need to test _mh = 255, _ml = 0 ?
@@ -157,26 +158,27 @@ void   FeatureBaseModel::modelVcpValueSet(
         fv->_value.sh = feature_value->sh;
         fv->_value.sl = feature_value->sl;
 
-        printf("(%s) Emitting signalFeatureAdded()\n", __func__); fflush(stdout);
+        PRINTFCM("Emitting signalFeatureAdded()");
         emit signalFeatureAdded(*fv);
 // #endif
     }
 }
 
 
-void   FeatureBaseModel::modelVcpValueUpdate(
-                   uint8_t                              feature_code,
-                   uint8_t                              sh,
-                   uint8_t                              sl)
+void
+FeatureBaseModel::modelVcpValueUpdate(
+        uint8_t   feature_code,
+        uint8_t   sh,
+        uint8_t   sl)
 {
     if (debugModel)
-        printf("(%s::%s) feature_code=0x%02x, sh=0x%02x, sl=0x%02x\n",
-               _cls, __func__, feature_code, sh, sl); fflush(stdout);
+        PRINTFCM("feature_code=0x%02x, sh=0x%02x, sl=0x%02x\n", feature_code, sh, sl);
+
     int ndx = modelVcpValueIndex(feature_code);
     // printf("(%s) ndx=%d\n", __func__, ndx);  fflush(stdout);
     assert (ndx >= 0);
     if (debugModel)
-        printf("(%s) Modifying existing FeatureValue\n", __func__); fflush(stdout);
+        PRINTFCM("Modifying existing FeatureValue");
 
     FeatureValue * fv =  _featureValues->at(ndx);
     fv->_value.sh = sh;
@@ -194,35 +196,43 @@ FeatureBaseModel::setCapabilities(
       char *               capabilities_string,
       DDCA_Capabilities *  parsed_capabilities)
 {
-   printf("(%s::%s) capabilities_string=|%s|\n",
-          _cls, __func__, capabilities_string);  fflush(stdout);
+   PRINTFCM("capabilities_string=|%s|", capabilities_string);
+
    _caps_status = ddcrc;
    _caps_string = capabilities_string;
    _parsed_caps = parsed_capabilities;
 }
 
 
-void  FeatureBaseModel::onDdcError(
+void
+FeatureBaseModel::onDdcError(
       DdcError& erec)
 {
-   printf("(%s::%s) erec=%s\n", _cls, __func__,
-          erec.srepr() );    fflush(stdout);
+   // PRINTFCM("erec=%s", erec.srepr() );
    // emit signalModelError(featureCode, msg);
    emit  signalDdcError(erec);
 }
 
 
-void FeatureBaseModel::modelMccsVersionSet(
+void
+FeatureBaseModel::modelMccsVersionSet(
      DDCA_MCCS_Version_Spec    vspec)
 {
     _vspec = vspec;
 }
 
-DDCA_MCCS_Version_Spec FeatureBaseModel::mccsVersionSpec() {
+
+DDCA_MCCS_Version_Spec
+FeatureBaseModel::mccsVersionSpec()
+{
     return _vspec;
 }
 
-void FeatureBaseModel::setFeatureList(DDCA_Feature_List featureList) {
+
+void
+FeatureBaseModel::setFeatureList(
+      DDCA_Feature_List featureList)
+{
    _featuresToShow = featureList;
 
    DDCA_Feature_List unchecked_features =

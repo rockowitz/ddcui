@@ -127,10 +127,14 @@ void VcpThread::getvcp(uint8_t feature_code) {
 
     if (ddcrc == 0) {
        // should this be here?
-       ddcrc = ddca_get_feature_metadata_by_dh(feature_code, dh, false, &finfo);
+       ddcrc = ddca_get_feature_metadata_by_dh(
+                   feature_code,
+                   dh,
+                   true,       // create_default_if_not_found
+                   &finfo);
        if (ddcrc != 0) {
-           rpt_ddca_status(feature_code, __func__, "ddca_get_feature_metadata",  ddcrc);
-           cout << "ddca_get_feature_metadata() returned " << ddcrc << endl;
+           rpt_ddca_status(feature_code, __func__, "ddca_get_feature_metadata_by_dh",  ddcrc);
+           // cout << "ddca_get_feature_metadata() returned " << ddcrc << endl;
        }
     }
 
