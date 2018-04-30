@@ -19,7 +19,7 @@ class FeatureBaseModel;
 
 class FeatureWidget :
         public QWidget
-        , public SimpleFeatureValueObserver
+        // , public SimpleFeatureValueObserver
 {
     Q_OBJECT
 
@@ -35,14 +35,9 @@ public:
 
     QSize sizeHint() const override;
 
-    void simpleFeatureValueChanged(SimpleFeatureValue fv) override;   // SimpleFeatureValueObserver
+    // void simpleFeatureValueChanged(SimpleFeatureValue fv) override;   // SimpleFeatureValueObserver
     bool isSimpleNc();
     void setNcValuesSource(NcValuesSource newsrc);
-
-#ifdef NOT_NEEDED
-    void setBaseModel(FeatureBaseModel * model);  // hack for accessing model->_parsed_caps
-    FeatureBaseModel * _baseModel = nullptr;
-#endif
 
 public slots:
     void onInternalValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl);

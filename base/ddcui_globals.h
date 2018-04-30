@@ -30,4 +30,8 @@ const bool enableAltFeatures = false;
       fflush(stdout); \
    }
 
+inline const char * sbool(bool val) { return (val) ? "true" : "false"; }
+
+#define SBOOL(__v) ( (__v) ? "true" : "false")
+
 #endif // DDCUI_GLOBALS_H

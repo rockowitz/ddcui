@@ -1,5 +1,7 @@
 /* feature_widget.cpp */
 
+#include "feature_scrollarea/feature_widget.h"
+
 #include <assert.h>
 
 #include <QtWidgets/QVBoxLayout>
@@ -15,8 +17,6 @@
 #include "feature_value_widgets/value_std_widget.h"
 #include "feature_value_widgets/value_stacked_widget.h"
 
-#include "feature_scrollarea/feature_widget.h"
-
 
 static bool dimensionReportShown = false;
 
@@ -24,7 +24,6 @@ FeatureWidget::FeatureWidget(QWidget *parent) :
    QWidget(parent)
 {
     _cls = metaObject()->className();
-
 
     // QFrame methods:
     // setFrameStyle(QFrame::Box);    // something to make it visible
@@ -164,21 +163,14 @@ FeatureWidget::FeatureWidget(QWidget *parent) :
 
 
 void FeatureWidget::setFeatureValue(FeatureValue &fv) {
-    // printf("(FeatureWidgetBasic::%s)", __func__); fflush(stdout);
-    // fv.report();
-    _feature_code  = fv._feature_code;
-    _feature_flags = fv.flags();
-    // _vspec         = fv.vspec();
-
-    setObjectName(QString::asprintf("FeatureWidget-0x%02x", _feature_code));
-
+    // printf("(FeatureWidgetBasic::%s)", __func__);
+    // fv.report(); ff;isj)stdpit);
     // printf("(%s::%s) _feature_flags = 0x%08x, fv._feature_flags = 0x%08x, fv._finfo
 
-    // need to save value here?
-    // _mh = fv._value.mh;
-    // _ml = fv._value.ml;
-    // _sh = fv._value.sh;
-    // _sl = fv._value.sl;
+    _feature_code  = fv._feature_code;
+    _feature_flags = fv.flags();
+
+    setObjectName(QString::asprintf("FeatureWidget-0x%02x", _feature_code));
 
     _featureCodeField->setText(QString::asprintf("x%02x", _feature_code) );
 
@@ -206,9 +198,6 @@ void FeatureWidget::setFeatureValue(FeatureValue &fv) {
         _featureTypeField->setText(QString("T"));
     }
 
-#ifdef NOT_NEEDED
-    _valueWidget->setBaseModel(_baseModel);
-#endif
     _valueWidget->setFeatureValue(fv);
 
     _layout->addWidget(_valueWidget);
@@ -219,12 +208,6 @@ void FeatureWidget::setCurrentValue(uint16_t newval) {
     _valueWidget->setCurrentValue(newval);
 }
 
-#ifdef NOT_NEEDED
-// must occur before setFeatureValue
-void FeatureWidget::setBaseModel(FeatureBaseModel * model) {  // hack for accessing model->_parsed_caps
-    _baseModel = model;
-}
-#endif
 
 QSize FeatureWidget::sizeHint() const {
     int w = 700;
@@ -243,36 +226,37 @@ void FeatureWidget::paintEvent(QPaintEvent *event) {
 #endif
 
 
-
 void FeatureWidget::dbgrpt() const {
     std::string on1 = objectName().toStdString();
     const char * objname = on1.c_str();
     // printf("%-20s code: 0x%02x, flags: 0x%04x, mh: 0x%02x, ml: 0x%02x, sh: 0x%02x, sl 0x%02x\n",
     //        objname, _feature_code, _feature_flags, _mh, _ml, _sh, _sl);
-    printf("%-20s feature code: 0x%02x, flags: 0x%04x\n",
-           objname, _feature_code, _feature_flags);
+    PRINTFCM("%-20s feature code: 0x%02x, flags: 0x%04x", objname, _feature_code, _feature_flags);
 }
 
 void FeatureWidget::onInternalValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl) {
-   printf("(%s::%s) feature_code = 0x%02x, sh=0x%02x, sl=0x%02x\n", _cls, __func__,
-          featureCode, sh, sl); fflush(stdout);
+   PRINTFCM("feature_code = 0x%02x, sh=0x%02x, sl=0x%02x\n", featureCode, sh, sl);
    assert(featureCode == _feature_code);
+
    emit valueChanged(featureCode, sh, sl);
 }
 
+#ifdef UNUSED
 // SimpleFeatureValueObserver
 void FeatureWidget::simpleFeatureValueChanged(SimpleFeatureValue fv) {
    printf("(%s::%s) feature_code = 0x%02x, sh=0x%02x, sl=0x%02x\n", _cls, __func__,
           fv.featureCode, fv.hiByte, fv.loByte); fflush(stdout);
 }
+#endif
+
 
 bool FeatureWidget::isSimpleNc() {
    bool result = _valueWidget->isSimpleNc();
-   printf("(%s::%s) returning: %d \n", _cls, __func__, result); fflush(stdout);
+   PRINTFCM("Returning: %s \n", sbool(result));
    return result;
 }
 
 void FeatureWidget::setNcValuesSource(NcValuesSource newsrc) {
-   printf("(%s::%s) newsrc = %d \n", _cls, __func__, newsrc); fflush(stdout);
+   PRINTFCM("newsrc = %d-%s \n", newsrc, ncValuesSourceName(newsrc));
    _valueWidget->setNcValuesSource(newsrc);
 }
