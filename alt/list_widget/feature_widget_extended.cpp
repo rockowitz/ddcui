@@ -109,7 +109,7 @@ void FeatureWidgetExtended::setFeatureValue(FeatureValue &fv) {
 
     _feature_code  = fv._feature_code;
     _feature_flags = fv.flags();     // fv._feature_flags;
-    _vspec         = fv.vspec();     // fv._vspec;
+    // _vspec         = fv.vspec();     // fv._vspec;
 
     _featureCodeField->setText(QString::asprintf("x%02x", _feature_code) );
 

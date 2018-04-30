@@ -38,9 +38,9 @@ DDCA_Display_Ref         FeatureValue::dref()   const {
 }
 
 
-DDCA_MCCS_Version_Spec   FeatureValue::vspec()  const {
-   return _finfo.vspec;
-}
+// DDCA_MCCS_Version_Spec   FeatureValue::vspec()  const {
+//    return _finfo.vspec;
+// }
 
 DDCA_Feature_Metadata    FeatureValue::finfo()  const {
    return _finfo;
@@ -54,20 +54,20 @@ DDCA_Non_Table_Vcp_Value FeatureValue::val()    const {
    return _value;
 }
 
-DDCA_Monitor_Model_Key   FeatureValue::mmid()   const {
-  // return _mmid;
-   DDCA_Monitor_Model_Key result = DDCA_UNDEFINED_MONITOR_MODEL_KEY;
-   if (_finfo.mmid)
-      result = *_finfo.mmid;
-   return result;
-}
+//DDCA_Monitor_Model_Key   FeatureValue::mmid()   const {
+//  // return _mmid;
+//   DDCA_Monitor_Model_Key result = DDCA_UNDEFINED_MONITOR_MODEL_KEY;
+//   if (_finfo.mmid)
+//      result = *_finfo.mmid;
+//   return result;
+//}
 
 
 void FeatureValue::dbgrpt() {
     printf("(FeatureValue::report) FeatureValue:\n");
     printf("   _feature_code:   0x%02x\n", _feature_code);
     printf("   dref:            %s\n",    ddca_dref_repr(dref()));
-    printf("   _vspec:          %d.%d\n", _finfo.vspec.major, _finfo.vspec.minor);
+ // printf("   _vspec:          %d.%d\n", _finfo.vspec.major, _finfo.vspec.minor);
     printf("   _feature_flags:  0x%04x\n", _finfo.feature_flags);
     printf("   _value.mh:             0x%02x\n", _value.mh);
     printf("   _value.ml:             0x%02x\n", _value.ml);
@@ -75,6 +75,7 @@ void FeatureValue::dbgrpt() {
     printf("   _value.sl:             0x%02x\n", _value.sl);
     printf("   _cap_vcp:              %p\n",     _cap_vcp);
 
+#ifdef NO
     if (_finfo.mmid) {
        printf("   _finfo.mmid->mfg_id:       %s\n", _finfo.mmid->mfg_id);
        printf("   _finfo.mmid->model_name:   %s\n", _finfo.mmid->model_name);
@@ -83,5 +84,6 @@ void FeatureValue::dbgrpt() {
     else {
        printf("   _finfo.mmid:          Not set\n");
     }
+#endif
     fflush(stdout);
 }

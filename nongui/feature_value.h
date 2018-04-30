@@ -15,7 +15,6 @@ public:
     // no-arg constructor needed for Q_METATYPE
     FeatureValue() {}
 
-    explicit     // ???
     FeatureValue(
             uint8_t                   feature_code,
             DDCA_Display_Ref          dref,      // dref or finfo?  which?
@@ -27,11 +26,11 @@ public:
 
     uint8_t                  featureCode() const;
     DDCA_Display_Ref         dref()   const;
-    DDCA_MCCS_Version_Spec   vspec()  const;
+ // DDCA_MCCS_Version_Spec   vspec()  const;
     DDCA_Feature_Metadata    finfo()  const;
     DDCA_Feature_Flags       flags()  const;
     DDCA_Non_Table_Vcp_Value val()    const;
-    DDCA_Monitor_Model_Key   mmid()   const;
+ // DDCA_Monitor_Model_Key   mmid()   const;
 
     void dbgrpt();
 
