@@ -159,7 +159,7 @@ FeatureWidget::FeatureWidget(QWidget *parent) :
                       this,         SLOT(onInternalValueChanged(uint8_t, uint8_t, uint8_t)));
 
     // signals/slots not working, try hardcoding
-    _valueWidget->addSimpleFeatureValueObserver(this);
+    // _valueWidget->addSimpleFeatureValueObserver(this);
 }
 
 

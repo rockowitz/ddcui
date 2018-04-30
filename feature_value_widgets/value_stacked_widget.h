@@ -16,7 +16,8 @@ class QWidget;
 class QPaintEvent;
 class QStackedWidget;
 
-class ValueStackedWidget : public ValueBaseWidget, public SimpleFeatureValueSubject
+class ValueStackedWidget : public ValueBaseWidget
+      // , public SimpleFeatureValueSubject
 {
    Q_OBJECT
 
