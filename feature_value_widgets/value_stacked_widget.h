@@ -18,7 +18,7 @@ class QWidget;
 class QPaintEvent;
 // class QStackedWidget;
 
-class ValueStackedWidget : public ValueBaseWidget
+class ValueStackedWidget :    public QWidget      // public ValueBaseWidget
      //  , public QStackedWidget
       // , public SimpleFeatureValueSubject
 {
@@ -27,9 +27,9 @@ class ValueStackedWidget : public ValueBaseWidget
 public:
     explicit ValueStackedWidget(QWidget *parent = nullptr);
 
-    void     setFeatureValue(const FeatureValue &fv) override;
-    void     setCurrentValue(uint16_t newval) override;
-    uint16_t getCurrentValue() override;
+    void     setFeatureValue(const FeatureValue &fv) ;
+    void     setCurrentValue(uint16_t newval) ;
+    uint16_t getCurrentValue() ;
 
     // QSize sizeHint() const override;
     // void paintEvent(QPaintEvent *event) override;
@@ -40,7 +40,13 @@ public:
 signals:
     void stackedFeatureValueChanged(uint8_t feature_code, uint8_t sh, uint8_t sl);
 
+signals:
+    // compiler warning: signals may not be declared virtual
+    void featureValueChanged(uint8_t feature_code, uint8_t sh, uint8_t sl);
+
 private:
+    const char *     _cls;
+    uint8_t                _featureCode;
     QStackedWidget * _stacked;
     ValueBaseWidget * _cur_stacked_widget;
 

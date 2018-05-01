@@ -10,6 +10,7 @@
 
 class QLabel;
 class QHBoxLayout;
+class ValueStackedWidget;
 
 class FeatureWidgetExtended :
         public QWidget,
@@ -53,7 +54,7 @@ private:
     QLabel*   _featureNameField;
     QLabel*   _featureRwField;
     QLabel*   _featureTypeField;
-    ValueAbstractWidget * _valueWidget;
+    ValueStackedWidget * _valueWidget;
 
 #ifdef ALT
     QStackedWidget * _featureValueStackedWidget; 

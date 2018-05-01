@@ -177,8 +177,8 @@ FeatureWidget::FeatureWidget(QWidget *parent) :
                      this,         &FeatureWidget::onInternalValueChanged);
 
 
-    QObject::connect(_valueWidget, &ValueBaseWidget::featureValueChanged,
-                     this,         &FeatureWidget::onInternalValueChanged);
+    // QObject::connect(_valueWidget, &ValueStackedWidget::featureValueChanged,
+    //                  this,         &FeatureWidget::onInternalValueChanged);
 
     QObject::connect( _valueWidget, SIGNAL( featureValueChanged(uint8_t, uint8_t, uint8_t)),
                       this,         SLOT(onInternalValueChanged(uint8_t, uint8_t, uint8_t)));

@@ -25,7 +25,8 @@
 static bool dimensionReportShown = false;
 
 ValueStackedWidget::ValueStackedWidget(QWidget *parent):
-    ValueBaseWidget(parent)
+    QWidget(parent)
+    // ValueBaseWidget(parent)
 
     // , SimpleFeatureValueSubject()
 {
