@@ -11,8 +11,10 @@
 // #include <QtWidgets/QVBoxLayout>
 
 #include "base/ddcui_globals.h"
+#include "base/debug_utils.h"
 #include "value_cont_widget.h"
 
+static bool dimensionReportShown = false;
 
 ValueContWidget::ValueContWidget(QWidget *parent):
     ValueBaseWidget(parent)
@@ -31,10 +33,10 @@ ValueContWidget::ValueContWidget(QWidget *parent):
     monoValueFont.setFamily(QString::fromUtf8("Monospace"));
 
     QFont nonMonoValueFont;
-    nonMonoValueFont.setPointSize(9);
+    nonMonoValueFont.setPointSize(8);
 
     QFont nonMonoFont9;
-    nonMonoFont9.setPointSize(9);
+    nonMonoFont9.setPointSize(8);
 
 
     _curSlider = new QSlider(Qt::Horizontal);
@@ -52,14 +54,15 @@ ValueContWidget::ValueContWidget(QWidget *parent):
     _curSpinBox->setStyleSheet("background-color:green;");
 
     _maxTitle = new QLabel("Max:");
-    _maxTitle->setFixedSize(35,20);
+    _maxTitle->setFixedSize(35,18);
     _maxTitle->setFont(nonMonoValueFont);
     if (debugLayout)
     _maxTitle->setStyleSheet("background-color:cyan;");
 
     _maxValue = new QLabel();
     _maxValue->setFont(monoValueFont);
-    _maxValue->setFrameStyle(QFrame::Sunken | QFrame::Panel);
+    // _maxValue->setFrameStyle(QFrame::Sunken | QFrame::Panel);
+    _maxValue->setFrameStyle(QFrame::Plain | QFrame::NoFrame);
     _maxValue->setFixedSize(30,20);
     if (debugLayout)
     _maxValue->setStyleSheet("background-color:blue;");
@@ -133,8 +136,28 @@ ValueContWidget::ValueContWidget(QWidget *parent):
     layout->setContentsMargins(0,0,0,0);
     setLayout(layout);
 
-    if (debugLayout)
+    if (debugLayout) {
        this->setStyleSheet("background-color:yellow;");
+
+       if (!dimensionReportShown) {
+          PRINTFCM("curSlider dimensions\n");
+          reportWidgetDimensions(_curSlider, _cls, __func__);
+
+           PRINTFCM("_curSpinBox dimensions\n");
+           reportWidgetDimensions(_curSpinBox, _cls, __func__);
+
+           PRINTFCM("_maxTitle dimensions\n");
+           reportWidgetDimensions(_maxTitle, _cls, __func__);
+
+           PRINTFCM("_maxValue dimensions\n");
+           reportWidgetDimensions(_maxValue, _cls, __func__);
+
+           PRINTFCM("ValueContWidget dimensions\n");
+           reportWidgetDimensions(this, _cls, __func__);
+           dimensionReportShown = true;
+       }
+
+    }
 
     // int m_left, m_right, m_top, m_bottom;
     // getContentsMargins(&m_left, &m_top, &m_right, &m_bottom);

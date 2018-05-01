@@ -6,10 +6,13 @@
 
 #include "ddcutil_c_api.h"
 
+#include "base/debug_utils.h"
 #include "base/ddcui_globals.h"
 
 #include "value_std_widget.h"
 
+
+static bool dimensionReportShown = false;
 
 ValueStdWidget::ValueStdWidget(QWidget *parent):
         ValueBaseWidget(parent)
@@ -41,6 +44,16 @@ ValueStdWidget::ValueStdWidget(QWidget *parent):
     if (debugLayout) {
        this->setStyleSheet("background-color:magenta;");
        // _valueField->setStyleSheet("background-color:fuschia;");
+
+       if (!dimensionReportShown) {
+           PRINTFCM("_valueField dimensions\n");
+           reportWidgetDimensions(_valueField, _cls, __func__);
+
+           PRINTFCM("ValueStdWidget dimensions\n");
+           reportWidgetDimensions(this, _cls, __func__);
+
+           dimensionReportShown = true;
+       }
     }
 }
 
@@ -63,6 +76,7 @@ void ValueStdWidget::setValueField() {
     _valueField->setText(QString::fromUtf8(s_formatted));
 }
 
+
 void ValueStdWidget::setFeatureValue(const FeatureValue &fv) {
     PRINTFCMF(debugValueWidgetSignals, "Starting. feature code: 0x%02x", fv._feature_code);
     ValueBaseWidget::setFeatureValue(fv);
@@ -74,6 +88,7 @@ void ValueStdWidget::setCurrentValue(uint16_t newval) {
     ValueBaseWidget::setCurrentValue(newval);
     setValueField();
 }
+
 
 #ifdef DEBUG_PAINT
 void ValueStdWidget::paintEvent(QPaintEvent *event) {
@@ -90,3 +105,4 @@ void ValueStdWidget::paintEvent(QPaintEvent *event) {
                 this->ValueBaseWidget::paintEvent(event);
 }
 #endif
+

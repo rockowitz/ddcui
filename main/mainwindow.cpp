@@ -226,7 +226,7 @@ void MainWindow::initMonitors() {
             curMonitor->_requestQueue->put(new VcpCapRequest());
     }
 
-    _toolbarDisplayCB->setCurrentIndex(0);
+    _toolbarDisplayCB->setCurrentIndex(1);    // *** Set to 1 instead of 0 for testing ***
 
     connect(_toolbarDisplayCB, SIGNAL(currentIndexChanged(int)),
             this,              SLOT(  displaySelectorCombobox_currentIndexChanged(int)));

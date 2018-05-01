@@ -1,6 +1,8 @@
 #ifndef VALUE_STACKED_WIDGET_H
 #define VALUE_STACKED_WIDGET_H
 
+#include <QtWidgets/QStackedWidget>
+
 #include "nongui/simple_feature_value.h"
 #include "nongui/simple_feature_value_subject.h"
 
@@ -14,9 +16,10 @@
 
 class QWidget;
 class QPaintEvent;
-class QStackedWidget;
+// class QStackedWidget;
 
 class ValueStackedWidget : public ValueBaseWidget
+     //  , public QStackedWidget
       // , public SimpleFeatureValueSubject
 {
    Q_OBJECT

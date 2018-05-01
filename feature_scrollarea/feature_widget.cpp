@@ -20,18 +20,22 @@
 
 static bool dimensionReportShown = false;
 
-void setupFeatureWidgetField(QLabel * w) {
+static void setupFeatureWidgetField(QLabel * w) {
    // printf("(%s)\n", __func__);  fflush(stdout);
    int fieldFrameStyle;
-   fieldFrameStyle = QFrame::Sunken | QFrame::Panel;
-   // fieldFrameStyle = QFrame::Plain | QFrame::Box;
+   // fieldFrameStyle = QFrame::Sunken | QFrame::Panel;
+   fieldFrameStyle = QFrame::Plain | QFrame::Box;
 
    w->setFrameStyle(fieldFrameStyle);
    // w->setFrameStyle( QFrame::Sunken | QFrame::Panel );
    // apparently contents margins is the size of the Panel/box
     w->setContentsMargins(1,1,1,1);  // This is what kills the panel, when set to 0
     w->setLineWidth(1);
+    // w->setFrameShape(QFrame::NoFrame);
+    // w->setMargin(20,20,20,20); mp sicj
+    w->setMargin(0);
 
+    // w->setStyleSheet("margins: 25px;");
 }
 
 
@@ -43,10 +47,6 @@ FeatureWidget::FeatureWidget(QWidget *parent) :
     // QFrame methods:
     // setFrameStyle(QFrame::Box);    // something to make it visible
 
-    // layout
-    // setObjectName(QString::fromUtf8("FeatureWidgetBasic"));
-    // resize(400,20);
-
     QFont font;
     font.setPointSize(8);
     QWidget::setFont(font);
@@ -56,12 +56,16 @@ FeatureWidget::FeatureWidget(QWidget *parent) :
 
     QFont nonMonoValueFont;
 
-    QSizePolicy fixedSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
-    fixedSizePolicy.setHorizontalStretch(0);    // needed?
-    fixedSizePolicy.setVerticalStretch(0);
-    fixedSizePolicy.setHeightForWidth(false);
+    QSizePolicy fixedSizePolicy(QSizePolicy::Fixed,QSizePolicy::MinimumExpanding);
+    // fixedSizePolicy.setHorizontalStretch(0);    // needed?
+    // fixedSizePolicy.setVerticalStretch(0);
+    // fixedSizePolicy.setHeightForWidth(false);
+    // verify apparent defaults, since I can't find them documented
+    assert(fixedSizePolicy.horizontalStretch() == 0);
+    assert(fixedSizePolicy.verticalStretch() == 0);
+    assert(fixedSizePolicy.hasHeightForWidth() == false);
 
-    QSizePolicy adjustableSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::Fixed);
+    QSizePolicy adjustableSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::MinimumExpanding);
     fixedSizePolicy.setHorizontalStretch(1);    // needed?
     fixedSizePolicy.setVerticalStretch(0);
     fixedSizePolicy.setHeightForWidth(false);
@@ -71,36 +75,28 @@ FeatureWidget::FeatureWidget(QWidget *parent) :
     /* Feature Code */
     _featureCodeField = new QLabel();
     _featureCodeField->setObjectName(QString::fromUtf8("featureCode"));
- // _featureCodeField->setGeometry( QRect(codeLabelStartX,0, codeLabelLen,10));
     _featureCodeField->setMinimumWidth(30);
     _featureCodeField->setSizePolicy(fixedSizePolicy);
     _featureCodeField->setFont(monoValueFont);
     _featureCodeField->setText(QString::fromUtf8("0x00"));    // dummy
-   // _featureCodeField->setFrameStyle(fieldFrameStyle);
-   //  _featureCodeField->setFrameStyle(QFrame::Sunken | QFrame::Panel);
     setupFeatureWidgetField(_featureCodeField);
 
     /* Feature Name */
     _featureNameField = new QLabel();
     _featureNameField->setObjectName(QString::fromUtf8("featureName"));
-  //  _featureNameField->setGeometry((QRect(nameLabelStartX,0,59,19)));
     _featureNameField->setMinimumWidth(200);
-    _featureNameField->setSizePolicy(adjustableSizePolicy);
+    _featureNameField->setSizePolicy(fixedSizePolicy);
     _featureNameField->setFont(nonMonoValueFont);
     _featureNameField->setText(QString::fromUtf8("Dummy feature name"));    // dummy
-   //  _featureCodeField->setFrameStyle(fieldFrameStyle);
-
-    setupFeatureWidgetField(_featureNameField);    // makes it impossible to set frame style
-    // _featureNameField->setFrameStyle(QFrame::Sunken | QFrame::Panel);
+    setupFeatureWidgetField(_featureNameField);
 
     /* RW/RO/WO */
     _featureRwField = new QLabel();
     _featureRwField->setObjectName(QString::fromUtf8("featureRW"));
-   // _featureRwField->setGeometry((QRect(50,0,59,19)));
     _featureRwField->setSizePolicy(fixedSizePolicy);
     _featureRwField->setFixedWidth(25);
-    _featureRwField->setFont(nonMonoValueFont);
-    _featureRwField->setText(QString::fromUtf8("RW"));    // dummy
+    _featureRwField->setFont(monoValueFont);
+    _featureRwField->setText(QString::fromUtf8("XX"));    // dummy
    //  _featureCodeField->setFrameStyle(fieldFrameStyle);
     // _featureRwField->setFrameStyle(QFrame::Sunken | QFrame::Panel);
     setupFeatureWidgetField(_featureRwField);
@@ -108,11 +104,10 @@ FeatureWidget::FeatureWidget(QWidget *parent) :
     /* MCCS Type */
     _featureTypeField = new QLabel();
     _featureTypeField->setObjectName(QString::fromUtf8("featureType"));
- //   _featureTypeField->setGeometry((QRect(60,0,69,19)));
     _featureTypeField->setSizePolicy(fixedSizePolicy);
     _featureTypeField->setFixedWidth(25);
-    _featureTypeField->setFont(nonMonoValueFont);
-    _featureTypeField->setText(QString::fromUtf8("NC"));    // dummy
+    _featureTypeField->setFont(monoValueFont);
+    _featureTypeField->setText(QString::fromUtf8("YY"));    // dummy
    //  _featureCodeField->setFrameStyle(fieldFrameStyle);
     // _featureTypeField->setFrameStyle(QFrame::Sunken | QFrame::Panel);
     setupFeatureWidgetField(_featureTypeField);
@@ -142,6 +137,10 @@ FeatureWidget::FeatureWidget(QWidget *parent) :
     // layout->addWidget(_featureValueStackedWidget);
     _layout->addStretch(1);
 
+    // _layout->insertStretch(-1, 2);
+    _layout->setSpacing(0);
+
+    // _layout->setMargin(0);    // no effect
     _layout->setContentsMargins(0,0,0,0);
     // removes space between all fields except field type <-> value
     // _layout->setSpacing(0);  // adjusts space between each horizontal item, no effect on above/below
@@ -203,10 +202,7 @@ void FeatureWidget::setFeatureValue(FeatureValue &fv) {
     setObjectName(QString::asprintf("FeatureWidget-0x%02x", _feature_code));
 
     _featureCodeField->setText(QString::asprintf("x%02x", _feature_code) );
-
-    // char * fname = ddca_get_feature_name(_feature_code);
-    char * fname = fv.finfo().feature_name;
-    _featureNameField->setText(QString::fromUtf8(fname));
+    _featureNameField->setText(QString::fromUtf8( fv.finfo().feature_name));
 
     QString s_rw;
     if (_feature_flags & DDCA_RW)
@@ -229,7 +225,6 @@ void FeatureWidget::setFeatureValue(FeatureValue &fv) {
     }
 
     _valueWidget->setFeatureValue(fv);
-
     _layout->addWidget(_valueWidget);
 }
 
@@ -264,12 +259,14 @@ void FeatureWidget::dbgrpt() const {
     PRINTFCM("%-20s feature code: 0x%02x, flags: 0x%04x", objname, _feature_code, _feature_flags);
 }
 
+
 void FeatureWidget::onInternalValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl) {
-   PRINTFCM("feature_code = 0x%02x, sh=0x%02x, sl=0x%02x\n", featureCode, sh, sl);
+   PRINTFCMF(debugSignals, "feature_code = 0x%02x, sh=0x%02x, sl=0x%02x\n", featureCode, sh, sl);
    assert(featureCode == _feature_code);
 
    emit valueChanged(featureCode, sh, sl);
 }
+
 
 #ifdef UNUSED
 // SimpleFeatureValueObserver

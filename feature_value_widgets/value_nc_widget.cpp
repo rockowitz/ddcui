@@ -77,7 +77,9 @@ ValueNcWidget::ValueNcWidget(QWidget *parent):
     setLayout(layout);
 
     if (!dimensionReportShown && debugLayout) {
-        printf("ValueNcWidget dimensions\n"); fflush(stdout);
+        PRINTFCM("combobox dimensions\n");
+        reportWidgetDimensions(_cb, _cls, __func__);
+        PRINTFCM("ValueNcWidget dimensions\n");
         reportWidgetDimensions(this, _cls, __func__);
         dimensionReportShown = true;
     }
