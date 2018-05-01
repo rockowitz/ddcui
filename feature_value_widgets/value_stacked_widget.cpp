@@ -25,7 +25,9 @@
 static bool dimensionReportShown = false;
 
 ValueStackedWidget::ValueStackedWidget(QWidget *parent):
-    QWidget(parent)
+      QStackedWidget(parent)
+
+    //    QWidget(parent)
     // ValueBaseWidget(parent)
 
     // , SimpleFeatureValueSubject()
@@ -48,18 +50,19 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent):
     _pageno_2button = 4;
     _pageno_selected = _pageno_std;    // default
 
-    _stacked = new QStackedWidget();
+    _stacked = this;
+    // _stacked = new QStackedWidget();
     _stacked->addWidget(_contWidget);
     _stacked->addWidget(_ncWidget);
     _stacked->addWidget(_stdWidget);
     _stacked->addWidget(_resetWidget);
     _stacked->addWidget(_2ButtonWidget);
 
-    // ???
-    QVBoxLayout * layout = new QVBoxLayout;
-    layout->setContentsMargins(0,0,0,0);
-    layout->addWidget(_stacked);
-    setLayout(layout);
+//    // ???
+//    QVBoxLayout * layout = new QVBoxLayout;
+//    layout->setContentsMargins(0,0,0,0);
+//    layout->addWidget(_stacked);
+//    setLayout(layout);
 
     if (!dimensionReportShown && debugLayout) {
         // printf("-------------------------------------------->\n"); fflush(stdout);

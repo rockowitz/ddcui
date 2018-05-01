@@ -18,7 +18,7 @@ class QWidget;
 class QPaintEvent;
 // class QStackedWidget;
 
-class ValueStackedWidget :    public QWidget      // public ValueBaseWidget
+class ValueStackedWidget :  public QStackedWidget // public QWidget      // public ValueBaseWidget
      //  , public QStackedWidget
       // , public SimpleFeatureValueSubject
 {
