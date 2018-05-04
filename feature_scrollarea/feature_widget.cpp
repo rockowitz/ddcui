@@ -32,7 +32,7 @@ static void setupFeatureWidgetField(QLabel * w) {
     w->setContentsMargins(1,1,1,1);  // This is what kills the panel, when set to 0
     w->setLineWidth(1);
     // w->setFrameShape(QFrame::NoFrame);
-    // w->setMargin(20,20,20,20); mp sicj
+    // w->setMargin(20,20,20,20);
     w->setMargin(0);
 
     // w->setStyleSheet("margins: 25px;");
@@ -84,7 +84,9 @@ FeatureWidget::FeatureWidget(QWidget *parent) :
     /* Feature Name */
     _featureNameField = new QLabel();
     _featureNameField->setObjectName(QString::fromUtf8("featureName"));
-    _featureNameField->setMinimumWidth(200);
+    // _featureNameField->setMinimumWidth(200);
+    // _featureNameField->setMaximumSize(200,20);
+    _featureNameField->setFixedWidth(200);
     _featureNameField->setSizePolicy(fixedSizePolicy);
     _featureNameField->setFont(nonMonoValueFont);
     _featureNameField->setText(QString::fromUtf8("Dummy feature name"));    // dummy
@@ -135,7 +137,10 @@ FeatureWidget::FeatureWidget(QWidget *parent) :
     _layout->addWidget(_featureTypeField);
     _layout->addWidget(_valueWidget);
     // layout->addWidget(_featureValueStackedWidget);
-    _layout->addStretch(1);
+
+    // eliminating addStretch() eliminates gap between Type and Value fields, but allows
+    // feature name field to expand
+    // _layout->addStretch(2);
 
     // _layout->insertStretch(-1, 2);
     _layout->setSpacing(0);
@@ -156,13 +161,14 @@ FeatureWidget::FeatureWidget(QWidget *parent) :
 #endif
     setLayout(_layout);
 
-    if (debugLayout)
+    if (debugLayout) {
         this->setStyleSheet("background-color:orange;");
 
-    if (!dimensionReportShown && debugLayout) {
-        printf("-------------------------------------------->\n"); fflush(stdout);
-        reportWidgetDimensions(this, _cls, __func__);
-        dimensionReportShown = true;
+        if (!dimensionReportShown) {
+           PRINTFCM("FeatuerWidget dimenstions:");
+           reportWidgetDimensions(this, _cls, __func__);
+           dimensionReportShown = true;
+        }
     }
 
   // use ValueBaseWidget or ValueStackedWidget?

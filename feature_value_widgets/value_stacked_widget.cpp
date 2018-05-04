@@ -66,7 +66,7 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent):
 
     if (!dimensionReportShown && debugLayout) {
         // printf("-------------------------------------------->\n"); fflush(stdout);
-        reportWidgetDimensions(this, _cls, __func__);
+        reportFrameDimensions(this, _cls, __func__, "ValueStackedWidget dimensions");
         dimensionReportShown = true;
     }
 

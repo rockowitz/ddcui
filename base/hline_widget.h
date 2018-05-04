@@ -1,4 +1,4 @@
-/* ddcui_globals.cpp
+/* hline_widget.h
  *
  * <copyright>
  * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
@@ -21,11 +21,22 @@
  * </endcopyright>
  */
 
-#include "ddcui_globals.h"
+#ifndef HLINE_WIDGET_H_
+#define HLINE_WIDGET_H_
 
-const bool debugSignals            = false;
-const bool debugValueWidgetSignals = false;
-const bool debugFeatureLists       = false;
-const bool debugFeatureSelection   = false;
-const bool debugLayout             = true;
-const bool debugNcValues           = false;
+#include <QtWidgets/QWidget>
+
+#include "base/ddcui_globals.h"
+
+class HLineWidget  : public QFrame {
+   Q_OBJECT
+
+public:
+   explicit HLineWidget(QWidget * parent = nullptr);
+   virtual ~HLineWidget();
+
+private:
+   const char * _cls;
+};
+
+#endif /* HLINE_WIDGET_H_ */

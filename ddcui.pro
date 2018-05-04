@@ -33,6 +33,7 @@ SOURCES += \
     base/debug_utils.cpp \
     base/feature_selector.cpp \
     base/global_state.cpp \
+    base/hline_widget.cpp \
     base/other_options_state.cpp \
     base/vertical_scroll_area.cpp \
 
@@ -76,6 +77,7 @@ SOURCES += \
 SOURCES += \
     feature_scrollarea/features_scrollarea_ui.cpp \
     feature_scrollarea/feature_widget.cpp \
+    feature_scrollarea/feature_widget_header.cpp \
     feature_scrollarea/features_scrollarea_contents.cpp \
     feature_scrollarea/features_scrollarea_view.cpp
 
@@ -115,6 +117,7 @@ HEADERS += \
     base/debug_utils.h \
     base/feature_selector.h \
     base/global_state.h \
+    base/hline_widget.h \
     base/monitor.h \
     base/other_options_state.h \
     base/vertical_scroll_area.h
@@ -158,6 +161,7 @@ HEADERS += \
 HEADERS += \
     feature_scrollarea/features_scrollarea_ui.h \
     feature_scrollarea/feature_widget.h \
+    feature_scrollarea/feature_widget_header.h \
     feature_scrollarea/features_scrollarea_contents.h \
     feature_scrollarea/features_scrollarea_view.h
 

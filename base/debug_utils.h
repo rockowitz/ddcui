@@ -30,9 +30,9 @@ class QLabel;
 class QString;
 
 void reportWidgetChildren(QWidget * w, const char * msg = nullptr);
-void reportLabelDimensions( QLabel  * l, const char * className, const char * funcName);
-void reportFrameDimensions( QFrame  * f, const char * className, const char * funcName);
-void reportWidgetDimensions(QWidget * w, const char * className, const char * funcName, const char * msg = nullptr);
+void reportLabelDimensions( QLabel  * l, const char * className, const char * funcName, const char * msg=nullptr);
+void reportFrameDimensions( QFrame  * f, const char * className, const char * funcName, const char * msg=nullptr);
+void reportWidgetDimensions(QWidget * w, const char * className, const char * funcName, const char * msg=nullptr);
 
 
 #endif /* BASE_DEBUG_UTILS_H_ */

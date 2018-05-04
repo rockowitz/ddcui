@@ -64,7 +64,8 @@ Value2ButtonWidget::Value2ButtonWidget(
 
     if (!dimensionReportShown  && debugLayout ) {
         printf("(%s::%s) ------------------------------------------>\n", _cls, __func__); fflush(stdout);
-        reportWidgetDimensions(this, _cls, __func__);
+        reportWidgetDimensions(_button1, _cls, __func__, "_button1");
+        reportWidgetDimensions(this, _cls, __func__, "Value2ButtonWidget");
         dimensionReportShown = true;
     }
     if (debugLayout)

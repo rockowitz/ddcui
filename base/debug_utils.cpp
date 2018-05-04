@@ -102,6 +102,15 @@ void reportWidgetDimensions(
     printf("visible:               %s\n", (w->isVisible()) ? "True" : "False");
     printf("hidden:                %s\n", (w->isHidden()) ? "True" : "False");
 
+    Qt::LayoutDirection direction = w->layoutDirection();
+    char * s = NULL;
+    switch(direction) {
+    case Qt::LeftToRight:   s = (char *) "LeftToRight";        break;
+    case Qt::RightToLeft:   s = (char *) "RightToLeft";        break;
+    case Qt::LayoutDirectionAuto:  s = (char*) "LayoutDirectionAuto";        break;
+    }
+    printf("layoutDirection:      %d - %s\n", direction, s);
+
 #ifdef USELESS
     QRect childrenRect = w->childrenRect();
     printf("childrenRect:          x: %d, y: %d, width: %d, height: %d\n",
@@ -147,29 +156,64 @@ void reportWidgetDimensions(
      else {
         printf("No layout set\n");
      }
-     fflush(stdout);
+
+     printf("\n");  fflush(stdout);
 
 }
 
 
-void reportFrameDimensions(QFrame * f, const char * className, const char * funcName) {
+void reportFrameDimensions(
+      QFrame * f,
+      const char * className,
+      const char * funcName,
+      const char * msg)
+{
+   if (msg)
+      printf("%s\n", msg);
    printf("(%s::%s) Frame Dimension Information: \n", className, funcName); fflush(stdout);
 
    QRect frameRect = f->frameRect();
    printf("frameRect: x: %d, y: %d, width: %d, height: %d\n",
           frameRect.x(), frameRect.y(), frameRect.width(), frameRect.height());
 
+   QFrame::Shape shape = f->frameShape();
+   char * s = NULL;
+   switch(shape) {
+   case QFrame::NoFrame:   s = (char*) "NoFrame";      break;
+   case QFrame::Box:       s = (char*) "Box";          break;
+   case QFrame::Panel:     s = (char*) "Panel";        break;
+   case QFrame::StyledPanel:  s = (char*) "StyledPanel";  break;
+   case QFrame::HLine:        s = (char*) "HLIine";       break;
+   case QFrame::VLine:        s = (char*) "VLine";        break;
+   case QFrame::WinPanel:    s = (char*) "WinPanel";     break;
+   }
+   printf("shape:        %d - %s\n", shape, s);
+
+   // int style = f->frameStyle()
+
+   printf("frameWidth:   %d\n",  f->frameWidth() );
+
+   printf("lineWidth:   %d\n", f->lineWidth() );
+
+
    reportWidgetDimensions(f, className, funcName);
 }
 
 
-void reportLabelDimensions(QLabel * label, const char * className, const char * funcName) {
+void reportLabelDimensions(
+      QLabel * label,
+      const char * className,
+      const char * funcName,
+      const char * msg)
+{
+   if (msg)
+      printf("%s\n", msg);
    printf("(%s::%s) Label Dimension Information: \n", className, funcName); fflush(stdout);
 
    printf("indent:  %d\n", label->indent());
    printf("margin:  %d\n", label->margin());
 
-   reportFrameDimensions(label, className, funcName);
+   reportFrameDimensions(label, className, funcName, NULL);
 }
 
 

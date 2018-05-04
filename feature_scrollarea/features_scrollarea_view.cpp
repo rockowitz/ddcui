@@ -17,6 +17,8 @@
 
 #include "nongui/ddc_error.h"
 
+#include "feature_scrollarea/feature_widget.h"
+#include "feature_scrollarea/feature_widget_header.h"
 #include "feature_scrollarea/features_scrollarea_contents.h"
 
 
@@ -73,6 +75,8 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
        scrollAreaContents->setStyleSheet("background-color:chartreuse;");
        _centralStackedWidget->setStyleSheet("background-color:chocolate:");
     }
+
+    vLayout->addWidget(new FeatureWidgetHeader());
 
     int ct = 0;
     for (int feature_code = 0; feature_code < 256; feature_code++) {

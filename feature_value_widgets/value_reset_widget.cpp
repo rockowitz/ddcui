@@ -29,7 +29,7 @@ ValueResetWidget::ValueResetWidget(QWidget *parent):
     // printf("(ValueResetWidget::ValueResetWidget) Starting.\n" ); fflush(stdout);
 
    QFont nonMonoFont;
-   nonMonoFont.setPointSize(9);
+   nonMonoFont.setPointSize(8);
 
    _resetButton = new QPushButton("Restore");
    _resetButton->setMaximumSize(60,20);
@@ -49,7 +49,8 @@ ValueResetWidget::ValueResetWidget(QWidget *parent):
 
     if (!dimensionReportShown && debugLayout) {
         // printf("-------------------------------------------->\n"); fflush(stdout);
-        reportWidgetDimensions(this, _cls, __func__);
+        reportWidgetDimensions(_resetButton, _cls, __func__, "ValueResetWidget::_resetButton");
+        reportWidgetDimensions(this, _cls, __func__, "ValueResetWidget");
         dimensionReportShown = true;
     }
     if (debugLayout)

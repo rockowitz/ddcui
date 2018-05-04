@@ -1,4 +1,4 @@
-/* ddcui_globals.cpp
+/* hline_widget.cpp
  *
  * <copyright>
  * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
@@ -21,11 +21,25 @@
  * </endcopyright>
  */
 
-#include "ddcui_globals.h"
+#include "hline_widget.h"
 
-const bool debugSignals            = false;
-const bool debugValueWidgetSignals = false;
-const bool debugFeatureLists       = false;
-const bool debugFeatureSelection   = false;
-const bool debugLayout             = true;
-const bool debugNcValues           = false;
+HLineWidget::HLineWidget(QWidget * parent )
+: QFrame(parent)
+{
+   _cls = metaObject()->className();
+
+   setFrameStyle(QFrame::HLine);
+
+   QSizePolicy sizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+
+   setSizePolicy(sizePolicy);
+   setMaximumHeight(1);
+   setLineWidth(1);
+   // setFrameWidth(1);
+
+}
+
+HLineWidget::~HLineWidget() {
+   // TODO Auto-generated destructor stub
+}
+

@@ -1,4 +1,4 @@
-/* ddcui_globals.cpp
+/* feature_widget_header.h
  *
  * <copyright>
  * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
@@ -21,11 +21,22 @@
  * </endcopyright>
  */
 
-#include "ddcui_globals.h"
+#ifndef FEATURE_WIDGET_HEADER_H_
+#define FEATURE_WIDGET_HEADER_H_
 
-const bool debugSignals            = false;
-const bool debugValueWidgetSignals = false;
-const bool debugFeatureLists       = false;
-const bool debugFeatureSelection   = false;
-const bool debugLayout             = true;
-const bool debugNcValues           = false;
+#include <QtWidgets/QWidget>
+
+#include "base/ddcui_globals.h"
+
+class FeatureWidgetHeader : public QFrame {
+   Q_OBJECT
+
+public:
+   explicit FeatureWidgetHeader(QWidget * parent = nullptr);
+   virtual ~FeatureWidgetHeader();
+
+private:
+   const char * _cls;
+};
+
+#endif /* FEATURE_WIDGET_HEADER_H_ */
