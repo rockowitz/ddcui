@@ -3,7 +3,7 @@
 #include "feature_value_widgets/value_std_widget.h"
 
 #include <QtCore/QRect>
-#include <QtGui/QHBoxLayout>
+#include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 
@@ -37,6 +37,7 @@ ValueStdWidget::ValueStdWidget(QWidget *parent):
     _valueField->setMinimumSize(400,10);
     _valueField->setFrameStyle( QFrame::Plain | QFrame::NoFrame);  // ValueStdWidget has the frame, not Label
     _valueField->setFont(font);
+    _valueField->setIndent(5);
 
     // QSizePolicy* sizePolicy = new QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
     QSizePolicy* sizePolicy = new QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
@@ -48,24 +49,9 @@ ValueStdWidget::ValueStdWidget(QWidget *parent):
     layout->addWidget(_valueField);
     setLayout(layout);
 
-    // int m_left, m_right, m_top, m_bottom;
-    // getContentsMargins(&m_left, &m_top, &m_right, &m_bottom);
-    // printf("(ValueStdWidget::ValueStdWidget) margins after set: left=%d, top=%d, right=%d, bottom=%d)\n",
-    //        m_left, m_right, m_top, m_bottom);
-
-    int fieldFrameStyle;
+    // int fieldFrameStyle;
     // fieldFrameStyle = QFrame::Sunken | QFrame::Panel;
-    fieldFrameStyle = QFrame::Plain | QFrame::Box;
-
-//    // copied from FeatureWidget::setupWidgetField() - doesn't address text clipping problem
-//    setFrameStyle(fieldFrameStyle);
-//    // w->setFrameStyle( QFrame::Sunken | QFrame::Panel );
-//    // apparently contents margins is the size of the Panel/box
-//     setContentsMargins(1,1,1,1);  // This is what kills the panel, when set to 0
-//     setLineWidth(1);
-//     // w->setFrameShape(QFrame::NoFrame);
-//     // w->setMargin(20,20,20,20);
-//     layout->setMargin(0);
+    // fieldFrameStyle = QFrame::Plain | QFrame::Box;
 
     if (debugLayout) {
        this->setStyleSheet("background-color:magenta;");

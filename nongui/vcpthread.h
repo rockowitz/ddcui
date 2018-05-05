@@ -32,7 +32,7 @@ public:
 
 private:
     void getvcp(uint8_t feature_code);
-    void setvcp(uint8_t feature_code, uint8_t newval);
+    void setvcp(uint8_t feature_code, bool writeOnly, uint8_t newval);
     void capabilities();
     void startInitialLoad(void);
     void endInitialLoad(void); 

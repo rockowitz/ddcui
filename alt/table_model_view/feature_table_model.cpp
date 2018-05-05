@@ -234,6 +234,7 @@ QVariant FeatureTableModel::data(const QModelIndex &index, int role) const
     return result;
 }
 
+
 // called by view to set data for a cell
 bool FeatureTableModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
@@ -241,7 +242,8 @@ bool FeatureTableModel::setData(const QModelIndex &index, const QVariant &value,
     if (value.canConvert<FeatureValue>()) {
        FeatureValue fv = value.value<FeatureValue>();
        fv.dbgrpt();
-       VcpSetRequest * rqst = new VcpSetRequest(fv._feature_code, fv._value.sl);
+       bool writeOnly = false;    // *** TEMP, assume verification ***
+       VcpSetRequest * rqst = new VcpSetRequest(fv._feature_code, fv._value.sl, writeOnly);
        emit _baseModel->signalVcpRequest(rqst);
     }
 

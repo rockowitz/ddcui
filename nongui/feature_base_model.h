@@ -73,8 +73,8 @@ signals:
     void signalStartInitialLoad(void);
     void signalEndInitialLoad(void);
     void signalFeatureAdded(FeatureValue fv);
-    void signalFeatureUpdated(char feature_code);
-    void signalFeatureUpdated3(uint8_t feature_code, uint8_t sh, uint8_t sl);
+    // void signalFeatureUpdated(char feature_code);
+    void signalFeatureUpdated3(const char * caller, uint8_t feature_code, uint8_t sh, uint8_t sl);
     void signalVcpRequest(VcpRequest * rqst);  // used to call into monitor
     void signalModelError(uint8_t featureCode, QString msg);
     void signalDdcError(DdcError erec);

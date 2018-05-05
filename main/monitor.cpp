@@ -9,6 +9,7 @@
 
 #include <ddcutil_c_api.h>
 
+#include "base/ddcui_globals.h"
 #include "nongui/vcpthread.h"    // includes vcprequest.h
 #include "nongui/feature_value.h"
 
@@ -18,7 +19,7 @@ Monitor::Monitor(DDCA_Display_Info * display_info, int monitorNumber)
       _displayInfo(display_info),
       _cls(metaObject()->className())
 {
-    // _cls         = metaObject()->className();
+    // _cls = metaObject()->className();
 }
 
 
@@ -69,6 +70,6 @@ void Monitor::setFeatureTableModel(FeatureTableModel * tableModel) {
 }
 
 void Monitor::putVcpRequest(VcpRequest * rqst) {
-    printf("(Monitor::putVcpRequest)\n");  fflush(stdout);
+    PRINTFCM("rqst->type=%d. Adding request to monitor's request queue", rqst->_type);
     _requestQueue->put(rqst);
 }

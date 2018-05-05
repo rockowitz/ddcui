@@ -24,7 +24,7 @@
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QLabel>
-#include <QtGui/QSizePolicy>
+#include <QtWidgets/QSizePolicy>
 #include <QtWidgets/QHBoxLayout>
 
 #include "base/debug_utils.h"
@@ -48,8 +48,11 @@ static void stdLabelSetup(QLabel * l) {
 
    QFont font;
    font.setPointSize(8);
+   font.setWeight(QFont::Bold);
    l->setFont(font);
    l->setContentsMargins(0,0,0,0);
+   l->setMargin(0);
+   l->setIndent(0);
 
 }
 
@@ -73,10 +76,10 @@ FeatureWidgetHeader::FeatureWidgetHeader(QWidget * parent)
    stdLabelSetup(_valueLabel);
 
    _codeLabel->setMinimumWidth(30);
-   _nameLabel->setMinimumWidth(200);
-   _nameLabel->setFixedWidth(25);
-   _typeLabel->setFixedWidth(25);
-   _valueLabel->setMinimumWidth(200);
+   _nameLabel->setFixedWidth(200-2);
+   _rwLabel->setFixedWidth(25-1);
+   _typeLabel->setFixedWidth(25+1+4);
+   _valueLabel->setMinimumWidth(200-4+2);
 
    QSizePolicy adjSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
    _valueLabel->setSizePolicy(adjSizePolicy);
@@ -89,10 +92,14 @@ FeatureWidgetHeader::FeatureWidgetHeader(QWidget * parent)
    layout->addWidget(_typeLabel);
    layout->addWidget(_valueLabel);
 
+   layout->setSpacing(0);
+
    setLayout(layout);
 
-   setFrameStyle(QFrame::Box | QFrame::Plain);
-   setContentsMargins(1,1,1,1);
+   setFrameStyle(QFrame::NoFrame | QFrame::Plain);
+   setContentsMargins(1,1,1,1);  // 0,0,0,0 doesn't move "Code" left
+
+
 
    setLineWidth(1);
 

@@ -42,10 +42,11 @@ SOURCES += \
     nongui/feature_base_model.cpp \
     nongui/feature_value.cpp \
     nongui/vcprequest.cpp \
-    nongui/vcpthread.cpp \
-    nongui/simple_feature_value_observer.cpp \
-    nongui/simple_feature_value_subject.cpp \
-    nongui/simple_feature_value.cpp
+    nongui/vcpthread.cpp 
+
+#   nongui/simple_feature_value_observer.cpp \
+#   nongui/simple_feature_value_subject.cpp \
+#   nongui/simple_feature_value.cpp
 
 #     nongui/feature_change_observer.cpp \
 
@@ -128,10 +129,11 @@ HEADERS += \
     nongui/feature_change_observer.h \
     nongui/feature_value.h \
     nongui/vcprequest.h \
-    nongui/vcpthread.h \
-    nongui/simple_feature_value_observer.h \
-    nongui/simple_feature_value_subject.h \
-    nongui/simple_feature_value.h
+    nongui/vcpthread.h 
+
+#   nongui/simple_feature_value_observer.h \
+#   nongui/simple_feature_value_subject.h \
+#   nongui/simple_feature_value.h
 
 HEADERS += \
     monitor_desc/monitor_desc_ui.h \

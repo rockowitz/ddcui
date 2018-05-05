@@ -57,8 +57,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     _ui->setupUi(this);
 
+    // with either ApplicationModal or WindowModal, moving the application does not move the spinner with it
+    // _loadingMsgBox has same problem
     _spinner = new WaitingSpinnerWidget(
-                      Qt::ApplicationModal,    // alt WindowModal, ApplicationModal, NonModal
+                      Qt::WindowModal,    // alt WindowModal, ApplicationModal, NonModal
                       nullptr,      // parent   - if set to this, spinning widget does not display
                       true,      // centerOnParent
                       true);     // disableParentWhenSpinning
@@ -83,7 +85,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QLabel* toolbarDisplayLabel = new QLabel("&Display:  ");
     _toolbarDisplayCB = new QComboBox();
     _toolbarDisplayCB->setObjectName("displaySelectorCombobox");
-    _toolbarDisplayCB->setStyleSheet("background-color:white;");
+    _toolbarDisplayCB->setStyleSheet("background-color:white; color:black");
     toolbarDisplayLabel->setBuddy(_toolbarDisplayCB);
     _ui->mainToolBar->addWidget( toolbarDisplayLabel);
     _ui->mainToolBar->addWidget( _toolbarDisplayCB);

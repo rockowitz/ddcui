@@ -3,8 +3,8 @@
 
 #include <QtWidgets/QStackedWidget>
 
-#include "nongui/simple_feature_value.h"
-#include "nongui/simple_feature_value_subject.h"
+// #include "nongui/simple_feature_value.h"
+// #include "nongui/simple_feature_value_subject.h"
 
 #include "value_abstract_widget.h"
 #include "value_base_widget.h"

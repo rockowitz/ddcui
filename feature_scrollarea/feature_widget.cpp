@@ -23,8 +23,8 @@ static bool dimensionReportShown = false;
 static void setupFeatureWidgetField(QLabel * w) {
    // printf("(%s)\n", __func__);  fflush(stdout);
    int fieldFrameStyle;
-   // fieldFrameStyle = QFrame::Sunken | QFrame::Panel;
-   fieldFrameStyle = QFrame::Plain | QFrame::Box;
+   fieldFrameStyle = QFrame::Sunken | QFrame::Panel;
+   // fieldFrameStyle = QFrame::Plain | QFrame::Box;
 
    w->setFrameStyle(fieldFrameStyle);
    // w->setFrameStyle( QFrame::Sunken | QFrame::Panel );
@@ -270,7 +270,9 @@ void FeatureWidget::onInternalValueChanged(uint8_t featureCode, uint8_t sh, uint
    PRINTFCMF(debugSignals, "feature_code = 0x%02x, sh=0x%02x, sl=0x%02x\n", featureCode, sh, sl);
    assert(featureCode == _feature_code);
 
-   emit valueChanged(featureCode, sh, sl);
+   bool writeOnlyFeature = _feature_flags & DDCA_WO;
+
+   emit valueChanged(featureCode, writeOnlyFeature, sh, sl);
 }
 
 

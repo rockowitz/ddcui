@@ -26,11 +26,12 @@ VcpGetRequest::VcpGetRequest(DDCA_Vcp_Feature_Code feature_code)
 }
 
 
-VcpSetRequest::VcpSetRequest(DDCA_Vcp_Feature_Code feature_code, uint8_t newval)
+VcpSetRequest::VcpSetRequest(DDCA_Vcp_Feature_Code feature_code, uint8_t newval, bool writeOnly)
     :  VcpRequest::VcpRequest(VcpRequestType::RQSetVcp)
 {
     _featureCode = feature_code;
     _newval = newval;
+    _writeOnly = writeOnly;
 }
 
 

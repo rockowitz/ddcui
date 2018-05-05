@@ -153,8 +153,8 @@ void VcpThread::getvcp(uint8_t feature_code) {
 
 
 // Process RQSetVcp
-void VcpThread::setvcp(uint8_t feature_code, uint8_t sl) {
-    // printf("(VcpThread::setvcp) Starting. feature_code=0x%02x\n", feature_code);
+void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint8_t sl) {
+    PRINTFCM("Starting. feature_code=0x%02x. sl=0x%02x, writeOnly=%s", feature_code, sl, sbool(writeOnly));
     DDCA_Display_Handle         dh;
 
     DDCA_Status ddcrc = ddca_open_display(this->_dref, &dh);
@@ -163,20 +163,21 @@ void VcpThread::setvcp(uint8_t feature_code, uint8_t sl) {
         // how to handle?
     }
 
-    ddca_enable_verify(true);
+    ddca_enable_verify(!writeOnly);
     // uint8_t verified_hi_byte = 0;   // unused
     // uint8_t verified_lo_byte = 0;   // unused
-
     // need to update mh, ml, use a valrec
     // ddcrc = ddca_set_non_table_vcp_value_verify(dh, feature_code, 0, sl, &verified_hi_byte, &verified_lo_byte);
+
     ddcrc = ddca_set_non_table_vcp_value(dh, feature_code, 0, sl);
     if (ddcrc != 0) {
-        PRINTFCM("ddca_set_raw_vcp_value() returned %d - %s", ddcrc, ddca_rc_name(ddcrc));
+        // redundant, rpt_ddca_status() issues message
+        // PRINTFCM("ddca_set_non_table_vcp_value() returned %d - %s", ddcrc, ddca_rc_name(ddcrc));
         // how to handle?
         rpt_ddca_status(feature_code, __func__, "ddca_set_non_table_vcp_value", ddcrc);
 
         if (ddcrc == DDCRC_VERIFY) {
-            printf("(VcpThread::%s) Verification failed\n", __func__);
+            // PRINTFCM("Verification failed");
             // read current value
             // put up dialog box with:
             //   original valueS
@@ -190,24 +191,28 @@ void VcpThread::setvcp(uint8_t feature_code, uint8_t sl) {
             // emit postError(QString("Verification failed"));
 
             DDCA_Non_Table_Vcp_Value              valrec;
-                DDCA_Status
+            DDCA_Status
                 ddcrc2 = ddca_get_non_table_vcp_value(dh, feature_code, &valrec);
-                if (ddcrc2 != 0) {
-                    rpt_ddca_status(feature_code, __func__, "ddca_get_nontable_vcp_value", ddcrc);
-                    // how to handle?
-                }
-                else {
-                    // printf("ddca_get_nontable_vcp_value() returned:\n");
-                    // printf("  opcode:   0x%02x, mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x\n",
-                    //        feature_code, valrec.mh, valrec.ml, valrec.sh, valrec.sl);
-                   _baseModel->modelVcpValueUpdate(feature_code, valrec.sh, valrec.sl);
-                }
+            if (ddcrc2 != 0) {
+                rpt_ddca_status(feature_code, __func__, "ddca_get_nontable_vcp_value", ddcrc);
+                // how to handle?
+            }
+            else {
+                // printf("ddca_get_nontable_vcp_value() returned:\n");
+                // printf("  opcode:   0x%02x, mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x\n",
+                //        feature_code, valrec.mh, valrec.ml, valrec.sh, valrec.sl);
+                PRINTFCM("Calling _baseModel->modelVcpValueUpdate() after failed verification");
+                _baseModel->modelVcpValueUpdate(feature_code, valrec.sh, valrec.sl);
+            }
        }
     }
 
     if (ddcrc == 0) {
         // _baseModel->modelVcpValueSet(feature_code, _dinfo->vcp_version, finfo, &valrec);
-        _baseModel->modelVcpValueUpdate(feature_code, 0, sl);
+       if (!writeOnly) {
+           PRINTFCM("Calling _baseModel->modelVcpValueUpdate() after successful call to ddca_non_table_vcp_value()");
+            _baseModel->modelVcpValueUpdate(feature_code, 0, sl);
+       }
     }
     else if (ddcrc == DDCRC_VERIFY) {
       //   _baseModel->modelVcpValueUpdate(feature_code, verified_hi_byte, verified_lo_byte);
@@ -261,7 +266,7 @@ void VcpThread::run() {
             // if (debugThread)
             //     printf("(VcpThread::run) RQSetVcp. feature code=0x%02x, newval=%d\n",
             //            setRqst->_featureCode, setRqst->_newval);  fflush(stdout);
-            setvcp(setRqst->_featureCode, setRqst->_newval & 0xff);
+            setvcp(setRqst->_featureCode, setRqst->_writeOnly, setRqst->_newval & 0xff);
             break;
         }
         case VcpRequestType::RQStartInitialLoad:

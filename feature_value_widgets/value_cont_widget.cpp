@@ -19,7 +19,7 @@ static bool dimensionReportShown = false;
 ValueContWidget::ValueContWidget(QWidget *parent):
     ValueBaseWidget(parent)
 {
-   _cls                    = strdup(metaObject()->className());
+   _cls = strdup(metaObject()->className());
     // printf("(ValueContWidget::ValueContWidget) Starting.\n" ); fflush(stdout);
 
     QSizePolicy fixedSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
@@ -38,7 +38,6 @@ ValueContWidget::ValueContWidget(QWidget *parent):
     QFont nonMonoFont9;
     nonMonoFont9.setPointSize(8);
 
-
     _curSlider = new QSlider(Qt::Horizontal);
     _curSlider->setFocusPolicy(Qt::StrongFocus);
     _curSlider->setTickPosition(QSlider::TicksBelow);   // alt TicksBothSides
@@ -54,7 +53,7 @@ ValueContWidget::ValueContWidget(QWidget *parent):
     _curSpinBox->setStyleSheet("background-color:green;");
 
     _maxTitle = new QLabel("Max:");
-    _maxTitle->setFixedSize(35,18);
+    _maxTitle->setFixedSize(25,18);
     _maxTitle->setFont(nonMonoValueFont);
     if (debugLayout)
     _maxTitle->setStyleSheet("background-color:cyan;");
@@ -104,10 +103,13 @@ ValueContWidget::ValueContWidget(QWidget *parent):
        _cancelButton->setSizePolicy(*sizePolicy);
        _cancelButton->setFont(nonMonoFont9);
 
-       connect(_applyButton, &QPushButton::clicked,
-                this,        &ValueContWidget::onApplyButtonClicked);
+       _applyButton->setEnabled(false);
+       _cancelButton->setEnabled(false);
+
+       connect(_applyButton,  &QPushButton::clicked,
+               this,          &ValueContWidget::onApplyButtonClicked);
        connect(_cancelButton, &QPushButton::clicked,
-             this,        &ValueContWidget::onCancelButtonClicked);
+               this,          &ValueContWidget::onCancelButtonClicked);
     }
 
    QLabel* spacer = new QLabel();
@@ -156,17 +158,6 @@ ValueContWidget::ValueContWidget(QWidget *parent):
            reportWidgetDimensions(this, _cls, __func__);
            dimensionReportShown = true;
        }
-
-    }
-
-    // int m_left, m_right, m_top, m_bottom;
-    // getContentsMargins(&m_left, &m_top, &m_right, &m_bottom);
-    // printf("(ValueContWidget::ValueContWidget) margins: left=%d, top=%d, right=%d, bottom=%d)\n",
-    //        m_left, m_top, m_right, m_bottom);
-
-    if (useApplyCancel) {
-      _applyButton->setEnabled(false);
-      _cancelButton->setEnabled(false);
     }
 }
 
@@ -178,8 +169,8 @@ void ValueContWidget::setFeatureValue(const FeatureValue &fv) {
     int maxval = _mh << 8 | _ml;
     int curval = _sh << 8 | _sl;
 
-    if (debugValueWidgetSignals)
-        printf("(%s::%s) feature=0x%02x, curval=%d, maxval=%d\n", _cls, __func__, _featureCode, curval, maxval); fflush(stdout);
+    PRINTFCMF(debugValueWidgetSignals,
+              "feature=0x%02x, curval=%d, maxval=%d", _featureCode, curval, maxval);
 
     _guiChange = false;
 
@@ -196,8 +187,8 @@ void ValueContWidget::setFeatureValue(const FeatureValue &fv) {
     _maxValue->setText(s);
 
     if (useApplyCancel) {
-    _applyButton->setEnabled(false);
-    _cancelButton->setEnabled(false);
+        _applyButton->setEnabled(false);
+        _cancelButton->setEnabled(false);
     }
 
     _guiChange = true;
@@ -209,16 +200,14 @@ void ValueContWidget::setCurrentValue(uint16_t newval) {
     _guiChange = false;
 
      int curval = _sh << 8 | _sl;
-     if (debugValueWidgetSignals)
-         printf("(%s::%s) feature=0x%02x, curval=%d\n",
-                _cls, __func__, _featureCode , curval);   fflush(stdout);
+     PRINTFCMF(debugValueWidgetSignals, "feature=0x%02x, curval=%d", _featureCode , curval);
 
     _curSpinBox->setValue(curval);
     _curSlider->setValue(curval);
 
     if (useApplyCancel) {
-    _applyButton->setEnabled(false);
-    _cancelButton->setEnabled(false);
+        _applyButton->setEnabled(false);
+        _cancelButton->setEnabled(false);
     }
 
     _guiChange = true;
@@ -235,14 +224,13 @@ uint16_t ValueContWidget::getCurrentValue() {
 
 
 void ValueContWidget::onSliderValueChanged(int value) {
-   if (debugValueWidgetSignals)
-       printf("(%s::%s) NO ACTION feature=0x%02x, value=%d\n", _cls, __func__, _featureCode, value); fflush(stdout);
+   PRINTFCMF(debugValueWidgetSignals, "NO ACTION feature=0x%02x, value=%d",  _featureCode, value);
 }
 
 
 void ValueContWidget::onSliderReleased() {
-   if (debugValueWidgetSignals)
-      printf("(%s::%s) feature=0x%02x\n", _cls, __func__, _featureCode); fflush(stdout);
+   PRINTFCMF(debugValueWidgetSignals, "feature=0x%02x",  _featureCode);
+
    int newval = _curSpinBox->value();
 
    uint8_t new_sh = (newval >> 8) & 0xff;
@@ -263,9 +251,8 @@ void ValueContWidget::onSliderReleased() {
 
 
 void ValueContWidget::onSpinBoxValueChanged(int value) {
-   if (debugValueWidgetSignals)
-       printf("(%s::%s) feature=0x%02x, value=%d, _guiChange=%d\n",
-              _cls, __func__,   _featureCode, value, _guiChange); fflush(stdout);
+   PRINTFCMF(debugValueWidgetSignals,
+             "feature=0x%02x, value=%d, _guiChange=%d", _featureCode, value, _guiChange);
 
    int newval = _curSpinBox->value();
    // uint8_t new_sh = (newval >> 8) & 0xff;
@@ -289,11 +276,11 @@ void ValueContWidget::onSpinBoxValueChanged(int value) {
 }
 
 void ValueContWidget::onSpinBoxTimedOut() {
-   printf("(%s::%s) feature 0x%02x, _newval=%d, emitting featureValueChanged() \n", _cls, __func__, _featureCode, _newval); fflush(stdout);
+   PRINTFCM("feature 0x%02x, _newval=%d, emitting featureValueChanged()", _featureCode, _newval);
+
    uint8_t new_sh = (_newval >> 8) & 0xff;
    uint8_t new_sl = _newval & 0xff;
    emit featureValueChanged(_featureCode, new_sh, new_sl);
-
 }
 
 
@@ -302,9 +289,10 @@ void ValueContWidget::onSpinBoxEditingFinished() {
        printf("(%s::%s) \n", _cls, __func__); fflush(stdout);
 }
 
+
 void  ValueContWidget::onApplyButtonClicked(bool checked) {
-   if (debugValueWidgetSignals)
-       printf("(%s::%s) \n", _cls, __func__); fflush(stdout);
+   PRINTFCMF(debugValueWidgetSignals, "Executing");
+
    uint16_t oldval = _sh << 8 | _sl;
    if (_newval != oldval) {
       emit featureValueChanged(_featureCode, _newval >> 8, _newval & 0xff);
@@ -315,12 +303,12 @@ void  ValueContWidget::onApplyButtonClicked(bool checked) {
 
    _applyButton->setEnabled(false);
    _cancelButton->setEnabled(false);
-
 }
 
+
 void  ValueContWidget::onCancelButtonClicked(bool checked) {
-   if (debugValueWidgetSignals)
-       printf("(%s::%s) \n", _cls, __func__); fflush(stdout);
+    PRINTFCMF(debugValueWidgetSignals, "Executing");
+
    _applyButton->setEnabled(false);
    _cancelButton->setEnabled(false);
    uint16_t oldval = _sh<<8 | _sl;
@@ -328,16 +316,17 @@ void  ValueContWidget::onCancelButtonClicked(bool checked) {
    _newval = oldval;
 }
 
+
 // never triggered
 void ValueContWidget::focusOutEvent(QFocusEvent * event) {
-   if (debugValueWidgetSignals)
-       printf("(%s::%s) \n", _cls, __func__); fflush(stdout);
+    PRINTFCMF(debugValueWidgetSignals, "Executing"  );
+
     ValueBaseWidget::focusOutEvent(event);
 }
 
 void ValueContWidget::focusInEvent(QFocusEvent * event) {
-   if (debugValueWidgetSignals)
-       printf("(%s::%s) \n", _cls, __func__); fflush(stdout);
+    PRINTFCMF(debugValueWidgetSignals, "Executing" );
+
     ValueBaseWidget::focusInEvent(event);
 }
 
@@ -365,7 +354,6 @@ void ValueContWidget::leaveEvent(QEvent * event) {
 
 // void QWidget::mousePressEvent(QMouseEvent *event)
 // void QWidget::keyPressEvent(QKeyEvent *event)
-//void QWidget::focusInEvent(QFocusEvent *event)
 
 
 

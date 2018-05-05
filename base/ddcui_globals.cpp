@@ -27,5 +27,5 @@ const bool debugSignals            = false;
 const bool debugValueWidgetSignals = false;
 const bool debugFeatureLists       = false;
 const bool debugFeatureSelection   = false;
-const bool debugLayout             = true;
+const bool debugLayout             = false;
 const bool debugNcValues           = false;

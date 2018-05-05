@@ -43,7 +43,7 @@ public slots:
     void onInternalValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl);
 
 signals:
-    void valueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl);
+    void valueChanged(uint8_t featureCode, bool writeOnly, uint8_t sh, uint8_t sl);
 
 protected:
 

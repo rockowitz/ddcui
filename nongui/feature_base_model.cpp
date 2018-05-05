@@ -18,7 +18,7 @@
 
 using namespace std;
 
-static bool debugModel = false;
+static bool debugModel = true;
 
 FeatureBaseModel::FeatureBaseModel(Monitor * monitor)
 {
@@ -158,8 +158,9 @@ void   FeatureBaseModel::modelVcpValueSet(
         fv->_value.sh = feature_value->sh;
         fv->_value.sl = feature_value->sl;
 
-        PRINTFCM("Emitting signalFeatureAdded()");
-        emit signalFeatureAdded(*fv);
+        PRINTFCM("Emitting signalFeatureUpdated3(), feature code: 0x%02x, sl: 0x%02x",
+                 fv->_feature_code, feature_value->sl);
+        emit signalFeatureUpdated3(__func__, fv->_feature_code, feature_value->sh, feature_value->sl);
 // #endif
     }
 }
@@ -171,21 +172,21 @@ FeatureBaseModel::modelVcpValueUpdate(
         uint8_t   sh,
         uint8_t   sl)
 {
-    if (debugModel)
-        PRINTFCM("feature_code=0x%02x, sh=0x%02x, sl=0x%02x\n", feature_code, sh, sl);
+    PRINTFCMF(debugModel, "feature_code=0x%02x, sh=0x%02x, sl=0x%02x", feature_code, sh, sl);
 
     int ndx = modelVcpValueIndex(feature_code);
     // printf("(%s) ndx=%d\n", __func__, ndx);  fflush(stdout);
     assert (ndx >= 0);
-    if (debugModel)
-        PRINTFCM("Modifying existing FeatureValue");
+    // PRINTFCMF(debugModel, "Modifying existing FeatureValue");
 
     FeatureValue * fv =  _featureValues->at(ndx);
     fv->_value.sh = sh;
     fv->_value.sl = sl;
 
-    emit signalFeatureUpdated(feature_code);
-    emit signalFeatureUpdated3(feature_code, sh, sl);
+    // PRINTFCMF(debugModel, "Emitting signalFeatureUpdated()");
+    // emit signalFeatureUpdated(feature_code);
+    PRINTFCMF(debugModel, "Emitting signalFeatureUpdated3()");
+    emit signalFeatureUpdated3(__func__, feature_code, sh, sl);
 }
 
 

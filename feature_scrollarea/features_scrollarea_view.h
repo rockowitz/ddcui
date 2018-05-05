@@ -46,8 +46,8 @@ signals:
 public slots:
     // void startInitialLoad(void);
     void onEndInitialLoad(void);
-    void onUIValueChanged(uint8_t feature_code, uint8_t sh, uint8_t sl);
-    void onModelValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl);
+    void onUIValueChanged(uint8_t feature_code, bool writeOnly, uint8_t sh, uint8_t sl);
+    void onModelValueChanged(const char * caller, uint8_t featureCode, uint8_t sh, uint8_t sl);
     void onNcValuesSourceChanged(NcValuesSource newsrc);
     void onModelDdcError(DdcError erec);
 };

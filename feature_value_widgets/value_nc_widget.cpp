@@ -29,8 +29,8 @@ static bool debugWidget = false;
 ValueNcWidget::ValueNcWidget(QWidget *parent):
         ValueBaseWidget(parent)
 {
-   _cls                    = strdup(metaObject()->className());
-    // printf("(ValueNcWidget::ValueNcWidget) Starting.\n" ); fflush(stdout);
+   _cls = strdup(metaObject()->className());
+    // PRINTFCM("Starting." );
 
    QFont nonMonoFont8;
    nonMonoFont8.setPointSize(8);
@@ -48,7 +48,7 @@ ValueNcWidget::ValueNcWidget(QWidget *parent):
     // whatever the size, large or small, causes big gap between RW and feature value
     _cb->setMaximumWidth(320);
     // _cb->setFrameStyle(QFrame::Sunken | QFrame::Panel);   // not a method
-    _cb->setStyleSheet("background-color:white;");
+    _cb->setStyleSheet("background-color:white;color:black;");
 
     if (useApplyCancel) {
        sizePolicy->setControlType(QSizePolicy::PushButton);

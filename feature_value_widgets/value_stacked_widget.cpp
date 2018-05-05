@@ -14,8 +14,8 @@
 #include "base/ddcui_globals.h"
 #include "base/debug_utils.h"
 
-#include "nongui/simple_feature_value.h"
-#include "nongui/simple_feature_value_subject.h"
+// #include "nongui/simple_feature_value.h"
+// #include "nongui/simple_feature_value_subject.h"
 
 #include "feature_value_widgets/value_std_widget.h"
 #include "feature_value_widgets/value_cont_widget.h"
@@ -164,6 +164,7 @@ uint16_t ValueStackedWidget::getCurrentValue() {
     return _cur_stacked_widget->getCurrentValue();
 }
 
+
 // QSize ValueStackedWidget::sizeHint() const {
 //     // printf("(%s::%s) Starting\n", _cls, __func__);  fflush(stdout);
 //     return QSize(100,50);    // ???
@@ -204,19 +205,18 @@ void  ValueStackedWidget::onContainedWidgetChanged(uint8_t feature_code, uint8_t
 
    // printf("(%s::%s) Calling simpleFeatueValueNotify() \n", _cls, __func__);  fflush(stdout);
    // simpleFeatureValueNotify(SimpleFeatureValue(feature_code, sh, sl));
-
 }
+
 
 bool ValueStackedWidget::isSimpleNc() {
    bool result = (_pageno_selected == _pageno_nc);
-   // printf("(%s::%s) _pageno_selected=%d, _pageno_nc=%d, returning: %d\n",
-   //       _cls, __func__, _pageno_selected, _pageno_nc, result); fflush(stdout);
    return result;
 }
 
+
 void ValueStackedWidget::setNcValuesSource(NcValuesSource newsrc) {
-   printf("(%s::%s) newsrc = %d, _pageno_selected=%d, _pageno_nc=%d \n",
-         _cls, __func__, newsrc, _pageno_selected, _pageno_nc); fflush(stdout);
+   PRINTFCM("newsrc = %d, _pageno_selected=%d, _pageno_nc=%d",
+            newsrc, _pageno_selected, _pageno_nc);
 
    if (_pageno_selected == _pageno_nc) {
       _ncWidget->reloadComboBox(newsrc);

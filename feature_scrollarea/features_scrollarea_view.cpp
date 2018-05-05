@@ -54,6 +54,11 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
    // TODO:
    // free existing QScrollArea, QScrollAreaContents
 
+    QFrame * scrollWrap = new QFrame();
+    QVBoxLayout * wrapLayout = new QVBoxLayout;
+    wrapLayout->setSpacing(0);
+    wrapLayout->addWidget(new FeatureWidgetHeader());
+
     QScrollArea * scrollArea = new QScrollArea();
     // causes extra space between C/NC/T column and value column
     // VerticalScrollArea * scrollArea = new VerticalScrollArea();
@@ -76,7 +81,7 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
        _centralStackedWidget->setStyleSheet("background-color:chocolate:");
     }
 
-    vLayout->addWidget(new FeatureWidgetHeader());
+    // vLayout->addWidget(new FeatureWidgetHeader());
 
     int ct = 0;
     for (int feature_code = 0; feature_code < 256; feature_code++) {
@@ -100,6 +105,9 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
     scrollAreaContents->setLayout(vLayout);
     scrollArea->setWidget(scrollAreaContents);
 
+    wrapLayout->addWidget(scrollArea);
+    scrollWrap->setLayout(wrapLayout);
+
     // QObject::connect(_baseModel,   &FeatureBaseModel::signalFeatureUpdated,
     //                  scrollAreaContents, &FeaturesScrollAreaContents::featureUpdated);
 
@@ -107,9 +115,10 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
                      this,       &FeaturesScrollAreaView::onModelValueChanged);
 
 
-    /* int pageno = */ _centralStackedWidget->addWidget(scrollArea);
+    /* int pageno = */ _centralStackedWidget->addWidget(scrollWrap);   // was scrollArea
     // _centralStackedWidget->hide();    // no effect
-    _centralStackedWidget->setCurrentWidget(scrollArea);
+    _centralStackedWidget->setCurrentWidget(scrollWrap);    // was scrollArea
+
 
     if (!dimensionReportShown && debugLayout) {
         printf("(%s::%s) ---------------------> scrollAreaContents in QScrollArea\n",    _cls, __func__);
@@ -130,17 +139,27 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
 }
 
 
-void FeaturesScrollAreaView::onUIValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl) {
-   PRINTFCM("feature_code = 0x%02x, sh=0x%02x, sl=0x%02x", featureCode, sh, sl);
-   VcpRequest * rqst = new VcpSetRequest(featureCode, sl);   // n.b. ignoring sh
+void FeaturesScrollAreaView::onUIValueChanged(uint8_t featureCode, bool writeOnly, uint8_t sh, uint8_t sl) {
+   PRINTFCM("feature_code = 0x%02x, writeOnly=%s, sh=0x%02x, sl=0x%02x", featureCode, sbool(writeOnly), sh, sl);
+
+   VcpRequest * rqst = new VcpSetRequest(featureCode, sl, writeOnly);   // n.b. ignoring sh
    emit signalVcpRequest(rqst);  // used to call into monitor
+
+   if (featureCode == 0x05)  {    // restore factory defaults brightness/contrast
+      emit signalVcpRequest( new VcpGetRequest(0x10) );
+      emit signalVcpRequest( new VcpGetRequest(0x12) );    // what if contrast is unsupported feature?
+   }
+   // handle x04  Restore factory defaults
+   //        x06  Restore geometry defaults
+   //        x08  Restore color defaults
 }
 
 
 void FeaturesScrollAreaView::onModelValueChanged(
+      const char * caller,
       uint8_t featureCode, uint8_t sh, uint8_t sl)
 {
-   PRINTFCM("feature_code = 0x%02x, sh=0x%02x, sl=0x%02x", featureCode, sh, sl);
+   PRINTFCM("caller = %s, feature_code = 0x%02x, sh=0x%02x, sl=0x%02x", caller, featureCode, sh, sl);
 
    // find the entry in _widgets
    FeatureWidget * curWidget = _widgets[featureCode];
