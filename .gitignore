@@ -9,6 +9,5 @@ playitemmodel*
 *tmp
 temp/
 dumped/
-*.txt
 feature_scrollarea/unused/
-
+api_use.txt

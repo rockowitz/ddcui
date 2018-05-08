@@ -112,9 +112,6 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
     wrapLayout->addWidget(scrollArea);
     scrollWrap->setLayout(wrapLayout);
 
-    // QObject::connect(_baseModel,   &FeatureBaseModel::signalFeatureUpdated,
-    //                  scrollAreaContents, &FeaturesScrollAreaContents::featureUpdated);
-
     QObject::connect(_baseModel, &FeatureBaseModel::signalFeatureUpdated3,
                      this,       &FeaturesScrollAreaView::onModelValueChanged);
 
@@ -122,7 +119,6 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
     /* int pageno = */ _centralStackedWidget->addWidget(scrollWrap);   // was scrollArea
     // _centralStackedWidget->hide();    // no effect
     _centralStackedWidget->setCurrentWidget(scrollWrap);    // was scrollArea
-
 
     if (!dimensionReportShown && debugLayout) {
         printf("(%s::%s) ---------------------> scrollAreaContents in QScrollArea\n",    _cls, __func__);
