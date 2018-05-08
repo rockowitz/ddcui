@@ -60,7 +60,7 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent):
 
     if (debugLayout) {
         if (!dimensionReportShown) {
-            // printf("-------------------------------------------->\n"); fflush(stdout);
+            // printf("-------------------------------------------->\n");
             reportFrameDimensions(this, _cls, __func__, "ValueStackedWidget dimensions");
             dimensionReportShown = true;
         }
@@ -164,30 +164,12 @@ uint16_t ValueStackedWidget::getCurrentValue() {
 //     return QSize(100,50);    // ???
 // }
 
-#ifdef OLD
-void ValueStackedWidget::paintEvent(QPaintEvent *event) {
-            // printf("(%s::%s) Starting\n", _cls, __func__);  fflush(stdout);
-            const QRect rect = event->rect();
-            // const QRegion = event->region();
-            int x;
-            int y;
-            int width;
-            int height;
-            rect.getRect(&x, &y, &width, &height);
-            // _cls points to base class name, not this class
-            // printf("(ValueStackedWidget::%s) event rectangle: x:%d, y:%d, width:%d, height:%d\n",
-            //       __func__, x, y, width, height);  fflush(stdout);
-
-            this->ValueBaseWidget::paintEvent(event);
-}
-#endif
 
 
-void  ValueStackedWidget::onContainedWidgetChanged(uint8_t feature_code, uint8_t sh, uint8_t sl) {
-   if (debugValueWidgetSignals) {
-       printf("(%s::%s) feature_code=0x%02x, sh=0x%02x, sl=0x%02x\n",
-              _cls, __func__, feature_code, sh, sl);  fflush(stdout);
-   }
+void  ValueStackedWidget::onContainedWidgetChanged(uint8_t feature_code, uint8_t sh, uint8_t sl)
+{
+   PRINTFCMF(debugValueWidgetSignals,
+             "feature_code=0x%02x, sh=0x%02x, sl=0x%02x", feature_code, sh, sl);
    assert(feature_code == _featureCode);
 
    PRINTFCMF(debugValueWidgetSignals,
@@ -207,12 +189,12 @@ bool ValueStackedWidget::isSimpleNc() {
 
 
 void ValueStackedWidget::setNcValuesSource(NcValuesSource newsrc) {
-   PRINTFCM("newsrc = %d, _pageno_selected=%d, _pageno_nc=%d",
-            newsrc, _pageno_selected, _pageno_nc);
+   PRINTFCMF(debugNcValues,
+             "newsrc = %d, _pageno_selected=%d, _pageno_nc=%d",
+             newsrc, _pageno_selected, _pageno_nc);
 
    if (_pageno_selected == _pageno_nc) {
       _ncWidget->reloadComboBox(newsrc);
    }
 }
-
 

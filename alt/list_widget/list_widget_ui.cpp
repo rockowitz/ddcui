@@ -145,8 +145,8 @@ QWidget * initListWidget(
                      featureListWidget, SLOT(  endInitialLoad()));
     QObject::connect(baseModel,         SIGNAL(signalFeatureAdded(FeatureValue)),    // char is a built-in QMetaType, uint8_t is not
                      featureListWidget, SLOT(  featureAdded(FeatureValue)));
-    QObject::connect(baseModel,         SIGNAL(signalFeatureUpdated(char)),
-                     featureListWidget, SLOT(  featureUpdated(char)));
+    QObject::connect(baseModel,         SIGNAL(signalFeatureUpdated3(const char*,uint8_t,uint8_t,uint8_t)),
+                     featureListWidget, SLOT(  featureUpdated3(const char *, uint8_t, uint8_t, uint8_t)));
 
     // Use Qt5 function pointers
     QObject::connect(baseModel,         &FeatureBaseModel::signalFeatureAdded,

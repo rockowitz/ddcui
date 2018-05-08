@@ -25,7 +25,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 # CONFIG += apply_cancel
-CONFIG += alt_features
+# CONFIG += alt_features
 
 apply_cancel {
    APPLY_CANCEL_FLAG = 1

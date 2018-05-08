@@ -86,8 +86,10 @@ ValueContWidget::ValueContWidget(QWidget *parent):
     // connect( _curSlider,  SIGNAL(valueChanged(int)),
     //         this,        SLOT(  onSliderValueChanged(int)));
 
+#ifdef UNUSED
     connect( _curSlider,  SIGNAL(valueChanged(int)),
              this,        SLOT(  onSliderValueChanged(int)));
+#endif
 
     connect( _curSlider,  SIGNAL(sliderReleased()),
              this,        SLOT(  onSliderReleased()));
@@ -155,19 +157,19 @@ ValueContWidget::ValueContWidget(QWidget *parent):
        this->setStyleSheet("background-color:yellow;");
 
        if (!dimensionReportShown) {
-          PRINTFCM("curSlider dimensions\n");
+          PRINTFCM("curSlider dimensions");
           reportWidgetDimensions(_curSlider, _cls, __func__);
 
-           PRINTFCM("_curSpinBox dimensions\n");
+           PRINTFCM("_curSpinBox dimensions");
            reportWidgetDimensions(_curSpinBox, _cls, __func__);
 
-           PRINTFCM("_maxTitle dimensions\n");
+           PRINTFCM("_maxTitle dimensions");
            reportWidgetDimensions(_maxTitle, _cls, __func__);
 
-           PRINTFCM("_maxValue dimensions\n");
+           PRINTFCM("_maxValue dimensions");
            reportWidgetDimensions(_maxValue, _cls, __func__);
 
-           PRINTFCM("ValueContWidget dimensions\n");
+           PRINTFCM("ValueContWidget dimensions");
            reportWidgetDimensions(this, _cls, __func__);
            dimensionReportShown = true;
        }
@@ -182,8 +184,7 @@ void ValueContWidget::setFeatureValue(const FeatureValue &fv) {
     int maxval = _mh << 8 | _ml;
     int curval = _sh << 8 | _sl;
 
-    printf("\n");
-    PRINTFCMF(true,                   // debugValueWidgetSignals,
+    PRINTFCMF(debugValueWidgetSignals,
               "feature=0x%02x, curval=%d, maxval=%d", _featureCode, curval, maxval);
 
     _guiChange = false;
@@ -216,8 +217,7 @@ void ValueContWidget::setCurrentValue(uint16_t newval) {
     _guiChange = false;
 
      int curval = _sh << 8 | _sl;
-     // PRINTFCMF(debugValueWidgetSignals, "feature=0x%02x, curval=%d", _featureCode , curval);
-     PRINTFCMF(true, "feature=0x%02x, curval=%d", _featureCode , curval);
+     PRINTFCMF(debugValueWidgetSignals, "feature=0x%02x, curval=%d", _featureCode , curval);
 
     _curSpinBox->setValue(curval);
     _curSlider->setValue(curval);
@@ -275,8 +275,7 @@ void ValueContWidget::onSliderReleased() {
 
 
 void ValueContWidget::onSpinBoxValueChanged(int value) {
-
-   PRINTFCMF(true,                    // debugValueWidgetSignals,
+   PRINTFCMF(debugValueWidgetSignals,
              "feature=0x%02x, value=%d, _guiChange=%d", _featureCode, value, _guiChange);
 
    int newval = _curSpinBox->value();
@@ -296,11 +295,11 @@ void ValueContWidget::onSpinBoxValueChanged(int value) {
 #endif
       // QTimer::singleShot(1000, this, SLOT(onSpinBoxTimedOut()));
       if (_guiChange) {
-         PRINTFCM("Starting timer");
+         PRINTFCMF(debugValueWidgetSignals, "Starting timer");
          _spinBoxTimer->start();
       }
       else {
-         PRINTFCM("Not starting timer");
+         PRINTFCMF(debugValueWidgetSignals,"Not starting timer");
       }
 #ifdef APPLY_CANCEL
    }
@@ -309,7 +308,8 @@ void ValueContWidget::onSpinBoxValueChanged(int value) {
 }
 
 void ValueContWidget::onSpinBoxTimedOut() {
-   PRINTFCM("feature 0x%02x, _newval=%d, emitting featureValueChanged()", _featureCode, _newval);
+   PRINTFCMF(debugValueWidgetSignals,
+             "feature 0x%02x, _newval=%d, emitting featureValueChanged()", _featureCode, _newval);
 
    uint8_t new_sh = (_newval >> 8) & 0xff;
    uint8_t new_sl = _newval & 0xff;

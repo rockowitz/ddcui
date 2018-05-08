@@ -37,8 +37,7 @@
 #include "feature_scrollarea/feature_widget.h"
 
 
-// static bool dimensionReportShown = false;
-static bool debugMain = false;
+static bool debugWidget = false;
 
 
 FeaturesScrollAreaContents::FeaturesScrollAreaContents(QWidget * parent) :
@@ -123,7 +122,7 @@ void FeaturesScrollAreaContents::startInitialLoad(void)
 
 void FeaturesScrollAreaContents::endInitialLoad()
 {
-   PRINTFCM("Executing");
+   PRINTFCMF(debugWidget, "Executing");
    assert(_containingScrollArea);
 
    emit showCentralWidgetByWidget(_containingScrollArea);

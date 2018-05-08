@@ -53,8 +53,9 @@ public slots:
 
     void            featureAdded(FeatureValue fv);
     void            featureUpdated(char feature_code);
+    void            featureUpdated3(const char * caller, uint8_t feature_code, uint8_t sh, uint8_t sl);
 
-    void            featureChanged(uint8_t feature_code); //  override;    // virtual
+    void            featureChanged(char * caller, char feature_code, char sh, char sl); //  override;    // virtual
 
 protected:
     void            paintEvent(QPaintEvent *event);

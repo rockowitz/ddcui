@@ -153,10 +153,13 @@ void VcpThread::getvcp(uint8_t feature_code) {
 
 
 // Process RQSetVcp
-void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint8_t sl) {
-    PRINTFCM("Starting. feature_code=0x%02x. sl=0x%02x, writeOnly=%s", feature_code, sl, sbool(writeOnly));
-    DDCA_Display_Handle         dh;
+void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint8_t sl)
+{
+    PRINTFCMF(debugThread,
+              "Starting. feature_code=0x%02x. sl=0x%02x, writeOnly=%s",
+              feature_code, sl, sbool(writeOnly));
 
+    DDCA_Display_Handle         dh;
     DDCA_Status ddcrc = ddca_open_display(this->_dref, &dh);
     if (ddcrc != 0) {
         cout << "ddca_open_display() returned " << ddcrc << endl;
@@ -210,8 +213,9 @@ void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint8_t sl) {
     if (ddcrc == 0) {
         // _baseModel->modelVcpValueSet(feature_code, _dinfo->vcp_version, finfo, &valrec);
        if (!writeOnly) {
-           PRINTFCM("Calling _baseModel->modelVcpValueUpdate() after successful call to ddca_non_table_vcp_value()");
-            _baseModel->modelVcpValueUpdate(feature_code, 0, sl);
+           PRINTFCMF(debugThread,
+              "Calling _baseModel->modelVcpValueUpdate() after successful call to ddca_non_table_vcp_value()");
+           _baseModel->modelVcpValueUpdate(feature_code, 0, sl);
        }
     }
     else if (ddcrc == DDCRC_VERIFY) {

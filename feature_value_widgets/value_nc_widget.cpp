@@ -29,7 +29,7 @@ static bool debugWidget = false;
 ValueNcWidget::ValueNcWidget(QWidget *parent):
         ValueBaseWidget(parent)
 {
-   _cls = strdup(metaObject()->className());
+    _cls = strdup(metaObject()->className());
     // PRINTFCM("Starting." );
 
    QFont nonMonoFont8;
@@ -82,16 +82,16 @@ ValueNcWidget::ValueNcWidget(QWidget *parent):
     layout->setContentsMargins(0,0,0,0);
     setLayout(layout);
 
-    if (!dimensionReportShown && debugLayout) {
-        PRINTFCM("combobox dimensions\n");
-        reportWidgetDimensions(_cb, _cls, __func__);
-        PRINTFCM("ValueNcWidget dimensions\n");
-        reportWidgetDimensions(this, _cls, __func__);
-        dimensionReportShown = true;
+    if (debugLayout) {
+        if (!dimensionReportShown) {
+            PRINTFCM("combobox dimensions");
+            reportWidgetDimensions(_cb, _cls, __func__);
+            PRINTFCM("ValueNcWidget dimensions");
+            reportWidgetDimensions(this, _cls, __func__);
+            dimensionReportShown = true;
+        }
+        this->setStyleSheet("background-color:cyan;");
     }
-
-    if (debugLayout)
-       this->setStyleSheet("background-color:cyan;");
 
     QObject::connect(_cb,  SIGNAL(activated(int)),
                      this, SLOT(combobox_activated(int)) );
@@ -180,7 +180,7 @@ void ValueNcWidget::reloadComboBox(NcValuesSource newSource) {
 }
 
 void ValueNcWidget::setCurrentValue(uint16_t newval) {
-   PRINTFCM("Starting. feature 0x%02x, newval=x%04x", _featureCode, newval ); fflush(stdout);
+   PRINTFCMF(debugWidget, "Starting. feature 0x%02x, newval=x%04x", _featureCode, newval);
 
    _guiChange = false;
 
@@ -218,7 +218,7 @@ uint16_t ValueNcWidget::getCurrentValue() {
 }
 
 void ValueNcWidget::combobox_activated(int index) {
-   PRINTFCM("feature 0x%02x, index=%d", _featureCode, index);
+   PRINTFCMF(debugWidget, "feature 0x%02x, index=%d", _featureCode, index);
    int ndx = _cb->currentIndex();
    assert(ndx == index);
 
@@ -228,14 +228,14 @@ void ValueNcWidget::combobox_activated(int index) {
    uint8_t new_sl = i & 0xff;
 
    if (new_sh != _sh || new_sl != _sl) {
-      PRINTFCM("Value changed.  New sl: %u, _guiChange=%d\n", new_sl, _guiChange);
+      PRINTFCMF(debugWidget, "Value changed.  New sl: %u, _guiChange=%d\n", new_sl, _guiChange);
       if (_guiChange)
          emit featureValueChanged(_featureCode, 0, new_sl);
       _sh = 0;
       _sl = new_sl;
    }
    else {
-      PRINTFCM("Value not changed.");
+      PRINTFCMF(debugWidget, "Value not changed.");
    }
 }
 

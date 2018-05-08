@@ -287,7 +287,7 @@ void FeatureWidget::simpleFeatureValueChanged(SimpleFeatureValue fv) {
 
 bool FeatureWidget::isSimpleNc() {
    bool result = _valueWidget->isSimpleNc();
-   PRINTFCM("Returning: %s \n", sbool(result));
+   // PRINTFCM("Returning: %s \n", sbool(result));
    return result;
 }
 

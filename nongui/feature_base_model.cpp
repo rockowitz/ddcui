@@ -288,7 +288,7 @@ void FeatureBaseModel::dbgrpt() {
 
 
 void  FeatureBaseModel::modelStartInitialLoad(void) {
-    PRINTFCM("Emitting signalStartInitialLoad");
+    // PRINTFCM("Emitting signalStartInitialLoad");
     emit signalStartInitialLoad();
 }
 

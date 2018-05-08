@@ -136,6 +136,21 @@ void   FeatureListWidget::featureUpdated(char feature_code) {
     updateFeature(fv);
 }
 
+void   FeatureListWidget::featureUpdated3(
+          const char *  caller,
+          uint8_t feature_code,
+          uint8_t sh,
+          uint8_t sl)
+{
+    if (debugSignals)
+        printf("FeatureListWidget::%s) feature_code=0x%02x\n", __func__, feature_code); fflush(stdout);
+
+    FeatureValue * fv = _baseModel->modelVcpValueFind(feature_code);
+    assert(fv);
+    updateFeature(fv);
+}
+
+
 
 #ifdef OLD
 void    FeatureListWidget::featureChangedObserver(uint8_t feature_code) {
@@ -148,7 +163,7 @@ void    FeatureListWidget::featureChangedObserver(uint8_t feature_code) {
 #endif
 
 // #ifdef NO_FEATURE_CHANGED
-void    FeatureListWidget::featureChanged(uint8_t feature_code)  {
+void    FeatureListWidget::featureChanged(char * caller, char feature_code, char sh, char sl)  {
      if (debugSignals)
          printf("FeatureListWidget::%s) feature_code=0x%02x\n", __func__, feature_code); fflush(stdout);
      FeatureValue * fv = _baseModel->modelVcpValueFind(feature_code);

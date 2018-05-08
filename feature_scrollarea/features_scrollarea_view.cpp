@@ -48,7 +48,7 @@ void FeaturesScrollAreaView::freeContents(void) {
 
 
 void FeaturesScrollAreaView::onEndInitialLoad(void) {
-   PRINTFCM("Starting");
+   // PRINTFCM("Starting");
    if (_monitor->_curFeaturesView != Monitor::FEATURES_VIEW_SCROLLAREA_VIEW) {
       PRINTFCM("Not FEATURES_VIEW_SCROLLAREA, skipping");
       return;
@@ -121,11 +121,11 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
     _centralStackedWidget->setCurrentWidget(scrollWrap);    // was scrollArea
 
     if (!dimensionReportShown && debugLayout) {
-        printf("(%s::%s) ---------------------> scrollAreaContents in QScrollArea\n",    _cls, __func__);
+        PRINTFCM("---------------------> scrollAreaContents in QScrollArea");
         reportWidgetDimensions(scrollAreaContents,    _cls, __func__, "scrollAreaContents in QScrollArea");
-        printf("(%s::%s) ---------------------> QScrollArea in _centralStackedWidget\n", _cls, __func__);
+        PRINTFCM("---------------------> QScrollArea in _centralStackedWidget");
         reportWidgetDimensions(scrollArea,            _cls, __func__, "QScrollArea in _centralStackedWidget");
-        printf("(%s::%s) ---------------------> centralStackedWidget\n",                 _cls, __func__);
+        PRINTFCM("---------------------> centralStackedWidget" );
         reportWidgetDimensions(_centralStackedWidget, _cls, __func__, "centralStackedWidget");
         dimensionReportShown = true;
     }
@@ -140,7 +140,9 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
 
 
 void FeaturesScrollAreaView::onUIValueChanged(uint8_t featureCode, bool writeOnly, uint8_t sh, uint8_t sl) {
-   PRINTFCM("feature_code = 0x%02x, writeOnly=%s, sh=0x%02x, sl=0x%02x", featureCode, sbool(writeOnly), sh, sl);
+   PRINTFCMF(debugSignals,
+             "feature_code = 0x%02x, writeOnly=%s, sh=0x%02x, sl=0x%02x",
+             featureCode, sbool(writeOnly), sh, sl);
 
    FeatureValue * curFv = _baseModel->modelVcpValueFind(featureCode);
    if (curFv && curFv->_value.sh == sh && curFv->_value.sl == sl) {
@@ -165,7 +167,9 @@ void FeaturesScrollAreaView::onModelValueChanged(
       const char * caller,
       uint8_t featureCode, uint8_t sh, uint8_t sl)
 {
-   PRINTFCM("caller = %s, feature_code = 0x%02x, sh=0x%02x, sl=0x%02x", caller, featureCode, sh, sl);
+   PRINTFCMF(debugSignals,
+             "caller = %s, feature_code = 0x%02x, sh=0x%02x, sl=0x%02x",
+             caller, featureCode, sh, sl);
 
    // find the entry in _widgets
    FeatureWidget * curWidget = _widgets[featureCode];
@@ -177,9 +181,10 @@ void FeaturesScrollAreaView::onModelValueChanged(
 
 
 void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc) {
-   PRINTFCM("newsrc=%d - %s, _curNcValuesSource=%d - %s",
-            newsrc,             (char*) ncValuesSourceName(newsrc),
-            _curNcValuesSource, (char*) ncValuesSourceName(_curNcValuesSource));  fflush(stdout);
+   PRINTFCMF(debugSignals,
+             "newsrc=%d - %s, _curNcValuesSource=%d - %s",
+             newsrc,             (char*) ncValuesSourceName(newsrc),
+             _curNcValuesSource, (char*) ncValuesSourceName(_curNcValuesSource));
 
    if (newsrc != _curNcValuesSource) {
       // reportWidgetChildren(_scrollAreaContents, (const char *) "Children of FeatuersScrollAreaView");

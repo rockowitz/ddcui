@@ -391,8 +391,8 @@ void MainWindow::on_actionCapabilities_triggered()
 // Features Slots - Common Functions
 
 void MainWindow::loadMonitorFeatures(Monitor * monitor) {
-    PRINTFCM("monitor=%p", monitor);
-    monitor->dbgrpt();
+    // PRINTFCM("monitor=%p", monitor);
+    // monitor->dbgrpt();
     QString msg = QString("Reading monitor features...");
     _ui->statusBar->showMessage(msg);
 
@@ -418,7 +418,7 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
     // causes async feature reads in VcpThread, then load feature values from model into widgets
     monitor->_baseModel->setFeatureList(features_to_show);
 
-    PRINTFCM("Done");
+    // PRINTFCM("Done");
 }
 
 
