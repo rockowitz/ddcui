@@ -1,6 +1,8 @@
 #ifndef DDCUI_GLOBALS_H
 #define DDCUI_GLOBALS_H
 
+#include "config.h"
+
 #include <QtCore/QtCore>
 #include <QtWidgets/QListWidgetItem>
 
@@ -15,8 +17,6 @@ extern const bool debugFeatureSelection   ;
 extern const bool debugNcValues;
 extern const bool debugLayout             ;
 
-const bool useApplyCancel    = false;
-const bool enableAltFeatures = false;
 
 
 #define PRINTFCM(__FMT__, ...) \
@@ -34,5 +34,16 @@ const bool enableAltFeatures = false;
 inline const char * sbool(bool val) { return (val) ? "true" : "false"; }
 
 #define SBOOL(__v) ( (__v) ? "true" : "false")
+
+// #define APPLY_CANCEL
+// #define ALT_MOCK_FEATURES
+
+#ifdef APPLY_CANCEL
+const bool useApplyCancel    = true;
+#endif
+#ifdef ALT_FEATURES
+const bool enableAltFeatures = true;
+#endif
+
 
 #endif // DDCUI_GLOBALS_H

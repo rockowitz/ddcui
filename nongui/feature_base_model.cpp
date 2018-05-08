@@ -18,14 +18,16 @@
 
 using namespace std;
 
-static bool debugModel = true;
+static bool debugModel = false;
 
 FeatureBaseModel::FeatureBaseModel(Monitor * monitor)
 {
     _cls                    = metaObject()->className();
     _monitor                = monitor;
     _featureValues          = new QVector<FeatureValue*>();
+#ifdef FEATURE_CHANGE_OBSERVER
     _featureChangeObservers = new QVector<FeatureChangeObserver*>;
+#endif
     ddca_feature_list_clear(&_featuresChecked);
 }
 
@@ -147,21 +149,15 @@ void   FeatureBaseModel::modelVcpValueSet(
         // notifyFeatureChangeObservers(feature_code);   // alternative
     }
     else {
-// #ifdef OLD
-        PRINTFCM("Modifying existing FeatureValue");
+        // PRINTFCM("Modifying existing FeatureValue");
+
         FeatureValue * fv =  _featureValues->at(ndx);
-       // FeatureValue * fv = modelVcpValueAt(ndx);
-        // need to test _mh = 255, _ml = 0 ?
-
-        // TODO: free old values
-
         fv->_value.sh = feature_value->sh;
         fv->_value.sl = feature_value->sl;
 
         PRINTFCM("Emitting signalFeatureUpdated3(), feature code: 0x%02x, sl: 0x%02x",
                  fv->_feature_code, feature_value->sl);
         emit signalFeatureUpdated3(__func__, fv->_feature_code, feature_value->sh, feature_value->sl);
-// #endif
     }
 }
 
@@ -307,6 +303,7 @@ void  FeatureBaseModel::setStatusMsg(QString msg) {
 }
 
 
+#ifdef FEATURE_CHANGE_OBSERVER
 void  FeatureBaseModel::addFeatureChangeObserver(FeatureChangeObserver* observer) {
     _featureChangeObservers->append(observer);
 }
@@ -325,3 +322,4 @@ void FeatureBaseModel::notifyFeatureChangeObservers(uint8_t feature_code) {
     }
 #endif
 }
+#endif

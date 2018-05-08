@@ -12,7 +12,7 @@
 
 #include <ddcutil_types.h>
 
-#include "../feature_scrollarea/unused/page_change_observer.h"
+// #include "../feature_scrollarea/unused/page_change_observer.h"
 #include "base/ddcui_globals.h"
 #include "base/other_options_state.h"
 
@@ -32,7 +32,8 @@ class MainWindow;
 }
 
 
-class MainWindow : public QMainWindow, public PageChangeObserver
+class MainWindow : public QMainWindow
+// , public PageChangeObserver
 {
     Q_OBJECT
 
@@ -48,8 +49,8 @@ public:
     ~MainWindow();
 
     void reportDdcApiError(QString funcname, int rc) const;
-    void pageChanged(int pageno) override;
-    void pageChangedByWidget(QWidget * widget) override;
+    // void pageChanged(int pageno) override;
+    // void pageChangedByWidget(QWidget * widget) override;
 
 #ifdef UNUSED
     DDCA_Feature_Subset_Id feature_list_id() const;
@@ -71,15 +72,17 @@ private slots:
     // View Menu
     void on_actionMonitorSummary_triggered();
     void on_actionCapabilities_triggered();
+#ifdef ALT_FEATURES
     void on_actionFeaturesTableView_triggered();
     void on_actionFeaturesListView_triggered();
     void on_actionFeaturesListWidget_triggered();
     void on_actionFeaturesScrollAreaMock_triggered();
+#endif
     void on_actionFeaturesScrollArea_triggered();
 
     // Options Menu
-    void for_actionFeatureSelectionDialog_accepted();
     void on_actionFeatureSelectionDialog_triggered();
+    void for_actionFeatureSelectionDialog_accepted();
 #ifdef UNUSED
     void actionFeatureSelectionDialog_destroyed(QObject * obj);
     void on_actionFeatureSelection_triggered();
@@ -87,7 +90,7 @@ private slots:
 #endif
 
     void on_actionOtherOptionsDialog_triggered();
-    void on_actionOtherOptionsDialog_ncValuesSourceChanged(NcValuesSource valuesSource);
+    void for_actionOtherOptionsDialog_ncValuesSourceChanged(NcValuesSource valuesSource);
 #ifdef UNUSED
     void on_actionOtherOptionsDialog_accepted();
 #endif
@@ -128,8 +131,8 @@ private:
     WaitingSpinnerWidget*    _spinner;
     QMessageBox*             _loadingMsgBox;
 
-    FeatureSelectionDialog*  _fsd;
-    OtherOptionsDialog*      _ood;       // for future use
+    FeatureSelectionDialog*  _fsd = NULL;
+    OtherOptionsDialog*      _ood = NULL;       // for future use
 };
 
 #endif // MAINWINDOW_H

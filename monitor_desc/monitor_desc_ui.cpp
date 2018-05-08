@@ -74,6 +74,10 @@ void initPlaintextWidget(
       plainTextWidget->setLineWrapMode(QPlainTextEdit::WidgetWidth);
       plainTextWidget->setReadOnly(true);
 
+      QFont fixedFont("Courier");
+      fixedFont.setPointSize(10);
+      plainTextWidget->setFont(fixedFont);
+
       // AMEN!
       QHBoxLayout *
       pageMoninfoLayout = new QHBoxLayout(page_widget);

@@ -28,6 +28,7 @@
 
 #include "feature_value_widgets/value_stacked_widget.h"
 
+#ifdef ALT_FEATURES
 #include "alt/list_model_view/feature_item_model.h"
 #include "alt/list_model_view/list_model_view_ui.h"
 #include "alt/list_widget/list_widget_ui.h"
@@ -35,6 +36,7 @@
 #include "alt/table_model_view/feature_value_tableitem_delegate.h"
 #include "alt/table_model_view/table_model_view_ui.h"
 #include "alt/table_widget/table_widget_ui.h"
+#endif
 
 #include "feature_scrollarea/feature_widget.h"
 #include "feature_scrollarea/features_scrollarea_contents.h"
@@ -166,6 +168,7 @@ void MainWindow::initMonitors() {
               curMonitor,
               _ui->centralWidget);
 
+#ifdef ALT_FEATURES
         if (enableAltFeatures) {
 
            initListWidget(
@@ -194,6 +197,7 @@ void MainWindow::initMonitors() {
    //              );
 
         }
+#endif
 
         initFeaturesScrollAreaView(
               curMonitor,
@@ -331,8 +335,6 @@ void MainWindow::on_actionMonitorSummary_triggered()
     int pageno = monitor->_pageno_moninfo;
     moninfoPlainText->setPlainText(s);
     free(s);
-    QFont fixedFont("Courier");
-    moninfoPlainText->setFont(fixedFont);
 
     _curView = View::MonitorView;
     _ui->actionMonitorSummary->setChecked(true);
@@ -364,7 +366,7 @@ void MainWindow::on_actionCapabilities_triggered()
        DDCA_Status ddcrc = capture_capabilities_report(monitor, dref, &caps_report);
        if (ddcrc != 0) {
            reportDdcApiError("ddca_open_display", ddcrc);
-           printf("(%s::%s) capture_capabilites_report returned %d\n", _cls, __func__, ddcrc);
+           PRINTFCM("capture_capabilites_report returned %d", ddcrc);
        }
        else {
            // cout << "Parsed capabilities: " << endl;
@@ -375,8 +377,6 @@ void MainWindow::on_actionCapabilities_triggered()
            int pageno = monitor->_pageno_capabilities;
            capabilitiesPlainText->setPlainText(caps_report);
            free(caps_report);
-           QFont fixedFont("Courier");
-           capabilitiesPlainText->setFont(fixedFont);
 
            // show widget
            _curView = View::CapabilitiesView;
@@ -398,29 +398,22 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
 
     DDCA_Feature_List features_to_show = monitor->getFeatureList(_feature_selector->_featureListId);
 
-    char * s = NULL;
-    if (debugFeatureLists) {
-        s = ddca_feature_list_string(&features_to_show, NULL, (char*) " ");
-        PRINTFCM("features_to_show: %s", s);
-    }
+    PRINTFCMF(debugFeatureLists,
+        "features_to_show: %s", ddca_feature_list_string(&features_to_show, NULL, (char*)" "));
 
     if (_feature_selector->_respectCapabilities) {
        // need to test _parsed_caps is valid
        DDCA_Feature_List caps_features =
              ddca_feature_list_from_capabilities(monitor->_baseModel->_parsed_caps);
 
-       if (debugFeatureLists) {
-           char * s = ddca_feature_list_string(&caps_features, NULL, (char*) " ");
-           PRINTFCM("Capabilities features: %s", s);
-       }
+       PRINTFCMF(debugFeatureLists,
+           "Capabilities features: %s", ddca_feature_list_string(&caps_features, NULL, (char*)" "));
 
        features_to_show = ddca_feature_list_and(&features_to_show, &caps_features);
     }
 
-    if (debugFeatureLists) {
-        s = ddca_feature_list_string(&features_to_show, NULL, (char*) " ");
-        PRINTFCM("Final features_to_show: %s", s); fflush(stdout);
-    }
+    PRINTFCMF(debugFeatureLists,
+        "Final features_to_show: %s", ddca_feature_list_string(&features_to_show, NULL, (char*)" "));
 
     // causes async feature reads in VcpThread, then load feature values from model into widgets
     monitor->_baseModel->setFeatureList(features_to_show);
@@ -431,6 +424,7 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
 
 // *** Features slots - Alternative feature views ***
 
+#ifdef ALT_FEATURES
 void MainWindow::on_actionFeaturesTableView_triggered()
 {
     printf("(=============> MainWindow::on_actionFeatures_TableView_triggered)\n");
@@ -482,8 +476,9 @@ void MainWindow::on_actionFeaturesListWidget_triggered()
     _ui->centralWidget->setCurrentIndex(monitor->_pageno_listWidget);
     _ui->centralWidget->show();
 }
+#endif
 
-
+#ifdef ALT_FEATURES
 void MainWindow::on_actionFeaturesScrollAreaMock_triggered()
 {
     printf("(MainWindow::%s) Starting\n", __func__);  fflush(stdout);
@@ -595,6 +590,7 @@ void MainWindow::on_actionFeaturesScrollAreaMock_triggered()
     _ui->centralWidget->setCurrentWidget(page_features_scrollarea);
     _ui->centralWidget->show();
 }
+#endif
 
 // *** End Slots for Alternative Features Views ***
 
@@ -662,6 +658,7 @@ void MainWindow::on_actionFeatureSelection_triggered()
 void MainWindow::on_actionFeatureSelectionDialog_triggered()
 {
    //  cout << "(on_actionFeatureSelectionDialog_triggered)" << endl;
+   PRINTFCM("Executing. _fsd=%p", _fsd);
 
     // FeatureSelectionDialog*
    if (_fsd) {
@@ -734,16 +731,18 @@ void MainWindow::on_actionOtherOptionsDialog_triggered()
 {
      // TODO: allocate once and save dialog, cf feature selection
      // display dialog box for selecting features
-     cout << "(on_actionOtherOptionsDialog_triggered)" << endl;
+     std::cout << "(on_actionOtherOptionsDialog_triggered)" << std::endl;
 
     OtherOptionsDialog* dialog = new OtherOptionsDialog(this->_otherOptionsState, this);
     QObject::connect(dialog,   &OtherOptionsDialog::ncValuesSourceChanged,
-                     this,     &MainWindow::on_actionOtherOptionsDialog_ncValuesSourceChanged);
+                     this,     &MainWindow::for_actionOtherOptionsDialog_ncValuesSourceChanged);
     dialog->exec();
     delete dialog;
 }
 
-void MainWindow::on_actionOtherOptionsDialog_ncValuesSourceChanged(NcValuesSource valuesSource )
+// named for_ .. instead of on_ so that connectSlotsByName doesn't report this as slot
+// for which it could find no signal
+void MainWindow::for_actionOtherOptionsDialog_ncValuesSourceChanged(NcValuesSource valuesSource )
 {
    printf("%s::%s) valuesSource=%d\n", _cls, __func__, valuesSource); fflush(stdout);
 
@@ -832,7 +831,7 @@ void MainWindow::showCentralWidgetByWidget(QWidget * pageWidget) {
    }
 }
 
-
+#ifdef UNUSED
 void MainWindow::pageChanged(int pageno) {
     printf("(%s::%s) pageno: %d\n", _cls, __func__, pageno); fflush(stdout);
    //  std::cout << "    objectName: " << objectName.toStdString() << std::endl;
@@ -845,7 +844,7 @@ void MainWindow::pageChangedByWidget(QWidget * widget) {
    //  std::cout << "    objectName: " << objectName.toStdString() << std::endl;
     showCentralWidgetByWidget(widget);
 }
-
+#endif
 
 
 #ifdef UNUSED

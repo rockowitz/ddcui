@@ -1,0 +1,23 @@
+#ifndef DDCUI_CMAKE_CONFIG_H
+#define DDCUI_CMAKE_CONFIG_H
+
+// config.h template file, CMake version 
+
+#cmakedefine APPLY_CANCEL
+#cmakedefine ALT_FEATURES 
+ 
+// not working #cmakedefine ALT_FEATURES  @ALT_FEATURES_DEFINED@
+
+// #ifdef APPLY_CANCEL
+// #warning "APPLY_CANCEL IS defined"
+// #else
+// #warning "APPLY_CANCEL is NOT defined"
+// #endif
+
+// #ifdef ALT_FEATURES
+// #warning "ALT_FEATURES IS defined"
+// #else
+// #warning "ALT_FEATURES is NOT defined"
+// #endif
+
+#endif

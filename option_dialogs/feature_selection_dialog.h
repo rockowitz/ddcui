@@ -46,10 +46,10 @@ private slots:
 #endif
 
 private:
+    // keep in order for constructor initializers
+    char *                      _cls;
     Ui::FeatureSelectionDialog* _ui;
     FeatureSelector*            _featureSelector;
-    // MainWindow *             _mainWindow;
-    char *                      _cls;
 };
 
 #endif // FEATURESELECTIONDIALOG_H

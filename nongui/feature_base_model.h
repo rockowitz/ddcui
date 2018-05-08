@@ -8,11 +8,13 @@
 #include "ddcutil_types.h"
 
 #include "nongui/ddc_error.h"
+#ifdef FEATURE_CHANGE_OBSERVER
 #include "nongui/feature_change_observer.h"
+#endif
 #include "nongui/feature_value.h"
 #include "nongui/vcprequest.h"
 
-typedef void (*NotifyFeatureChanged)(uint8_t feature_code);
+// typedef void (*NotifyFeatureChanged)(uint8_t feature_code);
 
 class Monitor;
 
@@ -53,8 +55,10 @@ public:
              char *               capabilities_string,
              DDCA_Capabilities *  parsed_capabilities);
     void dbgrpt();
+#ifdef FEATURE_CHANGE_OBSERVER
  // void addFeatureChangedObserver(NotifyFeatureChanged func);
     void addFeatureChangeObserver(FeatureChangeObserver *observer);
+#endif
     void setFeatureList(DDCA_Feature_List featureList);
     void setFeatureChecked(uint8_t featureCode);
 
@@ -92,7 +96,9 @@ private:
     QVector<FeatureValue*> * _featureValues;
     DDCA_MCCS_Version_Spec   _vspec;
 
+#ifdef FEATURE_CHANGE_OBSERVER
     QVector<FeatureChangeObserver*> * _featureChangeObservers;
+#endif
 };
 
 #endif // FEATURE_BASE_MODEL_H

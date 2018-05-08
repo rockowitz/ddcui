@@ -33,11 +33,13 @@ public:
     QAction     *actionMonitorSummary;
     QAction     *actionCapabilities;
 
+#ifdef ALT_FEATURES
     QAction     *actionFeaturesListWidget;        // for ListWidget
     QAction     *actionFeaturesListView;
     QAction     *actionFeaturesTableView;
-    QAction     *actionFeaturesScrollArea;
     QAction     *actionFeaturesScrollAreaMock;
+#endif
+    QAction     *actionFeaturesScrollArea;
 
     // Options Menu
     QAction     *actionFeatureSelection;
@@ -79,6 +81,7 @@ private:
         actionCapabilities->setObjectName(QString::fromUtf8("actionCapabilities"));
         actionCapabilities->setCheckable(true);
 
+#ifdef ALT_FEATURES
         if (enableAltFeatures) {
            actionFeaturesListWidget = new QAction(MainWindow);
            actionFeaturesListWidget->setObjectName(QString::fromUtf8("actionFeaturesListWidget"));
@@ -92,6 +95,7 @@ private:
            actionFeaturesScrollAreaMock = new QAction(MainWindow);
            actionFeaturesScrollAreaMock->setObjectName(QString::fromUtf8("actionFeaturesScrollAreaMock"));
         }
+#endif
 
         actionFeaturesScrollArea = new QAction(MainWindow);
         actionFeaturesScrollArea->setObjectName(QString::fromUtf8("actionFeaturesScrollArea"));
@@ -104,9 +108,11 @@ private:
         viewGroup->addAction(actionMonitorSummary);
         viewGroup->addAction(actionCapabilities);
         viewGroup->addAction(actionFeaturesScrollArea);
+#ifdef ALT_FEATURES
         if (enableAltFeatures) {
            // TODO
         }
+#endif
         // actionMonitorSummary->setChecked(true);   // ???
 
 
@@ -197,16 +203,19 @@ private:
 
        menuView->addAction(actionMonitorSummary);
        menuView->addAction(actionCapabilities);
+#ifdef ALT_FEATURES
        if (enableAltFeatures) {
            menuView->addAction(actionFeaturesListWidget);
            menuView->addAction(actionFeaturesListView);
            menuView->addAction(actionFeaturesTableView);
            menuView->addAction(actionFeaturesScrollAreaMock);
        }
+#endif
        menuView->addAction(actionFeaturesScrollArea);
 
        actionMonitorSummary->setText(    QApplication::translate("MainWindow", "&Monitor Summary", 0));
        actionCapabilities->setText(      QApplication::translate("MainWindow", "&Capabilities", 0));
+#ifdef ALT_FEATURES
        if (enableAltFeatures) {
           actionFeaturesListWidget->setText(QApplication::translate("MainWindow", "&Features - ListWidget", 0));
           actionFeaturesListView->setText(  QApplication::translate("MainWindow", "&Features - ListView",   0));
@@ -217,8 +226,11 @@ private:
           actionFeaturesScrollArea->setText(QApplication::translate("MainWindow", "Features - &ScrollArea", 0));
        }
        else {
+#endif
           actionFeaturesScrollArea->setText(QApplication::translate("MainWindow", "&Features", 0));
+#ifdef ALT_FEATURES
        }
+#endif
        menuHelp->addAction(actionAbout);
        menuHelp->addAction(actionAboutQt);
 

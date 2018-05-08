@@ -58,31 +58,25 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent):
     _stacked->addWidget(_resetWidget);
     _stacked->addWidget(_2ButtonWidget);
 
-//    // ???
-//    QVBoxLayout * layout = new QVBoxLayout;
-//    layout->setContentsMargins(0,0,0,0);
-//    layout->addWidget(_stacked);
-//    setLayout(layout);
-
-    if (!dimensionReportShown && debugLayout) {
-        // printf("-------------------------------------------->\n"); fflush(stdout);
-        reportFrameDimensions(this, _cls, __func__, "ValueStackedWidget dimensions");
-        dimensionReportShown = true;
+    if (debugLayout) {
+        if (!dimensionReportShown) {
+            // printf("-------------------------------------------->\n"); fflush(stdout);
+            reportFrameDimensions(this, _cls, __func__, "ValueStackedWidget dimensions");
+            dimensionReportShown = true;
+        }
+        this->setStyleSheet("background-color:red;");
     }
-
-    if (debugLayout)
-       this->setStyleSheet("background-color:red;");
 
     _pageno_selected = _pageno_std;
     _stacked->setCurrentIndex(_pageno_selected);
     _cur_stacked_widget = _stdWidget;
 
-    ValueStackedWidget * curWidget = this;  // still treated as ValueBaseWidget* in SIGNAL/SLOT versions
+    // ValueStackedWidget * curWidget = this;  // still treated as ValueBaseWidget* in SIGNAL/SLOT versions
 
     QWidget::connect(_contWidget,  &ValueContWidget::featureValueChanged,
-                     curWidget,    &ValueStackedWidget::onContainedWidgetChanged);
+                     this,         &ValueStackedWidget::onContainedWidgetChanged);
 
-    QWidget::connect(_ncWidget,    &ValueContWidget::featureValueChanged,
+    QWidget::connect(_ncWidget,    &ValueNcWidget::featureValueChanged,
                      this,         &ValueStackedWidget::onContainedWidgetChanged);
 
     QWidget::connect(_resetWidget, &ValueResetWidget::featureValueChanged,
@@ -196,11 +190,9 @@ void  ValueStackedWidget::onContainedWidgetChanged(uint8_t feature_code, uint8_t
    }
    assert(feature_code == _featureCode);
 
-   // if (debugValueWidgetSignals)
-       // printf("(%s::%s) Calling emit featureValueChanged()\n", _cls, __func__);  fflush(stdout);
-   // emit featureValueChanged(feature_code, sh, sl);
-   if (debugValueWidgetSignals)
-       printf("(%s::%s) Calling emit stackedFeatureValueChanged()\n", _cls, __func__);  fflush(stdout);
+   PRINTFCMF(debugValueWidgetSignals,
+             "Calling emit stackedFeatureValueChanged(), feature_code=0x%02x, sh=0x%02x, sl=0x%02x",
+             feature_code, sh, sl);
    emit stackedFeatureValueChanged(feature_code, sh, sl);
 
    // printf("(%s::%s) Calling simpleFeatueValueNotify() \n", _cls, __func__);  fflush(stdout);

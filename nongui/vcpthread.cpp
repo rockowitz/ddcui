@@ -198,9 +198,9 @@ void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint8_t sl) {
                 // how to handle?
             }
             else {
-                // printf("ddca_get_nontable_vcp_value() returned:\n");
-                // printf("  opcode:   0x%02x, mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x\n",
-                //        feature_code, valrec.mh, valrec.ml, valrec.sh, valrec.sl);
+                PRINTFCM("ddca_get_nontable_vcp_value() after DDCRC_VERIFY:");
+                PRINTFCM("  opcode: 0x%02x, mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x",
+                         feature_code, valrec.mh, valrec.ml, valrec.sh, valrec.sl);
                 PRINTFCM("Calling _baseModel->modelVcpValueUpdate() after failed verification");
                 _baseModel->modelVcpValueUpdate(feature_code, valrec.sh, valrec.sl);
             }

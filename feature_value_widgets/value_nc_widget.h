@@ -7,6 +7,7 @@
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QPushButton>
 
+#include "config.h"
 #include "base/other_options_state.h"
 #include "feature_value_widgets/value_base_widget.h"
 
@@ -29,8 +30,10 @@ public:
 
 private:
     QComboBox *    _cb;
+#ifdef APPLY_CANCEL
     QPushButton *  _applyButton;
     QPushButton *  _cancelButton;
+#endif
     NcValuesSource _curNcValuesSource = NcValuesSourceUnset;
     bool           _guiChange = false;
 

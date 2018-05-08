@@ -50,6 +50,7 @@ ValueNcWidget::ValueNcWidget(QWidget *parent):
     // _cb->setFrameStyle(QFrame::Sunken | QFrame::Panel);   // not a method
     _cb->setStyleSheet("background-color:white;color:black;");
 
+#ifdef APPLY_CANCEL
     if (useApplyCancel) {
        sizePolicy->setControlType(QSizePolicy::PushButton);
        _applyButton  = new QPushButton("Apply");
@@ -61,11 +62,13 @@ ValueNcWidget::ValueNcWidget(QWidget *parent):
        _cancelButton->setSizePolicy(*sizePolicy);
        _cancelButton->setFont(nonMonoFont9);
     }
+#endif
 
     QHBoxLayout * layout = new QHBoxLayout();
     layout->addSpacing(5);
     layout->addWidget(_cb);
     layout->addStretch(1);
+#ifdef APPLY_CANCEL
     if (useApplyCancel) {
        layout->addWidget(_applyButton);
        layout->addWidget(_cancelButton);
@@ -73,6 +76,9 @@ ValueNcWidget::ValueNcWidget(QWidget *parent):
     else {
        layout->addSpacing(10);
     }
+#else
+    layout->addSpacing(10);
+#endif
     layout->setContentsMargins(0,0,0,0);
     setLayout(layout);
 

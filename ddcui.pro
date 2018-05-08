@@ -24,6 +24,33 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+# CONFIG += apply_cancel
+CONFIG += alt_features
+
+apply_cancel {
+   APPLY_CANCEL_FLAG = 1
+   message("setting APPLY_CANCEL_FLAG");
+}
+else {
+   message("not setting APPLY_CANCEL_FLAG")
+   APPLY_CANCEL_FLAG = 0
+}
+  
+CONFIG(alt_features) {
+  message("setting ALT_FEATURES_FLAG")
+  ALT_FEATURES_FLAG = 1
+}
+else {
+  message("NOT setting ALT_FEATURES_FLAG")
+  ALT_FEATURES_FLAG = 0
+}
+
+
+versionconfig.input = qconfig.h.in
+versionconfig.output = config.h
+QMAKE_SUBSTITUTES += versionconfig
+
+
 SOURCES += \
     imported/QtWaitingSpinner/waitingspinnerwidget.cpp
 
@@ -34,8 +61,9 @@ SOURCES += \
     base/feature_selector.cpp \
     base/global_state.cpp \
     base/hline_widget.cpp \
-    base/other_options_state.cpp \
-    base/vertical_scroll_area.cpp \
+    base/other_options_state.cpp 
+    
+#   base/vertical_scroll_area.cpp \
 
 SOURCES += \
     nongui/ddc_error.cpp \
@@ -64,6 +92,7 @@ SOURCES += \
     feature_value_widgets/value_stacked_widget.cpp \
     feature_value_widgets/value_std_widget.cpp 
 
+CONFIG(alt_features) {
 SOURCES += \
     alt/table_model_view/table_model_view_ui.cpp \
     alt/table_model_view/feature_table_model.cpp \
@@ -74,14 +103,7 @@ SOURCES += \
 
 SOURCES += \
     alt/table_widget/table_widget_ui.cpp
-
-SOURCES += \
-    feature_scrollarea/features_scrollarea_ui.cpp \
-    feature_scrollarea/feature_widget.cpp \
-    feature_scrollarea/feature_widget_header.cpp \
-    feature_scrollarea/features_scrollarea_contents.cpp \
-    feature_scrollarea/features_scrollarea_view.cpp
-
+    
 SOURCES += \
     alt/list_model_view/list_model_view_ui.cpp \
     alt/list_model_view/feature_item_model.cpp
@@ -90,6 +112,18 @@ SOURCES += \
     alt/list_widget/list_widget_ui.cpp \
     alt/list_widget/feature_list_widget.cpp \
     alt/list_widget/feature_widget_extended.cpp
+    
+}
+
+
+SOURCES += \
+    feature_scrollarea/features_scrollarea_ui.cpp \
+    feature_scrollarea/feature_widget.cpp \
+    feature_scrollarea/feature_widget_header.cpp \
+    feature_scrollarea/features_scrollarea_contents.cpp \
+    feature_scrollarea/features_scrollarea_view.cpp
+
+
 
 SOURCES += \
     option_dialogs/feature_selection_dialog.cpp \
@@ -120,17 +154,18 @@ HEADERS += \
     base/global_state.h \
     base/hline_widget.h \
     base/monitor.h \
-    base/other_options_state.h \
-    base/vertical_scroll_area.h
+    base/other_options_state.h
+    
+#   base/vertical_scroll_area.h
 
 HEADERS += \
     nongui/ddc_error.h \
     nongui/feature_base_model.h \
-    nongui/feature_change_observer.h \
     nongui/feature_value.h \
     nongui/vcprequest.h \
     nongui/vcpthread.h 
 
+#   nongui/feature_change_observer.h \
 #   nongui/simple_feature_value_observer.h \
 #   nongui/simple_feature_value_subject.h \
 #   nongui/simple_feature_value.h
@@ -149,6 +184,7 @@ HEADERS += \
     feature_value_widgets/value_2button_widget.h \
     feature_value_widgets/value_stacked_widget.h
 
+CONFIG(alt_features) {
 HEADERS += \
     alt/table_model_view/table_model_view_ui.h \
     alt/table_model_view/feature_table_model.h \
@@ -161,13 +197,6 @@ HEADERS += \
     alt/table_widget/table_widget_ui.h
 
 HEADERS += \
-    feature_scrollarea/features_scrollarea_ui.h \
-    feature_scrollarea/feature_widget.h \
-    feature_scrollarea/feature_widget_header.h \
-    feature_scrollarea/features_scrollarea_contents.h \
-    feature_scrollarea/features_scrollarea_view.h
-
-HEADERS += \
    alt/list_model_view/list_model_view_ui.h \
    alt/list_model_view/feature_item_model.h
 
@@ -175,6 +204,16 @@ HEADERS += \
     alt/list_widget/list_widget_ui.h \
     alt/list_widget/feature_list_widget.h \
     alt/list_widget/feature_widget_extended.h
+    
+}
+
+HEADERS += \
+    feature_scrollarea/features_scrollarea_ui.h \
+    feature_scrollarea/feature_widget.h \
+    feature_scrollarea/feature_widget_header.h \
+    feature_scrollarea/features_scrollarea_contents.h \
+    feature_scrollarea/features_scrollarea_view.h
+
 
 HEADERS += \
     option_dialogs/feature_selection_dialog.h \

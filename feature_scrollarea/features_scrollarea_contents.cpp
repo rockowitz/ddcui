@@ -74,7 +74,7 @@ void FeaturesScrollAreaContents::setContainingScrollArea(QScrollArea * scrollAre
    _containingScrollArea = scrollArea;
 }
 
-
+#ifdef UNUSED
 void FeaturesScrollAreaContents::featureAdded(FeatureValue fv)
 {
    if (debugMain) {
@@ -91,6 +91,7 @@ void FeaturesScrollAreaContents::featureAdded(FeatureValue fv)
    layout()->addWidget(newTableEntry);
    _widgets[fv._feature_code] = newTableEntry;
 }
+#endif
 
 
 #ifdef OLD

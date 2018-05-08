@@ -52,7 +52,9 @@ signals:
     // void showCentralWidgetByPageno(int pageno);
 
 public slots:
+#ifdef MAYBE_UNUSED
    void featureAdded(FeatureValue fv);
+#endif
 #ifdef OLD
    void featureUpdated(char feature_code);
 #endif

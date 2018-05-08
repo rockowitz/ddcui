@@ -25,10 +25,9 @@ class FeatureWidget :
 
 public:
     explicit FeatureWidget(QWidget *parent = nullptr);
-
-    // FeatureWidgetBasic(FeatureValue *fv, QWidget *parent=nullptr);
-
+    FeatureWidget(FeatureValue& fv, QWidget *parent=nullptr);
     void setFeatureValue(FeatureValue &fv);
+
     void setCurrentValue(uint16_t newval);
 
     void dbgrpt() const;
@@ -43,13 +42,15 @@ public slots:
     void onInternalValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl);
 
 signals:
-    void valueChanged(uint8_t featureCode, bool writeOnly, uint8_t sh, uint8_t sl);
+    void valueChanged(uint8_t featureCode, bool writeOnlyFeature, uint8_t sh, uint8_t sl);
 
 protected:
 
     // void paintEvent(QPaintEvent *event) override;
 
 private:
+    void setupFeatureWidget();   // called by constructor
+
     const char *        _cls;    // className
 
     uint8_t             _feature_code;

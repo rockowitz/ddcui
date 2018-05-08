@@ -16,8 +16,8 @@
 
 Monitor::Monitor(DDCA_Display_Info * display_info, int monitorNumber)
     : _monitorNumber(monitorNumber),
-      _displayInfo(display_info),
-      _cls(metaObject()->className())
+      _displayInfo(display_info)
+     ,  _cls(metaObject()->className())
 {
     // _cls = metaObject()->className();
 }

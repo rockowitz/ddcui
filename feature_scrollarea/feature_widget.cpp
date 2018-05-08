@@ -38,165 +38,165 @@ static void setupFeatureWidgetField(QLabel * w) {
     // w->setStyleSheet("margins: 25px;");
 }
 
+void FeatureWidget::setupFeatureWidget() {
+   // QFrame methods:
+   // setFrameStyle(QFrame::Box);    // something to make it visible
 
-FeatureWidget::FeatureWidget(QWidget *parent) :
-   QWidget(parent)
-{
-    _cls = metaObject()->className();
+   QFont font;
+   font.setPointSize(8);
+   QWidget::setFont(font);
 
-    // QFrame methods:
-    // setFrameStyle(QFrame::Box);    // something to make it visible
+   QFont monoValueFont;
+   monoValueFont.setFamily(QString::fromUtf8("Monospace"));
 
-    QFont font;
-    font.setPointSize(8);
-    QWidget::setFont(font);
+   QFont nonMonoValueFont;
 
-    QFont monoValueFont;
-    monoValueFont.setFamily(QString::fromUtf8("Monospace"));
+   QSizePolicy fixedSizePolicy(QSizePolicy::Fixed,QSizePolicy::MinimumExpanding);
+   // fixedSizePolicy.setHorizontalStretch(0);    // needed?
+   // fixedSizePolicy.setVerticalStretch(0);
+   // fixedSizePolicy.setHeightForWidth(false);
+   // verify apparent defaults, since I can't find them documented
+   assert(fixedSizePolicy.horizontalStretch() == 0);
+   assert(fixedSizePolicy.verticalStretch() == 0);
+   assert(fixedSizePolicy.hasHeightForWidth() == false);
 
-    QFont nonMonoValueFont;
+   QSizePolicy adjustableSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::MinimumExpanding);
+   fixedSizePolicy.setHorizontalStretch(1);    // needed?
+   fixedSizePolicy.setVerticalStretch(0);
+   fixedSizePolicy.setHeightForWidth(false);
 
-    QSizePolicy fixedSizePolicy(QSizePolicy::Fixed,QSizePolicy::MinimumExpanding);
-    // fixedSizePolicy.setHorizontalStretch(0);    // needed?
-    // fixedSizePolicy.setVerticalStretch(0);
-    // fixedSizePolicy.setHeightForWidth(false);
-    // verify apparent defaults, since I can't find them documented
-    assert(fixedSizePolicy.horizontalStretch() == 0);
-    assert(fixedSizePolicy.verticalStretch() == 0);
-    assert(fixedSizePolicy.hasHeightForWidth() == false);
+   // int fieldFrameStyle = QFrame::Sunken | QFrame::Panel;
 
-    QSizePolicy adjustableSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::MinimumExpanding);
-    fixedSizePolicy.setHorizontalStretch(1);    // needed?
-    fixedSizePolicy.setVerticalStretch(0);
-    fixedSizePolicy.setHeightForWidth(false);
+   /* Feature Code */
+   _featureCodeField = new QLabel();
+   _featureCodeField->setObjectName(QString::fromUtf8("featureCode"));
+   _featureCodeField->setMinimumWidth(30);
+   _featureCodeField->setSizePolicy(fixedSizePolicy);
+   _featureCodeField->setFont(monoValueFont);
+   _featureCodeField->setText(QString::fromUtf8("0x00"));    // dummy
+   setupFeatureWidgetField(_featureCodeField);
 
-    // int fieldFrameStyle = QFrame::Sunken | QFrame::Panel;
+   /* Feature Name */
+   _featureNameField = new QLabel();
+   _featureNameField->setObjectName(QString::fromUtf8("featureName"));
+   // _featureNameField->setMinimumWidth(200);
+   // _featureNameField->setMaximumSize(200,20);
+   _featureNameField->setFixedWidth(200);
+   _featureNameField->setSizePolicy(fixedSizePolicy);
+   _featureNameField->setFont(nonMonoValueFont);
+   _featureNameField->setText(QString::fromUtf8("Dummy feature name"));    // dummy
+   setupFeatureWidgetField(_featureNameField);
 
-    /* Feature Code */
-    _featureCodeField = new QLabel();
-    _featureCodeField->setObjectName(QString::fromUtf8("featureCode"));
-    _featureCodeField->setMinimumWidth(30);
-    _featureCodeField->setSizePolicy(fixedSizePolicy);
-    _featureCodeField->setFont(monoValueFont);
-    _featureCodeField->setText(QString::fromUtf8("0x00"));    // dummy
-    setupFeatureWidgetField(_featureCodeField);
+   /* RW/RO/WO */
+   _featureRwField = new QLabel();
+   _featureRwField->setObjectName(QString::fromUtf8("featureRW"));
+   _featureRwField->setSizePolicy(fixedSizePolicy);
+   _featureRwField->setFixedWidth(25);
+   _featureRwField->setFont(monoValueFont);
+   _featureRwField->setText(QString::fromUtf8("XX"));    // dummy
+  //  _featureCodeField->setFrameStyle(fieldFrameStyle);
+   // _featureRwField->setFrameStyle(QFrame::Sunken | QFrame::Panel);
+   setupFeatureWidgetField(_featureRwField);
 
-    /* Feature Name */
-    _featureNameField = new QLabel();
-    _featureNameField->setObjectName(QString::fromUtf8("featureName"));
-    // _featureNameField->setMinimumWidth(200);
-    // _featureNameField->setMaximumSize(200,20);
-    _featureNameField->setFixedWidth(200);
-    _featureNameField->setSizePolicy(fixedSizePolicy);
-    _featureNameField->setFont(nonMonoValueFont);
-    _featureNameField->setText(QString::fromUtf8("Dummy feature name"));    // dummy
-    setupFeatureWidgetField(_featureNameField);
-
-    /* RW/RO/WO */
-    _featureRwField = new QLabel();
-    _featureRwField->setObjectName(QString::fromUtf8("featureRW"));
-    _featureRwField->setSizePolicy(fixedSizePolicy);
-    _featureRwField->setFixedWidth(25);
-    _featureRwField->setFont(monoValueFont);
-    _featureRwField->setText(QString::fromUtf8("XX"));    // dummy
-   //  _featureCodeField->setFrameStyle(fieldFrameStyle);
-    // _featureRwField->setFrameStyle(QFrame::Sunken | QFrame::Panel);
-    setupFeatureWidgetField(_featureRwField);
-
-    /* MCCS Type */
-    _featureTypeField = new QLabel();
-    _featureTypeField->setObjectName(QString::fromUtf8("featureType"));
-    _featureTypeField->setSizePolicy(fixedSizePolicy);
-    _featureTypeField->setFixedWidth(25);
-    _featureTypeField->setFont(monoValueFont);
-    _featureTypeField->setText(QString::fromUtf8("YY"));    // dummy
-   //  _featureCodeField->setFrameStyle(fieldFrameStyle);
-    // _featureTypeField->setFrameStyle(QFrame::Sunken | QFrame::Panel);
-    setupFeatureWidgetField(_featureTypeField);
+   /* MCCS Type */
+   _featureTypeField = new QLabel();
+   _featureTypeField->setObjectName(QString::fromUtf8("featureType"));
+   _featureTypeField->setSizePolicy(fixedSizePolicy);
+   _featureTypeField->setFixedWidth(25);
+   _featureTypeField->setFont(monoValueFont);
+   _featureTypeField->setText(QString::fromUtf8("YY"));    // dummy
+  //  _featureCodeField->setFrameStyle(fieldFrameStyle);
+   // _featureTypeField->setFrameStyle(QFrame::Sunken | QFrame::Panel);
+   setupFeatureWidgetField(_featureTypeField);
 
 #ifdef ALT
-    _featureValueStackedWidget = new QStackedWidget(this);
-    _featureValueStackedWidget->setObjectName(QString::fromUtf8("_featureValueStackedWidget"));
-    _featureValueStackedWidget->setGeometry(QRect(209, 6, 181, 20));
+   _featureValueStackedWidget = new QStackedWidget(this);
+   _featureValueStackedWidget->setObjectName(QString::fromUtf8("_featureValueStackedWidget"));
+   _featureValueStackedWidget->setGeometry(QRect(209, 6, 181, 20));
 
-    _featureValueStandardWidget = new QWidget();
-    _featureValueStandardWidget->setObjectName(QString::fromUtf8("featureValueStandardWidgdet"));
-    _featureValueStackedWidget->addWidget(_featureValueStandardWidget);
+   _featureValueStandardWidget = new QWidget();
+   _featureValueStandardWidget->setObjectName(QString::fromUtf8("featureValueStandardWidgdet"));
+   _featureValueStackedWidget->addWidget(_featureValueStandardWidget);
 
-    _featureValueStackedWidget->setCurrentIndex(0);
+   _featureValueStackedWidget->setCurrentIndex(0);
 #endif
 
-    _valueWidget = new ValueStackedWidget();
-    // _valueWidget->setSizePolicy(fixedSizePolicy);
-    // _valueWidget->setFixedWidth(400);
+   _valueWidget = new ValueStackedWidget();
+   // _valueWidget->setSizePolicy(fixedSizePolicy);
+   // _valueWidget->setFixedWidth(400);
 
-    _layout = new QHBoxLayout();
-    _layout->addWidget(_featureCodeField);
-    _layout->addWidget(_featureNameField);
-    _layout->addWidget(_featureRwField);
-    _layout->addWidget(_featureTypeField);
-    _layout->addWidget(_valueWidget);
-    // layout->addWidget(_featureValueStackedWidget);
+   _layout = new QHBoxLayout();
+   _layout->addWidget(_featureCodeField);
+   _layout->addWidget(_featureNameField);
+   _layout->addWidget(_featureRwField);
+   _layout->addWidget(_featureTypeField);
+   _layout->addWidget(_valueWidget);
+   // layout->addWidget(_featureValueStackedWidget);
 
-    // eliminating addStretch() eliminates gap between Type and Value fields, but allows
-    // feature name field to expand
-    // _layout->addStretch(2);
+   // eliminating addStretch() eliminates gap between Type and Value fields, but allows
+   // feature name field to expand
+   // _layout->addStretch(2);
 
-    // _layout->insertStretch(-1, 2);
-    _layout->setSpacing(0);
+   // _layout->insertStretch(-1, 2);
+   _layout->setSpacing(0);
 
-    // _layout->setMargin(0);    // no effect
-    _layout->setContentsMargins(0,0,0,0);
-    // removes space between all fields except field type <-> value
-    // _layout->setSpacing(0);  // adjusts space between each horizontal item, no effect on above/below
-    // _layout->setSpacing(50);
+   // _layout->setMargin(0);    // no effect
+   _layout->setContentsMargins(0,0,0,0);
+   // removes space between all fields except field type <-> value
+   // _layout->setSpacing(0);  // adjusts space between each horizontal item, no effect on above/below
+   // _layout->setSpacing(50);
 
-    // eliminating vlayout restores horizontal spacing between all fields.  why?
+   // eliminating vlayout restores horizontal spacing between all fields.  why?
 #ifdef UNNEEDED
-    QVBoxLayout * vlayout = new QVBoxLayout();
-    vlayout->addLayout(_layout);
-    vlayout->setSpacing(0);
-    vlayout->setContentsMargins(0,0,0,0);
-    setLayout(vlayout);
+   QVBoxLayout * vlayout = new QVBoxLayout();
+   vlayout->addLayout(_layout);
+   vlayout->setSpacing(0);
+   vlayout->setContentsMargins(0,0,0,0);
+   setLayout(vlayout);
 #endif
-    setLayout(_layout);
+   setLayout(_layout);
 
-    if (debugLayout) {
-        this->setStyleSheet("background-color:orange;");
+   if (debugLayout) {
+       this->setStyleSheet("background-color:orange;");
 
-        if (!dimensionReportShown) {
-           PRINTFCM("FeatuerWidget dimenstions:");
-           reportWidgetDimensions(this, _cls, __func__);
-           dimensionReportShown = true;
-        }
-    }
+       if (!dimensionReportShown) {
+          PRINTFCM("FeatureWidget dimenstions:");
+          reportWidgetDimensions(this, _cls, __func__);
+          dimensionReportShown = true;
+       }
+   }
 
-  // use ValueBaseWidget or ValueStackedWidget?
-    // won't compile
-    // QObject::connect( _valueWidget, &ValueStackedWidget::featureValueChanged,
-    //                   this,         &FeatureWidgetBasic::onInternalValueChanged);
+   QObject::connect(_valueWidget, &ValueStackedWidget::stackedFeatureValueChanged,
+                    this,         &FeatureWidget::onInternalValueChanged);
 
-    QObject::connect(_valueWidget, &ValueStackedWidget::featureValueChanged,
-                     this,         &FeatureWidget::onInternalValueChanged);
-
-    QObject::connect(_valueWidget, &ValueStackedWidget::stackedFeatureValueChanged,
-                     this,         &FeatureWidget::onInternalValueChanged);
-
-
-    // QObject::connect(_valueWidget, &ValueStackedWidget::featureValueChanged,
-    //                  this,         &FeatureWidget::onInternalValueChanged);
-
-    QObject::connect( _valueWidget, SIGNAL( featureValueChanged(uint8_t, uint8_t, uint8_t)),
-                      this,         SLOT(onInternalValueChanged(uint8_t, uint8_t, uint8_t)));
-
-    QObject::connect( _valueWidget, SIGNAL( featureValueChanged(uint8_t, uint8_t, uint8_t)),
-                      this,         SLOT(onInternalValueChanged(uint8_t, uint8_t, uint8_t)));
-
-    // signals/slots not working, try hardcoding
-    // _valueWidget->addSimpleFeatureValueObserver(this);
+#ifdef ALT
+   QObject::connect( _valueWidget, SIGNAL( stackedFeatureValueChanged(uint8_t, uint8_t, uint8_t)),
+                     this,         SLOT(onInternalValueChanged(uint8_t, uint8_t, uint8_t)));
+#endif
+   // signals/slots not working, try hardcoding
+   // _valueWidget->addSimpleFeatureValueObserver(this);
 }
 
 
+FeatureWidget::FeatureWidget(QWidget *parent) :
+   QWidget(parent),
+   _cls(metaObject()->className())
+{
+    // _cls = metaObject()->className();
+    setupFeatureWidget();
+}
+
+FeatureWidget::FeatureWidget(FeatureValue& fv, QWidget *parent) :
+   QWidget(parent),
+   _cls(metaObject()->className())
+{
+    // _cls = metaObject()->className();
+    setupFeatureWidget();
+    setFeatureValue(fv);
+}
+
+
+// Used only to set feature value immediately after constructor called
 void FeatureWidget::setFeatureValue(FeatureValue &fv) {
     // printf("(FeatureWidgetBasic::%s)", __func__);
     // fv.report(); ff;isj)stdpit);

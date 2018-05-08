@@ -10,7 +10,7 @@
 
 #include "base/global_state.h"
 #include "base/other_options_state.h"
-#include "base/vertical_scroll_area.h"
+// #include "base/vertical_scroll_area.h"
 #include "base/monitor.h"
 #include "base/ddcui_globals.h"
 #include "base/debug_utils.h"
@@ -30,12 +30,15 @@ FeaturesScrollAreaView::FeaturesScrollAreaView(
         QStackedWidget *   centralStackedWidget,
         QObject *          parent)
     : QObject(parent)
+      , _cls(metaObject()->className())
+      , _monitor(monitor)
+      , _baseModel(model)
+      , _centralStackedWidget(centralStackedWidget)
 {
-    _cls  = metaObject()->className();
-
-    _monitor = monitor;
-    _centralStackedWidget = centralStackedWidget;
-    _baseModel = model;
+   //  _cls  = metaObject()->className();
+   //  _monitor = monitor;
+   //  _centralStackedWidget = centralStackedWidget;
+   //  _baseModel = model;
 }
 
 
@@ -87,12 +90,13 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
     for (int feature_code = 0; feature_code < 256; feature_code++) {
          FeatureValue * fv =  _baseModel->modelVcpValueFilteredFind(feature_code);
          if (fv) {
-             FeatureWidget * w = new FeatureWidget();
+             // FeatureWidget * w = new FeatureWidget();
+             FeatureWidget * w = new FeatureWidget(*fv);
              if (debugLayout) {
                 // gets applied to the widgets inside w, not to w itself
                 w->setStyleSheet("background-color:brown;");
              }
-             w->setFeatureValue(*fv);
+             // w->setFeatureValue(*fv);
 
              QObject::connect(w ,   &FeatureWidget::valueChanged,
                               this, &FeaturesScrollAreaView::onUIValueChanged);
@@ -142,16 +146,22 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
 void FeaturesScrollAreaView::onUIValueChanged(uint8_t featureCode, bool writeOnly, uint8_t sh, uint8_t sl) {
    PRINTFCM("feature_code = 0x%02x, writeOnly=%s, sh=0x%02x, sl=0x%02x", featureCode, sbool(writeOnly), sh, sl);
 
-   VcpRequest * rqst = new VcpSetRequest(featureCode, sl, writeOnly);   // n.b. ignoring sh
-   emit signalVcpRequest(rqst);  // used to call into monitor
-
-   if (featureCode == 0x05)  {    // restore factory defaults brightness/contrast
-      emit signalVcpRequest( new VcpGetRequest(0x10) );
-      emit signalVcpRequest( new VcpGetRequest(0x12) );    // what if contrast is unsupported feature?
+   FeatureValue * curFv = _baseModel->modelVcpValueFind(featureCode);
+   if (curFv && curFv->_value.sh == sh && curFv->_value.sl == sl) {
+      PRINTFCM("New value matches model value, Suppressing.");
    }
-   // handle x04  Restore factory defaults
-   //        x06  Restore geometry defaults
-   //        x08  Restore color defaults
+   else {
+      VcpRequest * rqst = new VcpSetRequest(featureCode, sl, writeOnly);   // n.b. ignoring sh
+      emit signalVcpRequest(rqst);  // used to call into monitor
+
+      if (featureCode == 0x05)  {    // restore factory defaults brightness/contrast
+         emit signalVcpRequest( new VcpGetRequest(0x10) );
+         emit signalVcpRequest( new VcpGetRequest(0x12) );    // what if contrast is unsupported feature?
+      }
+      // handle x04  Restore factory defaults
+      //        x06  Restore geometry defaults
+      //        x08  Restore color defaults
+   }
 }
 
 

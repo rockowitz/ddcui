@@ -40,9 +40,11 @@ public:
 signals:
     void stackedFeatureValueChanged(uint8_t feature_code, uint8_t sh, uint8_t sl);
 
+#ifdef OLD
 signals:
     // compiler warning: signals may not be declared virtual
     void featureValueChanged(uint8_t feature_code, uint8_t sh, uint8_t sl);
+#endif
 
 private:
     const char *     _cls;

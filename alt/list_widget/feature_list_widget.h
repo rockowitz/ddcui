@@ -10,11 +10,15 @@
 #include <ddcutil_c_api.h>
 
 #include "nongui/feature_base_model.h"
+#ifdef FEATURE_CHANGE
 #include "nongui/feature_change_observer.h"
+#endif
 
 
 class FeatureListWidget : public QListWidget
+#ifdef FEATURE_LIST_WIDGET
                         , public FeatureChangeObserver    // no longer needed
+#endif
 {
     Q_OBJECT
 
@@ -50,7 +54,7 @@ public slots:
     void            featureAdded(FeatureValue fv);
     void            featureUpdated(char feature_code);
 
-    void            featureChanged(uint8_t feature_code) override;    // virtual
+    void            featureChanged(uint8_t feature_code); //  override;    // virtual
 
 protected:
     void            paintEvent(QPaintEvent *event);

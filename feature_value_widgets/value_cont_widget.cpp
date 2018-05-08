@@ -1,3 +1,6 @@
+/* value_cont_widget.cpp */
+
+#include "feature_value_widgets/value_cont_widget.h"
 
 #include <string.h>
 
@@ -12,7 +15,7 @@
 
 #include "base/ddcui_globals.h"
 #include "base/debug_utils.h"
-#include "value_cont_widget.h"
+
 
 static bool dimensionReportShown = false;
 
@@ -79,8 +82,9 @@ ValueContWidget::ValueContWidget(QWidget *parent):
     connect(_curSpinBox,  SIGNAL(valueChanged(int)),
             _curSlider,   SLOT(  setValue(int)));
 
-    connect( _curSlider,  SIGNAL(valueChanged(int)),
-             this,        SLOT(  onSliderValueChanged(int)));
+    // duplicate
+    // connect( _curSlider,  SIGNAL(valueChanged(int)),
+    //         this,        SLOT(  onSliderValueChanged(int)));
 
     connect( _curSlider,  SIGNAL(valueChanged(int)),
              this,        SLOT(  onSliderValueChanged(int)));
@@ -89,9 +93,13 @@ ValueContWidget::ValueContWidget(QWidget *parent):
              this,        SLOT(  onSliderReleased()));
     connect( _curSpinBox, SIGNAL(valueChanged(int)),
              this,        SLOT(  onSpinBoxValueChanged(int)));
+
+#ifdef UNUSED
     connect( _curSpinBox, SIGNAL(editingFinished()),
              this,        SLOT(  onSpinBoxEditingFinished()));
+#endif
 
+#ifdef APPLY_CANCEL
     if (useApplyCancel) {
         QSizePolicy* sizePolicy = new QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
        _applyButton  = new QPushButton("Apply");
@@ -111,6 +119,7 @@ ValueContWidget::ValueContWidget(QWidget *parent):
        connect(_cancelButton, &QPushButton::clicked,
                this,          &ValueContWidget::onCancelButtonClicked);
     }
+#endif
 
    QLabel* spacer = new QLabel();
    spacer->setFixedSize(10,18);
@@ -126,15 +135,19 @@ ValueContWidget::ValueContWidget(QWidget *parent):
 
     layout->setStretch(1,0);
 
+#ifdef APPLY_CANCEL
     if (useApplyCancel) {
        layout->addSpacing(5);
        layout->addWidget(_applyButton);
        layout->addWidget(_cancelButton);
     }
     else {
+#endif
        layout->addSpacing(5);
        layout->addWidget(spacer);
+#ifdef APPLY_CANCEL
     }
+#endif
     layout->setContentsMargins(0,0,0,0);
     setLayout(layout);
 
@@ -169,7 +182,8 @@ void ValueContWidget::setFeatureValue(const FeatureValue &fv) {
     int maxval = _mh << 8 | _ml;
     int curval = _sh << 8 | _sl;
 
-    PRINTFCMF(debugValueWidgetSignals,
+    printf("\n");
+    PRINTFCMF(true,                   // debugValueWidgetSignals,
               "feature=0x%02x, curval=%d, maxval=%d", _featureCode, curval, maxval);
 
     _guiChange = false;
@@ -186,10 +200,12 @@ void ValueContWidget::setFeatureValue(const FeatureValue &fv) {
     QString s = QString::number(maxval);
     _maxValue->setText(s);
 
+#ifdef APPLY_CANCEL
     if (useApplyCancel) {
         _applyButton->setEnabled(false);
         _cancelButton->setEnabled(false);
     }
+#endif
 
     _guiChange = true;
 }
@@ -200,15 +216,18 @@ void ValueContWidget::setCurrentValue(uint16_t newval) {
     _guiChange = false;
 
      int curval = _sh << 8 | _sl;
-     PRINTFCMF(debugValueWidgetSignals, "feature=0x%02x, curval=%d", _featureCode , curval);
+     // PRINTFCMF(debugValueWidgetSignals, "feature=0x%02x, curval=%d", _featureCode , curval);
+     PRINTFCMF(true, "feature=0x%02x, curval=%d", _featureCode , curval);
 
     _curSpinBox->setValue(curval);
     _curSlider->setValue(curval);
 
+#ifdef APPLY_CANCEL
     if (useApplyCancel) {
         _applyButton->setEnabled(false);
         _cancelButton->setEnabled(false);
     }
+#endif
 
     _guiChange = true;
 }
@@ -222,10 +241,11 @@ uint16_t ValueContWidget::getCurrentValue() {
     return result;
 }
 
-
+#ifdef UNUSED
 void ValueContWidget::onSliderValueChanged(int value) {
    PRINTFCMF(debugValueWidgetSignals, "NO ACTION feature=0x%02x, value=%d",  _featureCode, value);
 }
+#endif
 
 
 void ValueContWidget::onSliderReleased() {
@@ -239,19 +259,24 @@ void ValueContWidget::onSliderReleased() {
    //     printf("(%s::%s) sh=0x%02x, sl=0x%02x \n", _cls, __func__, new_sh, new_sl); fflush(stdout);
 
    _newval = newval;
+#ifdef APPLY_CANCEL
    if (useApplyCancel) {
       _applyButton->setEnabled(true);
       _cancelButton->setEnabled(true);
    }
    else {
+#endif
       if (_guiChange)
          emit featureValueChanged(_featureCode, new_sh, new_sl);
+#ifdef APPLY_CANCEL
    }
+#endif
 }
 
 
 void ValueContWidget::onSpinBoxValueChanged(int value) {
-   PRINTFCMF(debugValueWidgetSignals,
+
+   PRINTFCMF(true,                    // debugValueWidgetSignals,
              "feature=0x%02x, value=%d, _guiChange=%d", _featureCode, value, _guiChange);
 
    int newval = _curSpinBox->value();
@@ -262,16 +287,24 @@ void ValueContWidget::onSpinBoxValueChanged(int value) {
    // emit featureValueChanged(_feature_code, new_sh, new_sl);
    _newval = newval;
 
-
+#ifdef APPLY_CANCEL
    if (useApplyCancel) {
       _applyButton->setEnabled(true);
       _cancelButton->setEnabled(true);
    }
    else {
+#endif
       // QTimer::singleShot(1000, this, SLOT(onSpinBoxTimedOut()));
-      if (_guiChange)
+      if (_guiChange) {
+         PRINTFCM("Starting timer");
          _spinBoxTimer->start();
+      }
+      else {
+         PRINTFCM("Not starting timer");
+      }
+#ifdef APPLY_CANCEL
    }
+#endif
 
 }
 
@@ -283,13 +316,15 @@ void ValueContWidget::onSpinBoxTimedOut() {
    emit featureValueChanged(_featureCode, new_sh, new_sl);
 }
 
-
+#ifdef UNUSED
 void ValueContWidget::onSpinBoxEditingFinished() {
    if (debugValueWidgetSignals)
        printf("(%s::%s) \n", _cls, __func__); fflush(stdout);
 }
+#endif
 
 
+#ifdef APPLY_CANCEL
 void  ValueContWidget::onApplyButtonClicked(bool checked) {
    PRINTFCMF(debugValueWidgetSignals, "Executing");
 
@@ -315,8 +350,9 @@ void  ValueContWidget::onCancelButtonClicked(bool checked) {
    _curSpinBox->setValue(oldval);
    _newval = oldval;
 }
+#endif
 
-
+#ifdef UNUSED
 // never triggered
 void ValueContWidget::focusOutEvent(QFocusEvent * event) {
     PRINTFCMF(debugValueWidgetSignals, "Executing"  );
@@ -329,6 +365,7 @@ void ValueContWidget::focusInEvent(QFocusEvent * event) {
 
     ValueBaseWidget::focusInEvent(event);
 }
+#endif
 
 
 #ifdef USELESS

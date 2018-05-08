@@ -29,11 +29,12 @@ public:
     void freeContents(void);    // private?
 
 private:
-    const char * _cls;
-
-    QStackedWidget *   _centralStackedWidget;
-    FeatureBaseModel * _baseModel;
+    // keep in order for constructor initialization
+    const char *       _cls;
     Monitor *          _monitor;
+    FeatureBaseModel * _baseModel;
+    QStackedWidget *   _centralStackedWidget;
+
     NcValuesSource     _curNcValuesSource;  // how to properly initialize?
     FeaturesScrollAreaContents * _scrollAreaContents = NULL;
 

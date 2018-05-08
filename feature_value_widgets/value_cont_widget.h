@@ -3,10 +3,7 @@
 #ifndef VALUE_CONT_WIDGET_H
 #define VALUE_CONT_WIDGET_H
 
-// #include <QtWidgets/QWidget>
-// #include <QtWidgets/QSlider>
-// #include <QtWidgets/QSpinBox>
-// #include <QtWidgets/QLabel>
+#include "config.h"
 
 #include "nongui/feature_value.h"
 #include "feature_value_widgets/value_base_widget.h"
@@ -33,13 +30,17 @@ public:
     QLabel*     _maxTitle;
     QLabel*     _maxValue;
 
+#ifdef APPLY_CANCEL
     QPushButton * _applyButton;
     QPushButton * _cancelButton;
+#endif
 
 
 protected:
+#ifdef UNUSED
     void focusInEvent(QFocusEvent * event);
     void focusOutEvent(QFocusEvent * event);
+#endif
 
     // void leaveEvent(QEvent * event);
 
@@ -50,20 +51,16 @@ private:
     bool    _guiChange = false;
 
 private slots:
-
-    void onSliderValueChanged(int value);
-
     void onSliderReleased();
-
+    // void onSliderValueChanged(int value);  // unused
+    // void onSpinBoxEditingFinished();     // unused
+    void onSpinBoxTimedOut();
     void onSpinBoxValueChanged(int value);
 
-    void onSpinBoxTimedOut();
-
-    void onSpinBoxEditingFinished();
-
+#ifdef APPLY_CANCEL
     void onApplyButtonClicked(bool checked);
-
     void onCancelButtonClicked(bool checked);
+#endif
 
 };
 
