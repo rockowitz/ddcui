@@ -12,4 +12,4 @@ dumped/
 feature_scrollarea/unused/
 api_use.txt
 meson.build
-
+build*/
