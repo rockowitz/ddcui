@@ -14,4 +14,8 @@ api_use.txt
 meson.build
 build*
 bd
+bc
 callprt*
+ddcui.pro
+.settings
+

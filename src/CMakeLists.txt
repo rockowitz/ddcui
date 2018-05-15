@@ -2,6 +2,12 @@ cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 
 project(ddcui)
 
+set(QT5_LIBRARIES Qt5::Widgets )
+
+set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/build/build_cmake)
+
+set(EXECUTABLE_OUTPUT_PATH, ${CMAKE_BINARY_DIR})
+set(LIBRARY_OUTPUT_PATH,    ${CMAKE_BINARY_DIR})
 
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -23,7 +29,6 @@ include_directories(SYSTEM ${Qt5Widgets_INCLUDE_DIRS} ${GLIB2_INCLUDE_DIRS})
 OPTION(APPLY_CANCEL "Use Accept/Cancel buttons" OFF)
 set(ALT_FEATURES ON)
 configure_file(cconfig.h.in config.h)
-
 
 set(SOURCES
 
@@ -55,14 +60,11 @@ set(SOURCES
     feature_value_widgets/value_stacked_widget.cpp 
     feature_value_widgets/value_std_widget.cpp 
 
-
     feature_scrollarea/features_scrollarea_ui.cpp 
     feature_scrollarea/feature_widget.cpp 
     feature_scrollarea/feature_widget_header.cpp 
     feature_scrollarea/features_scrollarea_contents.cpp 
     feature_scrollarea/features_scrollarea_view.cpp
-
-
 
     option_dialogs/feature_selection_dialog.cpp 
     option_dialogs/other_options_dialog.cpp
@@ -70,7 +72,6 @@ set(SOURCES
     main/monitor.cpp 
     main/mainwindow.cpp 
     main/main.cpp
-
 )
 
 if (ALT_FEATURES) 
@@ -94,15 +95,12 @@ if (ALT_FEATURES)
    )
 endif()
 
-
 set(UI_SOURCES
     option_dialogs/feature_selection_dialog.ui
     option_dialogs/other_options_dialog.ui
-    )
-
+   )
 
 qt5_wrap_ui(UI_GENERATED_HEADERS ${UI_SOURCES})
-
 
 add_executable(ddcui ${SOURCES} ${UI_GENERATED_HEADERS})
 
@@ -115,10 +113,6 @@ set_property(TARGET ddcui PROPERTY AUTOUIC)
 # Use the Widgets module from Qt 5.
 target_link_libraries(ddcui Qt5::Widgets ${GLIB2_LIBRARIES} ${DDCUTIL_LIBRARIES})
 
-set(QT5_LIBRARIES Qt5::Widgets )
 
-set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/../build_cmake)
-set(EXECUTABLE_OUTPUT_PATH, ${CMAKE_BINARY_DIR})
-set(LIBRARY_OUTPUT_PATH,    ${CMAKE_BINARY_DIR})
 
 install(TARGETS ddcui DESTINATION bin)
