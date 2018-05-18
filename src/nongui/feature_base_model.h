@@ -39,8 +39,10 @@
 
 class Monitor;
 
-/** The UI independent portion of the QT feature data model.
- *  Records all VCP values for a single monitor.
+/** Records all VCP values for a single monitor.
+ *
+ *  For alternative (unused) feature views that use QListWidgets etc.
+ *  this class is contained in FeatureTableModel etc.
  */
 class FeatureBaseModel : public QObject
 {
@@ -65,9 +67,11 @@ public:
              uint8_t                     feature_code,
              uint8_t                     sh,
              uint8_t                     sl);
+#ifdef UNUSED
     void modelMccsVersionSet(DDCA_MCCS_Version_Spec vspec);
     DDCA_MCCS_Version_Spec
          mccsVersionSpec();
+#endif
     void modelStartInitialLoad(void);
     void modelEndInitialLoad(void);
     void setStatusMsg(QString msg);
@@ -87,8 +91,7 @@ public:
     const char *        _cls;    // className
 
     Monitor *           _monitor;
-    DDCA_Feature_List   _featuresToShow;
-    DDCA_Feature_List   _featuresChecked;
+
 
     DDCA_Status         _caps_status = -999;    // a value that's undefined
     char *              _caps_string = NULL;
@@ -109,17 +112,26 @@ public slots:
     void onDdcError(DdcError& erec);
 
 protected:
-    void notifyFeatureChangeObservers(uint8_t feature_code) ;
+#ifdef FEATURE_CHANGE_OBSERVER
+    void notifyFeatureChangeObservers(uint8_t feature_code);
+#endif
 
 private:
     int modelVcpValueIndex(uint8_t feature_code);
 
     QVector<FeatureValue*> * _featureValues;
+#ifdef UNUSED
     DDCA_MCCS_Version_Spec   _vspec;
+#endif
 
 #ifdef FEATURE_CHANGE_OBSERVER
     QVector<FeatureChangeObserver*> * _featureChangeObservers;
 #endif
+
+private:
+    DDCA_Feature_List   _featuresToShow;
+    DDCA_Feature_List   _featuresChecked;
+
 };
 
 #endif // FEATURE_BASE_MODEL_H

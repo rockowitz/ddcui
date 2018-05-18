@@ -21,6 +21,8 @@
  * </endcopyright>
  */
 
+#include "nongui/feature_base_model.h"
+
 #include <assert.h>
 #include <iostream>
 
@@ -35,7 +37,6 @@
 
 #include "nongui/feature_value.h"
 
-#include "nongui/feature_base_model.h"
 
 using namespace std;
 
@@ -234,6 +235,7 @@ FeatureBaseModel::onDdcError(
 }
 
 
+#ifdef UNUSED
 void
 FeatureBaseModel::modelMccsVersionSet(
      DDCA_MCCS_Version_Spec    vspec)
@@ -247,6 +249,7 @@ FeatureBaseModel::mccsVersionSpec()
 {
     return _vspec;
 }
+#endif
 
 
 void
@@ -259,8 +262,8 @@ FeatureBaseModel::setFeatureList(
          ddca_feature_list_and_not(&_featuresToShow, &_featuresChecked);
 
    if (debugFeatureLists) {
-       char * s = ddca_feature_list_string(&unchecked_features, NULL, (char*) " ");
-       PRINTFCM("Unchecked features: %s", s);
+       PRINTFCM("Unchecked features: %s",
+                ddca_feature_list_string(&unchecked_features, NULL, (char*) " "));
    }
 
 #ifdef OLD

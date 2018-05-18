@@ -258,7 +258,9 @@ void VcpThread::startInitialLoad(void) {
     PRINTFCMF(debugThread, "Executing");
     // _baseModel->beginResetModel();
     _baseModel->modelStartInitialLoad();
+#ifdef UNUSED
     _baseModel->modelMccsVersionSet(_dinfo->vcp_version);
+#endif
 
 }
 
