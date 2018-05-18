@@ -115,23 +115,22 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent):
 
 
 void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
-    PRINTFCMF(debugValueWidgetSignals, "Starting. feature code: 0x%02x", fv._feature_code);
+    PRINTFCMF(debugValueWidgetSignals, "Starting. feature code: 0x%02x", fv.featureCode());
     // ValueBaseWidget::setFeatureValue(fv);
-    _featureCode = fv._feature_code;   // needed since not calling ValueBaseWidget::setFeatureValue()
-
+    _featureCode = fv.featureCode();   // needed since not calling ValueBaseWidget::setFeatureValue()
 
     // alt, test for PRESET, then xb0 (settings) or normal
-    if ( fv._feature_code == 0x04 ||    // Restore factory defaults
-         fv._feature_code == 0x05 ||    // Restore factory brightness/contrast defaults
-         fv._feature_code == 0x06 ||    // Restore factory geometry defaults
-         fv._feature_code == 0x08 ||    // Restore factory color defaults
-         fv._feature_code == 0x0a )     // Restore factory TV defaults
+    if ( _featureCode == 0x04 ||    // Restore factory defaults
+         _featureCode == 0x05 ||    // Restore factory brightness/contrast defaults
+         _featureCode == 0x06 ||    // Restore factory geometry defaults
+         _featureCode == 0x08 ||    // Restore factory color defaults
+         _featureCode == 0x0a )     // Restore factory TV defaults
     {
        _stacked->setCurrentIndex(_pageno_reset);
        _cur_stacked_widget = _resetWidget;
     }
 
-    else if (fv._feature_code == 0xb0) {
+    else if (_featureCode == 0xb0) {
        // printf("(%s::%s) B0\n", _cls, __func__);
        _2ButtonWidget->setButtonDetail(
              QString("Store"),

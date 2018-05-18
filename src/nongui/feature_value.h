@@ -37,32 +37,36 @@ public:
     FeatureValue() {}
 
     FeatureValue(
-            uint8_t                   feature_code,
-            DDCA_Display_Ref          dref,      // dref or finfo?  which?
+            uint8_t                   featureCode,
+            DDCA_Display_Ref          dref,
             DDCA_Feature_Metadata     finfo,
-            DDCA_Cap_Vcp *            cap_vcp,
+            DDCA_Cap_Vcp *            capVcp,
             DDCA_Non_Table_Vcp_Value  val);
 
-    // need a destructor
+    ~FeatureValue();
 
     uint8_t                  featureCode() const;
-    DDCA_Display_Ref         dref()   const;
- // DDCA_MCCS_Version_Spec   vspec()  const;
-    DDCA_Feature_Metadata    finfo()  const;
-    DDCA_Feature_Flags       flags()  const;
-    DDCA_Non_Table_Vcp_Value val()    const;
- // DDCA_Monitor_Model_Key   mmid()   const;
+    DDCA_Display_Ref         dref()        const;
+    DDCA_Feature_Metadata    finfo()       const;
+    DDCA_Feature_Flags       flags()       const;
+    DDCA_Cap_Vcp *           capVcp()      const;
+    DDCA_Non_Table_Vcp_Value val()         const;
+    void                     setCurrentValue(uint8_t sh, uint8_t sl);
+    void                     setCurrentValue(uint16_t newval);
+    void                     dbgrpt()      const;
 
-    void dbgrpt();
+ // DDCA_MCCS_Version_Spec   vspec()       const;
+ // DDCA_Monitor_Model_Key   mmid()        const;
 
-    // eventually private?
-    uint8_t                  _feature_code;
+private:
+    uint8_t                  _featureCode;
     DDCA_Display_Ref         _dref;
     DDCA_Feature_Metadata    _finfo;
-    DDCA_Cap_Vcp *           _cap_vcp;
+    DDCA_Cap_Vcp *           _capVcp;
     DDCA_Non_Table_Vcp_Value _value;    // use this or individual bytes? DDCA_Non_Table_Value needed for get_formatted_value call
 };
 
 Q_DECLARE_METATYPE(FeatureValue)
 
 #endif // FEATURE_VALUE_H
+

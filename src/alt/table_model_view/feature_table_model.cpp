@@ -163,7 +163,7 @@ QVariant FeatureTableModel::data(const QModelIndex &index, int role) const
         {
             // result = QVariant(fv->feature_code);    // how to force display as hex?,  or convert to string here?
             char buffer[8];
-            snprintf(buffer, 8, "x%02x", fv->_feature_code);
+            snprintf(buffer, 8, "x%02x", fv->featureCode());
             QString qs = QString(buffer);
             result = QVariant(buffer);
             break;
@@ -214,10 +214,11 @@ QVariant FeatureTableModel::data(const QModelIndex &index, int role) const
                 }
                 else {
                     char * formatted_value = NULL;
+                    DDCA_Non_Table_Vcp_Value value = fv->val(); // needed because can't take address of temporary in function call
                     DDCA_Status rc = ddca_format_non_table_vcp_value_by_dref(
                                          fv->featureCode(),
                                          fv->dref(),
-                                         &fv->_value,
+                                         &value,
                                          &formatted_value);
                     if (rc == 0)
                        result = QVariant(QString(formatted_value));
@@ -264,7 +265,7 @@ bool FeatureTableModel::setData(const QModelIndex &index, const QVariant &value,
        FeatureValue fv = value.value<FeatureValue>();
        fv.dbgrpt();
        bool writeOnly = false;    // *** TEMP, assume verification ***
-       VcpSetRequest * rqst = new VcpSetRequest(fv._feature_code, fv._value.sl, writeOnly);
+       VcpSetRequest * rqst = new VcpSetRequest(fv.featureCode(), fv.val().sl, writeOnly);
        emit _baseModel->signalVcpRequest(rqst);
     }
 

@@ -167,7 +167,7 @@ void FeaturesScrollAreaView::onUIValueChanged(uint8_t featureCode, bool writeOnl
              featureCode, sbool(writeOnly), sh, sl);
 
    FeatureValue * curFv = _baseModel->modelVcpValueFind(featureCode);
-   if (curFv && curFv->_value.sh == sh && curFv->_value.sl == sl) {
+   if (curFv && curFv->val().sh == sh && curFv->val().sl == sl) {
       PRINTFCM("New value matches model value, Suppressing.");
    }
    else {

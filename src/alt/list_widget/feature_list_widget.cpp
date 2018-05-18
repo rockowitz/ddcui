@@ -92,10 +92,10 @@ void FeatureListWidget::addFeature(FeatureValue * fv) {
 
 
 void FeatureListWidget::updateFeature(FeatureValue * fv) {
-    FeatureWidgetExtended * itemWidget = getFeatureItem(fv->_feature_code);
+    FeatureWidgetExtended * itemWidget = getFeatureItem(fv->featureCode());
     assert(itemWidget);
 
-    uint16_t newval = (fv->_value.sh << 8) | fv->_value.sl;
+    uint16_t newval = (fv->val().sh << 8) | fv->val().sl;
     itemWidget->setCurrentValue(newval);
     // signal paint event?
 }
@@ -135,14 +135,14 @@ void   FeatureListWidget::endInitialLoad(void) {
 // slot
 void  FeatureListWidget::featureAdded(FeatureValue fv) {
    if (debugSignals) {
-        printf("FeatureListWidget::%s) feature_code=0x%02x\n", __func__, fv._feature_code); fflush(stdout);
+        printf("FeatureListWidget::%s) feature_code=0x%02x\n", __func__, fv.featureCode()); fflush(stdout);
         // a QListWidget is not a QWidget - but is is a QObject
         QString objname = QListWidget::objectName();
         std::cout << "        objectname: " << objname.toStdString() << std::endl;
         // printf("(FeatureListWidget::%s) _baseModel=%p\n", __func__, _baseModel);
     }
 
-    FeatureValue * fv2 = _baseModel->modelVcpValueFind(fv._feature_code);
+    FeatureValue * fv2 = _baseModel->modelVcpValueFind(fv.featureCode());
     assert(fv2);
     addFeature(&fv);
 

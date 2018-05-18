@@ -224,7 +224,7 @@ void FeatureWidget::setFeatureValue(FeatureValue &fv) {
     // fv.report(); ff;isj)stdpit);
     // printf("(%s::%s) _feature_flags = 0x%08x, fv._feature_flags = 0x%08x, fv._finfo
 
-    _feature_code  = fv._feature_code;
+    _feature_code  = fv.featureCode();
     _feature_flags = fv.flags();
 
     setObjectName(QString::asprintf("FeatureWidget-0x%02x", _feature_code));

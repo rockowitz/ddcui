@@ -199,7 +199,7 @@ ValueContWidget::ValueContWidget(QWidget *parent):
 
 
 void ValueContWidget::setFeatureValue(const FeatureValue &fv) {
-    PRINTFCMF(debugValueWidgetSignals, "Starting. feature code: 0x%02x", fv._feature_code);
+    PRINTFCMF(debugValueWidgetSignals, "Starting. feature code: 0x%02x", fv.featureCode());
     ValueBaseWidget::setFeatureValue(fv);
 
     int maxval = _mh << 8 | _ml;

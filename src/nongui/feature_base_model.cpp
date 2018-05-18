@@ -62,7 +62,7 @@ int FeatureBaseModel::modelVcpValueIndex(uint8_t feature_code) {
     int result = -1;
     for (int ndx = 0; ndx < _featureValues->count(); ndx++) {
         FeatureValue * cur = _featureValues->at(ndx);
-        if (cur->_feature_code == feature_code) {
+        if (cur->featureCode() == feature_code) {
             result = ndx;
             break;
         }
@@ -80,7 +80,7 @@ FeatureValue * FeatureBaseModel::modelVcpValueFind(uint8_t feature_code) {
     FeatureValue * result = NULL;
     for (int ndx = 0; ndx < _featureValues->count(); ndx++) {
         FeatureValue * cur = _featureValues->at(ndx);
-        if (cur->_feature_code == feature_code) {
+        if (cur->featureCode() == feature_code) {
             result = cur;
             break;
         }
@@ -173,12 +173,13 @@ void   FeatureBaseModel::modelVcpValueSet(
         // PRINTFCM("Modifying existing FeatureValue");
 
         FeatureValue * fv =  _featureValues->at(ndx);
-        fv->_value.sh = feature_value->sh;
-        fv->_value.sl = feature_value->sl;
+        // fv->_value.sh = feature_value->sh;
+        // fv->_value.sl = feature_value->sl;
+        fv->setCurrentValue(feature_value->sh, feature_value->sl);
 
         PRINTFCM("Emitting signalFeatureUpdated3(), feature code: 0x%02x, sl: 0x%02x",
-                 fv->_feature_code, feature_value->sl);
-        emit signalFeatureUpdated3(__func__, fv->_feature_code, feature_value->sh, feature_value->sl);
+                 fv->featureCode(), feature_value->sl);
+        emit signalFeatureUpdated3(__func__, fv->featureCode(), feature_value->sh, feature_value->sl);
     }
 }
 
@@ -197,8 +198,9 @@ FeatureBaseModel::modelVcpValueUpdate(
     // PRINTFCMF(debugModel, "Modifying existing FeatureValue");
 
     FeatureValue * fv =  _featureValues->at(ndx);
-    fv->_value.sh = sh;
-    fv->_value.sl = sl;
+    // fv->_value.sh = sh;
+    // fv->_value.sl = sl;
+    fv->setCurrentValue(sh,sl);
 
     // PRINTFCMF(debugModel, "Emitting signalFeatureUpdated()");
     // emit signalFeatureUpdated(feature_code);
@@ -299,11 +301,11 @@ void FeatureBaseModel::dbgrpt() {
         FeatureValue* fv = _featureValues->at(ndx);
         // printf("   feature_code: 0x%02x\n", fv->_feature_code);
         printf("   code=0x%02x, mh=0x%02x, ml-0x%02x, sh=0x%02x, sl=0x%02x\n",
-               fv->_feature_code,
-               fv->_value.mh,
-               fv->_value.ml,
-               fv->_value.sh,
-               fv->_value.sl);
+               fv->featureCode(),
+               fv->val().mh,
+               fv->val().ml,
+               fv->val().sh,
+               fv->val().sl);
     }
 }
 

@@ -68,7 +68,7 @@ void FeatureValueTableItemCbEditor::setFeatureValue(const FeatureValue &fv) {
     // rc = ddca_get_feature_info_by_vcp_version(_fv._feature_code, mccs_id, &info);
     DDCA_Feature_Value_Table value_table;
 
-    value_table = fv._finfo.sl_values;
+    value_table = fv.finfo().sl_values;
 
      // - set values in combo box
      printf("(%s) Setting combo box values. value_table=%p\n", __func__, value_table);
@@ -86,12 +86,12 @@ void FeatureValueTableItemCbEditor::setFeatureValue(const FeatureValue &fv) {
      }
 
      // - set current value in combo box
-     int cur_ndx = findItem(_fv._value.sl);
+     int cur_ndx = findItem(_fv.val().sl);
      if (cur_ndx >= 0) {
          _cb->setCurrentIndex(cur_ndx);
      }
      else {
-         printf("(FeatureValueTableItemCbEditor::%s) Unable to find value 0x%02x\n", __func__, _fv._value.sl);
+         printf("(FeatureValueTableItemCbEditor::%s) Unable to find value 0x%02x\n", __func__, _fv.val().sl);
      }
 }
 
@@ -103,15 +103,17 @@ FeatureValue FeatureValueTableItemCbEditor::featureValue() {
     QVariant qv = _cb->itemData(ndx);
     uint i = qv.toUInt();
 
-     _fv._value.sh = 0;
-     _fv._value.sl = i & 0xff;
+     // _fv._value.sh = 0;
+     // _fv._value.sl = i & 0xff;
+     _fv.setCurrentValue(0, i&0xff);
     return _fv;
 }
 
 
 void FeatureValueTableItemCbEditor::setCurValue(ushort curval) {
-    _fv._value.sh = curval >> 8;
-    _fv._value.sl = curval & 0xff;
+    //  _fv._value.sh = curval >> 8;
+    // _fv._value.sl = curval & 0xff;
+    _fv.setCurrentValue(curval);
     // _curSpinBox->setValue(curval);
     // _curSlider->setValue(curval);
 }

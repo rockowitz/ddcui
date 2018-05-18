@@ -128,7 +128,7 @@ void FeatureWidgetExtended::setFeatureValue(FeatureValue &fv) {
         fv.dbgrpt();
     }
 
-    _feature_code  = fv._feature_code;
+    _feature_code  = fv.featureCode();
     _feature_flags = fv.flags();     // fv._feature_flags;
     // _vspec         = fv.vspec();     // fv._vspec;
 

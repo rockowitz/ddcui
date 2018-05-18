@@ -121,7 +121,7 @@ ValueNcWidget::ValueNcWidget(QWidget *parent):
 
 void ValueNcWidget::setFeatureValue(const FeatureValue &fv) {
     PRINTFCMF(debugWidget, "Starting. feature 0x%02x, new sl=x%02x\n",
-              fv._feature_code, fv._value.sl);
+              fv.featureCode(), fv.val().sl);
     ValueBaseWidget::setFeatureValue(fv);
 
     _guiChange = false;

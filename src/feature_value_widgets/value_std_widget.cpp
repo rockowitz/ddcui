@@ -111,7 +111,7 @@ void ValueStdWidget::setValueField() {
 
 
 void ValueStdWidget::setFeatureValue(const FeatureValue &fv) {
-    PRINTFCMF(debugValueWidgetSignals, "Starting. feature code: 0x%02x", fv._feature_code);
+    PRINTFCMF(debugValueWidgetSignals, "Starting. feature code: 0x%02x", fv.featureCode());
     ValueBaseWidget::setFeatureValue(fv);
     setValueField();
 }

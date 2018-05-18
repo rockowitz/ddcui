@@ -86,12 +86,13 @@ QVariant FeatureItemModel::data(const QModelIndex &index, int role) const
     switch(role) {
     case(Qt::DisplayRole):
     {
-        char * s_name = fv->_finfo.feature_name;
+        char * s_name = fv->finfo().feature_name;
         char * s_formatted = NULL;
+        DDCA_Non_Table_Vcp_Value value = fv->val();
         DDCA_Status rc = ddca_format_non_table_vcp_value_by_dref(
                              fv->featureCode(),
                              fv->dref(),
-                             &fv->_value,
+                             &value,
                              &s_formatted);
         if (rc != 0)
             s_formatted = (char*) "invalid formatted value";   // explicit cast to avoid compiler warning
@@ -119,7 +120,7 @@ QVariant FeatureItemModel::data(const QModelIndex &index, int role) const
 
         char buffer[100];
         snprintf(buffer, 100, "%02x  %-30s %-2s %-2s %-40s",
-                 fv->_feature_code, s_name, s_mccs_type, s_rw, s_formatted  );
+                 fv->featureCode(), s_name, s_mccs_type, s_rw, s_formatted  );
         printf("(FeatureItemModel::data) buffer=|%s|\n", buffer);
 
         result = QString(buffer);
