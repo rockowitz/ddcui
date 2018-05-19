@@ -72,14 +72,17 @@ void FeaturesScrollAreaView::freeContents(void) {
 
 
 void FeaturesScrollAreaView::onEndInitialLoad(void) {
-   // PRINTFCM("Starting");
-   if (_monitor->_curFeaturesView != Monitor::FEATURES_VIEW_SCROLLAREA_VIEW) {
-      PRINTFCM("Not FEATURES_VIEW_SCROLLAREA, skipping");
-      return;
-   }
+    // PRINTFCM("Starting");
+    if (_monitor->_curFeaturesView != Monitor::FEATURES_VIEW_SCROLLAREA_VIEW) {
+        PRINTFCM("Not FEATURES_VIEW_SCROLLAREA, skipping");
+        return;
+    }
 
-   // TODO:
-   // free existing QScrollArea, QScrollAreaContents
+    // TODO:
+    // free existing QScrollArea, QScrollAreaContents
+
+    // scrollWrap contains a FeatureWidgetHeader and a scrollable
+    // collection of FeatureWidget rows
 
     QFrame * scrollWrap = new QFrame();
     QVBoxLayout * wrapLayout = new QVBoxLayout;

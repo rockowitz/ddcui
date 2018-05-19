@@ -1,5 +1,8 @@
 /* features_scrollarea_contents.h
  *
+ * A FeaturesScrollAreaContents instance contains rows of feature descriptions,
+ * implemented aas FeatureWidgets.  It is contained in a QScrollArea.
+ *
  * <copyright>
  * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
  *
@@ -28,7 +31,7 @@
 #include "nongui/feature_base_model.h"
 
 #include "feature_scrollarea/feature_widget.h"
-// #include "unused/page_change_observer.h"
+// #include "page_change_observer.h"
 
 class QScrollArea;
 class QVBoxLayout;
