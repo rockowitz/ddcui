@@ -194,18 +194,11 @@ FeatureBaseModel::modelVcpValueUpdate(
     PRINTFCMF(debugModel, "feature_code=0x%02x, sh=0x%02x, sl=0x%02x", feature_code, sh, sl);
 
     int ndx = modelVcpValueIndex(feature_code);
-    // printf("(%s) ndx=%d\n", __func__, ndx);  fflush(stdout);
     assert (ndx >= 0);
-    // PRINTFCMF(debugModel, "Modifying existing FeatureValue");
-
     FeatureValue * fv =  _featureValues->at(ndx);
-    // fv->_value.sh = sh;
-    // fv->_value.sl = sl;
     fv->setCurrentValue(sh,sl);
 
-    // PRINTFCMF(debugModel, "Emitting signalFeatureUpdated()");
-    // emit signalFeatureUpdated(feature_code);
-    PRINTFCMF(debugModel, "Emitting signalFeatureUpdated3()");
+    PRINTFCMF(debugModel || debugSignals, "Emitting signalFeatureUpdated3()");
     emit signalFeatureUpdated3(__func__, feature_code, sh, sl);
 }
 
