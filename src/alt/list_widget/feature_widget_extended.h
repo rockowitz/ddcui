@@ -27,7 +27,8 @@
 #include "base/ddcui_globals.h"
 #include "nongui/feature_value.h"
 
-#include "feature_value_widgets/value_abstract_widget.h"
+// #include "feature_value_widgets/value_abstract_widget.h"
+#include "feature_value_widgets/value_base_widget.h"
 
 class QLabel;
 class QHBoxLayout;

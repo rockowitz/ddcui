@@ -27,7 +27,7 @@
 // #include "nongui/simple_feature_value.h"
 // #include "nongui/simple_feature_value_subject.h"
 
-#include "value_abstract_widget.h"
+// #include "value_abstract_widget.h"
 #include "value_base_widget.h"
 #include "value_std_widget.h"
 #include "value_cont_widget.h"

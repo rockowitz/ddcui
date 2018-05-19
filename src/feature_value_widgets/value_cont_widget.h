@@ -46,16 +46,6 @@ public:
     void     setCurrentValue(uint16_t newval) override;
     uint16_t getCurrentValue() override;
 
-    QSlider*    _curSlider;
-    QSpinBox*   _curSpinBox;
-    QLabel*     _maxTitle;
-    QLabel*     _maxValue;
-
-#ifdef APPLY_CANCEL
-    QPushButton * _applyButton;
-    QPushButton * _cancelButton;
-#endif
-
 
 protected:
 #ifdef UNUSED
@@ -66,6 +56,11 @@ protected:
     // void leaveEvent(QEvent * event);
 
 private:
+    QSlider*    _curSlider;
+    QSpinBox*   _curSpinBox;
+    QLabel*     _maxTitle;
+    QLabel*     _maxValue;
+
     uint16_t _newval;
 
     QTimer* _spinBoxTimer;
@@ -79,9 +74,15 @@ private slots:
     void onSpinBoxValueChanged(int value);
 
 #ifdef APPLY_CANCEL
+private:
     void onApplyButtonClicked(bool checked);
     void onCancelButtonClicked(bool checked);
+
+    QPushButton * _applyButton;
+    QPushButton * _cancelButton;
 #endif
+
+
 
 };
 
