@@ -64,6 +64,7 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent):
     _resetWidget   = new ValueResetWidget();
     _2ButtonWidget = new Value2ButtonWidget();
 
+    // relying on _pageno_xxx order corresponds to addWidget() order
     _pageno_cont    = 0;
     _pageno_nc      = 1;
     _pageno_std     = 2;
@@ -71,13 +72,11 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent):
     _pageno_2button = 4;
     _pageno_selected = _pageno_std;    // default
 
-    _stacked = this;
-    // _stacked = new QStackedWidget();
-    _stacked->addWidget(_contWidget);
-    _stacked->addWidget(_ncWidget);
-    _stacked->addWidget(_stdWidget);
-    _stacked->addWidget(_resetWidget);
-    _stacked->addWidget(_2ButtonWidget);
+    addWidget(_contWidget);
+    addWidget(_ncWidget);
+    addWidget(_stdWidget);
+    addWidget(_resetWidget);
+    addWidget(_2ButtonWidget);
 
     if (debugLayout) {
         if (!dimensionReportShown) {
@@ -89,7 +88,7 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent):
     }
 
     _pageno_selected = _pageno_std;
-    _stacked->setCurrentIndex(_pageno_selected);
+    setCurrentIndex(_pageno_selected);
     _cur_stacked_widget = _stdWidget;
 
     // ValueStackedWidget * curWidget = this;  // still treated as ValueBaseWidget* in SIGNAL/SLOT versions
@@ -126,7 +125,7 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
          _featureCode == 0x08 ||    // Restore factory color defaults
          _featureCode == 0x0a )     // Restore factory TV defaults
     {
-       _stacked->setCurrentIndex(_pageno_reset);
+       setCurrentIndex(_pageno_reset);
        _cur_stacked_widget = _resetWidget;
     }
 
@@ -137,14 +136,14 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
              1,
              QString("Restore"),
              2);
-       _stacked->setCurrentIndex(_pageno_2button);
+       setCurrentIndex(_pageno_2button);
        _pageno_selected = _pageno_2button;
        _cur_stacked_widget = _2ButtonWidget;
     }
 
     else if (fv.flags() & DDCA_STD_CONT) {
          // printf("(ValueStackedWidget::%s) DDCA_STD_CONT\n", __func__); fflush(stdout);
-        _stacked->setCurrentIndex(_pageno_cont);
+        setCurrentIndex(_pageno_cont);
         _pageno_selected = _pageno_cont;
         _cur_stacked_widget = _contWidget;
     }
@@ -153,13 +152,13 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
             )
     {
         // printf("(ValueStackedWidget::%s) DDCA_SIMPLE_NC\n", __func__); fflush(stdout);
-        _stacked->setCurrentIndex(_pageno_nc);
+        setCurrentIndex(_pageno_nc);
         _pageno_selected = _pageno_nc;
         _cur_stacked_widget = _ncWidget;
     }
     else {
         // printf("(ValueStackedWidget::%s) default case, _stdWidget\n",  __func__); fflush(stdout);
-        _stacked->setCurrentIndex(_pageno_std);
+        setCurrentIndex(_pageno_std);
         _pageno_selected = _pageno_std;
         _cur_stacked_widget = _stdWidget;
     }

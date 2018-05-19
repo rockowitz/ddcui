@@ -60,7 +60,6 @@ signals:
 private:
     const char *        _cls;
     uint8_t             _featureCode;
-    QStackedWidget*     _stacked;
     int                 _pageno_selected;
     ValueBaseWidget*    _cur_stacked_widget;
 
