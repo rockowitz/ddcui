@@ -36,19 +36,13 @@ class Value2ButtonWidget : public ValueBaseWidget
 
 public:
     Value2ButtonWidget(
-#ifdef NO
-          QString& name1,
-          uint8_t  val1,
-          QString& name2,
-          uint8_t  val1,
-#endif
           QWidget *parent = nullptr);
 
     void setButtonDetail(
           QString  name1,
-          uint8_t   val1,
+          uint8_t  val1,
           QString  name2,
-          uint8_t   val2);
+          uint8_t  val2);
 
 private slots:
     void on_button1_pressed();

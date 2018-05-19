@@ -44,14 +44,8 @@
 static bool dimensionReportShown = false;
 
 Value2ButtonWidget::Value2ButtonWidget(
-#ifdef NO
-      QString& name1,
-      uint8_t val1,
-      QString& name2,
-      uint8_t val2,
-#endif
-      QWidget *parent)
-:         ValueBaseWidget(parent)    // , _val1(val1), _val2(val2)
+     QWidget *parent)
+    : ValueBaseWidget(parent)
 {
    _cls = strdup(metaObject()->className());
     // printf("(Value2ButtonWidget::Value2ButtonWidget) Starting.\n" ); fflush(stdout);
@@ -92,14 +86,12 @@ Value2ButtonWidget::Value2ButtonWidget(
     if (debugLayout)
        this->setStyleSheet("background-color:cyan;");
 
-    // QObject::connect(_button1,  &QAbstractButton::released),
-    //                  this,          &Value2ButtonWidget::on_button1_pressed );
-
     QObject::connect(_button1,  SIGNAL(released()),
                      this,      SLOT(  on_button1_pressed()) );
     QObject::connect(_button2,  SIGNAL(released()),
                      this,      SLOT(  on_button2_pressed()) );
 }
+
 
 void Value2ButtonWidget::setButtonDetail(
       QString   name1,
@@ -115,16 +107,14 @@ void Value2ButtonWidget::setButtonDetail(
 }
 
 
-
 void Value2ButtonWidget::on_button1_pressed() {
-   if (debugValueWidgetSignals)
-   printf("(%s::%s)\n", _cls, __func__); fflush(stdout);
+   PRINTFCMF(debugValueWidgetSignals, "Button 1 pressed. Emitting featureValueChanged");
    emit featureValueChanged(_featureCode, 0, _val1);
 }
 
+
 void Value2ButtonWidget::on_button2_pressed() {
-   if (debugValueWidgetSignals)
-   printf("(%s::%s)\n", _cls, __func__); fflush(stdout);
+   PRINTFCMF(debugValueWidgetSignals, "Button 2 pressed. Emitting featureValueChanged");
    emit featureValueChanged(_featureCode, 0, _val2);
 }
 
