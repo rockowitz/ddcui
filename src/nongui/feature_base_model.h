@@ -29,11 +29,11 @@
 #include "ddcutil_types.h"
 
 #include "nongui/ddc_error.h"
+#include "nongui/feature_value.h"
+#include "nongui/vcprequest.h"
 #ifdef FEATURE_CHANGE_OBSERVER
 #include "nongui/feature_change_observer.h"
 #endif
-#include "nongui/feature_value.h"
-#include "nongui/vcprequest.h"
 
 // typedef void (*NotifyFeatureChanged)(uint8_t feature_code);
 
@@ -51,12 +51,9 @@ class FeatureBaseModel : public QObject
 public:
     FeatureBaseModel(Monitor * monitor);
 
-    FeatureValue *
-         modelVcpValueFind(uint8_t feature_code);
-    FeatureValue *
-         modelVcpValueFilteredFind(uint8_t feature_code);
-    FeatureValue *
-         modelVcpValueAt(int ndx) const;
+    FeatureValue* modelVcpValueFind(uint8_t feature_code);
+    FeatureValue* modelVcpValueFilteredFind(uint8_t feature_code);
+    FeatureValue* modelVcpValueAt(int ndx) const;
     int  modelVcpValueCount(void) const;
     void modelVcpValueSet(
              uint8_t                     feature_code,
