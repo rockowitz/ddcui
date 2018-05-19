@@ -47,6 +47,9 @@ public:
 
     // QSize sizeHint() const override;   //   needed?
 
+
+protected:
+    char * _cls;
     uint8_t                _featureCode;
     DDCA_Display_Ref       _dref;
     DDCA_Feature_Metadata  _finfo;
@@ -55,9 +58,6 @@ public:
     uint8_t                _ml;
     uint8_t                _sh;
     uint8_t                _sl;
-
-protected:
-    char * _cls;
 
 signals:
 // compiler warning: signals may not be declared virtual
