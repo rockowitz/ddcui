@@ -68,14 +68,15 @@ ValueResetWidget::ValueResetWidget(QWidget *parent):
     layout->setContentsMargins(0,0,0,0);
     setLayout(layout);
 
-    if (!dimensionReportShown && debugLayout) {
-        // printf("-------------------------------------------->\n"); fflush(stdout);
-        reportWidgetDimensions(_resetButton, _cls, __func__, "ValueResetWidget::_resetButton");
-        reportWidgetDimensions(this, _cls, __func__, "ValueResetWidget");
-        dimensionReportShown = true;
-    }
-    if (debugLayout)
+    if (debugLayout) {
        this->setStyleSheet("background-color:cyan;");
+       if (!dimensionReportShown) {
+           // printf("-------------------------------------------->\n"); fflush(stdout);
+           reportWidgetDimensions(_resetButton, _cls, __func__, "ValueResetWidget::_resetButton");
+           reportWidgetDimensions(this, _cls, __func__, "ValueResetWidget");
+           dimensionReportShown = true;
+       }
+    }
 
     // QObject::connect(_resetButton,  &QAbstractButton::released),
     //                  this,          &ValueResetWidget::on_resetButton_pressed );
@@ -86,9 +87,7 @@ ValueResetWidget::ValueResetWidget(QWidget *parent):
 
 
 void ValueResetWidget::on_resetButton_pressed() {
-   if (debugValueWidgetSignals) {
-       printf("(%s::%s)\n", _cls, __func__); fflush(stdout);
-   }
+   PRINTFCMF(debugValueWidgetSignals, "Button pressed. Emitting featureValueChanged()");
    emit featureValueChanged(_featureCode, 0, 1);
 }
 
