@@ -1,4 +1,4 @@
-/* hline_widget.h
+/* hline_widget.h - creates a horizontal line
  *
  * <copyright>
  * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>

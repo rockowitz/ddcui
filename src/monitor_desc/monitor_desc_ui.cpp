@@ -21,6 +21,7 @@
  * </endcopyright>
  */
 
+#include "monitor_desc/monitor_desc_ui.h"
 
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QPlainTextEdit>
@@ -28,22 +29,19 @@
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QStackedWidget>
 
-#include "monitor_desc_ui.h"
-#include "../base/monitor.h"
+#include "base/monitor.h"
 
 
-// Initialization for monitor info, capabilities are identical
+// Common initialization for monitor info and capabilities
 
-// static
+static
 void initPlaintextWidget(
       const char *          name,
       int                   monitorNumber,
-      QStackedWidget *      stackedWidget,
+      QStackedWidget *      stackedWidget,  // central widget of GUI
       QWidget **            page_loc,
       int *                 pageno_loc,
-      QPlainTextEdit **     pagePlainText_loc
-
-)
+      QPlainTextEdit **     pagePlainText_loc)
 {
    // TODO: CLEAN UP AND SIMPLIFY!
 
@@ -97,10 +95,10 @@ void initPlaintextWidget(
       *pagePlainText_loc = plainTextWidget;
 }
 
+
 QWidget * initMonitorInfoWidget(
       Monitor *         curMonitor,
       QStackedWidget *  stackedWidget)
-
 {
    initPlaintextWidget(
          "MonitorInfo",
@@ -127,7 +125,6 @@ QWidget * initCapabilitiesWidget(
          &curMonitor->_capabilitiesPlainText);
 
    return curMonitor->_page_capabilities;
-
 }
 
 
