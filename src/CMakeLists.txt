@@ -51,7 +51,7 @@ set(SOURCES
     monitor_desc/monitor_desc_ui.cpp 
     monitor_desc/monitor_desc_actions.cpp
 
-    feature_value_widgets/value_abstract_widget.cpp 
+
     feature_value_widgets/value_base_widget.cpp 
     feature_value_widgets/value_cont_widget.cpp 
     feature_value_widgets/value_nc_widget.cpp 

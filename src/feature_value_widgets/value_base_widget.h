@@ -30,20 +30,20 @@
 #include <ddcutil_c_api.h>
 
 #include "nongui/feature_value.h"
-#include "feature_value_widgets/value_abstract_widget.h"
+// #include "feature_value_widgets/value_abstract_widget.h"
 
 class FeatureBaseModel;
 
-class ValueBaseWidget : public ValueAbstractWidget
+class ValueBaseWidget : public QFrame    // ValueAbstractWidget
 {
     Q_OBJECT
 
 public:
     explicit ValueBaseWidget(QWidget *parent = nullptr);
 
-    void     setFeatureValue(const FeatureValue &fv) override;
-    void     setCurrentValue(uint16_t newval) override;
-    uint16_t getCurrentValue() override;
+    virtual void     setFeatureValue(const FeatureValue &fv);   // override;
+    virtual void     setCurrentValue(uint16_t newval);  // override;
+    virtual uint16_t getCurrentValue(); //  override;
 
     // QSize sizeHint() const override;   //   needed?
 

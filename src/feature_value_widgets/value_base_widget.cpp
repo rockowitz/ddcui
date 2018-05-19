@@ -22,12 +22,12 @@
  */
 
 #include "feature_value_widgets/value_base_widget.h"
-#include "feature_value_widgets/value_abstract_widget.h"
+// #include "feature_value_widgets/value_abstract_widget.h"
 
 #include <QtCore/QMargins>
 
 ValueBaseWidget::ValueBaseWidget(QWidget *parent)
-     : ValueAbstractWidget(parent)
+     : QFrame(parent)             // ValueAbstractWidget(parent)
 {
    // n. will be reset in subclass constructor
    _cls = strdup(metaObject()->className());
