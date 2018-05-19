@@ -28,7 +28,7 @@
 #include "nongui/feature_base_model.h"
 
 #include "feature_scrollarea/feature_widget.h"
-#include "unused/page_change_observer.h"
+// #include "unused/page_change_observer.h"
 
 class QScrollArea;
 class QVBoxLayout;
@@ -65,7 +65,9 @@ private:
    const char *        _cls;    // className
    FeatureBaseModel *  _baseModel = NULL;
    QScrollArea *       _containingScrollArea = NULL;
+#ifdef PAGE_CHANGE_OBSERVER
    QVector<PageChangeObserver*> * _pageChangeObservers;
+#endif
 
    // quick and dirty for now, eventually replace by hash
    FeatureWidget * _widgets[256] = {0};

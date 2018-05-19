@@ -32,8 +32,8 @@ class FeatureBaseModel;
 class QStackedWidget;
 
 void initFeaturesScrollAreaView(
-      Monitor *         curMonitor,
+      Monitor*          curMonitor,
       FeatureBaseModel* baseModel,
-      QStackedWidget *  stackedWidget);
+      QStackedWidget*   stackedWidget);
 
 #endif /* FEATURES_SCROLLAREA_UI_H_ */

@@ -28,15 +28,10 @@
 #include "base/ddcui_globals.h"
 #include "nongui/feature_value.h"
 
-// #include "feature_value_widgets/value_abstract_widget.h"
-#include "feature_value_widgets/value_base_widget.h"
 #include "feature_value_widgets/value_stacked_widget.h"
-
-// Like FeatureWidgetExtended, but derives only from QWidget, not QListWidgetItem
 
 class QLabel;
 class QHBoxLayout;
-
 class FeatureBaseModel;
 
 
@@ -49,27 +44,23 @@ class FeatureWidget :
 public:
     explicit FeatureWidget(QWidget *parent = nullptr);
     FeatureWidget(FeatureValue& fv, QWidget *parent=nullptr);
-    void setFeatureValue(FeatureValue &fv);
 
+    void setFeatureValue(FeatureValue &fv);
     void setCurrentValue(uint16_t newval);
+    bool isSimpleNc();
+    void setNcValuesSource(NcValuesSource newsrc);
 
     void dbgrpt() const;
 
     QSize sizeHint() const override;
 
     // void simpleFeatureValueChanged(SimpleFeatureValue fv) override;   // SimpleFeatureValueObserver
-    bool isSimpleNc();
-    void setNcValuesSource(NcValuesSource newsrc);
 
 public slots:
     void onInternalValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl);
 
 signals:
     void valueChanged(uint8_t featureCode, bool writeOnlyFeature, uint8_t sh, uint8_t sl);
-
-protected:
-
-    // void paintEvent(QPaintEvent *event) override;
 
 private:
     void setupFeatureWidget();   // called by constructor

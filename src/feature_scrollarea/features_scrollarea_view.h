@@ -52,7 +52,6 @@ public:
     void freeContents(void);    // private?
 
 private:
-    // keep in order for constructor initialization
     const char *       _cls;
     Monitor *          _monitor;
     FeatureBaseModel * _baseModel;

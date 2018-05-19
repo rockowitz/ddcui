@@ -1,4 +1,4 @@
-#include "feature_scrollarea/features_scrollarea_view.h"
+/* features_scrollarea_view.cpp */
 
 /* <copyright>
  * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
@@ -21,6 +21,7 @@
  * </endcopyright>
  */
 
+#include "feature_scrollarea/features_scrollarea_view.h"
 
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QStackedWidget>
@@ -52,10 +53,11 @@ FeaturesScrollAreaView::FeaturesScrollAreaView(
         QStackedWidget *   centralStackedWidget,
         QObject *          parent)
     : QObject(parent)
-      , _cls(metaObject()->className())
-      , _monitor(monitor)
-      , _baseModel(model)
-      , _centralStackedWidget(centralStackedWidget)
+    , _cls(metaObject()->className())
+    , _monitor(monitor)
+    , _baseModel(model)
+    , _centralStackedWidget(centralStackedWidget)
+    , _curNcValuesSource(NcValuesSourceUnset)
 {
    //  _cls  = metaObject()->className();
    //  _monitor = monitor;
@@ -186,14 +188,16 @@ void FeaturesScrollAreaView::onUIValueChanged(uint8_t featureCode, bool writeOnl
 
 
 void FeaturesScrollAreaView::onModelValueChanged(
-      const char * caller,
-      uint8_t featureCode, uint8_t sh, uint8_t sl)
+      const char* caller,
+      uint8_t     featureCode,
+      uint8_t     sh,
+      uint8_t     sl)
 {
    PRINTFCMF(debugSignals,
              "caller = %s, feature_code = 0x%02x, sh=0x%02x, sl=0x%02x",
              caller, featureCode, sh, sl);
 
-   // find the entry in _widgets
+   // find the FeatureWidget for the feature code
    FeatureWidget * curWidget = _widgets[featureCode];
 
    // set value in the widget

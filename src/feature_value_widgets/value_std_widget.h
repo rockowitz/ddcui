@@ -40,10 +40,6 @@ public:
     void setFeatureValue(const FeatureValue  &fv) override;
     void setCurrentValue(uint16_t newval) override;
 
-#ifdef DEBUG_PAINT
-    void paintEvent(QPaintEvent *event) override;
-#endif
-
 private:
     void setValueField();
 
