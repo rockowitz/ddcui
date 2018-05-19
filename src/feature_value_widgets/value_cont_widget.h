@@ -46,14 +46,12 @@ public:
     void     setCurrentValue(uint16_t newval) override;
     uint16_t getCurrentValue() override;
 
-
 protected:
 #ifdef UNUSED
     void focusInEvent(QFocusEvent * event);
     void focusOutEvent(QFocusEvent * event);
     void leaveEvent(QEvent * event);
 #endif
-
 
 private:
     QSlider*    _curSlider;
