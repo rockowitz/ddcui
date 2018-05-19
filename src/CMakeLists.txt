@@ -27,7 +27,7 @@ include_directories(SYSTEM ${Qt5Widgets_INCLUDE_DIRS} ${GLIB2_INCLUDE_DIRS})
 
 # both work:
 OPTION(APPLY_CANCEL "Use Accept/Cancel buttons" OFF)
-set(ALT_FEATURES ON)
+set(ALT_FEATURES OFF)
 configure_file(cconfig.h.in config.h)
 
 set(SOURCES
