@@ -51,20 +51,18 @@ protected:
 #ifdef UNUSED
     void focusInEvent(QFocusEvent * event);
     void focusOutEvent(QFocusEvent * event);
+    void leaveEvent(QEvent * event);
 #endif
 
-    // void leaveEvent(QEvent * event);
 
 private:
     QSlider*    _curSlider;
     QSpinBox*   _curSpinBox;
     QLabel*     _maxTitle;
     QLabel*     _maxValue;
-
-    uint16_t _newval;
-
-    QTimer* _spinBoxTimer;
-    bool    _guiChange = false;
+    uint16_t    _newval;
+    QTimer*     _spinBoxTimer;
+    bool        _guiChange = false;
 
 private slots:
     void onSliderReleased();
@@ -82,8 +80,7 @@ private:
     QPushButton * _cancelButton;
 #endif
 
-
-
 };
 
 #endif // VALUE_CONT_WIDGET_H
+
