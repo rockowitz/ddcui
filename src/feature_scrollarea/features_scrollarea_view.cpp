@@ -73,10 +73,12 @@ void FeaturesScrollAreaView::freeContents(void) {
 
 void FeaturesScrollAreaView::onEndInitialLoad(void) {
     // PRINTFCM("Starting");
+#ifdef ALT_FEATURES
     if (_monitor->_curFeaturesView != Monitor::FEATURES_VIEW_SCROLLAREA_VIEW) {
         PRINTFCM("Not FEATURES_VIEW_SCROLLAREA, skipping");
         return;
     }
+#endif
 
     // TODO:
     // free existing QScrollArea, QScrollAreaContents

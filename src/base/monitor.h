@@ -58,6 +58,7 @@ class Monitor : public QObject
 
 public:
 
+#ifdef ALT_FEATURES
     // For selecting among alternative features views
     enum FeaturesView {
        FEATURES_VIEW_SCROLLAREA_VIEW,
@@ -68,6 +69,7 @@ public:
        FEATURES_VIEW_LISTWIDGET,
        FEATURES_VIEW_UNSET
     };
+#endif
 
     Monitor(DDCA_Display_Info * display_info, int monitorNumber);
     ~Monitor();
@@ -95,7 +97,9 @@ public:
     int                 _pageno_capabilities;
     QPlainTextEdit *    _capabilitiesPlainText;
 
+#ifdef ALT_FEATURES
     FeaturesView        _curFeaturesView = FEATURES_VIEW_UNSET;
+#endif
     FeatureSelector     _curFeatureSelector;
 
     // FEATURES_VIEW_SCROLLAREAVIEW

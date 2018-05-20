@@ -623,16 +623,24 @@ void MainWindow::on_actionFeaturesScrollAreaMock_triggered()
 void MainWindow::on_actionFeaturesScrollArea_triggered()
 {
     if (debugFeatureSelection) {
+#ifdef ALT_FEATURES
         PRINTFCM("Desired view: %d, features view: %d, feature list:",
                  View::FeaturesView, Monitor::FEATURES_VIEW_SCROLLAREA_VIEW);
+#else
+        PRINTFCM("Desired view: %d, feature list:", View::FeaturesView);
+#endif
         this->_feature_selector->dbgrpt();
     }
 
     int monitorNdx = _toolbarDisplayCB->currentIndex();
     Monitor * monitor = _monitors[monitorNdx];
     if (debugFeatureSelection) {
+#ifdef ALT_FEATURES
         PRINTFCM("Current view: %d, features view: %d, feature list:",
                  _curView, monitor->_curFeaturesView);
+#else
+        PRINTFCM("Current view: %d, feature list:", _curView);
+#endif
         monitor->_curFeatureSelector.dbgrpt();
     }
 
@@ -648,14 +656,18 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
     // TODO Combine View, features view
     if (_curView                     != View::FeaturesView                     ||
         _curDisplayIndex             != monitorNdx                             ||
+#ifdef ALT_FEATURES
         monitor->_curFeaturesView    != Monitor::FEATURES_VIEW_SCROLLAREA_VIEW ||
+#endif
         monitor->_curFeatureSelector != *_feature_selector )
     {
        loadMonitorFeatures(monitor);
        _curDisplayIndex = monitorNdx;
        _curView = View::FeaturesView;
        _ui->actionFeaturesScrollArea->setChecked(true);
+#ifdef ALT_FEATURES
        monitor->_curFeaturesView = Monitor::FEATURES_VIEW_SCROLLAREA_VIEW;
+#endif
        monitor->_curFeatureSelector   = *_feature_selector;
     }
     else {
