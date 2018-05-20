@@ -28,6 +28,7 @@
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QStackedWidget>
+// #include <QtWidgets/QSizePolicy>
 
 #include "base/monitor.h"
 

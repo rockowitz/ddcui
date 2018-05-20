@@ -29,6 +29,7 @@
 
 #include <ddcutil_c_api.h>
 
+#include "config.h"
 #include "base/feature_selector.h"
 
 class QListView;
@@ -57,6 +58,7 @@ class Monitor : public QObject
 
 public:
 
+    // For selecting among alternative features views
     enum FeaturesView {
        FEATURES_VIEW_SCROLLAREA_VIEW,
        FEATURES_VIEW_SCROLLAREA_MOCK,
@@ -81,7 +83,7 @@ public:
 
     VcpRequestQueue*     _requestQueue;
 
-    DDCA_Display_Handle  _dh;
+    // DDCA_Display_Handle  _dh;
     // DDCA_Display_Ref  _dref;    // use _displayInfo->dref
     // VcpThread         _vcpThread;
 
@@ -111,6 +113,7 @@ private:
     QHash<DDCA_Feature_Subset_Id, DDCA_Feature_List> _features;
 
 
+#ifdef ALT_FEATURES
 // *** Begin Functions and Variables for Alternative Central Widgets ***
 
 public:
@@ -160,6 +163,8 @@ public:
     // int                           _pageno_features_scrollarea;
 
     // *** End Alternative Central Widgets ***
+#endif
+
 };
 
 #endif // MONITOR_H

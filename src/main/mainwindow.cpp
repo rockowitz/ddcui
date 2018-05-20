@@ -353,13 +353,14 @@ void MainWindow::on_actionMonitorSummary_triggered()
 
     Monitor * monitor = _monitors[monitorNdx];
     QPlainTextEdit * moninfoPlainText = monitor->_moninfoPlainText;
-    int pageno = monitor->_pageno_moninfo;
+    // int pageno = monitor->_pageno_moninfo;
     moninfoPlainText->setPlainText(s);
     free(s);
 
     _curView = View::MonitorView;
     _ui->actionMonitorSummary->setChecked(true);
-    _ui->centralWidget->setCurrentIndex(pageno);
+    // _ui->centralWidget->setCurrentIndex(pageno);
+    _ui->centralWidget->setCurrentWidget(monitor->_page_moninfo);
     _ui->centralWidget->show();
 }
 
@@ -395,14 +396,15 @@ void MainWindow::on_actionCapabilities_triggered()
 
            Monitor * monitor = _monitors[monitorNdx];
            QPlainTextEdit * capabilitiesPlainText = monitor->_capabilitiesPlainText;
-           int pageno = monitor->_pageno_capabilities;
+           // int pageno = monitor->_pageno_capabilities;
            capabilitiesPlainText->setPlainText(caps_report);
            free(caps_report);
 
            // show widget
            _curView = View::CapabilitiesView;
            _ui->actionCapabilities->setChecked(true);
-           _ui->centralWidget->setCurrentIndex(pageno);    // need proper constants
+           // _ui->centralWidget->setCurrentIndex(pageno);    // need proper constants
+           _ui->centralWidget->setCurrentWidget(monitor->_page_capabilities);
            _ui->centralWidget->show();
        }
     }

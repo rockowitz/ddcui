@@ -50,13 +50,13 @@ Monitor::~Monitor() {
 void Monitor::dbgrpt() {
    printf("_monitorNumber:      %d\n",    _monitorNumber);
    printf("_displayInfo->dref:  %s\n",     ddca_dref_repr(_displayInfo->dref));
+   fflush(stdout);
 }
 
 
 DDCA_Feature_List
 Monitor::getFeatureList(DDCA_Feature_Subset_Id feature_list_id) {
-    // printf("(%s::%s) feature_list_id=%d-%s\n",
-    //       _cls, __func__, feature_list_id, ddca_feature_list_id_name(feature_list_id));
+    // PRINTFCM("feature_list_id=%d-%s",feature_list_id, ddca_feature_list_id_name(feature_list_id));
 
     bool include_table_features = false;    // TODO get from feature selection dialog
     DDCA_Status ddcrc = 0;
@@ -65,9 +65,8 @@ Monitor::getFeatureList(DDCA_Feature_Subset_Id feature_list_id) {
         result = _features.value(feature_list_id);
     }
     else {
-        // DDCA_MCCS_Version_Spec vspec = _displayInfo->vcp_version;
-        // ddcrc = ddca_get_feature_list(feature_list_id, vspec, include_table_features, &result);
-        ddcrc = ddca_get_feature_list_by_dref(feature_list_id, _displayInfo->dref, include_table_features, &result);
+        ddcrc = ddca_get_feature_list_by_dref(
+                   feature_list_id, _displayInfo->dref, include_table_features, &result);
         if (ddcrc == 0)
            _features.insert(feature_list_id, result);
     }
@@ -82,6 +81,7 @@ bool Monitor::supportsDdc() {
    return result;
 }
 
+#ifdef ALT_WIDGETS
 void Monitor::setFeatureItemModel(FeatureItemModel * model) {
    _listModel = model;
 }
@@ -89,6 +89,7 @@ void Monitor::setFeatureItemModel(FeatureItemModel * model) {
 void Monitor::setFeatureTableModel(FeatureTableModel * tableModel) {
     this->_tableModel = tableModel;
 }
+#endif
 
 void Monitor::putVcpRequest(VcpRequest * rqst) {
     // PRINTFCM("rqst->type=%d. Adding request to monitor's request queue", rqst->_type);
