@@ -57,20 +57,6 @@ class Monitor : public QObject
     Q_OBJECT
 
 public:
-
-#ifdef ALT_FEATURES
-    // For selecting among alternative features views
-    enum FeaturesView {
-       FEATURES_VIEW_SCROLLAREA_VIEW,
-       FEATURES_VIEW_SCROLLAREA_MOCK,
-       FEATURES_VIEW_TABLEVIEW,
-       FEATURES_VIEW_TABLEWIDGET,
-       FEATURES_VIEW_LISTVIEW,
-       FEATURES_VIEW_LISTWIDGET,
-       FEATURES_VIEW_UNSET
-    };
-#endif
-
     Monitor(DDCA_Display_Info * display_info, int monitorNumber);
     ~Monitor();
 
@@ -80,14 +66,8 @@ public:
 
     const int            _monitorNumber = -1;    // 1 based
     DDCA_Display_Info *  _displayInfo;
-
     FeatureBaseModel *   _baseModel;
-
     VcpRequestQueue*     _requestQueue;
-
-    // DDCA_Display_Handle  _dh;
-    // DDCA_Display_Ref  _dref;    // use _displayInfo->dref
-    // VcpThread         _vcpThread;
 
     QWidget *           _page_moninfo;
     int                 _pageno_moninfo;
@@ -97,9 +77,6 @@ public:
     int                 _pageno_capabilities;
     QPlainTextEdit *    _capabilitiesPlainText;
 
-#ifdef ALT_FEATURES
-    FeaturesView        _curFeaturesView = FEATURES_VIEW_UNSET;
-#endif
     FeatureSelector     _curFeatureSelector;
 
     // FEATURES_VIEW_SCROLLAREAVIEW
@@ -107,7 +84,6 @@ public:
     // QScrollArea and contents.  These must be created dynamically
     // each time features are loaded.
     FeaturesScrollAreaView * _featuresScrollAreaView = NULL;
-
 
 public slots:
         void putVcpRequest(VcpRequest * rqst);
@@ -121,9 +97,21 @@ private:
 // *** Begin Functions and Variables for Alternative Central Widgets ***
 
 public:
+    // For selecting among alternative features views
+    enum FeaturesView {
+       FEATURES_VIEW_SCROLLAREA_VIEW,
+       FEATURES_VIEW_SCROLLAREA_MOCK,
+       FEATURES_VIEW_TABLEVIEW,
+       FEATURES_VIEW_TABLEWIDGET,
+       FEATURES_VIEW_LISTVIEW,
+       FEATURES_VIEW_LISTWIDGET,
+       FEATURES_VIEW_UNSET
+    };
+
     void setFeatureItemModel(FeatureItemModel * listModel);      // ALT
     void setFeatureTableModel(FeatureTableModel * tableModel);
 
+    FeaturesView         _curFeaturesView = FEATURES_VIEW_UNSET;
     FeatureItemModel *   _listModel;   // for central widget alternative
     FeatureTableModel *  _tableModel;
 
