@@ -46,6 +46,8 @@ static bool dimensionReportShown = false;
 Value2ButtonWidget::Value2ButtonWidget(
      QWidget *parent)
     : ValueBaseWidget(parent)
+    , _val1(0)      // set in setButtonDetail()
+    , _val2(0)
 {
    _cls = strdup(metaObject()->className());
     // printf("(Value2ButtonWidget::Value2ButtonWidget) Starting.\n" ); fflush(stdout);
@@ -90,6 +92,8 @@ Value2ButtonWidget::Value2ButtonWidget(
                      this,      SLOT(  on_button1_pressed()) );
     QObject::connect(_button2,  SIGNAL(released()),
                      this,      SLOT(  on_button2_pressed()) );
+
+    delete sizePolicy;
 }
 
 
@@ -100,7 +104,7 @@ void Value2ButtonWidget::setButtonDetail(
       uint8_t   val2)
 {
    _val1  = val1;
-   _val1  = val2;
+   _val2  = val2;
    _button1->setText(name1);
    _button2->setText(name2);
    // setVisible(true);

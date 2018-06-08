@@ -36,10 +36,15 @@
 
 static bool debug = true;
 
-FeatureWidgetExtended::FeatureWidgetExtended(QListWidget *parent) :
- //   QWidget(parent)
-  //   QWidgetItem(nullptr)
-      QListWidgetItem(parent, FeatureWidgetType)
+FeatureWidgetExtended::FeatureWidgetExtended(QListWidget *parent)
+  :  QListWidgetItem(parent, FeatureWidgetType)
+  ,  _feature_code(0)
+  ,  _feature_name(NULL)
+  ,  _feature_flags(0)
+  , _mh(0)
+  , _ml(0)
+  , _sh(0)
+  , _sl(0)
 {
     _cls = metaObject()->className();
     setText("Dummy Item Text");

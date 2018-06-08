@@ -34,7 +34,7 @@ class FeatureValue
 
 public:
     // no-arg constructor needed for Q_METATYPE
-    FeatureValue() {}
+    FeatureValue();
 
     FeatureValue(
             uint8_t                   featureCode,
@@ -59,11 +59,11 @@ public:
  // DDCA_Monitor_Model_Key   mmid()        const;
 
 private:
-    uint8_t                  _featureCode;
-    DDCA_Display_Ref         _dref;
+    uint8_t                  _featureCode = 0;
+    DDCA_Display_Ref         _dref = NULL;
     DDCA_Feature_Metadata    _finfo;
-    DDCA_Cap_Vcp *           _capVcp;
-    DDCA_Non_Table_Vcp_Value _value;    // use this or individual bytes? DDCA_Non_Table_Value needed for get_formatted_value call
+    DDCA_Cap_Vcp *           _capVcp = NULL;
+    DDCA_Non_Table_Vcp_Value _value;     // use this or individual bytes? DDCA_Non_Table_Value needed for get_formatted_value call
 };
 
 Q_DECLARE_METATYPE(FeatureValue)

@@ -38,8 +38,9 @@ using namespace std;
 
 FeatureItemModel::FeatureItemModel(FeatureBaseModel * baseModel, QObject *parent)
     : QAbstractListModel(parent)
+    , _cls(metaObject()->className())
+    , _baseModel(baseModel)
 {
-        this->_baseModel = baseModel;
 }
 
 
@@ -95,7 +96,7 @@ QVariant FeatureItemModel::data(const QModelIndex &index, int role) const
                              &value,
                              &s_formatted);
         if (rc != 0)
-            s_formatted = (char*) "invalid formatted value";   // explicit cast to avoid compiler warning
+            s_formatted = strdup("invalid formatted value");   // strdup() to allow unconditional free()
 
         DDCA_Feature_Flags flags = fv->flags();
         char * s_rw = NULL;

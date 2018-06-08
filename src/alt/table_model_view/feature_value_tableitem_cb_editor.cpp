@@ -50,6 +50,7 @@ FeatureValueTableItemCbEditor::FeatureValueTableItemCbEditor(QWidget *parent) :
   QHBoxLayout * layout = new QHBoxLayout();
   layout->addWidget(_cb);
   setLayout(layout);
+  delete sizePolicy;   // safe?
 }
 
 

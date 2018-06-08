@@ -37,7 +37,8 @@ static bool debugMain    = false;
 FeatureListWidget::FeatureListWidget(QWidget * parent):
     QListWidget(parent)
 {
-    _cls = metaObject()->className();
+    _cls       = metaObject()->className();
+    _baseModel = NULL;            // avoid Coverity warning
 }
 
 

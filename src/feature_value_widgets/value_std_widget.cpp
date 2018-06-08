@@ -65,6 +65,7 @@ ValueStdWidget::ValueStdWidget(QWidget *parent):
     sizePolicy->setHorizontalStretch(1);
     // _cb->setHorizontalStretch(0);
     _valueField->setSizePolicy(*sizePolicy);
+    delete sizePolicy;
     QHBoxLayout * layout = new QHBoxLayout();
     layout->setContentsMargins(0,0,0,0);
     layout->addWidget(_valueField);

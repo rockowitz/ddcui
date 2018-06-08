@@ -21,8 +21,8 @@
  * </endcopyright>
  */
 
-#include "main/ui_mainwindow2.h"
 #include "main/mainwindow.h"
+#include "uimainwindow2.h"
 
 #include <assert.h>
 #include <iostream>
@@ -48,6 +48,7 @@
 #include "monitor_desc/monitor_desc_ui.h"
 
 #include "feature_value_widgets/value_stacked_widget.h"
+
 
 #ifdef ALT_FEATURES
 #include "alt/list_model_view/feature_item_model.h"
@@ -612,6 +613,16 @@ void MainWindow::on_actionFeaturesScrollAreaMock_triggered()
     _ui->centralWidget->addWidget(page_features_scrollarea);
     _ui->centralWidget->setCurrentWidget(page_features_scrollarea);
     _ui->centralWidget->show();
+
+    delete fv1;
+    delete fv2;
+    delete fv3;
+    delete fv4;
+    delete fv7;
+    free(md1);
+    free(md2);
+    free(md4);
+    free(md7);
 }
 #endif
 

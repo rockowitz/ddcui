@@ -53,6 +53,9 @@ FeatureBaseModel::FeatureBaseModel(Monitor * monitor)
     ddca_feature_list_clear(&_featuresChecked);
 }
 
+FeatureBaseModel::~FeatureBaseModel() {
+   delete _featureValues;
+}
 
 /** Returns the index of the entry for the specified feature in _feature_values
  *

@@ -25,7 +25,10 @@
 
 #include "ddc_error.h"
 
-DdcError::DdcError() {}
+DdcError::DdcError()
+   //  : _featureCode(0)
+   //  , _ddcErrno(0)
+{}
 
 DdcError::DdcError(
       uint8_t       featureCode,

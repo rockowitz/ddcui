@@ -48,8 +48,6 @@ public:
 
     void setModel(FeatureBaseModel * baseModel);
 
-    const char * _cls;    // className
-
     void dbgrpt() const;
 
 public slots:
@@ -87,6 +85,7 @@ private:
     void            addFeature(FeatureValue * fv);
     void            updateFeature(FeatureValue * fv);
 
+    const char *       _cls;    // className
     FeatureBaseModel * _baseModel;
 };
 

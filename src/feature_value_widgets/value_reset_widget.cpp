@@ -83,6 +83,8 @@ ValueResetWidget::ValueResetWidget(QWidget *parent):
 
     QObject::connect(_resetButton,  SIGNAL(released()),
                      this,          SLOT(  on_resetButton_pressed()) );
+
+    delete(sizePolicy);
 }
 
 

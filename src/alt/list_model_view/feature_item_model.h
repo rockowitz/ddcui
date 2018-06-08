@@ -45,13 +45,12 @@ public:
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
-    const char * _cls;    // className
-
 public slots:
     void          startInitialLoad(void);
     void          endInitialLoad(void);
 
 private:
+    const char *       _cls;    // className
     FeatureBaseModel * _baseModel;
 
 };

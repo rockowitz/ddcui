@@ -51,6 +51,17 @@ ValueBaseWidget::ValueBaseWidget(QWidget *parent)
 
    // try setting frame style at this level,
    setFrameStyle(QFrame::Sunken | QFrame::Panel);
+
+   // dummy values to make Coverity happy, will be set by setFeatureValue()
+   _featureCode = 0;
+   _dref = NULL;
+   _finfo.feature_code = 0;
+   _finfo.feature_flags = 0;
+   _finfo.sl_values = NULL;
+   _finfo.feature_name = NULL;
+   _finfo.feature_desc = NULL;
+   _capVcp = NULL;
+   _mh = _ml = _sh = _sl = 0;
 }
 
 

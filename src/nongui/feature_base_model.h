@@ -50,6 +50,7 @@ class FeatureBaseModel : public QObject
 
 public:
     FeatureBaseModel(Monitor * monitor);
+    virtual ~FeatureBaseModel();
 
     FeatureValue* modelVcpValueFind(uint8_t feature_code);
     FeatureValue* modelVcpValueFilteredFind(uint8_t feature_code);
@@ -88,7 +89,6 @@ public:
     const char *        _cls;    // className
 
     Monitor *           _monitor;
-
 
     DDCA_Status         _caps_status = -999;    // a value that's undefined
     char *              _caps_string = NULL;

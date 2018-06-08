@@ -135,19 +135,29 @@ void ValueNcWidget::setFeatureValue(const FeatureValue &fv) {
 }
 
 
+/**
+ *  @param  mode
+ *  @return dynamically allocated feature value table, caller must free
+ */
 DDCA_Feature_Value_Entry * ValueNcWidget::getComboBoxEntries(NcValuesSource mode) {
    PRINTFCMF(debugNcValues, "feature 0x%02x, newSource=%d-%s", _featureCode, mode, ncValuesSourceName(mode) );
 
    DDCA_Feature_Value_Entry * entries = _finfo.sl_values;
-   if (mode != NcValuesFromMccs) {
-      Nc_Values_Merge_Mode merge_mode = (mode==NcValuesFromCapabilities) ? CapsOnly : CapsPlusMccs;
-      entries = ddcutil_merge_feature_values(
-             _capVcp,              // DDCA_Cap_Vcp *
-             entries,               // DDCA_Feature_Value_Table
-             merge_mode);           // Nc_Values_Merge_Mode
+   Nc_Values_Merge_Mode merge_mode = MccsOnly;  // pointless initialization to avoid -Wmaybe-unitialized
+   switch(mode) {
+   case NcValuesFromMccs:           merge_mode = MccsOnly;      break;
+   case NcValuesFromCapabilities:   merge_mode = CapsOnly;      break;
+   case NcValuesFromBoth:           merge_mode = CapsPlusMccs;  break;
+   case NcValuesSourceUnset:        merge_mode = CapsPlusMccs;  break;     // correct default?
    }
+   entries = ddcutil_merge_feature_values(
+             _capVcp,             // DDCA_Cap_Vcp *
+             entries,             // DDCA_Feature_Value_Table
+             merge_mode);         // Nc_Values_Merge_Mode
    return entries;
 }
+
+
 
 
 void ValueNcWidget::loadComboBox(NcValuesSource mode) {
@@ -158,7 +168,8 @@ void ValueNcWidget::loadComboBox(NcValuesSource mode) {
       _cb->removeItem(ndx);
    }
 
-   DDCA_Feature_Value_Entry * cur = getComboBoxEntries(mode);
+   DDCA_Feature_Value_Entry * table = getComboBoxEntries(mode);
+   DDCA_Feature_Value_Entry * cur = table;
    if (cur) {
        while (cur->value_name) {
            // printf("(%s) value code: 0x%02x, value_name: %s\n",
@@ -169,6 +180,7 @@ void ValueNcWidget::loadComboBox(NcValuesSource mode) {
            cur++;
        }
    }
+   ddcutil_free_dynamic_feature_value_table(table);
 
    // - set current value in combo box
    int cur_ndx = findItem(_sl);

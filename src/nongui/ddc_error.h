@@ -41,8 +41,8 @@ public:
 
    virtual ~DdcError();
 
-   DDCA_Status _ddcErrno;
-   uint8_t     _featureCode;
+   DDCA_Status _ddcErrno = 0;
+   uint8_t     _featureCode = 0;
    QString     _ddcFunction;
 
    QString repr();

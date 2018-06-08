@@ -52,7 +52,7 @@ public:
     VcpCapRequest();
     ~VcpCapRequest();
 
-    DDCA_Vcp_Feature_Code _featureCode;
+    // DDCA_Vcp_Feature_Code _featureCode;
 };
 
 class VcpGetRequest: public VcpRequest {
@@ -69,9 +69,9 @@ public:
     VcpSetRequest(uint8_t featureCode, uint8_t newval, bool writeOnly=false);
     ~VcpSetRequest();
 
-    DDCA_Vcp_Feature_Code _featureCode;
-    uint8_t               _newval;
-    bool                  _writeOnly;
+    DDCA_Vcp_Feature_Code _featureCode = 0;
+    uint8_t               _newval = 0;
+    bool                  _writeOnly = false;
 };
 
 

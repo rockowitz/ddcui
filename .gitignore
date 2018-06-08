@@ -20,4 +20,8 @@ ddcui.pro
 .settings
 .cproject
 .project
+ddcui.pro1
+ddcui.pro2
+src/dummies/
+src/config.h
 

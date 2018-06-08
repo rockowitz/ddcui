@@ -78,26 +78,44 @@ ddcutil_merge_feature_values(
       Nc_Values_Merge_Mode       merge_mode)
 {
    DDCA_Feature_Value_Table result = NULL;
-   int max_entries = (merge_mode == CapsOnly)
-                          ? cfr->value_ct + 1
-                          : int_max( cfr->value_ct, feature_value_entry_ct(mccs_table)) + 1;
+   // int max_entries = (merge_mode == CapsOnly)
+   //                        ? cfr->value_ct + 1
+   //                        : int_max( cfr->value_ct, feature_value_entry_ct(mccs_table)) + 1;
+   int max_entries = 0;
+   switch(merge_mode) {
+   case CapsOnly:
+      max_entries = cfr->value_ct + 1;
+      break;
+   case CapsPlusMccs:
+      max_entries = int_max( cfr->value_ct, feature_value_entry_ct(mccs_table)) + 1;
+      break;
+   case MccsOnly:
+      max_entries =  feature_value_entry_ct(mccs_table) + 1;
+      break;
+   }
    result = (DDCA_Feature_Value_Table) calloc(max_entries, sizeof(DDCA_Feature_Value_Entry));
    int result_ct = 0;
    for (int feature_code = 0; feature_code < 256; feature_code++) {
       bool emit = false;
       bool feature_in_caps = cap_vcp_contains(cfr, feature_code);
       DDCA_Feature_Value_Entry * sl_entry = NULL;
-      if (merge_mode == CapsOnly) {
+      switch(merge_mode) {
+      case CapsOnly:
          if (feature_in_caps) {
             sl_entry = find_feature_value_entry(mccs_table, feature_code);
             emit = true;
          }
-      }
-      else {
-         assert(merge_mode == CapsPlusMccs);
+         break;
+      case CapsPlusMccs:
          sl_entry = find_feature_value_entry(mccs_table, feature_code);
          if (feature_in_caps || sl_entry)
             emit = true;
+         break;
+      case MccsOnly:
+         sl_entry = find_feature_value_entry(mccs_table, feature_code);
+         if (sl_entry)
+            emit = true;
+         break;
       }
       if (emit) {
          result[result_ct].value_code = feature_code;
@@ -114,9 +132,30 @@ ddcutil_merge_feature_values(
    // Don't assume the values are ordered.
    // Results in a O(n**2) algorithm, but the lists are short.
 
-
    return result;
 }
+
+void
+ddcutil_free_dynamic_feature_value_table(
+      DDCA_Feature_Value_Table table)
+{
+   // TODO:
+   // need a header on the table to indicate whether dynamic and ensure it's actually
+   // a DDCA_Feature_Value_Table
+   if (table) {
+      DDCA_Feature_Value_Entry * cur = table;
+      while (cur) {
+         if (cur->value_name)
+            free(cur->value_name);
+         if (cur->value_code != 0 || cur->value_name)
+            cur++;
+         else
+            cur = NULL;
+      }
+      free(table);
+   }
+}
+
 
 DDCA_Cap_Vcp *
 ddcutil_find_cap_vcp(DDCA_Capabilities * parsed_caps, uint8_t feature_code)
@@ -135,6 +174,7 @@ ddcutil_find_cap_vcp(DDCA_Capabilities * parsed_caps, uint8_t feature_code)
    return result;
 }
 
+#ifdef UNUSED
 void free_ddca_feature_value_table(DDCA_Feature_Value_Table * table) {
    if (table) {
       for (int ndx = 0; table[ndx]->value_name; ndx++) {
@@ -144,4 +184,5 @@ void free_ddca_feature_value_table(DDCA_Feature_Value_Table * table) {
 
    }
 }
+#endif
 

@@ -32,7 +32,11 @@
 #include "nongui/feature_value.h"
 
 
-// FeatureValue::FeatureValue() {}
+FeatureValue::FeatureValue()
+{
+   memset(&_finfo, 0, sizeof(_finfo));  // avoid -Wmissing-field-initializers
+   _value.mh = _value.ml = _value.sh = _value.sl = 0;
+}
 
 FeatureValue::FeatureValue(
         uint8_t                  feature_code,

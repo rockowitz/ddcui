@@ -40,8 +40,9 @@
 
 static bool dimensionReportShown = false;
 
-ValueContWidget::ValueContWidget(QWidget *parent):
-    ValueBaseWidget(parent)
+ValueContWidget::ValueContWidget(QWidget *parent)
+    : ValueBaseWidget(parent)
+    , _newval(0)
 {
    _cls = strdup(metaObject()->className());
     // printf("(ValueContWidget::ValueContWidget) Starting.\n" ); fflush(stdout);
