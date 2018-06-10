@@ -1,0 +1,6 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+    <file>docs/feature_selection.html</file>
+    <file>docs/nc_values.html</file>
+</qresource>
+</RCC>

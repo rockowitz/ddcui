@@ -3,22 +3,8 @@
 /* <copyright>
  * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
  *
- * Licensed under the GNU General Public License Version 2
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- * </endcopyright>
+ * SPDX-License-Identifier: GPL-2.0-or-later
+ * </copyright>
  */
 
 #include "feature_scrollarea/features_scrollarea_view.h"
@@ -72,7 +58,7 @@ void FeaturesScrollAreaView::freeContents(void) {
 
 
 void FeaturesScrollAreaView::onEndInitialLoad(void) {
-    // PRINTFCM("Starting");
+    PRINTFCM("Starting, Monitor=%s", _monitor->_displayInfo->model_name);
 #ifdef ALT_FEATURES
     if (_monitor->_curFeaturesView != Monitor::FEATURES_VIEW_SCROLLAREA_VIEW) {
         PRINTFCM("Not FEATURES_VIEW_SCROLLAREA, skipping");
@@ -246,11 +232,18 @@ void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc) {
 
 
 void FeaturesScrollAreaView::onModelDdcError(DdcError erec) {
-    PRINTFCM("erec=%s", erec.srepr() );
+    // PRINTFCM("erec=%s", erec.srepr() );   // srepr unsafe
+    // PRINTFCM();
     QMessageBox * msgBox = new QMessageBox();
+    DDCA_Display_Info * dinfo = _monitor->_displayInfo;
+    // dinfo->mfg_id
+    // dinfo->model_name
     //  if (strcmp(erec._ddcFunction.toLatin1().data(), "ddca_get_capabilities_string") == 0) {
     if ( QString::compare(erec._ddcFunction, QString("ddca_get_capabilities_string")) == 0) {
-        msgBox->setText(QString("Error reading capabilities string"));
+        msgBox->setText(QString::asprintf(
+                          "Error reading capabilities string for display %d - %s",
+                          dinfo->dispno+1, dinfo->model_name
+                       ));
         msgBox->setWindowTitle("DDC Error");
     }
     else {

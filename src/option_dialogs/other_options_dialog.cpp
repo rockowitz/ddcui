@@ -3,56 +3,57 @@
 /* <copyright>
  * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
  *
- * Licensed under the GNU General Public License Version 2
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- * </endcopyright>
+ * SPDX-License-Identifier: GPL-2.0-or-later
+ * </copyright>
  */
 
 #include "option_dialogs/other_options_dialog.h"
 
 #include <assert.h>
+#include <QtCore/QDebug>
+
+#include "base/ddcui_globals.h"
+#include "help/help_dialog.h"
 
 #include "ui_other_options_dialog.h"
 
+
+void OtherOptionsDialog::setUiSource(NcValuesSource source) {
+   switch(source) {
+   case NcValuesFromCapabilities:
+       ui->capabilitiesNcValuesButton->setChecked(true);
+       break;
+   case NcValuesFromMccs:
+       ui->mccsNcValuesButton->setChecked(true);
+       break;
+   case NcValuesFromBoth:
+      ui->bothNcValuesButton->setChecked(true);
+      break;
+   case NcValuesSourceUnset:
+      assert(false);
+   }
+}
+
+
 OtherOptionsDialog::OtherOptionsDialog(OtherOptionsState * state, QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::OtherOptionsDialog)
+    ui(new Ui::OtherOptionsDialog),
+    _cls( metaObject()->className() ),
+    _state(state)
 {
-    _state = state;
+    // _state = state;
     ui->setupUi(this);
 
-    switch(state->ncValuesSource) {
-    case NcValuesFromCapabilities:
-        ui->capabilitiesNcValuesButton->setChecked(true);
-        break;
-    case NcValuesFromMccs:
-        ui->mccsNcValuesButton->setChecked(true);
-        break;
-    case NcValuesFromBoth:
-       ui->bothNcValuesButton->setChecked(true);
-       break;
-    case NcValuesSourceUnset:
-       assert(false);
-    }
+    setWindowTitle("ddcui - Other Options");
+    setUiSource(state->ncValuesSource);
 }
+
 
 OtherOptionsDialog::~OtherOptionsDialog()
 {
     delete ui;
 }
+
 
 void OtherOptionsDialog::on_buttonBox_accepted()
 {
@@ -69,6 +70,48 @@ void OtherOptionsDialog::on_buttonBox_accepted()
 
     if (_state->ncValuesSource != oldsrc) {
         emit ncValuesSourceChanged(_state->ncValuesSource);
-
     }
 }
+
+
+void OtherOptionsDialog::on_buttonBox_helpRequested()
+{
+    // PRINTFCM();
+    QString fn(":/docs/nc_values.html");
+    QFile f(fn);
+    f.open(QFile::ReadOnly | QFile::Text);
+    QTextStream in(&f);
+
+    QString htmlText = in.readAll();
+
+    // qDebug() << htmlText;
+
+    // doesn't show dialog box
+    // HelpDialog2("ddcui Help - Other Options", htmlText, this);
+
+    HelpDialog2* hd = new HelpDialog2(this);
+    hd->setText(htmlText);
+    hd->setWindowTitle("ddcui Help - Other Options");
+    hd->show();
+}
+
+
+// Reset
+void OtherOptionsDialog::on_buttonBox_clicked(QAbstractButton* button)
+{
+   if(button== (QAbstractButton*) ui->buttonBox->button(QDialogButtonBox::Reset) ){
+      // PRINTFCM("Reset");
+      setUiSource(OtherOptionsState::DefaultNcValuesSource);
+      // on_buttonBox_accepted();  // do not actually change until OK
+
+      // NcValuesSource oldsrc = _state->ncValuesSource;
+      //  _state->ncValuesSource = OtherOptionsState::DefaultNcValuesSource;
+      //   setUiSource(_state->ncValuesSource);
+      //   if (_state->ncValuesSource != oldsrc) {
+      //       emit ncValuesSourceChanged(_state->ncValuesSource);
+      //   }
+   }
+
+}
+
+

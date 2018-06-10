@@ -25,6 +25,7 @@
 #define FEATURESELECTIONDIALOG_H
 
 #include <QtWidgets/QDialog>
+#include <QtWidgets/QAbstractButton>
 
 #include <ddcutil_c_api.h>
 
@@ -45,6 +46,7 @@ public:
     explicit FeatureSelectionDialog(QWidget *parent, FeatureSelector* featureSelector);
     ~FeatureSelectionDialog();
 
+    void useSelectorData(FeatureSelector * fsel);
     void useSelectorData();
 
 signals:
@@ -53,6 +55,8 @@ signals:
 
 private slots:
     void on_buttonBox_accepted();
+    void on_buttonBox_helpRequested();
+    void on_buttonBox_clicked(QAbstractButton* button);
 
 #ifdef UNUSED
     void on_known_radioButton_clicked(bool checked);

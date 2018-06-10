@@ -39,9 +39,11 @@ FeatureBaseModel::FeatureBaseModel(Monitor * monitor)
     ddca_feature_list_clear(&_featuresChecked);
 }
 
+
 FeatureBaseModel::~FeatureBaseModel() {
    delete _featureValues;
 }
+
 
 /** Returns the index of the entry for the specified feature in _feature_values
  *
@@ -199,7 +201,7 @@ FeatureBaseModel::setCapabilities(
       char *               capabilities_string,
       DDCA_Capabilities *  parsed_capabilities)
 {
-   PRINTFCM("capabilities_string=|%s|", capabilities_string);
+   // PRINTFCM("capabilities_string=|%s|", capabilities_string);
 
    _caps_status = ddcrc;
    _caps_string = capabilities_string;
@@ -274,7 +276,6 @@ void FeatureBaseModel::setFeatureChecked(uint8_t featureCode) {
 }
 
 
-
 /** Debugging function to report the contents of the current 
  *  #FeatureBaseModel instance. 
  */
@@ -300,10 +301,12 @@ void  FeatureBaseModel::modelStartInitialLoad(void) {
     emit signalStartInitialLoad();
 }
 
+
 void  FeatureBaseModel::modelEndInitialLoad(void) {
     PRINTFCM("Emitting signalEndInitialLoad");
     signalEndInitialLoad();
 }
+
 
 void  FeatureBaseModel::setStatusMsg(QString msg) {
    // printf("(%s::%s) msg=%s\n", _cls, __func__, msg.toLatin1().data());  fflush(stdout);

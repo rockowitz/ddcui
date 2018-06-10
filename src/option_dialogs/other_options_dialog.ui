@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>300</height>
+    <height>185</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -22,8 +22,8 @@
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>240</y>
+     <x>20</x>
+     <y>130</y>
      <width>341</width>
      <height>32</height>
     </rect>
@@ -32,10 +32,10 @@
     <enum>Qt::Horizontal</enum>
    </property>
    <property name="standardButtons">
-    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok|QDialogButtonBox::Reset</set>
    </property>
    <property name="centerButtons">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
   </widget>
   <widget class="QRadioButton" name="mccsNcValuesButton">
@@ -46,6 +46,9 @@
      <width>311</width>
      <height>22</height>
     </rect>
+   </property>
+   <property name="toolTip">
+    <string>List of valid values are taken from the MCCS specification</string>
    </property>
    <property name="text">
     <string>&amp;Monitor Control Command Set specification</string>
@@ -63,8 +66,11 @@
      <height>22</height>
     </rect>
    </property>
+   <property name="toolTip">
+    <string>List of valid values taken from the capabilities string, names of valid values taken from MCCS spec</string>
+   </property>
    <property name="text">
-    <string>Capabilities string</string>
+    <string>&amp;Capabilities string</string>
    </property>
    <attribute name="buttonGroup">
     <string notr="true">ncValueSourceButtonGroup</string>
@@ -75,12 +81,12 @@
     <rect>
      <x>20</x>
      <y>10</y>
-     <width>271</width>
+     <width>341</width>
      <height>18</height>
     </rect>
    </property>
    <property name="text">
-    <string>Source of NC Values shown in comboboxes:</string>
+    <string>Source of values for simple non-continuous features</string>
    </property>
   </widget>
   <widget class="QRadioButton" name="bothNcValuesButton">
@@ -91,6 +97,9 @@
      <width>261</width>
      <height>22</height>
     </rect>
+   </property>
+   <property name="toolTip">
+    <string>Valid values are those either in the MCCS spec or the capabilities string</string>
    </property>
    <property name="text">
     <string>Both &amp;MCCS and Capabilities</string>

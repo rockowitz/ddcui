@@ -3,22 +3,8 @@
  * <copyright>
  * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
  *
- * Licensed under the GNU General Public License Version 2
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- * </endcopyright>
+ * SPDX-License-Identifier: GPL-2.0-or-later
+ * </copyright>
  */
 
 #include <assert.h>
@@ -32,6 +18,7 @@
 
 
 bool cap_vcp_contains(DDCA_Cap_Vcp* cfr, uint8_t feature_code) {
+   // printf("(%s) cfr=%p, feature_code=0x%02x\n", __func__, cfr, feature_code); fflush(stdout);
    bool result = false;
    for (int ndx = 0; ndx < cfr->value_ct; ndx++) {
       if (cfr->values[ndx] == feature_code) {
@@ -39,6 +26,7 @@ bool cap_vcp_contains(DDCA_Cap_Vcp* cfr, uint8_t feature_code) {
          break;
       }
    }
+   // printf("(%s) Returning %d\n", __func__, result);
    return result;
 }
 
@@ -77,6 +65,8 @@ ddcutil_merge_feature_values(
       DDCA_Feature_Value_Table   mccs_table,
       Nc_Values_Merge_Mode       merge_mode)
 {
+   // printf("(%s) cfr=%p, mccs_table=%p, merge_mode=%d\n",
+   //        __func__, cfr, mccs_table, merge_mode);   fflush(stdout);
    DDCA_Feature_Value_Table result = NULL;
    // int max_entries = (merge_mode == CapsOnly)
    //                        ? cfr->value_ct + 1
@@ -97,7 +87,7 @@ ddcutil_merge_feature_values(
    int result_ct = 0;
    for (int feature_code = 0; feature_code < 256; feature_code++) {
       bool emit = false;
-      bool feature_in_caps = cap_vcp_contains(cfr, feature_code);
+      bool feature_in_caps = cfr && cap_vcp_contains(cfr, feature_code);
       DDCA_Feature_Value_Entry * sl_entry = NULL;
       switch(merge_mode) {
       case CapsOnly:

@@ -1,0 +1,45 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+    <head>
+        <title>Feature Selection (T)</title>
+    </head>
+    <body>
+        This dialog selects the features to be reported.  The features are specified as a group, and further refined by 
+        one or more filters on that group. 
+        <br>
+        The feature groups are: 
+        <ul>
+            <li>
+                <em>Known</em> - All features defined in the MCCS specification.  
+                Note that the defined features vary by the MCCS version reported by the monitor.
+            </li>
+            <li>
+                <em>Scan</em> - Examine all feature codes.
+            </li>
+            <li>
+                <em>Manufacturer</em> - Examine feature codes in the manufacturer specific range (xe0..xff)
+            </li>
+            <li>
+                <em>Color</em> - Color related feature codes.
+            </li>
+            <li>
+                <em>Profile</em> - Color related feature codes that are saved and restored by <em>loadvcp</em> and <i>savevcp</i>. 
+            </li>
+        </ul>
+        The features reported can further be refined by the following filters:
+        <ul>
+            <li>
+                <em>Respect Reported Capabilities</em> - Report only those features found in the Capabilities string
+            </li>
+            <li>
+                <em>Include Unsupported Features</em> - Include features that are reported as unspported.
+            </li>
+            <li>
+                <em>Include Table Features</em> - Include features of type Table.  Alwasy unset.  <em>ddcui</em> does not 
+                implement Table type features.
+            </li>
+        </ul>
+
+
+    </body>
+</html>
