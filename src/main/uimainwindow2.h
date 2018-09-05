@@ -25,7 +25,7 @@
 
 class Ui_MainWindow
 {
-public:
+private:
 
     // Menu Bar
     QMenuBar    *menuBar;
@@ -33,6 +33,7 @@ public:
     QMenu       *menuOptions;
     QMenu       *menuHelp;
 
+public:
     // View Menu
     QAction     *actionMonitorSummary;
     QAction     *actionCapabilities;
@@ -44,7 +45,7 @@ public:
     QAction     *actionFeaturesScrollAreaMock;
 #endif
     QAction     *actionFeaturesScrollArea;
-
+private:
     // Options Menu
     QAction     *actionFeatureSelection;
     QAction     *actionShowUnsupportedFeatures;
@@ -60,6 +61,7 @@ public:
     QAction     *actionAbout;
     QAction     *actionAboutQt;
 
+public:
     // Tool Bar
     QToolBar    *mainToolBar;
 
