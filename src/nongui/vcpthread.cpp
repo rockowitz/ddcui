@@ -1,10 +1,7 @@
 /* vcpthread.cpp */
 
-/* <copyright>
- * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
- *
+/* Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
  * SPDX-License-Identifier: GPL-2.0-or-later
- * </copyright>
  */
 
 #include <iostream>
@@ -20,7 +17,8 @@
 
 using namespace std;
 
-static bool debugThread = false;
+static bool debugThread = true;
+
 
 VcpThread::VcpThread(
         QObject*            parent,
@@ -28,12 +26,11 @@ VcpThread::VcpThread(
         VcpRequestQueue*    requestQueue,
         FeatureBaseModel *  baseModel)
     : QThread(parent)
+    , _dinfo(dinfo)
+    , _baseModel(baseModel)
+    , _requestQueue(requestQueue)
 {
-    _dinfo        = dinfo;
     _dref         = dinfo->dref;   // transitional
-    _baseModel    = baseModel;
-    _requestQueue = requestQueue;
-    // open the display, raise exception if error
 
     // ddca_report_display_info(dinfo, 4);
     // ddca_dbgrpt_display_ref(_dref, 4);
@@ -46,11 +43,11 @@ void VcpThread::rpt_ddca_status(
       const char * ddca_func_name,
       DDCA_Status  ddcrc)
 {
-    printf("(VcpThread::%s) %s() returned %d - %s\n",
-           caller_name, ddca_func_name, ddcrc, ddca_rc_name(ddcrc));
+    printf("(VcpThread::%s) %s() for feature 0x%02x returned %d - %s\n",
+           caller_name, ddca_func_name, feature_code, ddcrc, ddca_rc_name(ddcrc));
     fflush(stdout);
 
-    QString msg = "generic error msg";
+    // QString msg = "generic error msg";
     // emit signalDdcError(0, msg);
     DdcError erec(feature_code, ddca_func_name, ddcrc);
     // just call function, no need to signal:
@@ -58,8 +55,9 @@ void VcpThread::rpt_ddca_status(
     _baseModel->onDdcError(erec);
 
     // postError(msg);
-    fflush(stdout);
+    // fflush(stdout);
 }
+
 
 // Process RQCapabilities
 void VcpThread::capabilities() {
@@ -74,7 +72,7 @@ void VcpThread::capabilities() {
          rpt_ddca_status(0, __func__, "ddca_open_display", ddcrc);
          // how to handle?
    }
-   if (ddcrc == 0) {
+   else {
       ddcrc = ddca_get_capabilities_string(dh, &caps);
       if (ddcrc != 0) {
          rpt_ddca_status(0, __func__, "ddca_get_capabilities_string", ddcrc);
@@ -100,7 +98,8 @@ void VcpThread::capabilities() {
 
 // Process RQGetVcp
 void VcpThread::getvcp(uint8_t feature_code) {
-    // printf("(VcpThread::getvcp) Starting. feature_code=0x%02x\n", feature_code);
+    PRINTFCMF(debugThread, "Starting. feature_code=0x%02x", feature_code);
+
     DDCA_Display_Handle                   dh;
     DDCA_Non_Table_Vcp_Value              valrec;
     DDCA_Feature_Metadata                 finfo;
@@ -110,11 +109,8 @@ void VcpThread::getvcp(uint8_t feature_code) {
           rpt_ddca_status(0, __func__, "ddca_open_display", ddcrc);
           // how to handle?
     }
-
-    if (ddcrc == 0) {
+    else {
        QString msg;
-       //  msg.sprintf("Reading feature 0x%02x",feature_code);
-       //  _baseModel->setStatusMsg(msg);
        _baseModel->setStatusMsg(msg.sprintf("Reading feature 0x%02x",feature_code));
 
         ddcrc = ddca_get_non_table_vcp_value(dh, feature_code, &valrec);
@@ -130,32 +126,32 @@ void VcpThread::getvcp(uint8_t feature_code) {
             // printf("  opcode:   0x%02x, mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x\n",
             //        feature_code, valrec.mh, valrec.ml, valrec.sh, valrec.sl);
         }
-    }
 
-    if (ddcrc == 0) {
-       // should this be here?
-       ddcrc = ddca_get_feature_metadata_by_dh(
-                   feature_code,
-                   dh,
-                   true,       // create_default_if_not_found
-                   &finfo);
-       if (ddcrc != 0) {
-           rpt_ddca_status(feature_code, __func__, "ddca_get_feature_metadata_by_dh",  ddcrc);
-           // cout << "ddca_get_feature_metadata() returned " << ddcrc << endl;
-       }
-    }
+        if (ddcrc == 0) {
+           // should this be here?
+           ddcrc = ddca_get_feature_metadata_by_dh(
+                      feature_code,
+                      dh,
+                      true,       // create_default_if_not_found
+                      &finfo);
+           if (ddcrc != 0) {
+              rpt_ddca_status(feature_code, __func__, "ddca_get_feature_metadata_by_dh",  ddcrc);
+              // cout << "ddca_get_feature_metadata() returned " << ddcrc << endl;
+           }
+        }
 
-    if (ddcrc == 0) {
-        _baseModel->modelVcpValueSet(feature_code, this->_dref, finfo, &valrec);
-    }
-    _baseModel->setFeatureChecked(feature_code);
+        if (ddcrc == 0) {
+           _baseModel->modelVcpValueSet(feature_code, this->_dref, finfo, &valrec);
+        }
+        _baseModel->setFeatureChecked(feature_code);
 
-    ddcrc = ddca_close_display(dh);
-    if (ddcrc != 0) {
-        rpt_ddca_status(0, __func__, "ddca_close_display", ddcrc);
-        // how to handle?
+        ddcrc = ddca_close_display(dh);
+        if (ddcrc != 0) {
+           rpt_ddca_status(0, __func__, "ddca_close_display", ddcrc);
+           // how to handle?
+        }
     }
-    // printf("(VcpThread::getvcp) Done\n");
+    // PRINTFCMF(debugThread, "Done");
 }
 
 

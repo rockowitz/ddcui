@@ -1,24 +1,7 @@
 /* ui_mainwindow2.h - Extracted from uic generated ui code */
 
-/* <copyright>
- * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
- *
- * Licensed under the GNU General Public License Version 2
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- * </endcopyright>
+/* Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+ * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
 #ifndef UI_MAINWINDOW2_H
@@ -38,7 +21,7 @@
 #include "base/debug_utils.h"
 
 
-QT_BEGIN_NAMESPACE
+// QT_BEGIN_NAMESPACE
 
 class Ui_MainWindow
 {
@@ -176,16 +159,24 @@ private:
 
     void retranslateFeatureSelectionDialog()
     {
-       actionFeatureSelection->setText(       QApplication::translate("MainWindow", "Feature Selection", 0));
-       actionShowUnsupportedFeatures->setText(QApplication::translate("MainWindow", "Show Unsupported Features", 0));
-       actionKnown->setText(                  QApplication::translate("MainWindow", "Known", 0));
-       actionScan->setText(                   QApplication::translate("MainWindow", "Scan", 0));
-       actionColor->setText(                  QApplication::translate("MainWindow", "Color", 0));
-       actionProfile->setText(                QApplication::translate("MainWindow", "Profile", 0));
-       actionManufacturer->setText(           QApplication::translate("MainWindow", "Manufacturer", 0));
-       actionFeatureSelectionDialog->setText( QApplication::translate("MainWindow", "&Feature Selection", 0));
-
-       actionOtherOptionsDialog->setText(     QApplication::translate("MainWindow", "&Other Options", 0));
+       actionFeatureSelection->setText(
+             QApplication::translate("MainWindow", "Feature Selection",         nullptr, -1));
+       actionShowUnsupportedFeatures->setText(
+             QApplication::translate("MainWindow", "Show Unsupported Features", nullptr, -1));
+       actionKnown->setText(
+             QApplication::translate("MainWindow", "Known",                     nullptr, -1));
+       actionScan->setText(
+             QApplication::translate("MainWindow", "Scan",                      nullptr, -1));
+       actionColor->setText(
+             QApplication::translate("MainWindow", "Color",                     nullptr, -1));
+       actionProfile->setText(
+             QApplication::translate("MainWindow", "Profile",                   nullptr, -1));
+       actionManufacturer->setText(
+             QApplication::translate("MainWindow", "Manufacturer",              nullptr, -1));
+       actionFeatureSelectionDialog->setText(
+             QApplication::translate("MainWindow", "&Feature Selection",        nullptr, -1));
+       actionOtherOptionsDialog->setText(
+             QApplication::translate("MainWindow", "&Other Options",            nullptr, -1));
     }
 
 
@@ -198,7 +189,7 @@ private:
 
        menuView = new QMenu(menuBar);
        menuView->setObjectName(QString::fromUtf8("menuView"));
-       menuView->setTitle(    QApplication::translate("MainWindow", "&View", 0));
+       menuView->setTitle(    QApplication::translate("MainWindow", "&View", nullptr, -1));
 
        // menuDisplays = new QMenu(menuBar);
        // menuDisplays->setObjectName(QString::fromUtf8("menuDisplays"));
@@ -206,13 +197,13 @@ private:
 
        menuOptions = new QMenu(menuBar);
        menuOptions->setObjectName(QString::fromUtf8("menuOptions"));
-       menuOptions->setTitle( QApplication::translate("MainWindow", "Optio&ns", 0));
+       menuOptions->setTitle( QApplication::translate("MainWindow", "Optio&ns", nullptr, -1));
        menuOptions->addAction(actionFeatureSelectionDialog);
        menuOptions->addAction(actionOtherOptionsDialog);
 
        menuHelp = new QMenu(menuBar);
        menuHelp->setObjectName(QString::fromUtf8("menuHelp"));
-       menuHelp->setTitle(    QApplication::translate("MainWindow", "Help", 0));
+       menuHelp->setTitle(    QApplication::translate("MainWindow", "Help", nullptr, -1));
 
        MainWindow->setMenuBar(menuBar);
 
@@ -234,8 +225,8 @@ private:
 #endif
        menuView->addAction(actionFeaturesScrollArea);
 
-       actionMonitorSummary->setText(    QApplication::translate("MainWindow", "&Monitor Summary", 0));
-       actionCapabilities->setText(      QApplication::translate("MainWindow", "&Capabilities", 0));
+       actionMonitorSummary->setText(    QApplication::translate("MainWindow", "&Monitor Summary", nullptr, -1));
+       actionCapabilities->setText(      QApplication::translate("MainWindow", "&Capabilities", nullptr, -1));
 #ifdef ALT_FEATURES
        if (enableAltFeatures) {
           actionFeaturesListWidget->setText(QApplication::translate("MainWindow", "&Features - ListWidget", 0));
@@ -248,15 +239,15 @@ private:
        }
        else {
 #endif
-          actionFeaturesScrollArea->setText(QApplication::translate("MainWindow", "&Features", 0));
+          actionFeaturesScrollArea->setText(QApplication::translate("MainWindow", "&Features", nullptr, -1));
 #ifdef ALT_FEATURES
        }
 #endif
        menuHelp->addAction(actionAbout);
        menuHelp->addAction(actionAboutQt);
 
-       actionAbout->setText(QApplication::translate(  "MainWindow", "&About ddcui", 0));
-       actionAboutQt->setText(QApplication::translate("MainWindow", "About &Qt", 0));
+       actionAbout->setText(QApplication::translate(  "MainWindow", "&About ddcui", nullptr, -1));
+       actionAboutQt->setText(QApplication::translate("MainWindow", "About &Qt", nullptr, -1));
 
 
        // Tool Bar
@@ -318,7 +309,7 @@ public:
 
         setupMenus(MainWindow);
 
-        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "ddcui - Control Monitor Settings", 0));
+        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "ddcui - Control Monitor Settings", nullptr, -1));
         retranslateFeatureSelectionDialog();
 
         centralWidget->setCurrentIndex(0);
@@ -331,10 +322,10 @@ public:
 
 };
 
-namespace Ui {
-    class MainWindow: public Ui_MainWindow {};
-} // namespace Ui
+// namespace Ui {
+//     class MainWindow: public Ui_MainWindow {};
+// } // namespace Ui
 
-QT_END_NAMESPACE
+// QT_END_NAMESPACE
 
 #endif // UI_MAINWINDOW2_H

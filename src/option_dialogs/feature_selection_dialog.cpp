@@ -1,10 +1,7 @@
-/* feature_selection_dialog.cpp */
-
-/* <copyright>
- * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+/* feature_selection_dialog.cpp
  *
+ * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
  * SPDX-License-Identifier: GPL-2.0-or-later
- * </copyright>
  */
 
 #include <assert.h>

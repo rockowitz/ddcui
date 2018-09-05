@@ -1,10 +1,7 @@
 /* vcpthread.h */
 
-/* <copyright>
- * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
- *
+/* Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
  * SPDX-License-Identifier: GPL-2.0-or-later
- * </copyright>
  */
 
 #ifndef VCPTHREAD_H
@@ -46,7 +43,7 @@ private:
     void rpt_ddca_status(
           uint8_t feature_code,
           const char * caller_name,
-          const char *ddca_func_name,
+          const char * ddca_func_name,
           int ddcrc);
 
     DDCA_Display_Ref     _dref;

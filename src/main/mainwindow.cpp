@@ -1,10 +1,7 @@
 /* mainwindow.cpp */
 
-/* <copyright>
- * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
- *
+/* Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
  * SPDX-License-Identifier: GPL-2.0-or-later
- * </copyright>
  */
 
 #include "main/mainwindow.h"
@@ -60,7 +57,8 @@ using namespace std;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    _ui(new Ui::MainWindow)
+    _ui(new Ui_MainWindow)
+    // _ui(new Ui::MainWindow)
     // , PageChangeObserver()
 {
    _cls = metaObject()->className();

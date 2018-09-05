@@ -1,10 +1,7 @@
-/* other_options_dialog.cpp */
-
-/* <copyright>
- * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+/* other_options_dialog.cpp
  *
+ * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
  * SPDX-License-Identifier: GPL-2.0-or-later
- * </copyright>
  */
 
 #include "option_dialogs/other_options_dialog.h"

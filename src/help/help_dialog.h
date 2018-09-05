@@ -1,20 +1,14 @@
-/* help_dialog.h
- *
- * <copyright>
- * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
- *
- * SPDX-License-Identifier: GPL-2.0-or-later
- * </copyright>
- */
+// help_dialog.h
+
+// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef HELP_DIALOG_H_
 #define HELP_DIALOG_H_
 
 #include <QtWidgets/QDialog>
-#include <QtWidgets/QTextBrowser>
-#include <QtWidgets/QTextEdit>
 
-// class QTextBrowser;
+class QTextBrowser;
 
 
 class HelpDialog2 : public QDialog {
@@ -31,12 +25,8 @@ public:
 private:
     void commonInit();
 
-public:   // temp
     QTextBrowser* _textBrowser;
-    QTextEdit *   _textEdit;
-
-
-
+ // QTextEdit *   _textEdit;
 };
 
 #endif /* HELP_DIALOG_H_ */
