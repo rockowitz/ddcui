@@ -27,8 +27,8 @@ VcpThread::VcpThread(
         FeatureBaseModel *  baseModel)
     : QThread(parent)
     , _dinfo(dinfo)
-    , _baseModel(baseModel)
     , _requestQueue(requestQueue)
+    , _baseModel(baseModel)
 {
     _dref         = dinfo->dref;   // transitional
 

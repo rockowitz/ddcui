@@ -5,8 +5,6 @@
  */
 
 #include "main/mainwindow.h"
-#include "uimainwindow2.h"
-
 #include <assert.h>
 #include <iostream>
 
@@ -31,6 +29,7 @@
 #include "monitor_desc/monitor_desc_ui.h"
 
 #include "feature_value_widgets/value_stacked_widget.h"
+#include "mainwindow_ui.h"
 
 
 #ifdef ALT_FEATURES
@@ -57,13 +56,13 @@ using namespace std;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    _ui(new Ui_MainWindow)
+    _ui(new Ui_MainWindow(this))
     // _ui(new Ui::MainWindow)
     // , PageChangeObserver()
 {
    _cls = metaObject()->className();
 
-    _ui->setupUi(this);
+    // _ui->setupUi(this);
 
     // with either ApplicationModal or WindowModal, moving the application does not move the spinner with it
     // _loadingMsgBox has same problem

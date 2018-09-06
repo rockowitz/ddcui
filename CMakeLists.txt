@@ -83,6 +83,7 @@ set(SOURCES
     src/option_dialogs/other_options_dialog.cpp
 
     src/main/monitor.cpp 
+    src/main/mainwindow_ui.cpp
     src/main/mainwindow.cpp 
     src/main/main.cpp
 )
