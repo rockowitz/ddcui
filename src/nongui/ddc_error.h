@@ -1,11 +1,7 @@
-/* ddc_error.h
- *
- * <copyright>
- * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
- *
- * SPDX-License-Identifier: GPL-2.0-or-later
- * </copyright>
- */
+// ddc_error.h
+
+// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef DDC_ERROR_H_
 #define DDC_ERROR_H_
@@ -27,8 +23,8 @@ public:
 
    virtual ~DdcError();
 
-   DDCA_Status _ddcErrno = 0;
-   uint8_t     _featureCode = 0;
+   uint8_t     _featureCode;
+   DDCA_Status _ddcErrno;
    QString     _ddcFunction;
 
    QString repr();

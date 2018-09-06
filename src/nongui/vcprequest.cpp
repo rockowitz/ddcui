@@ -1,21 +1,20 @@
 /* vcprequest.cpp - VcpRequestQueue and the classes that populate it */
 
-/* <copyright>
- * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
- *
- * SPDX-License-Identifier: GPL-2.0-or-later
- * </copyright>
- */
+// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "nongui/vcprequest.h"
 
 /* VcpRequest and subclasses */
 
-VcpRequest::VcpRequest(VcpRequestType type) {
-     _type = type;
+VcpRequest::VcpRequest(VcpRequestType type)
+    : _type(type)
+{
+     // _type = type;
 }
 
-VcpRequest::~VcpRequest() {
+VcpRequest::~VcpRequest()
+{
 }
 
 
@@ -25,20 +24,23 @@ VcpCapRequest::VcpCapRequest()
 }
 
 
-
 VcpGetRequest::VcpGetRequest(DDCA_Vcp_Feature_Code feature_code)
     : VcpRequest::VcpRequest(VcpRequestType::RQGetVcp)
+    , _featureCode(feature_code)
 {
-    _featureCode = feature_code;
+    // _featureCode = feature_code;
 }
 
 
 VcpSetRequest::VcpSetRequest(DDCA_Vcp_Feature_Code feature_code, uint8_t newval, bool writeOnly)
     :  VcpRequest::VcpRequest(VcpRequestType::RQSetVcp)
+    , _featureCode(feature_code)
+    , _newval(newval)
+    , _writeOnly(writeOnly)
 {
-    _featureCode = feature_code;
-    _newval = newval;
-    _writeOnly = writeOnly;
+    // _featureCode = feature_code;
+    // _newval = newval;
+    // _writeOnly = writeOnly;
 }
 
 

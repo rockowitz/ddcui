@@ -1,11 +1,7 @@
 /* feature_value.cpp */
 
-/* <copyright>
- * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
- *
- * SPDX-License-Identifier: GPL-2.0-or-later
- * </copyright>
- */
+// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+/// SPDX-License-Identifier: GPL-2.0-or-later
 
 // #include <QMetaType>
 

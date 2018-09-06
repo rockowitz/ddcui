@@ -1,8 +1,7 @@
 /* vcpthread.h */
 
-/* Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
- * SPDX-License-Identifier: GPL-2.0-or-later
- */
+// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef VCPTHREAD_H
 #define VCPTHREAD_H

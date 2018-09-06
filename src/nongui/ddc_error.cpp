@@ -1,11 +1,7 @@
-/* ddc_error.cpp
- *
- * <copyright>
- * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
- *
- * SPDX-License-Identifier: GPL-2.0-or-later
- * </copyright>
- */
+// ddc_error.cpp
+
+// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "ddcutil_c_api.h"
 
@@ -16,21 +12,28 @@ DdcError::DdcError()
    //  , _ddcErrno(0)
 {}
 
+
 DdcError::DdcError(
       uint8_t       featureCode,
       const char *  ddcFunction,
       DDCA_Status   ddcErrno)
+    : _featureCode(featureCode)
+    , _ddcErrno(   ddcErrno)
+    , _ddcFunction(QString(ddcFunction))
 {
-   _featureCode = featureCode;
-   _ddcErrno    = ddcErrno;
-   _ddcFunction = QString(ddcFunction);
-
+   // _featureCode = featureCode;
+   // _ddcErrno    = ddcErrno;
+   // _ddcFunction = QString(ddcFunction);
 }
 
-DdcError::DdcError(const DdcError& erec) {
-   _featureCode = erec._featureCode;
-   _ddcFunction = erec._ddcFunction;
-   _ddcErrno    = erec._ddcErrno;
+DdcError::DdcError(const DdcError& erec)
+: _featureCode(erec._featureCode)
+, _ddcErrno(   erec._ddcErrno)
+, _ddcFunction(erec._ddcFunction)
+{
+   // _featureCode = erec._featureCode;
+   // _ddcFunction = erec._ddcFunction;
+   // _ddcErrno    = erec._ddcErrno;
 }
 
 
@@ -47,8 +50,8 @@ QString DdcError::repr() {
                     .arg(_ddcErrno)
                     .arg(s);
    return msg;
-
 }
+
 
 char *  DdcError::srepr() {
    return strdup(repr().toLatin1().data());

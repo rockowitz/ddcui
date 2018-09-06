@@ -1,11 +1,7 @@
 /* feature_base_model.h - Records all VCP feature values for a single monitor */
 
-/* <copyright>
- * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
- *
- * SPDX-License-Identifier: GPL-2.0-or-later
- * </endcopyright>
- */
+// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef FEATURE_BASE_MODEL_H
 #define FEATURE_BASE_MODEL_H

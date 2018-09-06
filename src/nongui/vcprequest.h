@@ -1,11 +1,7 @@
 /* vcprequest.h - VcpRequestQueue and the VcpRequest classes that populate the queue */
 
-/* <copyright>
- * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
- *
- * SPDX-License-Identifier: GPL-2.0-or-later
- * </copyright>
- */
+// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef VCPREQUEST_H
 #define VCPREQUEST_H
@@ -40,6 +36,7 @@ public:
 
     // DDCA_Vcp_Feature_Code _featureCode;
 };
+
 
 class VcpGetRequest: public VcpRequest {
 public:
@@ -90,7 +87,7 @@ public:
     QMutex _mutex;
 
 // public slots:
-        void        put(VcpRequest* request);
+    void        put(VcpRequest* request);
 
 private:
     // Monitor* monitor;
@@ -100,3 +97,4 @@ private:
 };
 
 #endif // VCPREQUEST_H
+

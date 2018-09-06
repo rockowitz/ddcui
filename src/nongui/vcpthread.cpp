@@ -1,8 +1,7 @@
 /* vcpthread.cpp */
 
-/* Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
- * SPDX-License-Identifier: GPL-2.0-or-later
- */
+// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <iostream>
 #include <string.h>
@@ -165,7 +164,8 @@ void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint8_t sl)
     DDCA_Display_Handle         dh;
     DDCA_Status ddcrc = ddca_open_display(this->_dref, &dh);
     if (ddcrc != 0) {
-        cout << "ddca_open_display() returned " << ddcrc << endl;
+        PRINTFCM("ddca_open_display() returned %d", ddcrc);
+        // cout << "ddca_open_display() returned " << ddcrc << endl;
         // how to handle?
     }
 
