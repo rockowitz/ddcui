@@ -53,8 +53,10 @@
        actionFeaturesScrollArea->setObjectName(QString::fromUtf8("actionFeaturesScrollArea"));
        actionFeaturesScrollArea->setCheckable(true);
 
+#ifdef IS_THIS_NEEDED
        actionFeatureSelection = new QAction(MainWindow);
        actionFeatureSelection->setObjectName(QString::fromUtf8("actionFeatureSelection"));
+#endif
 
        QActionGroup* viewGroup = new QActionGroup(MainWindow);
        viewGroup->addAction(actionMonitorSummary);
@@ -70,6 +72,7 @@
 
        // Options->Feature Selection Dialog Actions
 
+#ifdef IS_THIS_NEEDED
        actionShowUnsupportedFeatures = new QAction(MainWindow);
        actionShowUnsupportedFeatures->setObjectName(QString::fromUtf8("actionShow_Unsupported_Features"));
        actionShowUnsupportedFeatures->setCheckable(true);
@@ -88,13 +91,19 @@
 
        actionManufacturer = new QAction(MainWindow);
        actionManufacturer->setObjectName(QString::fromUtf8("actionManufacturer"));
+#endif
 
        // Options Menu Actions
        actionFeatureSelectionDialog = new QAction(MainWindow);
        actionFeatureSelectionDialog->setObjectName(QString::fromUtf8("actionFeatureSelectionDialog"));
+       actionFeatureSelectionDialog->setText(
+             QApplication::translate("MainWindow", "&Feature Selection",        nullptr, -1));
+
 
        actionOtherOptionsDialog = new QAction(MainWindow);
        actionOtherOptionsDialog->setObjectName(QString::fromUtf8("actionOtherOptionsDialog"));
+       actionOtherOptionsDialog->setText(
+             QApplication::translate("MainWindow", "&Other Options",            nullptr, -1));
 
        // Help Menu Actions
 
@@ -102,11 +111,14 @@
        actionAbout->setObjectName(QString::fromUtf8("actionAbout"));
        actionAboutQt = new QAction(MainWindow);
        actionAboutQt->setObjectName(QString::fromUtf8("actionAbout_Qt"));
+
    }
 
 
+#ifdef UNUSED
    void Ui_MainWindow::retranslateFeatureSelectionDialog()
    {
+#ifdef IS_THIS_NEEDED
       actionFeatureSelection->setText(
             QApplication::translate("MainWindow", "Feature Selection",         nullptr, -1));
       actionShowUnsupportedFeatures->setText(
@@ -121,11 +133,10 @@
             QApplication::translate("MainWindow", "Profile",                   nullptr, -1));
       actionManufacturer->setText(
             QApplication::translate("MainWindow", "Manufacturer",              nullptr, -1));
-      actionFeatureSelectionDialog->setText(
-            QApplication::translate("MainWindow", "&Feature Selection",        nullptr, -1));
-      actionOtherOptionsDialog->setText(
-            QApplication::translate("MainWindow", "&Other Options",            nullptr, -1));
+#endif
+
    }
+#endif
 
    void Ui_MainWindow::setupMenus(QMainWindow *MainWindow)
     {
@@ -254,7 +265,9 @@
          setupMenus(MainWindow);
 
          MainWindow->setWindowTitle(QApplication::translate("MainWindow", "ddcui - Control Monitor Settings", nullptr, -1));
+#ifdef UNUSED
          retranslateFeatureSelectionDialog();
+#endif
 
          centralWidget->setCurrentIndex(0);
 

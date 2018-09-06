@@ -52,13 +52,16 @@ public:
     QAction     *actionFeaturesScrollArea = NULL;
 private:
     // Options Menu
+#ifdef IS_THIS_NEEDED
     QAction     *actionFeatureSelection= NULL;
+
     QAction     *actionShowUnsupportedFeatures= NULL;
     QAction     *actionKnown= NULL;
     QAction     *actionScan= NULL;
     QAction     *actionColor= NULL;
     QAction     *actionProfile = NULL;
     QAction     *actionManufacturer = NULL;
+#endif
     QAction     *actionFeatureSelectionDialog = NULL;
     QAction     *actionOtherOptionsDialog = NULL;
 
@@ -79,7 +82,9 @@ public:
 
 private:
     void initActions(QMainWindow * mainWindow);
+#ifdef UNUSED
     void retranslateFeatureSelectionDialog();
+#endif
     void setupMenus(QMainWindow *MainWindow);
     void layoutCentralWidget(QMainWindow *MainWindow);
 
