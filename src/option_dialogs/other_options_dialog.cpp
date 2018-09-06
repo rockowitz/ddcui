@@ -108,7 +108,6 @@ void OtherOptionsDialog::on_buttonBox_clicked(QAbstractButton* button)
       //       emit ncValuesSourceChanged(_state->ncValuesSource);
       //   }
    }
-
 }
 
 
