@@ -1,11 +1,7 @@
-/* global_state.h
- *
- * <copyright>
- * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
- *
- * SPDX-License-Identifier: GPL-2.0-or-later
- * </copyright>
- */
+// global_state.h
+
+// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef GLOBAL_STATE_H_
 #define GLOBAL_STATE_H_

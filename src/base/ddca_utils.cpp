@@ -1,11 +1,7 @@
-/* ddca_utils.cpp
- *
- * <copyright>
- * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
- *
- * SPDX-License-Identifier: GPL-2.0-or-later
- * </copyright>
- */
+// ddca_utils.cpp
+
+// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <assert.h>
 #include <stdlib.h>
@@ -30,6 +26,7 @@ bool cap_vcp_contains(DDCA_Cap_Vcp* cfr, uint8_t feature_code) {
    return result;
 }
 
+
 DDCA_Feature_Value_Entry *
 find_feature_value_entry(DDCA_Feature_Value_Table sl_values, uint8_t feature_code) {
    DDCA_Feature_Value_Entry * result = NULL;
@@ -45,6 +42,7 @@ find_feature_value_entry(DDCA_Feature_Value_Table sl_values, uint8_t feature_cod
    return result;
 }
 
+
 int
 feature_value_entry_ct(DDCA_Feature_Value_Table sl_values) {
    int ct = 0;
@@ -55,9 +53,11 @@ feature_value_entry_ct(DDCA_Feature_Value_Table sl_values) {
    return ct;
 }
 
+
 inline int int_max(int v1, int v2) {
    return (( v1 > v2) ? v1 : v2);
 }
+
 
 DDCA_Feature_Value_Table
 ddcutil_merge_feature_values(
@@ -125,6 +125,7 @@ ddcutil_merge_feature_values(
    return result;
 }
 
+
 void
 ddcutil_free_dynamic_feature_value_table(
       DDCA_Feature_Value_Table table)
@@ -160,9 +161,9 @@ ddcutil_find_cap_vcp(DDCA_Capabilities * parsed_caps, uint8_t feature_code)
          }
       }
    }
-
    return result;
 }
+
 
 #ifdef UNUSED
 void free_ddca_feature_value_table(DDCA_Feature_Value_Table * table) {

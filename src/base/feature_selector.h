@@ -1,11 +1,7 @@
-/* feature_selector.h */
+// feature_selector.h
 
-/* <copyright>
- * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
- *
- * SPDX-License-Identifier: GPL-2.0-or-later
- * </copyright>
- */
+// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef FEATURE_SELECTOR_H
 #define FEATURE_SELECTOR_H

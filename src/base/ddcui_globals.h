@@ -1,12 +1,10 @@
+// ddcui_globals.h
+
+// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 #ifndef DDCUI_GLOBALS_H
 #define DDCUI_GLOBALS_H
-
-/* <copyright>
- * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
- *
- * SPDX-License-Identifier: GPL-2.0-or-later
- * </copyright>
- */
 
 #include "config.h"
 
@@ -23,8 +21,6 @@ extern const bool debugFeatureLists       ;
 extern const bool debugFeatureSelection   ;
 extern const bool debugNcValues;
 extern const bool debugLayout             ;
-
-
 
 #define PRINTFCM(__FMT__, ...) \
    do { \
@@ -51,6 +47,5 @@ const bool useApplyCancel    = true;
 #ifdef ALT_FEATURES
 const bool enableAltFeatures = true;
 #endif
-
 
 #endif // DDCUI_GLOBALS_H

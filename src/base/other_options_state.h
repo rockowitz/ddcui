@@ -1,11 +1,7 @@
-/* other_options_state.h
- *
- * <copyright>
- * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
- *
- * SPDX-License-Identifier: GPL-2.0-or-later
- * </copyright>
- */
+// other_options_state.h
+
+// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef OTHER_OPTIONS_STATE_H_
 #define OTHER_OPTIONS_STATE_H_
@@ -19,7 +15,6 @@ typedef enum {
    NcValuesFromBoth,
    NcValuesSourceUnset
 } NcValuesSource;
-
 
 class OtherOptionsState : public QObject {
    Q_OBJECT
