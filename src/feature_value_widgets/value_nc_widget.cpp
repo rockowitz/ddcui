@@ -30,7 +30,7 @@
 
 
 static bool dimensionReportShown = false;
-static bool debugWidget = true;
+static bool debugWidget = false;
 
 
 ValueNcWidget::ValueNcWidget(QWidget *parent):

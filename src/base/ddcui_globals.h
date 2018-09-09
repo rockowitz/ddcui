@@ -34,6 +34,19 @@ extern const bool debugLayout             ;
       fflush(stdout); \
    }
 
+#define PRINTFTCM(__FMT__, ...) \
+   do { \
+     printf("(%p %s::%s) " __FMT__ "\n",  QThread::currentThreadId(), _cls, __func__, ##__VA_ARGS__); \
+     fflush(stdout); \
+   } while(0)
+
+#define PRINTFTCMF(__FLAG__, __FMT__, ...) \
+   if (__FLAG__) { \
+      printf("(%p %s::%s) " __FMT__ "\n",  QThread::currentThreadId(), _cls, __func__, ##__VA_ARGS__); \
+      fflush(stdout); \
+   }
+
+
 inline const char * sbool(bool val) { return (val) ? "true" : "false"; }
 
 #define SBOOL(__v) ( (__v) ? "true" : "false")

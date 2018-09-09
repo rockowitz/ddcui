@@ -139,7 +139,7 @@ void MainWindow::initMonitors() {
                             &_dlist);
     assert(ddcrc == 0);
     for (int ndx = 0; ndx < _dlist->ct; ndx++) {
-        printf("(%s) Processing display %d\n", __func__, ndx);  fflush(stdout);
+        PRINTFTCM("Processing display %d", ndx);
 
         // Add entry for monitor in display selector combo box
 // #ifdef OLD
@@ -269,13 +269,13 @@ void MainWindow::initMonitors() {
 
 void MainWindow::longRunningTaskStart() {
    // needs counter
-   printf("(%s::%s)\n", _cls, __func__);  fflush(stdout);
+   PRINTFTCM("Executing");
    _spinner->start();
    // _loadingMsgBox->show();
 }
 
 void MainWindow::longRunningTaskEnd() {
-   printf("(%s::%s)\n", _cls, __func__);  fflush(stdout);
+   PRINTFTCM("Executing");
    _spinner->stop();
    // _loadingMsgBox->hide();
 }
@@ -372,7 +372,7 @@ void MainWindow::on_actionCapabilities_triggered()
        DDCA_Status ddcrc = capture_capabilities_report(monitor, dref, &caps_report);
        if (ddcrc != 0) {
            reportDdcApiError("ddca_open_display", ddcrc);
-           PRINTFCM("capture_capabilites_report returned %d", ddcrc);
+           PRINTFTCM("capture_capabilites_report returned %d", ddcrc);
        }
        else {
            // cout << "Parsed capabilities: " << endl;
@@ -398,14 +398,14 @@ void MainWindow::on_actionCapabilities_triggered()
 // Features Slots - Common Functions
 
 void MainWindow::loadMonitorFeatures(Monitor * monitor) {
-    // PRINTFCM("monitor=%p", monitor);
+    // PRINTFTCM("monitor=%p", monitor);
     // monitor->dbgrpt();
     QString msg = QString("Reading monitor features...");
     _ui->statusBar->showMessage(msg);
 
     DDCA_Feature_List features_to_show = monitor->getFeatureList(_feature_selector->_featureListId);
 
-    PRINTFCMF(debugFeatureLists,
+    PRINTFTCMF(debugFeatureLists,
         "features_to_show: %s", ddca_feature_list_string(&features_to_show, NULL, (char*)" "));
 
     if (_feature_selector->_respectCapabilities) {
@@ -413,19 +413,19 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
        DDCA_Feature_List caps_features =
              ddca_feature_list_from_capabilities(monitor->_baseModel->_parsed_caps);
 
-       PRINTFCMF(debugFeatureLists,
+       PRINTFTCMF(debugFeatureLists,
            "Capabilities features: %s", ddca_feature_list_string(&caps_features, NULL, (char*)" "));
 
        features_to_show = ddca_feature_list_and(&features_to_show, &caps_features);
     }
 
-    PRINTFCMF(debugFeatureLists,
+    PRINTFTCMF(debugFeatureLists,
         "Final features_to_show: %s", ddca_feature_list_string(&features_to_show, NULL, (char*)" "));
 
     // causes async feature reads in VcpThread, then load feature values from model into widgets
     monitor->_baseModel->setFeatureList(features_to_show);
 
-    // PRINTFCM("Done");
+    // PRINTFTCM("Done");
 }
 
 
@@ -618,10 +618,10 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
 {
     if (debugFeatureSelection) {
 #ifdef ALT_FEATURES
-        PRINTFCM("Desired view: %d, features view: %d, feature list:",
+        PRINTFTCM("Desired view: %d, features view: %d, feature list:",
                  View::FeaturesView, Monitor::FEATURES_VIEW_SCROLLAREA_VIEW);
 #else
-        PRINTFCM("Desired view: %d, feature list:", View::FeaturesView);
+        PRINTFTCM("Desired view: %d, feature list:", View::FeaturesView);
 #endif
         this->_feature_selector->dbgrpt();
     }
@@ -630,10 +630,10 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
     Monitor * monitor = _monitors[monitorNdx];
     if (debugFeatureSelection) {
 #ifdef ALT_FEATURES
-        PRINTFCM("Current view: %d, features view: %d, feature list:",
+        PRINTFTCM("Current view: %d, features view: %d, feature list:",
                  _curView, monitor->_curFeaturesView);
 #else
-        PRINTFCM("Current view: %d, feature list:", _curView);
+        PRINTFTCM("Current view: %d, feature list:", _curView);
 #endif
         monitor->_curFeatureSelector.dbgrpt();
     }
@@ -665,7 +665,7 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
        monitor->_curFeatureSelector   = *_feature_selector;
     }
     else {
-       PRINTFCM("Unchanged view and feature set, no need to load");
+       PRINTFTCM("Unchanged view and feature set, no need to load");
     }
 }
 
@@ -687,7 +687,7 @@ void MainWindow::on_actionFeatureSelection_triggered()
 void MainWindow::on_actionFeatureSelectionDialog_triggered()
 {
    //  cout << "(on_actionFeatureSelectionDialog_triggered)" << endl;
-   PRINTFCM("Executing. _fsd=%p", _fsd);
+   PRINTFTCM("Executing. _fsd=%p", _fsd);
 
     // FeatureSelectionDialog*
    if (_fsd) {
@@ -711,7 +711,6 @@ void MainWindow::on_actionFeatureSelectionDialog_triggered()
 
        QObject::connect(_fsd,     &FeatureSelectionDialog::featureSelectionChanged,
                         this,     &MainWindow::for_actionFeatureSelectionDialog_accepted);
-
     }
     _fsd->exec();
   //   delete _fsd;
@@ -719,11 +718,10 @@ void MainWindow::on_actionFeatureSelectionDialog_triggered()
 
 
 void MainWindow::featureSelectionDone() {
-   if (debugSignals || debugFeatureSelection )
-      printf("(%s::%s)\n", _cls, __func__);
+   bool debugFunc = debugSignals || debugFeatureSelection;
+   PRINTFTCMF(debugFunc, "Executing");
    if (_curView == FeaturesView) {
-      if (debugSignals || debugFeatureSelection)
-         printf("(%s::%s) Signaling featureSelectionChanged() \n", _cls, __func__);
+      PRINTFTCMF(debugFunc, "Signaling featureSelectionChanged()");
       emit featureSelectionChanged();
    }
 }
@@ -734,7 +732,7 @@ void MainWindow::featureSelectionDone() {
 void MainWindow::for_actionFeatureSelectionDialog_accepted()
 {
    if (debugFeatureSelection) {
-       PRINTFCM("Executing");
+       PRINTFTCM("Executing");
        _feature_selector->dbgrpt();
    }
    featureSelectionDone();
@@ -773,7 +771,7 @@ void MainWindow::on_actionOtherOptionsDialog_triggered()
 // for which it could find no signal
 void MainWindow::for_actionOtherOptionsDialog_ncValuesSourceChanged(NcValuesSource valuesSource )
 {
-   printf("%s::%s) valuesSource=%d\n", _cls, __func__, valuesSource); fflush(stdout);
+   PRINTFTCM("valuesSource=%d", valuesSource);
 
    if (_curView == FeaturesView  )   {  // need also check if  FeaturesScrollAreaView
       int monitorNdx = _toolbarDisplayCB->currentIndex();
@@ -838,23 +836,21 @@ void MainWindow::on_actionAbout_Qt_triggered()
 //
 
 void MainWindow::showCentralWidgetPage(int pageno) {
-   printf("(%s::%s) ===========> Setting current index, pageno = %d\n", _cls, __func__,
-          pageno);  fflush(stdout);
+   PRINTFTCM("===========> Setting current index, pageno = %d", pageno);
    _ui->centralWidget->setCurrentIndex(pageno);
    _ui->centralWidget->show();
 }
 
 void MainWindow::showCentralWidgetByWidget(QWidget * pageWidget) {
-   printf("(%s::%s) ===========> Setting current index, pageWidget object name = %s\n", _cls, __func__,
+   PRINTFTCM("===========> Setting current index, pageWidget object name = %s",
           "dummy"  /* pageWidget->objectName() */);   // utf-8
-   fflush(stdout);
 
    int pageno = _ui->centralWidget->indexOf(pageWidget);
    if (pageno < 0) {
-      printf("(%s::%s) page for widget not found\n", _cls, __func__); fflush(stdout);
+      PRINTFTCM("page for widget not found");
    }
    else {
-      printf("(%s::%s) widget page number: %d\n", _cls, __func__, pageno); fflush(stdout);
+      PRINTFTCM("widget page number: %d\n", pageno);
       _ui->centralWidget->setCurrentWidget(pageWidget);
       _ui->centralWidget->show();
    }

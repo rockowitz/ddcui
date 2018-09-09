@@ -7,6 +7,7 @@
 
 #include <assert.h>
 #include <iostream>
+#include <typeinfo>
 
 #include <QtCore/QVector>
 #include <QtCore/QByteArray>
@@ -18,6 +19,7 @@
 #include "base/ddca_utils.h"
 
 #include "nongui/feature_value.h"
+
 
 
 using namespace std;
@@ -127,7 +129,7 @@ void   FeatureBaseModel::modelVcpValueSet(
                    DDCA_Non_Table_Vcp_Value *           feature_value)
 {
     if (debugModel)
-        PRINTFCM("feature_code=0x%02x, mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x",
+        PRINTFTCM("feature_code=0x%02x, mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x",
                  feature_code, feature_value->mh, feature_value->ml, feature_value->sh, feature_value->sl);
 
     int ndx = modelVcpValueIndex(feature_code);
@@ -137,7 +139,7 @@ void   FeatureBaseModel::modelVcpValueSet(
     // assert(ndx < 0);
     if (ndx < 0) {
         if (debugModel)
-            PRINTFCM("Creating new FeatureValue");
+            PRINTFTCM("Creating new FeatureValue");
 
         DDCA_Cap_Vcp * cap_vcp = NULL;
         if (_parsed_caps)
@@ -158,14 +160,14 @@ void   FeatureBaseModel::modelVcpValueSet(
         // notifyFeatureChangeObservers(feature_code);   // alternative
     }
     else {
-        // PRINTFCM("Modifying existing FeatureValue");
+        // PRINTFTCM("Modifying existing FeatureValue");
 
         FeatureValue * fv =  _featureValues->at(ndx);
         // fv->_value.sh = feature_value->sh;
         // fv->_value.sl = feature_value->sl;
         fv->setCurrentValue(feature_value->sh, feature_value->sl);
 
-        PRINTFCM("Emitting signalFeatureUpdated3(), feature code: 0x%02x, sl: 0x%02x",
+        PRINTFTCM("Emitting signalFeatureUpdated3(), feature code: 0x%02x, sl: 0x%02x",
                  fv->featureCode(), feature_value->sl);
         emit signalFeatureUpdated3(__func__, fv->featureCode(), feature_value->sh, feature_value->sl);
     }
@@ -178,14 +180,16 @@ FeatureBaseModel::modelVcpValueUpdate(
         uint8_t   sh,
         uint8_t   sl)
 {
-    PRINTFCMF(debugModel, "feature_code=0x%02x, sh=0x%02x, sl=0x%02x", feature_code, sh, sl);
+    bool debugFunc = debugModel;
+    debugFunc = true;
+    PRINTFTCMF(debugFunc, "feature_code=0x%02x, sh=0x%02x, sl=0x%02x", feature_code, sh, sl);
 
     int ndx = modelVcpValueIndex(feature_code);
     assert (ndx >= 0);
     FeatureValue * fv =  _featureValues->at(ndx);
     fv->setCurrentValue(sh,sl);
 
-    PRINTFCMF(debugModel || debugSignals, "Emitting signalFeatureUpdated3()");
+    PRINTFTCMF(debugFunc || debugSignals, "Emitting signalFeatureUpdated3()");
     emit signalFeatureUpdated3(__func__, feature_code, sh, sl);
 }
 
@@ -197,7 +201,7 @@ FeatureBaseModel::setCapabilities(
       char *               capabilities_string,
       DDCA_Capabilities *  parsed_capabilities)
 {
-   // PRINTFCM("capabilities_string=|%s|", capabilities_string);
+   // PRINTFTCM("capabilities_string=|%s|", capabilities_string);
 
    _caps_status = ddcrc;
    _caps_string = capabilities_string;
@@ -207,11 +211,13 @@ FeatureBaseModel::setCapabilities(
 
 void
 FeatureBaseModel::onDdcError(
-      DdcError& erec)
+      DdcError* perec)
 {
-   // PRINTFCM("erec=%s", erec.srepr() );
+   PRINTFTCM("perec=%p -> %s", perec, perec->srepr() );
+   // std::cout << "typeid(perec):  " << typeid(perec).name()  << std::endl;
+   // std::cout << "typeid(*perec): " << typeid(*perec).name() << std::endl;
    // emit signalModelError(featureCode, msg);
-   emit  signalDdcError(erec);
+   emit  signalDdcError(perec);
 }
 
 
@@ -242,7 +248,7 @@ FeatureBaseModel::setFeatureList(
          ddca_feature_list_and_not(&_featuresToShow, &_featuresChecked);
 
    if (debugFeatureLists) {
-       PRINTFCM("Unchecked features: %s",
+       PRINTFTCM("Unchecked features: %s",
                 ddca_feature_list_string(&unchecked_features, NULL, (char*) " "));
    }
 
@@ -293,13 +299,13 @@ void FeatureBaseModel::dbgrpt() {
 
 
 void  FeatureBaseModel::modelStartInitialLoad(void) {
-    // PRINTFCM("Emitting signalStartInitialLoad");
+    // PRINTFTCM("Emitting signalStartInitialLoad");
     emit signalStartInitialLoad();
 }
 
 
 void  FeatureBaseModel::modelEndInitialLoad(void) {
-    PRINTFCM("Emitting signalEndInitialLoad");
+    PRINTFTCM("Emitting signalEndInitialLoad");
     signalEndInitialLoad();
 }
 

@@ -16,6 +16,7 @@
 #ifdef FEATURE_CHANGE_OBSERVER
 #include "nongui/feature_change_observer.h"
 #endif
+// #include "nongui/ddc_error_subject.h"
 
 // typedef void (*NotifyFeatureChanged)(uint8_t feature_code);
 
@@ -26,7 +27,7 @@ class Monitor;
  *  For alternative (unused) feature views that use QListWidgets etc.
  *  this class is contained in FeatureTableModel etc.
  */
-class FeatureBaseModel : public QObject
+class FeatureBaseModel : public QObject // , DdcErrorSubject
 {
     Q_OBJECT
 
@@ -84,11 +85,11 @@ signals:
     void signalFeatureUpdated3(const char * caller, uint8_t feature_code, uint8_t sh, uint8_t sl);
     void signalVcpRequest(VcpRequest * rqst);  // used to call into monitor
     void signalModelError(uint8_t featureCode, QString msg);
-    void signalDdcError(DdcError erec);
+    void signalDdcError(DdcError* perec);
     void signalStatusMsg(QString msg);
 
 public slots:
-    void onDdcError(DdcError& erec);
+    void onDdcError(DdcError* perec);
 
 protected:
 #ifdef FEATURE_CHANGE_OBSERVER

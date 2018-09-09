@@ -16,6 +16,8 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <iostream>
+#include <typeinfo>
 
 #include "base/global_state.h"
 #include "base/other_options_state.h"
@@ -32,6 +34,8 @@
 
 
 static bool dimensionReportShown = false;
+
+// static QSemaphore errorMsgSemaphore(1);
 
 FeaturesScrollAreaView::FeaturesScrollAreaView(
         Monitor *          monitor,
@@ -58,10 +62,10 @@ void FeaturesScrollAreaView::freeContents(void) {
 
 
 void FeaturesScrollAreaView::onEndInitialLoad(void) {
-    PRINTFCM("Starting, Monitor=%s", _monitor->_displayInfo->model_name);
+    PRINTFTCM("Starting, Monitor=%s", _monitor->_displayInfo->model_name);
 #ifdef ALT_FEATURES
     if (_monitor->_curFeaturesView != Monitor::FEATURES_VIEW_SCROLLAREA_VIEW) {
-        PRINTFCM("Not FEATURES_VIEW_SCROLLAREA, skipping");
+        PRINTFTCM("Not FEATURES_VIEW_SCROLLAREA, skipping");
         return;
     }
 #endif
@@ -136,11 +140,11 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
     _centralStackedWidget->setCurrentWidget(scrollWrap);    // was scrollArea
 
     if (!dimensionReportShown && debugLayout) {
-        PRINTFCM("---------------------> scrollAreaContents in QScrollArea");
+        PRINTFTCM("---------------------> scrollAreaContents in QScrollArea");
         reportWidgetDimensions(scrollAreaContents,    _cls, __func__, "scrollAreaContents in QScrollArea");
-        PRINTFCM("---------------------> QScrollArea in _centralStackedWidget");
+        PRINTFTCM("---------------------> QScrollArea in _centralStackedWidget");
         reportWidgetDimensions(scrollArea,            _cls, __func__, "QScrollArea in _centralStackedWidget");
-        PRINTFCM("---------------------> centralStackedWidget" );
+        PRINTFTCM("---------------------> centralStackedWidget" );
         reportWidgetDimensions(_centralStackedWidget, _cls, __func__, "centralStackedWidget");
         dimensionReportShown = true;
     }
@@ -150,18 +154,18 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
     _scrollAreaContents = scrollAreaContents;
     _centralStackedWidget->show();
 
-    PRINTFCM("Done.  feature count: %d", ct);
+    PRINTFTCM("Done.  feature count: %d", ct);
 }
 
 
 void FeaturesScrollAreaView::onUIValueChanged(uint8_t featureCode, bool writeOnly, uint8_t sh, uint8_t sl) {
-   PRINTFCMF(debugSignals,
+   PRINTFTCMF(debugSignals,
              "feature_code = 0x%02x, writeOnly=%s, sh=0x%02x, sl=0x%02x",
              featureCode, sbool(writeOnly), sh, sl);
 
    FeatureValue * curFv = _baseModel->modelVcpValueFind(featureCode);
    if (curFv && curFv->val().sh == sh && curFv->val().sl == sl) {
-      PRINTFCM("New value matches model value, Suppressing.");
+      PRINTFTCM("New value matches model value, Suppressing.");
    }
    else {
       VcpRequest * rqst = new VcpSetRequest(featureCode, sl, writeOnly);   // n.b. ignoring sh
@@ -184,7 +188,7 @@ void FeaturesScrollAreaView::onModelValueChanged(
       uint8_t     sh,
       uint8_t     sl)
 {
-   PRINTFCMF(debugSignals,
+   PRINTFTCMF(debugSignals,
              "caller = %s, feature_code = 0x%02x, sh=0x%02x, sl=0x%02x",
              caller, featureCode, sh, sl);
 
@@ -198,7 +202,7 @@ void FeaturesScrollAreaView::onModelValueChanged(
 
 
 void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc) {
-   PRINTFCMF(debugSignals,
+   PRINTFTCMF(debugSignals,
              "newsrc=%d - %s, _curNcValuesSource=%d - %s",
              newsrc,             (char*) ncValuesSourceName(newsrc),
              _curNcValuesSource, (char*) ncValuesSourceName(_curNcValuesSource));
@@ -231,15 +235,22 @@ void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc) {
 }
 
 
-void FeaturesScrollAreaView::onModelDdcError(DdcError erec) {
-    // PRINTFCM("erec=%s", erec.srepr() );   // srepr unsafe
-    // PRINTFCM();
+void FeaturesScrollAreaView::onModelDdcError(DdcError* perec) {
+    // PRINTFTCM("perec=%p", perec); fflush(stdout);
+    // PRINTFTCM("perec->srepr=%p\n", &perec->srepr);
+    // std::cout << "typeid(perec):  " << typeid(perec).name()  << std::endl;
+    // std::cout << "typeid(*perec): " << typeid(*perec).name() << std::endl;
+    // char * s = perec->srepr();
+    PRINTFTCM("perec=%p, perec->%s", perec, perec->srepr() );   // srepr unsafe
+    // PRINTFTCM("wolf");
+
     QMessageBox * msgBox = new QMessageBox();
     DDCA_Display_Info * dinfo = _monitor->_displayInfo;
     // dinfo->mfg_id
     // dinfo->model_name
     //  if (strcmp(erec._ddcFunction.toLatin1().data(), "ddca_get_capabilities_string") == 0) {
-    if ( QString::compare(erec._ddcFunction, QString("ddca_get_capabilities_string")) == 0) {
+    if ( QString::compare(perec->_ddcFunction, QString("ddca_get_capabilities_string")) == 0) {
+        // PRINTFTCM("ddca_get_capabilities_string() branch");
         msgBox->setText(QString::asprintf(
                           "Error reading capabilities string for display %d - %s",
                           dinfo->dispno+1, dinfo->model_name
@@ -247,15 +258,24 @@ void FeaturesScrollAreaView::onModelDdcError(DdcError erec) {
         msgBox->setWindowTitle("DDC Error");
     }
     else {
-        QString detail = erec.repr();
-        // msgBox.setDetailedText(detail);  // detailed text adds details button, not what we want
+        // PRINTFTCM("Normal branch");
+        QString detail = perec->expl();
         // how to position over application?
         msgBox->setText(detail);
         msgBox->setWindowTitle("ddcutil API Error");
    }
+   delete perec;
    msgBox->setIcon(QMessageBox::Warning);
    msgBox->setModal(true);
+   PRINTFTCM("Before msgBox->exec(), thread id=%p", QThread::currentThreadId());
+   // std::cout << "Thread id: " << QThread::currentThreadId() << std::endl;
+   // errorMsgSemaphore.acquire();
+   // PRINTFTCM("acquired semaphore");
    msgBox->exec();
+   // PRINTFTCM("before release semaphore");
+   // errorMsgSemaphore.release();
+   PRINTFTCM("After msgBox->exec(), thread id=%p", QThread::currentThreadId());
+   // std::cout << "Thread id: " << QThread::currentThreadId() << std::endl;
    // msgBox.open();
 }
 

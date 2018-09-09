@@ -9,8 +9,11 @@
 #include "ddcutil_types.h"
 
 #include <QtCore/QString>
+#include <QtCore/QObject>
 
-class DdcError {
+class DdcError: public QObject {
+    Q_OBJECT
+
 public:
    DdcError();
 
@@ -19,6 +22,7 @@ public:
          const char * ddcFunction,
          DDCA_Status  ddcErrno);
 
+   // n. public copy constructor and destructor needed for qRegisterMetaType()
    DdcError(const DdcError& erec);
 
    virtual ~DdcError();
@@ -27,8 +31,41 @@ public:
    DDCA_Status _ddcErrno;
    QString     _ddcFunction;
 
-   QString repr();
-   char *  srepr();
+   virtual QString repr();
+   virtual char *  srepr();
+   virtual QString expl();
+   virtual char *  sexpl();
 };
+
+
+class DdcVerifyError : public DdcError {
+   Q_OBJECT
+
+public:
+   DdcVerifyError(
+         uint8_t      featureCode,
+         const char * ddcFunction,
+         uint8_t      expectedValue,
+         uint8_t      observedValue);
+
+   DdcVerifyError(const DdcVerifyError& erec);
+
+   DdcVerifyError(void);
+
+   virtual ~DdcVerifyError();
+
+   virtual QString repr();
+   virtual QString expl();
+#ifdef NOT_NEEDED
+   virtual char *  srepr();
+   virtual char *  sexpl();
+#endif
+
+   uint8_t  _expectedValue;
+   uint8_t  _observedValue;
+};
+
+ // Q_DECLARE_METATYPE(DdcError*);
+ // Q_DECLARE_METATYPE(DdcVerifyError);
 
 #endif /* DDC_ERROR_H_ */

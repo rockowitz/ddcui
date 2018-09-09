@@ -41,7 +41,7 @@ FeatureValue::FeatureValue(
 //    _value           = val;
 
     assert(_featureCode  == _finfo.feature_code);
-    printf("(FeatureValue::FeatureValue) feature_code=0x%02x, cap_vcp=%p\n", feature_code, cap_vcp);
+    // printf("(FeatureValue::FeatureValue) feature_code=0x%02x, cap_vcp=%p\n", feature_code, cap_vcp);
     fflush(stdout);
 }
 

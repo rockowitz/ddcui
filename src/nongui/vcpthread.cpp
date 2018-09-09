@@ -16,7 +16,7 @@
 
 using namespace std;
 
-static bool debugThread = true;
+static bool debugThread = false;
 
 
 VcpThread::VcpThread(
@@ -42,25 +42,41 @@ void VcpThread::rpt_ddca_status(
       const char * ddca_func_name,
       DDCA_Status  ddcrc)
 {
-    printf("(VcpThread::%s) %s() for feature 0x%02x returned %d - %s\n",
+    PRINTFTCM("In %s(), %s() for feature 0x%02x returned %d - %s",
            caller_name, ddca_func_name, feature_code, ddcrc, ddca_rc_name(ddcrc));
-    fflush(stdout);
 
     // QString msg = "generic error msg";
     // emit signalDdcError(0, msg);
-    DdcError erec(feature_code, ddca_func_name, ddcrc);
+    // DdcError erec(feature_code, ddca_func_name, ddcrc);
+    DdcError* perec = new DdcError(feature_code, ddca_func_name, ddcrc);
+    // printf("(VcpThread::rpt_ddca_status) Woff\n"); fflush(stdout);
+    PRINTFTCM("Built DdcError.  srepr: %s, sexpl: %s", perec->srepr(), perec->sexpl());
     // just call function, no need to signal:
     // postDdcError(erec);
-    _baseModel->onDdcError(erec);
+    _baseModel->onDdcError(perec);
 
     // postError(msg);
     // fflush(stdout);
 }
 
+void VcpThread::rpt_verify_error(
+      uint8_t      featureCode,
+      const char * function,
+      uint8_t      expectedValue,
+      uint8_t      observedValue)
+{
+   PRINTFTCM("featureCode=0x%02x, expectedValue=0x%02x, observedValue=0x%02x", featureCode, expectedValue, observedValue);
+   // DdcVerifyError erec(featureCode, function, expectedValue, observedValue);
+   DdcVerifyError* perec = new DdcVerifyError(featureCode, function, expectedValue, observedValue);
+   // cout << erec.srepr() << endl;
+   // cout << erec.sexpl() << endl;
+   _baseModel->onDdcError(perec);
+}
+
 
 // Process RQCapabilities
 void VcpThread::capabilities() {
-   PRINTFCMF(debugThread, "Starting. dref=%s", ddca_dref_repr(this->_dref));
+   PRINTFTCMF(debugThread, "Starting. dref=%s", ddca_dref_repr(this->_dref));
    DDCA_Display_Handle dh;
    char *              caps = NULL;
    DDCA_Capabilities * parsed_caps = NULL;
@@ -91,13 +107,13 @@ void VcpThread::capabilities() {
    }
    _baseModel->setCapabilities(ddcrc, caps, parsed_caps);
 
-   PRINTFCMF(debugThread, "Done. dref=%s", ddca_dref_repr(this->_dref));
+   PRINTFTCMF(debugThread, "Done. dref=%s", ddca_dref_repr(this->_dref));
 }
 
 
 // Process RQGetVcp
 void VcpThread::getvcp(uint8_t feature_code) {
-    PRINTFCMF(debugThread, "Starting. feature_code=0x%02x", feature_code);
+    PRINTFTCMF(debugThread, "Starting. feature_code=0x%02x", feature_code);
 
     DDCA_Display_Handle                   dh;
     DDCA_Non_Table_Vcp_Value              valrec;
@@ -113,7 +129,7 @@ void VcpThread::getvcp(uint8_t feature_code) {
        _baseModel->setStatusMsg(msg.sprintf("Reading feature 0x%02x",feature_code));
 
         ddcrc = ddca_get_non_table_vcp_value(dh, feature_code, &valrec);
-        PRINTFCMF(debugThread, "feature_code=0x%02x, ddca_get_non_table_vcp_value() returned %d - %s",
+        PRINTFTCMF(debugThread, "feature_code=0x%02x, ddca_get_non_table_vcp_value() returned %d - %s",
                   feature_code, ddcrc, ddca_rc_name(ddcrc));
         if (ddcrc != 0) {
            if (ddcrc != DDCRC_REPORTED_UNSUPPORTED)
@@ -150,26 +166,33 @@ void VcpThread::getvcp(uint8_t feature_code) {
            // how to handle?
         }
     }
-    // PRINTFCMF(debugThread, "Done");
+    // PRINTFTCMF(debugThread, "Done");
 }
 
 
 // Process RQSetVcp
 void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint8_t sl)
 {
-    PRINTFCMF(debugThread,
+    bool debugFunc = debugThread;
+    debugFunc = true;
+    PRINTFTCMF(debugFunc,
               "Starting. feature_code=0x%02x. sl=0x%02x, writeOnly=%s",
               feature_code, sl, sbool(writeOnly));
+
+    rpt_ddca_status(feature_code, __func__, "ddca_bogus", 0);
 
     DDCA_Display_Handle         dh;
     DDCA_Status ddcrc = ddca_open_display(this->_dref, &dh);
     if (ddcrc != 0) {
-        PRINTFCM("ddca_open_display() returned %d", ddcrc);
+        PRINTFTCM("ddca_open_display() returned %d", ddcrc);
         // cout << "ddca_open_display() returned " << ddcrc << endl;
-        // how to handle?
+        rpt_ddca_status(feature_code, __func__, "ddca_open_display", ddcrc);
+        goto bye;
     }
 
-    ddca_enable_verify(!writeOnly);
+    ddca_enable_verify(false);
+    PRINTFTCM( "ddca_is_verify_enabled() returned: %s", sbool( ddca_is_verify_enabled()));
+    // ddca_enable_verify(!writeOnly);
     // uint8_t verified_hi_byte = 0;   // unused
     // uint8_t verified_lo_byte = 0;   // unused
     // need to update mh, ml, use a valrec
@@ -177,52 +200,27 @@ void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint8_t sl)
 
     ddcrc = ddca_set_non_table_vcp_value(dh, feature_code, 0, sl);
     if (ddcrc != 0) {
-        // redundant, rpt_ddca_status() issues message
-        // PRINTFCM("ddca_set_non_table_vcp_value() returned %d - %s", ddcrc, ddca_rc_name(ddcrc));
-        // how to handle?
+        PRINTFTCM("ddca_set_non_table_vcp_value() returned %d - %s", ddcrc, ddca_rc_name(ddcrc));
         rpt_ddca_status(feature_code, __func__, "ddca_set_non_table_vcp_value", ddcrc);
-
-        if (ddcrc == DDCRC_VERIFY) {
-            // PRINTFCM("Verification failed");
-            // read current value
-            // put up dialog box with:
-            //   original valueS
-            //   requested value
-            //   current value
-
-            // Cannot create children for a parent in a different thread
-            // QMessageBox::critical(nullptr, QString("Error"), QString("Verification failed"));
-
-            // undefined reference to VcpThread::postError(Qstring)
-            // emit postError(QString("Verification failed"));
-
-            DDCA_Non_Table_Vcp_Value              valrec;
-            DDCA_Status
-                ddcrc2 = ddca_get_non_table_vcp_value(dh, feature_code, &valrec);
-            if (ddcrc2 != 0) {
+    }
+    else {
+       if (!writeOnly) {
+            DDCA_Non_Table_Vcp_Value  valrec;
+            ddcrc = ddca_get_non_table_vcp_value(dh, feature_code, &valrec);
+            if (ddcrc != 0) {
                 rpt_ddca_status(feature_code, __func__, "ddca_get_nontable_vcp_value", ddcrc);
-                // how to handle?
             }
             else {
-                PRINTFCM("ddca_get_nontable_vcp_value() after DDCRC_VERIFY:");
-                PRINTFCM("  opcode: 0x%02x, mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x",
-                         feature_code, valrec.mh, valrec.ml, valrec.sh, valrec.sl);
-                PRINTFCM("Calling _baseModel->modelVcpValueUpdate() after failed verification");
+                PRINTFTCM("ddca_get_nontable_vcp_value() after ddca_set_non_table_vcp_value():");
+                PRINTFTCM("  opcode: 0x%02x, requested sl=0x%02x, mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x",
+                         feature_code, sl, valrec.mh, valrec.ml, valrec.sh, valrec.sl);
+                if (sl != valrec.sl) {
+                   rpt_verify_error(feature_code, "ddca_set_non_table_vcp_value", sl, valrec.sl);
+                }
+                PRINTFTCM("Calling _baseModel->modelVcpValueUpdate()");
                 _baseModel->modelVcpValueUpdate(feature_code, valrec.sh, valrec.sl);
             }
        }
-    }
-
-    if (ddcrc == 0) {
-        // _baseModel->modelVcpValueSet(feature_code, _dinfo->vcp_version, finfo, &valrec);
-       if (!writeOnly) {
-           PRINTFCMF(debugThread,
-              "Calling _baseModel->modelVcpValueUpdate() after successful call to ddca_non_table_vcp_value()");
-           _baseModel->modelVcpValueUpdate(feature_code, 0, sl);
-       }
-    }
-    else if (ddcrc == DDCRC_VERIFY) {
-      //   _baseModel->modelVcpValueUpdate(feature_code, verified_hi_byte, verified_lo_byte);
     }
 
     ddcrc = ddca_close_display(dh);
@@ -231,13 +229,15 @@ void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint8_t sl)
         // how to handle?
     }
 
+bye:
+   ;
     // printf("(VcpThread::getvcp) Done\n");
 }
 
 
 // Process RQStartInitailLoad
 void VcpThread::startInitialLoad(void) {
-    PRINTFCMF(debugThread, "Executing");
+    PRINTFTCMF(debugThread, "Executing");
     // _baseModel->beginResetModel();
     _baseModel->modelStartInitialLoad();
 #ifdef UNUSED
@@ -249,7 +249,7 @@ void VcpThread::startInitialLoad(void) {
 
 // Process RQEndInitialLoad
 void VcpThread::endInitialLoad(void) {
-    PRINTFCMF(debugThread, "Starting");
+    PRINTFTCMF(debugThread, "Starting");
     // _baseModel->report();
     // _baseModel->endResetModel();
     _baseModel->modelEndInitialLoad();

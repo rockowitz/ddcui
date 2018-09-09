@@ -49,6 +49,8 @@ private:
     // quick and dirty for now, eventually replace by hash
     FeatureWidget * _widgets[256] = {0};
 
+    // QSemaphore  errorMsgSemaphore;
+
 signals:
     void signalVcpRequest(VcpRequest * rqst);  // used to call into monitor
 
@@ -58,6 +60,6 @@ public slots:
     void onUIValueChanged(uint8_t feature_code, bool writeOnly, uint8_t sh, uint8_t sl);
     void onModelValueChanged(const char * caller, uint8_t featureCode, uint8_t sh, uint8_t sl);
     void onNcValuesSourceChanged(NcValuesSource newsrc);
-    void onModelDdcError(DdcError erec);
+    void onModelDdcError(DdcError* perec);
 };
 #endif // FEATURES_SCROLLAREA_VIEW_H

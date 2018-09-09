@@ -271,7 +271,7 @@
 
          centralWidget->setCurrentIndex(0);
 
-         printf("(Ui_MainWindow::setupUi) Calling connectSlotsByName()...\n"); fflush(stdout);
+         // printf("(Ui_MainWindow::setupUi) Calling connectSlotsByName()...\n"); fflush(stdout);
          QMetaObject::connectSlotsByName(MainWindow);
 
          // std::cout << "(setupUi) Done" << std::endl;

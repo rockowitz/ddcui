@@ -44,6 +44,11 @@ private:
           const char * caller_name,
           const char * ddca_func_name,
           int ddcrc);
+    void rpt_verify_error(
+          uint8_t      featureCode,
+          const char * function,
+          uint8_t      expectedValue,
+          uint8_t      observedValue);
 
     DDCA_Display_Ref     _dref;
     DDCA_Display_Info*   _dinfo;

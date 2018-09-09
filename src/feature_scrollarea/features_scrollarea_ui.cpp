@@ -56,6 +56,9 @@ void initFeaturesScrollAreaView(
 
    // requires no-arg constructor, copy constructor
    qRegisterMetaType<DdcError>("DdcError");
+   qRegisterMetaType<DdcError*>("DdcError*");
+   // qRegisterMetaType<DdcVerifyError>("DdcVerifyError");
+   // qRegisterMetaType<DdcError&>();
    QObject::connect(baseModel,     &FeatureBaseModel::signalDdcError,
                     featuresView,  &FeaturesScrollAreaView::onModelDdcError);
 
