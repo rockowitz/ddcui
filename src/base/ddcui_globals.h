@@ -11,6 +11,8 @@
 #include <QtCore/QtCore>
 #include <QtWidgets/QListWidgetItem>
 
+const QString ddcui_version = "0.0.1";
+
 const int FeatureValueRole  = Qt::UserRole+1;  // DisplayRole, EditorRole, .. etc
 
 const int FeatureWidgetType = QListWidgetItem::UserType+1;
@@ -62,7 +64,8 @@ const bool enableAltFeatures = true;
 #endif
 
 
-#define qs2s(_qstr) ( _qstr.toLatin1().data() )
+inline const char * qs2s(QString qstr) {return qstr.toLatin1().data(); }
 
+#define QS2S(_qstr) ( _qstr.toLatin1().data() )
 
 #endif // DDCUI_GLOBALS_H

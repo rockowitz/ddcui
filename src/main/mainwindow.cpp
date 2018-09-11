@@ -839,7 +839,7 @@ void MainWindow::on_actionAbout_triggered()
     // mbox.setText("About ddcutil");
 
     QString msg = "";
-    msg = msg + "ddcui version:    " + "0.0.0" + "\n\n";
+    msg = msg + "ddcui version:    " + ddcui_version   + "\n\n";
     msg = msg + "ddcutil version:  " + ddcutil_version + "\n";
     msg = msg + "   Built with support for ADL connected monitors: " + ans1 + "\n";
     msg = msg + "   Built with support for USB connected monitors: " + ans2;
