@@ -1,4 +1,4 @@
-/* vcpthread.cpp */
+/* msgbox_thread.cpp */
 
 // Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
@@ -59,7 +59,7 @@ void MsgBoxThread::run() {
         PRINTFTCM("After msgBox->exec()");
            // std::cout << "Thread id: " << QThread::currentThreadId() << std::endl;
 #endif
-
+        delete rqst;
     }
 }
 

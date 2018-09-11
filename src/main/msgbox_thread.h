@@ -29,15 +29,10 @@ public slots:
 signals:
     void postSerialMsgBox(QString boxTitle, QString boxText, QMessageBox::Icon boxIcon);
 
-
-
 private:
     QWidget *             _parent;
-
     MsgBoxQueue*          _requestQueue = NULL;
-
     const char *          _cls = "MsgBoxThread";
-
 };
 
 #endif // MSGBOX_THREAD_H

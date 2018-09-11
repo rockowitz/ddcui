@@ -1,4 +1,4 @@
-/* vcprequest.h - MsgBoxQueue and the VcpRequest classes that populate the queue */
+/* msgbox_queue.h - MsgBoxQueue and the MsgBoxQueueEntry class that populates the queue */
 
 // Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
@@ -28,10 +28,9 @@ public:
     QString           _boxText;
     QMessageBox::Icon _boxIcon;
 
-
-
 private:
-    const char * _cls = "MsgBoxQueueEntry";
+    const char *      _cls = "MsgBoxQueueEntry";
+
 };
 
 
