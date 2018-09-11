@@ -32,6 +32,8 @@
 #include "features_scrollarea_view.h"
 #include "features_scrollarea_ui.h"
 
+#include "nongui/msgbox_queue.h"
+
 
 
 // Sets curMonitor->featuresScrollAreaView
@@ -40,15 +42,21 @@
 void initFeaturesScrollAreaView(
       Monitor *         curMonitor,
       FeatureBaseModel* baseModel,
-      QStackedWidget *  stackedWidget)
+      QStackedWidget *  stackedWidget,
+      MsgBoxQueue *     msgboxQueue
+     )
 {
+   printf("(initFeaturesScrollAreaView) Starting\n"); fflush(stdout);
    // printf("(%s) stackedWidget=%p\n", __func__, stackedWidget); fflush(stdout);
+   printf("(%s) msgboxQueue=%p\n", __func__, msgboxQueue); fflush(stdout);
 
    FeaturesScrollAreaView * featuresView =
             new FeaturesScrollAreaView(
                     curMonitor,
                     baseModel,
-                    stackedWidget);
+
+                    stackedWidget,
+                    msgboxQueue);
    curMonitor->_featuresScrollAreaView = featuresView;
 
    QObject::connect(baseModel,          SIGNAL(signalEndInitialLoad()),

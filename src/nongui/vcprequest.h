@@ -84,13 +84,14 @@ public:
     VcpRequest* pop();
 //  VcpRequest* popCondensed();   // future
 
-    QMutex _mutex;
+
 
 // public slots:
     void        put(VcpRequest* request);
 
 private:
     // Monitor* monitor;
+    QMutex _mutex;
 
     QQueue<VcpRequest*> _queue;
     QWaitCondition     _queueNonempty;

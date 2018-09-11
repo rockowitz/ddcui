@@ -179,7 +179,7 @@ void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint8_t sl)
               "Starting. feature_code=0x%02x. sl=0x%02x, writeOnly=%s",
               feature_code, sl, sbool(writeOnly));
 
-    rpt_ddca_status(feature_code, __func__, "ddca_bogus", 0);
+    // rpt_ddca_status(feature_code, __func__, "ddca_bogus", 0);
 
     DDCA_Display_Handle         dh;
     DDCA_Status ddcrc = ddca_open_display(this->_dref, &dh);

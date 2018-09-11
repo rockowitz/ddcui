@@ -9,6 +9,7 @@
 
 #include "feature_scrollarea/features_scrollarea_view.h"
 
+#include <QtCore/QString>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QStackedWidget>
 #include <QtWidgets/QScrollArea>
@@ -27,6 +28,7 @@
 #include "base/debug_utils.h"
 
 #include "nongui/ddc_error.h"
+#include "nongui/msgbox_queue.h"
 
 #include "feature_scrollarea/feature_widget.h"
 #include "feature_scrollarea/feature_widget_header.h"
@@ -41,6 +43,7 @@ FeaturesScrollAreaView::FeaturesScrollAreaView(
         Monitor *          monitor,
         FeatureBaseModel * model,
         QStackedWidget *   centralStackedWidget,
+        MsgBoxQueue *      msgboxQueue,
         QObject *          parent)
     : QObject(parent)
     , _cls(metaObject()->className())
@@ -49,6 +52,8 @@ FeaturesScrollAreaView::FeaturesScrollAreaView(
     , _centralStackedWidget(centralStackedWidget)
     , _curNcValuesSource(NcValuesSourceUnset)
 {
+   _msgboxQueue = msgboxQueue;
+   printf("(FeaturesScrollAreaView::FeaturesScrollAreaView) _msgboxQueue=%p\n", _msgboxQueue); fflush(stdout);
    //  _cls  = metaObject()->className();
    //  _monitor = monitor;
    //  _centralStackedWidget = centralStackedWidget;
@@ -236,19 +241,35 @@ void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc) {
 
 
 void FeaturesScrollAreaView::onModelDdcError(DdcError* perec) {
-    // PRINTFTCM("perec=%p", perec); fflush(stdout);
-    // PRINTFTCM("perec->srepr=%p\n", &perec->srepr);
+    PRINTFTCM("perec=%p, perec->%s", perec, perec->srepr() );
     // std::cout << "typeid(perec):  " << typeid(perec).name()  << std::endl;
     // std::cout << "typeid(*perec): " << typeid(*perec).name() << std::endl;
-    // char * s = perec->srepr();
-    PRINTFTCM("perec=%p, perec->%s", perec, perec->srepr() );   // srepr unsafe
-    // PRINTFTCM("wolf");
 
-    QMessageBox * msgBox = new QMessageBox();
     DDCA_Display_Info * dinfo = _monitor->_displayInfo;
-    // dinfo->mfg_id
-    // dinfo->model_name
-    //  if (strcmp(erec._ddcFunction.toLatin1().data(), "ddca_get_capabilities_string") == 0) {
+
+    QString qstitle = QString("ddcutil_API_Error R:");
+    QString qsexpl  = perec->expl();
+    QMessageBox::Icon icon = QMessageBox::Warning;
+
+    if ( QString::compare(perec->_ddcFunction, QString("ddca_get_capabilities_string")) == 0) {
+        // PRINTFTCM("ddca_get_capabilities_string() branch");
+        qsexpl = QString::asprintf(
+                          "Error reading capabilities string for display %d - %s",
+                          dinfo->dispno+1, dinfo->model_name
+                       );
+        qstitle = "DDC Error R";
+    }
+
+    MsgBoxQueueEntry * qe = new MsgBoxQueueEntry(
+                                   qstitle,
+                                   qsexpl,
+                                   icon);
+    PRINTFTCM("Calling _msgboxQueue.put() for qe: %s", qs2s(qe->repr()));
+    _msgboxQueue->put(qe);
+
+#ifdef OLD
+    QMessageBox * msgBox = new QMessageBox();
+
     if ( QString::compare(perec->_ddcFunction, QString("ddca_get_capabilities_string")) == 0) {
         // PRINTFTCM("ddca_get_capabilities_string() branch");
         msgBox->setText(QString::asprintf(
@@ -268,14 +289,15 @@ void FeaturesScrollAreaView::onModelDdcError(DdcError* perec) {
    msgBox->setIcon(QMessageBox::Warning);
    msgBox->setModal(true);
    PRINTFTCM("Before msgBox->exec(), thread id=%p", QThread::currentThreadId());
-   // std::cout << "Thread id: " << QThread::currentThreadId() << std::endl;
    // errorMsgSemaphore.acquire();
    // PRINTFTCM("acquired semaphore");
-   msgBox->exec();
+   PRINTFTCM("msgBox->exec() disabled");
+   // msgBox->exec();
    // PRINTFTCM("before release semaphore");
    // errorMsgSemaphore.release();
-   PRINTFTCM("After msgBox->exec(), thread id=%p", QThread::currentThreadId());
+   // PRINTFTCM("After msgBox->exec()");
    // std::cout << "Thread id: " << QThread::currentThreadId() << std::endl;
    // msgBox.open();
+#endif
 }
 

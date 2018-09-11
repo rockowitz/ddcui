@@ -25,6 +25,7 @@ class FeatureBaseModel;
 class FeatureSelectionDialog;
 class FeatureSelector;
 class Monitor;
+class MsgBoxQueue;
 class OtherOptionsDialog;
 class OtherOptionsState;
 class QMessageBox;
@@ -72,6 +73,7 @@ public slots:
     void longRunningTaskStart();
     void longRunningTaskEnd();
     void setStatusMsg(QString msg);
+    void showSerialMsgBox(QString title, QString text, QMessageBox::Icon icon);
 
 private slots:
     // View Menu
@@ -135,7 +137,9 @@ private:
     DDCA_Feature_Subset_Id   _feature_list_id = DDCA_SUBSET_KNOWN;
     QVector<VcpThread*>      _vcp_threads;
     WaitingSpinnerWidget*    _spinner;
+    QMessageBox*             _serialMsgBox = nullptr;
     QMessageBox*             _loadingMsgBox;
+    MsgBoxQueue*             _msgboxQueue = nullptr;
 
     FeatureSelectionDialog*  _fsd = NULL;
     OtherOptionsDialog*      _ood = NULL;       // for future use

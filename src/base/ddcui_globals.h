@@ -61,4 +61,8 @@ const bool useApplyCancel    = true;
 const bool enableAltFeatures = true;
 #endif
 
+
+#define qs2s(_qstr) ( _qstr.toLatin1().data() )
+
+
 #endif // DDCUI_GLOBALS_H

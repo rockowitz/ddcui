@@ -1,8 +1,7 @@
 /* mainwindow.cpp */
 
-/* Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
- * SPDX-License-Identifier: GPL-2.0-or-later
- */
+// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "main/mainwindow.h"
 #include <assert.h>
@@ -24,10 +23,12 @@
 #include "base/other_options_state.h"
 
 #include "nongui/vcpthread.h"    // includes vcprequest.h
+#include "nongui/msgbox_queue.h"
 
 #include "monitor_desc/monitor_desc_actions.h"
 #include "monitor_desc/monitor_desc_ui.h"
 
+#include "msgbox_thread.h"
 #include "feature_value_widgets/value_stacked_widget.h"
 #include "mainwindow_ui.h"
 
@@ -97,6 +98,29 @@ MainWindow::MainWindow(QWidget *parent) :
     _ui->mainToolBar->addWidget( toolbarDisplayLabel);
     _ui->mainToolBar->addWidget( _toolbarDisplayCB);
 
+
+    _serialMsgBox = new QMessageBox(this);
+    _serialMsgBox->setStandardButtons(QMessageBox::Ok);
+    _serialMsgBox->setWindowModality(Qt::WindowModal);
+    _serialMsgBox->setModal(true);
+
+    _msgboxQueue = new MsgBoxQueue();
+    PRINTFTCM("_msgboxQueue=%p", _msgboxQueue);
+    MsgBoxThread * msgBoxThread = new MsgBoxThread(this, _msgboxQueue);
+
+    QObject::connect(
+          _serialMsgBox, &QMessageBox::finished,
+          msgBoxThread, &MsgBoxThread::msbgoxClosed
+          );
+    QObject::connect(
+          msgBoxThread, &MsgBoxThread::postSerialMsgBox,
+          this, &MainWindow::showSerialMsgBox
+          );
+
+
+    msgBoxThread->start();
+
+
     // reportWidgetChildren(ui->centralWidget, "Children of centralWidget, before initMonitors():");
     initMonitors();
     _feature_selector   = new FeatureSelector();
@@ -110,12 +134,16 @@ MainWindow::MainWindow(QWidget *parent) :
     qRegisterMetaType<uint8_t>("uint8_t");
 
     qRegisterMetaType<NcValuesSource>("NcValuesSource");
+    qRegisterMetaType<QMessageBox::Icon>("QMessageBox::Icon");
+
 
      QObject::connect(
         this,     &MainWindow::featureSelectionChanged,
         this,     &MainWindow::on_actionFeaturesScrollArea_triggered);
 
      // connect for OtherOptions
+
+
 
 }
 
@@ -124,6 +152,16 @@ MainWindow::~MainWindow()
 {
     delete _ui;
 }
+
+void MainWindow::showSerialMsgBox(QString title, QString text, QMessageBox::Icon icon) {
+   PRINTFTCM("Starting.");
+   _serialMsgBox->setText(text);
+   _serialMsgBox->setWindowTitle(title);
+   _serialMsgBox->setIcon(icon);
+   _serialMsgBox->exec();
+
+}
+
 
 
 void MainWindow::initMonitors() {
@@ -204,10 +242,12 @@ void MainWindow::initMonitors() {
         }
 #endif
 
+        PRINTFTCM("_msgboxQueue=%p", _msgboxQueue);
         initFeaturesScrollAreaView(
               curMonitor,
               baseModel,
-              _ui->centralWidget
+              _ui->centralWidget,
+              _msgboxQueue
               );
 
 
@@ -333,7 +373,7 @@ void MainWindow::on_actionMonitorSummary_triggered()
 
     int monitorNdx = _toolbarDisplayCB->currentIndex();
     DDCA_Display_Info * dinfo = &_dlist->info[monitorNdx];
-    char * s = capture_display_info_report(dinfo);
+    char * s = MonitorDescActions::capture_display_info_report(dinfo);
 
     Monitor * monitor = _monitors[monitorNdx];
     QPlainTextEdit * moninfoPlainText = monitor->_moninfoPlainText;
@@ -369,7 +409,7 @@ void MainWindow::on_actionCapabilities_triggered()
        on_actionMonitorSummary_triggered();
     }
     else {
-       DDCA_Status ddcrc = capture_capabilities_report(monitor, dref, &caps_report);
+       DDCA_Status ddcrc = MonitorDescActions::capture_capabilities_report(monitor, dref, &caps_report);
        if (ddcrc != 0) {
            reportDdcApiError("ddca_open_display", ddcrc);
            PRINTFTCM("capture_capabilites_report returned %d", ddcrc);

@@ -23,6 +23,7 @@
 class QStackedWidget;
 class Monitor;
 class FeaturesScrollAreaContents;
+class MsgBoxQueue;
 
 class FeaturesScrollAreaView : public QObject
 {
@@ -33,6 +34,7 @@ public:
             Monitor *          monitor,    // needed?  complicates dependency order?
             FeatureBaseModel * model,
             QStackedWidget *   centralStackedWidget,
+            MsgBoxQueue *      msgboxQueue,
             QObject *          parent = nullptr);
 
     void freeContents(void);    // private?
@@ -42,6 +44,7 @@ private:
     Monitor *          _monitor;
     FeatureBaseModel * _baseModel;
     QStackedWidget *   _centralStackedWidget;
+    MsgBoxQueue *      _msgboxQueue;
 
     NcValuesSource     _curNcValuesSource;  // how to properly initialize?
     FeaturesScrollAreaContents * _scrollAreaContents = NULL;
