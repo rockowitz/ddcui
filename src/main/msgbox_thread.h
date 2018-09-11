@@ -19,7 +19,6 @@ class MsgBoxThread : public QThread
 
 public:
     MsgBoxThread(
-        QWidget*        parent,   // needed? get from QObject.parent
         MsgBoxQueue    *requestQueue);
     void run() override;
 
@@ -30,7 +29,6 @@ signals:
     void postSerialMsgBox(QString boxTitle, QString boxText, QMessageBox::Icon boxIcon);
 
 private:
-    QWidget *             _parent;
     MsgBoxQueue*          _requestQueue = NULL;
     const char *          _cls = "MsgBoxThread";
 };

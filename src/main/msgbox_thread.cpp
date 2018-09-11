@@ -6,7 +6,6 @@
 #include <iostream>
 #include <string.h>
 
-
 #include <QtCore/QString>
 
 #include "base/ddcui_globals.h"
@@ -14,22 +13,20 @@
 
 using namespace std;
 
-// static bool debugThread = false;
+static bool debugThread = true;
 
 static QSemaphore msgboxSemaphore(1);
 
 
 MsgBoxThread::MsgBoxThread(
-        QWidget*        parent,
         MsgBoxQueue*    requestQueue)
-    : QThread()   // not the cause of cannot create children for a parent thatis in a different thread
-    , _parent(parent)
+    : QThread()
     , _requestQueue(requestQueue)
 {}
 
 
 void MsgBoxThread::msbgoxClosed(int result) {
-   PRINTFTCM("Releasing semaphore");
+   PRINTFTCMF(debugThread, "Releasing semaphore");
    msgboxSemaphore.release();
 }
 
@@ -37,7 +34,7 @@ void MsgBoxThread::msbgoxClosed(int result) {
 void MsgBoxThread::run() {
     forever {
         MsgBoxQueueEntry * rqst = this->_requestQueue->pop();
-        PRINTFTCM("Popped: _boxTitle: %s, _boxText: %s",  qs2s(rqst->_boxTitle), qs2s(rqst->_boxText));
+        PRINTFTCMF(debugThread, "Popped: _boxTitle: %s, _boxText: %s",  qs2s(rqst->_boxTitle), qs2s(rqst->_boxText));
 #ifdef OLD
         QMessageBox * msgBox = new QMessageBox(_parent);
         msgBox->setText(rqst->_boxText);
@@ -48,7 +45,7 @@ void MsgBoxThread::run() {
            // std::cout << "Thread id: " << QThread::currentThreadId() << std::endl;
 #endif
         msgboxSemaphore.acquire();
-        PRINTFTCM("acquired semaphore");
+        PRINTFTCMF(debugThread, "acquired semaphore");
         // cause of "cannot create children for a parent that is in a different thread" ?  Yes
         // msgBox->open();
         emit postSerialMsgBox(rqst->_boxTitle, rqst->_boxText, rqst->_boxIcon);

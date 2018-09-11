@@ -106,7 +106,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     _msgboxQueue = new MsgBoxQueue();
     PRINTFTCM("_msgboxQueue=%p", _msgboxQueue);
-    MsgBoxThread * msgBoxThread = new MsgBoxThread(this, _msgboxQueue);
+    MsgBoxThread * msgBoxThread = new MsgBoxThread(_msgboxQueue);
 
     QObject::connect(
           _serialMsgBox, &QMessageBox::finished,
