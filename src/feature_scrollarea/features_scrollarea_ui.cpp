@@ -46,9 +46,8 @@ void initFeaturesScrollAreaView(
       MsgBoxQueue *     msgboxQueue
      )
 {
-   printf("(initFeaturesScrollAreaView) Starting\n"); fflush(stdout);
    // printf("(%s) stackedWidget=%p\n", __func__, stackedWidget); fflush(stdout);
-   printf("(%s) msgboxQueue=%p\n", __func__, msgboxQueue); fflush(stdout);
+   printf("(%s) Starting. msgboxQueue=%p\n", __func__, msgboxQueue); fflush(stdout);
 
    FeaturesScrollAreaView * featuresView =
             new FeaturesScrollAreaView(

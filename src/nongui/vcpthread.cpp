@@ -191,7 +191,7 @@ void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint8_t sl)
     }
 
     ddca_enable_verify(false);
-    PRINTFTCM( "ddca_is_verify_enabled() returned: %s", sbool( ddca_is_verify_enabled()));
+    // PRINTFTCM( "ddca_is_verify_enabled() returned: %s", sbool( ddca_is_verify_enabled()));
     // ddca_enable_verify(!writeOnly);
     // uint8_t verified_hi_byte = 0;   // unused
     // uint8_t verified_lo_byte = 0;   // unused

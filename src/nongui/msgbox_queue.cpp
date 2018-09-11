@@ -26,7 +26,7 @@ MsgBoxQueueEntry::~MsgBoxQueueEntry()
 
 
 QString MsgBoxQueueEntry::repr() {
-   printf("(MsgBoxQueueEntry::repr)\n"); fflush(stdout);
+   // printf("(MsgBoxQueueEntry::repr)\n"); fflush(stdout);
    QString msg = QString("[title=0x%1, text=%2]")
                     .arg(_boxTitle)
                     .arg(_boxText)
@@ -43,10 +43,11 @@ MsgBoxQueue::MsgBoxQueue()
 }
 
 void MsgBoxQueue::put(MsgBoxQueueEntry * request) {
-   printf("(MsgBoxQueue::put) Starting 0\n"); fflush(stdout);
-    QString r = request->repr();
-    char * s = strdup(qs2s(r));
-    PRINTFTCM("request: %s, about to lock", s);
+    // PRINTFTCM("Starting");
+    // QString r = request->repr();
+    char * s = strdup(qs2s(request->repr()));
+    PRINTFTCM("Starting. request: %s, about to lock", s);
+    free(s);
     _mutex.lock();
     _queue.enqueue(request);
     _queueNonempty.wakeOne();

@@ -50,14 +50,11 @@ FeaturesScrollAreaView::FeaturesScrollAreaView(
     , _monitor(monitor)
     , _baseModel(model)
     , _centralStackedWidget(centralStackedWidget)
+    , _msgboxQueue(msgboxQueue)
     , _curNcValuesSource(NcValuesSourceUnset)
 {
-   _msgboxQueue = msgboxQueue;
-   printf("(FeaturesScrollAreaView::FeaturesScrollAreaView) _msgboxQueue=%p\n", _msgboxQueue); fflush(stdout);
-   //  _cls  = metaObject()->className();
-   //  _monitor = monitor;
-   //  _centralStackedWidget = centralStackedWidget;
-   //  _baseModel = model;
+   // _msgboxQueue = msgboxQueue;
+   PRINTFTCM("Executing. _msgboxQueue=%p", _msgboxQueue);
 }
 
 
@@ -247,7 +244,7 @@ void FeaturesScrollAreaView::onModelDdcError(DdcError* perec) {
 
     DDCA_Display_Info * dinfo = _monitor->_displayInfo;
 
-    QString qstitle = QString("ddcutil_API_Error R:");
+    QString qstitle = QString("ddcutil API Error");
     QString qsexpl  = perec->expl();
     QMessageBox::Icon icon = QMessageBox::Warning;
 
@@ -257,14 +254,14 @@ void FeaturesScrollAreaView::onModelDdcError(DdcError* perec) {
                           "Error reading capabilities string for display %d - %s",
                           dinfo->dispno+1, dinfo->model_name
                        );
-        qstitle = "DDC Error R";
+        qstitle = "DDC Error";
     }
 
     MsgBoxQueueEntry * qe = new MsgBoxQueueEntry(
                                    qstitle,
                                    qsexpl,
                                    icon);
-    PRINTFTCM("Calling _msgboxQueue.put() for qe: %s", qs2s(qe->repr()));
+    // PRINTFTCM("Calling _msgboxQueue.put() for qe: %s", qs2s(qe->repr()));
     _msgboxQueue->put(qe);
 
 #ifdef OLD

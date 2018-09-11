@@ -56,6 +56,7 @@ set(SOURCES
     src/nongui/ddc_error.cpp 
     src/nongui/feature_base_model.cpp 
     src/nongui/feature_value.cpp 
+    src/nongui/msgbox_queue.cpp
     src/nongui/vcprequest.cpp 
     src/nongui/vcpthread.cpp 
 
@@ -86,6 +87,7 @@ set(SOURCES
     src/main/mainwindow_ui.cpp
     src/main/mainwindow.cpp 
     src/main/main.cpp
+    src/main/msgbox_thread.cpp
 )
 
 if (ALT_FEATURES) 

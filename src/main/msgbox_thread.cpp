@@ -25,22 +25,19 @@ MsgBoxThread::MsgBoxThread(
     : QThread()   // not the cause of cannot create children for a parent thatis in a different thread
     , _parent(parent)
     , _requestQueue(requestQueue)
-{
+{}
 
-}
 
 void MsgBoxThread::msbgoxClosed(int result) {
-   PRINTFTCM("Executing");
+   PRINTFTCM("Releasing semaphore");
    msgboxSemaphore.release();
 }
-
-
 
 
 void MsgBoxThread::run() {
     forever {
         MsgBoxQueueEntry * rqst = this->_requestQueue->pop();
-        PRINTFTCM("_boxTitle: %s, _boxText: %s",  qs2s(rqst->_boxTitle), qs2s(rqst->_boxText));
+        PRINTFTCM("Popped: _boxTitle: %s, _boxText: %s",  qs2s(rqst->_boxTitle), qs2s(rqst->_boxText));
 #ifdef OLD
         QMessageBox * msgBox = new QMessageBox(_parent);
         msgBox->setText(rqst->_boxText);

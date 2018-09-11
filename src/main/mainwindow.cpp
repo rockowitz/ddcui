@@ -168,7 +168,7 @@ void MainWindow::initMonitors() {
    //  ui->displaySelectorComboBox->setSizeAdjustPolicy(QComboBox::AdjustToContents);
    //  ui->displaySelectorComboBox->setMinimumContentsLength(28);   // 2 + 3 + 3 + 3 + 13
 
-   longRunningTaskStart();
+    longRunningTaskStart();
     QString msg = QString("Loading display information... ");
     _ui->statusBar->showMessage(msg);
 
@@ -242,7 +242,7 @@ void MainWindow::initMonitors() {
         }
 #endif
 
-        PRINTFTCM("_msgboxQueue=%p", _msgboxQueue);
+        // PRINTFTCM("_msgboxQueue=%p", _msgboxQueue);
         initFeaturesScrollAreaView(
               curMonitor,
               baseModel,
