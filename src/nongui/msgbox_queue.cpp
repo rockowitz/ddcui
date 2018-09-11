@@ -7,7 +7,7 @@
 #include "nongui/msgbox_queue.h"
 
 
-static bool debug = true;
+static bool debug = false;
 
 /* MsgBoxQueueEntry and subclasses */
 

@@ -21,7 +21,6 @@
 #include "nongui/feature_value.h"
 
 
-
 using namespace std;
 
 static bool debugModel = false;
@@ -181,7 +180,7 @@ FeatureBaseModel::modelVcpValueUpdate(
         uint8_t   sl)
 {
     bool debugFunc = debugModel;
-    debugFunc = true;
+    // debugFunc = true;
     PRINTFTCMF(debugFunc, "feature_code=0x%02x, sh=0x%02x, sl=0x%02x", feature_code, sh, sl);
 
     int ndx = modelVcpValueIndex(feature_code);
@@ -213,7 +212,9 @@ void
 FeatureBaseModel::onDdcError(
       DdcError* perec)
 {
-   PRINTFTCM("perec=%p -> %s", perec, perec->srepr() );
+   bool debugFunc = debugModel;
+   // debugFunc = true;
+   PRINTFTCMF(debugFunc, "perec=%p -> %s", perec, qs2s(perec->repr()) );
    // std::cout << "typeid(perec):  " << typeid(perec).name()  << std::endl;
    // std::cout << "typeid(*perec): " << typeid(*perec).name() << std::endl;
    // emit signalModelError(featureCode, msg);
