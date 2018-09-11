@@ -1,11 +1,7 @@
 /* features_scrollarea_view.cpp */
 
-/* <copyright>
- * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
- *
- * SPDX-License-Identifier: GPL-2.0-or-later
- * </copyright>
- */
+// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "feature_scrollarea/features_scrollarea_view.h"
 
@@ -236,7 +232,7 @@ void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc) {
 
 
 void FeaturesScrollAreaView::onModelDdcError(DdcError* perec) {
-    PRINTFTCM("perec=%p, perec->%s", perec, perec->srepr() );
+    PRINTFTCM("perec=%p, perec->%s", perec, qs2s(perec->repr()) );
     // std::cout << "typeid(perec):  " << typeid(perec).name()  << std::endl;
     // std::cout << "typeid(*perec): " << typeid(*perec).name() << std::endl;
 

@@ -11,6 +11,7 @@
 #include <QtCore/QString>
 #include <QtCore/QObject>
 
+
 class DdcError: public QObject {
     Q_OBJECT
 
@@ -56,10 +57,6 @@ public:
 
    virtual QString repr();
    virtual QString expl();
-#ifdef NOT_NEEDED
-   virtual char *  srepr();
-   virtual char *  sexpl();
-#endif
 
    uint8_t  _expectedValue;
    uint8_t  _observedValue;

@@ -50,7 +50,7 @@ void VcpThread::rpt_ddca_status(
     // DdcError erec(feature_code, ddca_func_name, ddcrc);
     DdcError* perec = new DdcError(feature_code, ddca_func_name, ddcrc);
     // printf("(VcpThread::rpt_ddca_status) Woff\n"); fflush(stdout);
-    PRINTFTCM("Built DdcError.  srepr: %s, sexpl: %s", perec->srepr(), perec->sexpl());
+    PRINTFTCM("Built DdcError.  srepr: %s, sexpl: %s", qs2s(perec->repr()), qs2s(perec->expl()));
     // just call function, no need to signal:
     // postDdcError(erec);
     _baseModel->onDdcError(perec);

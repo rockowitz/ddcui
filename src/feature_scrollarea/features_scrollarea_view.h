@@ -1,17 +1,13 @@
 /* features_scrollarea_view.h */
 
-#ifndef FEATURES_SCROLLAREA_VIEW_H
-#define FEATURES_SCROLLAREA_VIEW_H
-
-/* <copyright>
- * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
- *
- * SPDX-License-Identifier: GPL-2.0-or-later
- * </copyright>
- */
+// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// SPDX-License-Identifier: GPL-2.0-or-later
 
 // Manages the scroll area that provides a view onto the current feature settings
 // of a monitor
+
+#ifndef FEATURES_SCROLLAREA_VIEW_H
+#define FEATURES_SCROLLAREA_VIEW_H
 
 #include <QtCore/QObject>
 
@@ -24,6 +20,7 @@ class QStackedWidget;
 class Monitor;
 class FeaturesScrollAreaContents;
 class MsgBoxQueue;
+
 
 class FeaturesScrollAreaView : public QObject
 {

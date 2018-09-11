@@ -6,14 +6,13 @@
 #ifndef MONITOR_DESC_ACTIONS_H_
 #define MONITOR_DESC_ACTIONS_H_
 
-// class MonitorDescActions {
-// };
 
 #include "ddcutil_c_api.h"
 
 #include "base/monitor.h"
 
 namespace MonitorDescActions {
+
 char *
 capture_display_info_report(
       DDCA_Display_Info * dinfo);
