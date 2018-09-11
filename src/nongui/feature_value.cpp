@@ -15,7 +15,6 @@
 #include "nongui/feature_value.h"
 
 
-
 FeatureValue::FeatureValue()
 {
    memset(&_finfo, 0, sizeof(_finfo));  // avoid -Wmissing-field-initializers
