@@ -89,7 +89,6 @@ MainWindow::MainWindow(QWidget *parent) :
                             Qt::FramelessWindowHint | Qt::Dialog);
 #endif
 
-
     QLabel* toolbarDisplayLabel = new QLabel("&Display:  ");
     _toolbarDisplayCB = new QComboBox();
     _toolbarDisplayCB->setObjectName("displaySelectorCombobox");
@@ -105,7 +104,7 @@ MainWindow::MainWindow(QWidget *parent) :
     _serialMsgBox->setModal(true);
 
     _msgboxQueue = new MsgBoxQueue();
-    PRINTFTCM("_msgboxQueue=%p", _msgboxQueue);
+    // PRINTFTCM("_msgboxQueue=%p", _msgboxQueue);
     MsgBoxThread * msgBoxThread = new MsgBoxThread(_msgboxQueue);
 
     QObject::connect(
@@ -116,7 +115,6 @@ MainWindow::MainWindow(QWidget *parent) :
           msgBoxThread, &MsgBoxThread::postSerialMsgBox,
           this, &MainWindow::showSerialMsgBox
           );
-
 
     msgBoxThread->start();
 
@@ -136,14 +134,11 @@ MainWindow::MainWindow(QWidget *parent) :
     qRegisterMetaType<NcValuesSource>("NcValuesSource");
     qRegisterMetaType<QMessageBox::Icon>("QMessageBox::Icon");
 
-
      QObject::connect(
         this,     &MainWindow::featureSelectionChanged,
         this,     &MainWindow::on_actionFeaturesScrollArea_triggered);
 
      // connect for OtherOptions
-
-
 
 }
 
@@ -152,16 +147,6 @@ MainWindow::~MainWindow()
 {
     delete _ui;
 }
-
-void MainWindow::showSerialMsgBox(QString title, QString text, QMessageBox::Icon icon) {
-   PRINTFTCM("Starting.");
-   _serialMsgBox->setText(text);
-   _serialMsgBox->setWindowTitle(title);
-   _serialMsgBox->setIcon(icon);
-   _serialMsgBox->exec();
-
-}
-
 
 
 void MainWindow::initMonitors() {
@@ -726,8 +711,7 @@ void MainWindow::on_actionFeatureSelection_triggered()
 
 void MainWindow::on_actionFeatureSelectionDialog_triggered()
 {
-   //  cout << "(on_actionFeatureSelectionDialog_triggered)" << endl;
-   PRINTFTCM("Executing. _fsd=%p", _fsd);
+   // PRINTFTCM("Executing. _fsd=%p", _fsd);
 
     // FeatureSelectionDialog*
    if (_fsd) {
@@ -798,7 +782,7 @@ void MainWindow::on_actionOtherOptionsDialog_triggered()
 {
      // TODO: allocate once and save dialog, cf feature selection
      // display dialog box for selecting features
-     std::cout << "(on_actionOtherOptionsDialog_triggered)" << std::endl;
+    //  PRINTFTCM("triggered");
 
     OtherOptionsDialog* dialog = new OtherOptionsDialog(this->_otherOptionsState, this);
     QObject::connect(dialog,   &OtherOptionsDialog::ncValuesSourceChanged,
@@ -865,6 +849,7 @@ void MainWindow::on_actionAbout_triggered()
     QMessageBox::about(this, "About ddcui", msg);
 }
 
+
 void MainWindow::on_actionAbout_Qt_triggered()
 {
     QMessageBox::aboutQt(this, "About Qt");
@@ -872,14 +857,24 @@ void MainWindow::on_actionAbout_Qt_triggered()
 
 
 //
-// Misc Slots
+// Miscellaneous Slots
 //
+
+void MainWindow::showSerialMsgBox(QString title, QString text, QMessageBox::Icon icon) {
+   PRINTFTCM("Starting.");
+   _serialMsgBox->setText(text);
+   _serialMsgBox->setWindowTitle(title);
+   _serialMsgBox->setIcon(icon);
+   _serialMsgBox->exec();
+}
+
 
 void MainWindow::showCentralWidgetPage(int pageno) {
    PRINTFTCM("===========> Setting current index, pageno = %d", pageno);
    _ui->centralWidget->setCurrentIndex(pageno);
    _ui->centralWidget->show();
 }
+
 
 void MainWindow::showCentralWidgetByWidget(QWidget * pageWidget) {
    PRINTFTCM("===========> Setting current index, pageWidget object name = %s",
@@ -895,6 +890,7 @@ void MainWindow::showCentralWidgetByWidget(QWidget * pageWidget) {
       _ui->centralWidget->show();
    }
 }
+
 
 #ifdef UNUSED
 void MainWindow::pageChanged(int pageno) {

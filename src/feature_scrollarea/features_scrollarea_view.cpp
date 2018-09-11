@@ -37,7 +37,6 @@
 
 static bool dimensionReportShown = false;
 
-// static QSemaphore errorMsgSemaphore(1);
 
 FeaturesScrollAreaView::FeaturesScrollAreaView(
         Monitor *          monitor,
@@ -53,8 +52,7 @@ FeaturesScrollAreaView::FeaturesScrollAreaView(
     , _msgboxQueue(msgboxQueue)
     , _curNcValuesSource(NcValuesSourceUnset)
 {
-   // _msgboxQueue = msgboxQueue;
-   PRINTFTCM("Executing. _msgboxQueue=%p", _msgboxQueue);
+   // PRINTFTCM("Executing. _msgboxQueue=%p", _msgboxQueue);
 }
 
 
@@ -263,38 +261,5 @@ void FeaturesScrollAreaView::onModelDdcError(DdcError* perec) {
                                    icon);
     // PRINTFTCM("Calling _msgboxQueue.put() for qe: %s", qs2s(qe->repr()));
     _msgboxQueue->put(qe);
-
-#ifdef OLD
-    QMessageBox * msgBox = new QMessageBox();
-
-    if ( QString::compare(perec->_ddcFunction, QString("ddca_get_capabilities_string")) == 0) {
-        // PRINTFTCM("ddca_get_capabilities_string() branch");
-        msgBox->setText(QString::asprintf(
-                          "Error reading capabilities string for display %d - %s",
-                          dinfo->dispno+1, dinfo->model_name
-                       ));
-        msgBox->setWindowTitle("DDC Error");
-    }
-    else {
-        // PRINTFTCM("Normal branch");
-        QString detail = perec->expl();
-        // how to position over application?
-        msgBox->setText(detail);
-        msgBox->setWindowTitle("ddcutil API Error");
-   }
-   delete perec;
-   msgBox->setIcon(QMessageBox::Warning);
-   msgBox->setModal(true);
-   PRINTFTCM("Before msgBox->exec(), thread id=%p", QThread::currentThreadId());
-   // errorMsgSemaphore.acquire();
-   // PRINTFTCM("acquired semaphore");
-   PRINTFTCM("msgBox->exec() disabled");
-   // msgBox->exec();
-   // PRINTFTCM("before release semaphore");
-   // errorMsgSemaphore.release();
-   // PRINTFTCM("After msgBox->exec()");
-   // std::cout << "Thread id: " << QThread::currentThreadId() << std::endl;
-   // msgBox.open();
-#endif
 }
 
