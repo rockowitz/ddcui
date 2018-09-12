@@ -19,7 +19,8 @@ set(CMAKE_AUTORCC ON)
 # ADDITIONAL_MAKE_CLEAN_FILES(  ... )
 
 # Find the QtWidgets library
-find_package(Qt5Widgets)
+# find_package(Qt5Widgets)
+find_package(Qt5 COMPONENTS Core Widgets Gui Help REQUIRED)
 
 # find_package(glib-2.0)
 
