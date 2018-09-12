@@ -61,7 +61,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // _ui(new Ui::MainWindow)
     // , PageChangeObserver()
 {
-   _cls = metaObject()->className();
+    _cls = metaObject()->className();
 
     // _ui->setupUi(this);
 
@@ -70,8 +70,8 @@ MainWindow::MainWindow(QWidget *parent) :
     _spinner = new WaitingSpinnerWidget(
                       Qt::WindowModal,    // alt WindowModal, ApplicationModal, NonModal
                       nullptr,      // parent   - if set to this, spinning widget does not display
-                      true,      // centerOnParent
-                      true);     // disableParentWhenSpinning
+                      true,         // centerOnParent
+                      true);        // disableParentWhenSpinning
     _loadingMsgBox = new QMessageBox(this);
     _loadingMsgBox->setText("Loading...");
     _loadingMsgBox->setStandardButtons(QMessageBox::NoButton);
@@ -97,7 +97,7 @@ MainWindow::MainWindow(QWidget *parent) :
     _ui->mainToolBar->addWidget( toolbarDisplayLabel);
     _ui->mainToolBar->addWidget( _toolbarDisplayCB);
 
-
+    // QMessageBox for displaying error messages, one at a time
     _serialMsgBox = new QMessageBox(this);
     _serialMsgBox->setStandardButtons(QMessageBox::Ok);
     _serialMsgBox->setWindowModality(Qt::WindowModal);
@@ -117,7 +117,6 @@ MainWindow::MainWindow(QWidget *parent) :
           );
 
     msgBoxThread->start();
-
 
     // reportWidgetChildren(ui->centralWidget, "Children of centralWidget, before initMonitors():");
     initMonitors();
@@ -173,11 +172,9 @@ void MainWindow::initMonitors() {
         QString mfg_id     = _dlist->info[ndx].mmid.mfg_id;
         QString model_name = _dlist->info[ndx].mmid.model_name;
 #endif
-        // QString s = QString::number(ndx+1) + ":  " + mfg_id + " - " + model_name;
         QString s = QString::number(ndx+1) + ":  " + model_name;
 
         int monitorNumber = ndx+1;
-        // ui->displaySelectorComboBox->addItem(s, QVariant(ndx+1));
         _toolbarDisplayCB->addItem(s, QVariant(monitorNumber));
 
         // Create Monitor instance, initialize data structures
@@ -235,15 +232,12 @@ void MainWindow::initMonitors() {
               _msgboxQueue
               );
 
-
         QObject::connect(baseModel,  SIGNAL(signalVcpRequest(VcpRequest*)),
                          curMonitor, SLOT(  putVcpRequest(VcpRequest*)));
-
         QObject::connect(baseModel, &FeatureBaseModel::signalStartInitialLoad,
                          this,      &MainWindow::longRunningTaskStart);
         QObject::connect(baseModel, &FeatureBaseModel::signalEndInitialLoad,
                          this,      &MainWindow::longRunningTaskEnd);
-
 
         curMonitor->_baseModel = baseModel;
 
@@ -258,7 +252,7 @@ void MainWindow::initMonitors() {
         _vcp_threads.append(curThread);
 
         // asynchronously get capabilities for current monitor
-        if (_dlist->info[ndx].dispno > 0)      // don't try if known not to support DDC
+        if (_dlist->info[ndx].dispno > 0)      // don't try if monitor known to not support DDC
             curMonitor->_requestQueue->put(new VcpCapRequest());
     }
 
@@ -291,7 +285,6 @@ void MainWindow::initMonitors() {
 }
 
 
-
 void MainWindow::longRunningTaskStart() {
    // needs counter
    PRINTFTCM("Executing");
@@ -299,11 +292,13 @@ void MainWindow::longRunningTaskStart() {
    // _loadingMsgBox->show();
 }
 
+
 void MainWindow::longRunningTaskEnd() {
    PRINTFTCM("Executing");
    _spinner->stop();
    // _loadingMsgBox->hide();
 }
+
 
 void MainWindow::setStatusMsg(QString msg) {
    // printf("(%s::%s) msg: %s\n", _cls, __func__, msg.toLatin1().data());  fflush(stdout);
@@ -429,18 +424,16 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
     _ui->statusBar->showMessage(msg);
 
     DDCA_Feature_List features_to_show = monitor->getFeatureList(_feature_selector->_featureListId);
-
     PRINTFTCMF(debugFeatureLists,
         "features_to_show: %s", ddca_feature_list_string(&features_to_show, NULL, (char*)" "));
 
     if (_feature_selector->_respectCapabilities) {
        // need to test _parsed_caps is valid
+       // n. simply manipulates data structures, does not perform monitor io
        DDCA_Feature_List caps_features =
              ddca_feature_list_from_capabilities(monitor->_baseModel->_parsed_caps);
-
        PRINTFTCMF(debugFeatureLists,
            "Capabilities features: %s", ddca_feature_list_string(&caps_features, NULL, (char*)" "));
-
        features_to_show = ddca_feature_list_and(&features_to_show, &caps_features);
     }
 
@@ -750,7 +743,7 @@ void MainWindow::featureSelectionDone() {
    }
 }
 
-// named for_action... instead of on_action... to not use the connectSlotsByName naming convention
+// named "for_action..." instead of "on_action..." to avoid the connectSlotsByName naming convention
 // FeatureSelectionDialog not allocated at time connectSlotsByName() called, must use
 // explicit connect()
 void MainWindow::for_actionFeatureSelectionDialog_accepted()

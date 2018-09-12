@@ -5,7 +5,7 @@
  */
 
 // Note:  This file cannot be named ui_mainwindow.cpp.
-// The cmake autouic directive tries regards the "ui_" prefix as special.
+// The cmake autouic directive regards the "ui_" prefix as special.
 // If a cpp file starts with "ui_", cmake looks for a corresponding
 // file with extension .ui to process.
 

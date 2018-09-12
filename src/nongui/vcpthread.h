@@ -3,6 +3,10 @@
 // Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+// Thread for performing ddca_ API calls, which can perform I2C IO and so can
+// be slow.  There is one instance of this class, i.e. one thread, for
+// each monitor.
+
 #ifndef VCPTHREAD_H
 #define VCPTHREAD_H
 
@@ -57,9 +61,7 @@ private:
     DDCA_Display_Handle  _dh = NULL;
 
 signals:
-    void postError(QString);
     void postDdcError(DdcError& erec);
-    // void signalStatusMsg(QString msg);
 };
 
 #endif // VCPTHREAD_H

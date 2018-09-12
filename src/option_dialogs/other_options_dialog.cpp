@@ -1,8 +1,7 @@
-/* other_options_dialog.cpp
- *
- * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
- * SPDX-License-Identifier: GPL-2.0-or-later
- */
+// other_options_dialog.cpp
+
+// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "option_dialogs/other_options_dialog.h"
 
@@ -15,7 +14,8 @@
 #include "ui_other_options_dialog.h"
 
 
-void OtherOptionsDialog::setUiSource(NcValuesSource source) {
+void OtherOptionsDialog::setUiSource(NcValuesSource source)
+{
    switch(source) {
    case NcValuesFromCapabilities:
        ui->capabilitiesNcValuesButton->setChecked(true);
@@ -109,5 +109,4 @@ void OtherOptionsDialog::on_buttonBox_clicked(QAbstractButton* button)
       //   }
    }
 }
-
 

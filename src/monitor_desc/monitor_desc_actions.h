@@ -1,4 +1,4 @@
-/* monitor_desc_actions.h */
+// monitor_desc_actions.h
 
 // Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later

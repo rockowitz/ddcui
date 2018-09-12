@@ -1,11 +1,7 @@
-/* other_options_dialog.h */
+// other_options_dialog.h
 
-/* <copyright>
- * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
- *
- * SPDX-License-Identifier: GPL-2.0-or-later
- * </copyright>
- */
+// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef OTHER_OPTIONS_DIALOG_H
 #define OTHER_OPTIONS_DIALOG_H
@@ -39,7 +35,6 @@ private:
     void setUiSource(NcValuesSource source);
 
     Ui::OtherOptionsDialog *ui;
-
     const char * _cls;
     OtherOptionsState * _state;
 };

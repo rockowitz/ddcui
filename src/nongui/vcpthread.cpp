@@ -81,11 +81,9 @@ void VcpThread::capabilities() {
    char *              caps = NULL;
    DDCA_Capabilities * parsed_caps = NULL;
 
-   // need better way to report failure
    DDCA_Status ddcrc = ddca_open_display(this->_dref, &dh);
    if (ddcrc != 0) {
          rpt_ddca_status(0, __func__, "ddca_open_display", ddcrc);
-         // how to handle?
    }
    else {
       ddcrc = ddca_get_capabilities_string(dh, &caps);
@@ -98,11 +96,9 @@ void VcpThread::capabilities() {
             rpt_ddca_status(0, __func__, "ddca_parse_capabilities_string", ddcrc);
       }
 
-      // how to report failure?
       ddcrc = ddca_close_display(dh);
       if (ddcrc != 0) {
           rpt_ddca_status(0, __func__, "ddca_close_display", ddcrc);
-          // how to handle?
       }
    }
    _baseModel->setCapabilities(ddcrc, caps, parsed_caps);
@@ -134,7 +130,6 @@ void VcpThread::getvcp(uint8_t feature_code) {
         if (ddcrc != 0) {
            if (ddcrc != DDCRC_REPORTED_UNSUPPORTED)
             rpt_ddca_status(feature_code, __func__, "ddca_get_nontable_vcp_value", ddcrc);
-            // how to handle?
         }
         else {
             // printf("ddca_get_nontable_vcp_value() returned:\n");
@@ -163,7 +158,6 @@ void VcpThread::getvcp(uint8_t feature_code) {
         ddcrc = ddca_close_display(dh);
         if (ddcrc != 0) {
            rpt_ddca_status(0, __func__, "ddca_close_display", ddcrc);
-           // how to handle?
         }
     }
     // PRINTFTCMF(debugThread, "Done");
@@ -185,7 +179,6 @@ void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint8_t sl)
     DDCA_Status ddcrc = ddca_open_display(this->_dref, &dh);
     if (ddcrc != 0) {
         PRINTFTCM("ddca_open_display() returned %d", ddcrc);
-        // cout << "ddca_open_display() returned " << ddcrc << endl;
         rpt_ddca_status(feature_code, __func__, "ddca_open_display", ddcrc);
         goto bye;
     }
@@ -225,13 +218,13 @@ void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint8_t sl)
 
     ddcrc = ddca_close_display(dh);
     if (ddcrc != 0) {
-        cout << "ddca_close_display() returned " << ddcrc << endl;
-        // how to handle?
+        PRINTFTCM("ddca_close_display() returned %d", ddcrc);
+        rpt_ddca_status(0, __func__, "ddca_close_display", ddcrc);
     }
 
 bye:
    ;
-    // printf("(VcpThread::getvcp) Done\n");
+    // PRINTFTCM("Done");
 }
 
 

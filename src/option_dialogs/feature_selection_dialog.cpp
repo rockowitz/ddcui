@@ -1,8 +1,7 @@
-/* feature_selection_dialog.cpp
- *
- * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
- * SPDX-License-Identifier: GPL-2.0-or-later
- */
+// feature_selection_dialog.cpp
+
+// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <assert.h>
 #include <stdio.h>
@@ -57,6 +56,7 @@ void FeatureSelectionDialog::useSelectorData(FeatureSelector * fsel)
     _ui->show_unsupported_checkBox->setChecked(fsel->_showUnsupportedFeatures);
     _ui->capabilities_checkbox->setChecked(    fsel->_respectCapabilities);
 }
+
 
 void FeatureSelectionDialog::useSelectorData() {
    useSelectorData(_featureSelector);

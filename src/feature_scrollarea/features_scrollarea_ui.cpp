@@ -34,7 +34,6 @@ void initFeaturesScrollAreaView(
             new FeaturesScrollAreaView(
                     curMonitor,
                     baseModel,
-
                     stackedWidget,
                     msgboxQueue);
    curMonitor->_featuresScrollAreaView = featuresView;

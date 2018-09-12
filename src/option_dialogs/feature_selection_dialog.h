@@ -13,8 +13,6 @@
 
 #include "base/feature_selector.h"
 
-// #include "main/mainwindow.h"
-
 
 namespace Ui {
 class FeatureSelectionDialog;
@@ -60,3 +58,4 @@ private:
 };
 
 #endif // FEATURESELECTIONDIALOG_H
+

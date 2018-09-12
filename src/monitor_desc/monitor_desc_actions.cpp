@@ -52,8 +52,7 @@ capture_capabilities_report(
    }
 
    return ddcrc;
-
 }
 
-  }  // namespace MonitorDescActions
+}  // namespace MonitorDescActions
 
