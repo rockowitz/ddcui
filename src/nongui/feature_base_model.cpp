@@ -243,13 +243,17 @@ void
 FeatureBaseModel::setFeatureList(
       DDCA_Feature_List featureList)
 {
+   bool debugFunc = debugFeatureLists;
+   debugFunc = true;
+   PRINTFTCMF(debugFunc, "Starting. Features: %s",
+         ddca_feature_list_string(&featureList, NULL, (char*) " "));
    _featuresToShow = featureList;
 
    DDCA_Feature_List unchecked_features =
          ddca_feature_list_and_not(&_featuresToShow, &_featuresChecked);
 
    if (debugFeatureLists) {
-       PRINTFTCM("Unchecked features: %s",
+       PRINTFTCMF(debugFunc, "Unchecked features: %s",
                 ddca_feature_list_string(&unchecked_features, NULL, (char*) " "));
    }
 
@@ -271,11 +275,33 @@ FeatureBaseModel::setFeatureList(
        }
    }
    _monitor->_requestQueue->put(new VcpEndInitialLoadRequest);
+   PRINTFTCMF(debugFunc, "Done");
 }
 
 
 void FeatureBaseModel::setFeatureChecked(uint8_t featureCode) {
    ddca_feature_list_add(&_featuresChecked, featureCode);
+}
+
+
+void FeatureBaseModel::reloadFeatures() {
+   bool debugFunc = debugFeatureLists;
+   debugFunc = true;
+   PRINTFTCMF(debugFunc, "Starting.");
+
+   _monitor->_requestQueue->put(new VcpStartInitialLoadRequest);
+   int ct = modelVcpValueCount();
+   for (int ndx = 0; ndx < ct; ndx++) {
+      FeatureValue* fv =  modelVcpValueAt(ndx);
+      uint8_t featureCode = fv->featureCode();
+      DDCA_Feature_Flags flags = fv->flags();
+      if (flags & DDCA_RW) {
+         _monitor->_requestQueue->put( new VcpGetRequest(featureCode));
+      }
+      _monitor->_requestQueue->put(new VcpEndInitialLoadRequest);
+   }
+
+   PRINTFTCMF(debugFunc, "Done");
 }
 
 

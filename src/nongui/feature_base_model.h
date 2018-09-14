@@ -67,6 +67,7 @@ public:
 #endif
     void setFeatureList(DDCA_Feature_List featureList);
     void setFeatureChecked(uint8_t featureCode);
+    void reloadFeatures();
 
     // *** Public Member Variables ***
     const char *        _cls;    // className

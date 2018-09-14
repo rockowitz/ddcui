@@ -6,22 +6,22 @@
 #include "feature_scrollarea/features_scrollarea_view.h"
 
 #include <QtCore/QString>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QStackedWidget>
-#include <QtWidgets/QScrollArea>
 #include <QtWidgets/QMessageBox>
+#include <QtWidgets/QScrollArea>
+#include <QtWidgets/QStackedWidget>
+#include <QtWidgets/QVBoxLayout>
 
+#include <iostream>
 #include <stdio.h>
 #include <string.h>
-#include <iostream>
 #include <typeinfo>
 
-#include "base/global_state.h"
-#include "base/other_options_state.h"
-// #include "base/vertical_scroll_area.h"
-#include "base/monitor.h"
 #include "base/ddcui_globals.h"
 #include "base/debug_utils.h"
+#include "base/global_state.h"
+#include "base/monitor.h"
+#include "base/other_options_state.h"
+// #include "base/vertical_scroll_area.h"
 
 #include "nongui/ddc_error.h"
 #include "nongui/msgbox_queue.h"
@@ -154,7 +154,12 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
 }
 
 
-void FeaturesScrollAreaView::onUIValueChanged(uint8_t featureCode, bool writeOnly, uint8_t sh, uint8_t sl) {
+void FeaturesScrollAreaView::onUIValueChanged(
+      uint8_t featureCode,
+      bool    writeOnly,
+      uint8_t sh,
+      uint8_t sl)
+{
    PRINTFTCMF(debugSignals,
              "feature_code = 0x%02x, writeOnly=%s, sh=0x%02x, sl=0x%02x",
              featureCode, sbool(writeOnly), sh, sl);
@@ -167,14 +172,24 @@ void FeaturesScrollAreaView::onUIValueChanged(uint8_t featureCode, bool writeOnl
       VcpRequest * rqst = new VcpSetRequest(featureCode, sl, writeOnly);   // n.b. ignoring sh
       emit signalVcpRequest(rqst);  // used to call into monitor
 
-      if (featureCode == 0x05)  {    // restore factory defaults brightness/contrast
+      // If feature value change affects other features, reread possibly affected features
+      switch(featureCode) {
+      case 0x05:      // restore factory defaults brightness/contrast
          emit signalVcpRequest( new VcpGetRequest(0x10) );
          emit signalVcpRequest( new VcpGetRequest(0x12) );    // what if contrast is unsupported feature?
+         break;
+      case 0x04:      // restore factory defaults
+      case 0x06:      // restore geometry defaults  - treat as restore factory defaults
+      case 0x08:      // restore color defaults     - treat as restore factory defaults
+      case 0x14:      // select color preset        - treat as restore factory defaults
+         _monitor->_baseModel->reloadFeatures();
+         break;
+      default:
+         break;
       }
-      // handle x04  Restore factory defaults
-      //        x06  Restore geometry defaults
-      //        x08  Restore color defaults
    }
+
+   PRINTFTCMF(debugSignals, "Done");
 }
 
 
