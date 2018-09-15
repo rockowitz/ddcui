@@ -12,7 +12,7 @@ class FeatureSelector {
 public:
    //  FeatureSelector();
 
-    DDCA_Feature_Subset_Id _featureListId           = DDCA_SUBSET_COLOR;
+    DDCA_Feature_Subset_Id _featureListId           = DDCA_SUBSET_KNOWN;
     bool                   _showUnsupportedFeatures = false;
     bool                   _includeTableFeatures    = false;
     bool                   _respectCapabilities     = true;
