@@ -4,7 +4,6 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "feature_value_widgets/value_base_widget.h"
-// #include "feature_value_widgets/value_abstract_widget.h"
 
 #include <QtCore/QMargins>
 

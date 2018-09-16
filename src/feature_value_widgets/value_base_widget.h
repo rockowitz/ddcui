@@ -6,32 +6,28 @@
 #ifndef VALUE_BASE_WIDGET_H
 #define VALUE_BASE_WIDGET_H
 
-// #include <QtCore/QSize>
 #include <QtWidgets/QFrame>
 
 #include <ddcutil_c_api.h>
 
 #include "nongui/feature_value.h"
-// #include "feature_value_widgets/value_abstract_widget.h"
 
-class FeatureBaseModel;
 
-class ValueBaseWidget : public QFrame    // ValueAbstractWidget
+class ValueBaseWidget : public QFrame    // was ValueAbstractWidget
 {
     Q_OBJECT
 
 public:
     explicit ValueBaseWidget(QWidget *parent = nullptr);
 
-    virtual void     setFeatureValue(const FeatureValue &fv);   // override;
-    virtual void     setCurrentValue(uint16_t newval);  // override;
-    virtual uint16_t getCurrentValue(); //  override;
+    virtual void     setFeatureValue(const FeatureValue &fv); // override;
+    virtual void     setCurrentValue(uint16_t newval);        // override;
+    virtual uint16_t getCurrentValue();                       // override;
 
     // QSize sizeHint() const override;   //   needed?
 
-
 protected:
-    char * _cls;
+    char *                 _cls;
     uint8_t                _featureCode;
     DDCA_Display_Ref       _dref;
     DDCA_Feature_Metadata  _finfo;
@@ -44,9 +40,7 @@ protected:
 signals:
 // compiler warning: signals may not be declared virtual
 void featureValueChanged(uint8_t feature_code, uint8_t sh, uint8_t sl);
-// virtual void featureValueChanged(uint16_t val);
 
-public slots:
 };
 
 #endif // VALUE_BASE_WIDGET_H
