@@ -694,14 +694,6 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
 
 // Feature Selection slots
 
-#ifdef UNUSED
-void MainWindow::on_actionFeatureSelection_triggered()
-{
-    // display dialog box for selecting features
-    cout << "(on_actionFeatureSelection_triggered)" << endl;
-}
-#endif
-
 void MainWindow::on_actionFeatureSelectionDialog_triggered()
 {
    // PRINTFTCM("Executing. _fsd=%p", _fsd);
@@ -712,20 +704,6 @@ void MainWindow::on_actionFeatureSelectionDialog_triggered()
    }
    else {
         _fsd = new FeatureSelectionDialog(this, this->_feature_selector);
-        // signal not found in FeatureSelectionDialog
-        // now this one is working, why?
-#ifdef WRONG
-        QObject::connect(_fsd,      &FeatureSelectionDialog::accepted,
-                         this,     &MainWindow::for_actionFeatureSelectionDialog_accepted);
-#endif
-#ifdef UNUSED
-       QObject::connect(_fsd,      &FeatureSelectionDialog::destroyed,
-                        this,     &MainWindow::actionFeatureSelectionDialog_destroyed);
-
-       QObject::connect(_fsd,     &FeatureSelectionDialog::featureSelectionAccepted,
-                        this,    &MainWindow::featureSelectionAccepted);
-#endif
-
        QObject::connect(_fsd,     &FeatureSelectionDialog::featureSelectionChanged,
                         this,     &MainWindow::for_actionFeatureSelectionDialog_accepted);
     }
@@ -749,19 +727,6 @@ void MainWindow::for_actionFeatureSelectionDialog_accepted()
       emit featureSelectionChanged();
    }
 }
-
-#ifdef UNUSED
-void MainWindow::actionFeatureSelectionDialog_destroyed(QObject * obj)
-{
-   printf("%s::%s)\n", _cls, __func__);
-}
-#endif
-
-#ifdef UNUSED
-void MainWindow::featureSelectionAccepted(DDCA_Feature_Subset_Id feature_list) {
-   printf("%s::%s) feature_list=%d\n", _cls, __func__, feature_list);
-}
-#endif
 
 
 // OtherOptions slots
