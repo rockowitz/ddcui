@@ -72,7 +72,6 @@ FeatureSelectionDialog::FeatureSelectionDialog(
       _ui(new Ui::FeatureSelectionDialog),
       _featureSelector(featureSelector)
 {
-    // _cls = strdup(metaObject()->className());
     // PRINTFCM("_ui=%p, _featureSelector = %p\n", _ui, _featureSelector);
     _ui->setupUi(this);
     useSelectorData(_featureSelector);
