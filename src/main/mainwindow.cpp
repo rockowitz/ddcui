@@ -734,25 +734,20 @@ void MainWindow::on_actionFeatureSelectionDialog_triggered()
 }
 
 
-void MainWindow::featureSelectionDone() {
-   bool debugFunc = debugSignals || debugFeatureSelection;
-   PRINTFTCMF(debugFunc, "Executing");
-   if (_curView == FeaturesView) {
-      PRINTFTCMF(debugFunc, "Signaling featureSelectionChanged()");
-      emit featureSelectionChanged();
-   }
-}
-
 // named "for_action..." instead of "on_action..." to avoid the connectSlotsByName naming convention
 // FeatureSelectionDialog not allocated at time connectSlotsByName() called, must use
 // explicit connect()
 void MainWindow::for_actionFeatureSelectionDialog_accepted()
 {
-   if (debugFeatureSelection) {
+   bool debugFunc = debugSignals || debugFeatureSelection;
+   if (debugFunc) {
        PRINTFTCM("Executing");
        _feature_selector->dbgrpt();
    }
-   featureSelectionDone();
+   if (_curView == FeaturesView) {
+      PRINTFTCMF(debugFunc, "Signaling featureSelectionChanged()");
+      emit featureSelectionChanged();
+   }
 }
 
 #ifdef UNUSED

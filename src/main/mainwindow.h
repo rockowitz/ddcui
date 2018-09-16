@@ -122,7 +122,6 @@ private slots:
 private:
     void initMonitors();
     void loadMonitorFeatures(Monitor * monitor);
-    void featureSelectionDone();
 
     const char *             _cls;
     // Ui::MainWindow*          _ui;
