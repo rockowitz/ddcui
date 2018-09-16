@@ -130,7 +130,6 @@ DDCA_Feature_Value_Entry * ValueNcWidget::getComboBoxEntries(NcValuesSource mode
    case NcValuesFromMccs:           merge_mode = MccsOnly;      break;
    case NcValuesFromCapabilities:   merge_mode = CapsOnly;      break;
    case NcValuesFromBoth:           merge_mode = CapsPlusMccs;  break;
-   case NcValuesSourceUnset:        merge_mode = CapsPlusMccs;  break;     // correct default?
    }
    entries = ddcutil_merge_feature_values(
              _capVcp,             // DDCA_Cap_Vcp *
@@ -138,8 +137,6 @@ DDCA_Feature_Value_Entry * ValueNcWidget::getComboBoxEntries(NcValuesSource mode
              merge_mode);         // Nc_Values_Merge_Mode
    return entries;
 }
-
-
 
 
 void ValueNcWidget::loadComboBox(NcValuesSource mode) {

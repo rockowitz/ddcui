@@ -289,11 +289,10 @@ void FeatureWidget::dbgrpt() const {
 
 
 void FeatureWidget::onInternalValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl) {
-   PRINTFCMF(debugSignals, "feature_code = 0x%02x, sh=0x%02x, sl=0x%02x\n", featureCode, sh, sl);
+   PRINTFCMF(debugSignals, "feature_code = 0x%02x, sh=0x%02x, sl=0x%02x", featureCode, sh, sl);
    assert(featureCode == _feature_code);
 
    bool writeOnlyFeature = _feature_flags & DDCA_WO;
-
    emit valueChanged(featureCode, writeOnlyFeature, sh, sl);
 }
 
@@ -309,11 +308,11 @@ void FeatureWidget::simpleFeatureValueChanged(SimpleFeatureValue fv) {
 
 bool FeatureWidget::isSimpleNc() {
    bool result = _valueWidget->isSimpleNc();
-   // PRINTFCM("Returning: %s \n", sbool(result));
+   // PRINTFCM("Returning: %s", sbool(result));
    return result;
 }
 
 void FeatureWidget::setNcValuesSource(NcValuesSource newsrc) {
-   PRINTFCM("newsrc = %d-%s \n", newsrc, ncValuesSourceName(newsrc));
+   // PRINTFCM("newsrc = %d-%s", newsrc, ncValuesSourceName(newsrc));
    _valueWidget->setNcValuesSource(newsrc);
 }

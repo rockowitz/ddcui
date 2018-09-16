@@ -13,16 +13,15 @@ typedef enum {
    NcValuesFromMccs,
    NcValuesFromCapabilities,
    NcValuesFromBoth,
-   NcValuesSourceUnset
 } NcValuesSource;
 
 class OtherOptionsState : public QObject {
    Q_OBJECT
 
 public:
-   static const NcValuesSource DefaultNcValuesSource = NcValuesFromMccs;
+   static const NcValuesSource DefaultNcValuesSource = NcValuesFromCapabilities;
 
-   NcValuesSource ncValuesSource = DefaultNcValuesSource;    //  NcValuesFromMccs;
+   NcValuesSource ncValuesSource = DefaultNcValuesSource;
 };
 
 char * ncValuesSourceName(NcValuesSource source) ;

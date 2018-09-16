@@ -14,7 +14,6 @@ ncValuesSourceName(NcValuesSource source)
      case NcValuesFromMccs:         result = (char*) "NcValuesSourceFromMccs";   break;
      case NcValuesFromCapabilities: result = (char*) "NcValuesFromCapabilities"; break;
      case NcValuesFromBoth:         result = (char*) "NcValuesFromBoth";         break;
-     case NcValuesSourceUnset:      result = (char*) "NcValuesSourceUnset";      break;
      }
      return result;
 }

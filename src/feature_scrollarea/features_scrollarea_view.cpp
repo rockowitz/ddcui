@@ -46,7 +46,7 @@ FeaturesScrollAreaView::FeaturesScrollAreaView(
     , _baseModel(model)
     , _centralStackedWidget(centralStackedWidget)
     , _msgboxQueue(msgboxQueue)
-    , _curNcValuesSource(NcValuesSourceUnset)
+    , _curNcValuesSource(OtherOptionsState::DefaultNcValuesSource)  // , _curNcValuesSource(NcValuesSourceUnset)
 {
    // PRINTFTCM("Executing. _msgboxQueue=%p", _msgboxQueue);
 }

@@ -26,8 +26,6 @@ void OtherOptionsDialog::setUiSource(NcValuesSource source)
    case NcValuesFromBoth:
       ui->bothNcValuesButton->setChecked(true);
       break;
-   case NcValuesSourceUnset:
-      assert(false);
    }
 }
 

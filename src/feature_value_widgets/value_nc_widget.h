@@ -55,7 +55,7 @@ private:
     QPushButton *  _applyButton;
     QPushButton *  _cancelButton;
 #endif
-    NcValuesSource _curNcValuesSource = NcValuesSourceUnset;
+    NcValuesSource _curNcValuesSource = OtherOptionsState::DefaultNcValuesSource;
     bool           _guiChange = false;
 
 private slots:
