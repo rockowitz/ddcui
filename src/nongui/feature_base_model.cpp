@@ -127,7 +127,8 @@ void   FeatureBaseModel::modelVcpValueSet(
                    DDCA_Feature_Metadata                metadata,
                    DDCA_Non_Table_Vcp_Value *           feature_value)
 {
-    if (debugModel)
+    bool debugFunc = debugModel;
+    if (debugFunc)
         PRINTFTCM("feature_code=0x%02x, mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x",
                  feature_code, feature_value->mh, feature_value->ml, feature_value->sh, feature_value->sl);
 
@@ -137,8 +138,7 @@ void   FeatureBaseModel::modelVcpValueSet(
     // MAY DO A FULL LOAD MULTIPLE TIMES, E.G if switch table type
     // assert(ndx < 0);
     if (ndx < 0) {
-        if (debugModel)
-            PRINTFTCM("Creating new FeatureValue");
+        PRINTFTCMF(debugFunc, "Creating new FeatureValue");
 
         DDCA_Cap_Vcp * cap_vcp = NULL;
         if (_parsed_caps)
@@ -166,7 +166,7 @@ void   FeatureBaseModel::modelVcpValueSet(
         // fv->_value.sl = feature_value->sl;
         fv->setCurrentValue(feature_value->sh, feature_value->sl);
 
-        PRINTFTCM("Emitting signalFeatureUpdated3(), feature code: 0x%02x, sl: 0x%02x",
+        PRINTFTCMF(debugFunc, "Emitting signalFeatureUpdated3(), feature code: 0x%02x, sl: 0x%02x",
                  fv->featureCode(), feature_value->sl);
         emit signalFeatureUpdated3(__func__, fv->featureCode(), feature_value->sh, feature_value->sl);
     }
@@ -245,7 +245,7 @@ FeatureBaseModel::setFeatureList(
       bool              reportUnsupported)
 {
    bool debugFunc = debugFeatureLists;
-   // debugFunc = true;
+   debugFunc = true;
    PRINTFTCMF(debugFunc, "Starting. Features: %s",
          ddca_feature_list_string(&featureList, NULL, (char*) " "));
    _featuresToShow = featureList;
@@ -258,17 +258,7 @@ FeatureBaseModel::setFeatureList(
                 ddca_feature_list_string(&unchecked_features, NULL, (char*) " "));
    }
 
-#ifdef OLD
-   cout << "Unchecked features: " << endl;
-   for (int ndx = 0; ndx <= 255; ndx++) {
-       if ( ddca_feature_list_contains(&unchecked_features, (uint8_t) ndx))
-           printf("%02x ", ndx);
-   }
-   cout << endl;
-#endif
-
    _monitor->_requestQueue->put(new VcpStartInitialLoadRequest);
-
    for (int ndx = 0; ndx <= 255; ndx++) {
        uint8_t vcp_code = (uint8_t) ndx;
        if ( ddca_feature_list_contains(&unchecked_features, vcp_code)) {
@@ -276,6 +266,7 @@ FeatureBaseModel::setFeatureList(
        }
    }
    _monitor->_requestQueue->put(new VcpEndInitialLoadRequest);
+
    PRINTFTCMF(debugFunc, "Done");
 }
 
@@ -287,7 +278,7 @@ void FeatureBaseModel::setFeatureChecked(uint8_t featureCode) {
 
 void FeatureBaseModel::reloadFeatures() {
    bool debugFunc = debugFeatureLists;
-   debugFunc = true;
+   debugFunc = false;
    PRINTFTCMF(debugFunc, "Starting.");
 
    _monitor->_requestQueue->put(new VcpStartInitialLoadRequest);
@@ -299,8 +290,8 @@ void FeatureBaseModel::reloadFeatures() {
       if (flags & DDCA_RW) {
          _monitor->_requestQueue->put( new VcpGetRequest(featureCode));
       }
-      _monitor->_requestQueue->put(new VcpEndInitialLoadRequest);
    }
+   _monitor->_requestQueue->put(new VcpEndInitialLoadRequest);
 
    PRINTFTCMF(debugFunc, "Done");
 }
@@ -327,7 +318,7 @@ void FeatureBaseModel::dbgrpt() {
 
 
 void  FeatureBaseModel::modelStartInitialLoad(void) {
-    // PRINTFTCM("Emitting signalStartInitialLoad");
+    PRINTFTCM("Emitting signalStartInitialLoad");
     emit signalStartInitialLoad();
 }
 

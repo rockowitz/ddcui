@@ -96,7 +96,9 @@ void FeaturesScrollAreaContents::featureUpdated(char feature_code)
 
 void FeaturesScrollAreaContents::startInitialLoad(void)
 {
-   printf("(%s::%s)\n", _cls, __func__);  fflush(stdout);
+   bool debugFunc = debugWidget;
+   debugFunc = false;
+   PRINTFTCMF(debugFunc, "Executing");
    assert(_containingScrollArea != nullptr);
    // _containingScrollArea->hide();
 
@@ -104,7 +106,9 @@ void FeaturesScrollAreaContents::startInitialLoad(void)
 
 void FeaturesScrollAreaContents::endInitialLoad()
 {
-   PRINTFCMF(debugWidget, "Executing");
+   bool debugFunc = debugWidget;
+   debugFunc = false;
+   PRINTFTCMF(debugFunc, "Executing");
    assert(_containingScrollArea);
 
    emit showCentralWidgetByWidget(_containingScrollArea);
