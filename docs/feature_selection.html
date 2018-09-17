@@ -4,17 +4,18 @@
         <title>Feature Selection (T)</title>
     </head>
     <body>
-        This dialog selects the features to be reported.  The features are specified as a group, and further refined by 
-        one or more filters on that group. 
+        This dialog selects the features to be reported.  The features are specified as a group,
+        and further refined by one or more filters on that group. 
         <br><br>
         The feature groups are: 
         <ul>
             <li>
-                <em>Known</em> - All features defined in the MCCS specification.  
+                <em>Defined</em> - All features defined in the MCCS specification.
+                Includes features in the manufacturer specific range (xe0..xff)
                 Note that the defined features vary by MCCS version, as reported by the monitor.
             </li>
             <li>
-                <em>Scan</em> - Examine all feature codes.
+                <em>Scan</em> - Examine all feature codes. Unimplemented - cannot be checked.
             </li>
             <li>
                 <em>Manufacturer</em> - Examine feature codes in the manufacturer specific range (xe0..xff)
@@ -33,10 +34,11 @@
             </li>
             <li>
                 <em>Include Unsupported Features</em> - Include features that are reported as unspported.
+                Unimplemented - cannot be checked.
             </li>
             <li>
-                <em>Include Table Features</em> - Include features of type Table.  Alwasy unset.  <em>ddcui</em> does not 
-                implement Table type features.
+                <em>Include Table Features</em> - Include features of type Table.  
+                Unimplemented - cannot be checked.
             </li>
         </ul>
 

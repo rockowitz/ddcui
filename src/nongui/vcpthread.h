@@ -38,7 +38,7 @@ public:
     const char * _cls = "VcpThread";
 
 private:
-    void getvcp(uint8_t feature_code);
+    void getvcp(uint8_t feature_code, bool reportUnsupported);
     void setvcp(uint8_t feature_code, bool writeOnly, uint8_t newval);
     void capabilities();
     void startInitialLoad(void);

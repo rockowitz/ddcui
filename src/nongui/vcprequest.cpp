@@ -24,17 +24,18 @@ VcpCapRequest::VcpCapRequest()
 }
 
 
-VcpGetRequest::VcpGetRequest(DDCA_Vcp_Feature_Code feature_code)
+VcpGetRequest::VcpGetRequest(DDCA_Vcp_Feature_Code featureCode, bool reportUnsupported)
     : VcpRequest::VcpRequest(VcpRequestType::RQGetVcp)
-    , _featureCode(feature_code)
+    , _featureCode(featureCode)
+    , _reportUnsupported(reportUnsupported)
 {
     // _featureCode = feature_code;
 }
 
 
-VcpSetRequest::VcpSetRequest(DDCA_Vcp_Feature_Code feature_code, uint8_t newval, bool writeOnly)
+VcpSetRequest::VcpSetRequest(DDCA_Vcp_Feature_Code featureCode, uint8_t newval, bool writeOnly)
     :  VcpRequest::VcpRequest(VcpRequestType::RQSetVcp)
-    , _featureCode(feature_code)
+    , _featureCode(featureCode)
     , _newval(newval)
     , _writeOnly(writeOnly)
 {

@@ -60,21 +60,32 @@
     <item>
      <widget class="QRadioButton" name="known_radioButton">
       <property name="text">
-       <string>&amp;KNOWN - All features defined in MCCS</string>
+       <string>&amp;DEFINED - All features defined in MCCS</string>
       </property>
      </widget>
     </item>
     <item>
      <widget class="QRadioButton" name="scan_radioButton">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="font">
+       <font>
+        <strikeout>false</strikeout>
+       </font>
+      </property>
       <property name="text">
        <string>SCAN - Scan all feature &amp;Values</string>
+      </property>
+      <property name="checkable">
+       <bool>false</bool>
       </property>
      </widget>
     </item>
     <item>
      <widget class="QRadioButton" name="mfg_RadioButton">
       <property name="text">
-       <string>&amp;MANUFACTURER - Manufacturer Specific Features</string>
+       <string>&amp;MANUFACTURER - Manufacturer specific features</string>
       </property>
      </widget>
     </item>
@@ -104,11 +115,19 @@
     </item>
     <item>
      <widget class="QCheckBox" name="show_unsupported_checkBox">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="font">
+       <font>
+        <strikeout>false</strikeout>
+       </font>
+      </property>
       <property name="text">
        <string>Include Unsupported Features</string>
       </property>
       <property name="checkable">
-       <bool>true</bool>
+       <bool>false</bool>
       </property>
      </widget>
     </item>
@@ -119,7 +138,7 @@
       </property>
       <property name="font">
        <font>
-        <strikeout>true</strikeout>
+        <strikeout>false</strikeout>
        </font>
       </property>
       <property name="text">

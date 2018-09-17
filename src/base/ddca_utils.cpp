@@ -38,7 +38,6 @@ find_feature_value_entry(DDCA_Feature_Value_Table sl_values, uint8_t feature_cod
          }
       }
    }
-
    return result;
 }
 
@@ -62,66 +61,78 @@ inline int int_max(int v1, int v2) {
 DDCA_Feature_Value_Table
 ddcutil_merge_feature_values(
       DDCA_Cap_Vcp *             cfr,
-      DDCA_Feature_Value_Table   mccs_table,
-      Nc_Values_Merge_Mode       merge_mode)
+      DDCA_Feature_Value_Table   mccsTable,
+      Nc_Values_Merge_Mode       mergeMode)
 {
-   // printf("(%s) cfr=%p, mccs_table=%p, merge_mode=%d\n",
-   //        __func__, cfr, mccs_table, merge_mode);   fflush(stdout);
+   assert(cfr);
+   assert(mccsTable);
+   bool debug = false;
+   if (debug) {
+      printf("(%s) cfr=%p, mccsTable=%p, mergeMode=%d\n",
+             __func__, cfr, mccsTable, mergeMode);
+      printf("(%s) cfr->feature_code=0x%02x, cfr->value_ct=%d\n",
+             __func__, cfr->feature_code, cfr->value_ct);
+      fflush(stdout);
+   }
    DDCA_Feature_Value_Table result = NULL;
    // int max_entries = (merge_mode == CapsOnly)
    //                        ? cfr->value_ct + 1
    //                        : int_max( cfr->value_ct, feature_value_entry_ct(mccs_table)) + 1;
-   int max_entries = 0;
-   switch(merge_mode) {
+   int maxEntries = 0;
+   switch(mergeMode) {
    case CapsOnly:
-      max_entries = cfr->value_ct + 1;
+      maxEntries = cfr->value_ct + 1;
       break;
    case CapsPlusMccs:
-      max_entries = int_max( cfr->value_ct, feature_value_entry_ct(mccs_table)) + 1;
+      maxEntries = int_max( cfr->value_ct, feature_value_entry_ct(mccsTable)) + 1;
       break;
    case MccsOnly:
-      max_entries =  feature_value_entry_ct(mccs_table) + 1;
+      maxEntries =  feature_value_entry_ct(mccsTable) + 1;
       break;
    }
-   result = (DDCA_Feature_Value_Table) calloc(max_entries, sizeof(DDCA_Feature_Value_Entry));
-   int result_ct = 0;
-   for (int feature_code = 0; feature_code < 256; feature_code++) {
+   result = (DDCA_Feature_Value_Table) calloc(maxEntries, sizeof(DDCA_Feature_Value_Entry));
+   int resultCt = 0;
+   for (int featureCode = 0; featureCode < 256; featureCode++) {
+      // printf("(%s) feature_code=0x%02x\n", __func__, feature_code);
       bool emit = false;
-      bool feature_in_caps = cfr && cap_vcp_contains(cfr, feature_code);
-      DDCA_Feature_Value_Entry * sl_entry = NULL;
-      switch(merge_mode) {
+      bool featureInCaps = cfr && cap_vcp_contains(cfr, featureCode);
+      DDCA_Feature_Value_Entry * slEntry = NULL;
+      switch(mergeMode) {
       case CapsOnly:
-         if (feature_in_caps) {
-            sl_entry = find_feature_value_entry(mccs_table, feature_code);
+         if (featureInCaps) {
+            slEntry = find_feature_value_entry(mccsTable, featureCode);
             emit = true;
          }
          break;
       case CapsPlusMccs:
-         sl_entry = find_feature_value_entry(mccs_table, feature_code);
-         if (feature_in_caps || sl_entry)
+         slEntry = find_feature_value_entry(mccsTable, featureCode);
+         if (featureInCaps || slEntry)
             emit = true;
          break;
       case MccsOnly:
-         sl_entry = find_feature_value_entry(mccs_table, feature_code);
-         if (sl_entry)
+         slEntry = find_feature_value_entry(mccsTable, featureCode);
+         if (slEntry)
             emit = true;
          break;
       }
       if (emit) {
-         result[result_ct].value_code = feature_code;
-         if (sl_entry)
-            result[result_ct].value_name = strdup(sl_entry->value_name);
+         result[resultCt].value_code = featureCode;
+         if (slEntry)
+            result[resultCt].value_name = strdup(slEntry->value_name);
          else
-            result[result_ct].value_name = g_strdup_printf("Value 0x%02x", feature_code);
-         result_ct++;
+            result[resultCt].value_name = g_strdup_printf("Value 0x%02x", featureCode);
+         resultCt++;
       }
    }
-   result[result_ct].value_code = 0x00;
-   result[result_ct].value_name = NULL;
+   result[resultCt].value_code = 0x00;
+   result[resultCt].value_name = NULL;
 
    // Don't assume the values are ordered.
    // Results in a O(n**2) algorithm, but the lists are short.
 
+   if (debug) {
+      printf("(%s) Returning: %p\n", __func__, result); fflush(stdout);
+   }
    return result;
 }
 

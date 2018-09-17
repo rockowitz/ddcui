@@ -423,9 +423,9 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
     QString msg = QString("Reading monitor features...");
     _ui->statusBar->showMessage(msg);
 
-    DDCA_Feature_List features_to_show = monitor->getFeatureList(_feature_selector->_featureListId);
+    DDCA_Feature_List featuresToShow = monitor->getFeatureList(_feature_selector->_featureListId);
     PRINTFTCMF(debugFeatureLists,
-        "features_to_show: %s", ddca_feature_list_string(&features_to_show, NULL, (char*)" "));
+        "features_to_show: %s", ddca_feature_list_string(&featuresToShow, NULL, (char*)" "));
 
     if (_feature_selector->_respectCapabilities) {
        // need to test _parsed_caps is valid
@@ -434,14 +434,14 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
              ddca_feature_list_from_capabilities(monitor->_baseModel->_parsed_caps);
        PRINTFTCMF(debugFeatureLists,
            "Capabilities features: %s", ddca_feature_list_string(&caps_features, NULL, (char*)" "));
-       features_to_show = ddca_feature_list_and(&features_to_show, &caps_features);
+       featuresToShow = ddca_feature_list_and(&featuresToShow, &caps_features);
     }
 
     PRINTFTCMF(debugFeatureLists,
-        "Final features_to_show: %s", ddca_feature_list_string(&features_to_show, NULL, (char*)" "));
+        "Final features_to_show: %s", ddca_feature_list_string(&featuresToShow, NULL, (char*)" "));
 
     // causes async feature reads in VcpThread, then load feature values from model into widgets
-    monitor->_baseModel->setFeatureList(features_to_show);
+    monitor->_baseModel->setFeatureList(featuresToShow, _feature_selector->_showUnsupportedFeatures);
 
     // PRINTFTCM("Done");
 }

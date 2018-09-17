@@ -241,10 +241,11 @@ FeatureBaseModel::mccsVersionSpec()
 
 void
 FeatureBaseModel::setFeatureList(
-      DDCA_Feature_List featureList)
+      DDCA_Feature_List featureList,
+      bool              reportUnsupported)
 {
    bool debugFunc = debugFeatureLists;
-   debugFunc = true;
+   // debugFunc = true;
    PRINTFTCMF(debugFunc, "Starting. Features: %s",
          ddca_feature_list_string(&featureList, NULL, (char*) " "));
    _featuresToShow = featureList;
@@ -271,7 +272,7 @@ FeatureBaseModel::setFeatureList(
    for (int ndx = 0; ndx <= 255; ndx++) {
        uint8_t vcp_code = (uint8_t) ndx;
        if ( ddca_feature_list_contains(&unchecked_features, vcp_code)) {
-           _monitor->_requestQueue->put( new VcpGetRequest(vcp_code));
+           _monitor->_requestQueue->put( new VcpGetRequest(vcp_code, reportUnsupported));
        }
    }
    _monitor->_requestQueue->put(new VcpEndInitialLoadRequest);

@@ -40,10 +40,11 @@ public:
 
 class VcpGetRequest: public VcpRequest {
 public:
-    VcpGetRequest(uint8_t featureCode);
+    VcpGetRequest(uint8_t featureCode, bool reportUnsupported=false);
     ~VcpGetRequest();
 
     DDCA_Vcp_Feature_Code _featureCode;
+    bool                  _reportUnsupported = false;
 };
 
 
