@@ -11,6 +11,8 @@ equals(QT_MAJOR_VERSION,5) {
     lessThan(QT_MINOR_VERSION,5): error("requires Qt 5.5 or later")
 }
 
+CONFIG += c++11
+
 QT += core gui widgets help
 
 TARGET = ddcui
