@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 
 project(ddcui)
 
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CSS_STANDARD_REQUIRED ON)
+
 set(QT5_LIBRARIES Qt5::Widgets )
 
 set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/build/build_cmake)
@@ -29,6 +32,8 @@ find_package (PkgConfig REQUIRED)
 pkg_check_modules(GLIB2 REQUIRED glib-2.0)
 pkg_check_modules(DDCUTIL REQUIRED ddcutil)
 message( STATUS "DDCUTIL_INCLUDE_DIRS:  ${DDCUTIL_INCLUDE_DIRS}" )
+message( STATUS "DDCUTIL_LIBRARY_DIRS:  ${DDCUTIL_LIBRARY_DIRS}" )
+# message( STATUS "DDCUTIL_LIBRARIES:  ${DDCUTIL_LIBRARIES}" )
 
 include_directories(SYSTEM ${Qt5Widgets_INCLUDE_DIRS} ${GLIB2_INCLUDE_DIRS} ${DDCUTIL_INCLUDE_DIRS} )
 
