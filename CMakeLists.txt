@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 project(ddcui)
 
 set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CSS_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(QT5_LIBRARIES Qt5::Widgets )
 
