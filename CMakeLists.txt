@@ -33,7 +33,7 @@ pkg_check_modules(GLIB2 REQUIRED glib-2.0)
 pkg_check_modules(DDCUTIL REQUIRED ddcutil)
 message( STATUS "DDCUTIL_INCLUDE_DIRS:  ${DDCUTIL_INCLUDE_DIRS}" )
 message( STATUS "DDCUTIL_LIBRARY_DIRS:  ${DDCUTIL_LIBRARY_DIRS}" )
-# message( STATUS "DDCUTIL_LIBRARIES:  ${DDCUTIL_LIBRARIES}" )
+message( STATUS "DDCUTIL_LIBRARIES:  ${DDCUTIL_LIBRARIES}" )
 
 include_directories(SYSTEM ${Qt5Widgets_INCLUDE_DIRS} ${GLIB2_INCLUDE_DIRS} ${DDCUTIL_INCLUDE_DIRS} )
 
@@ -136,6 +136,8 @@ target_compile_options(ddcui PUBLIC "-fPIC")
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
 # set_property(TARGET ddcui PROPERTY AUTOUIC)
+
+link_directories($DDCUTIL_LIBRARY_DIRS)
 
 # Use the Widgets module from Qt 5.
 target_link_libraries(ddcui Qt5::Widgets ${GLIB2_LIBRARIES} ${DDCUTIL_LIBRARIES})
