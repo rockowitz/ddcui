@@ -137,7 +137,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
 # set_property(TARGET ddcui PROPERTY AUTOUIC)
 
-link_directories($DDCUTIL_LIBRARY_DIRS)
+link_directories(${DDCUTIL_LIBRARY_DIRS})
 
 # Use the Widgets module from Qt 5.
 target_link_libraries(ddcui Qt5::Widgets ${GLIB2_LIBRARIES} ${DDCUTIL_LIBRARIES})
