@@ -126,8 +126,10 @@ set(UI_SOURCES
     src/option_dialogs/other_options_dialog.ui
    )
 
-# qt5_wrap_ui(UI_GENERATED_HEADERS ${UI_SOURCES})
+# must come before add_executable(): 
+link_directories(${DDCUTIL_LIBRARY_DIRS})
 
+# qt5_wrap_ui(UI_GENERATED_HEADERS ${UI_SOURCES})
 # add_executable(ddcui ${SOURCES} ${UI_GENERATED_HEADERS})
 add_executable(ddcui ${SOURCES})
 
@@ -136,8 +138,6 @@ target_compile_options(ddcui PUBLIC "-fPIC")
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
 # set_property(TARGET ddcui PROPERTY AUTOUIC)
-
-link_directories(${DDCUTIL_LIBRARY_DIRS})
 
 # Use the Widgets module from Qt 5.
 target_link_libraries(ddcui Qt5::Widgets ${GLIB2_LIBRARIES} ${DDCUTIL_LIBRARIES})
