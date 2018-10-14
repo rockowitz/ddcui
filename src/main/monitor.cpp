@@ -52,6 +52,9 @@ Monitor::Monitor(DDCA_Display_Info * display_info, int monitorNumber)
    _page_moninfo     = _page_capabilities     = NULL;
    _pageno_moninfo   = _pageno_capabilities   = 0;
    _moninfoPlainText = _capabilitiesPlainText = NULL;
+
+   // PRINTFCM("End of constructor");
+   // ddca_report_display_info(_displayInfo, 3);
 }
 
 
@@ -68,7 +71,7 @@ void Monitor::dbgrpt() {
 DDCA_Feature_List
 Monitor::getFeatureList(DDCA_Feature_Subset_Id feature_list_id) {
     bool debugFunc = debugFeatureLists;
-    debugFunc = false;
+    // debugFunc = true;
     PRINTFTCMF(debugFunc,
           "feature_list_id=%d-%s",feature_list_id, ddca_feature_list_id_name(feature_list_id));
 
@@ -79,6 +82,8 @@ Monitor::getFeatureList(DDCA_Feature_Subset_Id feature_list_id) {
         result = _features.value(feature_list_id);
     }
     else {
+        // ddca_report_display_info(_displayInfo, 3);
+
         ddcrc = ddca_get_feature_list_by_dref(
                    feature_list_id, _displayInfo->dref, include_table_features, &result);
         PRINTFTCMF(debugFunc, "ddca_get_feature_list_by_dref() returned %d", ddcrc);
