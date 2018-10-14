@@ -11,6 +11,7 @@
 #include <QtWidgets/QPushButton>
 
 #include "config.h"
+#include "base/ddca_utils.h"
 #include "base/other_options_state.h"
 #include "feature_value_widgets/value_base_widget.h"
 
@@ -27,7 +28,7 @@ public:
     uint16_t getCurrentValue() override;
 
     int findItem(uint8_t sl_value);
-    DDCA_Feature_Value_Entry * getComboBoxEntries(NcValuesSource mode);
+    Local_Feature_Value_Table * getComboBoxEntries(NcValuesSource mode);
     void loadComboBox(NcValuesSource mode);
     void reloadComboBox(NcValuesSource newSource);
 

@@ -121,7 +121,7 @@ void ValueNcWidget::setFeatureValue(const FeatureValue &fv) {
  *  @param  mode
  *  @return dynamically allocated feature value table, caller must free
  */
-DDCA_Feature_Value_Entry * ValueNcWidget::getComboBoxEntries(NcValuesSource mode) {
+Local_Feature_Value_Table * ValueNcWidget::getComboBoxEntries(NcValuesSource mode) {
    PRINTFCMF(debugNcValues, "feature 0x%02x, newSource=%d-%s",
                             _featureCode, mode, ncValuesSourceName(mode) );
 
@@ -142,11 +142,12 @@ DDCA_Feature_Value_Entry * ValueNcWidget::getComboBoxEntries(NcValuesSource mode
       capVcp = &dummyCapVcp;
    }
 
-   entries = ddcutil_merge_feature_values(
-             capVcp,              // DDCA_Cap_Vcp *
-             entries,             // DDCA_Feature_Value_Table
-             merge_mode);         // Nc_Values_Merge_Mode
-   return entries;
+   Local_Feature_Value_Table * result =
+      ddcutil_merge_feature_values(
+                capVcp,        // DDCA_Cap_Vcp *, _capVcp or &dummyCapVcp, i.e. feature values from capabilities string
+                entries,       // DDCA_Feature_Value_Table, _finfo.sl_values, i.e. feature values/names from MCCS spec
+                merge_mode);   // Nc_Values_Merge_Mode
+   return result;
 }
 
 
@@ -158,8 +159,8 @@ void ValueNcWidget::loadComboBox(NcValuesSource mode) {
       _cb->removeItem(ndx);
    }
 
-   DDCA_Feature_Value_Entry * table = getComboBoxEntries(mode);
-   DDCA_Feature_Value_Entry * cur = table;
+   Local_Feature_Value_Table * table = getComboBoxEntries(mode);
+   DDCA_Feature_Value_Entry * cur = table->values;
    if (cur) {
        while (cur->value_name) {
            // printf("(%s) value code: 0x%02x, value_name: %s\n",
@@ -170,7 +171,7 @@ void ValueNcWidget::loadComboBox(NcValuesSource mode) {
            cur++;
        }
    }
-   ddcutil_free_dynamic_feature_value_table(table);
+   ddcutil_free_local_feature_value_table(table);
 
    // - set current value in combo box
    int cur_ndx = findItem(_sl);
