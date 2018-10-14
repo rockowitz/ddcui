@@ -6,7 +6,7 @@
 #include <iostream>
 #include <string.h>
 
-#include <ddcutil_status_codes.h>
+#include "ddcutil_status_codes.h"  // using quotes allows Eclipse to find in workspace
 
 #include <QtCore/QString>
 
