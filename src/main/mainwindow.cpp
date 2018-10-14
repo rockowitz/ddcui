@@ -157,7 +157,7 @@ void MainWindow::initMonitors() {
     _ui->statusBar->showMessage(msg);
 
     DDCA_Status ddcrc = ddca_get_display_info_list2(
-                            true,         // include invalid displays?
+                            true,        	// include invalid displays?
                             &_dlist);
     assert(ddcrc == 0);
     for (int ndx = 0; ndx < _dlist->ct; ndx++) {
@@ -180,6 +180,8 @@ void MainWindow::initMonitors() {
         // Create Monitor instance, initialize data structures
         Monitor * curMonitor = new Monitor(&_dlist->info[ndx], monitorNumber);
         _monitors.append(curMonitor);
+        // PRINTFCM("After curMonitor = new Monitor()");
+        // ddca_report_display_info(&_dlist->info[ndx], 3);
 
         curMonitor->_requestQueue = new VcpRequestQueue();
         FeatureBaseModel * baseModel = new FeatureBaseModel(curMonitor);
