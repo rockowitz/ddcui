@@ -4,10 +4,12 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <assert.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <glib-2.0/glib.h>
 
+#include <ddcutil_types.h>
 #include <ddcutil_c_api.h>
 
 #include "ddca_utils.h"
@@ -58,11 +60,11 @@ inline int int_max(int v1, int v2) {
 }
 
 
-DDCA_Feature_Value_Table
+Local_Feature_Value_Table *
 ddcutil_merge_feature_values(
-      DDCA_Cap_Vcp *             cfr,
-      DDCA_Feature_Value_Table   mccsTable,
-      Nc_Values_Merge_Mode       mergeMode)
+      DDCA_Cap_Vcp *             cfr,          // feature values from capabilities
+      DDCA_Feature_Value_Entry * mccsTable,    // feature values/names from MCCS spec
+      Nc_Values_Merge_Mode       mergeMode)    // CapsOnly, CapsPlusMccs, MccsOnly
 {
    assert(cfr);
    assert(mccsTable);
@@ -74,7 +76,7 @@ ddcutil_merge_feature_values(
              __func__, cfr->feature_code, cfr->value_ct);
       fflush(stdout);
    }
-   DDCA_Feature_Value_Table result = NULL;
+   Local_Feature_Value_Table * result = NULL;
    // int max_entries = (merge_mode == CapsOnly)
    //                        ? cfr->value_ct + 1
    //                        : int_max( cfr->value_ct, feature_value_entry_ct(mccs_table)) + 1;
@@ -90,7 +92,11 @@ ddcutil_merge_feature_values(
       maxEntries =  feature_value_entry_ct(mccsTable) + 1;
       break;
    }
-   result = (DDCA_Feature_Value_Table) calloc(maxEntries, sizeof(DDCA_Feature_Value_Entry));
+   int reqd_size = sizeof(Local_Feature_Value_Table) + maxEntries * sizeof(DDCA_Feature_Value_Entry);
+   // printf("(%s) maxEntries = %d, reqd_size = %d\n", __func__, maxEntries, reqd_size); fflush(stdout);
+   // result = (DDCA_Feature_Value_Table) calloc(maxEntries, sizeof(DDCA_Feature_Value_Entry));
+   result = (Local_Feature_Value_Table*) calloc(1,reqd_size);
+   memcpy(result->marker, LOCAL_FEATURE_VALUE_TABLE_MARKER, 4);
    int resultCt = 0;
    for (int featureCode = 0; featureCode < 256; featureCode++) {
       // printf("(%s) feature_code=0x%02x\n", __func__, feature_code);
@@ -116,16 +122,16 @@ ddcutil_merge_feature_values(
          break;
       }
       if (emit) {
-         result[resultCt].value_code = featureCode;
+         result->values[resultCt].value_code = featureCode;
          if (slEntry)
-            result[resultCt].value_name = strdup(slEntry->value_name);
+            result->values[resultCt].value_name = strdup(slEntry->value_name);
          else
-            result[resultCt].value_name = g_strdup_printf("Value 0x%02x", featureCode);
+            result->values[resultCt].value_name = g_strdup_printf("Value 0x%02x", featureCode);
          resultCt++;
       }
    }
-   result[resultCt].value_code = 0x00;
-   result[resultCt].value_name = NULL;
+   result->values[resultCt].value_code = 0x00;
+   result->values[resultCt].value_name = NULL;
 
    // Don't assume the values are ordered.
    // Results in a O(n**2) algorithm, but the lists are short.
@@ -138,14 +144,14 @@ ddcutil_merge_feature_values(
 
 
 void
-ddcutil_free_dynamic_feature_value_table(
-      DDCA_Feature_Value_Table table)
+ddcutil_free_local_feature_value_table(
+      Local_Feature_Value_Table * table)
 {
    // TODO:
    // need a header on the table to indicate whether dynamic and ensure it's actually
    // a DDCA_Feature_Value_Table
    if (table) {
-      DDCA_Feature_Value_Entry * cur = table;
+      DDCA_Feature_Value_Entry * cur = table->values;
       while (cur) {
          if (cur->value_name)
             free(cur->value_name);

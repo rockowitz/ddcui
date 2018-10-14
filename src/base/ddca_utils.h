@@ -14,15 +14,23 @@ typedef enum {
    MccsOnly
 } Nc_Values_Merge_Mode;
 
-DDCA_Feature_Value_Table
+// #define LOCAL_FEATURE_VALUE_TABLE_MARKER0 "LFVT"
+static const char * LOCAL_FEATURE_VALUE_TABLE_MARKER = "LFVT";
+typedef struct {
+   char                       marker[4];
+   unsigned char              flags;
+   DDCA_Feature_Value_Entry   values[0];
+} Local_Feature_Value_Table;
+
+Local_Feature_Value_Table *
 ddcutil_merge_feature_values(
       DDCA_Cap_Vcp *             capabilities_feature_record,
-      DDCA_Feature_Value_Table   mccs_table,
+      DDCA_Feature_Value_Entry * mccs_table,
       Nc_Values_Merge_Mode       merge_mode);
 
 void
-ddcutil_free_dynamic_feature_value_table(
-      DDCA_Feature_Value_Table   table);
+ddcutil_free_local_feature_value_table(
+      Local_Feature_Value_Table *  table);
 
 DDCA_Cap_Vcp *
 ddcutil_find_cap_vcp(
