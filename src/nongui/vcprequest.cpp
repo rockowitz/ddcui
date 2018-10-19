@@ -23,6 +23,12 @@ VcpCapRequest::VcpCapRequest()
 {
 }
 
+LoadDfrRequest::LoadDfrRequest()
+    : VcpRequest::VcpRequest(VcpRequestType::RQLoadDfr)
+{
+}
+
+
 
 VcpGetRequest::VcpGetRequest(DDCA_Vcp_Feature_Code featureCode, bool reportUnsupported)
     : VcpRequest::VcpRequest(VcpRequestType::RQGetVcp)
