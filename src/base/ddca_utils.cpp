@@ -30,7 +30,7 @@ bool cap_vcp_contains(DDCA_Cap_Vcp* cfr, uint8_t feature_code) {
 
 
 DDCA_Feature_Value_Entry *
-find_feature_value_entry(DDCA_Feature_Value_Table sl_values, uint8_t feature_code) {
+find_feature_value_entry(DDCA_Feature_Value_Entry * sl_values, uint8_t feature_code) {
    DDCA_Feature_Value_Entry * result = NULL;
    if (sl_values) {
       for (int ndx = 0; sl_values[ndx].value_name; ndx++) {
@@ -45,7 +45,7 @@ find_feature_value_entry(DDCA_Feature_Value_Table sl_values, uint8_t feature_cod
 
 
 int
-feature_value_entry_ct(DDCA_Feature_Value_Table sl_values) {
+feature_value_entry_ct(DDCA_Feature_Value_Entry * sl_values) {
    int ct = 0;
    if (sl_values) {
       while( sl_values[ct].value_name )

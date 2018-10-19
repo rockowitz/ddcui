@@ -18,7 +18,7 @@ typedef enum {
 static const char * LOCAL_FEATURE_VALUE_TABLE_MARKER = "LFVT";
 typedef struct {
    char                       marker[4];
-   unsigned char              flags;
+   unsigned char              flags;       // for future use, no flags yet defined
    DDCA_Feature_Value_Entry   values[0];
 } Local_Feature_Value_Table;
 
