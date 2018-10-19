@@ -10,9 +10,66 @@
 
 // *** DdcFeatureError ***
 
+DdcError::DdcError()
+   : _ddcErrno(0)
+{}
+
+
+DdcError::DdcError(
+      const char *  ddcFunction,
+      DDCA_Status   ddcErrno)
+    : _ddcErrno(   ddcErrno)
+    , _ddcFunction(QString(ddcFunction))
+{
+    // printf("(DdcError::DdcError) Executing\n"); fflush(stdout);
+}
+
+
+DdcError::DdcError(const DdcError& erec)
+    : QObject()
+    , _ddcErrno(   erec._ddcErrno)
+    , _ddcFunction(erec._ddcFunction)
+{}
+
+
+DdcError::~DdcError() {
+   // TODO Auto-generated destructor stub
+}
+
+
+QString DdcError::repr() {
+   // printf("(DdcError::repr) Executing\n"); fflush(stdout);
+   char * s = ddca_rc_name(_ddcErrno);
+   QString msg = QString("[function=%1, ddcrc=%2 - %3]")
+                    .arg(_ddcFunction)
+                    .arg(_ddcErrno)
+                    .arg(s);
+   return msg;
+}
+
+
+char *  DdcError::srepr() {
+   return strdup(repr().toLatin1().data());
+}
+
+
+QString DdcError::expl() {
+   // printf("(DdcError::expl) Executing\n"); fflush(stdout);
+   return repr();
+}
+
+
+char *  DdcError::sexpl() {
+   return strdup(expl().toLatin1().data());
+}
+
+
+
+// *** DdcFeatureError ***
+
 DdcFeatureError::DdcFeatureError()
-   : _featureCode(0)
-   , _ddcErrno(0)
+   : DdcError()
+   , _featureCode(0)
 {}
 
 
@@ -20,20 +77,19 @@ DdcFeatureError::DdcFeatureError(
       uint8_t       featureCode,
       const char *  ddcFunction,
       DDCA_Status   ddcErrno)
-    : _featureCode(featureCode)
-    , _ddcErrno(   ddcErrno)
-    , _ddcFunction(QString(ddcFunction))
+    : DdcError(ddcFunction, ddcErrno)
+    , _featureCode(featureCode)
 {
     // printf("(DdcFeatureError::DdcFeatureError) Executing\n"); fflush(stdout);
 }
 
 
 DdcFeatureError::DdcFeatureError(const DdcFeatureError& erec)
-    : QObject()
-    , _featureCode(erec._featureCode)
-    , _ddcErrno(   erec._ddcErrno)
-    , _ddcFunction(erec._ddcFunction)
-{}
+{
+    _ddcFunction = erec._ddcFunction;
+    _ddcErrno    = erec._ddcErrno;
+    _featureCode = erec._featureCode;
+}
 
 
 DdcFeatureError::~DdcFeatureError() {
@@ -53,9 +109,6 @@ QString DdcFeatureError::repr() {
 }
 
 
-char *  DdcFeatureError::srepr() {
-   return strdup(repr().toLatin1().data());
-}
 
 
 QString DdcFeatureError::expl() {
@@ -63,10 +116,6 @@ QString DdcFeatureError::expl() {
    return repr();
 }
 
-
-char *  DdcFeatureError::sexpl() {
-   return strdup(expl().toLatin1().data());
-}
 
 
 // *** DdcVerifyError ***

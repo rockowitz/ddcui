@@ -12,7 +12,34 @@
 #include <QtCore/QObject>
 
 
-class DdcFeatureError: public QObject {
+
+class DdcError: public QObject {
+    Q_OBJECT
+
+public:
+   DdcError();
+
+   DdcError(
+         const char * ddcFunction,
+         DDCA_Status  ddcErrno);
+
+   // n. public copy constructor and destructor needed for qRegisterMetaType()
+   DdcError(const DdcError& erec);
+
+   virtual ~DdcError();
+
+   DDCA_Status _ddcErrno;
+   QString     _ddcFunction;
+
+   virtual QString repr();
+   virtual char *  srepr();
+   virtual QString expl();
+   virtual char *  sexpl();
+};
+
+
+
+class DdcFeatureError: public DdcError {
     Q_OBJECT
 
 public:
@@ -29,13 +56,9 @@ public:
    virtual ~DdcFeatureError();
 
    uint8_t     _featureCode;
-   DDCA_Status _ddcErrno;
-   QString     _ddcFunction;
 
    virtual QString repr();
-   virtual char *  srepr();
    virtual QString expl();
-   virtual char *  sexpl();
 };
 
 
