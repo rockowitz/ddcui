@@ -27,7 +27,7 @@ class Monitor;
  *  For alternative (unused) feature views that use QListWidgets etc.
  *  this class is contained in FeatureTableModel etc.
  */
-class FeatureBaseModel : public QObject // , DdcErrorSubject
+class FeatureBaseModel : public QObject // , DdcFeatureErrorSubject
 {
     Q_OBJECT
 
@@ -86,11 +86,11 @@ signals:
     void signalFeatureUpdated3(const char * caller, uint8_t feature_code, uint8_t sh, uint8_t sl);
     void signalVcpRequest(VcpRequest * rqst);  // used to call into monitor
     void signalModelError(uint8_t featureCode, QString msg);
-    void signalDdcError(DdcError* perec);
+    void signalDdcFeatureError(DdcFeatureError* perec);
     void signalStatusMsg(QString msg);
 
 public slots:
-    void onDdcError(DdcError* perec);
+    void onDdcFeatureError(DdcFeatureError* perec);
 
 protected:
 #ifdef FEATURE_CHANGE_OBSERVER

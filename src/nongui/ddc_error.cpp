@@ -8,15 +8,15 @@
 
 #include "ddc_error.h"
 
-// *** DdcError ***
+// *** DdcFeatureError ***
 
-DdcError::DdcError()
+DdcFeatureError::DdcFeatureError()
    : _featureCode(0)
    , _ddcErrno(0)
 {}
 
 
-DdcError::DdcError(
+DdcFeatureError::DdcFeatureError(
       uint8_t       featureCode,
       const char *  ddcFunction,
       DDCA_Status   ddcErrno)
@@ -24,11 +24,11 @@ DdcError::DdcError(
     , _ddcErrno(   ddcErrno)
     , _ddcFunction(QString(ddcFunction))
 {
-    // printf("(DdcError::DdcError) Executing\n"); fflush(stdout);
+    // printf("(DdcFeatureError::DdcFeatureError) Executing\n"); fflush(stdout);
 }
 
 
-DdcError::DdcError(const DdcError& erec)
+DdcFeatureError::DdcFeatureError(const DdcFeatureError& erec)
     : QObject()
     , _featureCode(erec._featureCode)
     , _ddcErrno(   erec._ddcErrno)
@@ -36,13 +36,13 @@ DdcError::DdcError(const DdcError& erec)
 {}
 
 
-DdcError::~DdcError() {
+DdcFeatureError::~DdcFeatureError() {
    // TODO Auto-generated destructor stub
 }
 
 
-QString DdcError::repr() {
-   // printf("(DdcError::repr) Executing\n"); fflush(stdout);
+QString DdcFeatureError::repr() {
+   // printf("(DdcFeatureError::repr) Executing\n"); fflush(stdout);
    char * s = ddca_rc_name(_ddcErrno);
    QString msg = QString("[feature=0x%1, function=%2, ddcrc=%3 - %4]")
                     .arg(_featureCode, 2, 16)
@@ -53,18 +53,18 @@ QString DdcError::repr() {
 }
 
 
-char *  DdcError::srepr() {
+char *  DdcFeatureError::srepr() {
    return strdup(repr().toLatin1().data());
 }
 
 
-QString DdcError::expl() {
-   // printf("(DdcError::expl) Executing\n"); fflush(stdout);
+QString DdcFeatureError::expl() {
+   // printf("(DdcFeatureError::expl) Executing\n"); fflush(stdout);
    return repr();
 }
 
 
-char *  DdcError::sexpl() {
+char *  DdcFeatureError::sexpl() {
    return strdup(expl().toLatin1().data());
 }
 
@@ -76,7 +76,7 @@ DdcVerifyError::DdcVerifyError(
       const char * ddcFunction,
       uint8_t      expectedValue,
       uint8_t      observedValue)
-    : DdcError(featureCode, ddcFunction, DDCRC_VERIFY)
+    : DdcFeatureError(featureCode, ddcFunction, DDCRC_VERIFY)
     , _expectedValue(expectedValue)
     , _observedValue(observedValue)
 {
@@ -85,14 +85,14 @@ DdcVerifyError::DdcVerifyError(
 
 
 DdcVerifyError::DdcVerifyError(const DdcVerifyError& erec)
-    : DdcError(erec)
+    : DdcFeatureError(erec)
     , _expectedValue(erec._expectedValue)
     , _observedValue(erec._observedValue)
 {}
 
 
 DdcVerifyError::DdcVerifyError(void)
-    : DdcError()
+    : DdcFeatureError()
     , _expectedValue(0)
     , _observedValue(0)
 {

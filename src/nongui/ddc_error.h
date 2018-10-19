@@ -12,21 +12,21 @@
 #include <QtCore/QObject>
 
 
-class DdcError: public QObject {
+class DdcFeatureError: public QObject {
     Q_OBJECT
 
 public:
-   DdcError();
+   DdcFeatureError();
 
-   DdcError(
+   DdcFeatureError(
          uint8_t      featureCode,
          const char * ddcFunction,
          DDCA_Status  ddcErrno);
 
    // n. public copy constructor and destructor needed for qRegisterMetaType()
-   DdcError(const DdcError& erec);
+   DdcFeatureError(const DdcFeatureError& erec);
 
-   virtual ~DdcError();
+   virtual ~DdcFeatureError();
 
    uint8_t     _featureCode;
    DDCA_Status _ddcErrno;
@@ -39,7 +39,11 @@ public:
 };
 
 
-class DdcVerifyError : public DdcError {
+
+
+
+
+class DdcVerifyError : public DdcFeatureError {
    Q_OBJECT
 
 public:
@@ -62,7 +66,7 @@ public:
    uint8_t  _observedValue;
 };
 
- // Q_DECLARE_METATYPE(DdcError*);
+ // Q_DECLARE_METATYPE(DdcFeatureError*);
  // Q_DECLARE_METATYPE(DdcVerifyError);
 
 #endif /* DDC_ERROR_H_ */

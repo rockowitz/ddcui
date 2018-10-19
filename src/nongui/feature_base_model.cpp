@@ -209,8 +209,8 @@ FeatureBaseModel::setCapabilities(
 
 
 void
-FeatureBaseModel::onDdcError(
-      DdcError* perec)
+FeatureBaseModel::onDdcFeatureError(
+      DdcFeatureError* perec)
 {
    bool debugFunc = debugModel;
    // debugFunc = true;
@@ -218,7 +218,7 @@ FeatureBaseModel::onDdcError(
    // std::cout << "typeid(perec):  " << typeid(perec).name()  << std::endl;
    // std::cout << "typeid(*perec): " << typeid(*perec).name() << std::endl;
    // emit signalModelError(featureCode, msg);
-   emit  signalDdcError(perec);
+   emit  signalDdcFeatureError(perec);
 }
 
 

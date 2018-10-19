@@ -42,15 +42,15 @@ void initFeaturesScrollAreaView(
                     featuresView,       SLOT(  onEndInitialLoad()));
 
    // requires no-arg constructor, copy constructor
-   qRegisterMetaType<DdcError>("DdcError");
-   qRegisterMetaType<DdcError*>("DdcError*");
+   qRegisterMetaType<DdcFeatureError>("DdcFeatureError");
+   qRegisterMetaType<DdcFeatureError*>("DdcFeatureError*");
    // qRegisterMetaType<DdcVerifyError>("DdcVerifyError");
-   // qRegisterMetaType<DdcError&>();
-   QObject::connect(baseModel,     &FeatureBaseModel::signalDdcError,
-                    featuresView,  &FeaturesScrollAreaView::onModelDdcError);
+   // qRegisterMetaType<DdcFeatureError&>();
+   QObject::connect(baseModel,     &FeatureBaseModel::signalDdcFeatureError,
+                    featuresView,  &FeaturesScrollAreaView::onModelDdcFeatureError);
 
-   // QObject::connect(baseModel,     SIGNAL(signalDdcError( DdcError&)),
-   //                  featuresView,  SLOT(  onModelDdcError(DdcError&)));
+   // QObject::connect(baseModel,     SIGNAL(signalDdcFeatureError( DdcFeatureError&)),
+   //                  featuresView,  SLOT(  onModelDdcFeatureError(DdcFeatureError&)));
 
    // QObject::connect(baseModel,          &FeatureBaseModel::signalEndInitialLoad,
    //                  featuresView,       &FeaturesScrollAreaView::onEndInitialLoad);

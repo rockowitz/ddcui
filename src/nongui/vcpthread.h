@@ -41,6 +41,7 @@ private:
     void getvcp(uint8_t feature_code, bool reportUnsupported);
     void setvcp(uint8_t feature_code, bool writeOnly, uint8_t newval);
     void capabilities();
+    void loadDynamicFeatureRecords();
     void startInitialLoad(void);
     void endInitialLoad(void); 
     void rpt_ddca_status(
@@ -48,6 +49,11 @@ private:
           const char * caller_name,
           const char * ddca_func_name,
           int ddcrc);
+    void rpt_error_detail(
+          DDCA_Error_Detail * erec,
+          const char * caller_name,
+          const char * ddcra_func_name);
+
     void rpt_verify_error(
           uint8_t      featureCode,
           const char * function,
@@ -61,7 +67,7 @@ private:
     DDCA_Display_Handle  _dh = NULL;
 
 signals:
-    void postDdcError(DdcError& erec);
+    void postDdcFeatureError(DdcFeatureError& erec);
 };
 
 #endif // VCPTHREAD_H

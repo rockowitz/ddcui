@@ -7,6 +7,7 @@
 #include <string.h>
 
 #include "ddcutil_status_codes.h"  // using quotes allows Eclipse to find in workspace
+#include "ddcutil_c_api.h"
 
 #include <QtCore/QString>
 
@@ -46,17 +47,29 @@ void VcpThread::rpt_ddca_status(
            caller_name, ddca_func_name, feature_code, ddcrc, ddca_rc_name(ddcrc));
 
     // QString msg = "generic error msg";
-    // emit signalDdcError(0, msg);
-    // DdcError erec(feature_code, ddca_func_name, ddcrc);
-    DdcError* perec = new DdcError(feature_code, ddca_func_name, ddcrc);
+    // emit signalDdcFeatureError(0, msg);
+    // DdcFeatureError erec(feature_code, ddca_func_name, ddcrc);
+    DdcFeatureError* perec = new DdcFeatureError(feature_code, ddca_func_name, ddcrc);
     // printf("(VcpThread::rpt_ddca_status) Woff\n"); fflush(stdout);
-    PRINTFTCM("Built DdcError.  srepr: %s, sexpl: %s", qs2s(perec->repr()), qs2s(perec->expl()));
+    PRINTFTCM("Built DdcFeatureError.  srepr: %s, sexpl: %s", qs2s(perec->repr()), qs2s(perec->expl()));
     // just call function, no need to signal:
-    // postDdcError(erec);
-    _baseModel->onDdcError(perec);
+    // postDdcFeatureError(erec);
+    _baseModel->onDdcFeatureError(perec);
 
     // postError(msg);
     // fflush(stdout);
+}
+
+
+void VcpThread::rpt_error_detail(
+      DDCA_Error_Detail * erec,
+      const char * caller_name,
+      const char * ddca_func_name)
+{
+   PRINTFTCM("In %s(), %s()  returned DDCA_Error_Detail with status %d - %s",
+          caller_name, ddca_func_name, erec->status_code, ddca_rc_name(erec->status_code));
+
+
 }
 
 void VcpThread::rpt_verify_error(
@@ -70,7 +83,36 @@ void VcpThread::rpt_verify_error(
    DdcVerifyError* perec = new DdcVerifyError(featureCode, function, expectedValue, observedValue);
    // cout << erec.srepr() << endl;
    // cout << erec.sexpl() << endl;
-   _baseModel->onDdcError(perec);
+   _baseModel->onDdcFeatureError(perec);
+}
+
+
+void VcpThread::loadDynamicFeatureRecords()
+{
+   PRINTFTCMF(debugThread, "Starting. dref=%s", ddca_dref_repr(this->_dref));
+
+   DDCA_Display_Handle dh;
+
+   DDCA_Status ddcrc = ddca_open_display(this->_dref, &dh);
+   if (ddcrc != 0) {
+       rpt_ddca_status(0, __func__, "ddca_open_display", ddcrc);
+   }
+   else {
+      ddcrc = ddca_dfr_check_by_dh(dh);
+      if (ddcrc != 0) {
+         PRINTFCM("ddca_dfr_check_by_dh() returned %s", ddca_rc_name(ddcrc));
+         DDCA_Error_Detail * erec = ddca_get_error_detail();
+         ddca_report_error_detail(erec, 1);
+         ddca_free_error_detail(erec);
+      }
+
+      ddcrc = ddca_close_display(dh);
+      if (ddcrc != 0) {
+          rpt_ddca_status(0, __func__, "ddca_close_display", ddcrc);
+      }
+   }
+
+   PRINTFTCMF(debugThread, "Done. dref=%s", ddca_dref_repr(this->_dref));
 }
 
 
@@ -86,6 +128,16 @@ void VcpThread::capabilities() {
          rpt_ddca_status(0, __func__, "ddca_open_display", ddcrc);
    }
    else {
+      // TEMPORARY LOCATION - SHOULD BE A SEPARATE RQCheckDFR
+      ddcrc = ddca_dfr_check_by_dh(dh);
+      if (ddcrc != 0) {
+         PRINTFCM("ddca_dfr_check_by_dh() returned %s", ddca_rc_name(ddcrc));
+         DDCA_Error_Detail * erec = ddca_get_error_detail();
+         ddca_report_error_detail(erec, 1);
+         ddca_free_error_detail(erec);
+      }
+
+
       ddcrc = ddca_get_capabilities_string(dh, &caps);
       if (ddcrc != 0) {
          rpt_ddca_status(0, __func__, "ddca_get_capabilities_string", ddcrc);
@@ -281,6 +333,9 @@ void VcpThread::run() {
             break;
         case VcpRequestType::RQCapabilities:
             capabilities();
+            break;
+        case VcpRequestType::RQLoadDfr:
+            loadDynamicFeatureRecords();
             break;
         default:
             cout << "Unexpected request type: " << rqst->_type << endl;

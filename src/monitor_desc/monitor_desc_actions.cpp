@@ -45,7 +45,7 @@ capture_capabilities_report(
        DDCA_Output_Level saved_ol = ddca_get_output_level();
        ddca_set_output_level(DDCA_OL_VERBOSE);
        ddca_start_capture(DDCA_CAPTURE_NOOPTS);
-       ddca_report_parsed_capabilities(parsed_caps, 0);
+       ddca_report_parsed_capabilities_by_dref(parsed_caps, dref, 0);
        char * caps_report = ddca_end_capture();
        ddca_set_output_level(saved_ol);
        *caps_report_loc = caps_report;

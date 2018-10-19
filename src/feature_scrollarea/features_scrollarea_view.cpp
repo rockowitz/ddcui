@@ -248,7 +248,7 @@ void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc) {
 }
 
 
-void FeaturesScrollAreaView::onModelDdcError(DdcError* perec) {
+void FeaturesScrollAreaView::onModelDdcFeatureError(DdcFeatureError* perec) {
     PRINTFTCM("perec=%p, perec->%s", perec, qs2s(perec->repr()) );
     // std::cout << "typeid(perec):  " << typeid(perec).name()  << std::endl;
     // std::cout << "typeid(*perec): " << typeid(*perec).name() << std::endl;
