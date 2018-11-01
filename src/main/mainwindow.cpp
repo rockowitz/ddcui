@@ -758,6 +758,7 @@ void MainWindow::for_actionOtherOptionsDialog_ncValuesSourceChanged(NcValuesSour
       // or emit signal?
       monitor->_featuresScrollAreaView->onNcValuesSourceChanged(valuesSource);
    }
+   PRINTFCM("Done");
 }
 
 #ifdef UNUSED
