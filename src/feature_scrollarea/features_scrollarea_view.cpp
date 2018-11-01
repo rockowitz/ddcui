@@ -161,7 +161,7 @@ void FeaturesScrollAreaView::onUIValueChanged(
       uint8_t sl)
 {
    bool debug = debugSignals;
-   debug = false;
+   // debug = true;
    PRINTFTCMF(debug,
              "feature_code = 0x%02x, writeOnly=%s, sh=0x%02x, sl=0x%02x",
              featureCode, sbool(writeOnly), sh, sl);
@@ -215,7 +215,9 @@ void FeaturesScrollAreaView::onModelValueChanged(
 
 
 void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc) {
-   PRINTFTCMF(debugSignals,
+   bool debugFunc = debugSignals;
+   // debugFunc = true;
+   PRINTFTCMF(debugFunc,
              "newsrc=%d - %s, _curNcValuesSource=%d - %s",
              newsrc,             (char*) ncValuesSourceName(newsrc),
              _curNcValuesSource, (char*) ncValuesSourceName(_curNcValuesSource));
@@ -236,15 +238,16 @@ void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc) {
 
           FeatureWidget * curWidget = dynamic_cast<FeatureWidget*>(curobj);
           if (curWidget) {
-             // printf("(%s::%s) dynamic_cast succeeded\n", _cls, __func__); fflush(stdout);
+             PRINTFCM("dynamic_cast succeeded");
              if (curWidget->isSimpleNc()) {
-                // printf("(%s::%s) feature_code=0x%02x\n", _cls, __func__, curWidget->_feature_code); fflush(stdout);
+                PRINTFCM("feature_code=0x%02x", curWidget->_feature_code);
                 curWidget->setNcValuesSource(newsrc);
              }
           }
       }
       _curNcValuesSource = newsrc;
    }
+   PRINTFCMF(debugFunc, "Done");
 }
 
 

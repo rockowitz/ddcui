@@ -298,4 +298,5 @@ bool FeatureWidget::isSimpleNc() {
 void FeatureWidget::setNcValuesSource(NcValuesSource newsrc) {
    // PRINTFCM("newsrc = %d-%s", newsrc, ncValuesSourceName(newsrc));
    _valueWidget->setNcValuesSource(newsrc);
+   // PRINTFCM("Done");
 }

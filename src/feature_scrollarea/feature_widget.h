@@ -37,6 +37,9 @@ public:
 
     // void simpleFeatureValueChanged(SimpleFeatureValue fv) override;   // SimpleFeatureValueObserver
 
+    uint8_t             _feature_code;
+    QString*            _feature_name;
+
 public slots:
     void onInternalValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl);
 
@@ -48,8 +51,8 @@ private:
 
     const char *        _cls;    // className
 
-    uint8_t             _feature_code;
-    QString*            _feature_name;
+    // uint8_t             _feature_code;
+   //  QString*            _feature_name;
     DDCA_Version_Feature_Flags  _feature_flags;      // uint16_t
 
     QHBoxLayout*        _layout;
