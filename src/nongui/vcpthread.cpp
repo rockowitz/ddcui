@@ -11,6 +11,7 @@
 
 #include <QtCore/QString>
 
+#include "base/ddca_utils.h"
 #include "base/ddcui_globals.h"
 #include "nongui/ddc_error.h"
 #include "nongui/vcpthread.h"
@@ -162,13 +163,13 @@ void VcpThread::capabilities() {
 // Process RQGetVcp
 void VcpThread::getvcp(uint8_t featureCode, bool reportUnsupported) {
     bool debugFunc = debugThread;
-    // debugFunc = true;
+    debugFunc = true;
     PRINTFTCMF(debugFunc, "Starting. featureCode=0x%02x, reportUnsupported=%s",
                             featureCode, sbool(reportUnsupported));
 
     DDCA_Display_Handle                   dh;
     DDCA_Non_Table_Vcp_Value              valrec;
-    DDCA_Feature_Metadata                 finfo;
+    DDCA_Feature_Metadata *               finfo;
 
     DDCA_Status ddcrc = ddca_open_display(this->_dref, &dh);
     if (ddcrc != 0) {
@@ -182,8 +183,10 @@ void VcpThread::getvcp(uint8_t featureCode, bool reportUnsupported) {
         PRINTFTCMF(debugFunc, "feature_code=0x%02x, ddca_get_non_table_vcp_value() returned %d - %s",
                   featureCode, ddcrc, ddca_rc_name(ddcrc));
         if (ddcrc != 0) {
-           if (ddcrc != DDCRC_REPORTED_UNSUPPORTED)
-            rpt_ddca_status(featureCode, __func__, "ddca_get_nontable_vcp_value", ddcrc);
+
+           if (ddcrc != DDCRC_REPORTED_UNSUPPORTED) {
+              rpt_ddca_status(featureCode, __func__, "ddca_get_nontable_vcp_value", ddcrc);
+           }
         }
         else {
             // printf("ddca_get_nontable_vcp_value() returned:\n");
@@ -198,6 +201,12 @@ void VcpThread::getvcp(uint8_t featureCode, bool reportUnsupported) {
                       dh,
                       true,       // create_default_if_not_found
                       &finfo);
+           PRINTFCMF(debugFunc, "ddca_get_feature_metadata_by_dh() for feature 0x%02x returned %d - %s",
+                     featureCode, ddcrc, ddca_rc_name(ddcrc));
+           if (debugFunc && ddcrc == 0) {
+              ddcui_dbgrpt_ddca_feature_metadata(finfo);
+           }
+
            if (ddcrc != 0) {
               rpt_ddca_status(featureCode, __func__, "ddca_get_feature_metadata_by_dh",  ddcrc);
               // cout << "ddca_get_feature_metadata() returned " << ddcrc << endl;
@@ -205,7 +214,7 @@ void VcpThread::getvcp(uint8_t featureCode, bool reportUnsupported) {
         }
 
         if (ddcrc == 0) {
-           _baseModel->modelVcpValueSet(featureCode, this->_dref, finfo, &valrec);
+           _baseModel->modelVcpValueSet(featureCode, this->_dref, *finfo, &valrec);
         }
         _baseModel->setFeatureChecked(featureCode);
 
@@ -214,7 +223,7 @@ void VcpThread::getvcp(uint8_t featureCode, bool reportUnsupported) {
            rpt_ddca_status(0, __func__, "ddca_close_display", ddcrc);
         }
     }
-    // PRINTFTCMF(debugThread, "Done");
+    PRINTFTCMF(debugThread, "Done");
 }
 
 
