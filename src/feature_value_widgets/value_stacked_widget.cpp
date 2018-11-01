@@ -200,5 +200,6 @@ void ValueStackedWidget::setNcValuesSource(NcValuesSource newsrc) {
    if (_pageno_selected == _pageno_nc) {
       _ncWidget->reloadComboBox(newsrc);
    }
+   PRINTFCMF(debugNcValues, "Done");
 }
 

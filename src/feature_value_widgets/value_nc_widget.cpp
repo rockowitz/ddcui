@@ -201,6 +201,7 @@ void ValueNcWidget::reloadComboBox(NcValuesSource newSource) {
 
       _curNcValuesSource = newSource;
    }
+   PRINTFCMF(debugNcValues, "Done");
 }
 
 void ValueNcWidget::setCurrentValue(uint16_t newval) {

@@ -82,11 +82,13 @@ void ValueStdWidget::setValueField() {
     valrec.ml = _ml;
     valrec.sh = _sh;
     valrec.sl = _sl;
+    // PRINTFCM("Before calling ddca_format_non_table_vcp_value_by_dref() _featureCode=0x%02x", _featureCode);
     DDCA_Status rc = ddca_format_non_table_vcp_value_by_dref(
           _featureCode,
           _dref,
           &valrec,
           &s_formatted);
+    // PRINTFCM("ddca_format_non_table_vcp_value_by_dref() returned %d, s_formatted=%s", rc, s_formatted);
     if (rc != 0)
         s_formatted = (char*) "invalid formatted value";   // cast to avoid compiler warning
 
