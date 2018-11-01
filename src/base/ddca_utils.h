@@ -14,6 +14,10 @@ typedef enum {
    MccsOnly
 } Nc_Values_Merge_Mode;
 
+
+void ddcui_dbgrpt_ddca_feature_metadata(
+      DDCA_Feature_Metadata * meta);
+
 // #define LOCAL_FEATURE_VALUE_TABLE_MARKER0 "LFVT"
 static const char * LOCAL_FEATURE_VALUE_TABLE_MARKER = "LFVT";
 typedef struct {
