@@ -43,10 +43,6 @@ set(ALT_FEATURES OFF)
 # set(COVERITY_DUMMIES OFF)
 configure_file(cconfig.h.in config.h)
 
-# -j is a parm passed to make, not a compiler option
-# set( CMAKE_CXX_FLAGS "${$CMAKE_CXX_FLAGS} -j 5")
-# add_compile_options("-j 5")
-
 
 include_directories(src)
 
