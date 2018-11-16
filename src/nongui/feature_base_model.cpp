@@ -124,7 +124,7 @@ int FeatureBaseModel::modelVcpValueCount(void) const {
 void   FeatureBaseModel::modelVcpValueSet(
                    uint8_t                              feature_code,
                    DDCA_Display_Ref                     dref,
-                   DDCA_Feature_Metadata                metadata,
+                   DDCA_Feature_Metadata *              metadata,
                    DDCA_Non_Table_Vcp_Value *           feature_value)
 {
     bool debugFunc = debugModel;

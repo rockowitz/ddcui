@@ -163,7 +163,7 @@ void VcpThread::capabilities() {
 // Process RQGetVcp
 void VcpThread::getvcp(uint8_t featureCode, bool reportUnsupported) {
     bool debugFunc = debugThread;
-    debugFunc = true;
+    debugFunc = false;
     PRINTFTCMF(debugFunc, "Starting. featureCode=0x%02x, reportUnsupported=%s",
                             featureCode, sbool(reportUnsupported));
 
@@ -214,7 +214,7 @@ void VcpThread::getvcp(uint8_t featureCode, bool reportUnsupported) {
         }
 
         if (ddcrc == 0) {
-           _baseModel->modelVcpValueSet(featureCode, this->_dref, *finfo, &valrec);
+           _baseModel->modelVcpValueSet(featureCode, this->_dref, finfo, &valrec);
         }
         _baseModel->setFeatureChecked(featureCode);
 

@@ -17,14 +17,15 @@
 
 FeatureValue::FeatureValue()
 {
-   memset(&_finfo, 0, sizeof(_finfo));  // avoid -Wmissing-field-initializers
+   // memset(&_finfo, 0, sizeof(_finfo));  // avoid -Wmissing-field-initializers
+   _finfo = nullptr;
    _value.mh = _value.ml = _value.sh = _value.sl = 0;
 }
 
 FeatureValue::FeatureValue(
         uint8_t                  feature_code,
         DDCA_Display_Ref         dref,
-        DDCA_Feature_Metadata    finfo,
+        DDCA_Feature_Metadata *  finfo,
         DDCA_Cap_Vcp *           cap_vcp,
         DDCA_Non_Table_Vcp_Value val)
     : _featureCode(feature_code)
@@ -39,14 +40,14 @@ FeatureValue::FeatureValue(
 //    _cap_vcp         = cap_vcp;
 //    _value           = val;
 
-    assert(_featureCode  == _finfo.feature_code);
+    assert(_featureCode  == _finfo->feature_code);
     // printf("(FeatureValue::FeatureValue) feature_code=0x%02x, cap_vcp=%p\n", feature_code, cap_vcp);
     fflush(stdout);
 }
 
 FeatureValue::~FeatureValue() {
    ddca_free_display_ref(_dref);    // n. not checking return code
-   ddca_free_feature_metadata_contents(_finfo);
+   ddca_free_feature_metadata(_finfo);
 }
 
 
@@ -64,14 +65,14 @@ FeatureValue::dref()   const {
 //    return _finfo.vspec;
 // }
 
-DDCA_Feature_Metadata
+DDCA_Feature_Metadata *
 FeatureValue::finfo() const {
    return _finfo;
 }
 
 DDCA_Feature_Flags
 FeatureValue::flags() const {
-   return _finfo.feature_flags;
+   return _finfo->feature_flags;
 }
 
 DDCA_Cap_Vcp * FeatureValue::capVcp() const {
@@ -108,15 +109,15 @@ FeatureValue::setCurrentValue(uint16_t newval) {
 
 void FeatureValue::dbgrpt() const {
     printf("(FeatureValue::report) FeatureValue:\n");
-    printf("   _feature_code:   0x%02x\n", _featureCode);
-    printf("   dref:            %s\n",    ddca_dref_repr(dref()));
- // printf("   _vspec:          %d.%d\n", _finfo.vspec.major, _finfo.vspec.minor);
-    printf("   _feature_flags:  0x%04x\n", _finfo.feature_flags);
-    printf("   _value.mh:             0x%02x\n", _value.mh);
-    printf("   _value.ml:             0x%02x\n", _value.ml);
-    printf("   _value.sh:             0x%02x\n", _value.sh);
-    printf("   _value.sl:             0x%02x\n", _value.sl);
-    printf("   _cap_vcp:              %p\n",     _capVcp);
+    printf("   _feature_code:    0x%02x\n", _featureCode);
+    printf("   dref:             %s\n",    ddca_dref_repr(dref()));
+ // printf("   _vspec:           %d.%d\n", _finfo.vspec.major, _finfo.vspec.minor);
+    printf("   _feature_flags:   0x%04x\n", _finfo->feature_flags);
+    printf("   _value.mh:        0x%02x\n", _value.mh);
+    printf("   _value.ml:        0x%02x\n", _value.ml);
+    printf("   _value.sh:        0x%02x\n", _value.sh);
+    printf("   _value.sl:        0x%02x\n", _value.sl);
+    printf("   _cap_vcp:         %p\n",     _capVcp);
 
 #ifdef NO
     if (_finfo.mmid) {

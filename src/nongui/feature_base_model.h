@@ -42,7 +42,7 @@ public:
     void modelVcpValueSet(
              uint8_t                     feature_code,
              DDCA_Display_Ref            dref,   // unnecessary, can get from monitor
-             DDCA_Feature_Metadata       metadata,
+             DDCA_Feature_Metadata *     metadata,
              DDCA_Non_Table_Vcp_Value *  feature_value);
     void modelVcpValueUpdate(
              uint8_t                     feature_code,

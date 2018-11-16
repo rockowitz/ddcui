@@ -129,7 +129,7 @@ Local_Feature_Value_Table * ValueNcWidget::getComboBoxEntries(NcValuesSource mod
    dummyCapVcp.feature_code = _featureCode;
    dummyCapVcp.value_ct = 0;
 
-   DDCA_Feature_Value_Entry * entries = _finfo.sl_values;
+   DDCA_Feature_Value_Entry * entries = _finfo->sl_values;
    Nc_Values_Merge_Mode merge_mode = MccsOnly;  // pointless initialization to avoid -Wmaybe-unitialized
    switch(mode) {
    case NcValuesFromMccs:           merge_mode = MccsOnly;      break;

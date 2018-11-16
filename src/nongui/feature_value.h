@@ -21,7 +21,7 @@ public:
     FeatureValue(
             uint8_t                   featureCode,
             DDCA_Display_Ref          dref,
-            DDCA_Feature_Metadata     finfo,
+            DDCA_Feature_Metadata *   finfo,
             DDCA_Cap_Vcp *            capVcp,
             DDCA_Non_Table_Vcp_Value  val);
 
@@ -29,7 +29,7 @@ public:
 
     uint8_t                  featureCode() const;
     DDCA_Display_Ref         dref()        const;
-    DDCA_Feature_Metadata    finfo()       const;
+    DDCA_Feature_Metadata*   finfo()       const;
     DDCA_Feature_Flags       flags()       const;
     DDCA_Cap_Vcp *           capVcp()      const;
     DDCA_Non_Table_Vcp_Value val()         const;
@@ -43,7 +43,7 @@ public:
 private:
     uint8_t                  _featureCode = 0;
     DDCA_Display_Ref         _dref = NULL;
-    DDCA_Feature_Metadata    _finfo;
+    DDCA_Feature_Metadata *  _finfo = NULL;
     DDCA_Cap_Vcp *           _capVcp = NULL;
     DDCA_Non_Table_Vcp_Value _value;     // use this or individual bytes? DDCA_Non_Table_Value needed for get_formatted_value call
 };

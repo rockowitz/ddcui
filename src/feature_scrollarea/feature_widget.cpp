@@ -211,7 +211,7 @@ void FeatureWidget::setFeatureValue(FeatureValue &fv) {
     setObjectName(QString::asprintf("FeatureWidget-0x%02x", _feature_code));
 
     _featureCodeField->setText(QString::asprintf("x%02x", _feature_code) );
-    _featureNameField->setText(QString::fromUtf8( fv.finfo().feature_name));
+    _featureNameField->setText(QString::fromUtf8( fv.finfo()->feature_name));
 
     QString s_rw;
     if (_feature_flags & DDCA_RW)
