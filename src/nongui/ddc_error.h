@@ -38,6 +38,27 @@ public:
 };
 
 
+class DdcDetailedError: public DdcError {
+   Q_OBJECT
+
+public:
+   DdcDetailedError();
+
+   DdcDetailedError(
+         const char * ddcFunction,
+         DDCA_Status  ddcErrno,
+         const char * detail);
+
+   // n. public copy constructor and destructor needed for qRegisterMetaType()
+   DdcDetailedError(const DdcDetailedError& erec);
+
+   virtual ~DdcDetailedError();
+
+   QString  _detail;
+
+   virtual QString repr();
+   virtual QString expl();
+};
 
 class DdcFeatureError: public DdcError {
     Q_OBJECT

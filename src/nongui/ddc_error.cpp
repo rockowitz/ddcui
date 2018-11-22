@@ -64,6 +64,57 @@ char *  DdcError::sexpl() {
 }
 
 
+// *** DdcDetailedError ***
+
+DdcDetailedError::DdcDetailedError()
+    : DdcError()
+    , _detail("")
+{}
+
+DdcDetailedError::DdcDetailedError(
+      const char * ddcFunction,
+      DDCA_Status  ddcErrno,
+      const char * detail)
+    : DdcError(ddcFunction, ddcErrno)
+    , _detail(detail)
+{
+   printf("(DdcDetailedError::DdcDetailedError) Executing\n"); fflush(stdout);
+}
+
+DdcDetailedError::DdcDetailedError(const DdcDetailedError& erec)
+{
+    _ddcFunction = erec._ddcFunction;
+    _ddcErrno    = erec._ddcErrno;
+    _detail      = erec._detail;
+}
+
+
+DdcDetailedError::~DdcDetailedError() {
+   // TODO Auto-generated destructor stub
+}
+
+QString DdcDetailedError::repr() {
+   // printf("(DdcDetailedError::repr) Executing\n"); fflush(stdout);
+   char * s = ddca_rc_name(_ddcErrno);
+   QString msg = QString("[function=%1, ddcrc=%2 - %3]")
+                    .arg(_ddcFunction)
+                    .arg(_ddcErrno)
+                    .arg(s);
+   return msg;
+}
+
+QString DdcDetailedError::expl() {
+   printf("(DdcDetailedError::expl) Starting.\n"); fflush(stdout);
+   QString msg = QString("%1")
+                               .arg(_detail)
+                               ;
+   printf("(DdcDetailedError::expl) msg: %s\n", strdup(msg.toLatin1().data()) ); fflush(stdout);
+   // std::cout << "(DdcVerifyError::expl) Returning: " << msg << std::endl;
+   return msg;
+}
+
+
+
 
 // *** DdcFeatureError ***
 
