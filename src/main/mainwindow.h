@@ -102,6 +102,10 @@ private slots:
     void on_actionOtherOptionsDialog_accepted();
 #endif
 
+    // Actions Menu
+    void on_actionRescan_triggered();
+    void on_actionRedetect_triggered();
+
     // Help Menu
     void on_actionAbout_triggered();
     void on_actionAbout_Qt_triggered();

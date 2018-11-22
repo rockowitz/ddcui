@@ -105,13 +105,24 @@
        actionOtherOptionsDialog->setText(
              QApplication::translate("MainWindow", "&Other Options",            nullptr, -1));
 
+       // Actions Menu Actions
+       actionRescan = new QAction(MainWindow);
+       actionRescan->setObjectName(QString::fromUtf8("actionRescan"));
+       actionRedetect = new QAction(MainWindow);
+       actionRedetect->setObjectName(QString::fromUtf8("actionRedetect"));
+
+       // ??
+       // QActionGroup* actionsGroup = new QActionGroup(MainWindow);
+       // actionsGroup->addAction(actionRescan);
+       // actionsGroup->addAction(actionRescan);
+
+
        // Help Menu Actions
 
        actionAbout = new QAction(MainWindow);
        actionAbout->setObjectName(QString::fromUtf8("actionAbout"));
        actionAboutQt = new QAction(MainWindow);
        actionAboutQt->setObjectName(QString::fromUtf8("actionAbout_Qt"));
-
    }
 
 
@@ -153,11 +164,16 @@
        // menuDisplays->setObjectName(QString::fromUtf8("menuDisplays"));
        // menuDisplays->setTitle(QApplication::translate("MainWindow", "Disp&lays", 0));
 
+       menuActions = new QMenu(menuBar);
+       menuActions->setObjectName(QString::fromUtf8("menuActions"));
+       menuActions->setTitle(  QApplication::translate("MainWindow", "Actions", nullptr, -1));
+
        menuOptions = new QMenu(menuBar);
        menuOptions->setObjectName(QString::fromUtf8("menuOptions"));
        menuOptions->setTitle( QApplication::translate("MainWindow", "Optio&ns", nullptr, -1));
        menuOptions->addAction(actionFeatureSelectionDialog);
        menuOptions->addAction(actionOtherOptionsDialog);
+
 
        menuHelp = new QMenu(menuBar);
        menuHelp->setObjectName(QString::fromUtf8("menuHelp"));
@@ -168,6 +184,7 @@
        // Menu Bar actions
        menuBar->addAction(menuView->menuAction());
        // menuBar->addAction(menuDisplays->menuAction());
+       menuBar->addAction(menuActions->menuAction());
        menuBar->addAction(menuOptions->menuAction());
        menuBar->addAction(menuHelp->menuAction());
 
@@ -201,6 +218,16 @@
 #ifdef ALT_FEATURES
        }
 #endif
+
+       actionRescan->setText(    QApplication::translate("MainWindow", "&Rescan feature values", nullptr, -1));
+       actionRescan->setEnabled(false);
+
+       actionRedetect->setText(  QApplication::translate("MainWindow", "&Redetect monitors", nullptr, -1));
+       actionRedetect->setEnabled(false);
+
+       menuActions->addAction(actionRescan);
+       // menuActions->addAction(actionRedetect);   // FUTURE
+
        menuHelp->addAction(actionAbout);
        menuHelp->addAction(actionAboutQt);
 

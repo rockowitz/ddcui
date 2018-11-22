@@ -172,7 +172,8 @@ void MainWindow::initMonitors() {
         QString mfg_id     = _dlist->info[ndx].mmid.mfg_id;
         QString model_name = _dlist->info[ndx].mmid.model_name;
 #endif
-        QString s = QString::number(ndx+1) + ":  " + model_name;
+        // QString s = QString::number(ndx+1) + ":  " + model_name;
+        QString s = model_name;
 
         int monitorNumber = ndx+1;
         _toolbarDisplayCB->addItem(s, QVariant(monitorNumber));
@@ -254,8 +255,10 @@ void MainWindow::initMonitors() {
         _vcp_threads.append(curThread);
 
         // asynchronously get capabilities for current monitor
-        if (_dlist->info[ndx].dispno > 0)      // don't try if monitor known to not support DDC
+        if (_dlist->info[ndx].dispno > 0) {     // don't try if monitor known to not support DDC
+            curMonitor->_requestQueue->put(new LoadDfrRequest());
             curMonitor->_requestQueue->put(new VcpCapRequest());
+        }
     }
 
     _toolbarDisplayCB->setCurrentIndex(0);    // *** Can set to 1 instead of 0 for testing ***
@@ -364,6 +367,7 @@ void MainWindow::on_actionMonitorSummary_triggered()
     free(s);
 
     _curView = View::MonitorView;
+    _ui->actionRescan->setEnabled(false);
     _ui->actionMonitorSummary->setChecked(true);
     // _ui->centralWidget->setCurrentIndex(pageno);
     _ui->centralWidget->setCurrentWidget(monitor->_page_moninfo);
@@ -408,6 +412,7 @@ void MainWindow::on_actionCapabilities_triggered()
 
            // show widget
            _curView = View::CapabilitiesView;
+           _ui->actionRescan->setEnabled(false);
            _ui->actionCapabilities->setChecked(true);
            // _ui->centralWidget->setCurrentIndex(pageno);    // need proper constants
            _ui->centralWidget->setCurrentWidget(monitor->_page_capabilities);
@@ -678,6 +683,7 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
        loadMonitorFeatures(monitor);
        _curDisplayIndex = monitorNdx;
        _curView = View::FeaturesView;
+       _ui->actionRescan->setEnabled(true);
        _ui->actionFeaturesScrollArea->setChecked(true);
 #ifdef ALT_FEATURES
        monitor->_curFeaturesView = Monitor::FEATURES_VIEW_SCROLLAREA_VIEW;
@@ -778,6 +784,21 @@ void MainWindow::set_feature_list_id(DDCA_Feature_Subset_Id feature_list_id) {
     this->_feature_list_id = feature_list_id;
 }
 #endif
+
+//
+// Actions Menu Slots
+//
+
+void MainWindow::on_actionRescan_triggered() {
+   PRINTFCM("Executing");
+   assert(_curView == FeaturesView);
+   assert(_curDisplayIndex >= 0);
+   _monitors[_curDisplayIndex]->_baseModel->reloadFeatures();
+}
+
+void MainWindow::on_actionRedetect_triggered() {
+   PRINTFCM("Executing");
+}
 
 
 //

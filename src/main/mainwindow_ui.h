@@ -33,15 +33,19 @@ private:
    QMainWindow * _mainWindow;
 
     // Menu Bar
-    QMenuBar    *menuBar= NULL;
-    QMenu       *menuView= NULL;
-    QMenu       *menuOptions= NULL;
-    QMenu       *menuHelp= NULL;
+    QMenuBar    *menuBar     = NULL;
+    QMenu       *menuView    = NULL;
+    QMenu       *menuOptions = NULL;
+    QMenu       *menuActions = NULL;
+    QMenu       *menuHelp    = NULL;
 
 public:
     // View Menu
     QAction     *actionMonitorSummary= NULL;
     QAction     *actionCapabilities= NULL;
+
+    // Actions Menu
+    QAction     *actionRescan = NULL;
 
 #ifdef ALT_FEATURES
     QAction     *actionFeaturesListWidget;        // for ListWidget
@@ -64,6 +68,10 @@ private:
 #endif
     QAction     *actionFeatureSelectionDialog = NULL;
     QAction     *actionOtherOptionsDialog = NULL;
+
+    // Actions Menu
+
+    QAction     *actionRedetect = NULL;
 
     // Help Menu
     QAction     *actionAbout= NULL;
