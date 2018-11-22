@@ -70,6 +70,9 @@ void VcpThread::rpt_error_detail(
    PRINTFTCM("In %s(), %s()  returned DDCA_Error_Detail with status %d - %s",
           caller_name, ddca_func_name, erec->status_code, ddca_rc_name(erec->status_code));
 
+   // TODO:  Make appropriate call to _baseModel
+
+
 
 }
 
@@ -90,7 +93,9 @@ void VcpThread::rpt_verify_error(
 
 void VcpThread::loadDynamicFeatureRecords()
 {
-   PRINTFTCMF(debugThread, "Starting. dref=%s", ddca_dref_repr(this->_dref));
+   bool debugFunc = debugThread;
+   // debugFunc = true;
+   PRINTFTCMF(debugFunc, "Starting. dref=%s", ddca_dref_repr(this->_dref));
 
    DDCA_Display_Handle dh;
 
@@ -101,9 +106,11 @@ void VcpThread::loadDynamicFeatureRecords()
    else {
       ddcrc = ddca_dfr_check_by_dh(dh);
       if (ddcrc != 0) {
-         PRINTFCM("ddca_dfr_check_by_dh() returned %s", ddca_rc_name(ddcrc));
+         PRINTFTCM("ddca_dfr_check_by_dh() returned %s", ddca_rc_name(ddcrc));
          DDCA_Error_Detail * erec = ddca_get_error_detail();
-         ddca_report_error_detail(erec, 1);
+         ddca_report_error_detail(erec, 4);
+
+         rpt_error_detail(erec, "loadDynamicFeatureRecords", "ddca_dfr_check_by_dh");
          ddca_free_error_detail(erec);
       }
 
@@ -113,13 +120,15 @@ void VcpThread::loadDynamicFeatureRecords()
       }
    }
 
-   PRINTFTCMF(debugThread, "Done. dref=%s", ddca_dref_repr(this->_dref));
+   PRINTFTCMF(debugFunc, "Done. dref=%s", ddca_dref_repr(this->_dref));
 }
 
 
 // Process RQCapabilities
 void VcpThread::capabilities() {
-   PRINTFTCMF(debugThread, "Starting. dref=%s", ddca_dref_repr(this->_dref));
+   bool debugFunc = debugThread;
+   // debugFunc = true;
+   PRINTFTCMF(debugFunc, "Starting. dref=%s", ddca_dref_repr(this->_dref));
    DDCA_Display_Handle dh;
    char *              caps = NULL;
    DDCA_Capabilities * parsed_caps = NULL;
@@ -129,15 +138,16 @@ void VcpThread::capabilities() {
          rpt_ddca_status(0, __func__, "ddca_open_display", ddcrc);
    }
    else {
+#ifdef MOVED
       // TEMPORARY LOCATION - SHOULD BE A SEPARATE RQCheckDFR
       ddcrc = ddca_dfr_check_by_dh(dh);
       if (ddcrc != 0) {
-         PRINTFCM("ddca_dfr_check_by_dh() returned %s", ddca_rc_name(ddcrc));
+         PRINTFTCMF(debugFunc, "ddca_dfr_check_by_dh() returned %s", ddca_rc_name(ddcrc));
          DDCA_Error_Detail * erec = ddca_get_error_detail();
          ddca_report_error_detail(erec, 1);
          ddca_free_error_detail(erec);
       }
-
+#endif
 
       ddcrc = ddca_get_capabilities_string(dh, &caps);
       if (ddcrc != 0) {
@@ -156,7 +166,7 @@ void VcpThread::capabilities() {
    }
    _baseModel->setCapabilities(ddcrc, caps, parsed_caps);
 
-   PRINTFTCMF(debugThread, "Done. dref=%s", ddca_dref_repr(this->_dref));
+   PRINTFTCMF(debugFunc, "Done. dref=%s", ddca_dref_repr(this->_dref));
 }
 
 
