@@ -94,7 +94,7 @@ int_max(int v1, int v2) {
 
 Local_Feature_Value_Table *
 new_local_feature_value_table(int entry_ct) {
-   bool debug = true;
+   bool debug = false;
    int reqd_size = sizeof(Local_Feature_Value_Table) + entry_ct * sizeof(DDCA_Feature_Value_Entry);
    if (debug) {
       printf("(%s) entry_ct = %d, reqd_size = %d\n", __func__, entry_ct, reqd_size); fflush(stdout);
