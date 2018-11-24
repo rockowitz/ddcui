@@ -253,7 +253,7 @@ void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc) {
 
 void FeaturesScrollAreaView::onModelDdcDetailedError(DdcDetailedError* perec) {
    bool debugFunc = debugSignals;
-   debugFunc = true;
+   // debugFunc = true;
 
     // PRINTFTCM("Starting");
     PRINTFTCMF(debugFunc, "perec=%p, perec->%s", perec, perec->srepr() );
