@@ -61,6 +61,9 @@ set(SOURCES
     src/base/hline_widget.cpp 
     src/base/other_options_state.cpp 
 
+    src/cmdline/parsed_cmd.c
+    src/cmdline/cmd_parser.c
+
     src/nongui/ddc_error.cpp 
     src/nongui/feature_base_model.cpp 
     src/nongui/feature_value.cpp 
