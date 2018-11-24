@@ -213,14 +213,12 @@ FeatureBaseModel::onDdcDetailedError(
       DdcDetailedError* perec)
 {
    bool debugFunc = debugModel;
-   debugFunc = true;
+   // debugFunc = true;
 
    // PRINTFTCMF(debugFunc, "Starting");
    PRINTFTCMF(debugFunc, "perec=%p -> %s", perec, perec->srepr() );
-   // PRINTFTCMF(debugFunc, "Next");
-   PRINTFTCMF(debugFunc, "perec=%p -> %s", perec, perec->sexpl() );
+   // PRINTFTCMF(debugFunc, "perec=%p -> %s", perec, perec->sexpl() );
 
-   // PRINTFTCMF(debugFunc, "Before emit");
    emit  signalDdcDetailedError(perec);
 }
 
@@ -262,7 +260,7 @@ FeatureBaseModel::setFeatureList(
       bool              reportUnsupported)
 {
    bool debugFunc = debugFeatureLists;
-   debugFunc = true;
+   debugFunc = false;
    PRINTFTCMF(debugFunc, "Starting. Features: %s",
          ddca_feature_list_string(&featureList, NULL, (char*) " "));
    _featuresToShow = featureList;
