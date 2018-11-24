@@ -76,10 +76,23 @@ DdcDetailedError::DdcDetailedError(
       DDCA_Status  ddcErrno,
       const char * detail)
     : DdcError(ddcFunction, ddcErrno)
-    , _detail(detail)
 {
-   printf("(DdcDetailedError::DdcDetailedError) Executing\n"); fflush(stdout);
+   printf("(DdcDetailedError::DdcDetailedError) Executing A\n"); fflush(stdout);
+   _detail = QString(detail);
 }
+
+DdcDetailedError::DdcDetailedError(
+      const char * ddcFunction,
+      DDCA_Status  ddcErrno,
+      QString       detail)
+    : DdcError(ddcFunction, ddcErrno)
+{
+   printf("(DdcDetailedError::DdcDetailedError) Executing B\n"); fflush(stdout);
+   _detail = detail;
+}
+
+
+
 
 DdcDetailedError::DdcDetailedError(const DdcDetailedError& erec)
 {
@@ -96,7 +109,7 @@ DdcDetailedError::~DdcDetailedError() {
 QString DdcDetailedError::repr() {
    // printf("(DdcDetailedError::repr) Executing\n"); fflush(stdout);
    char * s = ddca_rc_name(_ddcErrno);
-   QString msg = QString("[function=%1, ddcrc=%2 - %3]")
+   QString msg = QString("DdcDetailedError[function=%1, ddcrc=%2 - %3]")
                     .arg(_ddcFunction)
                     .arg(_ddcErrno)
                     .arg(s);
@@ -104,11 +117,11 @@ QString DdcDetailedError::repr() {
 }
 
 QString DdcDetailedError::expl() {
-   printf("(DdcDetailedError::expl) Starting.\n"); fflush(stdout);
+  //  printf("(DdcDetailedError::expl) Starting.\n"); fflush(stdout);
    QString msg = QString("%1")
                                .arg(_detail)
                                ;
-   printf("(DdcDetailedError::expl) msg: %s\n", strdup(msg.toLatin1().data()) ); fflush(stdout);
+   // printf("(DdcDetailedError::expl) msg: %s\n", strdup(msg.toLatin1().data()) ); fflush(stdout);
    // std::cout << "(DdcVerifyError::expl) Returning: " << msg << std::endl;
    return msg;
 }

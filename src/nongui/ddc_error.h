@@ -49,6 +49,11 @@ public:
          DDCA_Status  ddcErrno,
          const char * detail);
 
+   DdcDetailedError(
+         const char * ddcFunction,
+         DDCA_Status  ddcErrno,
+         QString      detail);
+
    // n. public copy constructor and destructor needed for qRegisterMetaType()
    DdcDetailedError(const DdcDetailedError& erec);
 
