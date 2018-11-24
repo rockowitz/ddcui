@@ -86,10 +86,12 @@ signals:
     void signalFeatureUpdated3(const char * caller, uint8_t feature_code, uint8_t sh, uint8_t sl);
     void signalVcpRequest(VcpRequest * rqst);  // used to call into monitor
     void signalModelError(uint8_t featureCode, QString msg);
+    void signalDdcDetailedError(DdcDetailedError * perec);
     void signalDdcFeatureError(DdcFeatureError* perec);
     void signalStatusMsg(QString msg);
 
 public slots:
+    void onDdcDetailedError(DdcDetailedError * perec);
     void onDdcFeatureError(DdcFeatureError* perec);
 
 protected:

@@ -209,6 +209,23 @@ FeatureBaseModel::setCapabilities(
 
 
 void
+FeatureBaseModel::onDdcDetailedError(
+      DdcDetailedError* perec)
+{
+   bool debugFunc = debugModel;
+   debugFunc = true;
+
+   // PRINTFTCMF(debugFunc, "Starting");
+   PRINTFTCMF(debugFunc, "perec=%p -> %s", perec, perec->srepr() );
+   // PRINTFTCMF(debugFunc, "Next");
+   PRINTFTCMF(debugFunc, "perec=%p -> %s", perec, perec->sexpl() );
+
+   // PRINTFTCMF(debugFunc, "Before emit");
+   emit  signalDdcDetailedError(perec);
+}
+
+
+void
 FeatureBaseModel::onDdcFeatureError(
       DdcFeatureError* perec)
 {
