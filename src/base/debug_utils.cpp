@@ -6,15 +6,15 @@
 #include <string.h>
 #include <stdio.h>
 
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QLayout>
-#include <QtWidgets/QFrame>
-#include <QtCore/QSize>
-#include <QtCore/QRect>
-#include <QtGui/QRegion>
 #include <QtCore/QMargins>
-#include <QtWidgets/QLabel>
+#include <QtCore/QRect>
+#include <QtCore/QSize>
 #include <QtCore/QString>
+#include <QtGui/QRegion>
+#include <QtWidgets/QFrame>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLayout>
+#include <QtWidgets/QWidget>
 
 
 void reportWidgetChildren(QWidget * w, const char * msg) {
