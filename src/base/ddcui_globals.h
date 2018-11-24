@@ -11,7 +11,9 @@
 #include <QtCore/QtCore>
 #include <QtWidgets/QListWidgetItem>
 
-const QString ddcui_version = "0.0.1";
+#include "ddcui_parms.h"
+
+const QString ddcui_version = DDCUI_VERSION;   // in ddcui_parms.h
 
 const int FeatureValueRole  = Qt::UserRole+1;  // DisplayRole, EditorRole, .. etc
 
