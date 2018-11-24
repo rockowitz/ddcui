@@ -77,7 +77,7 @@ DdcDetailedError::DdcDetailedError(
       const char * detail)
     : DdcError(ddcFunction, ddcErrno)
 {
-   printf("(DdcDetailedError::DdcDetailedError) Executing A\n"); fflush(stdout);
+   // printf("(DdcDetailedError::DdcDetailedError) Executing A\n"); fflush(stdout);
    _detail = QString(detail);
 }
 
@@ -117,7 +117,7 @@ QString DdcDetailedError::repr() {
 }
 
 QString DdcDetailedError::expl() {
-  //  printf("(DdcDetailedError::expl) Starting.\n"); fflush(stdout);
+   //  printf("(DdcDetailedError::expl) Starting.\n"); fflush(stdout);
    QString msg = QString("%1")
                                .arg(_detail)
                                ;
