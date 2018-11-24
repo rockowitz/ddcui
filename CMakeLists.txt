@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 
 project(ddcui)
 
+# set (coverity_cflags --type_traits_helpers)
+# set (coverity_cflags --no_predefined_feature_test_macros)
+
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -31,6 +34,7 @@ find_package(Qt5 COMPONENTS Core Widgets Gui Help REQUIRED)
 find_package (PkgConfig REQUIRED)
 pkg_check_modules(GLIB2 REQUIRED glib-2.0)
 pkg_check_modules(DDCUTIL REQUIRED ddcutil)
+message( STATUS "GLIB2_INCLUDE_DIRS:    ${GLIB2_INCLUDE_DIRS}" )
 message( STATUS "DDCUTIL_INCLUDE_DIRS:  ${DDCUTIL_INCLUDE_DIRS}" )
 message( STATUS "DDCUTIL_LIBRARY_DIRS:  ${DDCUTIL_LIBRARY_DIRS}" )
 message( STATUS "DDCUTIL_LIBRARIES:  ${DDCUTIL_LIBRARIES}" )
@@ -116,6 +120,9 @@ if (ALT_FEATURES)
 endif()
 
 # file(GLOB dummy_SOURCES src/dummies/*.cpp)
+# if (COVERITY_DUMMIES) 
+#    set (SOURCES ${SOURCES} ${dummy_SOURCES} )
+# endif()
 
 set(UI_SOURCES
     src/option_dialogs/feature_selection_dialog.ui
@@ -129,7 +136,7 @@ link_directories(${DDCUTIL_LIBRARY_DIRS})
 # add_executable(ddcui ${SOURCES} ${UI_GENERATED_HEADERS})
 add_executable(ddcui ${SOURCES})
 
-target_compile_options(ddcui PUBLIC "-fPIC")
+target_compile_options(ddcui PUBLIC "-fPIC"  ${coverity_cflags})
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
