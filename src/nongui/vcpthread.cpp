@@ -67,14 +67,25 @@ void VcpThread::rpt_error_detail(
       const char * caller_name,
       const char * ddca_func_name)
 {
-   PRINTFTCM("In %s(), %s()  returned DDCA_Error_Detail with status %d - %s",
-          caller_name, ddca_func_name, erec->status_code, ddca_rc_name(erec->status_code));
+   bool debugFunc = debugThread;
+   // debugFunc = true;
+   PRINTFTCMF(debugFunc, "In %s(), %s()  returned DDCA_Error_Detail with status %d - %s",
+                         caller_name, ddca_func_name,
+                         erec->status_code, ddca_rc_name(erec->status_code));
 
-   // TODO:  Make appropriate call to _baseModel
+   QString smooshed = format_error_detail(erec, QString(""), 3);
+   // PRINTFCM("%s", smooshed.toLatin1().data() );
 
+   DdcDetailedError* detailedError = new
+         DdcDetailedError(ddca_func_name, erec->status_code, smooshed);
+       // DdcDetailedError(ddca_func_name, erec->status_code, smooshed.toLatin1().data());
 
-
+   PRINTFTCMF(debugFunc, "Built DdcDetailedError.  srepr: %s, sexpl: %s",
+                         detailedError->srepr(), detailedError->sexpl());
+   // just call function, no need to signal:
+   _baseModel->onDdcDetailedError(detailedError);
 }
+
 
 void VcpThread::rpt_verify_error(
       uint8_t      featureCode,
@@ -106,12 +117,17 @@ void VcpThread::loadDynamicFeatureRecords()
    else {
       ddcrc = ddca_dfr_check_by_dh(dh);
       if (ddcrc != 0) {
-         PRINTFTCM("ddca_dfr_check_by_dh() returned %s", ddca_rc_name(ddcrc));
-         DDCA_Error_Detail * erec = ddca_get_error_detail();
-         ddca_report_error_detail(erec, 4);
+         if (ddcrc == DDCRC_NOT_FOUND) {
+            PRINTFTCMF(debugFunc, "ddca_dfr_check_by_dh() returned DDCRC_NOT_FOUND");
+         }
+         else {
+            PRINTFTCMF(debugFunc, "ddca_dfr_check_by_dh() returned %s", ddca_rc_name(ddcrc));
+            DDCA_Error_Detail * erec = ddca_get_error_detail();
+            ddca_report_error_detail(erec, 4);
 
-         rpt_error_detail(erec, "loadDynamicFeatureRecords", "ddca_dfr_check_by_dh");
-         ddca_free_error_detail(erec);
+            rpt_error_detail(erec, "loadDynamicFeatureRecords", "ddca_dfr_check_by_dh");
+            ddca_free_error_detail(erec);
+         }
       }
 
       ddcrc = ddca_close_display(dh);
