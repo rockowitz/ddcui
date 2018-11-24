@@ -7,6 +7,7 @@
 #define DDCA_UTILS_H_
 
 #include <ddcutil_types.h>
+#include <QtCore/QString>
 
 typedef enum {
    CapsOnly,
@@ -46,5 +47,13 @@ void
 free_ddca_feature_value_table(
       DDCA_Feature_Value_Table * table);
 #endif
+
+QString
+format_error_detail(
+      DDCA_Error_Detail * erec,
+      QString             causesTitle,
+      int                 indentation_per_depth);
+
+
 
 #endif /* DDCA_UTILS_H_ */

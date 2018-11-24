@@ -14,6 +14,8 @@
 
 #include "ddca_utils.h"
 
+#include <QtCore/QString>
+
 
 void
 ddcui_dbgrpt_ddca_feature_metadata(
@@ -241,3 +243,58 @@ ddcutil_find_cap_vcp(DDCA_Capabilities * parsed_caps, uint8_t feature_code)
    return result;
 }
 
+
+void
+format_error_detail_aux(
+      DDCA_Error_Detail * erec,
+      QString             causesTitle,
+      int                 indentation_per_depth,
+      int                 cur_depth,
+      QString&            accum);
+
+void
+format_error_detail_aux(
+      DDCA_Error_Detail * erec,
+      QString             causesTitle,
+      int                 indentation_per_depth,
+      int                 cur_depth,
+      QString&            accum)
+{
+   int indentct = indentation_per_depth * cur_depth;
+   QString istring = "";
+   for (int ndx = 0; ndx < indentct; ndx++) {
+      istring.append(" ");
+   }
+   accum.append(istring);
+   accum.append(erec->detail);
+   accum.append("\n");
+   if (erec->cause_ct > 0) {
+      if (causesTitle.length() > 0) {
+         accum.append(causesTitle);
+         accum.append("\n");
+      }
+      for (int ndx = 0; ndx < erec->cause_ct; ndx++) {
+         format_error_detail_aux(
+               erec->causes[ndx],
+               causesTitle,
+               indentation_per_depth,
+               cur_depth+1,
+               accum);
+      }
+   }
+
+}
+
+
+
+QString
+format_error_detail(
+      DDCA_Error_Detail * erec,
+      QString             causesTitle,
+      int                 indentation_per_depth)
+{
+   QString accum = QString("");
+   format_error_detail_aux(erec, causesTitle, indentation_per_depth, 0, accum);
+   return accum;
+
+}
