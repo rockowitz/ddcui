@@ -251,8 +251,35 @@ void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc) {
 }
 
 
+void FeaturesScrollAreaView::onModelDdcDetailedError(DdcDetailedError* perec) {
+   bool debugFunc = debugSignals;
+   debugFunc = true;
+
+    // PRINTFTCM("Starting");
+    PRINTFTCMF(debugFunc, "perec=%p, perec->%s", perec, perec->srepr() );
+    // std::cout << "typeid(perec):  " << typeid(perec).name()  << std::endl;
+    // std::cout << "typeid(*perec): " << typeid(*perec).name() << std::endl;
+
+    DDCA_Display_Info * dinfo = _monitor->_displayInfo;
+
+    QString qstitle = QString("ddcutil Error");
+    QString qsexpl  = perec->expl();
+    QMessageBox::Icon icon = QMessageBox::Warning;
+
+    MsgBoxQueueEntry * qe = new MsgBoxQueueEntry(
+                                       qstitle,
+                                       qsexpl,
+                                       icon);
+   // PRINTFTCM("Calling _msgboxQueue.put() for qe: %s", qs2s(qe->repr()));
+   _msgboxQueue->put(qe);
+}
+
+
+
 void FeaturesScrollAreaView::onModelDdcFeatureError(DdcFeatureError* perec) {
-    PRINTFTCM("perec=%p, perec->%s", perec, qs2s(perec->repr()) );
+    bool debugFunc = debugSignals;
+    debugFunc = false;
+    PRINTFTCMF(debugFunc, "perec=%p, perec->%s", perec, qs2s(perec->repr()) );
     // std::cout << "typeid(perec):  " << typeid(perec).name()  << std::endl;
     // std::cout << "typeid(*perec): " << typeid(*perec).name() << std::endl;
 

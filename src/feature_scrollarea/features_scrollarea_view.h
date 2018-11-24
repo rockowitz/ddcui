@@ -60,6 +60,7 @@ public slots:
     void onUIValueChanged(uint8_t feature_code, bool writeOnly, uint8_t sh, uint8_t sl);
     void onModelValueChanged(const char * caller, uint8_t featureCode, uint8_t sh, uint8_t sl);
     void onNcValuesSourceChanged(NcValuesSource newsrc);
+    void onModelDdcDetailedError(DdcDetailedError* perec);
     void onModelDdcFeatureError(DdcFeatureError* perec);
 };
 #endif // FEATURES_SCROLLAREA_VIEW_H
