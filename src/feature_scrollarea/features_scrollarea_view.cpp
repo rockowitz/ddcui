@@ -260,7 +260,7 @@ void FeaturesScrollAreaView::onModelDdcDetailedError(DdcDetailedError* perec) {
     // std::cout << "typeid(perec):  " << typeid(perec).name()  << std::endl;
     // std::cout << "typeid(*perec): " << typeid(*perec).name() << std::endl;
 
-    DDCA_Display_Info * dinfo = _monitor->_displayInfo;
+    // DDCA_Display_Info * dinfo = _monitor->_displayInfo;
 
     QString qstitle = QString("ddcutil Error");
     QString qsexpl  = perec->expl();
