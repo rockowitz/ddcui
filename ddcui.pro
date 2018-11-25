@@ -75,6 +75,10 @@ SOURCES += \
 #   src/base/vertical_scroll_area.cpp \
 
 SOURCES += \
+    src/cmdline/parsed_cmd.c \
+    src/cmdline/cmd_parser.c
+
+SOURCES += \
     src/nongui/ddc_error.cpp \
     src/nongui/feature_base_model.cpp \
     src/nongui/feature_value.cpp \
@@ -160,6 +164,7 @@ HEADERS += \
     src/imported/QtWaitingSpinner/waitingspinnerwidget.h
 
 HEADERS += \
+    src/base/ddcui_parms.h \
     src/base/ddca_utils.h \
     src/base/ddcui_globals.h \
     src/base/debug_utils.h \
@@ -170,6 +175,11 @@ HEADERS += \
     src/base/other_options_state.h
     
 #   src/base/vertical_scroll_area.h
+
+HEADERS += \
+    src/cmdline/parsed_cmd.h \
+    src/cmdline/cmd_parser.h
+
 
 HEADERS += \
     src/nongui/ddc_error.h \
