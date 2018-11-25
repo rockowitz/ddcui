@@ -89,16 +89,22 @@ DdcDetailedError::DdcDetailedError(
 {
    printf("(DdcDetailedError::DdcDetailedError) Executing B\n"); fflush(stdout);
    _detail = detail;
+
 }
 
 
 
 
-DdcDetailedError::DdcDetailedError(const DdcDetailedError& erec)
+DdcDetailedError::DdcDetailedError(
+      const DdcDetailedError& erec)
+      : DdcError()
 {
     _ddcFunction = erec._ddcFunction;
+
+    // _ddcFunction    = new QString(erec._ddcFunction);
     _ddcErrno    = erec._ddcErrno;
-    _detail      = erec._detail;
+    // _detail      = erec._detail;
+     _detail  = erec._detail;
 }
 
 
@@ -148,7 +154,9 @@ DdcFeatureError::DdcFeatureError(
 }
 
 
-DdcFeatureError::DdcFeatureError(const DdcFeatureError& erec)
+DdcFeatureError::DdcFeatureError(
+      const DdcFeatureError& erec)
+     : DdcError()
 {
     _ddcFunction = erec._ddcFunction;
     _ddcErrno    = erec._ddcErrno;
