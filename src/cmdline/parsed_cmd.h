@@ -29,6 +29,6 @@ struct {
 
 Parsed_Cmd *  new_parsed_cmd();
 void          free_parsed_cmd(Parsed_Cmd * parsed_cmd);
-void          dbgrpt_parsed_cmd(Parsed_Cmd * parsed_cmd, int depth);   // debugging function
+// void          dbgrpt_parsed_cmd(Parsed_Cmd * parsed_cmd, int depth);   // debugging function
 
 #endif /* PARSED_CMD_H_ */

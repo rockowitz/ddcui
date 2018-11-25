@@ -97,9 +97,9 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
    g_option_context_free(context);
 
 
-   if (debug) {
-      dbgrpt_parsed_cmd(parsed_cmd, 0);
-   }
+   // if (debug) {
+   //    dbgrpt_parsed_cmd(parsed_cmd, 0);
+   // }
 
    if (!ok) {
       free_parsed_cmd(parsed_cmd);
