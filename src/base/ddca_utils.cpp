@@ -22,7 +22,6 @@ ddcui_dbgrpt_ddca_feature_metadata(
       DDCA_Feature_Metadata * meta)
 {
    assert(meta);
-   char workbuf[200];
 
    printf("DDCA_Feature_Metadata at %p:", meta);
    printf("   VCP code %02X: %s\n", meta->feature_code, meta->feature_name);
@@ -94,6 +93,8 @@ int_max(int v1, int v2) {
 }
 
 
+const char * LOCAL_FEATURE_VALUE_TABLE_MARKER = "LFVT";
+
 Local_Feature_Value_Table *
 new_local_feature_value_table(int entry_ct) {
    bool debug = false;
@@ -102,6 +103,7 @@ new_local_feature_value_table(int entry_ct) {
       printf("(%s) entry_ct = %d, reqd_size = %d\n", __func__, entry_ct, reqd_size); fflush(stdout);
    }
    Local_Feature_Value_Table * result = (Local_Feature_Value_Table*) calloc(1,reqd_size);
+   memcpy(result->marker, LOCAL_FEATURE_VALUE_TABLE_MARKER, 4);
    return result;
 }
 
@@ -180,8 +182,6 @@ ddcutil_merge_feature_values(
    result = (Local_Feature_Value_Table*) calloc(1,reqd_size);
 #endif
    result = new_local_feature_value_table(maxEntries);
-
-   memcpy(result->marker, LOCAL_FEATURE_VALUE_TABLE_MARKER, 4);
    int resultCt = 0;
    // Don't assume the values are ordered.
    // Results in a O(n**2) algorithm, but the lists are short.
