@@ -1,8 +1,8 @@
 # Building **ddcui**
 
 ## Requirements
-- ddcutil 0.9.1 or later.  If installed from pre-compiled packages, the shared library and development packages must be installed
-as well as the main ddcutil package.
+- ddcutil 0.9.3 or later.  If installed from pre-compiled packages, the shared library and development packages must be installed
+as well as the main ddcutil package. (Note that SONAME library versioning has not yet been implemented.)
 - A recent version of QT 5.  **ddcui** will not build with versions of Qt older than 5.5. 
 Unless you want to modify the the dialog boxes, or prefer the Qt Creator IDE, Qt Creator is not required. 
 
