@@ -26,4 +26,7 @@ src/config.h
 CMakeLists_with_coverity_dummies.txt
 *.ctl
 *.lst
+*.tgz
+make_archive
+*.tar.gz
 
