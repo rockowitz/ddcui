@@ -29,4 +29,4 @@ CMakeLists_with_coverity_dummies.txt
 *.tgz
 make_archive
 *.tar.gz
-
+CMakeLists_*
