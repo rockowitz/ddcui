@@ -196,7 +196,7 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
 
 void FeatureSelectionDialog::on_buttonBox_helpRequested()
 {
-    PRINTFCM();
+    // PRINTFCM();
     QString fn(":/docs/feature_selection.html");
     QFile f(fn);
     f.open(QFile::ReadOnly | QFile::Text);
@@ -204,9 +204,9 @@ void FeatureSelectionDialog::on_buttonBox_helpRequested()
 
     QString htmlText = in.readAll();
 
-    qDebug() << htmlText;
-    // HelpDialog2(htmlText, this);
+    // qDebug() << htmlText;
 
+    // HelpDialog2(htmlText, this);
     HelpDialog2* hd = new HelpDialog2(this);
     hd->setText(htmlText);
     // hd->_textBrowser->setSource(fn);
