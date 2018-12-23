@@ -2,67 +2,6 @@ cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 
 project(ddcui)
 
-message(STATUS "CPACK_SOURCE_IGNORE_FILES:"  ${CPACK_SOURCE_IGNORE_FILES})
-
-set(pack_ignore 
-#       ${CMAKE_SOURCE_DIR}/^\.;
-       *.lst\;
-   )
-
-set(pack_ignore ${pack_ignore} )
-
-# For using CPack as "make dist":
-set(CPACK_PACKAGE_VERSION_MAJOR "0")
-set(CPACK_PACKAGE_VERSION_MINOR "0")
-set(CPACK_PACKAGE_VERSION_PATCH "4")
-set(CPACK_SOURCE_GENERATOR      "TGZ")
-set(CPACK_GENERATOR             "TGZ")
-set(CPACK_SOURCE_PACKAGE_FILE_NAME
-    "${CMAKE_PROJECT_NAME}-${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
-
-set(CPACK_SOURCE_IGNORE_FILES 
-    "${pack_ignore};${CMAKE_SOURCE_DIR}/tmp/*;${CMAKE_SOURCE_DIR}/bd/;${CMAKE_SOURCE_DIR}/bc;${CMAKE_SOURCE_DIR}/api_use.txt;${CMAKE_SOURCE_DIR}/.git;/.gitignore;/*.tmp/;/build/;/build_cmake/;/.bzr/;~$;${CPACK_SOURCE_IGNORE_FILES}")
-
-set(CPACK_SOURCE_IGNORE_FILES
-   ${CMAKE_SOURCE_DIR}/tmp/*
-   ${CMAKE_SOURCE_DIR}/bd/
-   ${CMAKE_SOURCE_DIR}/bc
-   ${CMAKE_SOURCE_DIR}/api_use.txt
-   ${CMAKE_SOURCE_DIR}/.git/
-   ${CMAKE_SOURCE_DIR}/src/dumped/
-   ${CMAKE_SOURCE_DIR}/src/alt/
-   .gitignore
-   ${CMAKE_SOURCE_DIR}/t.tmp
-   ${CMAKE_SOURCE_DIR}/ddcui.pro1
-   ${CMAKE_SOURCE_DIR}/ddcui.pro2
-   ${CMAKE_SOURCE_DIR}/ddcui.user
-   .*.tmp$
-   .*.lst$
-   \.old$
-   ctl$
-   ~$
-   unused/
-   old/
-   ${CMAKE_SOURCE_DIR}/src/dummies/
-   ${CMAKE_SOURCE_DIR}/src/temp/
-   ${CMAKE_SOURCE_DIR}/build/
-   ${CMAKE_SOURCE_DIR}/src/build/
-   ${CMAKE_SOURCE_DIR}/build_cmake/
-   ${CMAKE_SOURCE_DIR}/.settings/
-   ${CMAKE_SOURCE_DIR}/.cproject
-   ${CMAKE_SOURCE_DIR}/\.project
-   ${CMAKE_SOURCE_DIR}/CMakeLists_with_coverity_dummies.txt
-   ${CMAKE_SOURCE_DIR}/*.tgz
-)
-
-message(STATUS "CMAKE_SOURCE_DIR:"           ${CMAKE_SOURCE_DIR})
-message(STATUS "pack_ignore:"                ${pack_ignore})
-message(STATUS "CPACK_SOURCE_IGNORE_FILES:"  ${CPACK_SOURCE_IGNORE_FILES})
-
-
-include(CPack)
-
-
 # set (coverity_cflags --type_traits_helpers)
 # set (coverity_cflags --no_predefined_feature_test_macros)
 
@@ -85,6 +24,9 @@ set(CMAKE_AUTORCC ON)
 
 # ADDITIONAL_MAKE_CLEAN_FILES(  ... )
 
+message( STATUS "CMAKE_MODULE_PATH: " ${CMAKE_MODULE_PATH})
+message( STATUS "CMAKE_PREFIX_PATH: " ${CMAKE_PREFIX_PATH})
+
 # Find the QtWidgets library
 # find_package(Qt5Widgets)
 # ensures all Qt componenets have same version: 
@@ -100,6 +42,16 @@ message( STATUS "GLIB2_INCLUDE_DIRS:    ${GLIB2_INCLUDE_DIRS}" )
 message( STATUS "DDCUTIL_INCLUDE_DIRS:  ${DDCUTIL_INCLUDE_DIRS}" )
 message( STATUS "DDCUTIL_LIBRARY_DIRS:  ${DDCUTIL_LIBRARY_DIRS}" )
 message( STATUS "DDCUTIL_LIBRARIES:  ${DDCUTIL_LIBRARIES}" )
+
+# hack for testing
+# set(DDCUTIL_LIBRARY_DIRS /usr/lib/x86_64-linux-gnu/)
+# message( STATUS "DDCUTIL_LIBRARY_DIRS:  ${DDCUTIL_LIBRARY_DIRS}" )
+
+# find_library(DDCUTIL_LIBRARY 
+#     NAMES libddcutil ddcutil libddcutil.so libddcutil.so.0
+#     PATHS /usr/lib /usr/lib/x86_64-linux-gnu)
+# message( STATUS "DDCUTIL_LIBRARY:  ${DDCUTIL_LIBRARY}" )
+
 
 include_directories(SYSTEM ${Qt5Widgets_INCLUDE_DIRS} ${GLIB2_INCLUDE_DIRS} ${DDCUTIL_INCLUDE_DIRS} )
 
@@ -209,6 +161,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
 # Use the Widgets module from Qt 5.
 target_link_libraries(ddcui Qt5::Widgets ${GLIB2_LIBRARIES} ${DDCUTIL_LIBRARIES})
+# target_link_libraries(ddcui Qt5::Widgets ${GLIB2_LIBRARIES} ${DDCUTIL_LIBRARIES} ${DDCUTIL_LIBRARY})
 
 install(TARGETS ddcui DESTINATION bin)
 
