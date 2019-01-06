@@ -30,3 +30,4 @@ CMakeLists_with_coverity_dummies.txt
 make_archive
 *.tar.gz
 CMakeLists_*
+/src/alt
