@@ -32,7 +32,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 # CONFIG += apply_cancel
-# CONFIG += alt_features
 
 apply_cancel {
    APPLY_CANCEL_FLAG = 1
@@ -43,15 +42,6 @@ else {
    APPLY_CANCEL_FLAG = 0
 }
   
-CONFIG(alt_features) {
-  message("setting ALT_FEATURES_FLAG")
-  ALT_FEATURES_FLAG = 1
-}
-else {
-  message("NOT setting ALT_FEATURES_FLAG")
-  ALT_FEATURES_FLAG = 0
-}
-
 
 versionconfig.input = qconfig.h.in
 versionconfig.output = config.h
@@ -104,29 +94,6 @@ SOURCES += \
     src/feature_value_widgets/value_2button_widget.cpp \
     src/feature_value_widgets/value_stacked_widget.cpp \
     src/feature_value_widgets/value_std_widget.cpp 
-
-
-CONFIG(alt_features) {
-SOURCES += \
-    src/alt/table_model_view/table_model_view_ui.cpp \
-    src/alt/table_model_view/feature_table_model.cpp \
-    src/alt/table_model_view/feature_value_tableitem_abstract_editor.cpp \
-    src/alt/table_model_view/feature_value_tableitem_cb_editor.cpp \
-    src/alt/table_model_view/feature_value_tableitem_cont_editor.cpp \
-    src/alt/table_model_view/feature_value_tableitem_delegate.cpp
-
-SOURCES += \
-    src/alt/table_widget/table_widget_ui.cpp
-    
-SOURCES += \
-    src/alt/list_model_view/list_model_view_ui.cpp \
-    src/alt/list_model_view/feature_item_model.cpp
-
-SOURCES += \
-    src/alt/list_widget/list_widget_ui.cpp \
-    src/alt/list_widget/feature_list_widget.cpp \
-    src/alt/list_widget/feature_widget_extended.cpp
-}
 
 
 SOURCES += \
@@ -206,29 +173,6 @@ HEADERS += \
     src/feature_value_widgets/value_reset_widget.h \
     src/feature_value_widgets/value_2button_widget.h \
     src/feature_value_widgets/value_stacked_widget.h
-
-
-CONFIG(alt_features) {
-HEADERS += \
-    src/alt/table_model_view/table_model_view_ui.h \
-    src/alt/table_model_view/feature_table_model.h \
-    src/alt/table_model_view/feature_value_tableitem_abstract_editor.h \
-    src/alt/table_model_view/feature_value_tableitem_cb_editor.h \
-    src/alt/table_model_view/feature_value_tableitem_cont_editor.h \
-    src/alt/table_model_view/feature_value_tableitem_delegate.h
-
-HEADERS += \
-    src/alt/table_widget/table_widget_ui.h
-
-HEADERS += \
-   src/alt/list_model_view/list_model_view_ui.h \
-   src/alt/list_model_view/feature_item_model.h
-
-HEADERS += \
-    src/alt/list_widget/list_widget_ui.h \
-    src/alt/list_widget/feature_list_widget.h \
-    src/alt/list_widget/feature_widget_extended.h
-}
 
 
 HEADERS += \
