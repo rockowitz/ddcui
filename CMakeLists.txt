@@ -57,7 +57,6 @@ include_directories(SYSTEM ${Qt5Widgets_INCLUDE_DIRS} ${GLIB2_INCLUDE_DIRS} ${DD
 
 # both work:
 OPTION(APPLY_CANCEL "Use Accept/Cancel buttons" OFF)
-set(ALT_FEATURES OFF)
 # set(COVERITY_DUMMIES OFF)
 configure_file(cconfig.h.in config.h)
 
@@ -115,26 +114,6 @@ set(SOURCES
     src/main/msgbox_thread.cpp
 )
 
-if (ALT_FEATURES) 
-   set (SOURCES ${SOURCES} 
-       src/alt/table_model_view/table_model_view_ui.cpp 
-       src/alt/table_model_view/feature_table_model.cpp 
-       src/alt/table_model_view/feature_value_tableitem_abstract_editor.cpp 
-       src/alt/table_model_view/feature_value_tableitem_cb_editor.cpp 
-
-       src/alt/table_model_view/feature_value_tableitem_cont_editor.cpp 
-       src/alt/table_model_view/feature_value_tableitem_delegate.cpp
-
-       src/alt/table_widget/table_widget_ui.cpp
-
-       src/alt/list_model_view/list_model_view_ui.cpp 
-       src/alt/list_model_view/feature_item_model.cpp
-
-       src/alt/list_widget/list_widget_ui.cpp 
-       src/alt/list_widget/feature_list_widget.cpp 
-       src/alt/list_widget/feature_widget_extended.cpp
-   )
-endif()
 
 # file(GLOB dummy_SOURCES src/dummies/*.cpp)
 # if (COVERITY_DUMMIES) 
