@@ -85,68 +85,6 @@ public:
     void setFeatureItemModel(FeatureItemModel * listModel);      // ALT
     void setFeatureTableModel(FeatureTableModel * tableModel);
 
-#ifdef ALT_FEATURES
-// *** Begin Functions and Variables for Alternative Central Widgets ***
-
-public:
-    // For selecting among alternative features views
-    enum FeaturesView {
-       FEATURES_VIEW_SCROLLAREA_VIEW,
-       FEATURES_VIEW_SCROLLAREA_MOCK,
-       FEATURES_VIEW_TABLEVIEW,
-       FEATURES_VIEW_TABLEWIDGET,
-       FEATURES_VIEW_LISTVIEW,
-       FEATURES_VIEW_LISTWIDGET,
-       FEATURES_VIEW_UNSET
-    };
-
-
-
-    FeaturesView         _curFeaturesView = FEATURES_VIEW_UNSET;
-
-
-
-#ifdef UNUSED
-    QWidget *           page_vcp;
-    QListWidget *       vcpListWidget;
-    int                 _pageno_vcp;
-#endif
-
-    // FEATURES_VIEW_LISTWIDGET, initListWidget()
-    QWidget *           _page_listWidget   = NULL;
-    FeatureListWidget * _featureListWidget = NULL;
-    int                 _pageno_listWidget = -1;
-
-#ifdef UNUSED
-    QWidget *page_list_widget;
-    // QListWidget *feature_listWidget;
-    FeatureListWidget * feature_listWidget;
-    int _pageno_list_widget;
-#endif
-
-    // FEATURES_VIEW_LISTVIEW
-    QWidget *           page_list_view    = NULL;
-    QListView *         vcp_listView      = NULL;
-    int                 _pageno_list_view = -1;
-
-    // FEATURES_VIEW_TABLEWIDGET
-    // init function defined, but no action
-    QWidget *           page_table_item     = NULL;
-    QTableWidget *      tableWidget         = NULL;
-    int                 _pageno_table_item  = -1;
-
-    // FEATURES_VIEW_TABLEVIEW
-    QWidget *           _page_table_view   = NULL;
-    QTableView *        _vcp_tableView     = NULL;
-    int                 _pageno_table_view = -1;
-
-    // QScrollArea *                 _page_features_scrollarea;
-    // FeaturesScrollAreaContents *  _featuresScrollAreaContents;
-    // int                           _pageno_features_scrollarea;
-
-    // *** End Alternative Central Widgets ***
-#endif
-
 };
 
 #endif // MONITOR_H
