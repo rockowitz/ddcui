@@ -61,9 +61,7 @@ inline const char * sbool(bool val) { return (val) ? "true" : "false"; }
 #ifdef APPLY_CANCEL
 const bool useApplyCancel    = true;
 #endif
-#ifdef ALT_FEATURES
-const bool enableAltFeatures = true;
-#endif
+
 
 
 inline const char * qs2s(QString qstr) {return qstr.toLatin1().data(); }
