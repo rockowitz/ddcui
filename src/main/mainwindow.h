@@ -79,12 +79,7 @@ private slots:
     // View Menu
     void on_actionMonitorSummary_triggered();
     void on_actionCapabilities_triggered();
-#ifdef ALT_FEATURES
-    void on_actionFeaturesTableView_triggered();
-    void on_actionFeaturesListView_triggered();
-    void on_actionFeaturesListWidget_triggered();
-    void on_actionFeaturesScrollAreaMock_triggered();
-#endif
+
     void on_actionFeaturesScrollArea_triggered();
 
     // Options Menu

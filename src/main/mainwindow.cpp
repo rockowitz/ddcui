@@ -32,17 +32,6 @@
 #include "feature_value_widgets/value_stacked_widget.h"
 #include "mainwindow_ui.h"
 
-
-#ifdef ALT_FEATURES
-#include "alt/list_model_view/feature_item_model.h"
-#include "alt/list_model_view/list_model_view_ui.h"
-#include "alt/list_widget/list_widget_ui.h"
-#include "alt/table_model_view/feature_table_model.h"
-#include "alt/table_model_view/feature_value_tableitem_delegate.h"
-#include "alt/table_model_view/table_model_view_ui.h"
-#include "alt/table_widget/table_widget_ui.h"
-#endif
-
 #include "feature_scrollarea/feature_widget.h"
 #include "feature_scrollarea/features_scrollarea_contents.h"
 #include "feature_scrollarea/features_scrollarea_ui.h"
@@ -195,37 +184,6 @@ void MainWindow::initMonitors() {
         initCapabilitiesWidget(
               curMonitor,
               _ui->centralWidget);
-
-#ifdef ALT_FEATURES
-        if (enableAltFeatures) {
-
-           initListWidget(
-                 curMonitor,
-                 monitorNumber,
-                 baseModel,
-                 _ui->centralWidget
-                 );
-
-           initTableWidget(
-                 curMonitor,
-                 baseModel,
-                 _ui->centralWidget
-                 );
-
-           initTableView(
-                 curMonitor,
-                 baseModel,
-                 _ui->centralWidget
-                 );
-
-   //        initFeaturesScrollArea(
-   //              curMonitor,
-   //              baseModel,
-   //              ui->centralWidget
-   //              );
-
-        }
-#endif
 
         // PRINTFTCM("_msgboxQueue=%p", _msgboxQueue);
         initFeaturesScrollAreaView(
@@ -454,212 +412,20 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
 }
 
 
-// *** Features slots - Alternative feature views ***
-
-#ifdef ALT_FEATURES
-void MainWindow::on_actionFeaturesTableView_triggered()
-{
-    printf("(=============> MainWindow::on_actionFeatures_TableView_triggered)\n");
-    int monitorNdx = _toolbarDisplayCB->currentIndex();
-    Monitor * monitor = _monitors[monitorNdx];
-    monitor->_curFeaturesView = Monitor::FEATURES_VIEW_TABLEVIEW;
-    loadMonitorFeatures(monitor);
-
-    // connect(tview, SIGNAL(cellClicked(int,int)),
-    //         this,  SLOT  (cell_clicked(int,int)));
-
-    connect(monitor->_vcp_tableView, SIGNAL(clicked(QModelIndex)),
-            this,                    SLOT(on_vcpTableView_clicked(QModelIndex)));
-
-    _ui->centralWidget->setCurrentWidget(monitor->_page_table_view);
-    _ui->centralWidget->show();
-}
-
-
-void MainWindow::on_actionFeaturesListView_triggered()
-{
-    std::cout << "(MainWindow::on_actionFeaturesListView()" << endl;
-
-    int monitorNdx = _toolbarDisplayCB->currentIndex();
-    Monitor * monitor = _monitors[monitorNdx];
-    monitor->_curFeaturesView = Monitor::FEATURES_VIEW_LISTVIEW;
-    loadMonitorFeatures(monitor);
-
-    int pageno = monitor->_pageno_list_view;         // ???
-    _ui->centralWidget->setCurrentIndex(pageno);
-
-    _ui->centralWidget->show();
-}
-
-
-void MainWindow::on_actionFeaturesListWidget_triggered()
-{
-    printf("=================== (MainWindow::%s) Starting\n", __func__);  fflush(stdout);
-    int monitorNdx = _toolbarDisplayCB->currentIndex();
-    Monitor * monitor = _monitors[monitorNdx];
-    monitor->_curFeaturesView = Monitor::FEATURES_VIEW_LISTWIDGET;
-    loadMonitorFeatures(monitor);
-
-    // TO FIX:
-    // FeatureListWidget * lwidget = monitor->_featureListWidget;  // unused
-    // lview->setModel(monitor->_listModel);
-
-    // TO FIX:
-    _ui->centralWidget->setCurrentIndex(monitor->_pageno_listWidget);
-    _ui->centralWidget->show();
-}
-#endif
-
-#ifdef ALT_FEATURES
-void MainWindow::on_actionFeaturesScrollAreaMock_triggered()
-{
-    printf("(MainWindow::%s) Starting\n", __func__);  fflush(stdout);
-
-    Monitor * monitor = _monitors[0];
-    DDCA_Display_Ref dref = monitor->_displayInfo->dref;
-
-
-    ValueStdWidget * mock1 = new ValueStdWidget();
-        // DDCA_MCCS_Version_Spec vspec1 = {2,0};
-        DDCA_Non_Table_Vcp_Value val1 = {0, 254, 0, 20};
-        DDCA_Feature_Flags flags1 = DDCA_RW | DDCA_STD_CONT;
-        DDCA_Feature_Metadata * md1 = (DDCA_Feature_Metadata*)calloc(1,sizeof(DDCA_Feature_Metadata));
-        md1->feature_code = 0x22;
-        md1->feature_desc =  (char*) "Description of feature X22";
-        md1->feature_flags = flags1;
-        md1->feature_name  = (char*) "Feature X22";
-        memcpy(md1->marker, DDCA_FEATURE_METADATA_MARKER, 4);
-        // md1->mmid = NULL;
-        md1->sl_values = NULL;
-        // md1->vspec = vspec1;
-
-        FeatureValue * fv1 = new FeatureValue(0x22, dref, *md1, NULL, val1);
-        mock1->setFeatureValue(*fv1);
-
-    ValueContWidget * mock2 = new ValueContWidget();
-        DDCA_Non_Table_Vcp_Value val2 = {0, 100, 0, 50};
-        DDCA_Feature_Flags flags2 = DDCA_RW | DDCA_STD_CONT;
-        DDCA_Feature_Metadata * md2 = (DDCA_Feature_Metadata*) calloc(1, sizeof(DDCA_Feature_Metadata));
-        memcpy(md2, md1, sizeof(DDCA_Feature_Metadata));
-        md2->feature_flags = flags2;
-        FeatureValue * fv2 = new FeatureValue(0x10, dref, *md2, NULL, val2);
-        mock2->setFeatureValue(*fv2);
-
-    ValueStackedWidget * mock3 = new ValueStackedWidget();
-        DDCA_Non_Table_Vcp_Value val3 = {0, 80, 0, 30};
-        DDCA_Feature_Flags flags3 = DDCA_RW | DDCA_STD_CONT;
-        md2->feature_flags = flags3;
-        FeatureValue * fv3 = new FeatureValue(0x10, dref, *md2, NULL, val3);
-        mock3->setFeatureValue(*fv3);
-
-    ValueStackedWidget * mock4 = new ValueStackedWidget();
-        DDCA_Feature_Flags flags4 = DDCA_RW | DDCA_COMPLEX_CONT;
-        DDCA_Feature_Metadata * md4 = (DDCA_Feature_Metadata*) calloc(1, sizeof(DDCA_Feature_Metadata));
-        memcpy(md4, md2, sizeof(DDCA_Feature_Metadata));
-        md4->feature_flags = flags4;
-        FeatureValue * fv4 = new FeatureValue(0x10, dref, *md4, NULL, val3);
-        mock4->setFeatureValue(*fv4);
-
-    FeatureWidget * mock5 = new FeatureWidget();
-        mock5->setFeatureValue(*fv4);
-        printf("mock5:\n");  mock5->dbgrpt();  fflush(stdout);
-
-    FeatureWidget * mock6 = new FeatureWidget();
-            mock6->setFeatureValue(*fv3);
-
-    FeatureWidget * mock7 = new FeatureWidget();
-        DDCA_Non_Table_Vcp_Value val7 = {0, 0, 0, 4};
-        DDCA_Feature_Flags flags7 = DDCA_RW | DDCA_SIMPLE_NC;
-
-        DDCA_Feature_Metadata * md7 = (DDCA_Feature_Metadata*)  calloc(1,sizeof(DDCA_Feature_Metadata));
-        md7->feature_code = 0x60;
-        md7->feature_desc = (char*) "Description of feature X22";
-        md7->feature_flags = flags7;
-        md7->feature_name  =  (char *) "Input Source";
-        memcpy(md1->marker, DDCA_FEATURE_METADATA_MARKER, 4);
-       // md7->mmid = NULL;
-        // doesn't compile, to address if I ever really need the mock data again
-        // md7->sl_values = {{0x01, "Input 1"},{0x02, "Input 2"}};
-       //  md7->vspec = vspec1;
-
-
-        FeatureValue * fv7 = new FeatureValue(0x60, dref, *md7, NULL, val7);
-        mock7->setFeatureValue(*fv7);
-
-    FeaturesScrollAreaContents * featuresScrollAreaContents =
-          new FeaturesScrollAreaContents();
-
-    QVBoxLayout * vLayout = new QVBoxLayout();
-    vLayout->setMargin(0);
-    featuresScrollAreaContents->setLayout(vLayout);   // ok
-    // will it work here?  NO, FAIL-3 - even later take and reset
-    // ui->featuresScrollArea->setWidget(ui->featuresScrollAreaContents);  // ALT-2
-
-    vLayout->addWidget(mock4);
-    vLayout->addWidget(mock3);
-    vLayout->addWidget(mock5);
-    vLayout->addWidget(mock7);
-    vLayout->addWidget(mock6);
-
-    vLayout->setContentsMargins(0,0,0,0);
-
-    // ui->featuresScrollAreaContents->setLayout(vLayout);  // ok here
-
-    // From doc for void QScrollArea::setWidget(QWidget *widget)
-    // Note that You must add the layout of widget before you call this function;
-    // if you add it later, the widget will not be visible - regardless of when you
-    // show() the scroll area. In this case, you can also not show() the widget later.
-
-    QScrollArea * page_features_scrollarea = new QScrollArea();
-
-    page_features_scrollarea->setWidget(featuresScrollAreaContents);  // ALT-2
-
-
-    if (debugLayout)
-       featuresScrollAreaContents->setStyleSheet("background-color:beige;");
-
-    _ui->centralWidget->addWidget(page_features_scrollarea);
-    _ui->centralWidget->setCurrentWidget(page_features_scrollarea);
-    _ui->centralWidget->show();
-
-    delete fv1;
-    delete fv2;
-    delete fv3;
-    delete fv4;
-    delete fv7;
-    free(md1);
-    free(md2);
-    free(md4);
-    free(md7);
-}
-#endif
-
-// *** End Slots for Alternative Features Views ***
-
-
 // *** Features slots - FeaturesScrollArea ***
 
 void MainWindow::on_actionFeaturesScrollArea_triggered()
 {
     if (debugFeatureSelection) {
-#ifdef ALT_FEATURES
-        PRINTFTCM("Desired view: %d, features view: %d, feature list:",
-                 View::FeaturesView, Monitor::FEATURES_VIEW_SCROLLAREA_VIEW);
-#else
+
         PRINTFTCM("Desired view: %d, feature list:", View::FeaturesView);
-#endif
         this->_feature_selector->dbgrpt();
     }
 
     int monitorNdx = _toolbarDisplayCB->currentIndex();
     Monitor * monitor = _monitors[monitorNdx];
     if (debugFeatureSelection) {
-#ifdef ALT_FEATURES
-        PRINTFTCM("Current view: %d, features view: %d, feature list:",
-                 _curView, monitor->_curFeaturesView);
-#else
         PRINTFTCM("Current view: %d, feature list:", _curView);
-#endif
         monitor->_curFeatureSelector.dbgrpt();
     }
 
@@ -675,9 +441,6 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
     // TODO Combine View, features view
     if (_curView                     != View::FeaturesView                     ||
         _curDisplayIndex             != monitorNdx                             ||
-#ifdef ALT_FEATURES
-        monitor->_curFeaturesView    != Monitor::FEATURES_VIEW_SCROLLAREA_VIEW ||
-#endif
         monitor->_curFeatureSelector != *_feature_selector )
     {
        loadMonitorFeatures(monitor);
@@ -685,9 +448,7 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
        _curView = View::FeaturesView;
        _ui->actionRescan->setEnabled(true);
        _ui->actionFeaturesScrollArea->setChecked(true);
-#ifdef ALT_FEATURES
-       monitor->_curFeaturesView = Monitor::FEATURES_VIEW_SCROLLAREA_VIEW;
-#endif
+
        monitor->_curFeatureSelector   = *_feature_selector;
     }
     else {

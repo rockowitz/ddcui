@@ -47,12 +47,6 @@ public:
     // Actions Menu
     QAction     *actionRescan = NULL;
 
-#ifdef ALT_FEATURES
-    QAction     *actionFeaturesListWidget;        // for ListWidget
-    QAction     *actionFeaturesListView;
-    QAction     *actionFeaturesTableView;
-    QAction     *actionFeaturesScrollAreaMock;
-#endif
     QAction     *actionFeaturesScrollArea = NULL;
 private:
     // Options Menu
