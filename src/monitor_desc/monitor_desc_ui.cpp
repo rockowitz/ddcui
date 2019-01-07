@@ -1,6 +1,6 @@
 // monitor_desc_ui.cpp
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "monitor_desc/monitor_desc_ui.h"

@@ -1,10 +1,8 @@
 /* monitor.h */
 
-/* <copyright>
- * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+/* Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
- * </endcopyright>
  */
 
 #ifndef MONITOR_H
