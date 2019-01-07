@@ -1,11 +1,7 @@
-/* ddcui_globals.cpp
- *
- * <copyright>
- * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
- *
- * SPDX-License-Identifier: GPL-2.0-or-later
- * </copyright>
- */
+// ddcui_globals.cpp
+
+// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "ddcui_globals.h"
 
