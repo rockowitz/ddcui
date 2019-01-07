@@ -1,8 +1,7 @@
 /* mainwindow_ui.h - Extracted from uic generated ui code */
 
-/* Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
- * SPDX-License-Identifier: GPL-2.0-or-later
- */
+// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef UI_MAINWINDOW2_H
 #define UI_MAINWINDOW2_H

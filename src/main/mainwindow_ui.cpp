@@ -1,8 +1,7 @@
-/* mainwindow_ui.cpp
- *
- * Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
- * SPDX-License-Identifier: GPL-2.0-or-later
- */
+// mainwindow_ui.cpp
+
+// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// SPDX-License-Identifier: GPL-2.0-or-later
 
 // Note:  This file cannot be named ui_mainwindow.cpp.
 // The cmake autouic directive regards the "ui_" prefix as special.
