@@ -1,4 +1,4 @@
-/* value_2button_widget.cpp */
+/* value_2button_widget.cpp - Widget containing 2 named buttons */
 
 // Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
