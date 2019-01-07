@@ -78,12 +78,14 @@ private:
     const char *  _cls;    // className
     QHash<DDCA_Feature_Subset_Id, DDCA_Feature_List> _features;
 
+#ifdef ALT_FEATURES
     // try removing from ifdef
 public:
     FeatureItemModel *   _listModel;   // for central widget alternative
     FeatureTableModel *  _tableModel;
     void setFeatureItemModel(FeatureItemModel * listModel);      // ALT
     void setFeatureTableModel(FeatureTableModel * tableModel);
+#endif
 
 };
 
