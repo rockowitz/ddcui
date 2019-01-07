@@ -29,12 +29,6 @@ ValueStdWidget::ValueStdWidget(QWidget *parent):
     font.setPointSize(8);
     QWidget::setFont(font);
 
-    QFont monoValueFont;
-    monoValueFont.setFamily(QString::fromUtf8("Monospace"));
-
-    QFont nonMonoValueFont;
-
-    // printf("(%s::%s) Starting\n", _cls, __func__);  fflush(stdout);
     _valueField = new QLabel();
     _valueField->setAlignment(Qt::AlignLeft);
     // _valueField->setFrameStyle(QFrame::Sunken | QFrame::Panel);  // now set in ValueBaseWidget
@@ -43,32 +37,23 @@ ValueStdWidget::ValueStdWidget(QWidget *parent):
     _valueField->setFont(font);
     _valueField->setIndent(5);
 
-    // QSizePolicy* sizePolicy = new QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
     QSizePolicy* sizePolicy = new QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
     sizePolicy->setHorizontalStretch(1);
-    // _cb->setHorizontalStretch(0);
     _valueField->setSizePolicy(*sizePolicy);
     delete sizePolicy;
+
     QHBoxLayout * layout = new QHBoxLayout();
     layout->setContentsMargins(0,0,0,0);
     layout->addWidget(_valueField);
     setLayout(layout);
 
-    // int fieldFrameStyle;
-    // fieldFrameStyle = QFrame::Sunken | QFrame::Panel;
-    // fieldFrameStyle = QFrame::Plain | QFrame::Box;
-
     if (debugLayout) {
        this->setStyleSheet("background-color:magenta;");
-       // _valueField->setStyleSheet("background-color:fuschia;");
-
        if (!dimensionReportShown) {
-           PRINTFCM("_valueField dimensions\n");
+           PRINTFCM("_valueField dimensions");
            reportWidgetDimensions(_valueField, _cls, __func__);
-
-           PRINTFCM("ValueStdWidget dimensions\n");
+           PRINTFCM("ValueStdWidget dimensions");
            reportWidgetDimensions(this, _cls, __func__);
-
            dimensionReportShown = true;
        }
     }
