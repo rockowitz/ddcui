@@ -1,8 +1,7 @@
 /** \file parsed_cmd.h */
 
-/* Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
- * SPDX-License-Identifier: GPL-2.0-or-later
- */
+// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef PARSED_CMD_H_
 #define PARSED_CMD_H_
