@@ -42,10 +42,6 @@ Monitor::Monitor(DDCA_Display_Info * display_info, int monitorNumber)
     ,  _baseModel(NULL)
  //   ,  _cls(metaObject()->className()) // -Wreorder
     ,  _requestQueue(NULL)
-#ifdef ALT_FEATURES
-    ,  _listModel(NULL)
-    ,  _tableModel(NULL)
-#endif
 
 {
    _cls = metaObject()->className();
@@ -115,15 +111,7 @@ bool Monitor::supportsDdc() {
    return result;
 }
 
-#ifdef ALT_FEATURES
-void Monitor::setFeatureItemModel(FeatureItemModel * model) {
-   _listModel = model;
-}
 
-void Monitor::setFeatureTableModel(FeatureTableModel * tableModel) {
-    this->_tableModel = tableModel;
-}
-#endif
 
 void Monitor::putVcpRequest(VcpRequest * rqst) {
     // PRINTFCM("rqst->type=%d. Adding request to monitor's request queue", rqst->_type);
