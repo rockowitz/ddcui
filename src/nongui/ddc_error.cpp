@@ -39,7 +39,7 @@ DdcError::~DdcError() {
 
 QString DdcError::repr() {
    // printf("(DdcError::repr) Executing\n"); fflush(stdout);
-   char * s = ddca_rc_name(_ddcErrno);
+   const char * s = ddca_rc_name(_ddcErrno);
    QString msg = QString("[function=%1, ddcrc=%2 - %3]")
                     .arg(_ddcFunction)
                     .arg(_ddcErrno)
@@ -114,7 +114,7 @@ DdcDetailedError::~DdcDetailedError() {
 
 QString DdcDetailedError::repr() {
    // printf("(DdcDetailedError::repr) Executing\n"); fflush(stdout);
-   char * s = ddca_rc_name(_ddcErrno);
+   const char * s = ddca_rc_name(_ddcErrno);
    QString msg = QString("DdcDetailedError[function=%1, ddcrc=%2 - %3]")
                     .arg(_ddcFunction)
                     .arg(_ddcErrno)
@@ -171,7 +171,7 @@ DdcFeatureError::~DdcFeatureError() {
 
 QString DdcFeatureError::repr() {
    // printf("(DdcFeatureError::repr) Executing\n"); fflush(stdout);
-   char * s = ddca_rc_name(_ddcErrno);
+   const char * s = ddca_rc_name(_ddcErrno);
    QString msg = QString("[feature=0x%1, function=%2, ddcrc=%3 - %4]")
                     .arg(_featureCode, 2, 16)
                     .arg(_ddcFunction)
@@ -228,7 +228,7 @@ DdcVerifyError::~DdcVerifyError() {
 
 QString DdcVerifyError::repr() {
    // printf("(DdcVerifyError::repr)\n"); fflush(stdout);
-   char * s = ddca_rc_name(_ddcErrno);
+   const char * s = ddca_rc_name(_ddcErrno);
    QString msg = QString("[feature=0x%1, function=%2, ddcrc=%3 - %4, expected: 0x%5, observed: 0x%6]")
                     .arg(_featureCode, 2, 16)
                     .arg(_ddcFunction)
