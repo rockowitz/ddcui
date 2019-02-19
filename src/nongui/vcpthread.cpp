@@ -110,7 +110,7 @@ void VcpThread::loadDynamicFeatureRecords()
 
    DDCA_Display_Handle dh;
 
-   DDCA_Status ddcrc = ddca_open_display(this->_dref, &dh);
+   DDCA_Status ddcrc = ddca_open_display2(this->_dref, false, &dh);
    if (ddcrc != 0) {
        rpt_ddca_status(0, __func__, "ddca_open_display", ddcrc);
    }
@@ -149,9 +149,9 @@ void VcpThread::capabilities() {
    char *              caps = NULL;
    DDCA_Capabilities * parsed_caps = NULL;
 
-   DDCA_Status ddcrc = ddca_open_display(this->_dref, &dh);
+   DDCA_Status ddcrc = ddca_open_display2(this->_dref, false, &dh);
    if (ddcrc != 0) {
-         rpt_ddca_status(0, __func__, "ddca_open_display", ddcrc);
+         rpt_ddca_status(0, __func__, "ddca_open_display2", ddcrc);
    }
    else {
 #ifdef MOVED
@@ -197,9 +197,9 @@ void VcpThread::getvcp(uint8_t featureCode, bool reportUnsupported) {
     DDCA_Non_Table_Vcp_Value              valrec;
     DDCA_Feature_Metadata *               finfo;
 
-    DDCA_Status ddcrc = ddca_open_display(this->_dref, &dh);
+    DDCA_Status ddcrc = ddca_open_display2(this->_dref, false, &dh);
     if (ddcrc != 0) {
-          rpt_ddca_status(0, __func__, "ddca_open_display", ddcrc);
+          rpt_ddca_status(0, __func__, "ddca_open_display2", ddcrc);
     }
     else {
        QString msg;
@@ -265,10 +265,10 @@ void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint8_t sl)
     // rpt_ddca_status(feature_code, __func__, "ddca_bogus", 0);
 
     DDCA_Display_Handle         dh;
-    DDCA_Status ddcrc = ddca_open_display(this->_dref, &dh);
+    DDCA_Status ddcrc = ddca_open_display2(this->_dref, false, &dh);
     if (ddcrc != 0) {
-        PRINTFTCM("ddca_open_display() returned %d", ddcrc);
-        rpt_ddca_status(feature_code, __func__, "ddca_open_display", ddcrc);
+        PRINTFTCM("ddca_open_display2() returned %d", ddcrc);
+        rpt_ddca_status(feature_code, __func__, "ddca_open_display2", ddcrc);
         goto bye;
     }
 
