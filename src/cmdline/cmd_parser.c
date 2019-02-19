@@ -28,13 +28,12 @@
  */
 Parsed_Cmd * parse_command(int argc, char * argv[]) {
    bool debug = false;
-   if (debug)
-      printf("(%s) Starting\n", __func__ );
 
    if (debug) {
+      printf("(%s) Starting\n", __func__ );
+
       printf("argc=%d\n", argc);
-      int ndx = 0;
-      for (; ndx < argc; ndx++) {
+      for (int ndx=0; ndx < argc; ndx++) {
          printf("argv[%d] = |%s|\n", ndx, argv[ndx]);
       }
    }
@@ -84,7 +83,7 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
       printf("ddcui %s\n", DDCUI_VERSION);
        puts("");
       // if no command specified, include license in version information and terminate
-         puts("Copyright (C) 2018 Sanford Rockowitz");
+         puts("Copyright (C) 2018-2019 Sanford Rockowitz");
          puts("License GPLv2: GNU GPL version 2 or later <http://gnu.org/licenses/gpl.html>");
          puts("This is free software: you are free to change and redistribute it.");
          puts("There is NO WARRANTY, to the extent permitted by law.");
