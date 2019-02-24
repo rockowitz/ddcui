@@ -26,8 +26,15 @@ src/config.h
 CMakeLists_with_coverity_dummies.txt
 *.ctl
 *.lst
+<<<<<<< HEAD
 *.tgz
 make_archive
 *.tar.gz
 CMakeLists_*
 /src/alt
+=======
+CMakeLists_cpack_entries.txt
+ddcui-coverity.tgz
+make_archive
+
+>>>>>>> more to ignore
