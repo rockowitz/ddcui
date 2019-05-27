@@ -1,4 +1,6 @@
-/* \file cmd_parser.c */
+/* \file cmd_parser.c
+ * ddcui command line parser
+ */
 
 // Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
@@ -12,12 +14,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 
 #include "base/ddcui_parms.h"
-
-#include "cmdline/cmd_parser.h"
 #include "cmdline/parsed_cmd.h"
+#include "cmdline/cmd_parser.h"
 
 /** Primary parsing function
  *
