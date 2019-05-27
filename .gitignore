@@ -29,6 +29,7 @@ CMakeLists_with_coverity_dummies.txt
 <<<<<<< HEAD
 *.tgz
 make_archive
+make_dist_archive
 *.tar.gz
 CMakeLists_*
 /src/alt
