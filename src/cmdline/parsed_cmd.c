@@ -1,11 +1,11 @@
-/** \file parsed_cmd.c */
+/** \file parsed_cmd.c - parsed ddcui command line */
 
 // Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 /** \cond */
 #include <assert.h>
-#include <glib-2.0/glib.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -15,7 +15,7 @@
 
 /** Allocates new Parsed_Cmd data structure, sets default values.
  *
- *  @return initialized Parsed_Cmd
+ *  @return initialized #Parsed_Cmd
  */
 Parsed_Cmd *  new_parsed_cmd() {
    Parsed_Cmd * parsed_cmd = (Parsed_Cmd*) calloc(1, sizeof(Parsed_Cmd));
@@ -39,10 +39,14 @@ Parsed_Cmd *  new_parsed_cmd() {
 void free_parsed_cmd(Parsed_Cmd * parsed_cmd) {
    bool debug = false;
    if (debug)
-      printf("(%s) Starting.  parsed_cmd=%p\n", __func__, parsed_cmd);
-   assert ( memcmp(parsed_cmd->marker,PARSED_CMD_MARKER,4) == 0);
+      printf("(%s) Starting.  parsed_cmd=%p\n", __func__, (void*) parsed_cmd);
 
-   free(parsed_cmd);
+   if (parsed_cmd) {
+      assert ( memcmp(parsed_cmd->marker,PARSED_CMD_MARKER,4) == 0);
+      parsed_cmd->marker[3] = 'x';
+      free(parsed_cmd);
+   }
+
    if (debug) {
       printf("(%s) Done\n", __func__); fflush(stdout);
    }
