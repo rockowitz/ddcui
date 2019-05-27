@@ -145,6 +145,7 @@ void MainWindow::initMonitors() {
     QString msg = QString("Loading display information... ");
     _ui->statusBar->showMessage(msg);
 
+    ddca_set_trace_groups(DDCA_TRC_API);
     DDCA_Status ddcrc = ddca_get_display_info_list2(
                             true,        	// include invalid displays?
                             &_dlist);
