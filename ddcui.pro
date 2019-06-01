@@ -66,6 +66,7 @@ SOURCES += \
 
 SOURCES += \
     src/cmdline/parsed_cmd.c \
+    src/cmdline/cmd_parser_aux.c \
     src/cmdline/cmd_parser.c
 
 SOURCES += \
@@ -145,6 +146,7 @@ HEADERS += \
 
 HEADERS += \
     src/cmdline/parsed_cmd.h \
+    src/cmdline/cmd_parser_aux.h \
     src/cmdline/cmd_parser.h
 
 

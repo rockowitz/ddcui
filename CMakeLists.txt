@@ -75,6 +75,7 @@ set(SOURCES
     src/base/other_options_state.cpp 
 
     src/cmdline/parsed_cmd.c
+    src/cmdline/cmd_parser_aux.c
     src/cmdline/cmd_parser.c
 
     src/nongui/ddc_error.cpp 
