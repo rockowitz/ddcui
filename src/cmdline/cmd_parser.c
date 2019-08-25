@@ -108,7 +108,7 @@ gboolean stats_arg_func(const    gchar* option_name,
  *          NULL if execution should be terminated
  */
 Parsed_Cmd * parse_command(int argc, char * argv[]) {
-   bool debug = true;
+   bool debug = false;
 
    if (debug) {
       printf("(%s) Starting\n", __func__ );
@@ -125,7 +125,9 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
    gboolean enable_udf_flag        = false;
    gboolean nousb_flag             = false;
    gboolean report_freed_excp_flag = false;
+#ifdef UNIMPLEMENTED
    gboolean timestamp_trace_flag   = false;
+#endif
    gboolean version_flag           = false;
    gchar**  cmd_and_args           = NULL;
    gchar**  trace_classes          = NULL;
@@ -137,7 +139,7 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
    //  monitor selection options
 
    // output control
-         {"ddc",     '\0', 0, G_OPTION_ARG_NONE,     &ddc_flag,         "Report DDC protocol and data errors", NULL},
+      {"ddc",     '\0', 0, G_OPTION_ARG_NONE,     &ddc_flag,         "Report DDC protocol and data errors", NULL},
 
       {"udf",     '\0', 0, G_OPTION_ARG_NONE,     &enable_udf_flag,  "Enable user defined feature support", NULL},
       {"noudf",   '\0', G_OPTION_FLAG_REVERSE,
@@ -146,8 +148,11 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
 
       // tuning
       {"maxtries",'\0', 0, G_OPTION_ARG_STRING,   &maxtrywork,       "Max try adjustment",  "comma separated list" },
+#ifdef UNIMPLEMENTED
+      // unclear how to implement in GUI environment
       {"stats",   's',  G_OPTION_FLAG_OPTIONAL_ARG,
                            G_OPTION_ARG_CALLBACK, stats_arg_func,    "Show retry statistics",    "stats type"},
+#endif
 
   // debugging
       {"excp",    '\0', 0, G_OPTION_ARG_NONE,     &report_freed_excp_flag,  "Report freed exceptions", NULL},
@@ -155,19 +160,21 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
   //  {"trace",   '\0', 0, G_OPTION_ARG_STRING,   &tracework,        "Trace classes",          "comma separated list" },
       {"trcfunc", '\0',0, G_OPTION_ARG_STRING_ARRAY, &trace_functions, "Trace functions",     "function name" },
       {"trcfile", '\0',0, G_OPTION_ARG_STRING_ARRAY, &trace_filenames,    "Trace files",     "file name" },
+#ifdef UNIMPLEMENTED
       {"timestamp",'\0',  0, G_OPTION_ARG_NONE,   &timestamp_trace_flag, "Prepend trace msgs with elapsed time",  NULL},
       {"ts",      '\0',   0, G_OPTION_ARG_NONE,   &timestamp_trace_flag, "Prepend trace msgs with elapsed time",  NULL},
-
+#endif
       {"version", 'V',  0, G_OPTION_ARG_NONE,     &version_flag,     "Show version information", NULL},
 
+      // collect to verify that does not exist
       {G_OPTION_REMAINING,
-                 '\0', 0,  G_OPTION_ARG_STRING_ARRAY, &cmd_and_args, "ARGUMENTS description",   "command [arguments...]"},
+                 '\0', 0,  G_OPTION_ARG_STRING_ARRAY, &cmd_and_args, NULL,   NULL},
 
       { NULL }
    };
 
    GError* error = NULL;
-   GOptionContext* context = g_option_context_new("- DDC query and manipulation");
+   GOptionContext* context = g_option_context_new("- graphical interface to ddcutil");
    g_option_context_add_main_entries(context, option_entries, NULL);
 
    g_option_context_set_help_enabled(context, true);
@@ -214,7 +221,9 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
 
    parsed_cmd->stats_types      = stats_work;
    SET_CMDFLAG(CMD_FLAG_DDCDATA,           ddc_flag);
+#ifdef UNIMPLEMENTED
    SET_CMDFLAG(CMD_FLAG_TIMESTAMP_TRACE,   timestamp_trace_flag);
+#endif
    SET_CMDFLAG(CMD_FLAG_REPORT_FREED_EXCP, report_freed_excp_flag);
 
    SET_CMDFLAG(CMD_FLAG_ENABLE_UDF,        enable_udf_flag);
@@ -235,7 +244,8 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
        // int ntsal = ntsa_length(pieces);
        int ntsal = g_strv_length(pieces);
        // DBGMSF(debug, "ntsal=%d", ntsal );
-       if (debug, "(%s) ntsal=%d\n", __func__, ntsal);
+       if (debug)
+          printf("(%s) ntsal=%d\n", __func__, ntsal);
        if (ntsal != 3) {
           fprintf(stderr, "--retries requires 3 values\n");
           ok = false;

@@ -39,7 +39,9 @@ void dbgrpt_parsed_cmd(Parsed_Cmd * parsed_cmd) {
    printf("(%s) Parsed_Cmd at %p\n", __func__, parsed_cmd);
    if (parsed_cmd) {
       printf("   stats:                     0x%08x\n",   parsed_cmd->stats_types);
+#ifdef UNIMPLEMENTED
       printf("   timestamp_trace:           %s\n",      sbool(parsed_cmd->flags & CMD_FLAG_TIMESTAMP_TRACE));
+#endif
       printf("   traced_groups              0x%08x\n",  parsed_cmd->traced_groups);
       if (parsed_cmd->traced_functions) {
          char * joined = g_strjoinv(", ", parsed_cmd->traced_functions);

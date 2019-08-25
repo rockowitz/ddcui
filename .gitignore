@@ -37,5 +37,5 @@ CMakeLists_*
 CMakeLists_cpack_entries.txt
 ddcui-coverity.tgz
 make_archive
-
+config.h
 >>>>>>> more to ignore
