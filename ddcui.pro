@@ -12,6 +12,8 @@ equals(QT_MAJOR_VERSION,5) {
 }
 
 CONFIG += c++11
+# for debugging: 
+CONFIG += no_lflags_merge
 
 QT += core gui widgets help
 
@@ -220,5 +222,36 @@ FORMS += \
 
 RESOURCES = ddcui.qrc
 
-unix: CONFIG += link_pkgconfig
-unix: PKGCONFIG += ddcutil
+
+# The pkg-config code is hard to test, since so many distribution specific configurations. 
+
+CONFIG += link_pkgconfig
+
+# Adding ddcutil to PKGCONFIG has no effect:
+# PKGCONFIG += ddcutil
+
+# Directly calling pkg-config works:
+PKGCONFIG_LIBS     = $$system(pkg-config --libs  ddcutil)
+GLIB_LIBS          = $$system(pkg-config --libs  glib-2.0)
+PKGCONFIG_CFLAGS   = $$system(pkg-config --cflags ddcutil)
+GLIB_CFLAGS        = $$system(pkg-config --cflags glib-2.0 | sed -e 's/-I//g')  # o.w. double -I-I sometimes invalid
+
+INCLUDEPATH += $$PKGCONFIG_CFLAGS
+INCLUDEPATH += $$GLIB_CFLAGS
+LIBS += $$GLIB_LIBS
+LIBS += $$PKGCONFIG_LIBS
+
+# A hack when all else fails, may have to edit paths:
+# LIBS += -L/usr/local/lib/ -lddcutil -lglib-2.0 
+# INCLUDEPATH += -I/usr/local/include
+# INCLUDEPATH += /usr/include/glib-2.0 /usr/lib64/glib-2.0/include
+
+message("GLIB_LIBS        =" $$GLIB_LIBS)
+message("PKGCONFIG_LIBS   =" $$PKGCONFIG_LIBS)
+message("PKGCONFIG_CFLAGS =" $$PKGCONFIG_CFLAGS)
+message("GLIB_CFLAGS      =" $$GLIB_CFLAGS)
+message("CONFIG           =" $$CONFIG)
+message("PKGCONFIG        =" $$PKGCONFIG)
+message("LIBS             =" $$LIBS)
+message("INCLUDEPATH      =" $$INCLUDEPATH)
+message("INCLUDE          =" $$INCLUDE)
