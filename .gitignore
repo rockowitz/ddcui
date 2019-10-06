@@ -22,20 +22,19 @@ callprt*
 ddcui.pro1
 ddcui.pro2
 src/dummies/
-src/config.h
 CMakeLists_with_coverity_dummies.txt
 *.ctl
 *.lst
-<<<<<<< HEAD
 *.tgz
 make_archive
 make_dist_archive
 *.tar.gz
 CMakeLists_*
 /src/alt
-=======
 CMakeLists_cpack_entries.txt
 ddcui-coverity.tgz
 make_archive
 config.h
->>>>>>> more to ignore
+show_libpath
+show_pkgconfig_path
+
