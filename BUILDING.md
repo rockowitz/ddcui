@@ -1,8 +1,8 @@
 # Building **ddcui**
 
 ## Requirements
-- ddcutil 0.9.6 or later.  If installed from pre-compiled packages, the shared library and development packages must be installed
-as well as the main ddcutil package. 
+- ddcutil 0.9.6 or later.  If **ddcutil** is installed from pre-compiled packages, 
+the shared library and development packages must be installed as well as the main ddcutil package. 
 - A recent version of QT 5.  **ddcui** will not build with versions of Qt older than 5.5. 
 Unless you want to modify the the dialog boxes, or prefer the Qt Creator IDE, Qt Creator is not required. 
 
@@ -22,6 +22,8 @@ Unless you want to modify the the dialog boxes, or prefer the Qt Creator IDE, Qt
 ~~~
    cmake <directory containing CMakeLists.txt> 
 ~~~  
+- Using the -S and -B options can ensure that the proper directory is used for the build tree. 
+See the cmake man page for detais.
 
 ## Using QtCreator
 
@@ -43,3 +45,5 @@ To see the default PKGCONFIG search path, issue the command:
 ~~~
 pkg-config --variable pc_path pkg-config
 ~~~
+
+For additional information, [Shared Library Configuration](http://www.ddcutil.com/shared_lib_config.md)
