@@ -5,6 +5,14 @@ project(ddcui)
 # set (coverity_cflags --type_traits_helpers)
 # set (coverity_cflags --no_predefined_feature_test_macros)
 
+message(STATUS "Significant environment variables:")
+message(STATUS "  INCLUDE:        " $ENV{INCLUDE})
+message(STATUS "  LD_LIBRARY_PATH:  $ENV{LD_LIBARARY_PATH}")
+message(STATUS "  PKG_CONFIG_PATH:  $ENV{PKG_CONFIG_PATH} ")
+# message("  NONESUCH:"        $ENV{NONESUCH})
+message(STATUS "")
+
+
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -13,7 +21,7 @@ set(QT5_LIBRARIES Qt5::Widgets )
 set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/build/build_cmake)
 
 set(EXECUTABLE_OUTPUT_PATH, ${CMAKE_BINARY_DIR})
-set(LIBRARY_OUTPUT_PATH,    ${CMAKE_BINARY_DIR})
+# set(LIBRARY_OUTPUT_PATH,    ${CMAKE_BINARY_DIR})
 
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -38,6 +46,7 @@ find_package (PkgConfig REQUIRED)
 pkg_check_modules(GLIB2 REQUIRED glib-2.0)
 
 pkg_check_modules(DDCUTIL REQUIRED ddcutil)
+message("Set by pkg-config:" )
 message( STATUS "GLIB2_INCLUDE_DIRS:    ${GLIB2_INCLUDE_DIRS}" )
 message( STATUS "DDCUTIL_INCLUDE_DIRS:  ${DDCUTIL_INCLUDE_DIRS}" )
 message( STATUS "DDCUTIL_LIBRARY_DIRS:  ${DDCUTIL_LIBRARY_DIRS}" )
