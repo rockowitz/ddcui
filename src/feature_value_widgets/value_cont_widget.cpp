@@ -55,7 +55,8 @@ ValueContWidget::ValueContWidget(QWidget *parent)
 
     _curSpinBox = new QSpinBox();
     _curSpinBox->setSingleStep(1);
-    _curSpinBox->setFixedSize(45,18);
+    _curSpinBox->setFixedSize(85,18);   // extra large for 2 byte values, possible horizontal up/down buttons
+    _curSpinBox->setAlignment(Qt::AlignRight);
     if (debugLayout)
     _curSpinBox->setStyleSheet("background-color:green;");
 
@@ -70,6 +71,8 @@ ValueContWidget::ValueContWidget(QWidget *parent)
     // _maxValue->setFrameStyle(QFrame::Sunken | QFrame::Panel);
     _maxValue->setFrameStyle(QFrame::Plain | QFrame::NoFrame);
     _maxValue->setFixedSize(30,20);
+    _maxValue->setAlignment(Qt::AlignRight);
+
     if (debugLayout)
     _maxValue->setStyleSheet("background-color:blue;");
 
@@ -191,6 +194,8 @@ void ValueContWidget::setFeatureValue(const FeatureValue &fv) {
     PRINTFCMF(debugValueWidgetSignals,
               "feature=0x%02x, curval=%d, maxval=%d", _featureCode, curval, maxval);
 
+    // maxval = 99999;   // for testing big numbers
+    // curval = 99999;
     _guiChange = false;
 
     _curSlider->setTickInterval(maxval/10);
