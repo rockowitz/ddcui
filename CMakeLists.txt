@@ -45,7 +45,7 @@ find_package(Qt5 COMPONENTS Core Widgets Gui Help REQUIRED)
 find_package (PkgConfig REQUIRED)
 pkg_check_modules(GLIB2 REQUIRED glib-2.0)
 
-pkg_check_modules(DDCUTIL REQUIRED ddcutil)
+pkg_check_modules(DDCUTIL REQUIRED ddcutil>=0.9.6)
 message("Set by pkg-config:" )
 message( STATUS "GLIB2_INCLUDE_DIRS:    ${GLIB2_INCLUDE_DIRS}" )
 message( STATUS "DDCUTIL_INCLUDE_DIRS:  ${DDCUTIL_INCLUDE_DIRS}" )
