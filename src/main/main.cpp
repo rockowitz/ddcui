@@ -93,6 +93,15 @@ int main(int argc, char *argv[])
     if (!init_ddcutil_library(parsed_cmd))
        return 1;
 
+    QStringList styles = QStyleFactory::keys();
+    printf("Known styles:\n");
+    for (int ndx = 0;  ndx < styles.size(); ndx++)
+    {
+       printf("  %s\n", styles.at(ndx).toLocal8Bit().constData());
+    }
+
+
+
     MainWindow w;
     w.show();
 
