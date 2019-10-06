@@ -231,6 +231,12 @@ CONFIG += link_pkgconfig
 # PKGCONFIG += ddcutil
 
 # Directly calling pkg-config works:
+# PKG_OK=FALSE
+system(pkg-config --atleast-version 0.9.6 ddcutil):PKG_OK=TRUE
+message(PKG_OK: $$PKG_OK)
+equals(PKG_OK, FALSE) {
+   error("libddcutil version must be at least 0.9.6")
+}
 PKGCONFIG_LIBS     = $$system(pkg-config --libs  ddcutil)
 GLIB_LIBS          = $$system(pkg-config --libs  glib-2.0)
 PKGCONFIG_CFLAGS   = $$system(pkg-config --cflags ddcutil)
