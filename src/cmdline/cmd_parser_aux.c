@@ -49,7 +49,7 @@ char * tracing_comma_separated_option_help =
        "  The argument to --trace is a comma separated list of trace classes, surrounded by \n"
        "  quotation marks if necessary."
        "  e.g. --trace all, --trace \"I2C,ADL\"\n"
-       "  Valid trace classes are:  BASE, I2C, ADL, DDC, DDCIO, VCP, TOP, ENV, API, UDF, ALL.\n"
+       "  Valid trace classes are:  BASE, SLEEP, I2C, ADL, DDC, DDCIO, VCP, TOP, ENV, API, UDF, ALL.\n"
        "  Trace class names are not case sensitive.\n"
        "  (Some trace classes are more useful than others.)\n"
   //   "\n"
