@@ -34,6 +34,8 @@ FeatureValue::FeatureValue(
     , _capVcp(cap_vcp)
     , _value(val)
 {
+//    _cls = metaObject()->className();
+
 //    _feature_code    = feature_code;
 //    _dref            = dref;
 //    _finfo           = finfo;
@@ -42,7 +44,11 @@ FeatureValue::FeatureValue(
 
     assert(_featureCode  == _finfo->feature_code);
     // printf("(FeatureValue::FeatureValue) feature_code=0x%02x, cap_vcp=%p\n", feature_code, cap_vcp);
-    fflush(stdout);
+
+    // PRINTFCM("feature_code=0x%02x, cap_vcp=%p", feature_code, cap_vcp);
+    // if (_featureCode == 0x14)
+    // ddca_dbgrpt_feature_metadata(_finfo, 2);
+    // fflush(stdout);
 }
 
 FeatureValue::~FeatureValue() {
@@ -118,6 +124,7 @@ void FeatureValue::dbgrpt() const {
     printf("   _value.sh:        0x%02x\n", _value.sh);
     printf("   _value.sl:        0x%02x\n", _value.sl);
     printf("   _cap_vcp:         %p\n",     _capVcp);
+    ddca_dbgrpt_feature_metadata(_finfo, 1);
 
 #ifdef NO
     if (_finfo.mmid) {

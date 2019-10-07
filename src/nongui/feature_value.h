@@ -41,6 +41,7 @@ public:
  // DDCA_Monitor_Model_Key   mmid()        const;
 
 private:
+    // const char *             _cls;
     uint8_t                  _featureCode = 0;
     DDCA_Display_Ref         _dref = NULL;
     DDCA_Feature_Metadata *  _finfo = NULL;
