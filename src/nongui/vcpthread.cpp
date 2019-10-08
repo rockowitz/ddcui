@@ -230,7 +230,8 @@ void VcpThread::getvcp(uint8_t featureCode, bool reportUnsupported) {
            PRINTFCMF(debugFunc, "ddca_get_feature_metadata_by_dh() for feature 0x%02x returned %d - %s",
                      featureCode, ddcrc, ddca_rc_name(ddcrc));
            if (debugFunc && ddcrc == 0) {
-              ddcui_dbgrpt_ddca_feature_metadata(finfo);
+              // ddcui_dbgrpt_ddca_feature_metadata(finfo);
+              ddca_dbgrpt_feature_metadata(finfo, 1);
            }
 
            if (ddcrc != 0) {
