@@ -1,6 +1,6 @@
 /* value_nc_widget.h - Widget for displaying/editing a simple Non-Continuous VCP feature value */
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef VALUE_NC_WIDGET_H
@@ -9,6 +9,7 @@
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QLayout>
 
 #include "config.h"
 #include "base/ddca_utils.h"
@@ -32,8 +33,12 @@ public:
     void loadComboBox(NcValuesSource mode);
     void reloadComboBox(NcValuesSource newSource);
 
+protected:
+    QComboBox *   _cb;
+    QHBoxLayout * _layout;
+
 private:
-    QComboBox *    _cb;
+
 #ifdef APPLY_CANCEL
     QPushButton *  _applyButton;
     QPushButton *  _cancelButton;
@@ -41,7 +46,7 @@ private:
     NcValuesSource _curNcValuesSource = OtherOptionsState::DefaultNcValuesSource;
     bool           _guiChange = false;
 
-private slots:
+protected slots:
     void combobox_activated(int index);
 };
 

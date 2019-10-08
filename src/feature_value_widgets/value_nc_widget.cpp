@@ -67,23 +67,23 @@ ValueNcWidget::ValueNcWidget(QWidget *parent):
     }
 #endif
 
-    QHBoxLayout * layout = new QHBoxLayout();
-    layout->addSpacing(5);
-    layout->addWidget(_cb);
-    layout->addStretch(1);
+    _layout = new QHBoxLayout();
+    _layout->addSpacing(5);
+    _layout->addWidget(_cb);
+    _layout->addStretch(1);
 #ifdef APPLY_CANCEL
     if (useApplyCancel) {
-       layout->addWidget(_applyButton);
-       layout->addWidget(_cancelButton);
+       _layout->addWidget(_applyButton);
+       _layout->addWidget(_cancelButton);
     }
     else {
-       layout->addSpacing(10);
+       _layout->addSpacing(10);
     }
 #else
-    layout->addSpacing(10);
+    _layout->addSpacing(10);
 #endif
-    layout->setContentsMargins(0,0,0,0);
-    setLayout(layout);
+    _layout->setContentsMargins(0,0,0,0);
+    setLayout(_layout);
 
     if (debugLayout) {
         if (!dimensionReportShown) {
@@ -243,7 +243,9 @@ uint16_t ValueNcWidget::getCurrentValue() {
 }
 
 void ValueNcWidget::combobox_activated(int index) {
-   PRINTFCMF(debugWidget, "feature 0x%02x, index=%d", _featureCode, index);
+   bool debug = true;
+   debug = debug || debugWidget;
+   PRINTFCMF(debug, "feature 0x%02x, index=%d", _featureCode, index);
    int ndx = _cb->currentIndex();
    assert(ndx == index);
 
@@ -253,14 +255,17 @@ void ValueNcWidget::combobox_activated(int index) {
    uint8_t new_sl = i & 0xff;
 
    if (new_sh != _sh || new_sl != _sl) {
-      PRINTFCMF(debugWidget, "Value changed.  New sl: %u, _guiChange=%d\n", new_sl, _guiChange);
-      if (_guiChange)
+      PRINTFCMF(debug, "Value changed.  New sl: %u, _guiChange=%d", new_sl, _guiChange);
+      if (_guiChange) {
+         PRINTFCMF(debug, "Emitting featureValueChanged, featureCode = 0x%02x, sh=0, new_sl=0x%02x",
+                         _featureCode, new_sl);
          emit featureValueChanged(_featureCode, 0, new_sl);
+      }
       _sh = 0;
       _sl = new_sl;
    }
    else {
-      PRINTFCMF(debugWidget, "Value not changed.");
+      PRINTFCMF(debug, "Value not changed.");
    }
 }
 
