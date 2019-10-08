@@ -189,7 +189,7 @@ uint16_t ValueStackedWidget::getCurrentValue() {
 void  ValueStackedWidget::onContainedWidgetChanged(uint8_t feature_code, uint8_t sh, uint8_t sl)
 {
    bool debug = debugValueWidgetSignals;
-   debug = true;
+   debug = false;
    PRINTFCMF(debug,
              "feature_code=0x%02x, sh=0x%02x, sl=0x%02x", feature_code, sh, sl);
    assert(feature_code == _featureCode);
