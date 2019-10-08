@@ -1,6 +1,6 @@
 // ddca_utils.cpp
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <assert.h>
@@ -16,7 +16,7 @@
 
 #include <QtCore/QString>
 
-
+#ifdef OLD   // use api function ddca_dbgrpt_feature_metadata()
 void
 ddcui_dbgrpt_ddca_feature_metadata(
       DDCA_Feature_Metadata * meta)
@@ -44,6 +44,7 @@ ddcui_dbgrpt_ddca_feature_metadata(
    else
       printf("Simple NC values; No table specified\n");
 }
+#endif
 
 
 static bool

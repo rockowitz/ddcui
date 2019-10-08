@@ -1,6 +1,6 @@
 // ddca_utils.h
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef DDCA_UTILS_H_
@@ -16,8 +16,10 @@ typedef enum {
 } Nc_Values_Merge_Mode;
 
 
+#ifdef OLD
 void ddcui_dbgrpt_ddca_feature_metadata(
       DDCA_Feature_Metadata * meta);
+#endif
 
 // #define LOCAL_FEATURE_VALUE_TABLE_MARKER0 "LFVT"
 extern  const char * LOCAL_FEATURE_VALUE_TABLE_MARKER;
