@@ -1,6 +1,6 @@
 /* feature_value.h */
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef FEATURE_VALUE_H
@@ -29,6 +29,7 @@ public:
 
     uint8_t                  featureCode() const;
     DDCA_Display_Ref         dref()        const;
+    DDCA_MCCS_Version_Spec   vspec()       const;
     DDCA_Feature_Metadata*   finfo()       const;
     DDCA_Feature_Flags       flags()       const;
     DDCA_Cap_Vcp *           capVcp()      const;
@@ -37,14 +38,13 @@ public:
     void                     setCurrentValue(uint16_t newval);
     void                     dbgrpt()      const;
 
- // DDCA_MCCS_Version_Spec   vspec()       const;
  // DDCA_Monitor_Model_Key   mmid()        const;
 
 private:
     // const char *             _cls;
     uint8_t                  _featureCode = 0;
-    DDCA_Display_Ref         _dref = NULL;
-    DDCA_Feature_Metadata *  _finfo = NULL;
+    DDCA_Display_Ref         _dref   = NULL;
+    DDCA_Feature_Metadata *  _finfo  = NULL;
     DDCA_Cap_Vcp *           _capVcp = NULL;
     DDCA_Non_Table_Vcp_Value _value;     // use this or individual bytes? DDCA_Non_Table_Value needed for get_formatted_value call
 };

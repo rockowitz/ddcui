@@ -1,6 +1,6 @@
 /* feature_value.cpp */
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 // #include <QMetaType>
@@ -67,9 +67,10 @@ FeatureValue::dref()   const {
    return _dref;
 }
 
-// DDCA_MCCS_Version_Spec   FeatureValue::vspec()  const {
-//    return _finfo.vspec;
-// }
+DDCA_MCCS_Version_Spec
+FeatureValue::vspec()  const {
+   return _finfo->vcp_version;
+}
 
 DDCA_Feature_Metadata *
 FeatureValue::finfo() const {
