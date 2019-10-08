@@ -164,6 +164,8 @@ void MainWindow::initMonitors() {
 #endif
         // QString s = QString::number(ndx+1) + ":  " + model_name;
         QString s = model_name;
+        if (s.isEmpty() )
+           s = QString("Laptop");
 
         int monitorNumber = ndx+1;
         _toolbarDisplayCB->addItem(s, QVariant(monitorNumber));
