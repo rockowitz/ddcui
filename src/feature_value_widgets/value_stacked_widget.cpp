@@ -23,6 +23,7 @@
 #include "feature_value_widgets/value_std_widget.h"
 #include "feature_value_widgets/value_cont_widget.h"
 #include "feature_value_widgets/value_nc_widget.h"
+#include "feature_value_widgets/value_cnc_widget_x14.h"
 
 
 static bool dimensionReportShown = false;
@@ -46,6 +47,7 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
     _stdWidget     = new ValueStdWidget();
     _resetWidget   = new ValueResetWidget();
     _2ButtonWidget = new Value2ButtonWidget();
+    _cncWidgetX14  = new ValueCncWidgetX14();
 
     // relying on _pageno_xxx order corresponds to addWidget() order
     _pageno_cont    = 0;
@@ -53,12 +55,14 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
     _pageno_std     = 2;
     _pageno_reset   = 3;
     _pageno_2button = 4;
+    _pageno_x14     = 5;
 
     addWidget(_contWidget);
     addWidget(_ncWidget);
     addWidget(_stdWidget);
     addWidget(_resetWidget);
     addWidget(_2ButtonWidget);
+    addWidget(_cncWidgetX14);
 
     if (debugLayout) {
         if (!dimensionReportShown) {
@@ -81,6 +85,10 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
     QWidget::connect(_ncWidget,    &ValueNcWidget::featureValueChanged,
                      this,         &ValueStackedWidget::onContainedWidgetChanged);
 
+    QWidget::connect(_cncWidgetX14, &ValueNcWidget::featureValueChanged,
+                     this,          &ValueStackedWidget::onContainedWidgetChanged);
+
+
     QWidget::connect(_resetWidget, &ValueResetWidget::featureValueChanged,
                      this,         &ValueStackedWidget::onContainedWidgetChanged);
 
@@ -96,7 +104,9 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
 
 
 void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
-    PRINTFCMF(debugValueWidgetSignals, "Starting. feature code: 0x%02x", fv.featureCode());
+    bool debug = false;
+    debug = debug || debugValueWidgetSignals;
+    PRINTFCMF(debug, "Starting. feature code: 0x%02x", fv.featureCode());
     // ValueBaseWidget::setFeatureValue(fv);
     _featureCode = fv.featureCode();   // needed since not calling ValueBaseWidget::setFeatureValue()
 
@@ -123,6 +133,14 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
        setCurrentIndex(_pageno_selected);
     }
 
+    else if (_featureCode == 0x14) {
+       PRINTFCMF(debug, "_feature_code == 0x14");
+       _pageno_selected = _pageno_x14;
+       _cur_stacked_widget = _cncWidgetX14;
+       setCurrentIndex(_pageno_x14);
+    }
+
+
     else if (fv.flags() & DDCA_STD_CONT) {
          // printf("(ValueStackedWidget::%s) DDCA_STD_CONT\n", __func__); fflush(stdout);
         _pageno_selected = _pageno_cont;
@@ -146,7 +164,7 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
         _cur_stacked_widget = _stdWidget;
     }
 
-    PRINTFCMF(debugValueWidgetSignals, "Calling _cur_stacked_widget->setFeatureValue()" );
+    PRINTFCMF(debug, "Calling _cur_stacked_widget->setFeatureValue()" );
     _cur_stacked_widget->setFeatureValue(fv);
 }
 
@@ -171,7 +189,7 @@ uint16_t ValueStackedWidget::getCurrentValue() {
 void  ValueStackedWidget::onContainedWidgetChanged(uint8_t feature_code, uint8_t sh, uint8_t sl)
 {
    bool debug = debugValueWidgetSignals;
-   debug = false;
+   debug = true;
    PRINTFCMF(debug,
              "feature_code=0x%02x, sh=0x%02x, sl=0x%02x", feature_code, sh, sl);
    assert(feature_code == _featureCode);

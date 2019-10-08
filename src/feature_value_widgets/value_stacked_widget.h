@@ -18,6 +18,8 @@
 #include "value_nc_widget.h"
 #include "value_reset_widget.h"
 #include "value_2button_widget.h"
+#include "value_cnc_widget_x14.h"
+
 
 class QWidget;
 class QPaintEvent;
@@ -52,12 +54,14 @@ private:
     int                 _pageno_nc;
     int                 _pageno_reset;
     int                 _pageno_2button;
+    int                 _pageno_x14;
 
     ValueStdWidget*     _stdWidget;
     ValueContWidget*    _contWidget;
     ValueNcWidget*      _ncWidget;
     ValueResetWidget*   _resetWidget;
     Value2ButtonWidget* _2ButtonWidget;
+    ValueCncWidgetX14*  _cncWidgetX14;
 
 private slots:
     void onContainedWidgetChanged(uint8_t feature_code, uint8_t sh, uint8_t sl);
