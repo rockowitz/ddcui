@@ -157,6 +157,7 @@ void MainWindow::initMonitors() {
 // #ifdef OLD
         QString mfg_id     = _dlist->info[ndx].mfg_id;
         QString model_name = _dlist->info[ndx].model_name;
+        QString sn         = _dlist->info[ndx].sn;
 // #endif
 #ifdef ALT
         QString mfg_id     = _dlist->info[ndx].mmid.mfg_id;
@@ -164,8 +165,12 @@ void MainWindow::initMonitors() {
 #endif
         // QString s = QString::number(ndx+1) + ":  " + model_name;
         QString s = model_name;
-        if (s.isEmpty() )
-           s = QString("Laptop");
+        if (s.isEmpty() ) {
+           if ( sn.isEmpty() )
+              s = QString("Laptop");
+           else
+              s = QString("Unknown");    // don't expect this
+        }
 
         int monitorNumber = ndx+1;
         _toolbarDisplayCB->addItem(s, QVariant(monitorNumber));
