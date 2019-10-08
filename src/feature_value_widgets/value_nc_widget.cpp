@@ -243,7 +243,7 @@ uint16_t ValueNcWidget::getCurrentValue() {
 }
 
 void ValueNcWidget::combobox_activated(int index) {
-   bool debug = true;
+   bool debug = false;
    debug = debug || debugWidget;
    PRINTFCMF(debug, "feature 0x%02x, index=%d", _featureCode, index);
    int ndx = _cb->currentIndex();
