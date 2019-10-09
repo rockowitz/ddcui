@@ -30,6 +30,7 @@ Parsed_Cmd *  new_parsed_cmd() {
    memcpy(parsed_cmd->marker, PARSED_CMD_MARKER, 4);
    // n. all flags are false, byte values 0, integers 0, pointers NULL because of calloc
    // parsed_cmd->flags |= CMD_FLAG_ENABLE_UDF;
+   parsed_cmd->sleep_multiplier = 1.0;
    return parsed_cmd;
 }
 
