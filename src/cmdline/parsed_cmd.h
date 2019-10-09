@@ -27,6 +27,7 @@ typedef struct {
    char **             traced_functions;
    int                 max_tries[3];
    Parsed_Cmd_Flags    flags;
+   float               sleep_multiplier;
 } Parsed_Cmd;
 
 Parsed_Cmd *  new_parsed_cmd();

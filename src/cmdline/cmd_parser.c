@@ -49,6 +49,51 @@ static bool is_abbrev(const char * value, const char * longname, size_t  minchar
    return result;
 }
 
+char * sbool(int val) {  return (val)  ? "true" : "false"; }
+
+
+/** Converts a string to a float value.
+ *
+ * @param sval   string representing an integer
+ * @param p_fval address at which to store float value
+ * @return true if conversion succeeded, false if it failed
+ *
+ * @remark
+ * \remark
+ * If conversion fails, the value pointed to by **p_fval** is unchanged.
+ * @remark
+ * This function wraps system function strtof(), hiding the ugly details.
+ */
+bool str_to_float(const char * sval, float * p_fval)
+{
+   bool debug = false;
+   if (debug)
+      printf("(%s) sval->|%s|\n", __func__, sval);
+
+   bool ok = false;
+   if ( *sval != '\0') {
+      char * tailptr;
+      float result = strtof(sval, &tailptr);
+
+      if (*tailptr == '\0') {
+         *p_fval = result;
+         ok = true;
+      }
+   }
+
+   if (debug) {
+      if (ok)
+        printf("(%s) sval=%s, Returning: %s, *p_fval = %16.7f\n", __func__, sval, sbool(ok), *p_fval);
+      else
+        printf("(%s) sval=%s, Returning: %s\n", __func__, sval, sbool(ok));
+   }
+   return ok;
+}
+
+
+
+// End of functions from string_util.h
+
 
 // Variables used by callback functions
 static DDCA_Stats_Type   stats_work    = DDCA_STATS_NONE;
@@ -133,6 +178,7 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
    gchar**  trace_classes          = NULL;
    gchar**  trace_filenames        = NULL;
    gchar**  trace_functions        = NULL;
+   char *   sleep_multiplier_work  = NULL;
 
    GOptionEntry option_entries[] = {
    //  long_name short flags option-type          gpointer           description                    arg description
@@ -153,6 +199,9 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
       {"stats",   's',  G_OPTION_FLAG_OPTIONAL_ARG,
                            G_OPTION_ARG_CALLBACK, stats_arg_func,    "Show retry statistics",    "stats type"},
 #endif
+      {"sleep-multiplier", '\0', 0,
+                                 G_OPTION_ARG_STRING,   &sleep_multiplier_work, "Multiplication factor for DDC sleeps", "number"},
+
 
   // debugging
       {"excp",    '\0', 0, G_OPTION_ARG_NONE,     &report_freed_excp_flag,  "Report freed exceptions", NULL},
@@ -291,6 +340,26 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
        debug = saved_debug;
     }
 // #endif
+
+
+   if (sleep_multiplier_work) {
+      // DBGMSF(debug, "sleep_multiplier_work = |%s|", sleep_multiplier_work);
+      float multiplier = 0.0f;
+      bool arg_ok = str_to_float(sleep_multiplier_work, &multiplier);
+      if (arg_ok) {
+         if (multiplier <= 0.0f)
+            arg_ok = false;
+      }
+
+      if (!arg_ok) {
+          fprintf(stderr, "Invalid sleep-multiplier: %s\n", sleep_multiplier_work );
+          ok = false;
+      }
+      else {
+         parsed_cmd->sleep_multiplier = multiplier;
+      }
+   }
+
 
    // #ifdef MULTIPLE_TRACE
       if (trace_classes) {
