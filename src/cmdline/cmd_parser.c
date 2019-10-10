@@ -17,13 +17,15 @@
 #include <ddcutil_types.h>
 #include <ddcutil_c_api.h>
 
+#include "c_util/string_util.h"
+
 #include "base/ddcui_parms.h"
 
 #include "cmdline/cmd_parser_aux.h"
 #include "cmdline/parsed_cmd.h"
 #include "cmdline/cmd_parser.h"
 
-
+#ifdef OLD
 // copied from ddcutil string_util.h
 
 /** Tests if one string is a valid abbreviation of another.
@@ -93,6 +95,7 @@ bool str_to_float(const char * sval, float * p_fval)
 
 
 // End of functions from string_util.h
+#endif
 
 
 // Variables used by callback functions

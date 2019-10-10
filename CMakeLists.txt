@@ -75,12 +75,15 @@ include_directories(src)
 set(SOURCES
     src/imported/QtWaitingSpinner/waitingspinnerwidget.cpp
 
+    src/c_util/string_util.c
+
     src/base/ddca_utils.cpp 
     src/base/ddcui_globals.cpp 
     src/base/debug_utils.cpp 
     src/base/feature_selector.cpp 
     src/base/global_state.cpp 
     src/base/hline_widget.cpp 
+    src/base/number_entry_widget.cpp
     src/base/other_options_state.cpp 
 
     src/cmdline/parsed_cmd.c
@@ -105,6 +108,7 @@ set(SOURCES
     src/feature_value_widgets/value_2button_widget.cpp 
     src/feature_value_widgets/value_stacked_widget.cpp 
     src/feature_value_widgets/value_std_widget.cpp 
+    src/feature_value_widgets/value_bytes_widget.cpp
 
     src/feature_scrollarea/features_scrollarea_ui.cpp 
     src/feature_scrollarea/feature_widget.cpp 

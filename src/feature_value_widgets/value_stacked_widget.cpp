@@ -24,6 +24,7 @@
 #include "feature_value_widgets/value_cont_widget.h"
 #include "feature_value_widgets/value_nc_widget.h"
 #include "feature_value_widgets/value_cnc_widget_x14.h"
+#include "feature_value_widgets/value_bytes_widget.h"
 
 
 static bool dimensionReportShown = false;
@@ -48,6 +49,7 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
     _resetWidget   = new ValueResetWidget();
     _2ButtonWidget = new Value2ButtonWidget();
     _cncWidgetX14  = new ValueCncWidgetX14();
+    _bytesWidget   = new ValueBytesWidget();
 
     // relying on _pageno_xxx order corresponds to addWidget() order
     _pageno_cont    = 0;
@@ -56,6 +58,7 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
     _pageno_reset   = 3;
     _pageno_2button = 4;
     _pageno_x14     = 5;
+    _pageno_bytes   = 6;
 
     addWidget(_contWidget);
     addWidget(_ncWidget);
@@ -63,6 +66,7 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
     addWidget(_resetWidget);
     addWidget(_2ButtonWidget);
     addWidget(_cncWidgetX14);
+    addWidget(_bytesWidget);
 
     if (debugLayout) {
         if (!dimensionReportShown) {
@@ -86,6 +90,9 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
                      this,         &ValueStackedWidget::onContainedWidgetChanged);
 
     QWidget::connect(_cncWidgetX14, &ValueNcWidget::featureValueChanged,
+                     this,          &ValueStackedWidget::onContainedWidgetChanged);
+
+    QWidget::connect(_bytesWidget,  &ValueBaseWidget::featureValueChanged,
                      this,          &ValueStackedWidget::onContainedWidgetChanged);
 
 
@@ -138,6 +145,12 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
        _pageno_selected = _pageno_x14;
        _cur_stacked_widget = _cncWidgetX14;
        setCurrentIndex(_pageno_x14);
+    }
+
+    else if ( _featureCode >= 0xe0) {
+       _pageno_selected = _pageno_bytes;
+       _cur_stacked_widget = _bytesWidget;
+       setCurrentIndex(_pageno_bytes);
     }
 
 
