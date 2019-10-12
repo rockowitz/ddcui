@@ -1,6 +1,6 @@
 /* value_base_widget.h - Common features of all Value_..._Widgets */
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef VALUE_BASE_WIDGET_H

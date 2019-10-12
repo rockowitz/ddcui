@@ -98,6 +98,10 @@ void VcpThread::rpt_verify_error(
    DdcVerifyError* perec = new DdcVerifyError(featureCode, function, expectedValue, observedValue);
    // cout << erec.srepr() << endl;
    // cout << erec.sexpl() << endl;
+   if ((expectedValue - observedValue) <= 1) {
+      PRINTFCM("difference within epsilon");
+   }
+
    _baseModel->onDdcFeatureError(perec);
 }
 
@@ -165,6 +169,8 @@ void VcpThread::capabilities() {
       }
 #endif
 
+      // PRINTFCMF(debugFunc,"Sleeping for 1000000 msec");
+      // usleep(1000000);
       ddcrc = ddca_get_capabilities_string(dh, &caps);
       if (ddcrc != 0) {
          rpt_ddca_status(0, __func__, "ddca_get_capabilities_string", ddcrc);
