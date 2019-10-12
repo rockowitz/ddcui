@@ -44,9 +44,14 @@ extern const bool debugLayout             ;
 
 #define PRINTFTCM(__FMT__, ...) \
    do { \
-     printf("(%p %s::%s) " __FMT__ "\n",  QThread::currentThreadId(), _cls, __func__, ##__VA_ARGS__); \
+      char thread_prefix[15] = ""; \
+      pid_t tid = syscall(SYS_gettid); \
+     snprintf(thread_prefix, 15, "[%7jd]", (intmax_t) tid); \
+     printf("(%s %s::%s) " __FMT__ "\n", thread_prefix,  _cls, __func__, ##__VA_ARGS__); \
      fflush(stdout); \
    } while(0)
+// variant that shows QtThreadId as well as Linux thread id
+// printf("(%p/%s %s::%s) " __FMT__ "\n",  QThread::currentThreadId(), thread_prefix, _cls, __func__, ##__VA_ARGS__); \
 
 #define PRINTFTCMF(__FLAG__, __FMT__, ...) \
    if (__FLAG__) { \
@@ -56,7 +61,7 @@ extern const bool debugLayout             ;
          pid_t tid = syscall(SYS_gettid); \
          snprintf(thread_prefix, 15, "[%7jd]", (intmax_t) tid); \
       } \
-      printf("(%p/%s %s::%s) " __FMT__ "\n",  QThread::currentThreadId(), thread_prefix, _cls, __func__, ##__VA_ARGS__); \
+      printf("((%s %s::%s) " __FMT__ "\n",  thread_prefix, _cls, __func__, ##__VA_ARGS__); \
       fflush(stdout); \
    }
 
