@@ -141,6 +141,8 @@ void MainWindow::initMonitors() {
    //  ui->displaySelectorComboBox->setSizeAdjustPolicy(QComboBox::AdjustToContents);
    //  ui->displaySelectorComboBox->setMinimumContentsLength(28);   // 2 + 3 + 3 + 3 + 13
 
+   bool debug = true;
+
     longRunningTaskStart();
     QString msg = QString("Loading display information... ");
     _ui->statusBar->showMessage(msg);
@@ -151,7 +153,7 @@ void MainWindow::initMonitors() {
                             &_dlist);
     assert(ddcrc == 0);
     for (int ndx = 0; ndx < _dlist->ct; ndx++) {
-        PRINTFTCM("Processing display %d", ndx);
+        PRINTFTCMF(debug, "Processing display %d", ndx);
 
         // Add entry for monitor in display selector combo box
 // #ifdef OLD
@@ -257,15 +259,17 @@ void MainWindow::initMonitors() {
 
 
 void MainWindow::longRunningTaskStart() {
+   bool debug = true;
    // needs counter
-   PRINTFTCM("Executing");
+   PRINTFTCMF(debug, "Executing");
    _spinner->start();
    // _loadingMsgBox->show();
 }
 
 
 void MainWindow::longRunningTaskEnd() {
-   PRINTFTCM("Executing");
+   bool debug = true;
+   PRINTFTCMF(debug, "Executing");
    _spinner->stop();
    // _loadingMsgBox->hide();
 }
