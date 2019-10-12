@@ -6,6 +6,10 @@
 #ifndef DDCUI_GLOBALS_H
 #define DDCUI_GLOBALS_H
 
+#include <sys/types.h>
+#include <sys/syscall.h>
+#include <unistd.h>
+
 #include "config.h"
 
 #include <QtCore/QtCore>
@@ -46,14 +50,20 @@ extern const bool debugLayout             ;
 
 #define PRINTFTCMF(__FLAG__, __FMT__, ...) \
    if (__FLAG__) { \
-      printf("(%p %s::%s) " __FMT__ "\n",  QThread::currentThreadId(), _cls, __func__, ##__VA_ARGS__); \
+      bool dbgtrc_show_thread_id = true;\
+      char thread_prefix[15] = ""; \
+      if (dbgtrc_show_thread_id) { \
+         pid_t tid = syscall(SYS_gettid); \
+         snprintf(thread_prefix, 15, "[%7jd]", (intmax_t) tid); \
+      } \
+      printf("(%p/%s %s::%s) " __FMT__ "\n",  QThread::currentThreadId(), thread_prefix, _cls, __func__, ##__VA_ARGS__); \
       fflush(stdout); \
    }
 
 
 inline const char * sbool(bool val) { return (val) ? "true" : "false"; }
 
-#define SBOOL(__v) ( (__v) ? "true" : "false")
+// #define SBOOL(__v) ( (__v) ? "true" : "false")
 
 // #define APPLY_CANCEL
 // #define ALT_MOCK_FEATURES
