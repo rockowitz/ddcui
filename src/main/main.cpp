@@ -41,6 +41,11 @@ static bool init_ddcutil_library(Parsed_Cmd * parsed_cmd) {
          printf("(%s) adding traced file: %s\n", __func__, filename);
          ddca_add_traced_file(filename);
       }
+
+      // TO DO: create parser options --thread-id --tid --timestamp
+      ddca_set_trace_options(DDCA_TRCOPT_THREAD_ID);
+
+
    }
 
    ddca_set_trace_groups(parsed_cmd->traced_groups);
