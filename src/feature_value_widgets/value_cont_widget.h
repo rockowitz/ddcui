@@ -15,6 +15,7 @@ class QSlider;
 class QSpinBox;
 class QLabel;
 class QPushButton;
+class EnhancedSlider;
 
 
 class ValueContWidget : public ValueBaseWidget
@@ -28,15 +29,9 @@ public:
     void     setCurrentValue(uint16_t newval) override;
     uint16_t getCurrentValue() override;
 
-protected:
-#ifdef UNUSED
-    void focusInEvent(QFocusEvent * event);
-    void focusOutEvent(QFocusEvent * event);
-    void leaveEvent(QEvent * event);
-#endif
-
 private:
-    QSlider*    _curSlider;
+    // QSlider*    _curSlider;
+    EnhancedSlider * _curSlider;
     QSpinBox*   _curSpinBox;
     QLabel*     _maxTitle;
     QLabel*     _maxValue;

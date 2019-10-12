@@ -8,16 +8,22 @@
 #include <string.h>
 
 #include <QtWidgets/QWidget>
-#include <QtWidgets/QSlider>
+// #include <QtWidgets/QSlider>
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QPushButton>
 
+#include <QtGui/QKeyEvent>
+#include <QtGui/QFocusEvent>
+#include <QtCore/QEvent>
+
 #include <QtWidgets/QHBoxLayout>
-// #include <QtWidgets/QVBoxLayout>
+
+#include "c_util/string_util.h"
 
 #include "base/ddcui_globals.h"
 #include "base/debug_utils.h"
+#include "base/enhanced_slider.h"
 
 
 static bool dimensionReportShown = false;
@@ -45,7 +51,8 @@ ValueContWidget::ValueContWidget(QWidget *parent)
     QFont nonMonoFont9;
     nonMonoFont9.setPointSize(8);
 
-    _curSlider = new QSlider(Qt::Horizontal);
+    // _curSlider = new QSlider(Qt::Horizontal);
+    _curSlider = new EnhancedSlider(Qt::Horizontal);
     _curSlider->setFocusPolicy(Qt::StrongFocus);
     _curSlider->setTickPosition(QSlider::TicksBelow);   // alt TicksBothSides
     _curSlider->setSingleStep(1);
@@ -361,20 +368,7 @@ void  ValueContWidget::onCancelButtonClicked(bool checked) {
 }
 #endif
 
-#ifdef UNUSED
-// never triggered
-void ValueContWidget::focusOutEvent(QFocusEvent * event) {
-    PRINTFCMF(debugValueWidgetSignals, "Executing"  );
 
-    ValueBaseWidget::focusOutEvent(event);
-}
-
-void ValueContWidget::focusInEvent(QFocusEvent * event) {
-    PRINTFCMF(debugValueWidgetSignals, "Executing" );
-
-    ValueBaseWidget::focusInEvent(event);
-}
-#endif
 
 
 #ifdef USELESS
@@ -397,9 +391,6 @@ void ValueContWidget::leaveEvent(QEvent * event) {
 
 #endif
 
-
-// void QWidget::mousePressEvent(QMouseEvent *event)
-// void QWidget::keyPressEvent(QKeyEvent *event)
 
 
 
