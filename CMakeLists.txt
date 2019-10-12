@@ -80,6 +80,7 @@ set(SOURCES
     src/base/ddca_utils.cpp 
     src/base/ddcui_globals.cpp 
     src/base/debug_utils.cpp 
+    src/base/enhanced_slider.cpp
     src/base/feature_selector.cpp 
     src/base/global_state.cpp 
     src/base/hline_widget.cpp 
