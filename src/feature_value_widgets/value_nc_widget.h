@@ -25,8 +25,8 @@ public:
     ValueNcWidget(QWidget *parent = nullptr);
 
     void     setFeatureValue(const FeatureValue &fv) override;
-    void     setCurrentValue(uint16_t newval) override;
-    uint16_t getCurrentValue() override;
+    void     setCurrentShSl(uint16_t newval) override;
+    uint16_t getCurrentShSl() override;
 
     int findItem(uint8_t sl_value);
     Local_Feature_Value_Table * getComboBoxEntries(NcValuesSource mode);

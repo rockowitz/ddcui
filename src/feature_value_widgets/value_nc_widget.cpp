@@ -204,12 +204,12 @@ void ValueNcWidget::reloadComboBox(NcValuesSource newSource) {
    PRINTFCMF(debugNcValues, "Done");
 }
 
-void ValueNcWidget::setCurrentValue(uint16_t newval) {
+void ValueNcWidget::setCurrentShSl(uint16_t newval) {
    PRINTFCMF(debugWidget, "Starting. feature 0x%02x, newval=x%04x", _featureCode, newval);
 
    _guiChange = false;
 
-    ValueBaseWidget::setCurrentValue(newval);
+    ValueBaseWidget::setCurrentShSl(newval);
 
     // - set current value in combo box
     int cur_ndx = findItem(_sl);
@@ -230,7 +230,7 @@ int ValueNcWidget::findItem(uint8_t sl_value) {
 }
 
 
-uint16_t ValueNcWidget::getCurrentValue() {
+uint16_t ValueNcWidget::getCurrentShSl() {
     // get sl from combobox
     int ndx = _cb->currentIndex();
     QVariant qv = _cb->itemData(ndx);
