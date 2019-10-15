@@ -179,17 +179,19 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
 
     PRINTFCMF(debug, "Calling _cur_stacked_widget->setFeatureValue()" );
     _cur_stacked_widget->setFeatureValue(fv);
+    PRINTFCMF(debug, "Done");
 }
 
 
 void ValueStackedWidget::setCurrentValue(uint16_t newval) {
-    _cur_stacked_widget->setCurrentValue(newval);
+    _cur_stacked_widget->setCurrentShSl(newval);
 }
 
-
+#ifdef UNUSED
 uint16_t ValueStackedWidget::getCurrentValue() {
     return _cur_stacked_widget->getCurrentValue();
 }
+#endif
 
 
 // QSize ValueStackedWidget::sizeHint() const {
@@ -202,7 +204,7 @@ uint16_t ValueStackedWidget::getCurrentValue() {
 void  ValueStackedWidget::onContainedWidgetChanged(uint8_t feature_code, uint8_t sh, uint8_t sl)
 {
    bool debug = debugValueWidgetSignals;
-   debug = false;
+   // debug = true;
    PRINTFCMF(debug,
              "feature_code=0x%02x, sh=0x%02x, sl=0x%02x", feature_code, sh, sl);
    assert(feature_code == _featureCode);

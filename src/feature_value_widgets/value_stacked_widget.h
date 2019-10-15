@@ -34,7 +34,7 @@ public:
 
     void     setFeatureValue(const FeatureValue &fv);
     void     setCurrentValue(uint16_t newval);
-    uint16_t getCurrentValue();
+    // uint16_t getCurrentValue();
     bool     isSimpleNc();
     void     setNcValuesSource(NcValuesSource newsrc);
 
