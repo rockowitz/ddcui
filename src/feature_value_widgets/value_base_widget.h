@@ -21,8 +21,8 @@ public:
     explicit ValueBaseWidget(QWidget *parent = nullptr);
 
     virtual void     setFeatureValue(const FeatureValue &fv); // override;
-    virtual void     setCurrentValue(uint16_t newval);        // override;
-    virtual uint16_t getCurrentValue();                       // override;
+    virtual void     setCurrentShSl(uint16_t newval);        // override;
+    virtual uint16_t getCurrentShSl();                       // override;
 
     // QSize sizeHint() const override;   //   needed?
 

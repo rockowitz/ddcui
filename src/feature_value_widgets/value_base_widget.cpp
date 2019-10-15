@@ -51,7 +51,8 @@ ValueBaseWidget::ValueBaseWidget(QWidget *parent)
 
 
 void ValueBaseWidget::setFeatureValue(const FeatureValue &fv) {
-    // PRINTFCM("featureCode=0x%02x, capVcp=%p", fv.featureCode(), fv.capVcp());
+   bool debug = false;
+   PRINTFCMF(debug, "featureCode=0x%02x, capVcp=%p", fv.featureCode(), fv.capVcp());
 
     _featureCode    = fv.featureCode();
     _dref           = fv.dref();
@@ -74,13 +75,13 @@ void ValueBaseWidget::setBaseModel(FeatureBaseModel * model) {
 #endif
 
 
-void ValueBaseWidget::setCurrentValue(uint16_t newval) {
+void ValueBaseWidget::setCurrentShSl(uint16_t newval) {
     _sh = newval >> 8;
     _sl = newval & 0xff;
 }
 
 
-uint16_t ValueBaseWidget::getCurrentValue() {
+uint16_t ValueBaseWidget::getCurrentShSl() {
     uint16_t result = (_sh << 8) | _sl;
     return result;
 }
