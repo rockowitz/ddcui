@@ -39,7 +39,7 @@ public:
 
 private:
     void getvcp(uint8_t feature_code, bool reportUnsupported);
-    void setvcp(uint8_t feature_code, bool writeOnly, uint8_t newval);
+    void setvcp(uint8_t feature_code, bool writeOnly, uint16_t newval);
     void capabilities();
     void loadDynamicFeatureRecords();
     void startInitialLoad(void);
@@ -57,8 +57,17 @@ private:
     void rpt_verify_error(
           uint8_t      featureCode,
           const char * function,
-          uint8_t      expectedValue,
-          uint8_t      observedValue);
+          uint16_t      expectedValue,
+          uint16_t      observedValue);
+
+    void rpt_verify_error(
+          uint8_t      featureCode,
+                const char * function,
+                uint8_t      expectedSh,
+                uint8_t      expectedSl,
+                uint8_t      observedSh,
+                uint8_t      observedSl
+                );
 
     DDCA_Display_Ref     _dref;
     DDCA_Display_Info*   _dinfo;

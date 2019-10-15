@@ -50,7 +50,9 @@ void VcpThread::rpt_ddca_status(
     // QString msg = "generic error msg";
     // emit signalDdcFeatureError(0, msg);
     // DdcFeatureError erec(feature_code, ddca_func_name, ddcrc);
+
     DdcFeatureError* perec = new DdcFeatureError(feature_code, ddca_func_name, ddcrc);
+
     // printf("(VcpThread::rpt_ddca_status) Woff\n"); fflush(stdout);
     PRINTFTCM("Built DdcFeatureError.  srepr: %s, sexpl: %s", qs2s(perec->repr()), qs2s(perec->expl()));
     // just call function, no need to signal:
@@ -87,29 +89,69 @@ void VcpThread::rpt_error_detail(
 }
 
 
+static uint8_t abs8(uint8_t v1, uint8_t v2) {
+   uint8_t result;
+   if (v1 >= v2)
+      result = v1 - v2;
+   else
+      result = v2 - v1;
+   return result;
+}
+
+static uint8_t max8(uint8_t v1, uint8_t v2) {
+   if (v1 > v2)
+      return v1;
+   return v2;
+}
+
 void VcpThread::rpt_verify_error(
       uint8_t      featureCode,
       const char * function,
-      uint8_t      expectedValue,
-      uint8_t      observedValue)
+      uint8_t     expectedSh,
+      uint8_t     expectedSl,
+      uint8_t     observedSh,
+      uint8_t     observedSl
+      )
 {
-   PRINTFTCM("featureCode=0x%02x, expectedValue=0x%02x, observedValue=0x%02x", featureCode, expectedValue, observedValue);
+   VcpThread::rpt_verify_error(
+         featureCode,
+         function,
+         expectedSh << 8 | expectedSl,
+         observedSh << 8 | observedSl);
+
+}
+
+
+void VcpThread::rpt_verify_error(
+      uint8_t      featureCode,
+      const char * function,
+      uint16_t     expectedValue,
+      uint16_t     observedValue)
+{
+   bool debug = true;
+   PRINTFTCMF(debug, "featureCode=0x%02x, expectedValue=0x%04x, observedValue=0x%04x", featureCode, expectedValue, observedValue);
    // DdcVerifyError erec(featureCode, function, expectedValue, observedValue);
    DdcVerifyError* perec = new DdcVerifyError(featureCode, function, expectedValue, observedValue);
    // cout << erec.srepr() << endl;
    // cout << erec.sexpl() << endl;
-   if ((expectedValue - observedValue) <= 1) {
-      PRINTFCM("difference within epsilon");
-   }
 
-   _baseModel->onDdcFeatureError(perec);
+   uint8_t  deltaSh = 0;
+   uint8_t  deltaSl = 0;
+   if (  max8(abs8(expectedValue >> 8,  observedValue >> 8),
+              abs8(expectedValue & 0xff, observedValue & 0xff)
+             ) <= 1)
+   {
+      PRINTFCMF(debug, "difference <= 1, suppressing error");
+   }
+   else
+      _baseModel->onDdcFeatureError(perec);
 }
 
 
 void VcpThread::loadDynamicFeatureRecords()
 {
    bool debugFunc = debugThread;
-   // debugFunc = true;
+   // debugFunc = false;
    PRINTFTCMF(debugFunc, "Starting. dref=%s", ddca_dref_repr(this->_dref));
 
    DDCA_Display_Handle dh;
@@ -147,7 +189,7 @@ void VcpThread::loadDynamicFeatureRecords()
 // Process RQCapabilities
 void VcpThread::capabilities() {
    bool debugFunc = debugThread;
-   // debugFunc = true;
+   // debugFunc = false;
    PRINTFTCMF(debugFunc, "Starting. dref=%s", ddca_dref_repr(this->_dref));
    DDCA_Display_Handle dh;
    char *              caps = NULL;
@@ -173,6 +215,9 @@ void VcpThread::capabilities() {
       // usleep(1000000);
       ddcrc = ddca_get_capabilities_string(dh, &caps);
       if (ddcrc != 0) {
+         DDCA_Error_Detail * err_detail =  ddca_get_error_detail();
+         PRINTFCM("Error getting capabilities string for %s", ddca_dref_repr(this->_dref));
+         ddca_report_error_detail(err_detail, 2);
          rpt_ddca_status(0, __func__, "ddca_get_capabilities_string", ddcrc);
       }
       else {
@@ -261,14 +306,17 @@ void VcpThread::getvcp(uint8_t featureCode, bool reportUnsupported) {
 
 
 // Process RQSetVcp
-void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint8_t sl)
+void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint16_t shsl)
 {
     bool debugFunc = debugThread;
-    debugFunc = true;
+    debugFunc = false;
     PRINTFTCMF(debugFunc,
-              "Starting. feature_code=0x%02x. sl=0x%02x, writeOnly=%s",
-              feature_code, sl, sbool(writeOnly));
+              "Starting. feature_code=0x%02x.  shsl=0x%04x, writeOnly=%s",
+              feature_code, shsl, sbool(writeOnly));
 
+    uint8_t sh = (shsl >> 8);
+    uint8_t sl = (shsl & 0xff);
+    PRINTFCM("sh: 0x%02x, sl: 0x%02x", sh, sl);
     // rpt_ddca_status(feature_code, __func__, "ddca_bogus", 0);
 
     DDCA_Display_Handle         dh;
@@ -287,7 +335,9 @@ void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint8_t sl)
     // need to update mh, ml, use a valrec
     // ddcrc = ddca_set_non_table_vcp_value_verify(dh, feature_code, 0, sl, &verified_hi_byte, &verified_lo_byte);
 
-    ddcrc = ddca_set_non_table_vcp_value(dh, feature_code, 0, sl);
+
+
+    ddcrc = ddca_set_non_table_vcp_value(dh, feature_code, sh, sl);
     if (ddcrc != 0) {
         PRINTFTCM("ddca_set_non_table_vcp_value() returned %d - %s", ddcrc, ddca_rc_name(ddcrc));
         rpt_ddca_status(feature_code, __func__, "ddca_set_non_table_vcp_value", ddcrc);
@@ -301,10 +351,11 @@ void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint8_t sl)
             }
             else {
                 PRINTFTCM("ddca_get_nontable_vcp_value() after ddca_set_non_table_vcp_value():");
-                PRINTFTCM("  opcode: 0x%02x, requested sl=0x%02x, mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x",
-                         feature_code, sl, valrec.mh, valrec.ml, valrec.sh, valrec.sl);
-                if (sl != valrec.sl) {
-                   rpt_verify_error(feature_code, "ddca_set_non_table_vcp_value", sl, valrec.sl);
+                PRINTFTCM("  opcode: 0x%02x, requested: sh=0x%02x, sl=0x%02x, observed: mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x",
+                         feature_code, sh, sl, valrec.mh, valrec.ml, valrec.sh, valrec.sl);
+
+                if ((sl != valrec.sl || sh != valrec.sh)) {
+                   rpt_verify_error(feature_code, "ddca_set_non_table_vcp_value", sh, sl, valrec.sh, valrec.sl);
                 }
                 PRINTFTCM("Calling _baseModel->modelVcpValueUpdate()");
                 _baseModel->modelVcpValueUpdate(feature_code, valrec.sh, valrec.sl);
@@ -320,7 +371,7 @@ void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint8_t sl)
 
 bye:
    ;
-    // PRINTFTCM("Done");
+    PRINTFCMF(debugFunc, "Done");
 }
 
 
@@ -364,7 +415,8 @@ void VcpThread::run() {
             // if (debugThread)
             //     printf("(VcpThread::run) RQSetVcp. feature code=0x%02x, newval=%d\n",
             //            setRqst->_featureCode, setRqst->_newval);  fflush(stdout);
-            setvcp(setRqst->_featureCode, setRqst->_writeOnly, setRqst->_newval & 0xff);
+            uint16_t newval = (setRqst->_newSh << 8) | (setRqst->_newSl );
+            setvcp(setRqst->_featureCode, setRqst->_writeOnly, newval);
             break;
         }
         case VcpRequestType::RQStartInitialLoad:
