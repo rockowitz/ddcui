@@ -20,7 +20,7 @@ public:
     ValueStdWidget(QWidget *parent = nullptr);
 
     void setFeatureValue(const FeatureValue  &fv) override;
-    void setCurrentValue(uint16_t newval) override;
+    void setCurrentShSl(uint16_t newval) override;
 
 private:
     void setValueField();

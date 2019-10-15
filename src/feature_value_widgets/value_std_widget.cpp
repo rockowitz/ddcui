@@ -88,8 +88,8 @@ void ValueStdWidget::setFeatureValue(const FeatureValue &fv) {
 }
 
 
-void ValueStdWidget::setCurrentValue(uint16_t newval) {
-    ValueBaseWidget::setCurrentValue(newval);
+void ValueStdWidget::setCurrentShSl(uint16_t newval) {
+    ValueBaseWidget::setCurrentShSl(newval);
     setValueField();
 }
 
