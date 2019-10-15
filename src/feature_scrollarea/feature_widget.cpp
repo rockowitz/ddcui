@@ -42,6 +42,8 @@ static void setupFeatureWidgetField(QLabel * w) {
 }
 
 void FeatureWidget::setupFeatureWidget() {
+   bool debug = false;
+   PRINTFCMF(debug, "Starting");
    // QFrame methods:
    // setFrameStyle(QFrame::Box);    // something to make it visible
 
@@ -124,7 +126,9 @@ void FeatureWidget::setupFeatureWidget() {
    _featureValueStackedWidget->setCurrentIndex(0);
 #endif
 
+   PRINTFCMF(debug, "creating ValueStackedWidget, feature code dummy");
    _valueWidget = new ValueStackedWidget();
+   PRINTFCMF(debug, "after ValueStackedWidget creation");
    // _valueWidget->setSizePolicy(fixedSizePolicy);
    // _valueWidget->setFixedWidth(400);
 
@@ -178,6 +182,7 @@ void FeatureWidget::setupFeatureWidget() {
 #endif
    // signals/slots not working, try hardcoding
    // _valueWidget->addSimpleFeatureValueObserver(this);
+   PRINTFCMF(debug, "Done");
 }
 
 
@@ -201,6 +206,9 @@ FeatureWidget::FeatureWidget(FeatureValue& fv, QWidget *parent) :
 
 // Used only to set feature value immediately after constructor called
 void FeatureWidget::setFeatureValue(FeatureValue &fv) {
+   bool debug = true;
+   PRINTFCMF(debug, "feature code = 0x%02x, sets feature value immediately after constructor called",
+             fv.featureCode());
     // printf("(FeatureWidgetBasic::%s)", __func__);
     // fv.report(); ff;isj)stdpit);
     // printf("(%s::%s) _feature_flags = 0x%08x, fv._feature_flags = 0x%08x, fv._finfo
@@ -233,7 +241,10 @@ void FeatureWidget::setFeatureValue(FeatureValue &fv) {
         _featureTypeField->setText(QString("T"));
     }
 
+    PRINTFCMF(debug, "Before calling valueWidget->setFeatureValue()");
     _valueWidget->setFeatureValue(fv);
+
+    PRINTFCMF(debug, "After calling valueWidget->setFeatureValue()");
     _layout->addWidget(_valueWidget);
 }
 
