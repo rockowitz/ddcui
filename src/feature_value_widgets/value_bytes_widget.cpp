@@ -6,7 +6,6 @@
 
 #include "value_bytes_widget.h"
 
-
 #include <string.h>
 
 #include <QtWidgets/QWidget>
@@ -15,7 +14,6 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QLineEdit>
-
 #include <QtWidgets/QHBoxLayout>
 // #include <QtWidgets/QVBoxLayout>
 
@@ -25,14 +23,6 @@
 
 static bool titleDimensionReportShown = false;
 static bool dimensionReportShown = false;
-
-
-
-
-
-
-
-
 
 
 QLabel *
@@ -63,10 +53,10 @@ newTitle(QString title) {
 
 ValueBytesWidget::ValueBytesWidget(QWidget *parent)
     : ValueBaseWidget(parent)
-    , _newval(0)
 {
     _cls = strdup(metaObject()->className());
-    // PRINTFCM("Starting." );
+    bool debug = false;
+    PRINTFCMF(debug, "Starting." );
 
     nonMonoFont9.setPointSize(8);
 
@@ -89,10 +79,22 @@ ValueBytesWidget::ValueBytesWidget(QWidget *parent)
     int   valueFrameStyle = QFrame::Plain | QFrame::NoFrame;
     QSize valueSize(30,20);
 
-    _mhValue = new NumberEntryWidget( 1, valueFont, valueFrameStyle, valueSize);
-    _mlValue = new NumberEntryWidget( 1, valueFont, valueFrameStyle, valueSize);
-    _shValue = new NumberEntryWidget( 1, valueFont, valueFrameStyle, valueSize);
-    _slValue = new NumberEntryWidget( 1, valueFont, valueFrameStyle, valueSize);
+    // PRINTFCMF(debug, "Before NumberEntryWidget constructors");
+    _mhWidget = new NumberEntryWidget( 1, valueFont, valueFrameStyle, valueSize);
+    _mlWidget = new NumberEntryWidget( 1, valueFont, valueFrameStyle, valueSize);
+    _shWidget = new NumberEntryWidget( 1, valueFont, valueFrameStyle, valueSize);
+    _slWidget = new NumberEntryWidget( 1, valueFont, valueFrameStyle, valueSize);
+    // PRINTFCM("===> After NumberEntryWidget constructors, before setting object names");
+    _mhWidget->setObjectName("mhWidget");
+    _mlWidget->setObjectName("mlWidget");
+    _shWidget->setObjectName("shWidget");
+    _slWidget->setObjectName("slWidget");
+    // PRINTFCM("===> After setting object names");
+
+    _mhWidget->setReadOnly(true);       //  which to use?
+    _mlWidget->setReadOnly(true);      // or setReadOnly(true)  ??
+    bool _slOk = true;
+    bool _shOk = true;
 
 // #ifdef APPLY_CANCEL
   //  if (useApplyCancel) {
@@ -123,23 +125,23 @@ ValueBytesWidget::ValueBytesWidget(QWidget *parent)
     QHBoxLayout * layout = new QHBoxLayout();
     // layout->addWidget(spacer);
     layout->addWidget(_mhTitle);
-    layout->addWidget(_mhValue);
+    layout->addWidget(_mhWidget);
     // not the culprit
   // layout->addWidget(spacer);  adds space here, but also whole valuestackedwidget shifts right
 
     layout->setStretch(1,0);
 
     layout->addWidget(_mlTitle);
-    layout->addWidget(_mlValue);
+    layout->addWidget(_mlWidget);
     layout->setStretch(1,0);
     layout->addSpacing(5);
 
     layout->addWidget(_shTitle);
-    layout->addWidget(_shValue);
+    layout->addWidget(_shWidget);
     layout->setStretch(1,0);
 
     layout->addWidget(_slTitle);
-    layout->addWidget(_slValue);
+    layout->addWidget(_slWidget);
     layout->setStretch(4,0);
 
 
@@ -150,6 +152,18 @@ ValueBytesWidget::ValueBytesWidget(QWidget *parent)
     layout->setContentsMargins(0,0,0,0);
     setLayout(layout);
 
+    //  connect(_shWidget, &NumberEntryWidget::setCurrentField, this, &ValueBytesWidget::whenEventFieldChanged);
+    // connect(_slWidget, &NumberEntryWidget::setCurrentField, this, &ValueBytesWidget::whenEventFieldChanged);
+
+    // connect(_shWidget, &NumberEntryWidget::valueChanged8, this, &ValueBytesWidget::whenShChanged);
+    // connect(_slWidget, &NumberEntryWidget::valueChanged8, this, &ValueBytesWidget::whenSlChanged);
+
+    connect(_shWidget, &NumberEntryWidget::stateChanged, this,  &ValueBytesWidget::whenStateChanged);
+    connect(_slWidget, &NumberEntryWidget::stateChanged, this,  &ValueBytesWidget::whenStateChanged);
+
+    connect(_applyButton,  &QPushButton::clicked, this, &ValueBytesWidget::onApplyButtonClicked);
+    connect(_cancelButton, &QPushButton::clicked, this, &ValueBytesWidget::onCancelButtonClicked);
+
     if (debugLayout) {
        this->setStyleSheet("background-color:yellow;");
 
@@ -158,14 +172,14 @@ ValueBytesWidget::ValueBytesWidget(QWidget *parent)
            PRINTFCM("_mhTitle dimensions");
            reportWidgetDimensions(_mhTitle, _cls, __func__);
 
-           PRINTFCM("_mhValue dimensions");
-           reportWidgetDimensions(_mhValue, _cls, __func__);
+           PRINTFCM("_mhWidget dimensions");
+           reportWidgetDimensions(_mhWidget, _cls, __func__);
 
            PRINTFCM("_mlTitle dimensions");
            reportWidgetDimensions(_mlTitle, _cls, __func__);
 
-           PRINTFCM("_mlValue dimensions");
-           reportWidgetDimensions(_mlValue, _cls, __func__);
+           PRINTFCM("_mlWidget dimensions");
+           reportWidgetDimensions(_mlWidget, _cls, __func__);
 
            PRINTFCM("_applyButton dimensions");
            reportWidgetDimensions(_applyButton, _cls, __func__);
@@ -175,24 +189,87 @@ ValueBytesWidget::ValueBytesWidget(QWidget *parent)
            dimensionReportShown = true;
        }
     }
+    PRINTFCMF(debug, "Done");
 }
 
+
+void ValueBytesWidget::checkAcceptCancelEnabled() {
+   // PRINTFCM("Starting");
+   bool enabled =
+          (_shState == NumberEntryWidget::StateNewValid && _slState == NumberEntryWidget::StateNewValid) ||
+          (_shState == NumberEntryWidget::StateNewValid && _slState == NumberEntryWidget::StateOldValid) ||
+          (_shState == NumberEntryWidget::StateOldValid && _slState == NumberEntryWidget::StateNewValid) ;
+   PRINTFCM("_shState=%d, _slState=%d, enable=%s", _shState, _slState, sbool(enabled) );
+   _applyButton->setEnabled(enabled);
+   _cancelButton->setEnabled(enabled);
+}
+
+#ifdef UNUSED
+void ValueBytesWidget::whenShChanged(uint8_t val) {
+   PRINTFCM("val = 0x%02x", val);
+   _shNew = val;
+   _shGood = true;
+
+   this->checkAcceptCancelEnabled();
+}
+
+
+void ValueBytesWidget::whenSlChanged(uint8_t val) {
+   PRINTFCM("val = 0x%02x", val);
+   _slNew = val;
+   _shGood = true;
+   this->checkAcceptCancelEnabled();
+}
+#endif
+
+void ValueBytesWidget::whenStateChanged(NumberEntryWidget * whichWidget, NumberEntryWidget::States newState)
+{
+   bool debug = false;
+   PRINTFCMF(debug, "whichWidget = %s, newState = %d", qs2s(whichWidget->objectName()), newState);
+
+   if (whichWidget == _shWidget)
+      _shState = newState;
+   else
+      _slState = newState;
+
+   checkAcceptCancelEnabled();
+}
+
+#ifdef UNUSEDS
+void ValueBytesWidget::whenTextValueChanged(bool ok) {
+   // check_all_values_ok();
+}
+#endif
+
+
 void ValueBytesWidget::setFeatureValue(const FeatureValue &fv) {
-    PRINTFCMF(debugValueWidgetSignals, "Starting. feature code: 0x%02x", fv.featureCode());
+    bool debug = debugValueWidgetSignals;
+    // debug = true;
+    PRINTFCMF(debug,
+              "feature code: 0x%02x, mh: 0x%02x, ml: 0x%02x, sh: 0x%02x sl: 0x%02x",
+              fv.featureCode(),
+              fv.val().mh,
+              fv.val().ml,
+              fv.val().sh,
+              fv.val().sl);
+
     ValueBaseWidget::setFeatureValue(fv);
+
+    PRINTFCMF(debug,
+              "feature code: 0x%02x, mh: 0x%02x, ml: 0x%02x, sh: 0x%02x sl: 0x%02x",
+              _featureCode,
+              _mh,
+              _ml,
+              _sh,
+              _sl);
+
 
     _guiChange = false;
 
-    // WRONG - NEED TO INSERT AS HEX VALUE
-    QString mhHex = QString::number( _mh, 16 );
-    _mhValue->setText(mhHex);
-    QString mlHex = QString::number( _ml, 16 );
-    _mlValue->setText(mlHex);
-    QString shHex = QString::number( _mh, 16 );
-    _shValue->setText(shHex);
-    QString slHex = QString::number( _sl, 16 );
-    _slValue->setText(slHex);
-
+   _mhWidget->setValue(_mh);
+   _mlWidget->setValue(_ml);
+   _shWidget->setValue(_sh);
+   _slWidget->setValue(_sl);
 
     // cf:
     // QString s = QString::number(maxval);
@@ -206,45 +283,60 @@ void ValueBytesWidget::setFeatureValue(const FeatureValue &fv) {
 // #endif
 
     _guiChange = true;
+    PRINTFCMF(debug, "Done");
 }
 
 
-void ValueBytesWidget::setCurrentValue(uint16_t newval) {
-    ValueBaseWidget::setCurrentValue(newval);
+void ValueBytesWidget::setCurrentShSl(uint16_t newval) {
+    ValueBaseWidget::setCurrentShSl(newval);
     _guiChange = false;
 
-     int curval = _sh << 8 | _sl;
-     PRINTFCMF(debugValueWidgetSignals, "feature=0x%02x, curval=0%04x", _featureCode , curval);
+    // whill update what's shown
+    _shWidget->setValue(newval >> 8);
+    _slWidget->setValue(newval & 0xff);
 
+     int baseval = _sh << 8 | _sl;
+     assert(baseval == newval);
+     PRINTFCMF(debugValueWidgetSignals, "feature=0x%02x, curval=0%04x", _featureCode , baseval);
 
-// #ifdef APPLY_CANCEL
-//    if (useApplyCancel) {
         _applyButton->setEnabled(false);
         _cancelButton->setEnabled(false);
-//    }
-// #endif
 
     _guiChange = true;
 }
 
 
-uint16_t ValueBytesWidget::getCurrentValue() {
-    int curval = _sh << 8 | _sl;
-    uint16_t result = (_sh << 8) | _sl;
-    return curval;
+
+// MOC not finding base class implementation #ifdef SHOULD_USE_BASE
+uint16_t ValueBytesWidget::getCurrentShSl() {
+    return ValueBaseWidget::getCurrentShSl();
+    // uint16_t result = (_sh << 8) | _sl;
+    // return result;
 }
+// #endif
 
 // ifdef APPLY_CANCEL
 void  ValueBytesWidget::onApplyButtonClicked(bool checked) {
-   PRINTFCMF(debugValueWidgetSignals, "Executing");
+   bool debug = debugValueWidgetSignals;
+   debug = true;
+   PRINTFCMF(debug, "Executing. checked=%s", sbool(checked));
 
-   uint16_t oldval = _sh << 8 | _sl;
-   if (_newval != oldval) {
-      emit featureValueChanged(_featureCode, _newval >> 8, _newval & 0xff);
+   uint16_t newval = ( _shWidget->getNewValue() <<8 | _slWidget->getNewValue() );
+
+   uint16_t oldval = _sh << 8    | _sl;
+
+   PRINTFCMF(debug, "oldval = 0x%04x, newval = 0x%04x", oldval, newval);
+   if (newval != oldval) {
+      PRINTFCMF(debug, "Emitting. feature code: 0x%02x, new sh: 0x%02x, new sl: 0x%02x",
+                _featureCode, newval >>8, newval&0xff);
+      emit featureValueChanged(_featureCode, newval >> 8, newval & 0xff);
    }
 
+  // uint8_t slNew =
+
    // what to do while we're waiting for the update to apply or fail?
-   _mhValue->setText( QString::number( _mh, 16 ) );
+
+  //  _shWidget->setText( QString::number( shNew, 16 ) );
    // etc
 
    _applyButton->setEnabled(false);
@@ -257,9 +349,17 @@ void  ValueBytesWidget::onCancelButtonClicked(bool checked) {
 
    _applyButton->setEnabled(false);
    _cancelButton->setEnabled(false);
+   _shWidget->reset();
+   _slWidget->reset();
+}
 
-   _mhValue->setText( QString::number( _mh, 16 ) );
-   // etc
+#ifdef OLD
+void ValueBytesWidget::whenEventFieldChanged(int field_number)
+{
+   PRINTFCM("field_number = %d", field_number);
+   _currentField = field_number;
+
 
 }
+#endif
 

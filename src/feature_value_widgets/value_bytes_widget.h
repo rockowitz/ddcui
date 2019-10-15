@@ -17,7 +17,6 @@
 
 class QLabel;
 class QPushButton;
-// class QLineEdit;
 
 
 class ValueBytesWidget : public ValueBaseWidget
@@ -28,22 +27,49 @@ public:
     ValueBytesWidget(QWidget *parent = nullptr);
 
     void     setFeatureValue(const FeatureValue &fv) override;
-    void     setCurrentValue(uint16_t newval)        override;
-    uint16_t getCurrentValue()                       override;
+    void     setCurrentShSl(uint16_t newval)        override;
+    uint16_t getCurrentShSl()                       override;
 
 
 private:
-    QLabel*     _mhTitle;
-    NumberEntryWidget *     _mhValue;
-    QLabel*     _mlTitle;
-    NumberEntryWidget *    _mlValue;
-    QLabel*     _shTitle;
-    NumberEntryWidget *   _shValue;
-    QLabel*     _slTitle;
-    NumberEntryWidget *   _slValue;
-    uint16_t    _newval;
+    void checkAcceptCancelEnabled();
+
+    private slots:
+
+    // void whenSlChanged(uint8_t val);
+    // void whenShChanged(uint8_t val);
+
+    // void whenTextValueChanged(bool ok);
+
+    // void whenEventFieldChanged(int fieldNumber);
+    void whenStateChanged(NumberEntryWidget * whichWidget, NumberEntryWidget::States newState);
+
+
+private:
+    QLabel*                _mhTitle;
+    NumberEntryWidget *    _mhWidget;
+    QLabel*                _mlTitle;
+    NumberEntryWidget *    _mlWidget;
+    QLabel*                _shTitle;
+    NumberEntryWidget *    _shWidget;
+    QLabel*                _slTitle;
+    NumberEntryWidget *    _slWidget;
+    // uint8_t               _sl;
+    // uint16_t    _newval;
     bool        _guiChange = false;
     QFont nonMonoFont9;
+
+    // bool _shGood = true;
+    // bool _slGood = true;
+
+    // uint8_t _shNew;
+    // uint8_t _slNew;
+
+    int _currentField = 0;
+
+    NumberEntryWidget::States _slState =  NumberEntryWidget::StateOldValid;
+    NumberEntryWidget::States _shState =  NumberEntryWidget::StateOldValid;
+
 
 // #ifdef APPLY_CANCEL
 //    QPushButton *  _applyButton;
@@ -58,8 +84,6 @@ private:
     QPushButton * _applyButton;
     QPushButton * _cancelButton;
 // #endif
-
-
 
 };
 
