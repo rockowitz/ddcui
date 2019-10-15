@@ -89,9 +89,6 @@ public:
 
 
 
-
-
-
 class DdcVerifyError : public DdcFeatureError {
    Q_OBJECT
 
@@ -99,8 +96,8 @@ public:
    DdcVerifyError(
          uint8_t      featureCode,
          const char * ddcFunction,
-         uint8_t      expectedValue,
-         uint8_t      observedValue);
+         uint16_t     expectedValue,
+         uint16_t     observedValue);
 
    DdcVerifyError(const DdcVerifyError& erec);
 
@@ -111,8 +108,8 @@ public:
    virtual QString repr();
    virtual QString expl();
 
-   uint8_t  _expectedValue;
-   uint8_t  _observedValue;
+   uint16_t  _expectedValue;
+   uint16_t  _observedValue;
 };
 
  // Q_DECLARE_METATYPE(DdcFeatureError*);

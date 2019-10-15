@@ -195,8 +195,8 @@ QString DdcFeatureError::expl() {
 DdcVerifyError::DdcVerifyError(
       uint8_t      featureCode,
       const char * ddcFunction,
-      uint8_t      expectedValue,
-      uint8_t      observedValue)
+      uint16_t      expectedValue,
+      uint16_t      observedValue)
     : DdcFeatureError(featureCode, ddcFunction, DDCRC_VERIFY)
     , _expectedValue(expectedValue)
     , _observedValue(observedValue)
@@ -234,8 +234,8 @@ QString DdcVerifyError::repr() {
                     .arg(_ddcFunction)
                     .arg(_ddcErrno)
                     .arg(s)
-                    .arg(_expectedValue, 2, 16)
-                    .arg(_observedValue, 2, 16)
+                    .arg(_expectedValue, 4, 16)
+                    .arg(_observedValue, 4, 16)
                     ;
    return msg;
 }
@@ -245,11 +245,11 @@ QString DdcVerifyError::expl() {
    // printf("(DdcVerifyError::expl) Starting.\n"); fflush(stdout);
    QString msg = QString("Verification failed after value change for feature 0x%1.\n"
                          "Expected value: %2 (0x%3), Reported value: %4 (0x%05)")
-                               .arg(_featureCode, 2, 16)
+                               .arg(_featureCode, 2, 16, QLatin1Char('0'))
                                .arg(_expectedValue)
-                               .arg(_expectedValue, 2, 16)
+                               .arg(_expectedValue, 4, 16, QLatin1Char('0'))
                                .arg(_observedValue)
-                               .arg(_observedValue, 2, 16)
+                               .arg(_observedValue, 4, 16, QChar('0'))
                                ;
    // printf("(DdcVerifyError::expl) msg: %s\n", strdup(msg.toLatin1().data()) );
    // std::cout << "(DdcVerifyError::expl) Returning: " << msg << std::endl;
