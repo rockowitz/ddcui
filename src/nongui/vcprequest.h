@@ -61,11 +61,12 @@ public:
 
 class VcpSetRequest: public VcpRequest {
 public:
-    VcpSetRequest(uint8_t featureCode, uint8_t newval, bool writeOnly=false);
+    VcpSetRequest(uint8_t featureCode, uint8_t newSh, uint8_t newSl, bool writeOnly=false);
     ~VcpSetRequest();
 
     DDCA_Vcp_Feature_Code _featureCode = 0;
-    uint8_t               _newval = 0;
+    uint8_t               _newSh = 0;
+    uint8_t               _newSl = 0;
     bool                  _writeOnly = false;
 };
 

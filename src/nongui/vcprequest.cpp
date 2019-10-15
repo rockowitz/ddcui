@@ -39,10 +39,11 @@ VcpGetRequest::VcpGetRequest(DDCA_Vcp_Feature_Code featureCode, bool reportUnsup
 }
 
 
-VcpSetRequest::VcpSetRequest(DDCA_Vcp_Feature_Code featureCode, uint8_t newval, bool writeOnly)
+VcpSetRequest::VcpSetRequest(DDCA_Vcp_Feature_Code featureCode, uint8_t newSh, uint8_t newSl, bool writeOnly)
     :  VcpRequest::VcpRequest(VcpRequestType::RQSetVcp)
     , _featureCode(featureCode)
-    , _newval(newval)
+    , _newSh(newSh)
+    , _newSl(newSl)
     , _writeOnly(writeOnly)
 {
     // _featureCode = feature_code;
