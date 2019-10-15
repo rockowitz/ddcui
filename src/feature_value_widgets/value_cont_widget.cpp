@@ -228,8 +228,8 @@ void ValueContWidget::setFeatureValue(const FeatureValue &fv) {
 }
 
 
-void ValueContWidget::setCurrentValue(uint16_t newval) {
-    ValueBaseWidget::setCurrentValue(newval);
+void ValueContWidget::setCurrentShSl(uint16_t newval) {
+    ValueBaseWidget::setCurrentShSl(newval);
     _guiChange = false;
 
      int curval = _sh << 8 | _sl;
@@ -249,7 +249,7 @@ void ValueContWidget::setCurrentValue(uint16_t newval) {
 }
 
 
-uint16_t ValueContWidget::getCurrentValue() {
+uint16_t ValueContWidget::getCurrentShSl() {
     int curval = _curSpinBox->value();
     _sh = (curval >> 8) & 0xff;
     _sl = curval & 0xff;

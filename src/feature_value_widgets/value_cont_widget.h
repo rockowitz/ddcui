@@ -1,6 +1,6 @@
 /* value_cont_widget.h - Widget for displaying/editing a Continuous VCP feature value */
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef VALUE_CONT_WIDGET_H
@@ -26,8 +26,8 @@ public:
     ValueContWidget(QWidget *parent = nullptr);
 
     void     setFeatureValue(const FeatureValue &fv) override;
-    void     setCurrentValue(uint16_t newval) override;
-    uint16_t getCurrentValue() override;
+    void     setCurrentShSl(uint16_t newval)         override;
+    uint16_t getCurrentShSl()                        override;
 
 private:
     // QSlider*    _curSlider;
