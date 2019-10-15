@@ -155,7 +155,7 @@ void FeaturesScrollAreaView::onUIValueChanged(
       uint8_t sl)
 {
    bool debug = debugSignals;
-   // debug = true;
+   debug = true;
    PRINTFTCMF(debug,
              "feature_code = 0x%02x, writeOnly=%s, sh=0x%02x, sl=0x%02x",
              featureCode, sbool(writeOnly), sh, sl);
@@ -165,7 +165,7 @@ void FeaturesScrollAreaView::onUIValueChanged(
       PRINTFTCM("New value matches model value, Suppressing.");
    }
    else {
-      VcpRequest * rqst = new VcpSetRequest(featureCode, sl, writeOnly);   // n.b. ignoring sh
+      VcpRequest * rqst = new VcpSetRequest(featureCode, sh, sl, writeOnly);
       emit signalVcpRequest(rqst);  // used to call into monitor
 
       // If feature value change affects other features, reread possibly affected features
@@ -247,7 +247,7 @@ void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc) {
 
 void FeaturesScrollAreaView::onModelDdcDetailedError(DdcDetailedError* perec) {
    bool debugFunc = debugSignals;
-   // debugFunc = true;
+   debugFunc = true;
 
     // PRINTFTCM("Starting");
     PRINTFTCMF(debugFunc, "perec=%p, perec->%s", perec, perec->srepr() );
@@ -272,7 +272,7 @@ void FeaturesScrollAreaView::onModelDdcDetailedError(DdcDetailedError* perec) {
 
 void FeaturesScrollAreaView::onModelDdcFeatureError(DdcFeatureError* perec) {
     bool debugFunc = debugSignals;
-    debugFunc = false;
+    debugFunc = true;
     PRINTFTCMF(debugFunc, "perec=%p, perec->%s", perec, qs2s(perec->repr()) );
     // std::cout << "typeid(perec):  " << typeid(perec).name()  << std::endl;
     // std::cout << "typeid(*perec): " << typeid(*perec).name() << std::endl;
