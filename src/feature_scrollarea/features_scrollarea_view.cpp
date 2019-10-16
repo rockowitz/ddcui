@@ -155,7 +155,7 @@ void FeaturesScrollAreaView::onUIValueChanged(
       uint8_t sl)
 {
    bool debug = debugSignals;
-   debug = true;
+   // debug = true;
    PRINTFTCMF(debug,
              "feature_code = 0x%02x, writeOnly=%s, sh=0x%02x, sl=0x%02x",
              featureCode, sbool(writeOnly), sh, sl);
@@ -247,7 +247,7 @@ void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc) {
 
 void FeaturesScrollAreaView::onModelDdcDetailedError(DdcDetailedError* perec) {
    bool debugFunc = debugSignals;
-   debugFunc = true;
+   // debugFunc = true;
 
     // PRINTFTCM("Starting");
     PRINTFTCMF(debugFunc, "perec=%p, perec->%s", perec, perec->srepr() );
@@ -264,7 +264,7 @@ void FeaturesScrollAreaView::onModelDdcDetailedError(DdcDetailedError* perec) {
                                        qstitle,
                                        qsexpl,
                                        icon);
-   // PRINTFTCM("Calling _msgboxQueue.put() for qe: %s", qs2s(qe->repr()));
+   PRINTFTCMF(debugFunc, "Calling _msgboxQueue.put() for qe: %s", qs2s(qe->repr()));
    _msgboxQueue->put(qe);
 }
 
@@ -272,7 +272,7 @@ void FeaturesScrollAreaView::onModelDdcDetailedError(DdcDetailedError* perec) {
 
 void FeaturesScrollAreaView::onModelDdcFeatureError(DdcFeatureError* perec) {
     bool debugFunc = debugSignals;
-    debugFunc = true;
+    // debugFunc = true;
     PRINTFTCMF(debugFunc, "perec=%p, perec->%s", perec, qs2s(perec->repr()) );
     // std::cout << "typeid(perec):  " << typeid(perec).name()  << std::endl;
     // std::cout << "typeid(*perec): " << typeid(*perec).name() << std::endl;
@@ -296,7 +296,7 @@ void FeaturesScrollAreaView::onModelDdcFeatureError(DdcFeatureError* perec) {
                                    qstitle,
                                    qsexpl,
                                    icon);
-    // PRINTFTCM("Calling _msgboxQueue.put() for qe: %s", qs2s(qe->repr()));
+     PRINTFTCMF(debugFunc, "Calling _msgboxQueue.put() for qe: %s", qs2s(qe->repr()));
     _msgboxQueue->put(qe);
 }
 
