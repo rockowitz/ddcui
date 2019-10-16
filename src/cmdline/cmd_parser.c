@@ -1,5 +1,5 @@
 /* \file cmd_parser.c
- * ddcui command line parser
+ * ddcui command line parser for ddcui
  */
 
 // Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
@@ -173,9 +173,8 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
    gboolean enable_udf_flag        = false;
    gboolean nousb_flag             = false;
    gboolean report_freed_excp_flag = false;
-#ifdef UNIMPLEMENTED
-   gboolean timestamp_trace_flag   = false;
-#endif
+   gboolean timestamp_trace_flag = false;
+   gboolean thread_id_trace_flag = false;
    gboolean version_flag           = false;
    gchar**  cmd_and_args           = NULL;
    gchar**  trace_classes          = NULL;
@@ -212,10 +211,11 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
   //  {"trace",   '\0', 0, G_OPTION_ARG_STRING,   &tracework,        "Trace classes",          "comma separated list" },
       {"trcfunc", '\0',0, G_OPTION_ARG_STRING_ARRAY, &trace_functions, "Trace functions",     "function name" },
       {"trcfile", '\0',0, G_OPTION_ARG_STRING_ARRAY, &trace_filenames,    "Trace files",     "file name" },
-#ifdef UNIMPLEMENTED
       {"timestamp",'\0',  0, G_OPTION_ARG_NONE,   &timestamp_trace_flag, "Prepend trace msgs with elapsed time",  NULL},
       {"ts",      '\0',   0, G_OPTION_ARG_NONE,   &timestamp_trace_flag, "Prepend trace msgs with elapsed time",  NULL},
-#endif
+      {"thread-id",'\0',  0, G_OPTION_ARG_NONE,   &thread_id_trace_flag, "Prepend trace msgs with thread id",  NULL},
+      {"tid",     '\0',   0, G_OPTION_ARG_NONE,   &thread_id_trace_flag, "Prepend trace msgs with thread id",  NULL},
+
       {"version", 'V',  0, G_OPTION_ARG_NONE,     &version_flag,     "Show version information", NULL},
 
       // collect to verify that does not exist
@@ -273,9 +273,8 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
 
    parsed_cmd->stats_types      = stats_work;
    SET_CMDFLAG(CMD_FLAG_DDCDATA,           ddc_flag);
-#ifdef UNIMPLEMENTED
    SET_CMDFLAG(CMD_FLAG_TIMESTAMP_TRACE,   timestamp_trace_flag);
-#endif
+   SET_CMDFLAG(CMD_FLAG_THREAD_ID_TRACE,   thread_id_trace_flag);
    SET_CMDFLAG(CMD_FLAG_REPORT_FREED_EXCP, report_freed_excp_flag);
 
    SET_CMDFLAG(CMD_FLAG_ENABLE_UDF,        enable_udf_flag);
