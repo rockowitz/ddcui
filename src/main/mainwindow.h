@@ -61,6 +61,7 @@ public:
     DDCA_Feature_Subset_Id feature_list_id() const;
     void set_feature_list_id(DDCA_Feature_Subset_Id feature_list_id);
 #endif
+    WaitingSpinnerWidget*    _spinner;
 
 signals:
     void featureSelectionChanged();
@@ -117,6 +118,8 @@ private slots:
     void showCentralWidgetPage(int pageno);
     void showCentralWidgetByWidget(QWidget * pageWidget);
 
+
+
 private:
     void initMonitors();
     void loadMonitorFeatures(Monitor * monitor);
@@ -133,7 +136,7 @@ private:
     QVector<Monitor*>        _monitors;
     DDCA_Feature_Subset_Id   _feature_list_id = DDCA_SUBSET_KNOWN;
     QVector<VcpThread*>      _vcp_threads;
-    WaitingSpinnerWidget*    _spinner;
+    // WaitingSpinnerWidget*    _spinner;
     QMessageBox*             _serialMsgBox = nullptr;
     QMessageBox*             _loadingMsgBox;
     MsgBoxQueue*             _msgboxQueue = nullptr;

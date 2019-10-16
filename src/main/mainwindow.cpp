@@ -58,9 +58,15 @@ MainWindow::MainWindow(QWidget *parent) :
     // _loadingMsgBox has same problem
     _spinner = new WaitingSpinnerWidget(
                       Qt::WindowModal,    // alt WindowModal, ApplicationModal, NonModal
-                      nullptr,      // parent   - if set to this, spinning widget does not display
+                      nullptr,     // parent   - if set to this, spinning widget does not display
+                                     //            if set to this->_ui won't compile
+                                     //                      &this->_ui, &this
                       true,         // centerOnParent
                       true);        // disableParentWhenSpinning
+    // PRINTFTCM("Spinner Settings: ");
+    // QColor wcolor = _spinner->color();
+    // PRINTFTCM("   color:      %s", qs2s(wcolor.name()));
+
     _loadingMsgBox = new QMessageBox(this);
     _loadingMsgBox->setText("Loading...");
     _loadingMsgBox->setStandardButtons(QMessageBox::NoButton);
@@ -262,16 +268,18 @@ void MainWindow::longRunningTaskStart() {
    bool debug = true;
    // needs counter
    PRINTFTCMF(debug, "Executing");
-   _spinner->start();
+   // _spinner->start();
    // _loadingMsgBox->show();
+   QGuiApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 }
 
 
 void MainWindow::longRunningTaskEnd() {
    bool debug = true;
    PRINTFTCMF(debug, "Executing");
-   _spinner->stop();
+   // _spinner->stop();
    // _loadingMsgBox->hide();
+   QGuiApplication::restoreOverrideCursor();
 }
 
 
