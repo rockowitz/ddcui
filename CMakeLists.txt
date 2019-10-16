@@ -83,6 +83,7 @@ set(SOURCES
     src/base/enhanced_slider.cpp
     src/base/feature_selector.cpp 
     src/base/global_state.cpp 
+    src/base/hex_number_validator.cpp
     src/base/hline_widget.cpp 
     src/base/number_entry_widget.cpp
     src/base/other_options_state.cpp 
