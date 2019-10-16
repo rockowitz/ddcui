@@ -58,7 +58,8 @@ void FeaturesScrollAreaView::freeContents(void) {
 
 
 void FeaturesScrollAreaView::onEndInitialLoad(void) {
-    PRINTFTCM("Starting, Monitor=%s", _monitor->_displayInfo->model_name);
+    bool debug = false;
+    PRINTFTCMF(debug, "Starting, Monitor=%s", _monitor->_displayInfo->model_name);
 
     // TODO:
     // free existing QScrollArea, QScrollAreaContents
@@ -144,7 +145,7 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
     _scrollAreaContents = scrollAreaContents;
     _centralStackedWidget->show();
 
-    PRINTFTCM("Done.  feature count: %d", ct);
+    PRINTFTCMF(debug, "Done.  feature count: %d", ct);
 }
 
 
@@ -155,9 +156,9 @@ void FeaturesScrollAreaView::onUIValueChanged(
       uint8_t sl)
 {
    bool debug = debugSignals;
-   // debug = true;
+   debug = false;
    PRINTFTCMF(debug,
-             "feature_code = 0x%02x, writeOnly=%s, sh=0x%02x, sl=0x%02x",
+             "Starting. feature_code = 0x%02x, writeOnly=%s, sh=0x%02x, sl=0x%02x",
              featureCode, sbool(writeOnly), sh, sl);
 
    FeatureValue * curFv = _baseModel->modelVcpValueFind(featureCode);
@@ -165,6 +166,7 @@ void FeaturesScrollAreaView::onUIValueChanged(
       PRINTFTCM("New value matches model value, Suppressing.");
    }
    else {
+      PRINTFTCMF(debug, "=> emitting signalVcpRequest() for VcpSetRequst, featureCode=0x%02x", featureCode);
       VcpRequest * rqst = new VcpSetRequest(featureCode, sh, sl, writeOnly);
       emit signalVcpRequest(rqst);  // used to call into monitor
 

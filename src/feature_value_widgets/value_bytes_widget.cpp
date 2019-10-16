@@ -112,10 +112,7 @@ ValueBytesWidget::ValueBytesWidget(QWidget *parent)
        _applyButton->setEnabled(false);
        _cancelButton->setEnabled(false);
 
-       connect(_applyButton,  &QPushButton::clicked,
-               this,          &ValueBytesWidget::onApplyButtonClicked);
-       connect(_cancelButton, &QPushButton::clicked,
-               this,          &ValueBytesWidget::onCancelButtonClicked);
+
    //
 // #endif
 
@@ -319,7 +316,7 @@ uint16_t ValueBytesWidget::getCurrentShSl() {
 // ifdef APPLY_CANCEL
 void  ValueBytesWidget::onApplyButtonClicked(bool checked) {
    bool debug = debugValueWidgetSignals;
-   // debug = true;
+   debug = false;
    // PRINTFCMF(debug, "Executing. checked=%s", sbool(checked));
 
    uint16_t newval = ( _shWidget->getNewValue() <<8 | _slWidget->getNewValue() );

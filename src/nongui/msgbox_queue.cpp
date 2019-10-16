@@ -51,11 +51,11 @@ MsgBoxQueue::MsgBoxQueue()
 
 void MsgBoxQueue::put(MsgBoxQueueEntry * request) {
    bool debugFunc = debug;
-
-   debugFunc = true;
+   // debugFunc = true;
     // QString r = request->repr();
+
     char * s = strdup(qs2s(request->repr()));
-    PRINTFTCMF(debugFunc, "=========> Starting. request: %s, about to lock", s);
+    PRINTFTCMF(debugFunc, "=> Starting. request: %s, about to lock", s);
     free(s);
     _mutex.lock();
     _queue.enqueue(request);
@@ -79,7 +79,7 @@ MsgBoxQueueEntry * MsgBoxQueue::pop() {
     // this->dbgrpt_nolock();
 
     _mutex.unlock();
-    PRINTFTCMF(debug, "Done. Returning request: %s", qs2s(rqst->repr()) );
+    PRINTFTCMF(debug, "<- Done. Returning request: %s", qs2s(rqst->repr()) );
     return rqst;
 }
 

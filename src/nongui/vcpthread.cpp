@@ -70,7 +70,7 @@ void VcpThread::rpt_error_detail(
       const char * ddca_func_name)
 {
    bool debugFunc = debugThread;
-   debugFunc = true;
+   // debugFunc = true;
    PRINTFTCMF(debugFunc, "In %s(), %s()  returned DDCA_Error_Detail with status %d - %s",
                          caller_name, ddca_func_name,
                          erec->status_code, ddca_rc_name(erec->status_code));
@@ -128,7 +128,8 @@ void VcpThread::rpt_verify_error(
       uint16_t     expectedValue,
       uint16_t     observedValue)
 {
-   bool debug = true;
+   bool debug = false;
+   debug = debug || debugThread;
    PRINTFTCMF(debug, "featureCode=0x%02x, expectedValue=0x%04x, observedValue=0x%04x", featureCode, expectedValue, observedValue);
    // DdcVerifyError erec(featureCode, function, expectedValue, observedValue);
    DdcVerifyError* perec = new DdcVerifyError(featureCode, function, expectedValue, observedValue);
@@ -141,10 +142,10 @@ void VcpThread::rpt_verify_error(
               abs8(expectedValue & 0xff, observedValue & 0xff)
              ) <= 1)
    {
-      PRINTFCMF(debug, "difference <= 1, suppressing error");
+      PRINTFTCMF(debug, "difference <= 1, suppressing error");
    }
    else {
-      PRINTFCMF(debug, "Calling baseModel->onDdcFeatureError()");
+      PRINTFTCMF(debug, "Calling baseModel->onDdcFeatureError()");
       _baseModel->onDdcFeatureError(perec);
    }
 }
@@ -311,20 +312,20 @@ void VcpThread::getvcp(uint8_t featureCode, bool reportUnsupported) {
 void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint16_t shsl)
 {
     bool debugFunc = debugThread;
-    debugFunc = true;
+    // debugFunc = true;
     PRINTFTCMF(debugFunc,
               "Starting. feature_code=0x%02x.  shsl=0x%04x, writeOnly=%s",
               feature_code, shsl, sbool(writeOnly));
 
     uint8_t sh = (shsl >> 8);
     uint8_t sl = (shsl & 0xff);
-    PRINTFCM("sh: 0x%02x, sl: 0x%02x", sh, sl);
+    PRINTFTCMF(debugFunc, "sh: 0x%02x, sl: 0x%02x", sh, sl);
     // rpt_ddca_status(feature_code, __func__, "ddca_bogus", 0);
 
-    DDCA_Display_Handle         dh;
+    DDCA_Display_Handle dh;
     DDCA_Status ddcrc = ddca_open_display2(this->_dref, false, &dh);
     if (ddcrc != 0) {
-        PRINTFTCM("ddca_open_display2() returned %d", ddcrc);
+        PRINTFTCMF(debugFunc, "ddca_open_display2() returned %d", ddcrc);
         rpt_ddca_status(feature_code, __func__, "ddca_open_display2", ddcrc);
         goto bye;
     }
@@ -339,7 +340,7 @@ void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint16_t shsl)
 
     ddcrc = ddca_set_non_table_vcp_value(dh, feature_code, sh, sl);
     if (ddcrc != 0) {
-        PRINTFTCM("ddca_set_non_table_vcp_value() returned %d - %s", ddcrc, ddca_rc_name(ddcrc));
+        PRINTFTCMF(debugFunc, "ddca_set_non_table_vcp_value() returned %d - %s", ddcrc, ddca_rc_name(ddcrc));
         rpt_ddca_status(feature_code, __func__, "ddca_set_non_table_vcp_value", ddcrc);
         goto bye;
     }
@@ -351,16 +352,16 @@ void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint16_t shsl)
                 rpt_ddca_status(feature_code, __func__, "ddca_get_nontable_vcp_value", ddcrc);
             }
             else {
-                PRINTFTCM("ddca_get_nontable_vcp_value() after ddca_set_non_table_vcp_value():");
-                PRINTFTCM("  opcode: 0x%02x, requested: sh=0x%02x, sl=0x%02x, observed: mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x",
+                PRINTFTCMF(debugFunc, "ddca_get_nontable_vcp_value() after ddca_set_non_table_vcp_value():");
+                PRINTFTCMF(debugFunc, "  opcode: 0x%02x, requested: sh=0x%02x, sl=0x%02x, observed: mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x",
                          feature_code, sh, sl, valrec.mh, valrec.ml, valrec.sh, valrec.sl);
 
                 if ((sl != valrec.sl || sh != valrec.sh)) {
-                   PRINTFCM("Calling rpt_verify_error()");
+                   // PRINTFCM("Calling rpt_verify_error()");
                    rpt_verify_error(feature_code, "ddca_set_non_table_vcp_value", sh, sl, valrec.sh, valrec.sl);
                 }
                 // 10/2019 coming here even if verify error???
-                PRINTFTCM("Calling _baseModel->modelVcpValueUpdate()");
+                PRINTFTCMF(debugFunc, "Calling _baseModel->modelVcpValueUpdate()");
                 _baseModel->modelVcpValueUpdate(feature_code, valrec.sh, valrec.sl);
             }
        }
@@ -368,7 +369,7 @@ void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint16_t shsl)
 
     ddcrc = ddca_close_display(dh);
     if (ddcrc != 0) {
-        PRINTFTCM("ddca_close_display() returned %d", ddcrc);
+        PRINTFTCMF(debugFunc, "ddca_close_display() returned %d", ddcrc);
         rpt_ddca_status(0, __func__, "ddca_close_display", ddcrc);
     }
 

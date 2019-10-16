@@ -166,7 +166,7 @@ void   FeatureBaseModel::modelVcpValueSet(
         // fv->_value.sl = feature_value->sl;
         fv->setCurrentValue(feature_value->sh, feature_value->sl);
 
-        PRINTFTCMF(debugFunc, "Emitting signalFeatureUpdated3(), feature code: 0x%02x, sl: 0x%02x",
+        PRINTFTCMF(debugFunc, "=> Emitting signalFeatureUpdated3(), feature code: 0x%02x, sl: 0x%02x",
                  fv->featureCode(), feature_value->sl);
         emit signalFeatureUpdated3(__func__, fv->featureCode(), feature_value->sh, feature_value->sl);
     }
@@ -218,7 +218,7 @@ FeatureBaseModel::onDdcDetailedError(
    // PRINTFTCMF(debugFunc, "Starting");
    PRINTFTCMF(debugFunc, "perec=%p -> %s", perec, perec->srepr() );
    // PRINTFTCMF(debugFunc, "perec=%p -> %s", perec, perec->sexpl() );
-   PRINTFCMF(debugFunc, "emitting signalDdcDetailedError()");
+   PRINTFCMF(debugFunc, "=> emitting signalDdcDetailedError()");
    emit  signalDdcDetailedError(perec);
 }
 
@@ -233,7 +233,7 @@ FeatureBaseModel::onDdcFeatureError(
    // std::cout << "typeid(perec):  " << typeid(perec).name()  << std::endl;
    // std::cout << "typeid(*perec): " << typeid(*perec).name() << std::endl;
    // emit signalModelError(featureCode, msg);
-   PRINTFCMF(debugFunc, "emitting signalDdcFeatureError()");
+   PRINTFCMF(debugFunc, "=> emitting signalDdcFeatureError()");
    emit  signalDdcFeatureError(perec);
 }
 
@@ -334,19 +334,19 @@ void FeatureBaseModel::dbgrpt() {
 
 
 void  FeatureBaseModel::modelStartInitialLoad(void) {
-    PRINTFTCM("Emitting signalStartInitialLoad");
+    // PRINTFTCM("=> Emitting signalStartInitialLoad");
     emit signalStartInitialLoad();
 }
 
 
 void  FeatureBaseModel::modelEndInitialLoad(void) {
-    PRINTFTCM("Emitting signalEndInitialLoad");
+    // PRINTFTCM("=> Emitting signalEndInitialLoad");
     signalEndInitialLoad();
 }
 
 
 void  FeatureBaseModel::setStatusMsg(QString msg) {
-   // printf("(%s::%s) msg=%s\n", _cls, __func__, msg.toLatin1().data());  fflush(stdout);
+   // printf("(%s::%s) => msg=%s\n", _cls, __func__, msg.toLatin1().data());  fflush(stdout);
    emit signalStatusMsg(msg);
 }
 

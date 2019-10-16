@@ -613,7 +613,7 @@ void MainWindow::on_actionAbout_Qt_triggered()
 //
 
 void MainWindow::showSerialMsgBox(QString title, QString text, QMessageBox::Icon icon) {
-   PRINTFTCM("Starting.");
+   // PRINTFTCM("Starting.");
    _serialMsgBox->setText(text);
    _serialMsgBox->setWindowTitle(title);
    _serialMsgBox->setIcon(icon);

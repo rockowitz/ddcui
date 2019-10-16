@@ -74,6 +74,8 @@ VcpRequestQueue::VcpRequestQueue()
 }
 
 void VcpRequestQueue::put(VcpRequest * request) {
+    // printf("VcpRequestQueue::put) -> request type: %d\n" , request->_type);
+
     _mutex.lock();
     _queue.enqueue(request);
     _queueNonempty.wakeOne();
@@ -91,6 +93,7 @@ VcpRequest * VcpRequestQueue::pop() {
     // do something with queueNonempty?
 
     _mutex.unlock();
+    // printf("VcpRequesQueue::pop) <- Done. request type: %d\n", rqst->_type);
     return rqst;
 }
 

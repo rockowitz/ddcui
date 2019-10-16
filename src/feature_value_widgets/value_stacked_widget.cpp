@@ -210,7 +210,7 @@ void  ValueStackedWidget::onContainedWidgetChanged(uint8_t feature_code, uint8_t
    assert(feature_code == _featureCode);
 
    PRINTFCMF(debug,
-             "Calling emit stackedFeatureValueChanged(), feature_code=0x%02x, sh=0x%02x, sl=0x%02x",
+             "-> Calling emit stackedFeatureValueChanged(), feature_code=0x%02x, sh=0x%02x, sl=0x%02x",
              feature_code, sh, sl);
    emit stackedFeatureValueChanged(feature_code, sh, sl);
 

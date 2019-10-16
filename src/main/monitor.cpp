@@ -96,6 +96,6 @@ bool Monitor::supportsDdc() {
 
 
 void Monitor::putVcpRequest(VcpRequest * rqst) {
-    // PRINTFCM("rqst->type=%d. Adding request to monitor's request queue", rqst->_type);
+    // PRINTFCM("-> rqst->type=%d. Adding request to monitor's request queue", rqst->_type);
     _requestQueue->put(rqst);
 }
