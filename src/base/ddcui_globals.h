@@ -46,8 +46,8 @@ extern const bool debugLayout             ;
    do { \
       char thread_prefix[15] = ""; \
       pid_t tid = syscall(SYS_gettid); \
-     snprintf(thread_prefix, 15, "[%7jd]", (intmax_t) tid); \
-     printf("(%s %s::%s) " __FMT__ "\n", thread_prefix,  _cls, __func__, ##__VA_ARGS__); \
+     snprintf(thread_prefix, 15, "[%5jd] ", (intmax_t) tid); \
+     printf("%s(%s::%s) " __FMT__ "\n", thread_prefix,  _cls, __func__, ##__VA_ARGS__); \
      fflush(stdout); \
    } while(0)
 // variant that shows QtThreadId as well as Linux thread id
@@ -59,9 +59,9 @@ extern const bool debugLayout             ;
       char thread_prefix[15] = ""; \
       if (dbgtrc_show_thread_id) { \
          pid_t tid = syscall(SYS_gettid); \
-         snprintf(thread_prefix, 15, "[%7jd]", (intmax_t) tid); \
+         snprintf(thread_prefix, 15, "[%5jd] ", (intmax_t) tid); \
       } \
-      printf("((%s %s::%s) " __FMT__ "\n",  thread_prefix, _cls, __func__, ##__VA_ARGS__); \
+      printf("%s(%s::%s) " __FMT__ "\n",  thread_prefix, _cls, __func__, ##__VA_ARGS__); \
       fflush(stdout); \
    }
 
