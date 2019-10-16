@@ -10,10 +10,9 @@
 
 typedef enum {
    CMD_FLAG_DDCDATA             = 0x0001,
-#ifdef UNIMPLEMENTED
    CMD_FLAG_TIMESTAMP_TRACE     = 0x0008,  // prepend trace and debug msgs with elapsed time
-#endif
    CMD_FLAG_REPORT_FREED_EXCP   = 0x0200,
+   CMD_FLAG_THREAD_ID_TRACE     = 0x0800,
    CMD_FLAG_ENABLE_UDF        = 0x100000,
    CMD_FLAG_NOUSB             = 0x200000,
 } Parsed_Cmd_Flags;

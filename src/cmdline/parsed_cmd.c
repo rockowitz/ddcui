@@ -66,6 +66,8 @@ void dbgrpt_parsed_cmd(Parsed_Cmd * parsed_cmd) {
       printf("   enable udf:                %s\n", sbool(parsed_cmd->flags & CMD_FLAG_ENABLE_UDF) );
       printf("   nousb                      %s\n", sbool(parsed_cmd->flags & CMD_FLAG_NOUSB) );
       printf("   display ddc errors:        %s\n", sbool(parsed_cmd->flags & CMD_FLAG_DDCDATA) );
+      printf("   timestamp prefix:          %s\n", sbool(parsed_cmd->flags & CMD_FLAG_TIMESTAMP_TRACE) );
+      printf("   thread_id prefix:          %s\n", sbool(parsed_cmd->flags & CMD_FLAG_THREAD_ID_TRACE) );
       printf("   sleep multiplier:         %9.1f\n", parsed_cmd->sleep_multiplier);
 
    }
