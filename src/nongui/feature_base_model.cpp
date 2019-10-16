@@ -218,7 +218,7 @@ FeatureBaseModel::onDdcDetailedError(
    // PRINTFTCMF(debugFunc, "Starting");
    PRINTFTCMF(debugFunc, "perec=%p -> %s", perec, perec->srepr() );
    // PRINTFTCMF(debugFunc, "perec=%p -> %s", perec, perec->sexpl() );
-
+   PRINTFCMF(debugFunc, "emitting signalDdcDetailedError()");
    emit  signalDdcDetailedError(perec);
 }
 
@@ -233,6 +233,7 @@ FeatureBaseModel::onDdcFeatureError(
    // std::cout << "typeid(perec):  " << typeid(perec).name()  << std::endl;
    // std::cout << "typeid(*perec): " << typeid(*perec).name() << std::endl;
    // emit signalModelError(featureCode, msg);
+   PRINTFCMF(debugFunc, "emitting signalDdcFeatureError()");
    emit  signalDdcFeatureError(perec);
 }
 
