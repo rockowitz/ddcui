@@ -8,8 +8,8 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <QtWidgets/QWidget>
+#include <QtWidgets/QSlider>
 
-class QSlider;
 class QMouseEvent;
 class QKeyEvent;
 
