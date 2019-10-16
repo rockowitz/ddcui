@@ -206,7 +206,7 @@ FeatureWidget::FeatureWidget(FeatureValue& fv, QWidget *parent) :
 
 // Used only to set feature value immediately after constructor called
 void FeatureWidget::setFeatureValue(FeatureValue &fv) {
-   bool debug = true;
+   bool debug = false;
    PRINTFCMF(debug, "feature code = 0x%02x, sets feature value immediately after constructor called",
              fv.featureCode());
     // printf("(FeatureWidgetBasic::%s)", __func__);
@@ -241,7 +241,7 @@ void FeatureWidget::setFeatureValue(FeatureValue &fv) {
         _featureTypeField->setText(QString("T"));
     }
 
-    PRINTFCMF(debug, "Before calling valueWidget->setFeatureValue()");
+    // PRINTFCMF(debug, "Before calling valueWidget->setFeatureValue()");
     _valueWidget->setFeatureValue(fv);
 
     PRINTFCMF(debug, "After calling valueWidget->setFeatureValue()");
