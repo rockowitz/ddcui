@@ -6,6 +6,7 @@
 
 #include "value_bytes_widget.h"
 
+#include <assert.h>
 #include <string.h>
 
 #include <QtWidgets/QWidget>
@@ -199,7 +200,7 @@ void ValueBytesWidget::checkAcceptCancelEnabled() {
           (_shState == NumberEntryWidget::StateNewValid && _slState == NumberEntryWidget::StateNewValid) ||
           (_shState == NumberEntryWidget::StateNewValid && _slState == NumberEntryWidget::StateOldValid) ||
           (_shState == NumberEntryWidget::StateOldValid && _slState == NumberEntryWidget::StateNewValid) ;
-   PRINTFCM("_shState=%d, _slState=%d, enable=%s", _shState, _slState, sbool(enabled) );
+   // PRINTFTCM("_shState=%d, _slState=%d, enable=%s", _shState, _slState, sbool(enabled) );
    _applyButton->setEnabled(enabled);
    _cancelButton->setEnabled(enabled);
 }
@@ -246,7 +247,7 @@ void ValueBytesWidget::setFeatureValue(const FeatureValue &fv) {
     bool debug = debugValueWidgetSignals;
     // debug = true;
     PRINTFCMF(debug,
-              "feature code: 0x%02x, mh: 0x%02x, ml: 0x%02x, sh: 0x%02x sl: 0x%02x",
+              "Starting. feature code: 0x%02x, mh: 0x%02x, ml: 0x%02x, sh: 0x%02x sl: 0x%02x",
               fv.featureCode(),
               fv.val().mh,
               fv.val().ml,
@@ -256,7 +257,7 @@ void ValueBytesWidget::setFeatureValue(const FeatureValue &fv) {
     ValueBaseWidget::setFeatureValue(fv);
 
     PRINTFCMF(debug,
-              "feature code: 0x%02x, mh: 0x%02x, ml: 0x%02x, sh: 0x%02x sl: 0x%02x",
+              "After valueBaseWidget::setFeatureValue() called, feature code: 0x%02x, mh: 0x%02x, ml: 0x%02x, sh: 0x%02x sl: 0x%02x",
               _featureCode,
               _mh,
               _ml,
@@ -318,8 +319,8 @@ uint16_t ValueBytesWidget::getCurrentShSl() {
 // ifdef APPLY_CANCEL
 void  ValueBytesWidget::onApplyButtonClicked(bool checked) {
    bool debug = debugValueWidgetSignals;
-   debug = true;
-   PRINTFCMF(debug, "Executing. checked=%s", sbool(checked));
+   // debug = true;
+   // PRINTFCMF(debug, "Executing. checked=%s", sbool(checked));
 
    uint16_t newval = ( _shWidget->getNewValue() <<8 | _slWidget->getNewValue() );
 
@@ -327,7 +328,7 @@ void  ValueBytesWidget::onApplyButtonClicked(bool checked) {
 
    PRINTFCMF(debug, "oldval = 0x%04x, newval = 0x%04x", oldval, newval);
    if (newval != oldval) {
-      PRINTFCMF(debug, "Emitting. feature code: 0x%02x, new sh: 0x%02x, new sl: 0x%02x",
+      PRINTFCMF(debug, "Emitting featureValueChanged(). feature code: 0x%02x, new sh: 0x%02x, new sl: 0x%02x",
                 _featureCode, newval >>8, newval&0xff);
       emit featureValueChanged(_featureCode, newval >> 8, newval & 0xff);
    }
