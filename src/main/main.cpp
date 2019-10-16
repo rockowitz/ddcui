@@ -43,7 +43,10 @@ static bool init_ddcutil_library(Parsed_Cmd * parsed_cmd) {
       }
 
       // TO DO: create parser options --thread-id --tid --timestamp
-      ddca_set_trace_options(DDCA_TRCOPT_THREAD_ID);
+      uint16_t work;
+      if (parsed_cmd->flags & CMD_FLAG_TIMESTAMP_TRACE) work |= DDCA_TRCOPT_TIMESTAMP;
+      if (parsed_cmd->flags & CMD_FLAG_THREAD_ID_TRACE) work |= DDCA_TRCOPT_THREAD_ID;
+      ddca_set_trace_options((DDCA_Trace_Options) work);
 
 
    }
@@ -84,6 +87,7 @@ static bool init_ddcutil_library(Parsed_Cmd * parsed_cmd) {
    if (parsed_cmd->sleep_multiplier != 1.0f) {
       ddca_set_global_sleep_multiplier(parsed_cmd->sleep_multiplier);
    }
+
 
 
    return ok;
