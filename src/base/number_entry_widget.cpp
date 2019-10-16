@@ -3,6 +3,7 @@
 // Copyright (C) 2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+#include <assert.h>
 
 #include <QtWidgets/QWidget>
 #include <QtCore/QString>
@@ -31,7 +32,7 @@ NumberEntryWidget::NumberEntryWidget(
 {
    _cls = strdup(metaObject()->className());
     // TODO: use an enumb instead of bytect
-   assert(bytect == 1 || bytect == 2);    // could allow 4, just more cases in switch stmts etc.
+  // ***TEMP*** assert(bytect == 1 || bytect == 2);    // could allow 4, just more cases in switch stmts etc.
 
     // *** Constrain what character strings are accepted
 
