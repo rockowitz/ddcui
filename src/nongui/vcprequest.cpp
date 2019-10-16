@@ -3,6 +3,8 @@
 // Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+// #include <string.h>
+
 #include "nongui/vcprequest.h"
 
 /* VcpRequest and subclasses */
@@ -90,6 +92,19 @@ VcpRequest * VcpRequestQueue::pop() {
 
     _mutex.unlock();
     return rqst;
+}
+
+void VcpRequestQueue::dbgrpt() {
+   _mutex.lock();
+   int ct = _queue.size();
+   printf("Queue contains %d entries", ct);
+   for (int ndx = 0; ndx < ct; ndx++) {
+      VcpRequest * rqst = _queue.at(ndx);
+      printf("   type: %d\n", rqst->_type);
+
+   }
+    _mutex.unlock();
+
 }
 
 // VcpRequest VcpRequestQueue::peek() { }

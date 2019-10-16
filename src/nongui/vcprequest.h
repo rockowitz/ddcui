@@ -96,6 +96,7 @@ public:
 
     VcpRequest* pop();
 //  VcpRequest* popCondensed();   // future
+    void dbgrpt();
 
 
 
