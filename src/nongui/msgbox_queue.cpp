@@ -45,18 +45,24 @@ QString MsgBoxQueueEntry::repr() {
 MsgBoxQueue::MsgBoxQueue()
 {
     _queue = QQueue<MsgBoxQueueEntry*>();
+    // _mutex = QMutex(QMutex::Recursive);
 }
 
 
 void MsgBoxQueue::put(MsgBoxQueueEntry * request) {
-    // PRINTFTCM("Starting");
+   bool debugFunc = debug;
+
+   debugFunc = true;
     // QString r = request->repr();
     char * s = strdup(qs2s(request->repr()));
-    PRINTFTCMF(debug, "Starting. request: %s, about to lock", s);
+    PRINTFTCMF(debugFunc, "=========> Starting. request: %s, about to lock", s);
     free(s);
     _mutex.lock();
     _queue.enqueue(request);
     _queueNonempty.wakeOne();
+
+    // dbgrpt_nolock();
+
     _mutex.unlock();
     PRINTFTCMF(debug, "Done");
 }
@@ -70,9 +76,27 @@ MsgBoxQueueEntry * MsgBoxQueue::pop() {
 
     MsgBoxQueueEntry * rqst = _queue.dequeue();
 
+    // this->dbgrpt_nolock();
+
     _mutex.unlock();
     PRINTFTCMF(debug, "Done. Returning request: %s", qs2s(rqst->repr()) );
     return rqst;
 }
 
 
+void MsgBoxQueue::dbgrpt_nolock() {
+   int ct = _queue.size();
+   printf("Queue contains %d entries", ct);
+   for (int ndx = 0; ndx < ct; ndx++) {
+      MsgBoxQueueEntry * rqst = _queue.at(ndx);
+      printf("   %s\n", qs2s( rqst->repr() ) );
+   }
+}
+
+
+void MsgBoxQueue::dbgrpt() {
+   _mutex.lock();
+   dbgrpt_nolock();
+   _mutex.unlock();
+
+}

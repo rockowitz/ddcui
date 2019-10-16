@@ -45,8 +45,10 @@ public:
 
     MsgBoxQueueEntry* pop();
     void              put(MsgBoxQueueEntry* request);
+    void              dbgrpt();
 
 private:
+    void                      dbgrpt_nolock();
     const char *              _cls = "MsgBoxQueue";
     QMutex                    _mutex;
     QQueue<MsgBoxQueueEntry*> _queue;
