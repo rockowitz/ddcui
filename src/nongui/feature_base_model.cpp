@@ -27,7 +27,7 @@ static bool debugModel = false;
 
 FeatureBaseModel::FeatureBaseModel(Monitor * monitor)
 {
-    _cls                    = metaObject()->className();
+    _cls                    = strdup(metaObject()->className());
     _monitor                = monitor;
     _featureValues          = new QVector<FeatureValue*>();
 #ifdef FEATURE_CHANGE_OBSERVER
@@ -129,7 +129,7 @@ void   FeatureBaseModel::modelVcpValueSet(
 {
     bool debugFunc = debugModel;
     if (debugFunc)
-        PRINTFTCM("feature_code=0x%02x, mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x",
+        TRACE("feature_code=0x%02x, mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x",
                  feature_code, feature_value->mh, feature_value->ml, feature_value->sh, feature_value->sl);
 
     int ndx = modelVcpValueIndex(feature_code);
@@ -138,7 +138,7 @@ void   FeatureBaseModel::modelVcpValueSet(
     // MAY DO A FULL LOAD MULTIPLE TIMES, E.G if switch table type
     // assert(ndx < 0);
     if (ndx < 0) {
-        PRINTFTCMF(debugFunc, "Creating new FeatureValue");
+        TRACEF(debugFunc, "Creating new FeatureValue");
 
         DDCA_Cap_Vcp * cap_vcp = NULL;
         if (_parsed_caps)
@@ -159,14 +159,14 @@ void   FeatureBaseModel::modelVcpValueSet(
         // notifyFeatureChangeObservers(feature_code);   // alternative
     }
     else {
-        // PRINTFTCM("Modifying existing FeatureValue");
+        // TRACE("Modifying existing FeatureValue");
 
         FeatureValue * fv =  _featureValues->at(ndx);
         // fv->_value.sh = feature_value->sh;
         // fv->_value.sl = feature_value->sl;
         fv->setCurrentValue(feature_value->sh, feature_value->sl);
 
-        PRINTFTCMF(debugFunc, "=> Emitting signalFeatureUpdated3(), feature code: 0x%02x, sl: 0x%02x",
+        TRACEF(debugFunc, "=> Emitting signalFeatureUpdated3(), feature code: 0x%02x, sl: 0x%02x",
                  fv->featureCode(), feature_value->sl);
         emit signalFeatureUpdated3(__func__, fv->featureCode(), feature_value->sh, feature_value->sl);
     }
@@ -181,14 +181,14 @@ FeatureBaseModel::modelVcpValueUpdate(
 {
     bool debugFunc = debugModel;
     // debugFunc = true;
-    PRINTFTCMF(debugFunc, "feature_code=0x%02x, sh=0x%02x, sl=0x%02x", feature_code, sh, sl);
+    TRACEF(debugFunc, "feature_code=0x%02x, sh=0x%02x, sl=0x%02x", feature_code, sh, sl);
 
     int ndx = modelVcpValueIndex(feature_code);
     assert (ndx >= 0);
     FeatureValue * fv =  _featureValues->at(ndx);
     fv->setCurrentValue(sh,sl);
 
-    PRINTFTCMF(debugFunc || debugSignals, "Emitting signalFeatureUpdated3()");
+    TRACEF(debugFunc || debugSignals, "Emitting signalFeatureUpdated3()");
     emit signalFeatureUpdated3(__func__, feature_code, sh, sl);
 }
 
@@ -200,7 +200,7 @@ FeatureBaseModel::setCapabilities(
       char *               capabilities_string,
       DDCA_Capabilities *  parsed_capabilities)
 {
-   // PRINTFTCM("capabilities_string=|%s|", capabilities_string);
+   // TRACE("capabilities_string=|%s|", capabilities_string);
 
    _caps_status = ddcrc;
    _caps_string = capabilities_string;
@@ -215,10 +215,10 @@ FeatureBaseModel::onDdcDetailedError(
    bool debugFunc = debugModel;
    // debugFunc = true;
 
-   // PRINTFTCMF(debugFunc, "Starting");
-   PRINTFTCMF(debugFunc, "perec=%p -> %s", perec, perec->srepr() );
-   // PRINTFTCMF(debugFunc, "perec=%p -> %s", perec, perec->sexpl() );
-   PRINTFCMF(debugFunc, "=> emitting signalDdcDetailedError()");
+   // TRACEF(debugFunc, "Starting");
+   TRACEF(debugFunc, "perec=%p -> %s", perec, perec->srepr() );
+   // TRACEF(debugFunc, "perec=%p -> %s", perec, perec->sexpl() );
+   TRACEF(debugFunc, "=> emitting signalDdcDetailedError()");
    emit  signalDdcDetailedError(perec);
 }
 
@@ -229,11 +229,11 @@ FeatureBaseModel::onDdcFeatureError(
 {
    bool debugFunc = debugModel;
    // debugFunc = true;
-   PRINTFTCMF(debugFunc, "perec=%p -> %s", perec, qs2s(perec->repr()) );
+   TRACEF(debugFunc, "perec=%p -> %s", perec, qs2s(perec->repr()) );
    // std::cout << "typeid(perec):  " << typeid(perec).name()  << std::endl;
    // std::cout << "typeid(*perec): " << typeid(*perec).name() << std::endl;
    // emit signalModelError(featureCode, msg);
-   PRINTFCMF(debugFunc, "=> emitting signalDdcFeatureError()");
+   TRACEF(debugFunc, "=> emitting signalDdcFeatureError()");
    emit  signalDdcFeatureError(perec);
 }
 
@@ -262,7 +262,7 @@ FeatureBaseModel::setFeatureList(
 {
    bool debugFunc = debugFeatureLists;
    debugFunc = false;
-   PRINTFTCMF(debugFunc, "Starting. Features: %s",
+   TRACEF(debugFunc, "Starting. Features: %s",
          ddca_feature_list_string(&featureList, NULL, (char*) " "));
    _featuresToShow = featureList;
 
@@ -270,7 +270,7 @@ FeatureBaseModel::setFeatureList(
          ddca_feature_list_and_not(&_featuresToShow, &_featuresChecked);
 
    if (debugFeatureLists) {
-       PRINTFTCMF(debugFunc, "Unchecked features: %s",
+       TRACEF(debugFunc, "Unchecked features: %s",
                 ddca_feature_list_string(&unchecked_features, NULL, (char*) " "));
    }
 
@@ -283,7 +283,7 @@ FeatureBaseModel::setFeatureList(
    }
    _monitor->_requestQueue->put(new VcpEndInitialLoadRequest);
 
-   PRINTFTCMF(debugFunc, "Done");
+   TRACEF(debugFunc, "Done");
 }
 
 
@@ -295,7 +295,7 @@ void FeatureBaseModel::setFeatureChecked(uint8_t featureCode) {
 void FeatureBaseModel::reloadFeatures() {
    bool debugFunc = debugFeatureLists;
    debugFunc = false;
-   PRINTFTCMF(debugFunc, "Starting.");
+   TRACEF(debugFunc, "Starting.");
 
    _monitor->_requestQueue->put(new VcpStartInitialLoadRequest);
    int ct = modelVcpValueCount();
@@ -309,7 +309,7 @@ void FeatureBaseModel::reloadFeatures() {
    }
    _monitor->_requestQueue->put(new VcpEndInitialLoadRequest);
 
-   PRINTFTCMF(debugFunc, "Done");
+   TRACEF(debugFunc, "Done");
 }
 
 
@@ -334,13 +334,13 @@ void FeatureBaseModel::dbgrpt() {
 
 
 void  FeatureBaseModel::modelStartInitialLoad(void) {
-    // PRINTFTCM("=> Emitting signalStartInitialLoad");
+    // TRACE("=> Emitting signalStartInitialLoad");
     emit signalStartInitialLoad();
 }
 
 
 void  FeatureBaseModel::modelEndInitialLoad(void) {
-    // PRINTFTCM("=> Emitting signalEndInitialLoad");
+    // TRACE("=> Emitting signalEndInitialLoad");
     signalEndInitialLoad();
 }
 
