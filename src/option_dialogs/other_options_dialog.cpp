@@ -71,7 +71,7 @@ void OtherOptionsDialog::on_buttonBox_accepted()
 
 void OtherOptionsDialog::on_buttonBox_helpRequested()
 {
-    // PRINTFCM();
+    // TRACE();
     QString fn(":/docs/nc_values.html");
     QFile f(fn);
     f.open(QFile::ReadOnly | QFile::Text);
@@ -95,7 +95,7 @@ void OtherOptionsDialog::on_buttonBox_helpRequested()
 void OtherOptionsDialog::on_buttonBox_clicked(QAbstractButton* button)
 {
    if(button== (QAbstractButton*) ui->buttonBox->button(QDialogButtonBox::Reset) ){
-      // PRINTFCM("Reset");
+      // TRACE("Reset");
       setUiSource(OtherOptionsState::DefaultNcValuesSource);
       // on_buttonBox_accepted();  // do not actually change until OK
 
