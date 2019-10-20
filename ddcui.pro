@@ -57,14 +57,19 @@ SOURCES += \
 
 SOURCES += \
     src/base/ddca_utils.cpp \
-    src/base/ddcui_globals.cpp \
+    src/base/ddcui_globals.c \
     src/base/debug_utils.cpp \
+    src/base/enhanced_slider.cpp \
     src/base/feature_selector.cpp \
     src/base/global_state.cpp \
     src/base/hline_widget.cpp \
+    src/base/number_entry_widget.cpp \
     src/base/other_options_state.cpp 
     
 #   src/base/vertical_scroll_area.cpp \
+
+SOURCES += \
+    src/c_util/string_util.c 
 
 SOURCES += \
     src/cmdline/parsed_cmd.c \
@@ -77,7 +82,7 @@ SOURCES += \
     src/nongui/feature_value.cpp \
     src/nongui/msgbox_queue.cpp \
     src/nongui/vcprequest.cpp \
-    src/nongui/vcpthread.cpp 
+    src/nongui/vcpthread.cpp
 
 #   src/nongui/simple_feature_value_observer.cpp \
 #   src/nongui/simple_feature_value_subject.cpp \
@@ -90,11 +95,13 @@ SOURCES += \
     src/monitor_desc/monitor_desc_actions.cpp
 
 SOURCES += \
+    src/feature_value_widgets/value_2button_widget.cpp \
     src/feature_value_widgets/value_base_widget.cpp \
+    src/feature_value_widgets/value_bytes_widget.cpp \
+    src/feature_value_widgets/value_cnc_widget_x14.cpp \
     src/feature_value_widgets/value_cont_widget.cpp \
     src/feature_value_widgets/value_nc_widget.cpp \
     src/feature_value_widgets/value_reset_widget.cpp \
-    src/feature_value_widgets/value_2button_widget.cpp \
     src/feature_value_widgets/value_stacked_widget.cpp \
     src/feature_value_widgets/value_std_widget.cpp 
 
@@ -137,14 +144,20 @@ HEADERS += \
     src/base/ddcui_parms.h \
     src/base/ddca_utils.h \
     src/base/ddcui_globals.h \
+    src/base/enhanced_slider.h \
+    src/base/hex_number_validator.h \
     src/base/debug_utils.h \
     src/base/feature_selector.h \
     src/base/global_state.h \
     src/base/hline_widget.h \
     src/base/monitor.h \
+    src/base/number_entry_widget.cpp \
     src/base/other_options_state.h
     
 #   src/base/vertical_scroll_area.h
+
+HEADERS += \
+    src/c_util/string_util.h 
 
 HEADERS += \
     src/cmdline/parsed_cmd.h \
