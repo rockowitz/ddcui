@@ -15,7 +15,7 @@
 
 #include <ddcutil_types.h>
 
-// #include "../feature_scrollarea/unused/page_change_observer.h"
+#include "base/user_interface_options_state.h"
 #include "base/ddcui_globals.h"
 #include "base/other_options_state.h"
 
@@ -27,6 +27,8 @@ class Monitor;
 class MsgBoxQueue;
 class OtherOptionsDialog;
 class OtherOptionsState;
+class UserInterfaceOptionsDialog;
+class UserInterfaceOptionsState;
 class QMessageBox;
 class VcpThread;
 class WaitingSpinnerWidget;
@@ -68,6 +70,7 @@ signals:
     void signalMonitorSummaryView();
     void signalCapabilitiesView();
     void signalFeaturesView();
+    void userInterfaceOptionsChanged();
 
 public slots:
     void longRunningTaskStart();
@@ -91,11 +94,16 @@ private slots:
     void featureSelectionAccepted(DDCA_Feature_Subset_Id feature_list);
 #endif
 
+    DDCA_Feature_Subset_Id feature_list_id() const;
+
     void on_actionOtherOptionsDialog_triggered();
     void for_actionOtherOptionsDialog_ncValuesSourceChanged(NcValuesSource valuesSource);
 #ifdef UNUSED
     void on_actionOtherOptionsDialog_accepted();
 #endif
+
+    void on_actionUserInterfaceOptionsDialog_triggered();
+    void for_actionUserInterfaceOptionsDialog_accept();
 
     // Actions Menu
     void on_actionRescan_triggered();
@@ -118,7 +126,8 @@ private slots:
     void showCentralWidgetPage(int pageno);
     void showCentralWidgetByWidget(QWidget * pageWidget);
 
-
+public:
+    UserInterfaceOptionsDialog * _uid = NULL;
 
 private:
     void initMonitors();
@@ -133,6 +142,7 @@ private:
     QComboBox *              _toolbarDisplayCB;
     FeatureSelector *        _feature_selector = NULL;
     OtherOptionsState *      _otherOptionsState = NULL;
+    UserInterfaceOptionsState* _uiOptionsState = NULL;
     QVector<Monitor*>        _monitors;
     DDCA_Feature_Subset_Id   _feature_list_id = DDCA_SUBSET_KNOWN;
     QVector<VcpThread*>      _vcp_threads;
@@ -143,6 +153,7 @@ private:
 
     FeatureSelectionDialog*  _fsd = NULL;
     OtherOptionsDialog*      _ood = NULL;       // for future use
+
 };
 
 #endif // MAINWINDOW_H

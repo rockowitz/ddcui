@@ -39,6 +39,7 @@
 
 #include "option_dialogs/feature_selection_dialog.h"
 #include "option_dialogs/other_options_dialog.h"
+#include "option_dialogs/user_interface_options_dialog.h"
 
 
 using namespace std;
@@ -81,7 +82,7 @@ MainWindow::MainWindow(QWidget *parent) :
                             QString("Loading2..."),
                             Qt::NoButton,             // buttons
                             this,                 // parent
-                            Qt::FramelessWindowHint | Qt::Dialog);
+                            Qt::FramelessWindowHint | Qt::Dialog);on_actionButtonBox_accepted
 #endif
 
     QLabel* toolbarDisplayLabel = new QLabel("&Display:  ");
@@ -115,15 +116,22 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // reportWidgetChildren(ui->centralWidget, "Children of centralWidget, before initMonitors():");
     initMonitors();
-    _feature_selector   = new FeatureSelector();
     GlobalState& globalState = GlobalState::instance();
+
+    _feature_selector   = new FeatureSelector();
+
     _otherOptionsState = new OtherOptionsState;
     globalState._otherOptionsState = _otherOptionsState;
+
+    _uiOptionsState = new UserInterfaceOptionsState;
+    globalState._uiOptionsState = _uiOptionsState;
+
     // reportWidgetChildren(_ui->centralWidget, "Children of centralWidget, after initMonitors():");
 
     // Register metatypes for primitive types here.
     // Metatypes for classes are registered with the class definition.
     qRegisterMetaType<uint8_t>("uint8_t");
+    qRegisterMetaType<bool>("bool");       // needed?
 
     qRegisterMetaType<NcValuesSource>("NcValuesSource");
     qRegisterMetaType<QMessageBox::Icon>("QMessageBox::Icon");
@@ -133,6 +141,17 @@ MainWindow::MainWindow(QWidget *parent) :
         this,     &MainWindow::on_actionFeaturesScrollArea_triggered);
 
      // connect for OtherOptions
+
+#ifdef REF
+     void on_actionUserInterfaceOptionsDialog_triggered();
+     void for_actionUserInterfaceOptionsDialog_accept();
+#endif
+
+     // Is this why double call?
+     // Why does this need to be explicit, not performed by connectSlotsByName
+     // QObject::connect(
+     //    this->_ui->actionUserInterfaceOptionsDialog,    &QAction::triggered,
+     //    this,     &MainWindow::on_actionUserInterfaceOptionsDialog_triggered);
 
 }
 
@@ -485,7 +504,7 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
 
 void MainWindow::on_actionFeatureSelectionDialog_triggered()
 {
-   // PRINTFTCM("Executing. _fsd=%p", _fsd);
+   PRINTFTCM("Executing. _fsd=%p", _fsd);
 
     // FeatureSelectionDialog*
    if (_fsd) {
@@ -507,6 +526,7 @@ void MainWindow::on_actionFeatureSelectionDialog_triggered()
 void MainWindow::for_actionFeatureSelectionDialog_accepted()
 {
    bool debugFunc = debugSignals || debugFeatureSelection;
+   debugFunc = true;
    if (debugFunc) {
        PRINTFTCM("Executing");
        _feature_selector->dbgrpt();
@@ -524,7 +544,7 @@ void MainWindow::on_actionOtherOptionsDialog_triggered()
 {
      // TODO: allocate once and save dialog, cf feature selection
      // display dialog box for selecting features
-    //  PRINTFTCM("triggered");
+    PRINTFTCM("triggered");
 
     OtherOptionsDialog* dialog = new OtherOptionsDialog(this->_otherOptionsState, this);
     QObject::connect(dialog,   &OtherOptionsDialog::ncValuesSourceChanged,
@@ -548,16 +568,51 @@ void MainWindow::for_actionOtherOptionsDialog_ncValuesSourceChanged(NcValuesSour
    PRINTFCM("Done");
 }
 
-#ifdef UNUSED
-void MainWindow::on_actionOtherOptionsDialog_accepted()
+
+// UserInterfaceOptionsDialog slots
+
+// causes the dialog to display
+void MainWindow::on_actionUserInterfaceOptionsDialog_triggered()
 {
-   printf("%s::%s)\n", _cls, __func__); fflush(stdout);
+   PRINTFTCM("Executing. _uid=%p", _uid);
+
+#ifdef NO  // don't bother keeping the dialog box around and hidden
+   if (_uid) {
+       _uid->_state = new UserInterfaceOptionsState();
+   }
+   else {
+        _uid = new UserInterfaceOptionsData(this, this->_userInterfaceOptionsData);
+       QObject::connect(_uid,     &UserInterfaceOptionsDialog::userInterfaceOptionsChanged,
+                        this,     &MainWindow::for_UserInterfaceOptionsDialog_accepted);
+    }
+    _uid->exec();
+    //   delete _fsd;
+#endif
+
+
+    UserInterfaceOptionsDialog* dialog = new UserInterfaceOptionsDialog(this->_uiOptionsState, this);
+    QObject::connect(dialog,   &UserInterfaceOptionsDialog::accepted,
+                     this,     &MainWindow::for_actionUserInterfaceOptionsDialog_accept);
+    // need a connection for reset?
+    dialog->exec();
+    delete dialog;
+}
+
+void MainWindow::for_actionUserInterfaceOptionsDialog_accept()
+{
+   PRINTFCM("Executiong");
+   PRINTFCM("Emitting userIntefaceOptionsChanged");
+   // need to test if real?
+   emit userInterfaceOptionsChanged();
+
+
+   // unneeded here - set in UserInterfaceOptionsCialog
+   // _uiOptionsState->setControlKeyRequired(newval);
 }
 
 DDCA_Feature_Subset_Id MainWindow::feature_list_id() const {
     return this->_feature_list_id;
 }
-#endif
 
 #ifdef UNUSED
 void MainWindow::set_feature_list_id(DDCA_Feature_Subset_Id feature_list_id) {
