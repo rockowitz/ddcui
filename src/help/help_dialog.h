@@ -25,6 +25,8 @@ public:
 private:
     void commonInit();
 
+    char * _cls;
+
     QTextBrowser* _textBrowser;
  // QTextEdit *   _textEdit;
 };

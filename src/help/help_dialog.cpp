@@ -6,10 +6,12 @@
 #include <QtWidgets/QTextBrowser>
 #include <QtWidgets/QVBoxLayout>
 
+#include "base/ddcui_globals.h"
 #include "help_dialog.h"
 
 
 void HelpDialog2::commonInit() {
+    // TRACE("Executing");
     setAttribute(Qt::WA_DeleteOnClose);
     setAttribute(Qt::WA_GroupLeader);
 
@@ -27,6 +29,7 @@ void HelpDialog2::commonInit() {
 
 HelpDialog2::HelpDialog2(QWidget* parent)
     : QDialog(parent)
+    ,_cls(strdup(metaObject()->className() ))
 {
     commonInit();
 }
@@ -34,7 +37,9 @@ HelpDialog2::HelpDialog2(QWidget* parent)
 
 HelpDialog2::HelpDialog2(QString title, QString& htmlText, QWidget* parent)
     : QDialog(parent)
+    ,_cls(strdup(metaObject()->className()) )
 {
+    // TRACE("title=%s, htmlText=%s", qs2s(title), qs2s(htmlText));
     commonInit();
     setWindowTitle(title);
     _textBrowser->setText(htmlText);
