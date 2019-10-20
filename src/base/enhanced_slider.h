@@ -40,7 +40,7 @@ protected:
 private:
    char *   _cls;
    bool     _ctrl_key_is_pressed;
-   bool     _ctrlKeyRequired;
+   bool     _ctrl_key_required;
 
 };
 
