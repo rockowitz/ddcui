@@ -124,9 +124,9 @@ void FeaturesScrollAreaContents::addPageChangeObserver(PageChangeObserver * obse
 
 void FeaturesScrollAreaContents::notifyPageChangeObservers(int pageno) {
    int ct = _pageChangeObservers->count();
-   PRINTFCMF(debugSignals, "Starting ct=%d", ct);
+   TRACEF(debugSignals, "Starting ct=%d", ct);
    for (int ndx = 0; ndx < ct; ndx++) {
-       PRINTFCMF(debugSignals, "Notifying observer");
+       TRACEF(debugSignals, "Notifying observer");
        PageChangeObserver*  observer = _pageChangeObservers->at(ndx);
        observer->pageChangedByWidget(_containingScrollArea);
    }

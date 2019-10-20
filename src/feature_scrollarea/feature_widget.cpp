@@ -43,7 +43,7 @@ static void setupFeatureWidgetField(QLabel * w) {
 
 void FeatureWidget::setupFeatureWidget() {
    bool debug = false;
-   PRINTFCMF(debug, "Starting");
+   TRACEF(debug, "Starting");
    // QFrame methods:
    // setFrameStyle(QFrame::Box);    // something to make it visible
 
@@ -126,9 +126,9 @@ void FeatureWidget::setupFeatureWidget() {
    _featureValueStackedWidget->setCurrentIndex(0);
 #endif
 
-   PRINTFCMF(debug, "creating ValueStackedWidget, feature code dummy");
+   TRACEF(debug, "creating ValueStackedWidget, feature code dummy");
    _valueWidget = new ValueStackedWidget();
-   PRINTFCMF(debug, "after ValueStackedWidget creation");
+   TRACEF(debug, "after ValueStackedWidget creation");
    // _valueWidget->setSizePolicy(fixedSizePolicy);
    // _valueWidget->setFixedWidth(400);
 
@@ -167,7 +167,7 @@ void FeatureWidget::setupFeatureWidget() {
        this->setStyleSheet("background-color:orange;");
 
        if (!dimensionReportShown) {
-          PRINTFCM("FeatureWidget dimenstions:");
+          TRACE("FeatureWidget dimenstions:");
           reportWidgetDimensions(this, _cls, __func__);
           dimensionReportShown = true;
        }
@@ -182,7 +182,7 @@ void FeatureWidget::setupFeatureWidget() {
 #endif
    // signals/slots not working, try hardcoding
    // _valueWidget->addSimpleFeatureValueObserver(this);
-   PRINTFCMF(debug, "Done");
+   TRACEF(debug, "Done");
 }
 
 
@@ -207,7 +207,7 @@ FeatureWidget::FeatureWidget(FeatureValue& fv, QWidget *parent) :
 // Used only to set feature value immediately after constructor called
 void FeatureWidget::setFeatureValue(FeatureValue &fv) {
    bool debug = false;
-   PRINTFCMF(debug, "feature code = 0x%02x, sets feature value immediately after constructor called",
+   TRACEF(debug, "feature code = 0x%02x, sets feature value immediately after constructor called",
              fv.featureCode());
     // printf("(FeatureWidgetBasic::%s)", __func__);
     // fv.report(); ff;isj)stdpit);
@@ -241,10 +241,10 @@ void FeatureWidget::setFeatureValue(FeatureValue &fv) {
         _featureTypeField->setText(QString("T"));
     }
 
-    // PRINTFCMF(debug, "Before calling valueWidget->setFeatureValue()");
+    // TRACEF(debug, "Before calling valueWidget->setFeatureValue()");
     _valueWidget->setFeatureValue(fv);
 
-    PRINTFCMF(debug, "After calling valueWidget->setFeatureValue()");
+    TRACEF(debug, "After calling valueWidget->setFeatureValue()");
     _layout->addWidget(_valueWidget);
 }
 
@@ -276,7 +276,7 @@ void FeatureWidget::dbgrpt() const {
     const char * objname = on1.c_str();
     // printf("%-20s code: 0x%02x, flags: 0x%04x, mh: 0x%02x, ml: 0x%02x, sh: 0x%02x, sl 0x%02x\n",
     //        objname, _feature_code, _feature_flags, _mh, _ml, _sh, _sl);
-    PRINTFCM("%-20s feature code: 0x%02x, flags: 0x%04x", objname, _feature_code, _feature_flags);
+    TRACE("%-20s feature code: 0x%02x, flags: 0x%04x", objname, _feature_code, _feature_flags);
 }
 
 
@@ -304,12 +304,12 @@ void FeatureWidget::simpleFeatureValueChanged(SimpleFeatureValue fv) {
 
 bool FeatureWidget::isSimpleNc() {
    bool result = _valueWidget->isSimpleNc();
-   // PRINTFCM("Returning: %s", sbool(result));
+   // TRACE("Returning: %s", sbool(result));
    return result;
 }
 
 void FeatureWidget::setNcValuesSource(NcValuesSource newsrc) {
-   // PRINTFCM("newsrc = %d-%s", newsrc, ncValuesSourceName(newsrc));
+   // TRACE("newsrc = %d-%s", newsrc, ncValuesSourceName(newsrc));
    _valueWidget->setNcValuesSource(newsrc);
-   // PRINTFCM("Done");
+   // TRACE("Done");
 }
