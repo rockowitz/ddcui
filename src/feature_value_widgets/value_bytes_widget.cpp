@@ -57,7 +57,7 @@ ValueBytesWidget::ValueBytesWidget(QWidget *parent)
 {
     _cls = strdup(metaObject()->className());
     bool debug = false;
-    PRINTFCMF(debug, "Starting." );
+    TRACEF(debug, "Starting." );
 
     nonMonoFont9.setPointSize(8);
 
@@ -80,17 +80,17 @@ ValueBytesWidget::ValueBytesWidget(QWidget *parent)
     int   valueFrameStyle = QFrame::Plain | QFrame::NoFrame;
     QSize valueSize(30,20);
 
-    // PRINTFCMF(debug, "Before NumberEntryWidget constructors");
+    // TRACEF(debug, "Before NumberEntryWidget constructors");
     _mhWidget = new NumberEntryWidget( 1, valueFont, valueFrameStyle, valueSize);
     _mlWidget = new NumberEntryWidget( 1, valueFont, valueFrameStyle, valueSize);
     _shWidget = new NumberEntryWidget( 1, valueFont, valueFrameStyle, valueSize);
     _slWidget = new NumberEntryWidget( 1, valueFont, valueFrameStyle, valueSize);
-    // PRINTFCM("===> After NumberEntryWidget constructors, before setting object names");
+    // TRACE("===> After NumberEntryWidget constructors, before setting object names");
     _mhWidget->setObjectName("mhWidget");
     _mlWidget->setObjectName("mlWidget");
     _shWidget->setObjectName("shWidget");
     _slWidget->setObjectName("slWidget");
-    // PRINTFCM("===> After setting object names");
+    // TRACE("===> After setting object names");
 
     _mhWidget->setReadOnly(true);       //  which to use?
     _mlWidget->setReadOnly(true);      // or setReadOnly(true)  ??
@@ -167,32 +167,32 @@ ValueBytesWidget::ValueBytesWidget(QWidget *parent)
 
        if (!dimensionReportShown) {
 
-           PRINTFCM("_mhTitle dimensions");
+           TRACE("_mhTitle dimensions");
            reportWidgetDimensions(_mhTitle, _cls, __func__);
 
-           PRINTFCM("_mhWidget dimensions");
+           TRACE("_mhWidget dimensions");
            reportWidgetDimensions(_mhWidget, _cls, __func__);
 
-           PRINTFCM("_mlTitle dimensions");
+           TRACE("_mlTitle dimensions");
            reportWidgetDimensions(_mlTitle, _cls, __func__);
 
-           PRINTFCM("_mlWidget dimensions");
+           TRACE("_mlWidget dimensions");
            reportWidgetDimensions(_mlWidget, _cls, __func__);
 
-           PRINTFCM("_applyButton dimensions");
+           TRACE("_applyButton dimensions");
            reportWidgetDimensions(_applyButton, _cls, __func__);
 
-           PRINTFCM("ValueBytesWidget dimensions");
+           TRACE("ValueBytesWidget dimensions");
            reportWidgetDimensions(this, _cls, __func__);
            dimensionReportShown = true;
        }
     }
-    PRINTFCMF(debug, "Done");
+    TRACEF(debug, "Done");
 }
 
 
 void ValueBytesWidget::checkAcceptCancelEnabled() {
-   // PRINTFCM("Starting");
+   // TRACE("Starting");
    bool enabled =
           (_shState == NumberEntryWidget::StateNewValid && _slState == NumberEntryWidget::StateNewValid) ||
           (_shState == NumberEntryWidget::StateNewValid && _slState == NumberEntryWidget::StateOldValid) ||
@@ -204,7 +204,7 @@ void ValueBytesWidget::checkAcceptCancelEnabled() {
 
 #ifdef UNUSED
 void ValueBytesWidget::whenShChanged(uint8_t val) {
-   PRINTFCM("val = 0x%02x", val);
+   TRACE("val = 0x%02x", val);
    _shNew = val;
    _shGood = true;
 
@@ -213,7 +213,7 @@ void ValueBytesWidget::whenShChanged(uint8_t val) {
 
 
 void ValueBytesWidget::whenSlChanged(uint8_t val) {
-   PRINTFCM("val = 0x%02x", val);
+   TRACE("val = 0x%02x", val);
    _slNew = val;
    _shGood = true;
    this->checkAcceptCancelEnabled();
@@ -223,7 +223,7 @@ void ValueBytesWidget::whenSlChanged(uint8_t val) {
 void ValueBytesWidget::whenStateChanged(NumberEntryWidget * whichWidget, NumberEntryWidget::States newState)
 {
    bool debug = false;
-   PRINTFCMF(debug, "whichWidget = %s, newState = %d", qs2s(whichWidget->objectName()), newState);
+   TRACEF(debug, "whichWidget = %s, newState = %d", qs2s(whichWidget->objectName()), newState);
 
    if (whichWidget == _shWidget)
       _shState = newState;
@@ -243,7 +243,7 @@ void ValueBytesWidget::whenTextValueChanged(bool ok) {
 void ValueBytesWidget::setFeatureValue(const FeatureValue &fv) {
     bool debug = debugValueWidgetSignals;
     // debug = true;
-    PRINTFCMF(debug,
+    TRACEF(debug,
               "Starting. feature code: 0x%02x, mh: 0x%02x, ml: 0x%02x, sh: 0x%02x sl: 0x%02x",
               fv.featureCode(),
               fv.val().mh,
@@ -253,7 +253,7 @@ void ValueBytesWidget::setFeatureValue(const FeatureValue &fv) {
 
     ValueBaseWidget::setFeatureValue(fv);
 
-    PRINTFCMF(debug,
+    TRACEF(debug,
               "After valueBaseWidget::setFeatureValue() called, feature code: 0x%02x, mh: 0x%02x, ml: 0x%02x, sh: 0x%02x sl: 0x%02x",
               _featureCode,
               _mh,
@@ -281,7 +281,7 @@ void ValueBytesWidget::setFeatureValue(const FeatureValue &fv) {
 // #endif
 
     _guiChange = true;
-    PRINTFCMF(debug, "Done");
+    TRACEF(debug, "Done");
 }
 
 
@@ -295,7 +295,7 @@ void ValueBytesWidget::setCurrentShSl(uint16_t newval) {
 
      int baseval = _sh << 8 | _sl;
      assert(baseval == newval);
-     PRINTFCMF(debugValueWidgetSignals, "feature=0x%02x, curval=0%04x", _featureCode , baseval);
+     TRACEF(debugValueWidgetSignals, "feature=0x%02x, curval=0%04x", _featureCode , baseval);
 
         _applyButton->setEnabled(false);
         _cancelButton->setEnabled(false);
@@ -317,15 +317,15 @@ uint16_t ValueBytesWidget::getCurrentShSl() {
 void  ValueBytesWidget::onApplyButtonClicked(bool checked) {
    bool debug = debugValueWidgetSignals;
    debug = false;
-   // PRINTFCMF(debug, "Executing. checked=%s", sbool(checked));
+   // TRACEF(debug, "Executing. checked=%s", sbool(checked));
 
    uint16_t newval = ( _shWidget->getNewValue() <<8 | _slWidget->getNewValue() );
 
    uint16_t oldval = _sh << 8    | _sl;
 
-   PRINTFCMF(debug, "oldval = 0x%04x, newval = 0x%04x", oldval, newval);
+   TRACEF(debug, "oldval = 0x%04x, newval = 0x%04x", oldval, newval);
    if (newval != oldval) {
-      PRINTFCMF(debug, "Emitting featureValueChanged(). feature code: 0x%02x, new sh: 0x%02x, new sl: 0x%02x",
+      TRACEF(debug, "Emitting featureValueChanged(). feature code: 0x%02x, new sh: 0x%02x, new sl: 0x%02x",
                 _featureCode, newval >>8, newval&0xff);
       emit featureValueChanged(_featureCode, newval >> 8, newval & 0xff);
    }
@@ -343,7 +343,7 @@ void  ValueBytesWidget::onApplyButtonClicked(bool checked) {
 
 
 void  ValueBytesWidget::onCancelButtonClicked(bool checked) {
-    PRINTFCMF(debugValueWidgetSignals, "Executing");
+    TRACEF(debugValueWidgetSignals, "Executing");
 
    _applyButton->setEnabled(false);
    _cancelButton->setEnabled(false);
@@ -354,7 +354,7 @@ void  ValueBytesWidget::onCancelButtonClicked(bool checked) {
 #ifdef OLD
 void ValueBytesWidget::whenEventFieldChanged(int field_number)
 {
-   PRINTFCM("field_number = %d", field_number);
+   TRACE("field_number = %d", field_number);
    _currentField = field_number;
 
 

@@ -32,7 +32,7 @@ Value2ButtonWidget::Value2ButtonWidget(
     , _val2(0)
 {
    _cls = strdup(metaObject()->className());
-   // PRINTFCM("Starting." );
+   // TRACE("Starting." );
 
    QFont nonMonoFont;
    nonMonoFont.setPointSize(9);
@@ -94,13 +94,13 @@ void Value2ButtonWidget::setButtonDetail(
 
 
 void Value2ButtonWidget::on_button1_pressed() {
-   PRINTFCMF(debugValueWidgetSignals, "Button 1 pressed. Emitting featureValueChanged");
+   TRACEF(debugValueWidgetSignals, "Button 1 pressed. Emitting featureValueChanged");
    emit featureValueChanged(_featureCode, 0, _val1);
 }
 
 
 void Value2ButtonWidget::on_button2_pressed() {
-   PRINTFCMF(debugValueWidgetSignals, "Button 2 pressed. Emitting featureValueChanged");
+   TRACEF(debugValueWidgetSignals, "Button 2 pressed. Emitting featureValueChanged");
    emit featureValueChanged(_featureCode, 0, _val2);
 }
 

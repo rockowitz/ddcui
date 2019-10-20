@@ -23,7 +23,7 @@ ValueStdWidget::ValueStdWidget(QWidget *parent):
         ValueBaseWidget(parent)
 {
     _cls = strdup(metaObject()->className());
-    // PRINTFCM("Starting");
+    // TRACE("Starting");
 
     QFont font;
     font.setPointSize(8);
@@ -50,9 +50,9 @@ ValueStdWidget::ValueStdWidget(QWidget *parent):
     if (debugLayout) {
        this->setStyleSheet("background-color:magenta;");
        if (!dimensionReportShown) {
-           PRINTFCM("_valueField dimensions");
+           TRACE("_valueField dimensions");
            reportWidgetDimensions(_valueField, _cls, __func__);
-           PRINTFCM("ValueStdWidget dimensions");
+           TRACE("ValueStdWidget dimensions");
            reportWidgetDimensions(this, _cls, __func__);
            dimensionReportShown = true;
        }
@@ -67,13 +67,13 @@ void ValueStdWidget::setValueField() {
     valrec.ml = _ml;
     valrec.sh = _sh;
     valrec.sl = _sl;
-    // PRINTFCM("Before calling ddca_format_non_table_vcp_value_by_dref() _featureCode=0x%02x", _featureCode);
+    // TRACE("Before calling ddca_format_non_table_vcp_value_by_dref() _featureCode=0x%02x", _featureCode);
     DDCA_Status rc = ddca_format_non_table_vcp_value_by_dref(
           _featureCode,
           _dref,
           &valrec,
           &s_formatted);
-    // PRINTFCM("ddca_format_non_table_vcp_value_by_dref() returned %d, s_formatted=%s", rc, s_formatted);
+    // TRACE("ddca_format_non_table_vcp_value_by_dref() returned %d, s_formatted=%s", rc, s_formatted);
     if (rc != 0)
         s_formatted = (char*) "invalid formatted value";   // cast to avoid compiler warning
 
@@ -82,7 +82,7 @@ void ValueStdWidget::setValueField() {
 
 
 void ValueStdWidget::setFeatureValue(const FeatureValue &fv) {
-    PRINTFCMF(debugValueWidgetSignals, "Starting. feature code: 0x%02x", fv.featureCode());
+    TRACEF(debugValueWidgetSignals, "Starting. feature code: 0x%02x", fv.featureCode());
     ValueBaseWidget::setFeatureValue(fv);
     setValueField();
 }

@@ -33,7 +33,7 @@ ValueNcWidget::ValueNcWidget(QWidget *parent):
         ValueBaseWidget(parent)
 {
     _cls = strdup(metaObject()->className());
-    // PRINTFCM("Starting." );
+    // TRACE("Starting." );
 
    QFont nonMonoFont8;
    nonMonoFont8.setPointSize(8);
@@ -87,9 +87,9 @@ ValueNcWidget::ValueNcWidget(QWidget *parent):
 
     if (debugLayout) {
         if (!dimensionReportShown) {
-            PRINTFCM("combobox dimensions");
+            TRACE("combobox dimensions");
             reportWidgetDimensions(_cb, _cls, __func__);
-            PRINTFCM("ValueNcWidget dimensions");
+            TRACE("ValueNcWidget dimensions");
             reportWidgetDimensions(this, _cls, __func__);
             dimensionReportShown = true;
         }
@@ -102,7 +102,7 @@ ValueNcWidget::ValueNcWidget(QWidget *parent):
 
 
 void ValueNcWidget::setFeatureValue(const FeatureValue &fv) {
-    PRINTFCMF(debugWidget, "Starting. feature 0x%02x, new sl=x%02x",
+    TRACEF(debugWidget, "Starting. feature 0x%02x, new sl=x%02x",
               fv.featureCode(), fv.val().sl);
     ValueBaseWidget::setFeatureValue(fv);
 
@@ -122,7 +122,7 @@ void ValueNcWidget::setFeatureValue(const FeatureValue &fv) {
  *  @return dynamically allocated feature value table, caller must free
  */
 Local_Feature_Value_Table * ValueNcWidget::getComboBoxEntries(NcValuesSource mode) {
-   PRINTFCMF(debugNcValues, "feature 0x%02x, newSource=%d-%s",
+   TRACEF(debugNcValues, "feature 0x%02x, newSource=%d-%s",
                             _featureCode, mode, ncValuesSourceName(mode) );
 
    DDCA_Cap_Vcp dummyCapVcp;
@@ -191,7 +191,7 @@ void ValueNcWidget::loadComboBox(NcValuesSource mode) {
 
 
 void ValueNcWidget::reloadComboBox(NcValuesSource newSource) {
-   PRINTFCMF(debugNcValues, "newSource=%d-%s, _curNcValuesSource=%d-%s",
+   TRACEF(debugNcValues, "newSource=%d-%s, _curNcValuesSource=%d-%s",
          newSource, ncValuesSourceName(newSource),
          _curNcValuesSource, ncValuesSourceName(_curNcValuesSource) );  fflush(stdout);
    if (newSource != _curNcValuesSource) {
@@ -201,11 +201,11 @@ void ValueNcWidget::reloadComboBox(NcValuesSource newSource) {
 
       _curNcValuesSource = newSource;
    }
-   PRINTFCMF(debugNcValues, "Done");
+   TRACEF(debugNcValues, "Done");
 }
 
 void ValueNcWidget::setCurrentShSl(uint16_t newval) {
-   PRINTFCMF(debugWidget, "Starting. feature 0x%02x, newval=x%04x", _featureCode, newval);
+   TRACEF(debugWidget, "Starting. feature 0x%02x, newval=x%04x", _featureCode, newval);
 
    _guiChange = false;
 
@@ -217,7 +217,7 @@ void ValueNcWidget::setCurrentShSl(uint16_t newval) {
         _cb->setCurrentIndex(cur_ndx);
     }
     else {
-        PRINTFCM("Unable to find value 0x%02x", _sl);
+        TRACE("Unable to find value 0x%02x", _sl);
     }
 
     _guiChange = true;
@@ -245,7 +245,7 @@ uint16_t ValueNcWidget::getCurrentShSl() {
 void ValueNcWidget::combobox_activated(int index) {
    bool debug = false;
    debug = debug || debugWidget;
-   PRINTFCMF(debug, "feature 0x%02x, index=%d", _featureCode, index);
+   TRACEF(debug, "feature 0x%02x, index=%d", _featureCode, index);
    int ndx = _cb->currentIndex();
    assert(ndx == index);
 
@@ -255,9 +255,9 @@ void ValueNcWidget::combobox_activated(int index) {
    uint8_t new_sl = i & 0xff;
 
    if (new_sh != _sh || new_sl != _sl) {
-      PRINTFCMF(debug, "Value changed.  New sl: %u, _guiChange=%d", new_sl, _guiChange);
+      TRACEF(debug, "Value changed.  New sl: %u, _guiChange=%d", new_sl, _guiChange);
       if (_guiChange) {
-         PRINTFCMF(debug, "Emitting featureValueChanged, featureCode = 0x%02x, sh=0, new_sl=0x%02x",
+         TRACEF(debug, "Emitting featureValueChanged, featureCode = 0x%02x, sh=0, new_sl=0x%02x",
                          _featureCode, new_sl);
          emit featureValueChanged(_featureCode, 0, new_sl);
       }
@@ -265,7 +265,7 @@ void ValueNcWidget::combobox_activated(int index) {
       _sl = new_sl;
    }
    else {
-      PRINTFCMF(debug, "Value not changed.");
+      TRACEF(debug, "Value not changed.");
    }
 }
 

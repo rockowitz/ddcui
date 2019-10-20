@@ -113,7 +113,7 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
 void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
     bool debug = false;
     debug = debug || debugValueWidgetSignals;
-    PRINTFCMF(debug, "Starting. feature code: 0x%02x", fv.featureCode());
+    TRACEF(debug, "Starting. feature code: 0x%02x", fv.featureCode());
     // ValueBaseWidget::setFeatureValue(fv);
     _featureCode = fv.featureCode();   // needed since not calling ValueBaseWidget::setFeatureValue()
 
@@ -141,7 +141,7 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
     }
 
     else if (_featureCode == 0x14) {
-       PRINTFCMF(debug, "_feature_code == 0x14");
+       TRACEF(debug, "_feature_code == 0x14");
        _pageno_selected = _pageno_x14;
        _cur_stacked_widget = _cncWidgetX14;
        setCurrentIndex(_pageno_x14);
@@ -177,9 +177,9 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
         _cur_stacked_widget = _stdWidget;
     }
 
-    PRINTFCMF(debug, "Calling _cur_stacked_widget->setFeatureValue()" );
+    TRACEF(debug, "Calling _cur_stacked_widget->setFeatureValue()" );
     _cur_stacked_widget->setFeatureValue(fv);
-    PRINTFCMF(debug, "Done");
+    TRACEF(debug, "Done");
 }
 
 
@@ -205,11 +205,11 @@ void  ValueStackedWidget::onContainedWidgetChanged(uint8_t feature_code, uint8_t
 {
    bool debug = debugValueWidgetSignals;
    // debug = true;
-   PRINTFCMF(debug,
+   TRACEF(debug,
              "feature_code=0x%02x, sh=0x%02x, sl=0x%02x", feature_code, sh, sl);
    assert(feature_code == _featureCode);
 
-   PRINTFCMF(debug,
+   TRACEF(debug,
              "-> Calling emit stackedFeatureValueChanged(), feature_code=0x%02x, sh=0x%02x, sl=0x%02x",
              feature_code, sh, sl);
    emit stackedFeatureValueChanged(feature_code, sh, sl);
@@ -226,13 +226,13 @@ bool ValueStackedWidget::isSimpleNc() {
 
 
 void ValueStackedWidget::setNcValuesSource(NcValuesSource newsrc) {
-   PRINTFCMF(debugNcValues,
+   TRACEF(debugNcValues,
              "newsrc = %d, _pageno_selected=%d, _pageno_nc=%d",
              newsrc, _pageno_selected, _pageno_nc);
 
    if (_pageno_selected == _pageno_nc) {
       _ncWidget->reloadComboBox(newsrc);
    }
-   PRINTFCMF(debugNcValues, "Done");
+   TRACEF(debugNcValues, "Done");
 }
 

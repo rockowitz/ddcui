@@ -29,7 +29,7 @@ ValueResetWidget::ValueResetWidget(QWidget *parent):
         ValueBaseWidget(parent)
 {
    _cls = strdup(metaObject()->className());
-   // PRINTFCM("Starting." );
+   // TRACE("Starting." );
 
    QFont nonMonoFont;
    nonMonoFont.setPointSize(8);
@@ -71,7 +71,7 @@ ValueResetWidget::ValueResetWidget(QWidget *parent):
 
 
 void ValueResetWidget::on_resetButton_pressed() {
-   // PRINTFCMF(debugValueWidgetSignals, "Button pressed. Emitting featureValueChanged()");
+   // TRACEF(debugValueWidgetSignals, "Button pressed. Emitting featureValueChanged()");
    emit featureValueChanged(_featureCode, 0, 1);
 }
 

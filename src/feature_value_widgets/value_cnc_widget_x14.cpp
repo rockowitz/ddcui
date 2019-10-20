@@ -33,7 +33,7 @@ ValueCncWidgetX14::ValueCncWidgetX14(QWidget *parent):
         ValueNcWidget(parent)
 {
     _cls = strdup(metaObject()->className());
-    // PRINTFCM("Starting." );
+    // TRACE("Starting." );
 
 #ifdef REF
    QFont nonMonoFont8;
@@ -88,9 +88,9 @@ ValueCncWidgetX14::ValueCncWidgetX14(QWidget *parent):
 
     if (debugLayout) {
         if (!dimensionReportShown) {
-            PRINTFCM("combobox dimensions");
+            TRACE("combobox dimensions");
             reportWidgetDimensions(_cb, _cls, __func__);
-            PRINTFCM("ValueNcWidget dimensions");
+            TRACE("ValueNcWidget dimensions");
             reportWidgetDimensions(this, _cls, __func__);
             dimensionReportShown = true;
         }

@@ -15,7 +15,7 @@ ValueBaseWidget::ValueBaseWidget(QWidget *parent)
 {
    // n. will be reset in subclass constructor
    _cls = strdup(metaObject()->className());
-   // PRINTFCM("Create empty widget");
+   // TRACE("Create empty widget");
 
    // setFrameStyle(QFrame::Box);
    // int m_left, m_right, m_top, m_bottom;
@@ -53,7 +53,7 @@ ValueBaseWidget::ValueBaseWidget(QWidget *parent)
 
 void ValueBaseWidget::setFeatureValue(const FeatureValue &fv) {
    bool debug = false;
-   PRINTFCMF(debug, "featureCode=0x%02x, capVcp=%p", fv.featureCode(), fv.capVcp());
+   TRACEF(debug, "featureCode=0x%02x, capVcp=%p", fv.featureCode(), fv.capVcp());
 
     _featureCode    = fv.featureCode();
     _dref           = fv.dref();
@@ -95,7 +95,7 @@ uint16_t ValueBaseWidget::getCurrentShSl() {
 }
 
 void ValueBaseWidget::setControlKeyRequired(bool onoff) {
-   PRINTFCM("onoff = %s", sbool(onoff) );
+   TRACE("onoff = %s", sbool(onoff) );
    _controlKeyRequired = onoff;
 }
 
@@ -104,8 +104,8 @@ bool ValueBaseWidget::getControlKeyRequired() {
 }
 
 void ValueBaseWidget::whenCkrChanged(bool onoff) {
-   PRINTFCM("Executiong. onoff=%s", sbool(onoff));
-   PRINTFCM("calling setControlKeyRequired()");
+   TRACE("Executiong. onoff=%s", sbool(onoff));
+   TRACE("calling setControlKeyRequired()");
    setControlKeyRequired(onoff);
 }
 
