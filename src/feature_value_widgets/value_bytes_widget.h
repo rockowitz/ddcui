@@ -85,6 +85,9 @@ private:
     QPushButton * _cancelButton;
 // #endif
 
+    void layoutValueBytesWidget();
+
+
 };
 
 #endif /* VALUE_BYTES_WIDGET_H_ */
