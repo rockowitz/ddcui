@@ -26,7 +26,7 @@ public:
 
    // ~EnhancedSlider();
 
-   void require_control_key(bool onoff);
+   void setControlKeyRequired(bool onoff);
 
 protected:
    void mouseMoveEvent(QMouseEvent *    ev) override;
@@ -36,10 +36,11 @@ protected:
    void keyPressEvent(QKeyEvent *    ev) override;
    void keyReleaseEvent(QKeyEvent *   ev) override;
 
+
 private:
    char *   _cls;
    bool     _ctrl_key_is_pressed;
-   bool     _ctrl_key_required;
+   bool     _ctrlKeyRequired;
 
 };
 

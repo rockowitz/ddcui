@@ -18,7 +18,7 @@
 EnhancedSlider::EnhancedSlider(QWidget * parent)
         : QSlider(parent)
         , _ctrl_key_is_pressed(false)
-        , _ctrl_key_required(true)
+        , _ctrlKeyRequired(false)
 {
    _cls = strdup(metaObject()->className());
 }
@@ -26,7 +26,7 @@ EnhancedSlider::EnhancedSlider(QWidget * parent)
 EnhancedSlider::EnhancedSlider(Qt::Orientation orientation, QWidget * parent)
   : QSlider(orientation, parent)
   , _ctrl_key_is_pressed(false)
-  , _ctrl_key_required(true)
+  , _ctrlKeyRequired(false)
 {
    _cls = strdup(metaObject()->className());
 }
@@ -36,8 +36,8 @@ EnhancedSlider::EnhancedSlider(Qt::Orientation orientation, QWidget * parent)
 // }
 
 // This is wrong.  Need to set at class level, not for individual instances
-void EnhancedSlider::require_control_key(bool onoff) {
-   _ctrl_key_required = onoff;
+void EnhancedSlider::setControlKeyRequired(bool onoff) {
+   _ctrlKeyRequired = onoff;
 }
 
 
@@ -53,7 +53,7 @@ void EnhancedSlider::mouseMoveEvent(QMouseEvent *    ev)
 {
    // PRINTFCM("Starting, _ctrl_key_is_pressed = %s, _ctrl_key_required = %s",
    //          SBOOL(_ctrl_key_is_pressed), SBOOL(_ctrl_key_required));
-   if (_ctrl_key_is_pressed || !_ctrl_key_required)
+   if (_ctrl_key_is_pressed || !_ctrlKeyRequired)
       QSlider::mouseMoveEvent(ev);
 
    // ev->ignore();    // needed?
@@ -63,7 +63,7 @@ void EnhancedSlider::mousePressEvent(QMouseEvent *   ev)
 {
    // PRINTFCM("Starting, _ctrl_key_is_pressed = %s, _ctrl_key_required = %s",
    //          SBOOL(_ctrl_key_is_pressed), SBOOL(_ctrl_key_required));
-   if (_ctrl_key_is_pressed|| !_ctrl_key_required)
+   if (_ctrl_key_is_pressed|| !_ctrlKeyRequired)
       QSlider::mousePressEvent(ev);
 
    // ev->ignore();    // needed?
@@ -73,7 +73,7 @@ void EnhancedSlider::mouseReleaseEvent(QMouseEvent * ev)
 {
    // PRINTFCM("Starting, _ctrl_key_is_pressed = %s, _ctrl_key_required = %s",
    //          SBOOL(_ctrl_key_is_pressed), SBOOL(_ctrl_key_required));
-   if (_ctrl_key_is_pressed|| !_ctrl_key_required)
+   if (_ctrl_key_is_pressed|| !_ctrlKeyRequired)
       QSlider::mouseReleaseEvent(ev);
 
    // ev->ignore();    // needed?
@@ -99,3 +99,8 @@ void EnhancedSlider::keyReleaseEvent(QKeyEvent *   ev)
    QSlider::keyPressEvent(ev);
    ev->ignore();    // needed?
 }
+
+
+
+
+
