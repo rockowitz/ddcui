@@ -586,7 +586,7 @@ void MainWindow::on_actionUserInterfaceOptionsDialog_triggered()
                         this,     &MainWindow::for_UserInterfaceOptionsDialog_accepted);
     }
     _uid->exec();
-    //   delete _fsd;
+    //   delete _uid;
 #endif
 
 
@@ -594,6 +594,10 @@ void MainWindow::on_actionUserInterfaceOptionsDialog_triggered()
     QObject::connect(dialog,   &UserInterfaceOptionsDialog::accepted,
                      this,     &MainWindow::for_actionUserInterfaceOptionsDialog_accept);
     // need a connection for reset?
+
+    TRACE("Calling setControKeyRequired(%s)", sbool(_uiOptionsState->controlKeyRequired) );
+    dialog->setDialogBoxControlKeyRequired( _uiOptionsState->controlKeyRequired);
+
     dialog->exec();
     delete dialog;
 }
