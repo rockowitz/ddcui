@@ -57,14 +57,16 @@ SOURCES += \
 
 SOURCES += \
     src/base/ddca_utils.cpp \
-    src/base/ddcui_globals.c \
+    src/base/ddcui_globals.cpp \
     src/base/debug_utils.cpp \
     src/base/enhanced_slider.cpp \
     src/base/feature_selector.cpp \
     src/base/global_state.cpp \
+    src/base/hex_number_validator.cpp \
     src/base/hline_widget.cpp \
     src/base/number_entry_widget.cpp \
-    src/base/other_options_state.cpp 
+    src/base/other_options_state.cpp \
+    src/base/user_interface_options_state.cpp
     
 #   src/base/vertical_scroll_area.cpp \
 
@@ -121,7 +123,8 @@ SOURCES += \
 
 SOURCES += \
     src/option_dialogs/feature_selection_dialog.cpp \
-    src/option_dialogs/other_options_dialog.cpp
+    src/option_dialogs/other_options_dialog.cpp \
+    src/option_dialogs/user_interface_options_dialog.cpp
 
 SOURCES += \
     src/main/monitor.cpp \
@@ -151,8 +154,9 @@ HEADERS += \
     src/base/global_state.h \
     src/base/hline_widget.h \
     src/base/monitor.h \
-    src/base/number_entry_widget.cpp \
-    src/base/other_options_state.h
+    src/base/number_entry_widget.h \
+    src/base/other_options_state.h \
+    src/base/user_interface_options_state.h
     
 #   src/base/vertical_scroll_area.h
 
@@ -184,7 +188,9 @@ HEADERS += \
 
 HEADERS += \
     src/feature_value_widgets/value_base_widget.h \
+    src/feature_value_widgets/value_bytes_widget.h \
     src/feature_value_widgets/value_std_widget.h \
+    src/feature_value_widgets/value_cnc_widget_x14.h \
     src/feature_value_widgets/value_cont_widget.h \
     src/feature_value_widgets/value_nc_widget.h \
     src/feature_value_widgets/value_reset_widget.h \
@@ -207,7 +213,8 @@ HEADERS += \
 
 HEADERS += \
     src/option_dialogs/feature_selection_dialog.h \
-    src/option_dialogs/other_options_dialog.h
+    src/option_dialogs/other_options_dialog.h \
+    src/option_dialogs/user_interface_options_dialog.h
 
 HEADERS += \
     src/main/msgbox_thread.h \
@@ -223,7 +230,8 @@ HEADERS += \
 
 FORMS += \
     src/option_dialogs/feature_selection_dialog.ui \
-    src/option_dialogs/other_options_dialog.ui 
+    src/option_dialogs/other_options_dialog.ui \
+    src/option_dialogs/user_interface_options_dialog.ui
 
     # src/help/help_dialog0.ui
 
