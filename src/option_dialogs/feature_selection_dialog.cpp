@@ -72,7 +72,7 @@ FeatureSelectionDialog::FeatureSelectionDialog(
       _ui(new Ui::FeatureSelectionDialog),
       _featureSelector(featureSelector)
 {
-    // PRINTFCM("_ui=%p, _featureSelector = %p\n", _ui, _featureSelector);
+    // TRACE("_ui=%p, _featureSelector = %p\n", _ui, _featureSelector);
     _ui->setupUi(this);
     useSelectorData(_featureSelector);
 }
@@ -196,7 +196,7 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
 
 void FeatureSelectionDialog::on_buttonBox_helpRequested()
 {
-    // PRINTFCM();
+    // TRACE();
     QString fn(":/docs/feature_selection.html");
     QFile f(fn);
     f.open(QFile::ReadOnly | QFile::Text);
@@ -219,7 +219,7 @@ void FeatureSelectionDialog::on_buttonBox_helpRequested()
 void FeatureSelectionDialog::on_buttonBox_clicked(QAbstractButton* button)
 {
    if(button== (QAbstractButton*) _ui->buttonBox->button(QDialogButtonBox::Reset) ){
-      // PRINTFCM("Reset");
+      // TRACE("Reset");
       FeatureSelector * defaultSelector = new FeatureSelector;
       useSelectorData(defaultSelector);
       delete defaultSelector;
