@@ -28,6 +28,7 @@ public:
     void     setFeatureValue(const FeatureValue &fv) override;
     void     setCurrentShSl(uint16_t newval)         override;
     uint16_t getCurrentShSl()                        override;
+    void setControlKeyRequired(bool onoff)           override;
 
 private:
     // QSlider*    _curSlider;

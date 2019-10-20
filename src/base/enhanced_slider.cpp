@@ -37,6 +37,7 @@ EnhancedSlider::EnhancedSlider(Qt::Orientation orientation, QWidget * parent)
 
 // This is wrong.  Need to set at class level, not for individual instances
 void EnhancedSlider::setControlKeyRequired(bool onoff) {
+   // TRACE("onoff=%s", sbool(onoff));
    _ctrl_key_required = onoff;
 }
 

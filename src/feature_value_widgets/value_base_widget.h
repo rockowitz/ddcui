@@ -25,7 +25,7 @@ public:
     virtual uint16_t getCurrentShSl();                       // override;
 
     // QSize sizeHint() const override;   //   needed?
-    void setControlKeyRequired(bool onoff);
+    virtual void setControlKeyRequired(bool onoff);
     bool getControlKeyRequired();
 
 

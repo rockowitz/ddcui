@@ -64,10 +64,11 @@ void ValueBaseWidget::setFeatureValue(const FeatureValue &fv) {
     _sh             = fv.val().sh;
     _sl             = fv.val().sl;
 
+    // when ValueBaseWidget is initialized
     GlobalState& globalState = GlobalState::instance();
     _controlKeyRequired = globalState._uiOptionsState->controlKeyRequired;
 
-    // need also to listen for changes
+    // listen for changes after initialization
     QObject::connect(globalState._uiOptionsState, &UserInterfaceOptionsState::ckrChanged,
                     this, &ValueBaseWidget::whenCkrChanged);
 }
@@ -95,7 +96,7 @@ uint16_t ValueBaseWidget::getCurrentShSl() {
 }
 
 void ValueBaseWidget::setControlKeyRequired(bool onoff) {
-   TRACE("onoff = %s", sbool(onoff) );
+   // TRACE("onoff = %s", sbool(onoff) );
    _controlKeyRequired = onoff;
 }
 
@@ -104,8 +105,8 @@ bool ValueBaseWidget::getControlKeyRequired() {
 }
 
 void ValueBaseWidget::whenCkrChanged(bool onoff) {
-   TRACE("Executiong. onoff=%s", sbool(onoff));
-   TRACE("calling setControlKeyRequired()");
+   // TRACE("Executiong. onoff=%s", sbool(onoff));
+   // TRACE("calling setControlKeyRequired()");
    setControlKeyRequired(onoff);
 }
 
