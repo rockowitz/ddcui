@@ -44,6 +44,7 @@ private:
     MsgBoxQueue *      _msgboxQueue;
 
     NcValuesSource     _curNcValuesSource;  // how to properly initialize?
+    bool               _controlKeyRequired;
     FeaturesScrollAreaContents * _scrollAreaContents = NULL;
 
     // quick and dirty for now, eventually replace by hash
