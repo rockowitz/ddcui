@@ -13,6 +13,8 @@ class UserInterfaceOptionsState : public QObject {
    Q_OBJECT
 
 public:
+   UserInterfaceOptionsState();
+
    static const bool CkrDefault = false;
 
    bool controlKeyRequired = CkrDefault;
@@ -21,6 +23,9 @@ public:
 
 signals:
    void ckrChanged(bool onoff);
+
+private:
+   char * _cls;
 };
 
 #endif /* USER_INTERFACE_OPTIONS_STATE_H_ */

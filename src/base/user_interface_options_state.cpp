@@ -1,4 +1,4 @@
-// ui_options_state.cpp
+// user_interfacee_options_state.cpp
 
 // Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
@@ -10,18 +10,22 @@
 #include "base/ddcui_globals.h"
 
 
- // UserInterfaceOptionsState::UserInterfaceOptionsState() {
- // }
+ UserInterfaceOptionsState::UserInterfaceOptionsState()
+     : _cls(strdup(metaObject()->className()))
+ {
+//    _cls = strdup(metaObject()->className());
+ }
+
 
 
  void UserInterfaceOptionsState::setControlKeyRequired(bool onoff) {
     bool old =   controlKeyRequired;
     bool newControlKeyRequired = onoff;
-    PRINTFCM("old = %s, new = %s", sbool(controlKeyRequired), sbool(onoff));
+    TRACE("old = %s, new = %s", sbool(controlKeyRequired), sbool(onoff));
 
     if (newControlKeyRequired != old) {
         controlKeyRequired = newControlKeyRequired;
-        PRINTFCM("emitting ckrChanged(%s)", sbool(controlKeyRequired));
+        TRACE("emitting ckrChanged(%s)", sbool(controlKeyRequired));
         emit ckrChanged(controlKeyRequired);
     }
  }
