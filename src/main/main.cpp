@@ -45,7 +45,7 @@ static bool init_ddcutil_library(Parsed_Cmd * parsed_cmd) {
          ddca_add_traced_file(filename);
       }
 
-      uint16_t work;
+      uint16_t work = 0;
       if (parsed_cmd->flags & CMD_FLAG_TIMESTAMP_TRACE) work |= DDCA_TRCOPT_TIMESTAMP;
       if (parsed_cmd->flags & CMD_FLAG_THREAD_ID_TRACE) work |= DDCA_TRCOPT_THREAD_ID;
       ddca_set_trace_options((DDCA_Trace_Options) work);
@@ -68,7 +68,7 @@ static bool init_ddcutil_library(Parsed_Cmd * parsed_cmd) {
    *  @retval  DDCRC_INVALID_OPERATION display identification has already occurred
    *  @retval  DDCRC_UNIMPLEMENTED     ddcutil not built with USB monitor support
    */
-   DDCA_Status rc =
+   // DDCA_Status rc =  // unused, comment out for now, need to properly set
    ddca_enable_usb_display_detection(parsed_cmd->flags & CMD_FLAG_NOUSB);
 
    ddca_enable_udf(              parsed_cmd->flags & CMD_FLAG_ENABLE_UDF);

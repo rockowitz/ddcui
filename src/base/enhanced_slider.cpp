@@ -41,7 +41,7 @@ void EnhancedSlider::setControlKeyRequired(bool onoff) {
 }
 
 
-static void dbgrptQKeyEvent(QKeyEvent * event) {
+void dbgrptQKeyEvent(QKeyEvent * event) {
    printf("  key:  %d\n", event->key());
    printf("  modifiers: 0x%x\n", (unsigned int) event->modifiers());
    printf("  nativeModifiers: 0x%08x\n", event->nativeModifiers());

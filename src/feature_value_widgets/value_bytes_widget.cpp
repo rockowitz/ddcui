@@ -94,8 +94,8 @@ ValueBytesWidget::ValueBytesWidget(QWidget *parent)
 
     _mhWidget->setReadOnly(true);       //  which to use?
     _mlWidget->setReadOnly(true);      // or setReadOnly(true)  ??
-    bool _slOk = true;
-    bool _shOk = true;
+    // bool _slOk = true;    // not used
+    // bool _shOk = true;
 
 // #ifdef APPLY_CANCEL
   //  if (useApplyCancel) {

@@ -303,7 +303,7 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
        }
        else {
           int ndx = 0;
-          char trimmed_piece[10];
+          // char trimmed_piece[10];    // unused
           for (; pieces[ndx] != NULL; ndx++) {
              // char * token = strtrim_r(pieces[ndx], trimmed_piece, 10);
              char * token = g_strstrip(pieces[ndx]);
@@ -401,7 +401,7 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
 
 
       if (cmd_and_args && cmd_and_args[0]) {
-      int rest_ct = 0;
+      // int rest_ct = 0;   // unused
       // don't pull debug into the if clause, need rest_ct to be set
       // if (cmd_and_args) {
       //    for (; cmd_and_args[rest_ct] != NULL; rest_ct++) {

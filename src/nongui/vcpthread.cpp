@@ -151,8 +151,8 @@ void VcpThread::rpt_verify_error(
    // cout << erec.srepr() << endl;
    // cout << erec.sexpl() << endl;
 
-   uint8_t  deltaSh = 0;
-   uint8_t  deltaSl = 0;
+   // uint8_t  deltaSh = 0;   // unused
+   // uint8_t  deltaSl = 0;
    if (  max8(abs8(expectedValue >> 8,  observedValue >> 8),
               abs8(expectedValue & 0xff, observedValue & 0xff)
              ) <= 1)

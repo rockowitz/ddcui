@@ -282,7 +282,7 @@ void FeatureWidget::dbgrpt() const {
 
 void FeatureWidget::onInternalValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl) {
    bool debug = false;
-   debug =  debug = debug ||debugSignals;
+   debug = debug || debugSignals;
    TRACEF(debug, "feature_code = 0x%02x, sh=0x%02x, sl=0x%02x", featureCode, sh, sl);
    assert(featureCode == _feature_code);
 
