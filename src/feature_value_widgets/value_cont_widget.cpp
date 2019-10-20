@@ -332,6 +332,11 @@ void ValueContWidget::onSpinBoxTimedOut() {
    emit featureValueChanged(_featureCode, new_sh, new_sl);
 }
 
+void ValueContWidget::when_ckrChanged(bool onoff) {
+   // should probably use a function, but quick and dirty
+   _curSlider->setControlKeyRequired(onoff);
+}
+
 #ifdef UNUSED
 void ValueContWidget::onSpinBoxEditingFinished() {
    if (debugValueWidgetSignals)

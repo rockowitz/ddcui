@@ -8,6 +8,7 @@
 #include <QtCore/QMargins>
 
 #include "base/ddcui_globals.h"
+#include "base/global_state.h"
 
 ValueBaseWidget::ValueBaseWidget(QWidget *parent)
      : QFrame(parent)             // ValueAbstractWidget(parent)
@@ -62,6 +63,13 @@ void ValueBaseWidget::setFeatureValue(const FeatureValue &fv) {
     _ml             = fv.val().ml;
     _sh             = fv.val().sh;
     _sl             = fv.val().sl;
+
+    GlobalState& globalState = GlobalState::instance();
+    _controlKeyRequired = globalState._uiOptionsState->controlKeyRequired;
+
+    // need also to listen for changes
+    QObject::connect(globalState._uiOptionsState, &UserInterfaceOptionsState::ckrChanged,
+                    this, &ValueBaseWidget::whenCkrChanged);
 }
 
 
@@ -85,6 +93,24 @@ uint16_t ValueBaseWidget::getCurrentShSl() {
     uint16_t result = (_sh << 8) | _sl;
     return result;
 }
+
+void ValueBaseWidget::setControlKeyRequired(bool onoff) {
+   PRINTFCM("onoff = %s", sbool(onoff) );
+   _controlKeyRequired = onoff;
+}
+
+bool ValueBaseWidget::getControlKeyRequired() {
+   return   _controlKeyRequired ;
+}
+
+void ValueBaseWidget::whenCkrChanged(bool onoff) {
+   PRINTFCM("Executiong. onoff=%s", sbool(onoff));
+   PRINTFCM("calling setControlKeyRequired()");
+   setControlKeyRequired(onoff);
+}
+
+
+
 
 #ifdef NO
 QSize ValueBaseWidget::sizeHint() const {

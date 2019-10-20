@@ -25,6 +25,9 @@ public:
     virtual uint16_t getCurrentShSl();                       // override;
 
     // QSize sizeHint() const override;   //   needed?
+    void setControlKeyRequired(bool onoff);
+    bool getControlKeyRequired();
+
 
 protected:
     char *                  _cls;
@@ -36,10 +39,14 @@ protected:
     uint8_t                 _ml;
     uint8_t                 _sh;
     uint8_t                 _sl;
+    bool                    _controlKeyRequired;
 
 signals:
-// compiler warning: signals may not be declared virtual
-void featureValueChanged(uint8_t feature_code, uint8_t sh, uint8_t sl);
+    // compiler warning: signals may not be declared virtual
+    void featureValueChanged(uint8_t feature_code, uint8_t sh, uint8_t sl);
+
+public slots:
+    void whenCkrChanged(bool onoff);
 
 };
 
