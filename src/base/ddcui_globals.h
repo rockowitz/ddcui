@@ -52,8 +52,6 @@ do { \
 } while(0)
 
 inline const char * sbool(bool val) { return (val) ? "true" : "false"; }
-// #define SBOOL(__v) ( (__v) ? "true" : "false")
-
 inline const char * qs2s(QString qstr) {return qstr.toLatin1().data(); }
 
 
