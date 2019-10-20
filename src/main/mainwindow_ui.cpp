@@ -72,18 +72,19 @@
        actionManufacturer->setObjectName(QString::fromUtf8("actionManufacturer"));
 #endif
 
-       // Options Menu Actions
+       // Feature Selection menu action
        actionFeatureSelectionDialog = new QAction(MainWindow);
        actionFeatureSelectionDialog->setObjectName(QString::fromUtf8("actionFeatureSelectionDialog"));
        actionFeatureSelectionDialog->setText(
              QApplication::translate("MainWindow", "&Feature Selection",        nullptr, -1));
 
-
+       // Options menu actions
        actionOtherOptionsDialog = new QAction(MainWindow);
        actionOtherOptionsDialog->setObjectName(QString::fromUtf8("actionOtherOptionsDialog"));
        actionOtherOptionsDialog->setText(
              QApplication::translate("MainWindow", "&Other Options",            nullptr, -1));
 
+       // User Interface menu action
        actionUserInterfaceOptionsDialog = new QAction(MainWindow);
        actionUserInterfaceOptionsDialog->setObjectName(QString::fromUtf8("actionUserInterfaceOptionsDialog"));
        actionUserInterfaceOptionsDialog->setText(
