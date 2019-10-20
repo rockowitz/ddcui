@@ -45,6 +45,6 @@ HexNumberValidator::State HexNumberValidator::validate(QString &input, int &pos)
          result = QValidator::Invalid;
    }
 
-   PRINTFCMF(debug, "String: %s, returning %d", qs2s(input), result);
+   TRACEF(debug, "String: %s, returning %d", qs2s(input), result);
    return result;
 }
