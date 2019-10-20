@@ -84,7 +84,7 @@ uint16_t
 NumberEntryWidget::getExistingValue()
 {
    bool debug = false;
-   PRINTFCMF(debug, "widget = %s, returning: x%04x", qs2s(this->objectName()), _curval);
+   TRACEF(debug, "widget = %s, returning: x%04x", qs2s(this->objectName()), _curval);
    return _curval;
 }
 
@@ -92,7 +92,7 @@ uint16_t
 NumberEntryWidget::getNewValue()
 {
    bool debug = false;
-   PRINTFCMF(debug, "widget = %s, returning: x%04x", qs2s(this->objectName()), _valueEntered);
+   TRACEF(debug, "widget = %s, returning: x%04x", qs2s(this->objectName()), _valueEntered);
    return _valueEntered;
 }
 
@@ -102,7 +102,7 @@ void
 NumberEntryWidget::setValue(uint16_t newval)
 {
    bool debug = false;
-   PRINTFCMF(debug, "widget = %s, newval = x%04x", qs2s(this->objectName()), newval);
+   TRACEF(debug, "widget = %s, newval = x%04x", qs2s(this->objectName()), newval);
 
    // Set text value in widget
    int textLength = 2 * _bytect;
@@ -127,21 +127,21 @@ void
 NumberEntryWidget::reset()
 {
    bool debug = false;
-   PRINTFCMF(debug, "Starting. widget = %s, _curState = %d", qs2s(this->objectName()),_widgetState);
+   TRACEF(debug, "Starting. widget = %s, _curState = %d", qs2s(this->objectName()),_widgetState);
    if (_widgetState != NumberEntryWidget::StateOldValid ) {
       int textLength = 2*_bytect;
       _valueEntered = 0;
       setText( QString("%1").arg(_curval,textLength,16,QLatin1Char('0')) );
       _widgetState = NumberEntryWidget::StateOldValid;
    }
-   PRINTFCMF(debug, "Done. _curState = %d", _widgetState);
+   TRACEF(debug, "Done. _curState = %d", _widgetState);
 }
       
 
 #ifdef OLD
 void
 NumberEntryWidget::onTextEdited(const QString &text) {
-   PRINTFCMF(true, "Starting. text=%s", text.toLatin1().data());
+   TRACEF(true, "Starting. text=%s", text.toLatin1().data());
    bool ok = false;
    if (text.length() > 0) {
 
@@ -149,15 +149,15 @@ NumberEntryWidget::onTextEdited(const QString &text) {
       int newval = text.toInt(&ok, 16);
       if (ok) {          // should already have been checked
          _curval = newval;
-         PRINTFCMF(true, "About to emit, _curval = newval = 0x%02x", newval);
+         TRACEF(true, "About to emit, _curval = newval = 0x%02x", newval);
 
          emit NumberEntryWidget::valueChanged8( newval & 0xff);
       }
       else {
-         PRINTFCM("Not a number: %s", qs2s(text));
+         TRACE("Not a number: %s", qs2s(text));
       }
    }
-   PRINTFCM("emitting NumberEntryWidet::isValidValue, _fieldNumber = %d, ok=%s",
+   TRACE("emitting NumberEntryWidet::isValidValue, _fieldNumber = %d, ok=%s",
             _fieldNumber, sbool(ok) );
    emit NumberEntryWidget::isValidValue(_fieldNumber, ok);
 }
@@ -172,7 +172,7 @@ NumberEntryWidget::onTextEdited(const QString &text) {
 void
 NumberEntryWidget::onTextEdited(const QString &text) {
    bool debug = false;
-   PRINTFCMF(debug, "Starting. text=%s", text.toLatin1().data());
+   TRACEF(debug, "Starting. text=%s", text.toLatin1().data());
 
    NumberEntryWidget::States newState = NumberEntryWidget::StateInvalid;
    bool ok = false;
@@ -186,20 +186,20 @@ NumberEntryWidget::onTextEdited(const QString &text) {
             newState = NumberEntryWidget::StateNewValid;
       }
       else {
-         PRINTFCM("Not a number: %s", qs2s(text));
+         TRACE("Not a number: %s", qs2s(text));
       }
    }
 
    if (newState != _widgetState && newState != NumberEntryWidget::StateInvalid)
    {
-      PRINTFCMF(debug, "About to emit stateChanged, newstate = %d", newState);
+      TRACEF(debug, "About to emit stateChanged, newstate = %d", newState);
       emit NumberEntryWidget::stateChanged(this, newState);
    }
 
    _widgetState = newState;
    // if (newState ==  NumberEntryWidget::StateNewValid )
    //    _curval = newval;
-   PRINTFCMF(debug, "Done. setting _widgetState to %d", _widgetState);
+   TRACEF(debug, "Done. setting _widgetState to %d", _widgetState);
 }
 
 
@@ -207,20 +207,20 @@ NumberEntryWidget::onTextEdited(const QString &text) {
 
 void
 NumberEntryWidget::focusInEvent(QFocusEvent * event) {
-   // PRINTFCM("Executing, _curState = %d", _widgetState);
+   // TRACE("Executing, _curState = %d", _widgetState);
 }
 
 void
 NumberEntryWidget::focusOutEvent(QFocusEvent * event) {
-   // PRINTFCM("Executing, _curState = %d", _widgetState);
+   // TRACE("Executing, _curState = %d", _widgetState);
 }
 
 void
 NumberEntryWidget::mousePressEvent(QMouseEvent * event) {
-   // PRINTFCM("Executing, _curState = %d", _widgetState);
+   // TRACE("Executing, _curState = %d", _widgetState);
 }
 
 void
 NumberEntryWidget::mouseReleaseEvent(QMouseEvent * event) {
-   // PRINTFCM("Executing, _curState = %d", _widgetState);
+   // TRACE("Executing, _curState = %d", _widgetState);
 }
