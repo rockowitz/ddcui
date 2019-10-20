@@ -13,10 +13,13 @@ extern "C" {
 #include "cmdline/cmd_parser.h"
 }
 
+#include <base/ddcui_globals.h>
+
 // #include <ui_main.h>
 #include "main/mainwindow.h"
 
 static bool init_ddcutil_library(Parsed_Cmd * parsed_cmd) {
+   // printf("(%s) Starting\n", __func__);
 
    bool ok = true;
 
@@ -42,13 +45,10 @@ static bool init_ddcutil_library(Parsed_Cmd * parsed_cmd) {
          ddca_add_traced_file(filename);
       }
 
-      // TO DO: create parser options --thread-id --tid --timestamp
       uint16_t work;
       if (parsed_cmd->flags & CMD_FLAG_TIMESTAMP_TRACE) work |= DDCA_TRCOPT_TIMESTAMP;
       if (parsed_cmd->flags & CMD_FLAG_THREAD_ID_TRACE) work |= DDCA_TRCOPT_THREAD_ID;
       ddca_set_trace_options((DDCA_Trace_Options) work);
-
-
    }
 
    ddca_set_trace_groups(parsed_cmd->traced_groups);
@@ -88,8 +88,7 @@ static bool init_ddcutil_library(Parsed_Cmd * parsed_cmd) {
       ddca_set_global_sleep_multiplier(parsed_cmd->sleep_multiplier);
    }
 
-
-
+   // printf("(%s) Done\n", __func__);
    return ok;
 }
 
@@ -102,6 +101,10 @@ int main(int argc, char *argv[])
     Parsed_Cmd * parsed_cmd = parse_command(argc, argv);
     if (!parsed_cmd)
        return 1;
+
+    // local, not in ddcutil library
+     enable_trace_show_time(     parsed_cmd->flags & CMD_FLAG_TIMESTAMP_TRACE);
+     enable_trace_show_thread_id(parsed_cmd->flags & CMD_FLAG_THREAD_ID_TRACE);
 
     if (!init_ddcutil_library(parsed_cmd))
        return 1;
