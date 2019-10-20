@@ -86,6 +86,7 @@ set(SOURCES
     src/base/hex_number_validator.cpp
     src/base/hline_widget.cpp 
     src/base/number_entry_widget.cpp
+    src/base/user_interface_options_state.cpp
     src/base/other_options_state.cpp 
 
     src/cmdline/parsed_cmd.c
@@ -123,6 +124,7 @@ set(SOURCES
 
     src/option_dialogs/feature_selection_dialog.cpp 
     src/option_dialogs/other_options_dialog.cpp
+    src/option_dialogs/user_interface_options_dialog.cpp
 
     src/main/monitor.cpp 
     src/main/mainwindow_ui.cpp
@@ -140,6 +142,7 @@ set(SOURCES
 set(UI_SOURCES
     src/option_dialogs/feature_selection_dialog.ui
     src/option_dialogs/other_options_dialog.ui
+    src/option_dialogs/user_interface_options_dialog.ui
    )
 
 # must come before add_executable(): 
