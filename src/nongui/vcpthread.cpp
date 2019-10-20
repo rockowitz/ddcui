@@ -77,7 +77,7 @@ void VcpThread::rpt_error_detail(
                          erec->status_code, ddca_rc_name(erec->status_code));
 
    QString smooshed = format_error_detail(erec, QString(""), 3);
-   // PRINTFCM("%s", smooshed.toLatin1().data() );
+   // TRACE("%s", smooshed.toLatin1().data() );
 
    DdcDetailedError* detailedError = new
          DdcDetailedError(ddca_func_name, erec->status_code, smooshed);
@@ -229,12 +229,12 @@ void VcpThread::capabilities() {
       }
 #endif
 
-      // PRINTFCMF(debugFunc,"Sleeping for 1000000 msec");
+      // TRACEF(debugFunc,"Sleeping for 1000000 msec");
       // usleep(1000000);
       ddcrc = ddca_get_capabilities_string(dh, &caps);
       if (ddcrc != 0) {
          DDCA_Error_Detail * err_detail =  ddca_get_error_detail();
-         PRINTFCM("Error getting capabilities string for %s", ddca_dref_repr(this->_dref));
+         TRACE("Error getting capabilities string for %s", ddca_dref_repr(this->_dref));
          ddca_report_error_detail(err_detail, 2);
          rpt_ddca_status(0, __func__, "ddca_get_capabilities_string", ddcrc);
       }
@@ -296,7 +296,7 @@ void VcpThread::getvcp(uint8_t featureCode, bool reportUnsupported) {
                       dh,
                       true,       // create_default_if_not_found
                       &finfo);
-           PRINTFCMF(debugFunc, "ddca_get_feature_metadata_by_dh() for feature 0x%02x returned %d - %s",
+           TRACEF(debugFunc, "ddca_get_feature_metadata_by_dh() for feature 0x%02x returned %d - %s",
                      featureCode, ddcrc, ddca_rc_name(ddcrc));
            if (debugFunc && ddcrc == 0) {
               // ddcui_dbgrpt_ddca_feature_metadata(finfo);
@@ -372,7 +372,7 @@ void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint16_t shsl)
                          feature_code, sh, sl, valrec.mh, valrec.ml, valrec.sh, valrec.sl);
 
                 if ((sl != valrec.sl || sh != valrec.sh)) {
-                   // PRINTFCM("Calling rpt_verify_error()");
+                   // TRACE("Calling rpt_verify_error()");
                    rpt_verify_error(feature_code, "ddca_set_non_table_vcp_value", sh, sl, valrec.sh, valrec.sl);
                 }
                 // 10/2019 coming here even if verify error???
@@ -390,7 +390,7 @@ void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint16_t shsl)
 
 bye:
    ;
-    PRINTFCMF(debugFunc, "Done");
+    TRACEF(debugFunc, "Done");
 }
 
 
