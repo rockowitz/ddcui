@@ -50,7 +50,7 @@ DDCA_Feature_List
 Monitor::getFeatureList(DDCA_Feature_Subset_Id feature_list_id) {
     bool debugFunc = debugFeatureLists;
     // debugFunc = true;
-    PRINTFTCMF(debugFunc,
+    TRACEF(debugFunc,
           "feature_list_id=%d-%s",feature_list_id, ddca_feature_list_id_name(feature_list_id));
 
     bool include_table_features = false;    // TODO get from feature selection dialog
@@ -64,14 +64,14 @@ Monitor::getFeatureList(DDCA_Feature_Subset_Id feature_list_id) {
 
         ddcrc = ddca_get_feature_list_by_dref(
                    feature_list_id, _displayInfo->dref, include_table_features, &result);
-        PRINTFTCMF(debugFunc, "ddca_get_feature_list_by_dref() returned %d", ddcrc);
+        TRACEF(debugFunc, "ddca_get_feature_list_by_dref() returned %d", ddcrc);
         if (ddcrc == 0) {
            // hack
            if (feature_list_id == DDCA_SUBSET_KNOWN) {
               DDCA_Feature_List mfgFeatureList;
               ddcrc = ddca_get_feature_list_by_dref(
                          DDCA_SUBSET_MFG, _displayInfo->dref, include_table_features, &mfgFeatureList);
-              PRINTFTCMF(debugFunc, "ddca_get_feature_list_by_dref(DDCA_SUBSET_MFG) returned %d", ddcrc);
+              TRACEF(debugFunc, "ddca_get_feature_list_by_dref(DDCA_SUBSET_MFG) returned %d", ddcrc);
               if (ddcrc == 0) {
                  result = ddca_feature_list_or(&result, &mfgFeatureList);
               }
@@ -80,7 +80,7 @@ Monitor::getFeatureList(DDCA_Feature_Subset_Id feature_list_id) {
            _features.insert(feature_list_id, result);
         }
     }
-    PRINTFTCMF(debugFunc,
+    TRACEF(debugFunc,
          "Returning: %s", ddca_feature_list_string(&result, NULL, (char*)" "));
     return result;
 }

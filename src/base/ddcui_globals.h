@@ -110,12 +110,10 @@ do { \
 
 
 // new names
-
 #define TRACE( _FMT, ...) \
 do { \
    printftcmf(true, _cls, __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
 } while(0)
-
 
 
 

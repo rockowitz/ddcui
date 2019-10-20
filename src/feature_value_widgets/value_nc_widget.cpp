@@ -138,7 +138,7 @@ Local_Feature_Value_Table * ValueNcWidget::getComboBoxEntries(NcValuesSource mod
    }
    DDCA_Cap_Vcp * capVcp = _capVcp;
    if (!capVcp) {
-      PRINTFTCMF(debugNcValues, "_featureCode=0x%02x, using dummyCapVcp", _featureCode);
+      TRACEF(debugNcValues, "_featureCode=0x%02x, using dummyCapVcp", _featureCode);
       capVcp = &dummyCapVcp;
    }
 
@@ -152,7 +152,7 @@ Local_Feature_Value_Table * ValueNcWidget::getComboBoxEntries(NcValuesSource mod
 
 
 void ValueNcWidget::loadComboBox(NcValuesSource mode) {
-   PRINTFTCMF(debugNcValues, "feature 0x%02x, newSource=%d-%s", _featureCode, mode, ncValuesSourceName(mode) );
+   TRACEF(debugNcValues, "feature 0x%02x, newSource=%d-%s", _featureCode, mode, ncValuesSourceName(mode) );
 
    // In case we're called to reload the combobox values, delete existing values
    for (int ndx = _cb->count()-1; ndx >= 0; ndx--) {
@@ -179,7 +179,7 @@ void ValueNcWidget::loadComboBox(NcValuesSource mode) {
        _cb->setCurrentIndex(cur_ndx);
    }
    else {
-       PRINTFTCM("VCP feature 0x%02x: Unable to find value 0x%02x", _featureCode, _sl);
+       TRACE("VCP feature 0x%02x: Unable to find value 0x%02x", _featureCode, _sl);
        // TODO: add generated entry for observed value
        QString s;
        s.sprintf("x%02x - Unrecognized value", _sl);

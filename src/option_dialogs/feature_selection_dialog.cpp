@@ -24,7 +24,7 @@ using namespace std;
 void FeatureSelectionDialog::useSelectorData(FeatureSelector * fsel)
 {
     if (debugFeatureSelection) {
-        PRINTFTCM("_feature_selector:");
+        TRACE("_feature_selector:");
         fsel->dbgrpt();
     }
 
@@ -140,7 +140,7 @@ void FeatureSelectionDialog::on_include_table_checkBox_stateChanged(int arg1)
 void FeatureSelectionDialog::on_buttonBox_accepted()
 {
     bool debugFunc = debugFeatureSelection;
-    PRINTFTCMF(debugFunc, "Executing");
+    TRACEF(debugFunc, "Executing");
     // which button is currently clicked?
 
     DDCA_Feature_Subset_Id feature_list;
@@ -180,12 +180,12 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
     // TODO: show_unsupported and show-table check boxes
 
     if (debugFeatureSelection) {
-        PRINTFTCM("_feature_selector:");
+        TRACE("_feature_selector:");
         _featureSelector->dbgrpt();
         if (changed)
-           PRINTFTCM("Signaling featureSelectionChanged()");
+           TRACE("Signaling featureSelectionChanged()");
         else
-           PRINTFTCM("NOT Signaling featureSelectionChanged()");
+           TRACE("NOT Signaling featureSelectionChanged()");
     }
 
     if (changed)

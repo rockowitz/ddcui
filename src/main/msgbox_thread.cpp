@@ -25,7 +25,7 @@ MsgBoxThread::MsgBoxThread(
 
 
 void MsgBoxThread::msbgoxClosed(int result) {
-   PRINTFTCMF(debugThread, "Releasing semaphore");
+   TRACEF(debugThread, "Releasing semaphore");
    msgboxSemaphore.release();
 }
 
@@ -33,10 +33,10 @@ void MsgBoxThread::msbgoxClosed(int result) {
 void MsgBoxThread::run() {
     forever {
         MsgBoxQueueEntry * rqst = this->_requestQueue->pop();
-        PRINTFTCMF(debugThread, "Popped: _boxTitle: %s, _boxText: %s",
+        TRACEF(debugThread, "Popped: _boxTitle: %s, _boxText: %s",
                                 qs2s(rqst->_boxTitle), qs2s(rqst->_boxText));
         msgboxSemaphore.acquire();
-        PRINTFTCMF(debugThread, "acquired semaphore");
+        TRACEF(debugThread, "acquired semaphore");
         emit postSerialMsgBox(rqst->_boxTitle, rqst->_boxText, rqst->_boxIcon);
         delete rqst;
     }

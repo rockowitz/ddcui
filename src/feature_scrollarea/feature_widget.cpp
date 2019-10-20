@@ -283,11 +283,11 @@ void FeatureWidget::dbgrpt() const {
 void FeatureWidget::onInternalValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl) {
    bool debug = false;
    debug =  debug = debug ||debugSignals;
-   PRINTFTCMF(debug, "feature_code = 0x%02x, sh=0x%02x, sl=0x%02x", featureCode, sh, sl);
+   TRACEF(debug, "feature_code = 0x%02x, sh=0x%02x, sl=0x%02x", featureCode, sh, sl);
    assert(featureCode == _feature_code);
 
    bool writeOnlyFeature = _feature_flags & DDCA_WO;
-   PRINTFTCMF(debug, "-> Calling emit valueChanged, feature_code=0x%02x, writeOnlyFeature=%s, sh=0x%02x, sl=0x%02x",
+   TRACEF(debug, "-> Calling emit valueChanged, feature_code=0x%02x, writeOnlyFeature=%s, sh=0x%02x, sl=0x%02x",
                     featureCode, sbool(writeOnlyFeature), sh, sl);
    emit valueChanged(featureCode, writeOnlyFeature, sh, sl);
 }

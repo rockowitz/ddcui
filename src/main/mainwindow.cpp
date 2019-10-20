@@ -64,9 +64,9 @@ MainWindow::MainWindow(QWidget *parent) :
                                      //                      &this->_ui, &this
                       true,         // centerOnParent
                       true);        // disableParentWhenSpinning
-    // PRINTFTCM("Spinner Settings: ");
+    // TRACE("Spinner Settings: ");
     // QColor wcolor = _spinner->color();
-    // PRINTFTCM("   color:      %s", qs2s(wcolor.name()));
+    // TRACE("   color:      %s", qs2s(wcolor.name()));
 
     _loadingMsgBox = new QMessageBox(this);
     _loadingMsgBox->setText("Loading...");
@@ -100,7 +100,7 @@ MainWindow::MainWindow(QWidget *parent) :
     _serialMsgBox->setModal(true);
 
     _msgboxQueue = new MsgBoxQueue();
-    // PRINTFTCM("_msgboxQueue=%p", _msgboxQueue);
+    // TRACE("_msgboxQueue=%p", _msgboxQueue);
     MsgBoxThread * msgBoxThread = new MsgBoxThread(_msgboxQueue);
 
     QObject::connect(
@@ -178,7 +178,7 @@ void MainWindow::initMonitors() {
                             &_dlist);
     assert(ddcrc == 0);
     for (int ndx = 0; ndx < _dlist->ct; ndx++) {
-        PRINTFTCMF(debug, "Processing display %d", ndx);
+        TRACEF(debug, "Processing display %d", ndx);
 
         // Add entry for monitor in display selector combo box
 // #ifdef OLD
@@ -205,7 +205,7 @@ void MainWindow::initMonitors() {
         // Create Monitor instance, initialize data structures
         Monitor * curMonitor = new Monitor(&_dlist->info[ndx], monitorNumber);
         _monitors.append(curMonitor);
-        // PRINTFCM("After curMonitor = new Monitor()");
+        // TRACE("After curMonitor = new Monitor()");
         // ddca_report_display_info(&_dlist->info[ndx], 3);
 
         curMonitor->_requestQueue = new VcpRequestQueue();
@@ -220,7 +220,7 @@ void MainWindow::initMonitors() {
               curMonitor,
               _ui->centralWidget);
 
-        // PRINTFTCM("_msgboxQueue=%p", _msgboxQueue);
+        // TRACE("_msgboxQueue=%p", _msgboxQueue);
         initFeaturesScrollAreaView(
               curMonitor,
               baseModel,
@@ -286,7 +286,7 @@ void MainWindow::initMonitors() {
 void MainWindow::longRunningTaskStart() {
    bool debug = true;
    // needs counter
-   PRINTFTCMF(debug, "Executing");
+   TRACEF(debug, "Executing");
    // _spinner->start();
    // _loadingMsgBox->show();
    QGuiApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
@@ -295,7 +295,7 @@ void MainWindow::longRunningTaskStart() {
 
 void MainWindow::longRunningTaskEnd() {
    bool debug = true;
-   PRINTFTCMF(debug, "Executing");
+   TRACEF(debug, "Executing");
    // _spinner->stop();
    // _loadingMsgBox->hide();
    QGuiApplication::restoreOverrideCursor();
@@ -395,7 +395,7 @@ void MainWindow::on_actionCapabilities_triggered()
        DDCA_Status ddcrc = MonitorDescActions::capture_capabilities_report(monitor, dref, &caps_report);
        if (ddcrc != 0) {
            reportDdcApiError("ddca_open_display", ddcrc);
-           PRINTFTCM("capture_capabilites_report returned %d", ddcrc);
+           TRACE("capture_capabilites_report returned %d", ddcrc);
        }
        else {
            // cout << "Parsed capabilities: " << endl;
@@ -422,13 +422,13 @@ void MainWindow::on_actionCapabilities_triggered()
 // Features Slots - Common Functions
 
 void MainWindow::loadMonitorFeatures(Monitor * monitor) {
-    // PRINTFTCM("monitor=%p", monitor);
+    // TRACE("monitor=%p", monitor);
     // monitor->dbgrpt();
     QString msg = QString("Reading monitor features...");
     _ui->statusBar->showMessage(msg);
 
     DDCA_Feature_List featuresToShow = monitor->getFeatureList(_feature_selector->_featureListId);
-    PRINTFTCMF(debugFeatureLists,
+    TRACEF(debugFeatureLists,
         "features_to_show: %s", ddca_feature_list_string(&featuresToShow, NULL, (char*)" "));
 
     if (_feature_selector->_respectCapabilities) {
@@ -436,18 +436,18 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
        // n. simply manipulates data structures, does not perform monitor io
        DDCA_Feature_List caps_features =
              ddca_feature_list_from_capabilities(monitor->_baseModel->_parsed_caps);
-       PRINTFTCMF(debugFeatureLists,
+       TRACEF(debugFeatureLists,
            "Capabilities features: %s", ddca_feature_list_string(&caps_features, NULL, (char*)" "));
        featuresToShow = ddca_feature_list_and(&featuresToShow, &caps_features);
     }
 
-    PRINTFTCMF(debugFeatureLists,
+    TRACEF(debugFeatureLists,
         "Final features_to_show: %s", ddca_feature_list_string(&featuresToShow, NULL, (char*)" "));
 
     // causes async feature reads in VcpThread, then load feature values from model into widgets
     monitor->_baseModel->setFeatureList(featuresToShow, _feature_selector->_showUnsupportedFeatures);
 
-    // PRINTFTCM("Done");
+    // TRACE("Done");
 }
 
 
@@ -457,14 +457,14 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
 {
     if (debugFeatureSelection) {
 
-        PRINTFTCM("Desired view: %d, feature list:", View::FeaturesView);
+        TRACE("Desired view: %d, feature list:", View::FeaturesView);
         this->_feature_selector->dbgrpt();
     }
 
     int monitorNdx = _toolbarDisplayCB->currentIndex();
     Monitor * monitor = _monitors[monitorNdx];
     if (debugFeatureSelection) {
-        PRINTFTCM("Current view: %d, feature list:", _curView);
+        TRACE("Current view: %d, feature list:", _curView);
         monitor->_curFeatureSelector.dbgrpt();
     }
 
@@ -491,7 +491,7 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
        monitor->_curFeatureSelector   = *_feature_selector;
     }
     else {
-       PRINTFTCM("Unchanged view and feature set, no need to load");
+       TRACE("Unchanged view and feature set, no need to load");
     }
 }
 
@@ -504,7 +504,7 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
 
 void MainWindow::on_actionFeatureSelectionDialog_triggered()
 {
-   PRINTFTCM("Executing. _fsd=%p", _fsd);
+   TRACE("Executing. _fsd=%p", _fsd);
 
     // FeatureSelectionDialog*
    if (_fsd) {
@@ -528,11 +528,11 @@ void MainWindow::for_actionFeatureSelectionDialog_accepted()
    bool debugFunc = debugSignals || debugFeatureSelection;
    debugFunc = true;
    if (debugFunc) {
-       PRINTFTCM("Executing");
+       TRACE("Executing");
        _feature_selector->dbgrpt();
    }
    if (_curView == FeaturesView) {
-      PRINTFTCMF(debugFunc, "Signaling featureSelectionChanged()");
+      TRACEF(debugFunc, "Signaling featureSelectionChanged()");
       emit featureSelectionChanged();
    }
 }
@@ -544,7 +544,7 @@ void MainWindow::on_actionOtherOptionsDialog_triggered()
 {
      // TODO: allocate once and save dialog, cf feature selection
      // display dialog box for selecting features
-    PRINTFTCM("triggered");
+    TRACE("triggered");
 
     OtherOptionsDialog* dialog = new OtherOptionsDialog(this->_otherOptionsState, this);
     QObject::connect(dialog,   &OtherOptionsDialog::ncValuesSourceChanged,
@@ -557,7 +557,7 @@ void MainWindow::on_actionOtherOptionsDialog_triggered()
 // for which it could find no signal
 void MainWindow::for_actionOtherOptionsDialog_ncValuesSourceChanged(NcValuesSource valuesSource )
 {
-   PRINTFTCM("valuesSource=%d", valuesSource);
+   TRACE("valuesSource=%d", valuesSource);
 
    if (_curView == FeaturesView  )   {  // need also check if  FeaturesScrollAreaView
       int monitorNdx = _toolbarDisplayCB->currentIndex();
@@ -565,7 +565,7 @@ void MainWindow::for_actionOtherOptionsDialog_ncValuesSourceChanged(NcValuesSour
       // or emit signal?
       monitor->_featuresScrollAreaView->onNcValuesSourceChanged(valuesSource);
    }
-   PRINTFCM("Done");
+   TRACE("Done");
 }
 
 
@@ -574,7 +574,7 @@ void MainWindow::for_actionOtherOptionsDialog_ncValuesSourceChanged(NcValuesSour
 // causes the dialog to display
 void MainWindow::on_actionUserInterfaceOptionsDialog_triggered()
 {
-   PRINTFTCM("Executing. _uid=%p", _uid);
+   TRACE("Executing. _uid=%p", _uid);
 
 #ifdef NO  // don't bother keeping the dialog box around and hidden
    if (_uid) {
@@ -604,8 +604,8 @@ void MainWindow::on_actionUserInterfaceOptionsDialog_triggered()
 
 void MainWindow::for_actionUserInterfaceOptionsDialog_accept()
 {
-   PRINTFCM("Executiong");
-   PRINTFCM("Emitting userIntefaceOptionsChanged");
+   TRACE("Executiong");
+   TRACE("Emitting userIntefaceOptionsChanged");
    // need to test if real?
    emit userInterfaceOptionsChanged();
 
@@ -630,14 +630,14 @@ void MainWindow::set_feature_list_id(DDCA_Feature_Subset_Id feature_list_id) {
 //
 
 void MainWindow::on_actionRescan_triggered() {
-   PRINTFCM("Executing");
+   TRACE("Executing");
    assert(_curView == FeaturesView);
    assert(_curDisplayIndex >= 0);
    _monitors[_curDisplayIndex]->_baseModel->reloadFeatures();
 }
 
 void MainWindow::on_actionRedetect_triggered() {
-   PRINTFCM("Executing");
+   TRACE("Executing");
 }
 
 
@@ -680,7 +680,7 @@ void MainWindow::on_actionAbout_Qt_triggered()
 //
 
 void MainWindow::showSerialMsgBox(QString title, QString text, QMessageBox::Icon icon) {
-   // PRINTFTCM("Starting.");
+   // TRACE("Starting.");
    _serialMsgBox->setText(text);
    _serialMsgBox->setWindowTitle(title);
    _serialMsgBox->setIcon(icon);
@@ -689,22 +689,22 @@ void MainWindow::showSerialMsgBox(QString title, QString text, QMessageBox::Icon
 
 
 void MainWindow::showCentralWidgetPage(int pageno) {
-   PRINTFTCM("===========> Setting current index, pageno = %d", pageno);
+   TRACE("===========> Setting current index, pageno = %d", pageno);
    _ui->centralWidget->setCurrentIndex(pageno);
    _ui->centralWidget->show();
 }
 
 
 void MainWindow::showCentralWidgetByWidget(QWidget * pageWidget) {
-   PRINTFTCM("===========> Setting current index, pageWidget object name = %s",
+   TRACE("===========> Setting current index, pageWidget object name = %s",
           "dummy"  /* pageWidget->objectName() */);   // utf-8
 
    int pageno = _ui->centralWidget->indexOf(pageWidget);
    if (pageno < 0) {
-      PRINTFTCM("page for widget not found");
+      TRACE("page for widget not found");
    }
    else {
-      PRINTFTCM("widget page number: %d\n", pageno);
+      TRACE("widget page number: %d\n", pageno);
       _ui->centralWidget->setCurrentWidget(pageWidget);
       _ui->centralWidget->show();
    }

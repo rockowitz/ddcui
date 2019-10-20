@@ -98,7 +98,7 @@ void FeaturesScrollAreaContents::startInitialLoad(void)
 {
    bool debugFunc = debugWidget;
    debugFunc = false;
-   PRINTFTCMF(debugFunc, "Executing");
+   TRACEF(debugFunc, "Executing");
    assert(_containingScrollArea != nullptr);
    // _containingScrollArea->hide();
 
@@ -108,7 +108,7 @@ void FeaturesScrollAreaContents::endInitialLoad()
 {
    bool debugFunc = debugWidget;
    debugFunc = false;
-   PRINTFTCMF(debugFunc, "Executing");
+   TRACEF(debugFunc, "Executing");
    assert(_containingScrollArea);
 
    emit showCentralWidgetByWidget(_containingScrollArea);

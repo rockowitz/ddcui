@@ -48,7 +48,7 @@ FeaturesScrollAreaView::FeaturesScrollAreaView(
     , _msgboxQueue(msgboxQueue)
     , _curNcValuesSource(OtherOptionsState::DefaultNcValuesSource)  // , _curNcValuesSource(NcValuesSourceUnset)
 {
-   // PRINTFTCM("Executing. _msgboxQueue=%p", _msgboxQueue);
+   // TRACE("Executing. _msgboxQueue=%p", _msgboxQueue);
 }
 
 
@@ -59,7 +59,7 @@ void FeaturesScrollAreaView::freeContents(void) {
 
 void FeaturesScrollAreaView::onEndInitialLoad(void) {
     bool debug = false;
-    PRINTFTCMF(debug, "Starting, Monitor=%s", _monitor->_displayInfo->model_name);
+    TRACEF(debug, "Starting, Monitor=%s", _monitor->_displayInfo->model_name);
 
     // TODO:
     // free existing QScrollArea, QScrollAreaContents
@@ -131,11 +131,11 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
     _centralStackedWidget->setCurrentWidget(scrollWrap);    // was scrollArea
 
     if (!dimensionReportShown && debugLayout) {
-        PRINTFTCM("---------------------> scrollAreaContents in QScrollArea");
+        TRACE("---------------------> scrollAreaContents in QScrollArea");
         reportWidgetDimensions(scrollAreaContents,    _cls, __func__, "scrollAreaContents in QScrollArea");
-        PRINTFTCM("---------------------> QScrollArea in _centralStackedWidget");
+        TRACE("---------------------> QScrollArea in _centralStackedWidget");
         reportWidgetDimensions(scrollArea,            _cls, __func__, "QScrollArea in _centralStackedWidget");
-        PRINTFTCM("---------------------> centralStackedWidget" );
+        TRACE("---------------------> centralStackedWidget" );
         reportWidgetDimensions(_centralStackedWidget, _cls, __func__, "centralStackedWidget");
         dimensionReportShown = true;
     }
@@ -145,7 +145,7 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
     _scrollAreaContents = scrollAreaContents;
     _centralStackedWidget->show();
 
-    PRINTFTCMF(debug, "Done.  feature count: %d", ct);
+    TRACEF(debug, "Done.  feature count: %d", ct);
 }
 
 
@@ -157,16 +157,16 @@ void FeaturesScrollAreaView::onUIValueChanged(
 {
    bool debug = debugSignals;
    debug = true;
-   PRINTFTCMF(debug,
+   TRACEF(debug,
              "Starting. feature_code = 0x%02x, writeOnly=%s, sh=0x%02x, sl=0x%02x",
              featureCode, sbool(writeOnly), sh, sl);
 
    FeatureValue * curFv = _baseModel->modelVcpValueFind(featureCode);
    if (curFv && curFv->val().sh == sh && curFv->val().sl == sl) {
-      PRINTFTCM("New value matches model value, Suppressing.");
+      TRACE("New value matches model value, Suppressing.");
    }
    else {
-      PRINTFTCMF(debug, "=> emitting signalVcpRequest() for VcpSetRequst, featureCode=0x%02x", featureCode);
+      TRACEF(debug, "=> emitting signalVcpRequest() for VcpSetRequst, featureCode=0x%02x", featureCode);
       VcpRequest * rqst = new VcpSetRequest(featureCode, sh, sl, writeOnly);
       emit signalVcpRequest(rqst);  // used to call into monitor
 
@@ -187,7 +187,7 @@ void FeaturesScrollAreaView::onUIValueChanged(
       }
    }
 
-   PRINTFTCMF(debug, "Done");
+   TRACEF(debug, "Done");
 }
 
 
@@ -197,7 +197,7 @@ void FeaturesScrollAreaView::onModelValueChanged(
       uint8_t     sh,
       uint8_t     sl)
 {
-   PRINTFTCMF(debugSignals,
+   TRACEF(debugSignals,
              "caller = %s, feature_code = 0x%02x, sh=0x%02x, sl=0x%02x",
              caller, featureCode, sh, sl);
 
@@ -213,7 +213,7 @@ void FeaturesScrollAreaView::onModelValueChanged(
 void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc) {
    bool debugFunc = debugSignals;
    // debugFunc = true;
-   PRINTFTCMF(debugFunc,
+   TRACEF(debugFunc,
              "newsrc=%d - %s, _curNcValuesSource=%d - %s",
              newsrc,             (char*) ncValuesSourceName(newsrc),
              _curNcValuesSource, (char*) ncValuesSourceName(_curNcValuesSource));
@@ -251,8 +251,8 @@ void FeaturesScrollAreaView::onModelDdcDetailedError(DdcDetailedError* perec) {
    bool debugFunc = debugSignals;
    // debugFunc = true;
 
-    // PRINTFTCM("Starting");
-    PRINTFTCMF(debugFunc, "perec=%p, perec->%s", perec, perec->srepr() );
+    // TRACE("Starting");
+    TRACEF(debugFunc, "perec=%p, perec->%s", perec, perec->srepr() );
     // std::cout << "typeid(perec):  " << typeid(perec).name()  << std::endl;
     // std::cout << "typeid(*perec): " << typeid(*perec).name() << std::endl;
 
@@ -266,7 +266,7 @@ void FeaturesScrollAreaView::onModelDdcDetailedError(DdcDetailedError* perec) {
                                        qstitle,
                                        qsexpl,
                                        icon);
-   PRINTFTCMF(debugFunc, "Calling _msgboxQueue.put() for qe: %s", qs2s(qe->repr()));
+   TRACEF(debugFunc, "Calling _msgboxQueue.put() for qe: %s", qs2s(qe->repr()));
    _msgboxQueue->put(qe);
 }
 
@@ -275,7 +275,7 @@ void FeaturesScrollAreaView::onModelDdcDetailedError(DdcDetailedError* perec) {
 void FeaturesScrollAreaView::onModelDdcFeatureError(DdcFeatureError* perec) {
     bool debugFunc = debugSignals;
     // debugFunc = true;
-    PRINTFTCMF(debugFunc, "perec=%p, perec->%s", perec, qs2s(perec->repr()) );
+    TRACEF(debugFunc, "perec=%p, perec->%s", perec, qs2s(perec->repr()) );
     // std::cout << "typeid(perec):  " << typeid(perec).name()  << std::endl;
     // std::cout << "typeid(*perec): " << typeid(*perec).name() << std::endl;
 
@@ -286,7 +286,7 @@ void FeaturesScrollAreaView::onModelDdcFeatureError(DdcFeatureError* perec) {
     QMessageBox::Icon icon = QMessageBox::Warning;
 
     if ( QString::compare(perec->_ddcFunction, QString("ddca_get_capabilities_string")) == 0) {
-        // PRINTFTCM("ddca_get_capabilities_string() branch");
+        // TRACE("ddca_get_capabilities_string() branch");
         qsexpl = QString::asprintf(
                           "Error reading capabilities string for display %d - %s",
                           dinfo->dispno+1, dinfo->model_name
@@ -298,7 +298,7 @@ void FeaturesScrollAreaView::onModelDdcFeatureError(DdcFeatureError* perec) {
                                    qstitle,
                                    qsexpl,
                                    icon);
-     PRINTFTCMF(debugFunc, "Calling _msgboxQueue.put() for qe: %s", qs2s(qe->repr()));
+     TRACEF(debugFunc, "Calling _msgboxQueue.put() for qe: %s", qs2s(qe->repr()));
     _msgboxQueue->put(qe);
 }
 
