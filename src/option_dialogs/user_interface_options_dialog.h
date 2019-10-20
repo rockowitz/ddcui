@@ -24,7 +24,7 @@ public:
     ~UserInterfaceOptionsDialog();
 
     void setCkrChanged(bool onoff);
-    void setControlKeyRequired(bool onoff);
+    void setDialogBoxControlKeyRequired(bool onoff);
 
 
 
@@ -40,6 +40,7 @@ private slots:
 
 public:
     Ui::UserInterfaceOptionsDialog *  _ui;   // why is this pointing to another instance of the same class?
+
 
 
 private:

@@ -30,13 +30,13 @@ UserInterfaceOptionsDialog::UserInterfaceOptionsDialog(
     , _state(state)
 {
     _cls = metaObject()->className();
-    PRINTFCM("Constructor starting");
+    TRACE("Constructor starting");
     // _state = state;
     _ui->setupUi(this);
 
     setWindowTitle("ddcui - User Interface Options");
     // setUSource(state->ncValuesSource);
-    PRINTFCM("Constructor done");
+    TRACE("Constructor done");
 }
 
 
@@ -46,31 +46,39 @@ UserInterfaceOptionsDialog::~UserInterfaceOptionsDialog()
 }
 
 
+void UserInterfaceOptionsDialog::setDialogBoxControlKeyRequired(bool onoff) {
+   Qt::CheckState stateToSet = Qt::Unchecked;
+   if (onoff)
+      stateToSet = Qt::Checked;
+
+   _ui->ckrCheckBox->setChecked(stateToSet);
+
+   }
+
+
 void UserInterfaceOptionsDialog::on_actionButtonBox_accepted()
 {
     bool debugFunc = true;
     bool newCtrlKeyRequired  = _ui->ckrCheckBox->isChecked();
-    PRINTFCMF(debugFunc, "Executing. Value read from ckr checkbox; %s", sbool(newCtrlKeyRequired));
+    TRACEF(debugFunc, "Executing. Value read from ckr checkbox; %s", sbool(newCtrlKeyRequired));
 
-    PRINTFCMF(debugFunc, "Calling _state->setControlKey Required(%s)", sbool(newCtrlKeyRequired));
+    TRACEF(debugFunc, "Calling _state->setControlKey_Required(%s)", sbool(newCtrlKeyRequired));
 
     _state->setControlKeyRequired(newCtrlKeyRequired);
 
     // no, automatically emitted when dialog accepted, by accept() or done()
     // emit userInterfaceDialog_accepted(_state);  // probably not needed
 
-    PRINTFCMF(debugFunc, "Before calling accept()");
+    TRACEF(debugFunc, "Before calling accept()");
     accept();  // causes accepteed() to be emitted
 }
 
 
 
-
-
 void UserInterfaceOptionsDialog::on_actionButtonBox_helpRequested()
 {
-    // PRINTFCM();
-    QString fn(":/docs/uioptions");
+    // TRACE();
+    QString fn(":/docs/uioptions.html");
     QFile f(fn);
     f.open(QFile::ReadOnly | QFile::Text);
     QTextStream in(&f);
@@ -93,19 +101,14 @@ void UserInterfaceOptionsDialog::on_actionButtonBox_helpRequested()
 void UserInterfaceOptionsDialog::on_actionButtonBox_clicked(QAbstractButton* button)
 {
    if(button== (QAbstractButton*) _ui->actionButtonBox->button(QDialogButtonBox::Reset) ){
-      PRINTFCM("Reset");
+      TRACE("Reset");
 
-      // THIS IS NONSENSE, IF RESETTING THEN STATE CANT CHANGE!
-      bool ckrOld = _state->controlKeyRequired;
+      // Pressing the reset button does not close the dialog box
+      // Reset the state in UserInterfaceOptionsState
+      // Do not emit a changed() message and do not close the dialog
+
       _state->controlKeyRequired = UserInterfaceOptionsState::CkrDefault;
-      // on_buttonBox_accepted();  // do not actually change until OK
-
-      // NcValuesSource oldsrc = _state->ncValuesSource;
-      //  _state->ncValuesSource = OtherOptionsState::DefaultNcValuesSource;
-      //   setUiSource(_state->ncValuesSource);
-      if (_state->controlKeyRequired !=ckrOld) {
-             emit ckrChanged(_state->controlKeyRequired);
-      }
+       setDialogBoxControlKeyRequired(UserInterfaceOptionsState::CkrDefault);
    }
 }
 
