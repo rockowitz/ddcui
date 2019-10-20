@@ -45,8 +45,11 @@ private slots:
     // void onSpinBoxEditingFinished();     // unused
     void onSpinBoxTimedOut();
     void onSpinBoxValueChanged(int value);
+
+#ifdef UNUSED
 public slots:
     void when_ckrChanged(bool onoff);
+#endif
 
 #ifdef APPLY_CANCEL
 private:
