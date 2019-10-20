@@ -2,5 +2,6 @@
 <qresource>
     <file>docs/feature_selection.html</file>
     <file>docs/nc_values.html</file>
+    <file>docs/uioptions.html</file>
 </qresource>
 </RCC>
