@@ -173,7 +173,7 @@ QString DdcFeatureError::repr() {
    // printf("(DdcFeatureError::repr) Executing\n"); fflush(stdout);
    const char * s = ddca_rc_name(_ddcErrno);
    QString msg = QString("[feature=0x%1, function=%2, ddcrc=%3 - %4]")
-                    .arg(_featureCode, 2, 16)
+                    .arg(_featureCode, 2, 16, QChar('0'))
                     .arg(_ddcFunction)
                     .arg(_ddcErrno)
                     .arg(s);
