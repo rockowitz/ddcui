@@ -47,6 +47,7 @@ public:
     QAction     *actionRescan = NULL;
 
     QAction     *actionFeaturesScrollArea = NULL;
+    QAction     *actionUserInterfaceOptionsDialog = NULL;
 private:
     // Options Menu
 #ifdef IS_THIS_NEEDED
@@ -61,6 +62,7 @@ private:
 #endif
     QAction     *actionFeatureSelectionDialog = NULL;
     QAction     *actionOtherOptionsDialog = NULL;
+
 
     // Actions Menu
 
