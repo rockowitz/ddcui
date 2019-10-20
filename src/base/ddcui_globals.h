@@ -55,7 +55,6 @@ inline const char * sbool(bool val) { return (val) ? "true" : "false"; }
 // #define SBOOL(__v) ( (__v) ? "true" : "false")
 
 inline const char * qs2s(QString qstr) {return qstr.toLatin1().data(); }
-#define QS2S(_qstr) ( _qstr.toLatin1().data() )
 
 
 // #define APPLY_CANCEL
