@@ -64,6 +64,7 @@ void VcpThread::rpt_ddca_status(
 }
 
 
+
 void VcpThread::rpt_error_detail(
       DDCA_Error_Detail * erec,
       const char * caller_name,
@@ -87,6 +88,20 @@ void VcpThread::rpt_error_detail(
    // just call function, no need to signal:
    _baseModel->onDdcDetailedError(detailedError);
 }
+
+#ifdef IN_PROGRESS
+void VcpThread::rpt_getvcp_error(
+      uin8_t              feature_code,
+      DDCA_Error_Detail * erec,
+      const char *        caller_name,
+      const char *        ddca_func_name)
+{
+   QString("Error reading feature x%1.  Status code: %2"))
+         .arg( QString::number(feature_code, 2, 16) )
+         .arg( QString::fromAscii( ddca_rc_desc(erec->status_code) );
+
+}
+#endif
 
 
 static uint8_t abs8(uint8_t v1, uint8_t v2) {
