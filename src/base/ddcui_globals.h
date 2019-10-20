@@ -35,6 +35,7 @@ bool enable_trace_show_thread_id(bool onoff);
 
 bool printftcmf(
       bool debug,
+      const char * cls,
       const char * funcname,
       int lineno,
       const char * filename,
@@ -51,7 +52,7 @@ bool printftcmf(
 
 #define PRINTFCM(_FMT, ...) \
 do { \
-   printftcmf(true, __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+   printftcmf(true, _cls, __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
 } while(0)
 
 
@@ -65,7 +66,7 @@ do { \
 
 #define PRINTFCMF(_FLAG, _FMT, ...) \
 do { \
-   printftcmf(_FLAG, __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+   printftcmf(_FLAG, _cls. __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
 } while(0)
 
 #ifdef OLD
@@ -84,7 +85,7 @@ do { \
 
 #define PRINTFTCM(_FMT, ...) \
    do { \
-      printftcmf(true, __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+      printftcmf(true, _cls, __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
    } while(0)
 
 #ifdef OLD
@@ -101,10 +102,28 @@ do { \
    }
 #endif
 
+
 #define PRINTFTCMF(_FLAG, _FMT, ...) \
 do { \
-   printftcmf(_FLAG, __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+   printftcmf(_FLAG, _cls, __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
 } while(0)
+
+
+// new names
+
+#define TRACE( _FMT, ...) \
+do { \
+   printftcmf(true, _cls, __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+} while(0)
+
+
+
+
+#define TRACEF(_FLAG, _FMT, ...) \
+do { \
+   printftcmf(_FLAG, _cls, __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+} while(0)
+
 
 
 

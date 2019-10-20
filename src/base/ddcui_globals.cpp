@@ -207,6 +207,7 @@ bool enable_trace_show_thread_id(bool onoff) {
 
 bool printftcmf(
       bool debug,
+      const char * cls,
       const char * funcname,
       int lineno,
       const char * filename,
@@ -223,6 +224,12 @@ bool printftcmf(
          int    bufsz = strlen(buffer) + 1;
          char * buf2  = (char *) calloc(bufsz+60, sizeof(char));
 
+         char funcbuf[50];
+         if (cls)
+            g_snprintf(funcbuf, sizeof(funcbuf), "%s::%s", cls, funcname);
+         else
+            strcpy(funcbuf, funcname);
+
          char  elapsed_prefix[15] = "";
          if (ddcui_trace_show_time)
             g_snprintf(elapsed_prefix, 15, "[%s]", formatted_elapsed_time());
@@ -236,7 +243,8 @@ bool printftcmf(
          g_snprintf(buf2, bufsz+60, "%s%s(%-30s) %s\n",
                                   thread_prefix,
                                   elapsed_prefix,
-                                  funcname, buffer);
+                                  funcbuf,
+                                  buffer);
 
          fputs(buf2, stdout);    // no automatic terminating null
          fflush(stdout);
