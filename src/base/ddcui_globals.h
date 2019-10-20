@@ -30,18 +30,45 @@ extern const bool debugFeatureSelection   ;
 extern const bool debugNcValues;
 extern const bool debugLayout             ;
 
+bool enable_trace_show_time(bool onoff);
+bool enable_trace_show_thread_id(bool onoff);
+
+bool printftcmf(
+      bool debug,
+      const char * funcname,
+      int lineno,
+      const char * filename,
+      const char * format, ...);
+
+
+#ifdef OLD
 #define PRINTFCM(__FMT__, ...) \
    do { \
      printf("(%s::%s) " __FMT__ "\n", _cls, __func__, ##__VA_ARGS__); \
      fflush(stdout); \
    } while(0)
+#endif
 
+#define PRINTFCM(_FMT, ...) \
+do { \
+   printftcmf(true, __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+} while(0)
+
+
+#ifdef OLD
 #define PRINTFCMF(__FLAG__, __FMT__, ...) \
    if (__FLAG__) { \
       printf("(%s::%s) " __FMT__ "\n", _cls, __func__, ##__VA_ARGS__); \
       fflush(stdout); \
    }
+#endif
 
+#define PRINTFCMF(_FLAG, _FMT, ...) \
+do { \
+   printftcmf(_FLAG, __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+} while(0)
+
+#ifdef OLD
 #define PRINTFTCM(__FMT__, ...) \
    do { \
       char thread_prefix[15] = ""; \
@@ -53,6 +80,14 @@ extern const bool debugLayout             ;
 // variant that shows QtThreadId as well as Linux thread id
 // printf("(%p/%s %s::%s) " __FMT__ "\n",  QThread::currentThreadId(), thread_prefix, _cls, __func__, ##__VA_ARGS__); \
 
+#endif
+
+#define PRINTFTCM(_FMT, ...) \
+   do { \
+      printftcmf(true, __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+   } while(0)
+
+#ifdef OLD
 #define PRINTFTCMF(__FLAG__, __FMT__, ...) \
    if (__FLAG__) { \
       bool dbgtrc_show_thread_id = true;\
@@ -64,6 +99,13 @@ extern const bool debugLayout             ;
       printf("%s(%s::%s) " __FMT__ "\n",  thread_prefix, _cls, __func__, ##__VA_ARGS__); \
       fflush(stdout); \
    }
+#endif
+
+#define PRINTFTCMF(_FLAG, _FMT, ...) \
+do { \
+   printftcmf(_FLAG, __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+} while(0)
+
 
 
 inline const char * sbool(bool val) { return (val) ? "true" : "false"; }
