@@ -23,6 +23,7 @@ private slots:
     void on_resetButton_pressed();
 
 private:
+    void layoutWidget();
     QPushButton * _resetButton;
 };
 
