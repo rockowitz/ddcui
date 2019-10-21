@@ -39,11 +39,7 @@ static void stdLabelSetup(QLabel * l) {
 }
 
 
-
-FeatureWidgetHeader::FeatureWidgetHeader(QWidget * parent)
-: QFrame(parent)
-{
-   _cls = metaObject()->className();
+void FeatureWidgetHeader::layoutWidget() {
 
    QLabel * _codeLabel  = new QLabel("Code");
    QLabel * _nameLabel  = new QLabel("Name");
@@ -66,7 +62,6 @@ FeatureWidgetHeader::FeatureWidgetHeader(QWidget * parent)
    QSizePolicy adjSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
    _valueLabel->setSizePolicy(adjSizePolicy);
 
-
    QHBoxLayout * layout = new QHBoxLayout();
    layout->addWidget(_codeLabel);
    layout->addWidget(_nameLabel);
@@ -80,8 +75,6 @@ FeatureWidgetHeader::FeatureWidgetHeader(QWidget * parent)
 
    setFrameStyle(QFrame::NoFrame | QFrame::Plain);
    setContentsMargins(1,1,1,1);  // 0,0,0,0 doesn't move "Code" left
-
-
 
    setLineWidth(1);
 
@@ -100,6 +93,16 @@ FeatureWidgetHeader::FeatureWidgetHeader(QWidget * parent)
          dimensionsReported = true;
       }
    }
+}
+
+
+
+FeatureWidgetHeader::FeatureWidgetHeader(QWidget * parent)
+: QFrame(parent)
+{
+   _cls = metaObject()->className();
+   layoutWidget();
+
 }
 
 FeatureWidgetHeader::~FeatureWidgetHeader() {

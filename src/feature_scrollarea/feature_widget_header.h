@@ -19,6 +19,7 @@ public:
 
 private:
    const char * _cls;
+   void layoutWidget();
 };
 
 #endif /* FEATURE_WIDGET_HEADER_H_ */
