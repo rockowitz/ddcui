@@ -173,6 +173,10 @@ void FeatureWidget::setupFeatureWidget() {
        }
    }
 
+   TRACEF(debug, "Done");
+}
+
+void FeatureWidget::setupConnections() {
    QObject::connect(_valueWidget, &ValueStackedWidget::stackedFeatureValueChanged,
                     this,         &FeatureWidget::onInternalValueChanged);
 
@@ -182,7 +186,6 @@ void FeatureWidget::setupFeatureWidget() {
 #endif
    // signals/slots not working, try hardcoding
    // _valueWidget->addSimpleFeatureValueObserver(this);
-   TRACEF(debug, "Done");
 }
 
 
@@ -192,6 +195,7 @@ FeatureWidget::FeatureWidget(QWidget *parent) :
 {
     // _cls = metaObject()->className();
     setupFeatureWidget();
+    setupConnections();
 }
 
 FeatureWidget::FeatureWidget(FeatureValue& fv, QWidget *parent) :
@@ -200,6 +204,7 @@ FeatureWidget::FeatureWidget(FeatureValue& fv, QWidget *parent) :
 {
     // _cls = metaObject()->className();
     setupFeatureWidget();
+    setupConnections();
     setFeatureValue(fv);
 }
 

@@ -48,6 +48,7 @@ signals:
 
 private:
     void setupFeatureWidget();   // called by constructor
+    void setupConnections();          // called by constructor
 
     const char *        _cls;    // className
 
