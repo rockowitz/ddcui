@@ -31,7 +31,8 @@ public:
     void setControlKeyRequired(bool onoff)           override;
 
 private:
-    // QSlider*    _curSlider;
+    void layoutWidget();
+
     EnhancedSlider * _curSlider;
     QSpinBox*   _curSpinBox;
     QLabel*     _maxTitle;
@@ -39,6 +40,7 @@ private:
     uint16_t    _newval;
     QTimer*     _spinBoxTimer;
     bool        _guiChange = false;
+
 
 private slots:
     void onSliderReleased();

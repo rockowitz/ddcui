@@ -28,92 +28,56 @@
 
 static bool dimensionReportShown = false;
 
-ValueContWidget::ValueContWidget(QWidget *parent)
-    : ValueBaseWidget(parent)
-    , _newval(0)
-{
-    _cls = strdup(metaObject()->className());
-    // TRACE("Starting." );
+void ValueContWidget::layoutWidget() {
 
-    QSizePolicy fixedSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
-    fixedSizePolicy.setHorizontalStretch(0);    // needed?
-    fixedSizePolicy.setVerticalStretch(0);
-    // sizePolicy1.setHeightForWidth(centralWidget->sizePolicy().hasHeightForWidth());
-    fixedSizePolicy.setHeightForWidth(false);
+   QSizePolicy fixedSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
+   fixedSizePolicy.setHorizontalStretch(0);    // needed?
+   fixedSizePolicy.setVerticalStretch(0);
+   // sizePolicy1.setHeightForWidth(centralWidget->sizePolicy().hasHeightForWidth());
+   fixedSizePolicy.setHeightForWidth(false);
 
-    QFont monoValueFont;
-    monoValueFont.setPointSize(9);
-    monoValueFont.setFamily(QString::fromUtf8("Monospace"));
+   QFont monoValueFont;
+   monoValueFont.setPointSize(9);
+   monoValueFont.setFamily(QString::fromUtf8("Monospace"));
 
-    QFont nonMonoValueFont;
-    nonMonoValueFont.setPointSize(8);
+   QFont nonMonoValueFont;
+   nonMonoValueFont.setPointSize(8);
 
-    QFont nonMonoFont9;
-    nonMonoFont9.setPointSize(8);
+   QFont nonMonoFont9;
+   nonMonoFont9.setPointSize(8);
 
-    // _curSlider = new QSlider(Qt::Horizontal);
-    _curSlider = new EnhancedSlider(Qt::Horizontal);
-    _curSlider->setFocusPolicy(Qt::StrongFocus);
-    _curSlider->setTickPosition(QSlider::TicksBelow);   // alt TicksBothSides
-    _curSlider->setSingleStep(1);
-    _curSlider->setFixedSize(200,18);
-    if (debugLayout)
-    _curSlider->setStyleSheet("background-color:pink;");
+   // _curSlider = new QSlider(Qt::Horizontal);
+   _curSlider = new EnhancedSlider(Qt::Horizontal);
+   _curSlider->setFocusPolicy(Qt::StrongFocus);
+   _curSlider->setTickPosition(QSlider::TicksBelow);   // alt TicksBothSides
+   _curSlider->setSingleStep(1);
+   _curSlider->setFixedSize(200,18);
+   if (debugLayout)
+   _curSlider->setStyleSheet("background-color:pink;");
 
-    _curSpinBox = new QSpinBox();
-    _curSpinBox->setSingleStep(1);
-    _curSpinBox->setFixedSize(85,18);   // extra large for 2 byte values, possible horizontal up/down buttons
-    _curSpinBox->setAlignment(Qt::AlignRight);
-    if (debugLayout)
-    _curSpinBox->setStyleSheet("background-color:green;");
+   _curSpinBox = new QSpinBox();
+   _curSpinBox->setSingleStep(1);
+   _curSpinBox->setFixedSize(85,18);   // extra large for 2 byte values, possible horizontal up/down buttons
+   _curSpinBox->setAlignment(Qt::AlignRight);
+   if (debugLayout)
+   _curSpinBox->setStyleSheet("background-color:green;");
 
-    _maxTitle = new QLabel("Max:");
-    _maxTitle->setFixedSize(25,18);
-    _maxTitle->setFont(nonMonoValueFont);
-    if (debugLayout)
-    _maxTitle->setStyleSheet("background-color:cyan;");
+   _maxTitle = new QLabel("Max:");
+   _maxTitle->setFixedSize(25,18);
+   _maxTitle->setFont(nonMonoValueFont);
+   if (debugLayout)
+   _maxTitle->setStyleSheet("background-color:cyan;");
 
-    _maxValue = new QLabel();
-    _maxValue->setFont(monoValueFont);
-    // _maxValue->setFrameStyle(QFrame::Sunken | QFrame::Panel);
-    _maxValue->setFrameStyle(QFrame::Plain | QFrame::NoFrame);
-    _maxValue->setFixedSize(30,20);
-    _maxValue->setAlignment(Qt::AlignRight);
+   _maxValue = new QLabel();
+   _maxValue->setFont(monoValueFont);
+   // _maxValue->setFrameStyle(QFrame::Sunken | QFrame::Panel);
+   _maxValue->setFrameStyle(QFrame::Plain | QFrame::NoFrame);
+   _maxValue->setFixedSize(30,20);
+   _maxValue->setAlignment(Qt::AlignRight);
 
-    if (debugLayout)
-    _maxValue->setStyleSheet("background-color:blue;");
+   if (debugLayout)
+   _maxValue->setStyleSheet("background-color:blue;");
 
-    _spinBoxTimer = new QTimer();
-    _spinBoxTimer->setSingleShot(true);
-    _spinBoxTimer->setInterval(1000);
-
-    connect(_spinBoxTimer,   SIGNAL(timeout()),
-            this,            SLOT(onSpinBoxTimedOut()));
-
-
-    connect( _curSlider,  SIGNAL(valueChanged(int)),
-             _curSpinBox, SLOT(  setValue(int)));
-    connect(_curSpinBox,  SIGNAL(valueChanged(int)),
-            _curSlider,   SLOT(  setValue(int)));
-
-    // duplicate
-    // connect( _curSlider,  SIGNAL(valueChanged(int)),
-    //         this,        SLOT(  onSliderValueChanged(int)));
-
-#ifdef UNUSED
-    connect( _curSlider,  SIGNAL(valueChanged(int)),
-             this,        SLOT(  onSliderValueChanged(int)));
-#endif
-
-    connect( _curSlider,  SIGNAL(sliderReleased()),
-             this,        SLOT(  onSliderReleased()));
-    connect( _curSpinBox, SIGNAL(valueChanged(int)),
-             this,        SLOT(  onSpinBoxValueChanged(int)));
-
-#ifdef UNUSED
-    connect( _curSpinBox, SIGNAL(editingFinished()),
-             this,        SLOT(  onSpinBoxEditingFinished()));
-#endif
 
 #ifdef APPLY_CANCEL
     if (useApplyCancel) {
@@ -167,6 +131,8 @@ ValueContWidget::ValueContWidget(QWidget *parent)
     layout->setContentsMargins(0,0,0,0);
     setLayout(layout);
 
+
+
     if (debugLayout) {
        this->setStyleSheet("background-color:yellow;");
 
@@ -188,6 +154,47 @@ ValueContWidget::ValueContWidget(QWidget *parent)
            dimensionReportShown = true;
        }
     }
+}
+
+
+
+ValueContWidget::ValueContWidget(QWidget *parent)
+    : ValueBaseWidget(parent)
+    , _newval(0)
+{
+    _cls = strdup(metaObject()->className());
+    // TRACE("Starting." );
+    layoutWidget();
+
+    // duplicate
+    // connect( _curSlider,  SIGNAL(valueChanged(int)),
+    //         this,        SLOT(  onSliderValueChanged(int)));
+
+#ifdef UNUSED
+    connect( _curSlider,  SIGNAL(valueChanged(int)),
+             this,        SLOT(  onSliderValueChanged(int)));
+#endif
+
+    connect( _curSlider,  SIGNAL(sliderReleased()),
+             this,        SLOT(  onSliderReleased()));
+    connect( _curSpinBox, SIGNAL(valueChanged(int)),
+             this,        SLOT(  onSpinBoxValueChanged(int)));
+    connect( _curSlider,  SIGNAL(valueChanged(int)),
+             _curSpinBox, SLOT(  setValue(int)));
+    connect(_curSpinBox,  SIGNAL(valueChanged(int)),
+            _curSlider,   SLOT(  setValue(int)));
+
+#ifdef UNUSED
+    connect( _curSpinBox, SIGNAL(editingFinished()),
+             this,        SLOT(  onSpinBoxEditingFinished()));
+#endif
+
+    _spinBoxTimer = new QTimer();
+    _spinBoxTimer->setSingleShot(true);
+    _spinBoxTimer->setInterval(1000);
+
+    connect(_spinBoxTimer,   SIGNAL(timeout()),
+            this,            SLOT(onSpinBoxTimedOut()));
 }
 
 
