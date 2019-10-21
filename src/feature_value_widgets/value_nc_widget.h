@@ -38,6 +38,7 @@ protected:
     QHBoxLayout * _layout;
 
 private:
+    void layoutWidget();
 
 #ifdef APPLY_CANCEL
     QPushButton *  _applyButton;

@@ -29,12 +29,8 @@ static bool dimensionReportShown = false;
 static bool debugWidget = false;
 
 
-ValueNcWidget::ValueNcWidget(QWidget *parent):
-        ValueBaseWidget(parent)
+void ValueNcWidget::layoutWidget()
 {
-    _cls = strdup(metaObject()->className());
-    // TRACE("Starting." );
-
    QFont nonMonoFont8;
    nonMonoFont8.setPointSize(8);
 
@@ -95,6 +91,16 @@ ValueNcWidget::ValueNcWidget(QWidget *parent):
         }
         this->setStyleSheet("background-color:cyan;");
     }
+}
+
+
+ValueNcWidget::ValueNcWidget(QWidget *parent):
+        ValueBaseWidget(parent)
+{
+    _cls = strdup(metaObject()->className());
+    // TRACE("Starting." );
+
+    layoutWidget();
 
     QObject::connect(_cb,  SIGNAL(activated(int)),
                      this, SLOT(combobox_activated(int)) );
