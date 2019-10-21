@@ -46,6 +46,8 @@ private:
 
 
 private:
+    void layoutWidget();
+
     QLabel*                _mhTitle;
     NumberEntryWidget *    _mhWidget;
     QLabel*                _mlTitle;
@@ -85,7 +87,7 @@ private:
     QPushButton * _cancelButton;
 // #endif
 
-    void layoutValueBytesWidget();
+
 
 
 };

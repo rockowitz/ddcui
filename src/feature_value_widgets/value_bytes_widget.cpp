@@ -59,7 +59,7 @@ ValueBytesWidget::ValueBytesWidget(QWidget *parent)
     bool debug = false;
     TRACEF(debug, "Starting." );
 
-    layoutValueBytesWidget();
+    layoutWidget();
 
     //  connect(_shWidget, &NumberEntryWidget::setCurrentField, this, &ValueBytesWidget::whenEventFieldChanged);
     // connect(_slWidget, &NumberEntryWidget::setCurrentField, this, &ValueBytesWidget::whenEventFieldChanged);
@@ -78,7 +78,7 @@ ValueBytesWidget::ValueBytesWidget(QWidget *parent)
 
 
 void
-ValueBytesWidget::layoutValueBytesWidget() {
+ValueBytesWidget::layoutWidget() {
 
 
    nonMonoFont9.setPointSize(8);
