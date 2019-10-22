@@ -156,7 +156,7 @@ void FeaturesScrollAreaView::onUIValueChanged(
       uint8_t sl)
 {
    bool debug = debugSignals;
-   debug = true;
+   // debug = true;
    TRACEF(debug,
              "Starting. feature_code = 0x%02x, writeOnly=%s, sh=0x%02x, sl=0x%02x",
              featureCode, sbool(writeOnly), sh, sl);
