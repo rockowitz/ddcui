@@ -50,6 +50,7 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
     _2ButtonWidget = new Value2ButtonWidget();
     _cncWidgetX14  = new ValueCncWidgetX14();
     _bytesWidget   = new ValueBytesWidget();
+    _ncplusWidget  = new ValueNcplusWidget();
 
     // relying on _pageno_xxx order corresponds to addWidget() order
     _pageno_cont    = 0;
@@ -59,6 +60,7 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
     _pageno_2button = 4;
     _pageno_x14     = 5;
     _pageno_bytes   = 6;
+    _pageno_ncplus  = 7;
 
     addWidget(_contWidget);
     addWidget(_ncWidget);
@@ -67,6 +69,7 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
     addWidget(_2ButtonWidget);
     addWidget(_cncWidgetX14);
     addWidget(_bytesWidget);
+    addWidget(_ncplusWidget);
 
     if (debugLayout) {
         if (!dimensionReportShown) {
@@ -116,6 +119,7 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
     TRACEF(debug, "Starting. feature code: 0x%02x", fv.featureCode());
     // ValueBaseWidget::setFeatureValue(fv);
     _featureCode = fv.featureCode();   // needed since not calling ValueBaseWidget::setFeatureValue()
+    DDCA_MCCS_Version_Spec vspec = fv.vspec();
 
     // alt, test for PRESET, then xb0 (settings) or normal
     if ( _featureCode == 0x04 ||    // Restore factory defaults
@@ -142,10 +146,30 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
 
     else if (_featureCode == 0x14) {
        TRACEF(debug, "_feature_code == 0x14");
+#ifdef FUTURE
+       if ( (vspec.major == 2 && vspec.minor >= 2) || vspec.major == 3) {
+          _pageno_selected = _pageno_ncplus;
+          _cur_stacked_widget = _ncplusWidget;
+          setCurrentIndex(_pageno_ncplus);
+       }
+       else {
+          _pageno_selected = _pageno_nc;
+          _cur_stacked_widget = ncWiget;
+          setCurrentIndex(_pageno_nc);
+       }
+#endif
        _pageno_selected = _pageno_x14;
        _cur_stacked_widget = _cncWidgetX14;
        setCurrentIndex(_pageno_x14);
+
     }
+
+    else if ( _featureCode == 0xca) {
+       _pageno_selected = _pageno_ncplus;;
+       _cur_stacked_widget = _ncplusWidget;
+       setCurrentIndex(_pageno_ncplus);
+    }
+
 
     else if ( _featureCode >= 0xe0) {
        _pageno_selected = _pageno_bytes;

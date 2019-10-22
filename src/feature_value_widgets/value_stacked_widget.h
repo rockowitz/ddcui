@@ -20,6 +20,7 @@
 #include "value_2button_widget.h"
 #include "value_cnc_widget_x14.h"
 #include "value_bytes_widget.h"
+#include "value_ncplus_widget.h"
 
 
 class QWidget;
@@ -57,6 +58,7 @@ private:
     int                 _pageno_2button;
     int                 _pageno_x14;
     int                 _pageno_bytes;
+    int                 _pageno_ncplus;
 
     ValueStdWidget*     _stdWidget;
     ValueContWidget*    _contWidget;
@@ -65,6 +67,7 @@ private:
     Value2ButtonWidget* _2ButtonWidget;
     ValueCncWidgetX14*  _cncWidgetX14;
     ValueBytesWidget*   _bytesWidget;
+    ValueNcplusWidget*  _ncplusWidget;
 
 private slots:
     void onContainedWidgetChanged(uint8_t feature_code, uint8_t sh, uint8_t sl);
