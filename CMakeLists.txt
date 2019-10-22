@@ -107,6 +107,7 @@ set(SOURCES
     src/feature_value_widgets/value_cont_widget.cpp 
     src/feature_value_widgets/value_nc_widget.cpp 
     src/feature_value_widgets/value_cnc_widget_x14.cpp
+    src/feature_value_widgets/value_ncplus_widget.cpp
 	src/feature_value_widgets/value_reset_widget.cpp 
     src/feature_value_widgets/value_2button_widget.cpp 
     src/feature_value_widgets/value_stacked_widget.cpp 

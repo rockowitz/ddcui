@@ -103,6 +103,7 @@ SOURCES += \
     src/feature_value_widgets/value_cnc_widget_x14.cpp \
     src/feature_value_widgets/value_cont_widget.cpp \
     src/feature_value_widgets/value_nc_widget.cpp \
+    src/feature_value_widgets/value_ncplus_widget.cpp \
     src/feature_value_widgets/value_reset_widget.cpp \
     src/feature_value_widgets/value_stacked_widget.cpp \
     src/feature_value_widgets/value_std_widget.cpp 
@@ -193,6 +194,7 @@ HEADERS += \
     src/feature_value_widgets/value_cnc_widget_x14.h \
     src/feature_value_widgets/value_cont_widget.h \
     src/feature_value_widgets/value_nc_widget.h \
+    src/feature_value_widgets/value_ncplus_widget.h \
     src/feature_value_widgets/value_reset_widget.h \
     src/feature_value_widgets/value_2button_widget.h \
     src/feature_value_widgets/value_stacked_widget.h
