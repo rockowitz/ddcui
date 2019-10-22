@@ -59,6 +59,7 @@ void ValueBaseWidget::setFeatureValue(const FeatureValue &fv) {
     _dref           = fv.dref();
     _finfo          = fv.finfo();
     _capVcp         = fv.capVcp();
+    _vspec          = fv.vspec();
     _mh             = fv.val().mh;
     _ml             = fv.val().ml;
     _sh             = fv.val().sh;

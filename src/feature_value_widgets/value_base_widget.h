@@ -35,6 +35,7 @@ protected:
     DDCA_Display_Ref        _dref;
     DDCA_Feature_Metadata * _finfo;
     DDCA_Cap_Vcp *          _capVcp;
+    DDCA_MCCS_Version_Spec  _vspec;   // yes, it's in DDCA_Feature_Metadata, but this makes use claearer
     uint8_t                 _mh;
     uint8_t                 _ml;
     uint8_t                 _sh;
