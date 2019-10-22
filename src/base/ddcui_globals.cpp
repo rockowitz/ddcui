@@ -15,7 +15,7 @@
 
 #include "ddcui_globals.h"
 
-const bool debugSignals            = true;
+const bool debugSignals            = false;
 const bool debugValueWidgetSignals = false;
 const bool debugFeatureLists       = false;
 const bool debugFeatureSelection   = false;
