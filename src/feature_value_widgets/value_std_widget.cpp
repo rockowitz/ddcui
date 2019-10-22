@@ -19,44 +19,49 @@
 static bool dimensionReportShown = false;
 
 
+void ValueStdWidget::layoutWidget() {
+   QFont font;
+     font.setPointSize(8);
+     QWidget::setFont(font);
+
+     _valueField = new QLabel();
+     _valueField->setAlignment(Qt::AlignLeft);
+     // _valueField->setFrameStyle(QFrame::Sunken | QFrame::Panel);  // now set in ValueBaseWidget
+     _valueField->setMinimumSize(400,10);
+     _valueField->setFrameStyle( QFrame::Plain | QFrame::NoFrame);  // ValueStdWidget has the frame, not Label
+     _valueField->setFont(font);
+     _valueField->setIndent(5);
+
+     QSizePolicy* sizePolicy = new QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+     sizePolicy->setHorizontalStretch(1);
+     _valueField->setSizePolicy(*sizePolicy);
+     delete sizePolicy;
+
+     QHBoxLayout * layout = new QHBoxLayout();
+     layout->setContentsMargins(0,0,0,0);
+     layout->addWidget(_valueField);
+     setLayout(layout);
+
+     if (debugLayout) {
+        this->setStyleSheet("background-color:magenta;");
+        if (!dimensionReportShown) {
+            TRACE("_valueField dimensions");
+            reportWidgetDimensions(_valueField, _cls, __func__);
+            TRACE("ValueStdWidget dimensions");
+            reportWidgetDimensions(this, _cls, __func__);
+            dimensionReportShown = true;
+        }
+     }
+}
+
+
 ValueStdWidget::ValueStdWidget(QWidget *parent):
         ValueBaseWidget(parent)
 {
     _cls = strdup(metaObject()->className());
     // TRACE("Starting");
+    layoutWidget();
 
-    QFont font;
-    font.setPointSize(8);
-    QWidget::setFont(font);
-
-    _valueField = new QLabel();
-    _valueField->setAlignment(Qt::AlignLeft);
-    // _valueField->setFrameStyle(QFrame::Sunken | QFrame::Panel);  // now set in ValueBaseWidget
-    _valueField->setMinimumSize(400,10);
-    _valueField->setFrameStyle( QFrame::Plain | QFrame::NoFrame);  // ValueStdWidget has the frame, not Label
-    _valueField->setFont(font);
-    _valueField->setIndent(5);
-
-    QSizePolicy* sizePolicy = new QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
-    sizePolicy->setHorizontalStretch(1);
-    _valueField->setSizePolicy(*sizePolicy);
-    delete sizePolicy;
-
-    QHBoxLayout * layout = new QHBoxLayout();
-    layout->setContentsMargins(0,0,0,0);
-    layout->addWidget(_valueField);
-    setLayout(layout);
-
-    if (debugLayout) {
-       this->setStyleSheet("background-color:magenta;");
-       if (!dimensionReportShown) {
-           TRACE("_valueField dimensions");
-           reportWidgetDimensions(_valueField, _cls, __func__);
-           TRACE("ValueStdWidget dimensions");
-           reportWidgetDimensions(this, _cls, __func__);
-           dimensionReportShown = true;
-       }
-    }
 }
 
 

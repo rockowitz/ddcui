@@ -23,6 +23,7 @@ public:
     void setCurrentShSl(uint16_t newval) override;
 
 private:
+    void layoutWidget();
     void setValueField();
 
     QLabel * _valueField;
