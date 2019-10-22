@@ -10,6 +10,7 @@
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QLayout>
+#include <QtWidgets/QLabel>
 
 #include "config.h"
 #include "base/ddca_utils.h"
@@ -36,6 +37,8 @@ public:
 protected:
     QComboBox *   _cb;
     QHBoxLayout * _layout;
+    QLabel * _extraInfo;
+    // void layoutWidgetAux();
 
 private:
     void layoutWidget();

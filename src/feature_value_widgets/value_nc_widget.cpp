@@ -29,15 +29,24 @@ static bool dimensionReportShown = false;
 static bool debugWidget = false;
 
 
-void ValueNcWidget::layoutWidget()
-{
+
+void ValueNcWidget::layoutWidget() {
+   // TRACE("Starting");
+   _layout = new QHBoxLayout();
+
+
    QFont nonMonoFont8;
    nonMonoFont8.setPointSize(8);
 
    QFont nonMonoFont9;
    nonMonoFont9.setPointSize(9);
 
+   QFont font;
+     font.setPointSize(8);
+     // QWidget::setFont(font);
+
     _cb = new QComboBox();
+    _extraInfo =  new QLabel("_extraInfo");
 
     QSizePolicy* sizePolicy = new QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     sizePolicy->setControlType(QSizePolicy::ComboBox);
@@ -48,6 +57,17 @@ void ValueNcWidget::layoutWidget()
     _cb->setMaximumWidth(320);
     // _cb->setFrameStyle(QFrame::Sunken | QFrame::Panel);   // not a method
     _cb->setStyleSheet("background-color:white;color:black;");
+
+    // _extraInfo->setFrameStyle(QFrame::Sunken | QFrame::Panel);  // now set in ValueBaseWidget
+    _extraInfo->setMinimumSize(20,10);
+    _extraInfo->setFrameStyle( QFrame::Plain | QFrame::NoFrame);  // ValueStdWidget has the frame, not Label
+    _extraInfo->setFont(font);
+    _extraInfo->setIndent(5);
+
+    sizePolicy = new QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+    sizePolicy->setHorizontalStretch(1);
+    _extraInfo->setSizePolicy(*sizePolicy);
+    // delete sizePolicy;
 
 #ifdef APPLY_CANCEL
     if (useApplyCancel) {
@@ -63,10 +83,10 @@ void ValueNcWidget::layoutWidget()
     }
 #endif
 
-    _layout = new QHBoxLayout();
     _layout->addSpacing(5);
     _layout->addWidget(_cb);
-    _layout->addStretch(1);
+    // _layout->addStretch(1);
+    _layout->addWidget(_extraInfo);
 #ifdef APPLY_CANCEL
     if (useApplyCancel) {
        _layout->addWidget(_applyButton);
@@ -79,19 +99,23 @@ void ValueNcWidget::layoutWidget()
     _layout->addSpacing(10);
 #endif
     _layout->setContentsMargins(0,0,0,0);
-    setLayout(_layout);
 
-    if (debugLayout) {
-        if (!dimensionReportShown) {
-            TRACE("combobox dimensions");
-            reportWidgetDimensions(_cb, _cls, __func__);
-            TRACE("ValueNcWidget dimensions");
-            reportWidgetDimensions(this, _cls, __func__);
-            dimensionReportShown = true;
-        }
-        this->setStyleSheet("background-color:cyan;");
-    }
+   setLayout(_layout);
+
+   if (debugLayout) {
+       if (!dimensionReportShown) {
+           TRACE("combobox dimensions");
+           reportWidgetDimensions(_cb, _cls, __func__);
+           TRACE("ValueNcWidget dimensions");
+           reportWidgetDimensions(this, _cls, __func__);
+           dimensionReportShown = true;
+       }
+       this->setStyleSheet("background-color:cyan;");
+       _extraInfo->setStyleSheet("background-color:green;");
+   }
+   // TRACE("Done");
 }
+
 
 
 ValueNcWidget::ValueNcWidget(QWidget *parent):
@@ -104,6 +128,7 @@ ValueNcWidget::ValueNcWidget(QWidget *parent):
 
     QObject::connect(_cb,  SIGNAL(activated(int)),
                      this, SLOT(combobox_activated(int)) );
+    // TRACE("Done");
 }
 
 
@@ -118,6 +143,9 @@ void ValueNcWidget::setFeatureValue(const FeatureValue &fv) {
     NcValuesSource sourceMode = globalState._otherOptionsState->ncValuesSource;
     _curNcValuesSource = sourceMode;
     loadComboBox(sourceMode);
+
+    // _extraInfo->setText("default extra text");
+    _extraInfo->setText("");
 
     _guiChange=true;
 }
