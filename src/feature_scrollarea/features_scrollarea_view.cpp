@@ -235,8 +235,8 @@ void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc) {
           FeatureWidget * curWidget = dynamic_cast<FeatureWidget*>(curobj);
           if (curWidget) {
              TRACEF(debugFunc, "dynamic_cast succeeded");
-             if (curWidget->isSimpleNc()) {
-                TRACEF(debugFunc, "feature_code=0x%02x", curWidget->_feature_code);
+             if (curWidget->hasSlTable()) {
+                TRACEF(debugFunc, "feature_code=0x%02x, has SL table", curWidget->_feature_code);
                 curWidget->setNcValuesSource(newsrc);
              }
           }

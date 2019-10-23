@@ -307,8 +307,8 @@ void FeatureWidget::simpleFeatureValueChanged(SimpleFeatureValue fv) {
 #endif
 
 
-bool FeatureWidget::isSimpleNc() {
-   bool result = _valueWidget->isSimpleNc();
+bool FeatureWidget::hasSlTable() {
+   bool result = _valueWidget->hasSlTable();
    // TRACE("Returning: %s", sbool(result));
    return result;
 }

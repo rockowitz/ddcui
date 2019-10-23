@@ -132,6 +132,14 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
        _cur_stacked_widget = _resetWidget;
     }
 
+    else if (_featureCode == 0x0c) {
+       // fv.flags marks it as DDCA_COMPLEX_CONT, but just treat it a normal continuous feature
+         // printf("(ValueStackedWidget::%s) x0c\n", __func__); fflush(stdout);
+        _pageno_selected = _pageno_cont;
+        _cur_stacked_widget = _contWidget;
+        setCurrentIndex(_pageno_selected);
+     }
+
     else if (_featureCode == 0xb0) {
        // printf("(%s::%s) B0\n", _cls, __func__);
        _2ButtonWidget->setButtonDetail(
@@ -146,22 +154,9 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
 
     else if (_featureCode == 0x14) {
        TRACEF(debug, "_feature_code == 0x14");
-#ifdef FUTURE
-       if ( (vspec.major == 2 && vspec.minor >= 2) || vspec.major == 3) {
-          _pageno_selected = _pageno_ncplus;
-          _cur_stacked_widget = _ncplusWidget;
-          setCurrentIndex(_pageno_ncplus);
-       }
-       else {
-          _pageno_selected = _pageno_nc;
-          _cur_stacked_widget = ncWiget;
-          setCurrentIndex(_pageno_nc);
-       }
-#endif
-       _pageno_selected = _pageno_x14;
-       _cur_stacked_widget = _cncWidgetX14;
-       setCurrentIndex(_pageno_x14);
-
+       _pageno_selected = _pageno_ncplus;
+       _cur_stacked_widget = _ncplusWidget;
+       setCurrentIndex(_pageno_ncplus);
     }
 
     else if ( _featureCode == 0xca) {
@@ -243,8 +238,8 @@ void  ValueStackedWidget::onContainedWidgetChanged(uint8_t feature_code, uint8_t
 }
 
 
-bool ValueStackedWidget::isSimpleNc() {
-   bool result = (_pageno_selected == _pageno_nc);
+bool ValueStackedWidget::hasSlTable() {
+   bool result = (_pageno_selected == _pageno_nc || _pageno_selected == _pageno_ncplus);
    return result;
 }
 

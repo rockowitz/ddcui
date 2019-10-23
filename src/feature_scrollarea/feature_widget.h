@@ -28,7 +28,7 @@ public:
 
     void setFeatureValue(FeatureValue &fv);
     void setCurrentValue(uint16_t newval);
-    bool isSimpleNc();
+    bool hasSlTable();
     void setNcValuesSource(NcValuesSource newsrc);
 
     void dbgrpt() const;

@@ -36,7 +36,7 @@ public:
     void     setFeatureValue(const FeatureValue &fv);
     void     setCurrentValue(uint16_t newval);
     // uint16_t getCurrentValue();
-    bool     isSimpleNc();
+    bool     hasSlTable();
     void     setNcValuesSource(NcValuesSource newsrc);
 
     // QSize sizeHint() const override;
