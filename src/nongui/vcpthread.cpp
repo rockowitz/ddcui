@@ -169,14 +169,14 @@ void VcpThread::rpt_verify_error(
 void VcpThread::loadDynamicFeatureRecords()
 {
    bool debugFunc = debugThread;
-   // debugFunc = false;
+   // debugFunc = true;
    TRACEF(debugFunc, "Starting. dref=%s", ddca_dref_repr(this->_dref));
 
    DDCA_Display_Handle dh;
 
    DDCA_Status ddcrc = ddca_open_display2(this->_dref, false, &dh);
    if (ddcrc != 0) {
-       rpt_ddca_status(0, __func__, "ddca_open_display", ddcrc);
+       rpt_ddca_status(0, __func__, "ddca_open_display2", ddcrc);
    }
    else {
       ddcrc = ddca_dfr_check_by_dh(dh);
@@ -258,7 +258,7 @@ void VcpThread::capabilities() {
 // Process RQGetVcp
 void VcpThread::getvcp(uint8_t featureCode, bool reportUnsupported) {
     bool debugFunc = debugThread;
-    debugFunc = false;
+    // debugFunc = true;
     TRACEF(debugFunc, "Starting. featureCode=0x%02x, reportUnsupported=%s",
                             featureCode, sbool(reportUnsupported));
 
