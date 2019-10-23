@@ -32,11 +32,6 @@ static bool dimensionReportShown = false;
 ValueStackedWidget::ValueStackedWidget(QWidget *parent)
     : QStackedWidget(parent)
     , _featureCode(0)              // appease Coverity
-
-    //    QWidget(parent)
-    // ValueBaseWidget(parent)
-
-    // , SimpleFeatureValueSubject()
 {
     _cls = strdup(metaObject()->className());
 
