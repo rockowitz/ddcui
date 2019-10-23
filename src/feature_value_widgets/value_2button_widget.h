@@ -1,6 +1,6 @@
 /* value_2button_widget.h - Widget containing 2 named buttons */
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef VALUE_2BUTTON_WIDGET_H
