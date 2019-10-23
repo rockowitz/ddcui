@@ -51,7 +51,7 @@ Value2ButtonWidget::Value2ButtonWidget(
     _button1->setStyleSheet("background-color:white;");
     _button2->setSizePolicy(*sizePolicy);
     _button2->setFont(nonMonoFont);
-    _button2>setStyleSheet("background-color:white;color:black;");
+    _button2->setStyleSheet("background-color:white;color:black;");
 
     QHBoxLayout * layout = new QHBoxLayout();
     layout->addWidget(_button1);
