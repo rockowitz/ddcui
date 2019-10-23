@@ -31,6 +31,8 @@ private slots:
     void on_button2_pressed();
 
 private:
+    void layoutWidget();
+
     QPushButton * _button1;
     QPushButton * _button2;
 

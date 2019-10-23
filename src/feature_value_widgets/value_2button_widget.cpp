@@ -25,15 +25,8 @@
 
 static bool dimensionReportShown = false;
 
-Value2ButtonWidget::Value2ButtonWidget(
-     QWidget *parent)
-    : ValueBaseWidget(parent)
-    , _val1(0)      // set in setButtonDetail()
-    , _val2(0)
+void Value2ButtonWidget::layoutWidget()
 {
-   _cls = strdup(metaObject()->className());
-   // TRACE("Starting." );
-
    QFont nonMonoFont;
    nonMonoFont.setPointSize(9);
 
@@ -61,6 +54,8 @@ Value2ButtonWidget::Value2ButtonWidget(
     setLayout(layout);
     // setVisible(true);
 
+    delete sizePolicy;
+
     if (!dimensionReportShown  && debugLayout ) {
         printf("(%s::%s) ------------------------------------------>\n", _cls, __func__); fflush(stdout);
         reportWidgetDimensions(_button1, _cls, __func__, "_button1");
@@ -70,12 +65,22 @@ Value2ButtonWidget::Value2ButtonWidget(
     if (debugLayout)
        this->setStyleSheet("background-color:cyan;");
 
+}
+
+Value2ButtonWidget::Value2ButtonWidget(
+     QWidget *parent)
+    : ValueBaseWidget(parent)
+    , _val1(0)      // set in setButtonDetail()
+    , _val2(0)
+{
+   _cls = strdup(metaObject()->className());
+   // TRACE("Starting." );
+   layoutWidget();
+
     QObject::connect(_button1,  SIGNAL(released()),
                      this,      SLOT(  on_button1_pressed()) );
     QObject::connect(_button2,  SIGNAL(released()),
                      this,      SLOT(  on_button2_pressed()) );
-
-    delete sizePolicy;
 }
 
 
