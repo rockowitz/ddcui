@@ -52,7 +52,7 @@ private:
 #endif
 
    // quick and dirty for now, eventually replace by hash
-   FeatureWidget * _widgets[256] = {0};
+   // FeatureWidget * _widgets[256] = {0};
 };
 
 #endif /* FEATURES_SCROLLAREA_CONTENTS_H_ */
