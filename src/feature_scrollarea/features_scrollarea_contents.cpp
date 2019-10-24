@@ -36,6 +36,11 @@ FeaturesScrollAreaContents::FeaturesScrollAreaContents(QWidget * parent) :
    //         qApp, SLOT(aboutQt()));
 
    // layout()->setContentsMargins(0,0,0,0); // no layout defined
+
+   // doesn't expand the contents area
+   //setSizePolicy( QSizePolicy::MinimumExpanding,  QSizePolicy::MinimumExpanding);
+
+
    if (debugLayout)
      setStyleSheet("background-color:aqua;");
 }
@@ -53,6 +58,8 @@ void FeaturesScrollAreaContents::setModel(FeatureBaseModel * baseModel) {
 
 void FeaturesScrollAreaContents::setContainingScrollArea(QScrollArea * scrollArea) {
    _containingScrollArea = scrollArea;
+   // no, just adds horizontal scrollbar on bottom
+   // scrollArea->setWidgetResizable(true);
 }
 
 #ifdef UNUSED
