@@ -89,9 +89,16 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
     vLayout->setObjectName("vLayout in onEndInitLoad");
     vLayout->setMargin(0);
     vLayout->setSpacing(0);    // <=== CONTROLS SPACING BETWEEN ROWS
+
+    // doesnt solve the non-expanding widgets
+    QSizePolicy adjSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+    scrollAreaContents->setSizePolicy(adjSizePolicy);
+
     if (debugLayout) {
        scrollAreaContents->setStyleSheet("background-color:chartreuse;");
        _centralStackedWidget->setStyleSheet("background-color:chocolate:");
+       // so this is where the gap is
+       scrollArea->setStyleSheet("background-color:purple");
     }
 
     // vLayout->addWidget(new FeatureWidgetHeader());
