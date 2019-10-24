@@ -1,6 +1,6 @@
 // debug_utils.cpp
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <string.h>
@@ -15,6 +15,7 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLayout>
 #include <QtWidgets/QWidget>
+#include <QtWidgets/QSizePolicy>
 
 
 void reportWidgetChildren(QWidget * w, const char * msg) {
@@ -28,6 +29,120 @@ void reportWidgetChildren(QWidget * w, const char * msg) {
         printf("   Child: %s, type:%s\n", name.toLatin1().data(), clsName);
     }
     fflush(stdout);
+}
+
+
+void reportPolicy(   QSizePolicy::Policy  hp,
+      const char * msg = nullptr)
+{
+    if (msg)
+       printf("%s\n", msg);
+
+    // Two ways of looking at the policy field, as bits or as enum
+
+    printf("policy:  %s %s %s %s\n",
+           (hp & QSizePolicy::GrowFlag)   ? "Grow"   : "",
+           (hp & QSizePolicy::ExpandFlag) ? "Expand" :"",
+           (hp & QSizePolicy::ShrinkFlag) ? "Shrink" : "",
+           (hp & QSizePolicy::IgnoreFlag) ? "Ignore" : "");
+
+    char * s = NULL;
+    switch(hp) {
+    case QSizePolicy::Fixed:             s = (char*) "Fixed"; break;
+    case QSizePolicy::Minimum:           s = (char*) "Minimum"; break;
+    case QSizePolicy::Maximum:           s = (char*) "Maximum"; break;
+    case QSizePolicy::Preferred:         s = (char*) "Preferred"; break;
+    case QSizePolicy::Expanding:         s = (char*) "Expanding"; break;
+    case QSizePolicy::MinimumExpanding:  s = (char*) "MinimumExpanding"; break;
+    case QSizePolicy::Ignored:           s = (char*) "Ignored"; break;
+    default: s = (char*) "other";
+    }
+
+    printf("     %s\n", s);
+}
+
+
+void reportQSizePolicy(
+      QSizePolicy p ,
+    //        const char * className,
+      //      const char * funcName,
+            const char * msg = nullptr)
+{
+    if (msg)
+       printf("%s\n", msg);
+
+    int x;
+    char buf[100];
+    Qt::Orientations orientations = p.expandingDirections();
+    snprintf(buf, 100, "expandingDirections:  %s  %s\n",
+             (orientations & Qt::Horizontal) ? "Horizontal" : "",
+             (orientations & Qt::Vertical)   ? "Vertical"   : "");
+    puts(buf);
+    printf("horizontalStretch:  %d\n", p.horizontalStretch());
+    printf("verticalStretch:    %d\n", p.verticalStretch());
+
+    char * s;
+    QSizePolicy::ControlTypes ct = p.controlType();
+    switch(ct) {
+    case QSizePolicy::DefaultType: s = (char*) "DefaultType"; break;
+    case QSizePolicy::ButtonBox:   s = (char*) "ButtonBox";   break;
+    case QSizePolicy::CheckBox:    s = (char*) "CheckBox";    break;
+    case QSizePolicy::ComboBox:    s = (char*) "ComboBox";    break;
+    case QSizePolicy::Frame:       s = (char*) "Frame";       break;
+    case QSizePolicy::GroupBox:    s = (char*) "GroupBox";    break;
+    case QSizePolicy::Label:       s = (char*) "Label";       break;
+    case QSizePolicy::Line:        s = (char*) "Line";        break;
+    case QSizePolicy::LineEdit:    s = (char*) "LineEdit";    break;
+    case QSizePolicy::PushButton:  s = (char*) "PushButton";  break;
+    case QSizePolicy::RadioButton: s = (char*) "RadioButton"; break;
+    case QSizePolicy::Slider:      s = (char*) "Slider";      break;
+    case QSizePolicy::SpinBox:     s = (char*) "SpinBox";     break;
+    case QSizePolicy::TabWidget:   s = (char*) "TabWidget";   break;
+    case QSizePolicy::ToolButton:  s = (char*) "ToolButton";  break;
+    default:                       s = (char*) "other";
+    }
+    printf("controlType:   %s\n", s);
+
+    QSizePolicy::Policy  hp = p.horizontalPolicy();
+    reportPolicy(hp, "Horizontal Policy:");
+    reportPolicy(p.verticalPolicy(), "Vertical Policy");
+
+    // TODO: additional
+    //    ->ExpandingDirections();
+    //     more?
+}
+
+
+
+void reportLayout(
+      QLayout * lay)
+{
+   QMargins layoutContentsMargins = lay->contentsMargins();
+        printf("layoutContentsMargins: left: %d, top: %d, right: %d, bottom: %d\n",
+               layoutContentsMargins.left(), layoutContentsMargins.top(),
+               layoutContentsMargins.right(), layoutContentsMargins.bottom() );
+#ifdef NOT_USEFUL
+        QRect    layoutContentsRect  = lay->contentsRect();
+        printf("layoutContentsRect: x: %d, y: %d, width: %d, height: %d\n",
+               layoutContentsRect.x(), layoutContentsRect.y(), layoutContentsRect.width(), layoutContentsRect.height());
+#endif
+        // spacing between the widgets inside the layout
+        // int layoutSpacing = lay->spacing();
+        printf("layout spacing:        %d\n", lay->spacing()); // layoutSpacing);
+
+        char buf[100];
+        Qt::Orientations orientations = lay->expandingDirections();
+        snprintf(buf, 100, "expandingDirections:  %s  %s\n",
+                 (orientations & Qt::Horizontal) ? "Horizontal" : "",
+                 (orientations & Qt::Vertical)   ? "Vertical"   : "");
+        puts(buf);
+
+        QSize sz = lay->minimumSize();
+        printf("minimumSize:          %d,%d\n",  sz.width(), sz.height() );
+        sz = lay->maximumSize();
+        printf("maximumSize:          %d,%d\n",  sz.width(), sz.height() );
+
+        // and more
 }
 
 
@@ -118,25 +233,17 @@ void reportWidgetDimensions(
             contentsRect.x(), contentsRect.y(), contentsRect.width(), contentsRect.height());
 #endif
 
-     QLayout * lay = w->layout();
-     if (lay) {
+     QSizePolicy policy = w->sizePolicy();
+     reportQSizePolicy(policy, "widget sizePolicy:");
 
-        QMargins layoutContentsMargins = lay->contentsMargins();
-        printf("layoutContentsMargins: left: %d, top: %d, right: %d, bottom: %d\n",
-               layoutContentsMargins.left(), layoutContentsMargins.top(),
-               layoutContentsMargins.right(), layoutContentsMargins.bottom() );
-#ifdef NOT_USEFUL
-        QRect    layoutContentsRect  = lay->contentsRect();
-        printf("layoutContentsRect: x: %d, y: %d, width: %d, height: %d\n",
-               layoutContentsRect.x(), layoutContentsRect.y(), layoutContentsRect.width(), layoutContentsRect.height());
-#endif
-        // spacing between the widgets inside the layout
-        int layoutSpacing = lay->spacing();
-        printf("layout spacing:        %d\n", layoutSpacing);
-     }
-     else {
+     QLayout * lay = w->layout();
+     if (lay)
+        reportLayout(lay);
+     else
         printf("No layout set\n");
-     }
+
+     QSizePolicy sizePolicy = w->sizePolicy();
+     reportQSizePolicy(sizePolicy);
 
      printf("\n");  fflush(stdout);
 }
