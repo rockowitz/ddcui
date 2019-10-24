@@ -29,8 +29,10 @@ void initPlaintextWidget(
    // TODO: CLEAN UP AND SIMPLIFY!
 
      QSizePolicy sizePolicy1(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
-     sizePolicy1.setHorizontalStretch(1);
-     sizePolicy1.setVerticalStretch(1);
+
+     // not needed
+   //   sizePolicy1.setHorizontalStretch(1);
+   //   sizePolicy1.setVerticalStretch(1);
      // sizePolicy1.setHeightForWidth(centralWidget->sizePolicy().hasHeightForWidth());
      sizePolicy1.setHeightForWidth(false);
 
