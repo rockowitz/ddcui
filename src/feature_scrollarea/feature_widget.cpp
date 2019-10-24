@@ -66,9 +66,9 @@ void FeatureWidget::setupFeatureWidget() {
    assert(fixedSizePolicy.hasHeightForWidth() == false);
 
    QSizePolicy adjustableSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::MinimumExpanding);
-   fixedSizePolicy.setHorizontalStretch(1);    // needed?
-   fixedSizePolicy.setVerticalStretch(0);
-   fixedSizePolicy.setHeightForWidth(false);
+   adjustableSizePolicy.setHorizontalStretch(1);    // needed?
+   adjustableSizePolicy.setVerticalStretch(0);
+   adjustableSizePolicy.setHeightForWidth(false);
 
    // int fieldFrameStyle = QFrame::Sunken | QFrame::Panel;
 
@@ -130,6 +130,7 @@ void FeatureWidget::setupFeatureWidget() {
    _valueWidget = new ValueStackedWidget();
    TRACEF(debug, "after ValueStackedWidget creation");
    // _valueWidget->setSizePolicy(fixedSizePolicy);
+   _valueWidget->setSizePolicy(adjustableSizePolicy);
    // _valueWidget->setFixedWidth(400);
 
    _layout = new QHBoxLayout();
@@ -145,7 +146,7 @@ void FeatureWidget::setupFeatureWidget() {
    // _layout->addStretch(2);
 
    // _layout->insertStretch(-1, 2);
-   _layout->setSpacing(0);
+   _layout->setSpacing(0);   // spacing between widgets inside the layout
 
    // _layout->setMargin(0);    // no effect
    _layout->setContentsMargins(0,0,0,0);
@@ -167,7 +168,7 @@ void FeatureWidget::setupFeatureWidget() {
        this->setStyleSheet("background-color:orange;");
 
        if (!dimensionReportShown) {
-          TRACE("FeatureWidget dimenstions:");
+          TRACE("FeatureWidget dimensions:");
           reportWidgetDimensions(this, _cls, __func__);
           dimensionReportShown = true;
        }
