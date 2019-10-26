@@ -142,20 +142,20 @@ void     ValueCncWidgetX14::setFeatureValue(const FeatureValue &fv) {
     // how to pull in x14_color_preset_tolerances from vcp_feature_codes.c instead,
    // or the formatted MH value?
 
+   char buf0[100];
    // TODO, either define ddcui versions of vcp_version_le(), etc, or put into api
    DDCA_MCCS_Version_Spec vspec = fv.vspec();
    if ( (vspec.major == 2 && vspec.minor >= 2) || vspec.major == 3) {
-   char buf0[100];
-   if (_mh == 0x00)
-      mh_msg = "No tolerance specified. (mh=0x00)";
-   else if (_mh >= 0x0b) {
-      snprintf(buf0, 100, "Invalid tolerance. (mh=0x%02x)", _mh);
-      mh_msg = buf0;
-   }
-   else {
-      snprintf(buf0, 100, "Tolerance: %d%%  (MH=0x%02x)", _mh, _mh);
-      mh_msg = buf0;
-   }
+      if (_mh == 0x00)
+         mh_msg = "No tolerance specified. (mh=0x00)";
+      else if (_mh >= 0x0b) {
+         snprintf(buf0, 100, "Invalid tolerance. (mh=0x%02x)", _mh);
+         mh_msg = buf0;
+      }
+      else {
+         snprintf(buf0, 100, "Tolerance: %d%%  (MH=0x%02x)", _mh, _mh);
+         mh_msg = buf0;
+      }
    }
 
    // QString& mhtext(mh_msg);
