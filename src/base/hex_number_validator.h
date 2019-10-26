@@ -19,7 +19,7 @@ public:
    QValidator::State validate(QString &input, int &pos) const;
 
 private:
-   char *   _cls;
+   const char *  _cls;
 };
 
 #endif /* HEX_NUMBER_VALIDATOR_H_ */

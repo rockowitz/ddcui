@@ -12,7 +12,7 @@ HexNumberValidator::HexNumberValidator(QObject * parent)
   : QValidator(parent)
  // , _fieldNumber(fieldNumber)
 {
-   _cls = strdup(metaObject()->className());
+   _cls = metaObject()->className();
 }
 
 static inline bool isHexDigit(QChar ch) {
