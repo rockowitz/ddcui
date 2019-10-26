@@ -57,8 +57,6 @@ newTitle(QString title) {
 
 void
 ValueBytesWidget::layoutWidget() {
-
-
    nonMonoFont9.setPointSize(8);
 
    QSizePolicy fixedSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
@@ -92,14 +90,14 @@ ValueBytesWidget::layoutWidget() {
    _mhWidget->setReadOnly(true);
    _mlWidget->setReadOnly(true);
 
-    QSizePolicy* sizePolicy = new QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    QSizePolicy sizePolicy = QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
    _applyButton  = new QPushButton("Apply");
    _cancelButton = new QPushButton("Cancel");
    _applyButton->setMaximumSize(55,20);
-   _applyButton->setSizePolicy(*sizePolicy);
+   _applyButton->setSizePolicy(sizePolicy);
    _applyButton->setFont(nonMonoFont9);
    _cancelButton->setMaximumSize(55,20);
-   _cancelButton->setSizePolicy(*sizePolicy);
+   _cancelButton->setSizePolicy(sizePolicy);
    _cancelButton->setFont(nonMonoFont9);
 
    _applyButton->setEnabled(false);
@@ -137,7 +135,6 @@ ValueBytesWidget::layoutWidget() {
    layout->setSpacing(0);
    layout->setContentsMargins(0,0,0,0);
    setLayout(layout);
-
 
    if (debugLayout) {
       this->setStyleSheet("background-color:yellow;");
