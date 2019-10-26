@@ -25,7 +25,7 @@ signals:
    void ckrChanged(bool onoff);
 
 private:
-   char * _cls;
+   const char * _cls;
 };
 
 #endif /* USER_INTERFACE_OPTIONS_STATE_H_ */

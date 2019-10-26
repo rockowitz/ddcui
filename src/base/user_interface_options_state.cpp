@@ -11,11 +11,9 @@
 
 
  UserInterfaceOptionsState::UserInterfaceOptionsState()
-     : _cls(strdup(metaObject()->className()))
+     : _cls(metaObject()->className())
  {
-//    _cls = strdup(metaObject()->className());
  }
-
 
 
  void UserInterfaceOptionsState::setControlKeyRequired(bool onoff) {
