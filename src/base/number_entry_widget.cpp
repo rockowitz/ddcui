@@ -30,8 +30,8 @@ NumberEntryWidget::NumberEntryWidget(
    , _curval(0)
    , _widgetState(NumberEntryWidget::StateOldValid)
 {
-   _cls = strdup(metaObject()->className());
-    // TODO: use an enumb instead of bytect
+   _cls = metaObject()->className();
+    // TODO: use an enum instead of bytect
   // ***TEMP*** assert(bytect == 1 || bytect == 2);    // could allow 4, just more cases in switch stmts etc.
 
     // *** Constrain what character strings are accepted

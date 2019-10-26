@@ -51,11 +51,10 @@ signals:
    void stateChanged(NumberEntryWidget * widget, NumberEntryWidget::States newState);
 
 private:
-    uint8_t   _bytect;
-    uint16_t  _curval;
-    uint16_t  _valueEntered;  // valid value displayed but not yet accepted
-    char *    _cls;
-    NumberEntryWidget::States
-              _widgetState;
+   const char *  _cls;
+    uint8_t      _bytect;
+    uint16_t     _curval;
+    uint16_t     _valueEntered = 0;  // valid value displayed but not yet accepted
+    NumberEntryWidget::States _widgetState;
 };
 #endif /* NUMBER_ENTRY_WIDGET_H_ */
