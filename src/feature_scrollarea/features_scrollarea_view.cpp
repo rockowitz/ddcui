@@ -87,7 +87,8 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
 
     QVBoxLayout * vLayout  = new QVBoxLayout();
     vLayout->setObjectName("vLayout in onEndInitLoad");
-    vLayout->setMargin(0);
+    vLayout->setContentsMargins(0,0,0,0);
+    // vLayout->setMargin(0);
     vLayout->setSpacing(0);    // <=== CONTROLS SPACING BETWEEN ROWS
 
     // doesnt solve the non-expanding widgets

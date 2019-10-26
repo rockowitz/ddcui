@@ -33,7 +33,7 @@ static void stdLabelSetup(QLabel * l) {
    font.setWeight(QFont::Bold);
    l->setFont(font);
    l->setContentsMargins(0,0,0,0);
-   l->setMargin(0);
+   // l->setMargin(0); //deprecated
    l->setIndent(0);
 }
 

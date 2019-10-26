@@ -38,7 +38,7 @@ static void setupFeatureWidgetField(QLabel * w)
    // apparently contents margins is the size of the Panel/box
     w->setContentsMargins(1,1,1,1);  // This is what kills the panel, when set to 0
     w->setLineWidth(1);
-    w->setMargin(0);
+    // w->setMargin(0);  // deprecated
 
     // w->setStyleSheet("margins: 25px;");
 }
