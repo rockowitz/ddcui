@@ -28,7 +28,7 @@ EnhancedSlider::EnhancedSlider(Qt::Orientation orientation, QWidget * parent)
   , _ctrl_key_is_pressed(false)
   , _ctrl_key_required(false)
 {
-   _cls = strdup(metaObject()->className());
+   _cls = metaObject()->className();
 }
 
 // EnhancedSlider::~EnhancedSlider() {
