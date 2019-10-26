@@ -48,6 +48,7 @@ FeaturesScrollAreaView::FeaturesScrollAreaView(
     , _centralStackedWidget(centralStackedWidget)
     , _msgboxQueue(msgboxQueue)
     , _curNcValuesSource(OtherOptionsState::DefaultNcValuesSource)  // , _curNcValuesSource(NcValuesSourceUnset)
+    , _controlKeyRequired(false)
 {
    // TRACE("Executing. _msgboxQueue=%p", _msgboxQueue);
 }
