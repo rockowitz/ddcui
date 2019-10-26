@@ -3,6 +3,7 @@
 // Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+#include <glib-2.0/glib.h>
 #include <string.h>
 #include <stdio.h>
 
@@ -33,14 +34,22 @@ void reportWidgetChildren(QWidget * w, const char * msg) {
 
 
 void reportPolicy(   QSizePolicy::Policy  hp,
+      int depth,
       const char * msg = nullptr)
 {
+   int d1 = depth+1;
+   char indent[100];
+   g_snprintf(indent, 100, "%*s", depth*3, "");
+
     if (msg)
-       printf("%s\n", msg);
+       printf("%s%s\n", indent, msg);
+
+    g_snprintf(indent, 100, "%*s", d1*3, "");
 
     // Two ways of looking at the policy field, as bits or as enum
 
-    printf("policy:  %s %s %s %s\n",
+    printf("%spolicy:  %s %s %s %s\n",
+           indent,
            (hp & QSizePolicy::GrowFlag)   ? "Grow"   : "",
            (hp & QSizePolicy::ExpandFlag) ? "Expand" :"",
            (hp & QSizePolicy::ShrinkFlag) ? "Shrink" : "",
@@ -58,28 +67,36 @@ void reportPolicy(   QSizePolicy::Policy  hp,
     default: s = (char*) "other";
     }
 
-    printf("     %s\n", s);
+    printf("%s     %s\n", indent, s);
 }
 
 
 void reportQSizePolicy(
       QSizePolicy p ,
-    //        const char * className,
+      //        const char * className,
       //      const char * funcName,
-            const char * msg = nullptr)
+      int         depth,
+      const char * msg = nullptr)
 {
+    int d1 = depth+1;
+    char indent[100];
+    g_snprintf(indent, 100, "%*s", depth*3, "");
+
     if (msg)
-       printf("%s\n", msg);
+       printf("%s%s\n", indent, msg);
+
+    g_snprintf(indent, 100, "%*s", d1*3, "");
 
     int x;
     char buf[100];
     Qt::Orientations orientations = p.expandingDirections();
-    snprintf(buf, 100, "expandingDirections:  %s  %s\n",
+    g_snprintf(buf, 100, "%sexpandingDirections:  %s  %s\n",
+             indent,
              (orientations & Qt::Horizontal) ? "Horizontal" : "",
              (orientations & Qt::Vertical)   ? "Vertical"   : "");
-    puts(buf);
-    printf("horizontalStretch:  %d\n", p.horizontalStretch());
-    printf("verticalStretch:    %d\n", p.verticalStretch());
+    printf("%s%s\n", indent, buf);
+    printf("%shorizontalStretch:  %d\n", indent, p.horizontalStretch());
+    printf("%sverticalStretch:    %d\n", indent, p.verticalStretch());
 
     char * s;
     QSizePolicy::ControlTypes ct = p.controlType();
@@ -101,11 +118,11 @@ void reportQSizePolicy(
     case QSizePolicy::ToolButton:  s = (char*) "ToolButton";  break;
     default:                       s = (char*) "other";
     }
-    printf("controlType:   %s\n", s);
+    printf("%scontrolType:   %s\n", indent, s);
 
     QSizePolicy::Policy  hp = p.horizontalPolicy();
-    reportPolicy(hp, "Horizontal Policy:");
-    reportPolicy(p.verticalPolicy(), "Vertical Policy");
+    reportPolicy(hp, depth+1, "Horizontal Policy:");
+    reportPolicy(p.verticalPolicy(), depth+1, "Vertical Policy");
 
     // TODO: additional
     //    ->ExpandingDirections();
@@ -115,10 +132,15 @@ void reportQSizePolicy(
 
 
 void reportLayout(
-      QLayout * lay)
+      QLayout * lay, int depth)
 {
+   int d1 = depth+1;
+   char indent[100];
+   g_snprintf(indent, 100, "%*s", d1*3, "");
+
    QMargins layoutContentsMargins = lay->contentsMargins();
-        printf("layoutContentsMargins: left: %d, top: %d, right: %d, bottom: %d\n",
+        printf("%slayoutContentsMargins: left: %d, top: %d, right: %d, bottom: %d\n",
+               indent,
                layoutContentsMargins.left(), layoutContentsMargins.top(),
                layoutContentsMargins.right(), layoutContentsMargins.bottom() );
 #ifdef NOT_USEFUL
@@ -128,19 +150,20 @@ void reportLayout(
 #endif
         // spacing between the widgets inside the layout
         // int layoutSpacing = lay->spacing();
-        printf("layout spacing:        %d\n", lay->spacing()); // layoutSpacing);
+        printf("%slayout spacing:        %d\n", indent, lay->spacing()); // layoutSpacing);
 
         char buf[100];
         Qt::Orientations orientations = lay->expandingDirections();
-        snprintf(buf, 100, "expandingDirections:  %s  %s\n",
+        g_snprintf(buf, 100, "%sexpandingDirections:  %s  %s\n",
+              indent,
                  (orientations & Qt::Horizontal) ? "Horizontal" : "",
                  (orientations & Qt::Vertical)   ? "Vertical"   : "");
         puts(buf);
 
         QSize sz = lay->minimumSize();
-        printf("minimumSize:          %d,%d\n",  sz.width(), sz.height() );
+        printf("%sminimumSize:          %d,%d\n",  indent, sz.width(), sz.height() );
         sz = lay->maximumSize();
-        printf("maximumSize:          %d,%d\n",  sz.width(), sz.height() );
+        printf("%smaximumSize:          %d,%d\n",  indent, sz.width(), sz.height() );
 
         // and more
 }
@@ -152,52 +175,59 @@ void reportWidgetDimensions(
       const char * funcName,
       const char * msg = nullptr)
 {
+   int depth = 0;
+   int d1 = depth+1;
+
+   char indent[100];
+   g_snprintf(indent, 100, "%*s", d1*3, "");
+
     if (msg)
        printf("%s\n", msg);
-    printf("(%s::%s) Dimensions:\n", className, funcName);
+    // printf("(%s::%s) Dimensions:\n", className, funcName);
+
 
     QSize sz = w->baseSize();
-    printf("baseSize:             %d,%d\n",  sz.width(), sz.height());
+    printf("%sbaseSize:              %d,%d\n", indent,  sz.width(), sz.height());
 
     sz = w->sizeIncrement();
-    printf("sizeIncrement:        %d,%d\n", sz.width(), sz.height());
+    printf("%ssizeIncrement:         %d,%d\n", indent, sz.width(), sz.height());
 
     // QSize minimumSize   = w->minimumSize();
-    //    printf("minimumSize:    %d,%d\n",  minimumSize.width(), minimumSize.height());
-    printf("minimumSize:          %d,%d\n",  w->minimumWidth(), w->minimumHeight());
+    //    printf("%sminimumSize:    %d,%d\n", indent,  minimumSize.width(), minimumSize.height());
+    printf("%sminimumSize:           %d,%d\n", indent,  w->minimumWidth(), w->minimumHeight());
 
     sz  = w->minimumSizeHint();
-    printf("minimumSizeHint:      %d,%d\n",  sz.width(), sz.height());
+    printf("%sminimumSizeHint:       %d,%d\n", indent,  sz.width(), sz.height());
 
     // QSize maximumSize   = w->maximumSize();
-    printf("maximumSize:          %d,%d\n",  w->maximumWidth(), w->maximumHeight());
+    printf("%smaximumSize:           %d,%d\n", indent,  w->maximumWidth(), w->maximumHeight());
 
     // sz = w->size();
     // size of widget excluding any window frame
-    printf("size:                 %d,%d\n",  w->width(), w->height());
+    printf("%ssize:                  %d,%d\n", indent,  w->width(), w->height());
 
     // recommended widget size
     sz = w->sizeHint();
-    printf("sizeHint:             %d,%d\n",  sz.width(), sz.height());
+    printf("%ssizeHint:              %d,%d\n", indent,  sz.width(), sz.height());
 
     // size of the widget including any window frame
     QSize frameSize     = w->frameSize();
-    printf("frameSize:             %d,%d\n",  frameSize.width(), frameSize.height());
+    printf("%sframeSize:             %d,%d\n", indent,  frameSize.width(), frameSize.height());
 
 
     int m_left, m_right, m_top, m_bottom;
     w->getContentsMargins(&m_left, &m_top, &m_right, &m_bottom);
-    printf("(margins:              left=%d, top=%d, right=%d, bottom=%d)\n",
+    printf("%smargins:               left=%d, top=%d, right=%d, bottom=%d\n", indent,
            m_left, m_top, m_right, m_bottom);
 
     QMargins contentsMargins = w->contentsMargins();
-    printf("contentsMargins: left: %d, top: %d, right: %d, bottom: %d\n",
+    printf("%scontentsMargins:       left=%d, top=%d, right=%d, bottom=%d\n", indent,
            contentsMargins.left(), contentsMargins.top(), contentsMargins.right(), contentsMargins.bottom() );
 
-    printf("hasHeightForWidth:     %s\n", (w->hasHeightForWidth()) ? "True" : "False");
-    printf("updatesEnabled:        %s\n", (w->updatesEnabled()) ? "True" : "False");
-    printf("visible:               %s\n", (w->isVisible()) ? "True" : "False");
-    printf("hidden:                %s\n", (w->isHidden()) ? "True" : "False");
+    printf("%shasHeightForWidth:     %s\n", indent, (w->hasHeightForWidth()) ? "True" : "False");
+    printf("%supdatesEnabled:        %s\n", indent, (w->updatesEnabled()) ? "True" : "False");
+    printf("%svisible:               %s\n", indent, (w->isVisible()) ? "True" : "False");
+    printf("%shidden:                %s\n", indent, (w->isHidden()) ? "True" : "False");
 
     Qt::LayoutDirection direction = w->layoutDirection();
     char * s = NULL;
@@ -206,44 +236,44 @@ void reportWidgetDimensions(
     case Qt::RightToLeft:   s = (char *) "RightToLeft";        break;
     case Qt::LayoutDirectionAuto:  s = (char*) "LayoutDirectionAuto";        break;
     }
-    printf("layoutDirection:      %d - %s\n", direction, s);
+    printf("%slayoutDirection:       %d - %s\n", indent, direction, s);
 
 #ifdef USELESS
     QRect childrenRect = w->childrenRect();
-    printf("childrenRect:          x: %d, y: %d, width: %d, height: %d\n",
+    printf("%schildrenRect:          x: %d, y: %d, width: %d, height: %d\n", indent,
            childrenRect.x(), childrenRect.y(), childrenRect.width(), childrenRect.height());
 
     // specifies a clip region for a painter
     // QRegion childrenRegion = w->childrenRegion();
 
     QRect frameGeometry = w->frameGeometry();
-    printf("frameGeometry:   x: %d, y: %d, width: %d, height: %d\n",
+    printf("%sframeGeometry:   x: %d, y: %d, width: %d, height: %d\n", indent,
            frameGeometry.x(), frameGeometry.y(), frameGeometry.width(), frameGeometry.height());
 
      QRect normalGeometry = w->normalGeometry();
-     printf("normalGeometry: x: %d, y: %d, width: %d, height: %d\n",
+     printf("%snormalGeometry: x: %d, y: %d, width: %d, height: %d\n", indent,
             normalGeometry.x(), normalGeometry.y(), normalGeometry.width(), normalGeometry.height());
 
      QRect rect = w->rect();
-     printf("rect:           x: %d, y: %d, width: %d, height: %d\n",
+     printf("%srect:                 x: %d, y: %d, width: %d, height: %d\n", indent,
             rect.x(), rect.y(), rect.width(), rect.height());
 
      QRect    contentsRect    = w->contentsRect();
-     printf("contentsRect:   x: %d, y: %d, width: %d, height: %d\n",
+     printf("%scontentsRect:         x: %d, y: %d, width: %d, height: %d\n", indent,
             contentsRect.x(), contentsRect.y(), contentsRect.width(), contentsRect.height());
 #endif
 
-     QSizePolicy policy = w->sizePolicy();
-     reportQSizePolicy(policy, "widget sizePolicy:");
+     QSizePolicy sizePolicy = w->sizePolicy();
+     reportQSizePolicy(sizePolicy, d1, "widget sizePolicy:");
+
 
      QLayout * lay = w->layout();
-     if (lay)
-        reportLayout(lay);
+     if (lay) {
+        printf("%sLayout:\n", indent);
+        reportLayout(lay, d1+1);
+     }
      else
-        printf("No layout set\n");
-
-     QSizePolicy sizePolicy = w->sizePolicy();
-     reportQSizePolicy(sizePolicy);
+        printf("%sNo layout set\n", indent);
 
      printf("\n");  fflush(stdout);
 }
