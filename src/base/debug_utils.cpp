@@ -217,7 +217,7 @@ void reportWidgetDimensions(
 
     int m_left, m_right, m_top, m_bottom;
     w->getContentsMargins(&m_left, &m_top, &m_right, &m_bottom);
-    printf("%smargins:               left=%d, top=%d, right=%d, bottom=%d\n", indent,
+    printf("%scontents margins:      left=%d, top=%d, right=%d, bottom=%d\n", indent,
            m_left, m_top, m_right, m_bottom);
 
     QMargins contentsMargins = w->contentsMargins();
@@ -328,7 +328,6 @@ void reportLabelDimensions(
    printf("(%s::%s) Label Dimension Information: \n", className, funcName); fflush(stdout);
 
    printf("indent:  %d\n", label->indent());
-   printf("margin:  %d\n", label->margin());
 
    reportFrameDimensions(label, className, funcName, NULL);
 }
