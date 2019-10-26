@@ -22,6 +22,8 @@
 #include "base/debug_utils.h"
 
 
+static bool showDimensionReports = false;
+
 static bool titleDimensionReportShown = false;
 static bool dimensionReportShown = false;
 
@@ -33,47 +35,23 @@ newTitle(QString title) {
    QFont nonMonoValueFont;
    nonMonoValueFont.setPointSize(8);
 
-   QSize   titleSize = QSize(25,18);
+   QSize   titleSize = QSize(20,18);
    QFont   titleFont = nonMonoValueFont;
    int     titleFrameStyle = QFrame::Plain | QFrame::NoFrame;
-   QString titleDebugStyle("background-color:cyan;");
 
    lab->setFixedSize(titleSize);
    lab->setFont(nonMonoValueFont);
    lab->setFrameStyle(titleFrameStyle);
 
-   if (!titleDimensionReportShown) {
-   }
-
-   if (debugLayout)
+   if (debugLayout) {
+      QString titleDebugStyle("background-color:cyan;");
       lab->setStyleSheet(titleDebugStyle);
 
+      if (showDimensionReports && !titleDimensionReportShown) {
+      }
+   }
+
    return lab;
-}
-
-
-ValueBytesWidget::ValueBytesWidget(QWidget *parent)
-    : ValueBaseWidget(parent)
-{
-    _cls = strdup(metaObject()->className());
-    bool debug = false;
-    TRACEF(debug, "Starting." );
-
-    layoutWidget();
-
-    //  connect(_shWidget, &NumberEntryWidget::setCurrentField, this, &ValueBytesWidget::whenEventFieldChanged);
-    // connect(_slWidget, &NumberEntryWidget::setCurrentField, this, &ValueBytesWidget::whenEventFieldChanged);
-
-    // connect(_shWidget, &NumberEntryWidget::valueChanged8, this, &ValueBytesWidget::whenShChanged);
-    // connect(_slWidget, &NumberEntryWidget::valueChanged8, this, &ValueBytesWidget::whenSlChanged);
-
-    connect(_shWidget, &NumberEntryWidget::stateChanged, this,  &ValueBytesWidget::whenStateChanged);
-    connect(_slWidget, &NumberEntryWidget::stateChanged, this,  &ValueBytesWidget::whenStateChanged);
-
-    connect(_applyButton,  &QPushButton::clicked, this, &ValueBytesWidget::onApplyButtonClicked);
-    connect(_cancelButton, &QPushButton::clicked, this, &ValueBytesWidget::onCancelButtonClicked);
-
-    TRACEF(debug, "Done");
 }
 
 
@@ -102,73 +80,61 @@ ValueBytesWidget::layoutWidget() {
    int   valueFrameStyle = QFrame::Plain | QFrame::NoFrame;
    QSize valueSize(30,20);
 
-   // TRACEF(debug, "Before NumberEntryWidget constructors");
    _mhWidget = new NumberEntryWidget( 1, valueFont, valueFrameStyle, valueSize);
    _mlWidget = new NumberEntryWidget( 1, valueFont, valueFrameStyle, valueSize);
    _shWidget = new NumberEntryWidget( 1, valueFont, valueFrameStyle, valueSize);
    _slWidget = new NumberEntryWidget( 1, valueFont, valueFrameStyle, valueSize);
-   // TRACE("===> After NumberEntryWidget constructors, before setting object names");
    _mhWidget->setObjectName("mhWidget");
    _mlWidget->setObjectName("mlWidget");
    _shWidget->setObjectName("shWidget");
    _slWidget->setObjectName("slWidget");
-   // TRACE("===> After setting object names");
 
-   _mhWidget->setReadOnly(true);       //  which to use?
-   _mlWidget->setReadOnly(true);      // or setReadOnly(true)  ??
-   // bool _slOk = true;    // not used
-   // bool _shOk = true;
+   _mhWidget->setReadOnly(true);
+   _mlWidget->setReadOnly(true);
 
-// #ifdef APPLY_CANCEL
- //  if (useApplyCancel) {
-       QSizePolicy* sizePolicy = new QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-      _applyButton  = new QPushButton("Apply");
-      _cancelButton = new QPushButton("Cancel");
-      _applyButton->setMaximumSize(55,20);
-      _applyButton->setSizePolicy(*sizePolicy);
-      _applyButton->setFont(nonMonoFont9);
-      _cancelButton->setMaximumSize(55,20);
-      _cancelButton->setSizePolicy(*sizePolicy);
-      _cancelButton->setFont(nonMonoFont9);
+    QSizePolicy* sizePolicy = new QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+   _applyButton  = new QPushButton("Apply");
+   _cancelButton = new QPushButton("Cancel");
+   _applyButton->setMaximumSize(55,20);
+   _applyButton->setSizePolicy(*sizePolicy);
+   _applyButton->setFont(nonMonoFont9);
+   _cancelButton->setMaximumSize(55,20);
+   _cancelButton->setSizePolicy(*sizePolicy);
+   _cancelButton->setFont(nonMonoFont9);
 
-      _applyButton->setEnabled(false);
-      _cancelButton->setEnabled(false);
+   _applyButton->setEnabled(false);
+   _cancelButton->setEnabled(false);
 
+   // QLabel* spacer = new QLabel();
+   // spacer->setFixedSize(10,18);
 
-  //
-// #endif
-
-  QLabel* spacer = new QLabel();
-  spacer->setFixedSize(10,18);
-
+   int afterValueSpace = 15;
 
    QHBoxLayout * layout = new QHBoxLayout();
    // layout->addWidget(spacer);
+   layout->addSpacing(10);
    layout->addWidget(_mhTitle);
    layout->addWidget(_mhWidget);
-   // not the culprit
- // layout->addWidget(spacer);  adds space here, but also whole valuestackedwidget shifts right
-
-   layout->setStretch(1,0);
+   layout->addSpacing(afterValueSpace);
 
    layout->addWidget(_mlTitle);
    layout->addWidget(_mlWidget);
-   layout->setStretch(1,0);
-   layout->addSpacing(5);
+   layout->addSpacing(afterValueSpace);
 
    layout->addWidget(_shTitle);
    layout->addWidget(_shWidget);
-   layout->setStretch(1,0);
+   layout->addSpacing(afterValueSpace);
 
    layout->addWidget(_slTitle);
    layout->addWidget(_slWidget);
-   layout->setStretch(4,0);
+   layout->addSpacing(afterValueSpace);
 
+   layout->addWidget(_applyButton);
+   layout->addWidget(_cancelButton);
 
-      layout->addSpacing(5);
-      layout->addWidget(_applyButton);
-      layout->addWidget(_cancelButton);
+   layout->addStretch(10);     // apply all added size to end
 
+   layout->setSpacing(0);
    layout->setContentsMargins(0,0,0,0);
    setLayout(layout);
 
@@ -176,7 +142,7 @@ ValueBytesWidget::layoutWidget() {
    if (debugLayout) {
       this->setStyleSheet("background-color:yellow;");
 
-      if (!dimensionReportShown) {
+      if (showDimensionReports && !dimensionReportShown) {
 
           TRACE("_mhTitle dimensions");
           reportWidgetDimensions(_mhTitle, _cls, __func__);
@@ -199,6 +165,32 @@ ValueBytesWidget::layoutWidget() {
       }
    }
 }
+
+
+ValueBytesWidget::ValueBytesWidget(QWidget *parent)
+    : ValueBaseWidget(parent)
+{
+    _cls = strdup(metaObject()->className());
+    bool debug = false;
+    TRACEF(debug, "Starting." );
+
+    layoutWidget();
+
+    //  connect(_shWidget, &NumberEntryWidget::setCurrentField, this, &ValueBytesWidget::whenEventFieldChanged);
+    // connect(_slWidget, &NumberEntryWidget::setCurrentField, this, &ValueBytesWidget::whenEventFieldChanged);
+
+    // connect(_shWidget, &NumberEntryWidget::valueChanged8, this, &ValueBytesWidget::whenShChanged);
+    // connect(_slWidget, &NumberEntryWidget::valueChanged8, this, &ValueBytesWidget::whenSlChanged);
+
+    connect(_shWidget, &NumberEntryWidget::stateChanged, this,  &ValueBytesWidget::whenStateChanged);
+    connect(_slWidget, &NumberEntryWidget::stateChanged, this,  &ValueBytesWidget::whenStateChanged);
+
+    connect(_applyButton,  &QPushButton::clicked, this, &ValueBytesWidget::onApplyButtonClicked);
+    connect(_cancelButton, &QPushButton::clicked, this, &ValueBytesWidget::onCancelButtonClicked);
+
+    TRACEF(debug, "Done");
+}
+
 
 
 

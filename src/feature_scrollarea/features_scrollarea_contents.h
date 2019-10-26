@@ -1,10 +1,14 @@
 /* features_scrollarea_contents.h */
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef FEATURES_SCROLLAREA_CONTENTS_H_
 #define FEATURES_SCROLLAREA_CONTENTS_H_
+
+#include <QtCore/QSize>
+#include <QtGui/QResizeEvent>
+
 
 #include "nongui/feature_value.h"
 #include "nongui/feature_base_model.h"
@@ -28,6 +32,12 @@ public:
 
     // void addPageChangeObserver(PageChangeObserver * observer);
     // void notifyPageChangeObservers(int pageno);
+
+    void resize(int w, int h);
+    void resize(QSize sz);
+
+protected:
+    void resizeEvent(QResizeEvent * event) override;
 
 signals:
     void showCentralWidgetByWidget(QWidget * widget);

@@ -7,6 +7,7 @@
 #define FEATURE_WIDGET_HEADER_H_
 
 #include <QtWidgets/QWidget>
+#include <QtGui/QResizeEvent>
 
 #include "base/ddcui_globals.h"
 
@@ -16,6 +17,9 @@ class FeatureWidgetHeader : public QFrame {
 public:
    explicit FeatureWidgetHeader(QWidget * parent = nullptr);
    virtual ~FeatureWidgetHeader();
+
+protected:
+    void resizeEvent(QResizeEvent * event) override;
 
 private:
    const char * _cls;

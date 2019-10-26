@@ -10,6 +10,7 @@
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
+#include <QtGui/QResizeEvent>
 
 #include "base/debug_utils.h"
 
@@ -23,7 +24,10 @@
 
 static bool dimensionReportShown = false;
 
-static void setupFeatureWidgetField(QLabel * w) {
+
+// used for all but the value field
+static void setupFeatureWidgetField(QLabel * w)
+{
    // printf("(%s)\n", __func__);  fflush(stdout);
    int fieldFrameStyle;
    fieldFrameStyle = QFrame::Sunken | QFrame::Panel;
@@ -34,18 +38,17 @@ static void setupFeatureWidgetField(QLabel * w) {
    // apparently contents margins is the size of the Panel/box
     w->setContentsMargins(1,1,1,1);  // This is what kills the panel, when set to 0
     w->setLineWidth(1);
-    // w->setFrameShape(QFrame::NoFrame);
-    // w->setMargin(20,20,20,20);
     w->setMargin(0);
 
     // w->setStyleSheet("margins: 25px;");
 }
 
-void FeatureWidget::setupFeatureWidget() {
+
+void FeatureWidget::setupFeatureWidget()
+{
    bool debug = false;
    TRACEF(debug, "Starting");
-   // QFrame methods:
-   // setFrameStyle(QFrame::Box);    // something to make it visible
+   // setFrameStyle(QFrame::Box);    // something to make it visible for development
 
    QFont font;
    font.setPointSize(8);
@@ -75,7 +78,7 @@ void FeatureWidget::setupFeatureWidget() {
    /* Feature Code */
    _featureCodeField = new QLabel();
    _featureCodeField->setObjectName(QString::fromUtf8("featureCode"));
-   _featureCodeField->setMinimumWidth(30);
+   _featureCodeField->setFixedWidth(30);
    _featureCodeField->setSizePolicy(fixedSizePolicy);
    _featureCodeField->setFont(monoValueFont);
    _featureCodeField->setText(QString::fromUtf8("0x00"));    // dummy
@@ -128,10 +131,7 @@ void FeatureWidget::setupFeatureWidget() {
 
    TRACEF(debug, "creating ValueStackedWidget, feature code dummy");
    _valueWidget = new ValueStackedWidget();
-   TRACEF(debug, "after ValueStackedWidget creation");
-   // _valueWidget->setSizePolicy(fixedSizePolicy);
    _valueWidget->setSizePolicy(adjustableSizePolicy);
-   // _valueWidget->setFixedWidth(400);
 
    _layout = new QHBoxLayout();
    _layout->addWidget(_featureCodeField);
@@ -139,6 +139,7 @@ void FeatureWidget::setupFeatureWidget() {
    _layout->addWidget(_featureRwField);
    _layout->addWidget(_featureTypeField);
    _layout->addWidget(_valueWidget);
+   _layout->setStretchFactor(_valueWidget, 10);
    // layout->addWidget(_featureValueStackedWidget);
 
    // eliminating addStretch() eliminates gap between Type and Value fields, but allows
@@ -146,13 +147,9 @@ void FeatureWidget::setupFeatureWidget() {
    // _layout->addStretch(2);
 
    // _layout->insertStretch(-1, 2);
-   _layout->setSpacing(0);   // spacing between widgets inside the layout
-
+   _layout->setSpacing(0);   // spacing between widgets inside the (horizontal) layout
    // _layout->setMargin(0);    // no effect
    _layout->setContentsMargins(0,0,0,0);
-   // removes space between all fields except field type <-> value
-   // _layout->setSpacing(0);  // adjusts space between each horizontal item, no effect on above/below
-   // _layout->setSpacing(50);
 
    // eliminating vlayout restores horizontal spacing between all fields.  why?
 #ifdef UNNEEDED
@@ -173,37 +170,33 @@ void FeatureWidget::setupFeatureWidget() {
           dimensionReportShown = true;
        }
    }
-
    TRACEF(debug, "Done");
 }
 
-void FeatureWidget::setupConnections() {
+
+void FeatureWidget::setupConnections()
+{
    QObject::connect(_valueWidget, &ValueStackedWidget::stackedFeatureValueChanged,
                     this,         &FeatureWidget::onInternalValueChanged);
 
-#ifdef ALT
-   QObject::connect( _valueWidget, SIGNAL( stackedFeatureValueChanged(uint8_t, uint8_t, uint8_t)),
-                     this,         SLOT(onInternalValueChanged(uint8_t, uint8_t, uint8_t)));
-#endif
    // signals/slots not working, try hardcoding
    // _valueWidget->addSimpleFeatureValueObserver(this);
 }
 
 
-FeatureWidget::FeatureWidget(QWidget *parent) :
-   QWidget(parent),
-   _cls(metaObject()->className())
+FeatureWidget::FeatureWidget(QWidget *parent)
+   : QWidget(parent)
+   , _cls(metaObject()->className())
 {
-    // _cls = metaObject()->className();
     setupFeatureWidget();
     setupConnections();
 }
 
-FeatureWidget::FeatureWidget(FeatureValue& fv, QWidget *parent) :
-   QWidget(parent),
-   _cls(metaObject()->className())
+
+FeatureWidget::FeatureWidget(FeatureValue& fv, QWidget *parent)
+   : QWidget(parent)
+   , _cls(metaObject()->className())
 {
-    // _cls = metaObject()->className();
     setupFeatureWidget();
     setupConnections();
     setFeatureValue(fv);
@@ -211,7 +204,8 @@ FeatureWidget::FeatureWidget(FeatureValue& fv, QWidget *parent) :
 
 
 // Used only to set feature value immediately after constructor called
-void FeatureWidget::setFeatureValue(FeatureValue &fv) {
+void FeatureWidget::setFeatureValue(FeatureValue &fv)
+{
    bool debug = false;
    TRACEF(debug, "feature code = 0x%02x, sets feature value immediately after constructor called",
              fv.featureCode());
@@ -255,12 +249,14 @@ void FeatureWidget::setFeatureValue(FeatureValue &fv) {
 }
 
 
-void FeatureWidget::setCurrentValue(uint16_t newval) {
+void FeatureWidget::setCurrentValue(uint16_t newval)
+{
     _valueWidget->setCurrentValue(newval);
 }
 
 
-QSize FeatureWidget::sizeHint() const {
+QSize FeatureWidget::sizeHint() const
+{
     int w = 700;
     int h = 10;
     // printf("(%s::%s) Returning (%d,%d)\n", _cls, __func__, w, h);  fflush(stdout);
@@ -277,7 +273,8 @@ void FeatureWidget::paintEvent(QPaintEvent *event) {
 #endif
 
 
-void FeatureWidget::dbgrpt() const {
+void FeatureWidget::dbgrpt() const
+{
     std::string on1 = objectName().toStdString();
     const char * objname = on1.c_str();
     // printf("%-20s code: 0x%02x, flags: 0x%04x, mh: 0x%02x, ml: 0x%02x, sh: 0x%02x, sl 0x%02x\n",
@@ -286,7 +283,8 @@ void FeatureWidget::dbgrpt() const {
 }
 
 
-void FeatureWidget::onInternalValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl) {
+void FeatureWidget::onInternalValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl)
+{
    bool debug = false;
    debug = debug || debugSignals;
    TRACEF(debug, "feature_code = 0x%02x, sh=0x%02x, sl=0x%02x", featureCode, sh, sl);
@@ -308,14 +306,33 @@ void FeatureWidget::simpleFeatureValueChanged(SimpleFeatureValue fv) {
 #endif
 
 
-bool FeatureWidget::hasSlTable() {
+bool FeatureWidget::hasSlTable()
+{
    bool result = _valueWidget->hasSlTable();
    // TRACE("Returning: %s", sbool(result));
    return result;
 }
 
-void FeatureWidget::setNcValuesSource(NcValuesSource newsrc) {
+
+void FeatureWidget::setNcValuesSource(NcValuesSource newsrc)
+{
    // TRACE("newsrc = %d-%s", newsrc, ncValuesSourceName(newsrc));
    _valueWidget->setNcValuesSource(newsrc);
    // TRACE("Done");
 }
+
+#ifdef UNNEEDED
+void FeatureWidget::resizeEvent(QResizeEvent * evt)
+{
+   QSize oldSz = evt->oldSize();
+   QSize newSz = evt->size();
+
+   TRACE("old size = %d, %d\n", oldSz.width(), oldSz.height());
+   TRACE("new size = %d, %d\n", newSz.width(), newSz.height());
+   evt->ignore();
+}
+#endif
+
+
+
+

@@ -22,8 +22,7 @@
 
 #include <ddcutil_c_api.h>
 
-
-static bool dimensionReportShown = false;
+static bool showDimensionReport = false;
 
 void Value2ButtonWidget::layoutWidget()
 {
@@ -47,6 +46,7 @@ void Value2ButtonWidget::layoutWidget()
     _button2->setStyleSheet("background-color:white;color:black;");
 
     QHBoxLayout * layout = new QHBoxLayout();
+    layout->addSpacing(5);
     layout->addWidget(_button1);
     layout->addWidget(_button2);
     layout->addStretch(1);
@@ -56,16 +56,19 @@ void Value2ButtonWidget::layoutWidget()
 
     delete sizePolicy;
 
-    if (!dimensionReportShown  && debugLayout ) {
-        printf("(%s::%s) ------------------------------------------>\n", _cls, __func__); fflush(stdout);
-        reportWidgetDimensions(_button1, _cls, __func__, "_button1");
-        reportWidgetDimensions(this, _cls, __func__, "Value2ButtonWidget");
-        dimensionReportShown = true;
-    }
-    if (debugLayout)
+    if (debugLayout) {
        this->setStyleSheet("background-color:cyan;");
 
+       static bool dimensionReportShown = false;
+       if (showDimensionReport && !dimensionReportShown) {
+          printf("(%s::%s) ------------------------------------------>\n", _cls, __func__); fflush(stdout);
+          reportWidgetDimensions(_button1, _cls, __func__, "_button1");
+          reportWidgetDimensions(this, _cls, __func__, "Value2ButtonWidget");
+          dimensionReportShown = true;
+       }
+    }
 }
+
 
 Value2ButtonWidget::Value2ButtonWidget(
      QWidget *parent)

@@ -24,16 +24,12 @@
 
 #include "nongui/feature_base_model.h"
 
-
-static bool dimensionReportShown = false;
 static bool debugWidget = false;
-
-
+static bool showDimensionReports = true;
 
 void ValueNcWidget::layoutWidget() {
    // TRACE("Starting");
    _layout = new QHBoxLayout();
-
 
    QFont nonMonoFont8;
    nonMonoFont8.setPointSize(8);
@@ -42,7 +38,7 @@ void ValueNcWidget::layoutWidget() {
    nonMonoFont9.setPointSize(9);
 
    QFont font;
-     font.setPointSize(8);
+   font.setPointSize(8);
      // QWidget::setFont(font);
 
     _cb = new QComboBox();
@@ -96,22 +92,27 @@ void ValueNcWidget::layoutWidget() {
        _layout->addSpacing(10);
     }
 #else
-    _layout->addSpacing(10);
+    // _layout->addSpacing(10);
 #endif
     _layout->setContentsMargins(0,0,0,0);
+
+   // _layout->addStretch(10);     // apply all added size to end
 
    setLayout(_layout);
 
    if (debugLayout) {
-       if (!dimensionReportShown) {
+      static bool dimensionReportShown = false;
+
+      this->setStyleSheet("background-color:cyan;");
+      _extraInfo->setStyleSheet("background-color:green;");
+
+      if (showDimensionReports &&!dimensionReportShown) {
            TRACE("combobox dimensions");
            reportWidgetDimensions(_cb, _cls, __func__);
            TRACE("ValueNcWidget dimensions");
            reportWidgetDimensions(this, _cls, __func__);
            dimensionReportShown = true;
-       }
-       this->setStyleSheet("background-color:cyan;");
-       _extraInfo->setStyleSheet("background-color:green;");
+      }
    }
    // TRACE("Done");
 }

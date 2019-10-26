@@ -1,6 +1,6 @@
 /* features_scroll_area_contents.cpp */
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "feature_scrollarea/features_scrollarea_contents.h"
@@ -11,6 +11,7 @@
 
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QScrollArea>
+#include <QtCore/QSize>
 
 #include "base/ddcui_globals.h"
 #include "base/debug_utils.h"
@@ -20,6 +21,8 @@
 
 
 static bool debugWidget = false;
+static bool showWidgetDimensions = false;
+static bool traceResizeEvents = false;
 
 
 FeaturesScrollAreaContents::FeaturesScrollAreaContents(QWidget * parent) :
@@ -41,8 +44,14 @@ FeaturesScrollAreaContents::FeaturesScrollAreaContents(QWidget * parent) :
    //setSizePolicy( QSizePolicy::MinimumExpanding,  QSizePolicy::MinimumExpanding);
 
 
-   if (debugLayout)
-     setStyleSheet("background-color:aqua;");
+   if (debugLayout) {
+      setStyleSheet("background-color:aqua;");
+
+      static bool widgetDimensionsReported = false;
+      if (showWidgetDimensions && !widgetDimensionsReported) {
+         reportWidgetDimensions(this, _cls, __func__, "FeatureScrollAreaContents dimensions");
+      }
+   }
 }
 
 
@@ -139,4 +148,32 @@ void FeaturesScrollAreaContents::notifyPageChangeObservers(int pageno) {
    }
 }
 #endif
+
+
+void FeaturesScrollAreaContents::resize(int w, int h)
+{
+   TRACE("width = %d, height = %s", w, h);
+   QWidget::resize(w, h);
+}
+void FeaturesScrollAreaContents::resize(QSize sz)
+{
+   TRACE("width = %d, height = %s", sz.width(), sz.height());
+   QWidget::resize(sz);
+}
+
+
+void FeaturesScrollAreaContents::resizeEvent(QResizeEvent * evt)
+{
+   if (traceResizeEvents) {
+      QSize oldSz = evt->oldSize();
+      QSize newSz = evt->size();
+
+      TRACE("old size = %d, %d", oldSz.width(), oldSz.height());
+      TRACE("new size = %d, %d", newSz.width(), newSz.height());
+   }
+   evt->ignore();
+}
+
+
+
 

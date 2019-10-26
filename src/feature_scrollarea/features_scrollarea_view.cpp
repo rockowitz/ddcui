@@ -29,9 +29,10 @@
 #include "feature_scrollarea/feature_widget.h"
 #include "feature_scrollarea/feature_widget_header.h"
 #include "feature_scrollarea/features_scrollarea_contents.h"
+#include "feature_scrollarea/features_scrollarea.h"
 
 
-static bool dimensionReportShown = false;
+static bool showDimensionReport = false;
 
 
 FeaturesScrollAreaView::FeaturesScrollAreaView(
@@ -58,7 +59,7 @@ void FeaturesScrollAreaView::freeContents(void) {
 
 
 void FeaturesScrollAreaView::onEndInitialLoad(void) {
-    bool debug = false;
+    bool debug = true;
     TRACEF(debug, "Starting, Monitor=%s", _monitor->_displayInfo->model_name);
 
     // TODO:
@@ -72,9 +73,8 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
     wrapLayout->setSpacing(0);
     wrapLayout->addWidget(new FeatureWidgetHeader());
 
-    QScrollArea * scrollArea = new QScrollArea();
-    // causes extra space between C/NC/T column and value column
-    // VerticalScrollArea * scrollArea = new VerticalScrollArea();
+    FeaturesScrollArea * scrollArea = new FeaturesScrollArea();
+    scrollArea->setWidgetResizable(true);
 
     FeaturesScrollAreaContents * scrollAreaContents = new FeaturesScrollAreaContents();
     scrollAreaContents->setObjectName("scrollAreaContents local to onEndInitialLoad");
@@ -137,14 +137,19 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
     // _centralStackedWidget->hide();    // no effect
     _centralStackedWidget->setCurrentWidget(scrollWrap);    // was scrollArea
 
-    if (!dimensionReportShown && debugLayout) {
-        TRACE("---------------------> scrollAreaContents in QScrollArea");
-        reportWidgetDimensions(scrollAreaContents,    _cls, __func__, "scrollAreaContents in QScrollArea");
-        TRACE("---------------------> QScrollArea in _centralStackedWidget");
-        reportWidgetDimensions(scrollArea,            _cls, __func__, "QScrollArea in _centralStackedWidget");
-        TRACE("---------------------> centralStackedWidget" );
-        reportWidgetDimensions(_centralStackedWidget, _cls, __func__, "centralStackedWidget");
-        dimensionReportShown = true;
+    if (debugLayout) {
+
+       static bool dimensionReportShown = false;
+       if ( (showDimensionReport && !dimensionReportShown) ) {
+           TRACE("---------------------> scrollAreaContents in QScrollArea");
+           reportWidgetDimensions(scrollAreaContents,    _cls, __func__, "scrollAreaContents in QScrollArea");
+           TRACE("---------------------> QScrollArea in _centralStackedWidget");
+           reportWidgetDimensions(scrollArea,            _cls, __func__, "QScrollArea in _centralStackedWidget");
+           TRACE("---------------------> centralStackedWidget" );
+           reportWidgetDimensions(_centralStackedWidget, _cls, __func__, "centralStackedWidget");
+
+           dimensionReportShown = true;
+       }
     }
 
     GlobalState& globalState = GlobalState::instance();
@@ -276,7 +281,6 @@ void FeaturesScrollAreaView::onModelDdcDetailedError(DdcDetailedError* perec) {
    TRACEF(debugFunc, "Calling _msgboxQueue.put() for qe: %s", qs2s(qe->repr()));
    _msgboxQueue->put(qe);
 }
-
 
 
 void FeaturesScrollAreaView::onModelDdcFeatureError(DdcFeatureError* perec) {

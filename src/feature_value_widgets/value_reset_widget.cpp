@@ -23,8 +23,7 @@
 #include "base/debug_utils.h"
 
 
-static bool dimensionReportShown = false;
-
+static bool showDimensionReport = false;
 
 void ValueResetWidget::layoutWidget() {
    QFont nonMonoFont;
@@ -42,6 +41,7 @@ void ValueResetWidget::layoutWidget() {
    _resetButton->setStyleSheet("background-color:white;color:black;");
 
    QHBoxLayout * layout = new QHBoxLayout();
+   layout->addSpacing(5);
    layout->addWidget(_resetButton);
    layout->addStretch(1);
    layout->setContentsMargins(0,0,0,0);
@@ -51,7 +51,9 @@ void ValueResetWidget::layoutWidget() {
 
    if (debugLayout) {
       this->setStyleSheet("background-color:cyan;");
-      if (!dimensionReportShown) {
+
+      static bool dimensionReportShown = false;
+      if (showDimensionReport && !dimensionReportShown) {
          // printf("-------------------------------------------->\n"); fflush(stdout);
          reportWidgetDimensions(_resetButton, _cls, __func__, "ValueResetWidget::_resetButton");
          reportWidgetDimensions(this, _cls, __func__, "ValueResetWidget");

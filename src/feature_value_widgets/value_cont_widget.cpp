@@ -26,7 +26,7 @@
 #include "base/enhanced_slider.h"
 
 
-static bool dimensionReportShown = false;
+static bool showDimensionReports = false;
 
 void ValueContWidget::layoutWidget() {
 
@@ -57,10 +57,10 @@ void ValueContWidget::layoutWidget() {
 
    _curSpinBox = new QSpinBox();
    _curSpinBox->setSingleStep(1);
-   _curSpinBox->setFixedSize(85,18);   // extra large for 2 byte values, possible horizontal up/down buttons
+   _curSpinBox->setFixedSize(65,18);   // extra large for 2 byte values, possible horizontal up/down buttons
    _curSpinBox->setAlignment(Qt::AlignRight);
    if (debugLayout)
-   _curSpinBox->setStyleSheet("background-color:green;");
+      _curSpinBox->setStyleSheet("background-color:green;");
 
    _maxTitle = new QLabel("Max:");
    _maxTitle->setFixedSize(25,18);
@@ -106,14 +106,11 @@ void ValueContWidget::layoutWidget() {
 
 
     QHBoxLayout * layout = new QHBoxLayout();
+    layout->addSpacing(5);
     layout->addWidget(_curSlider);
     layout->addWidget(_curSpinBox);
     layout->addWidget(_maxTitle);
     layout->addWidget(_maxValue);
-    // not the culprit
-  // layout->addWidget(spacer);  adds space here, but also whole valuestackedwidget shifts right
-
-    layout->setStretch(1,0);
 
 #ifdef APPLY_CANCEL
     if (useApplyCancel) {
@@ -123,20 +120,20 @@ void ValueContWidget::layoutWidget() {
     }
     else {
 #endif
-       layout->addSpacing(5);
-       layout->addWidget(spacer);
+       layout->addSpacing(5+10);
+       // layout->addWidget(spacer);
 #ifdef APPLY_CANCEL
     }
 #endif
+    layout->addStretch(10);    // take up all the space at the end - stretch factor = 10
     layout->setContentsMargins(0,0,0,0);
     setLayout(layout);
-
-
 
     if (debugLayout) {
        this->setStyleSheet("background-color:yellow;");
 
-       if (!dimensionReportShown) {
+       static bool dimensionReportShown = false;
+       if (showDimensionReports && !dimensionReportShown) {
           TRACE("curSlider dimensions");
           reportWidgetDimensions(_curSlider, _cls, __func__);
 

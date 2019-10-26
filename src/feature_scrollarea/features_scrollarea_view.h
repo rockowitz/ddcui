@@ -1,10 +1,15 @@
-/* features_scrollarea_view.h */
+/** \file features_scrollarea_view.h
+ *
+ * Manages the scroll area that provides a view onto the current feature settings
+ * of a monitor.
+ *
+ * There is one instance of this class for each detected monitor.
+ *
+ */
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-// Manages the scroll area that provides a view onto the current feature settings
-// of a monitor
 
 #ifndef FEATURES_SCROLLAREA_VIEW_H
 #define FEATURES_SCROLLAREA_VIEW_H

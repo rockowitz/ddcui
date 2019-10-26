@@ -14,6 +14,7 @@
 class QLabel;
 class QHBoxLayout;
 class FeatureBaseModel;
+class QResizeEvent;
 
 
 class FeatureWidget :
@@ -39,6 +40,9 @@ public:
 
     uint8_t             _feature_code;
     QString*            _feature_name;
+
+protected:
+    // void resizeEvent(QResizeEvent * event) override;   // UNNEEDED
 
 public slots:
     void onInternalValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl);

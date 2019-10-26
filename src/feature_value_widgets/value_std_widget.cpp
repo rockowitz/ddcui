@@ -16,7 +16,7 @@
 #include "base/ddcui_globals.h"
 
 
-static bool dimensionReportShown = false;
+static bool showDimensionReport = false;
 
 
 void ValueStdWidget::layoutWidget() {
@@ -39,12 +39,15 @@ void ValueStdWidget::layoutWidget() {
 
      QHBoxLayout * layout = new QHBoxLayout();
      layout->setContentsMargins(0,0,0,0);
+     layout->addSpacing(5);
      layout->addWidget(_valueField);
      setLayout(layout);
 
      if (debugLayout) {
         this->setStyleSheet("background-color:magenta;");
-        if (!dimensionReportShown) {
+
+        static bool dimensionReportShown = false;
+        if (showDimensionReport && !dimensionReportShown) {
             TRACE("_valueField dimensions");
             reportWidgetDimensions(_valueField, _cls, __func__);
             TRACE("ValueStdWidget dimensions");
