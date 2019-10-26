@@ -68,6 +68,7 @@ void dbgrpt_parsed_cmd(Parsed_Cmd * parsed_cmd) {
       printf("   display ddc errors:        %s\n", sbool(parsed_cmd->flags & CMD_FLAG_DDCDATA) );
       printf("   timestamp prefix:          %s\n", sbool(parsed_cmd->flags & CMD_FLAG_TIMESTAMP_TRACE) );
       printf("   thread_id prefix:          %s\n", sbool(parsed_cmd->flags & CMD_FLAG_THREAD_ID_TRACE) );
+      printf("   show styles:               %s\n", sbool(parsed_cmd->flags & CMD_FLAG_SHOW_STYLES) );
       printf("   sleep multiplier:         %9.1f\n", parsed_cmd->sleep_multiplier);
 
    }

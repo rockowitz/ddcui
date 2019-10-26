@@ -102,6 +102,16 @@ int main(int argc, char *argv[])
     if (!parsed_cmd)
        return 1;
 
+    if (parsed_cmd->flags & CMD_FLAG_SHOW_STYLES) {
+       QStringList styles = QStyleFactory::keys();
+       printf("Known styles:\n");
+       for (int ndx = 0;  ndx < styles.size(); ndx++)
+       {
+          printf("  %s\n", styles.at(ndx).toLocal8Bit().constData());
+       }
+       return 0;
+    }
+
     // local, not in ddcutil library
      enable_trace_show_time(     parsed_cmd->flags & CMD_FLAG_TIMESTAMP_TRACE);
      enable_trace_show_thread_id(parsed_cmd->flags & CMD_FLAG_THREAD_ID_TRACE);
@@ -109,13 +119,14 @@ int main(int argc, char *argv[])
     if (!init_ddcutil_library(parsed_cmd))
        return 1;
 
+#ifdef OLD_LOCATION
     QStringList styles = QStyleFactory::keys();
     printf("Known styles:\n");
     for (int ndx = 0;  ndx < styles.size(); ndx++)
     {
        printf("  %s\n", styles.at(ndx).toLocal8Bit().constData());
     }
-
+#endif
 
 
     MainWindow w;

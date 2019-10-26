@@ -16,6 +16,7 @@ typedef enum {
    CMD_FLAG_THREAD_ID_TRACE     = 0x0800,
    CMD_FLAG_ENABLE_UDF        = 0x100000,
    CMD_FLAG_NOUSB             = 0x200000,
+   CMD_FLAG_SHOW_STYLES       = 0x400000,
 } Parsed_Cmd_Flags;
 
 #define PARSED_CMD_MARKER  "PCMD"

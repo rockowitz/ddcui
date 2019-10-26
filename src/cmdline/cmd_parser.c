@@ -25,79 +25,6 @@
 #include "cmdline/parsed_cmd.h"
 #include "cmdline/cmd_parser.h"
 
-#ifdef OLD
-// copied from ddcutil string_util.h
-
-/** Tests if one string is a valid abbreviation of another.
- *
- * @param  value     is this string an abbreviation?
- * @param  longname  unabbreviated value
- * @param  minchars  minimum number of characters that must match
- * @return true/false
- */
-static bool is_abbrev(const char * value, const char * longname, size_t  minchars) {
-   bool result = false;
-   if (value && longname) {
-      int vlen = strlen(value);
-      if ( vlen >= minchars &&
-           vlen <= strlen(longname) &&
-           memcmp(value, longname, vlen) == 0   // n. returns 0 if vlen == 0
-         )
-      {
-         result = true;
-      }
-   }
-   // printf("(%s) value=|%s|, longname=|%s| returning %d\n", __func__, value, longname, result);
-   return result;
-}
-
-char * sbool(int val) {  return (val)  ? "true" : "false"; }
-
-
-/** Converts a string to a float value.
- *
- * @param sval   string representing an integer
- * @param p_fval address at which to store float value
- * @return true if conversion succeeded, false if it failed
- *
- * @remark
- * \remark
- * If conversion fails, the value pointed to by **p_fval** is unchanged.
- * @remark
- * This function wraps system function strtof(), hiding the ugly details.
- */
-bool str_to_float(const char * sval, float * p_fval)
-{
-   bool debug = false;
-   if (debug)
-      printf("(%s) sval->|%s|\n", __func__, sval);
-
-   bool ok = false;
-   if ( *sval != '\0') {
-      char * tailptr;
-      float result = strtof(sval, &tailptr);
-
-      if (*tailptr == '\0') {
-         *p_fval = result;
-         ok = true;
-      }
-   }
-
-   if (debug) {
-      if (ok)
-        printf("(%s) sval=%s, Returning: %s, *p_fval = %16.7f\n", __func__, sval, sbool(ok), *p_fval);
-      else
-        printf("(%s) sval=%s, Returning: %s\n", __func__, sval, sbool(ok));
-   }
-   return ok;
-}
-
-
-
-// End of functions from string_util.h
-#endif
-
-
 // Variables used by callback functions
 static DDCA_Stats_Type   stats_work    = DDCA_STATS_NONE;
 char *   maxtrywork      = NULL;
@@ -176,6 +103,7 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
    gboolean timestamp_trace_flag = false;
    gboolean thread_id_trace_flag = false;
    gboolean version_flag           = false;
+   gboolean show_styles_flag       = false;
    gchar**  cmd_and_args           = NULL;
    gchar**  trace_classes          = NULL;
    gchar**  trace_filenames        = NULL;
@@ -206,17 +134,20 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
 
 
   // debugging
-      {"excp",    '\0', 0, G_OPTION_ARG_NONE,     &report_freed_excp_flag,  "Report freed exceptions", NULL},
-      {"trace",   '\0', 0, G_OPTION_ARG_STRING_ARRAY, &trace_classes, "Trace classes",         "trace class name" },
-  //  {"trace",   '\0', 0, G_OPTION_ARG_STRING,   &tracework,        "Trace classes",          "comma separated list" },
-      {"trcfunc", '\0',0, G_OPTION_ARG_STRING_ARRAY, &trace_functions, "Trace functions",     "function name" },
-      {"trcfile", '\0',0, G_OPTION_ARG_STRING_ARRAY, &trace_filenames,    "Trace files",     "file name" },
-      {"timestamp",'\0',  0, G_OPTION_ARG_NONE,   &timestamp_trace_flag, "Prepend trace msgs with elapsed time",  NULL},
-      {"ts",      '\0',   0, G_OPTION_ARG_NONE,   &timestamp_trace_flag, "Prepend trace msgs with elapsed time",  NULL},
-      {"thread-id",'\0',  0, G_OPTION_ARG_NONE,   &thread_id_trace_flag, "Prepend trace msgs with thread id",  NULL},
-      {"tid",     '\0',   0, G_OPTION_ARG_NONE,   &thread_id_trace_flag, "Prepend trace msgs with thread id",  NULL},
+      {"excp",     '\0',   0, G_OPTION_ARG_NONE,     &report_freed_excp_flag,  "Report freed exceptions", NULL},
+      {"trace",    '\0',   0, G_OPTION_ARG_STRING_ARRAY, &trace_classes, "Trace classes",         "trace class name" },
+  //  {"trace",    '\0',   0, G_OPTION_ARG_STRING,   &tracework,        "Trace classes",          "comma separated list" },
+      {"trcfunc",  '\0',   0, G_OPTION_ARG_STRING_ARRAY, &trace_functions, "Trace functions",     "function name" },
+      {"trcfile",  '\0',   0, G_OPTION_ARG_STRING_ARRAY, &trace_filenames,    "Trace files",     "file name" },
+      {"timestamp",'\0',   0, G_OPTION_ARG_NONE,   &timestamp_trace_flag, "Prepend trace msgs with elapsed time",  NULL},
+      {"ts",       '\0',   0, G_OPTION_ARG_NONE,   &timestamp_trace_flag, "Prepend trace msgs with elapsed time",  NULL},
+      {"thread-id",'\0',   0, G_OPTION_ARG_NONE,   &thread_id_trace_flag, "Prepend trace msgs with thread id",     NULL},
+      {"tid",      '\0',   0, G_OPTION_ARG_NONE,   &thread_id_trace_flag, "Prepend trace msgs with thread id",     NULL},
 
-      {"version", 'V',  0, G_OPTION_ARG_NONE,     &version_flag,     "Show version information", NULL},
+
+// Pre-GUI queries
+      {"styles",   '\0',   0, G_OPTION_ARG_NONE,     &show_styles_flag,     "List known styles",        NULL},
+      {"version",  'V',    0, G_OPTION_ARG_NONE,     &version_flag,         "Show version information", NULL},
 
       // collect to verify that does not exist
       {G_OPTION_REMAINING,
@@ -279,6 +210,7 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
 
    SET_CMDFLAG(CMD_FLAG_ENABLE_UDF,        enable_udf_flag);
    SET_CMDFLAG(CMD_FLAG_NOUSB,             nousb_flag);
+   SET_CMDFLAG(CMD_FLAG_SHOW_STYLES,       show_styles_flag);
 
 #undef SET_CMDFLAG
 
@@ -426,6 +358,9 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
          puts("There is NO WARRANTY, to the extent permitted by law.");
 
          exit(0);
+   }
+
+   if (show_styles_flag) {
    }
 
    // DBGMSF(debug, "Calling g_option_context_free(), context=%p...", context);
