@@ -44,9 +44,10 @@ void ValueNcWidget::layoutWidget() {
     _cb = new QComboBox();
     _extraInfo =  new QLabel("_extraInfo");
 
-    QSizePolicy* sizePolicy = new QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    sizePolicy->setControlType(QSizePolicy::ComboBox);
-    _cb->setSizePolicy(*sizePolicy);
+    // QSizePolicy* sizePolicy = new QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    QSizePolicy sizePolicy = QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    sizePolicy.setControlType(QSizePolicy::ComboBox);
+    _cb->setSizePolicy(sizePolicy);
     _cb->setFont(nonMonoFont8);
     _cb->setMaximumHeight(20);
     // whatever the size, large or small, causes big gap between RW and feature value
@@ -60,9 +61,9 @@ void ValueNcWidget::layoutWidget() {
     _extraInfo->setFont(font);
     _extraInfo->setIndent(5);
 
-    sizePolicy = new QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
-    sizePolicy->setHorizontalStretch(1);
-    _extraInfo->setSizePolicy(*sizePolicy);
+    sizePolicy = QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+    sizePolicy.setHorizontalStretch(1);
+    _extraInfo->setSizePolicy(sizePolicy);
     // delete sizePolicy;
 
 #ifdef APPLY_CANCEL
