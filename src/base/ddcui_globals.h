@@ -51,6 +51,18 @@ do { \
    printftcmf(_FLAG, _cls, __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
 } while(0)
 
+#define TRACE2( _FMT, ...) \
+do { \
+   printftcmf(true, metaObject()->className(), __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+} while(0)
+
+#define TRACEF2(_FLAG, _FMT, ...) \
+do { \
+   printftcmf(_FLAG, metaObject()->className(), __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+} while(0)
+
+
+
 inline const char * sbool(bool val) { return (val) ? "true" : "false"; }
 inline const char * qs2s(QString qstr) {return qstr.toLatin1().data(); }
 
