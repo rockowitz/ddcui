@@ -6,9 +6,11 @@ project(ddcui)
 # set (coverity_cflags --no_predefined_feature_test_macros)
 
 message(STATUS "Significant environment variables:")
-message(STATUS "  INCLUDE:        " $ENV{INCLUDE})
-message(STATUS "  LD_LIBRARY_PATH:  $ENV{LD_LIBARARY_PATH}")
-message(STATUS "  PKG_CONFIG_PATH:  $ENV{PKG_CONFIG_PATH} ")
+message(STATUS "  INCLUDE:           $ENV{INCLUDE}")
+message(STATUS "  LD_LIBRARY_PATH:   $ENV{LD_LIBARARY_PATH}")
+message(STATUS "  PKG_CONFIG_PATH:   $ENV{PKG_CONFIG_PATH} ")
+message(STATUS "  CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
+message(STATUS "  CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
 # message("  NONESUCH:"        $ENV{NONESUCH})
 message(STATUS "")
 
@@ -33,13 +35,16 @@ set(CMAKE_AUTORCC ON)
 
 # ADDITIONAL_MAKE_CLEAN_FILES(  ... )
 
-message( STATUS "CMAKE_MODULE_PATH: " ${CMAKE_MODULE_PATH})
-message( STATUS "CMAKE_PREFIX_PATH: " ${CMAKE_PREFIX_PATH})
+
 
 # Find the QtWidgets library
 # find_package(Qt5Widgets)
 # ensures all Qt componenets have same version: 
 find_package(Qt5 COMPONENTS Core Widgets Gui Help REQUIRED)
+message( STATUS "Qt5Widgets_INCLUDE_DIRS:    ${Qt5Widgets_INCLUDE_DIRS}" )
+message( STATUS "Qt5Core_INCLUDE_DIRS:       ${Qt5Core_INCLUDE_DIRS}" )
+message( STATUS "Qt5Gui_INCLUDE_DIRS:        ${Qt5Gui_INCLUDE_DIRS}" )
+message( STATUS "Qt5Help_INCLUDE_DIRS:       ${Qt5Help_INCLUDE_DIRS}" )
 
 # find_package(glib-2.0)
 
@@ -49,9 +54,10 @@ pkg_check_modules(GLIB2 REQUIRED glib-2.0)
 pkg_check_modules(DDCUTIL REQUIRED ddcutil>=0.9.6)
 message("Set by pkg-config:" )
 message( STATUS "GLIB2_INCLUDE_DIRS:    ${GLIB2_INCLUDE_DIRS}" )
+message( STATUS "GLIB2_LIBRARIES:       ${GLIB2_LIBRARIES}" )
 message( STATUS "DDCUTIL_INCLUDE_DIRS:  ${DDCUTIL_INCLUDE_DIRS}" )
 message( STATUS "DDCUTIL_LIBRARY_DIRS:  ${DDCUTIL_LIBRARY_DIRS}" )
-message( STATUS "DDCUTIL_LIBRARIES:  ${DDCUTIL_LIBRARIES}" )
+message( STATUS "DDCUTIL_LIBRARIES:     ${DDCUTIL_LIBRARIES}" )
 
 # hack for testing
 # set(DDCUTIL_LIBRARY_DIRS /usr/lib/x86_64-linux-gnu/)
@@ -63,7 +69,8 @@ message( STATUS "DDCUTIL_LIBRARIES:  ${DDCUTIL_LIBRARIES}" )
 # message( STATUS "DDCUTIL_LIBRARY:  ${DDCUTIL_LIBRARY}" )
 
 
-include_directories(SYSTEM ${Qt5Widgets_INCLUDE_DIRS} ${GLIB2_INCLUDE_DIRS} ${DDCUTIL_INCLUDE_DIRS} )
+include_directories(SYSTEM ${Qt5Widgets_INCLUDE_DIRS} ${Qt5Gui_INCLUDE_DIRS} ${Qt5Core_INCLUDE_DIRS} ${Qt5Help_INCLUDE_DIRS} 
+                           ${GLIB2_INCLUDE_DIRS} ${DDCUTIL_INCLUDE_DIRS} )
 
 # both work:
 OPTION(APPLY_CANCEL "Use Accept/Cancel buttons" OFF)
