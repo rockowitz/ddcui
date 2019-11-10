@@ -87,7 +87,6 @@ void reportQSizePolicy(
 
     g_snprintf(indent, 100, "%*s", d1*3, "");
 
-    int x;
     char buf[100];
     Qt::Orientations orientations = p.expandingDirections();
     g_snprintf(buf, 100, "%sexpandingDirections:  %s  %s\n",
