@@ -1,6 +1,6 @@
 // feature_selector.h
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef FEATURE_SELECTOR_H
@@ -15,7 +15,8 @@ public:
     DDCA_Feature_Subset_Id _featureListId           = DDCA_SUBSET_KNOWN;
     bool                   _showUnsupportedFeatures = false;
     bool                   _includeTableFeatures    = false;
-    bool                   _respectCapabilities     = true;
+    bool                   _includeOnlyCapabilities = true;
+    bool                   _includeAllCapabilities  = false;
 
     bool operator==(const FeatureSelector& sel2) const;
     bool operator!=(const FeatureSelector& sel2) const;

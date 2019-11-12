@@ -427,18 +427,29 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
     QString msg = QString("Reading monitor features...");
     _ui->statusBar->showMessage(msg);
 
-    DDCA_Feature_List featuresToShow = monitor->getFeatureList(_feature_selector->_featureListId);
-    TRACEF(debugFeatureLists,
-        "features_to_show: %s", ddca_feature_list_string(&featuresToShow, NULL, (char*)" "));
+    DDCA_Feature_List featuresToShow = DDCA_EMPTY_FEATURE_LIST;
+    if (_feature_selector->_featureListId == DDCA_SUBSET_CAPABILITIES) {
+       featuresToShow = ddca_feature_list_from_capabilities(monitor->_baseModel->_parsed_caps);
 
-    if (_feature_selector->_respectCapabilities) {
-       // need to test _parsed_caps is valid
-       // n. simply manipulates data structures, does not perform monitor io
-       DDCA_Feature_List caps_features =
-             ddca_feature_list_from_capabilities(monitor->_baseModel->_parsed_caps);
+    }
+    else {
+       featuresToShow = monitor->getFeatureList(_feature_selector->_featureListId);
        TRACEF(debugFeatureLists,
-           "Capabilities features: %s", ddca_feature_list_string(&caps_features, NULL, (char*)" "));
-       featuresToShow = ddca_feature_list_and(&featuresToShow, &caps_features);
+           "features_to_show: %s", ddca_feature_list_string(&featuresToShow, NULL, (char*)" "));
+
+       if (_feature_selector->_includeOnlyCapabilities || _feature_selector->_includeAllCapabilities) {
+          // need to test _parsed_caps is valid
+          // n. simply manipulates data structures, does not perform monitor io
+          DDCA_Feature_List caps_features =
+                ddca_feature_list_from_capabilities(monitor->_baseModel->_parsed_caps);
+          TRACEF(debugFeatureLists,
+              "Capabilities features: %s", ddca_feature_list_string(&caps_features, NULL, (char*)" "));
+          if (_feature_selector ->_includeOnlyCapabilities)
+             featuresToShow = ddca_feature_list_and(&featuresToShow, &caps_features);
+          else
+             featuresToShow = ddca_feature_list_or(&featuresToShow, &caps_features);
+
+       }
     }
 
     TRACEF(debugFeatureLists,

@@ -38,6 +38,15 @@ private slots:
     void on_buttonBox_helpRequested();
     void on_buttonBox_clicked(QAbstractButton* button);
 
+    void on_known_radioButton_clicked(bool checked);
+    void on_capabilities_radioButton_clicked(int arg1);
+    void on_onlyCapabilities_checkbox_stateChanged(int arg1);
+    void on_mfg_radioButton_clicked(bool checked);
+    void on_profile_radioButton_clicked(bool checked);
+    void on_color_radioButton_clicked(bool checked);
+
+    void on_allCapabilities_checkbox_stateChanged(int arg1);
+
 #ifdef UNUSED
     void on_known_radioButton_clicked(bool checked);
     void on_known_radioButton_clicked();

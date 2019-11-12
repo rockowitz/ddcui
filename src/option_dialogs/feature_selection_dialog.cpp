@@ -41,20 +41,23 @@ void FeatureSelectionDialog::useSelectorData(FeatureSelector * fsel)
         curButton = _ui->color_radioButton;
         break;
     case DDCA_SUBSET_PROFILE:
-        curButton = _ui->profile_RadioButton;
+        curButton = _ui->profile_radioButton;
         break;
     case DDCA_SUBSET_MFG:
-        curButton = _ui->mfg_RadioButton;
+        curButton = _ui->mfg_radioButton;
         break;
+    case DDCA_SUBSET_CAPABILITIES:
+        curButton = _ui->capabilities_radioButton;
     case DDCA_SUBSET_UNSET:
         assert(false);
         break;
     }
     curButton->setChecked(true);
 
-    _ui->include_table_checkBox->setChecked(   fsel->_includeTableFeatures);
-    _ui->show_unsupported_checkBox->setChecked(fsel->_showUnsupportedFeatures);
-    _ui->capabilities_checkbox->setChecked(    fsel->_respectCapabilities);
+    _ui->includeTable_checkbox->setChecked(   fsel->_includeTableFeatures);
+    _ui->showUnsupported_checkbox->setChecked(fsel->_showUnsupportedFeatures);
+    _ui->onlyCapabilities_checkbox->setChecked(    fsel->_includeOnlyCapabilities);
+    _ui->allCapabilities_checkbox->setChecked(fsel->_includeAllCapabilities);
 }
 
 
@@ -74,6 +77,18 @@ FeatureSelectionDialog::FeatureSelectionDialog(
 {
     // TRACE("_ui=%p, _featureSelector = %p\n", _ui, _featureSelector);
     _ui->setupUi(this);
+
+    QObject::connect(_ui->known_radioButton, &QAbstractButton::clicked,
+                      this, &FeatureSelectionDialog::on_known_radioButton_clicked);
+    QObject::connect(_ui->capabilities_radioButton, &QAbstractButton::clicked,
+                      this, &FeatureSelectionDialog::on_capabilities_radioButton_clicked);
+    QObject::connect(_ui->mfg_radioButton, &QAbstractButton::clicked,
+                      this, &FeatureSelectionDialog::on_mfg_radioButton_clicked);
+    QObject::connect(_ui->mfg_profileButton, &QAbstractButton::clicked,
+                      this, &FeatureSelectionDialog::on_profile_radioButton_clicked);
+    QObject::connect(_ui->color_radioButton, &QAbstractButton::clicked,
+                      this, &FeatureSelectionDialog::on_color_radioButton_clicked);
+
     useSelectorData(_featureSelector);
 }
 
@@ -119,20 +134,76 @@ void FeatureSelectionDialog::on_color_radioButton_clicked()
 {
   setFeatureSet(DDCA_SUBSET_COLOR);
 }
+#endif
 
-void FeatureSelectionDialog::on_capabilities_checkbox_stateChanged(int arg1)
-{
-   cout << "(on_capabilities_checkBox_stateChanged) arg1 = " << arg1 << endl;
+
+void FeatureSelectionDialog::on_known_radioButton_clicked(bool checked) {
+   cout << "(on_known_radioButton_clicked) arg1 = " << checked << endl;
+   _ui->allCapabilities_checkbox->setEnabled(true);
+   _ui->onlyCapabilities_checkbox->setEnabled(true);
 }
 
-void FeatureSelectionDialog::on_show_unsupported_checkBox_stateChanged(int arg1)
+
+void FeatureSelectionDialog::on_capabilities_radioButton_clicked(int arg1) {
+   cout << "(on_capabilities_radioButton_clicked) arg1 = " << arg1 << endl;
+   _ui->allCapabilities_checkbox->setEnabled(false);
+    _ui->onlyCapabilities_checkbox->setEnabled(false);
+    _ui->allCapabilities_checkbox->setChecked(false);
+     _ui->onlyCapabilities_checkbox->setChecked(false);
+}
+
+
+void FeatureSelectionDialog::on_mfg_radioButton_clicked(bool checked) {
+   cout << "(mfg_radioButton_clicked) arg1 = " << checked << endl;
+   _ui->allCapabilities_checkbox->setEnabled(false);
+   _ui->onlyCapabilities_checkbox->setEnabled(true);
+   _ui->allCapabilities_checkbox->setChecked(false);
+}
+
+void FeatureSelectionDialog::on_profile_radioButton_clicked(int arg1) {
+   cout << "(on_profile_radioButton_clicked) arg1 = " << arg1 << endl;
+   _ui->allCapabilities_checkbox->setEnabled(false);
+   _ui->onlyCapabilities_checkbox->setEnabled(true);
+   _ui->allCapabilities_checkbox->setChecked(false);
+}
+
+void FeatureSelectionDialog::on_color_radioButton_clicked(int arg1) {
+   cout << "(on_color_radioButton_clicked) arg1 = " << arg1 << endl;
+   _ui->allCapabilities_checkbox->setEnabled(false);
+   _ui->onlyCapabilities_checkbox->setEnabled(true);
+   _ui->allCapabilities_checkbox->setChecked(false);
+}
+
+
+
+
+void FeatureSelectionDialog::on_onlyCapabilities_checkbox_stateChanged(int arg1)
+{
+   cout << "(on_onlyCapabilities_checkBox_stateChanged) arg1 = " << arg1 << endl;
+   if (_ui->onlyCapabilities_checkbox->isChecked() ) {     // or != 0
+      _ui->allCapabilities_checkbox->setCheckState(Qt::Unchecked);
+   }
+}
+
+void FeatureSelectionDialog::on_allCapabilities_checkbox_stateChanged(int arg1)
+{
+   cout << "(on_allCapabilities_checkBox_stateChanged) arg1 = " << arg1 << endl;
+   if (arg1 == 2) {
+      _ui->onlyCapabilities_checkbox->setCheckState(Qt::Unchecked);
+   }
+}
+
+
+
+
+#ifdef UNUSED
+void FeatureSelectionDialog::on_showUsupported_checkbox_stateChanged(int arg1)
 {
    cout << "(on_show_unpported_checkBox_stateChanged) arg1 = " << arg1 << endl;
 }
-
-void FeatureSelectionDialog::on_include_table_checkBox_stateChanged(int arg1)
+void FeatureSelectionDialog::on_includeTable_checkbox_stateChanged(int arg1)
 {
-   cout << "(on_include_table_checkBox_StateChanged) arg1 = " << arg1 << endl;
+   cout << "(on_includeTable_checkbox_StateChanged) arg1 = " << arg1 << endl;
 }
 #endif
 
@@ -148,12 +219,12 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
         feature_list = DDCA_SUBSET_COLOR;
     else if (_ui->known_radioButton->isChecked())
         feature_list = DDCA_SUBSET_KNOWN;
-    else if (_ui->mfg_RadioButton->isChecked())
+    else if (_ui->mfg_radioButton->isChecked())
         feature_list = DDCA_SUBSET_MFG;
-    else if (_ui->profile_RadioButton->isChecked())
+    else if (_ui->profile_radioButton->isChecked())
         feature_list = DDCA_SUBSET_PROFILE;
-    else if (_ui->scan_radioButton->isChecked())
-        feature_list = DDCA_SUBSET_KNOWN;    // hack for now
+    else if (_ui->capabilities_radioButton->isChecked())
+        feature_list = DDCA_SUBSET_CAPABILITIES;
     else
         feature_list = DDCA_SUBSET_KNOWN;    // should never occur
 
@@ -162,22 +233,37 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
        _featureSelector->_featureListId = feature_list;
        changed = true;
     }
-    if (_ui->include_table_checkBox->isChecked() !=  _featureSelector->_includeTableFeatures)
+    if (_ui->includeTable_checkbox->isChecked() !=  _featureSelector->_includeTableFeatures)
     {
-       _featureSelector->_includeTableFeatures = _ui->include_table_checkBox->isChecked();
+       _featureSelector->_includeTableFeatures = _ui->includeTable_checkbox->isChecked();
        changed = true;
     }
-    if (_featureSelector->_showUnsupportedFeatures !=_ui->show_unsupported_checkBox->isChecked())
+    if (_featureSelector->_showUnsupportedFeatures !=_ui->showUnsupported_checkbox->isChecked())
     {
-        _featureSelector->_showUnsupportedFeatures = _ui->show_unsupported_checkBox->isChecked();
+        _featureSelector->_showUnsupportedFeatures = _ui->showUnsupported_checkbox->isChecked();
        changed = true;
     }
-    if (_featureSelector->_respectCapabilities != _ui->capabilities_checkbox->isChecked() )
+    if (_featureSelector->_includeOnlyCapabilities != _ui->onlyCapabilities_checkbox->isChecked() )
     {
-        _featureSelector->_respectCapabilities = _ui->capabilities_checkbox->isChecked();
+        _featureSelector->_includeOnlyCapabilities = _ui->onlyCapabilities_checkbox->isChecked();
        changed = true;
     }
-    // TODO: show_unsupported and show-table check boxes
+    if (_featureSelector->_includeAllCapabilities != _ui->allCapabilities_checkbox->isChecked() )
+     {
+         _featureSelector->_includeAllCapabilities = _ui->allCapabilities_checkbox->isChecked();
+        changed = true;
+     }
+    if (_featureSelector->_showUnsupportedFeatures != _ui->showUnsupported_checkbox->isChecked() )
+     {
+         _featureSelector->_showUnsupportedFeatures = _ui->showUnsupported_checkbox->isChecked();
+        changed = true;
+     }
+    if (_featureSelector->_includeTableFeatures != _ui->includeTable_checkbox->isChecked() )
+     {
+         _featureSelector->_includeTableFeatures = _ui->includeTable_checkbox->isChecked();
+        changed = true;
+     }
+    // TODO: showUnsupported and show-table check boxes
 
     if (debugFeatureSelection) {
         TRACE("_feature_selector:");

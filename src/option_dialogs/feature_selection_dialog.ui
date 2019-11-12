@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>583</width>
-    <height>353</height>
+    <height>391</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,16 +17,24 @@
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>300</y>
+     <y>320</y>
      <width>341</width>
-     <height>32</height>
+     <height>61</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>11</pointsize>
+    </font>
    </property>
    <property name="orientation">
     <enum>Qt::Horizontal</enum>
    </property>
    <property name="standardButtons">
     <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok|QDialogButtonBox::Reset</set>
+   </property>
+   <property name="centerButtons">
+    <bool>true</bool>
    </property>
   </widget>
   <widget class="QLabel" name="label">
@@ -44,53 +52,86 @@
     </font>
    </property>
    <property name="text">
-    <string>Feature Selection</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Feature Selection&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </widget>
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>70</y>
-     <width>364</width>
-     <height>220</height>
+     <y>60</y>
+     <width>531</width>
+     <height>251</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="spacing">
+     <number>3</number>
+    </property>
     <item>
      <widget class="QRadioButton" name="known_radioButton">
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>50</weight>
+        <italic>false</italic>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="toolTip">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This is tooltip text&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
       <property name="text">
-       <string>&amp;DEFINED - All features defined in MCCS</string>
+       <string>&amp;KNOWN - All features defined in MCCS</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QRadioButton" name="scan_radioButton">
+     <widget class="QRadioButton" name="capabilities_radioButton">
       <property name="enabled">
-       <bool>false</bool>
+       <bool>true</bool>
       </property>
       <property name="font">
        <font>
-        <strikeout>false</strikeout>
+        <pointsize>10</pointsize>
+        <weight>50</weight>
+        <italic>false</italic>
+        <bold>false</bold>
        </font>
       </property>
+      <property name="whatsThis">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This is whats this text&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
       <property name="text">
-       <string>SCAN - Scan all feature &amp;Values</string>
+       <string>CAPABILITIES - All features defined in capabilities string</string>
       </property>
       <property name="checkable">
-       <bool>false</bool>
+       <bool>true</bool>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QRadioButton" name="mfg_RadioButton">
+     <widget class="QRadioButton" name="mfg_radioButton">
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
       <property name="text">
        <string>&amp;MANUFACTURER - Manufacturer specific features</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QRadioButton" name="profile_RadioButton">
+     <widget class="QRadioButton" name="profile_radioButton">
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>50</weight>
+        <italic>false</italic>
+        <bold>false</bold>
+       </font>
+      </property>
       <property name="text">
        <string>PROFILE - Features saved and restored for color profile</string>
       </property>
@@ -101,30 +142,56 @@
     </item>
     <item>
      <widget class="QRadioButton" name="color_radioButton">
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
       <property name="text">
        <string>COLOR - All color related features</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QCheckBox" name="capabilities_checkbox">
+     <widget class="QCheckBox" name="allCapabilities_checkbox">
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>50</weight>
+        <italic>false</italic>
+        <bold>false</bold>
+       </font>
+      </property>
       <property name="text">
-       <string>Respect Reported Capabilities</string>
+       <string>Include all features in capabilities string</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QCheckBox" name="show_unsupported_checkBox">
+     <widget class="QCheckBox" name="onlyCapabilities_checkbox">
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Exclude features not in capabilities string</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QCheckBox" name="showUnsupported_checkbox">
       <property name="enabled">
-       <bool>false</bool>
+       <bool>true</bool>
       </property>
       <property name="font">
        <font>
+        <pointsize>10</pointsize>
         <strikeout>false</strikeout>
        </font>
       </property>
       <property name="text">
-       <string>Include Unsupported Features</string>
+       <string>Show unsupported features</string>
       </property>
       <property name="checkable">
        <bool>false</bool>
@@ -132,12 +199,13 @@
      </widget>
     </item>
     <item>
-     <widget class="QCheckBox" name="include_table_checkBox">
+     <widget class="QCheckBox" name="includeTable_checkbox">
       <property name="enabled">
        <bool>false</bool>
       </property>
       <property name="font">
        <font>
+        <pointsize>10</pointsize>
         <strikeout>false</strikeout>
        </font>
       </property>
