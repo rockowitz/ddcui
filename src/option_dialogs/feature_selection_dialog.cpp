@@ -53,6 +53,7 @@ void FeatureSelectionDialog::useSelectorData(FeatureSelector * fsel)
         break;
     }
     curButton->setChecked(true);
+    // to do: enable/disable other buttons as appropriate
 
     _ui->includeTable_checkbox->setChecked(   fsel->_includeTableFeatures);
     _ui->showUnsupported_checkbox->setChecked(fsel->_showUnsupportedFeatures);
@@ -84,7 +85,7 @@ FeatureSelectionDialog::FeatureSelectionDialog(
                       this, &FeatureSelectionDialog::on_capabilities_radioButton_clicked);
     QObject::connect(_ui->mfg_radioButton, &QAbstractButton::clicked,
                       this, &FeatureSelectionDialog::on_mfg_radioButton_clicked);
-    QObject::connect(_ui->mfg_profileButton, &QAbstractButton::clicked,
+    QObject::connect(_ui->profile_radioButton, &QAbstractButton::clicked,
                       this, &FeatureSelectionDialog::on_profile_radioButton_clicked);
     QObject::connect(_ui->color_radioButton, &QAbstractButton::clicked,
                       this, &FeatureSelectionDialog::on_color_radioButton_clicked);
@@ -144,12 +145,12 @@ void FeatureSelectionDialog::on_known_radioButton_clicked(bool checked) {
 }
 
 
-void FeatureSelectionDialog::on_capabilities_radioButton_clicked(int arg1) {
-   cout << "(on_capabilities_radioButton_clicked) arg1 = " << arg1 << endl;
+void FeatureSelectionDialog::on_capabilities_radioButton_clicked(bool checked) {
+   cout << "(on_capabilities_radioButton_clicked) arg1 = " << checked << endl;
    _ui->allCapabilities_checkbox->setEnabled(false);
-    _ui->onlyCapabilities_checkbox->setEnabled(false);
-    _ui->allCapabilities_checkbox->setChecked(false);
-     _ui->onlyCapabilities_checkbox->setChecked(false);
+   _ui->onlyCapabilities_checkbox->setEnabled(false);
+   _ui->allCapabilities_checkbox->setChecked(false);
+   _ui->onlyCapabilities_checkbox->setChecked(false);
 }
 
 
@@ -160,15 +161,15 @@ void FeatureSelectionDialog::on_mfg_radioButton_clicked(bool checked) {
    _ui->allCapabilities_checkbox->setChecked(false);
 }
 
-void FeatureSelectionDialog::on_profile_radioButton_clicked(int arg1) {
-   cout << "(on_profile_radioButton_clicked) arg1 = " << arg1 << endl;
+void FeatureSelectionDialog::on_profile_radioButton_clicked(bool checked) {
+   cout << "(on_profile_radioButton_clicked) arg1 = " << checked << endl;
    _ui->allCapabilities_checkbox->setEnabled(false);
    _ui->onlyCapabilities_checkbox->setEnabled(true);
    _ui->allCapabilities_checkbox->setChecked(false);
 }
 
-void FeatureSelectionDialog::on_color_radioButton_clicked(int arg1) {
-   cout << "(on_color_radioButton_clicked) arg1 = " << arg1 << endl;
+void FeatureSelectionDialog::on_color_radioButton_clicked(bool checked) {
+   cout << "(on_color_radioButton_clicked) arg1 = " << checked << endl;
    _ui->allCapabilities_checkbox->setEnabled(false);
    _ui->onlyCapabilities_checkbox->setEnabled(true);
    _ui->allCapabilities_checkbox->setChecked(false);

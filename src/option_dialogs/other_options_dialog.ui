@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>185</height>
+    <width>477</width>
+    <height>161</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,10 +23,15 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>130</y>
+     <y>100</y>
      <width>341</width>
      <height>32</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
    </property>
    <property name="orientation">
     <enum>Qt::Horizontal</enum>
@@ -47,6 +52,11 @@
      <height>22</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
    <property name="toolTip">
     <string>List of valid values are taken from the MCCS specification</string>
    </property>
@@ -66,6 +76,11 @@
      <height>22</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
    <property name="toolTip">
     <string>List of valid values taken from the capabilities string, names of valid values taken from MCCS spec</string>
    </property>
@@ -76,17 +91,17 @@
     <string notr="true">ncValueSourceButtonGroup</string>
    </attribute>
   </widget>
-  <widget class="QLabel" name="label">
+  <widget class="QLabel" name="nc_value_options_header">
    <property name="geometry">
     <rect>
      <x>20</x>
      <y>10</y>
-     <width>341</width>
+     <width>441</width>
      <height>18</height>
     </rect>
    </property>
    <property name="text">
-    <string>Source of values for simple non-continuous features</string>
+    <string>Source of values for simple non-continuous features:</string>
    </property>
   </widget>
   <widget class="QRadioButton" name="bothNcValuesButton">
@@ -97,6 +112,11 @@
      <width>261</width>
      <height>22</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
    </property>
    <property name="toolTip">
     <string>Valid values are those either in the MCCS spec or the capabilities string</string>

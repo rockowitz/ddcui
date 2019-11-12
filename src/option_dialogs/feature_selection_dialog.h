@@ -39,7 +39,7 @@ private slots:
     void on_buttonBox_clicked(QAbstractButton* button);
 
     void on_known_radioButton_clicked(bool checked);
-    void on_capabilities_radioButton_clicked(int arg1);
+    void on_capabilities_radioButton_clicked(bool checked);
     void on_onlyCapabilities_checkbox_stateChanged(int arg1);
     void on_mfg_radioButton_clicked(bool checked);
     void on_profile_radioButton_clicked(bool checked);
