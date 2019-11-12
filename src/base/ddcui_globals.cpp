@@ -217,7 +217,7 @@ bool printftcmf(
    if (debug) {
 
       //if ( is_tracing(trace_group, filename, funcname) ) {
-         va_list(args);
+         va_list args;
          va_start(args, format);
          char * buffer = g_strdup_vprintf(format, args);
          va_end(args);

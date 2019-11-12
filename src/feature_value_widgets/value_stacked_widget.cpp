@@ -114,7 +114,7 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
     TRACEF(debug, "Starting. feature code: 0x%02x", fv.featureCode());
     // ValueBaseWidget::setFeatureValue(fv);
     _featureCode = fv.featureCode();   // needed since not calling ValueBaseWidget::setFeatureValue()
-    DDCA_MCCS_Version_Spec vspec = fv.vspec();
+    // DDCA_MCCS_Version_Spec vspec = fv.vspec();   // unused
 
     // alt, test for PRESET, then xb0 (settings) or normal
     if ( _featureCode == 0x04 ||    // Restore factory defaults

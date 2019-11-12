@@ -233,8 +233,8 @@ void VcpThread::capabilities() {
       // usleep(1000000);
       ddcrc = ddca_get_capabilities_string(dh, &caps);
       if (ddcrc != 0) {
-         DDCA_Error_Detail * err_detail =  ddca_get_error_detail();
          TRACE("Error getting capabilities string for %s", ddca_dref_repr(this->_dref));
+         // DDCA_Error_Detail * err_detail =  ddca_get_error_detail();
          // ddca_report_error_detail(err_detail, 2);
          rpt_ddca_status(0, __func__, "ddca_get_capabilities_string", ddcrc);
       }

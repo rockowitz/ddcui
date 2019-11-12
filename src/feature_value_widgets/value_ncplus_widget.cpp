@@ -28,7 +28,7 @@
 
 #include "nongui/feature_base_model.h"
 
-static bool dimensionReportShown = false;
+// static bool dimensionReportShown = false;  // unused
 
 #ifdef UNUSED
 void ValueNcplusWidget::layoutWidget() {
@@ -187,7 +187,7 @@ void ValueNcplusWidget::setAuxFields() {
 }
 
 void ValueNcplusWidget::setFeatureValue(const FeatureValue &fv) {
-   DDCA_MCCS_Version_Spec vspec = fv.vspec();
+   // DDCA_MCCS_Version_Spec vspec = fv.vspec();   // unused
    // TRACE("Starting. feature = 0x%02x, vspec = %d.%d", fv.featureCode(), vspec.major, vspec.minor);
    ValueNcWidget::setFeatureValue(fv);
    // do layout here since we don't know util the feature is loaded what the required layout is
