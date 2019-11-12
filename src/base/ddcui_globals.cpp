@@ -17,8 +17,8 @@
 
 const bool debugSignals            = false;
 const bool debugValueWidgetSignals = false;
-const bool debugFeatureLists       = false;
-const bool debugFeatureSelection   = false;
+const bool debugFeatureLists       = true;
+const bool debugFeatureSelection   = true;
 const bool debugLayout             = false;
 const bool debugNcValues           = false;
 
@@ -224,7 +224,7 @@ bool printftcmf(
          int    bufsz = strlen(buffer) + 1;
          char * buf2  = (char *) calloc(bufsz+60, sizeof(char));
 
-         char funcbuf[50];
+         char funcbuf[80];
          if (cls)
             g_snprintf(funcbuf, sizeof(funcbuf), "%s::%s", cls, funcname);
          else
