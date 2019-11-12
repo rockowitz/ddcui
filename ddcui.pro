@@ -110,6 +110,7 @@ SOURCES += \
 
 
 SOURCES += \
+    src/feature_scrollarea/features_scrollarea.cpp \
     src/feature_scrollarea/features_scrollarea_ui.cpp \
     src/feature_scrollarea/feature_widget.cpp \
     src/feature_scrollarea/feature_widget_header.cpp \
@@ -201,6 +202,7 @@ HEADERS += \
 
 
 HEADERS += \
+    src/feature_scrollarea/features_scrollarea.h \
     src/feature_scrollarea/features_scrollarea_ui.h \
     src/feature_scrollarea/feature_widget.h \
     src/feature_scrollarea/feature_widget_header.h \
