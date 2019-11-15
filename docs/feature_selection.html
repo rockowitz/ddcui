@@ -10,12 +10,13 @@
         The feature groups are: 
         <ul>
             <li>
-                <em>Defined</em> - All features defined in the MCCS specification.
+                <em>Known</em> - All features defined in the MCCS specification.
                 Includes features in the manufacturer specific range (xe0..xff)
                 Note that the defined features vary by MCCS version, as reported by the monitor.
             </li>
+<li><em>Capabilities</em> - All features defined in the capabilities string.
             <li>
-                <em>Scan</em> - Examine all feature codes. Unimplemented - cannot be checked.
+                <em>Scan</em> - Examine all possible feature codes, except those known to be read-only or of type Table.
             </li>
             <li>
                 <em>Manufacturer</em> - Examine feature codes in the manufacturer specific range (xe0..xff)
@@ -23,18 +24,18 @@
             <li>
                 <em>Color</em> - Color related feature codes.
             </li>
-            <li>
-                <em>Profile</em> - Color related feature codes that are saved and restored by <em>loadvcp</em> and <i>savevcp</i>. 
-            </li>
+ 
         </ul>
-        The features reported can further be refined by the following filters:
+        The features reported can further be refined by the following filters.  Not all filters apply to every group.
         <ul>
             <li>
-                <em>Respect Reported Capabilities</em> - Report only those features found in the Capabilities string
+<em>Include all features in capabilities string</em>
+- Add all features in the capabilities string to those in the group.
+<li>
+                <em>Exclude features not in capabilities string</em> - Include only features in the group that are also found in the Capabilities string
             </li>
             <li>
-                <em>Include Unsupported Features</em> - Include features that are reported as unsupported.
-                Unimplemented - cannot be checked.
+                <em>Show Unsupported Features</em> - Include features that are reported as unsupported.
             </li>
             <li>
                 <em>Include Table Features</em> - Include features of type Table.  
