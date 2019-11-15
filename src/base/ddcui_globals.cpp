@@ -240,7 +240,7 @@ bool printftcmf(
             snprintf(thread_prefix, 15, "[%7jd]", (intmax_t) tid);  // is this proper format for pid_t
          }
 
-         g_snprintf(buf2, bufsz+60, "%s%s(%-30s) %s\n",
+         g_snprintf(buf2, bufsz+100, "%s%s(%-30s) %s\n",
                                   thread_prefix,
                                   elapsed_prefix,
                                   funcbuf,
