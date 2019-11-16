@@ -28,6 +28,6 @@ void FeatureSelector::dbgrpt() {
    printf("   includeTableFeatures:     %s\n", sbool(_includeTableFeatures));
    printf("   showUnsupportedFeatures:  %s\n", sbool(_showUnsupportedFeatures));
    printf("   includeOnlyCapabilities:  %s\n", sbool(_includeOnlyCapabilities));
-   printf("   inncludeAllCapabilities:  %s\n", sbool(_includeAllCapabilities));
+   printf("   includeAllCapabilities:   %s\n", sbool(_includeAllCapabilities));
    fflush(stdout);
 }
