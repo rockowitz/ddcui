@@ -8,6 +8,7 @@
 
 #include <iostream>
 
+#include <QtGui/QFont>
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QMainWindow>
@@ -81,6 +82,7 @@ public:
 
     // Other
     QStackedWidget *centralWidget = NULL;
+    QFont mainMenuFont;
 
 
 private:
@@ -90,6 +92,8 @@ private:
 #endif
     void setupMenus(QMainWindow *MainWindow);
     void layoutCentralWidget(QMainWindow *MainWindow);
+
+
 
 // public:
     void setupUi(QMainWindow *MainWindow);

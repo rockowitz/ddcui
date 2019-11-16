@@ -55,6 +55,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // _ui->setupUi(this);
 
+#ifdef OLD
     // with either ApplicationModal or WindowModal, moving the application does not move the spinner with it
     // _loadingMsgBox has same problem
     _spinner = new WaitingSpinnerWidget(
@@ -74,6 +75,7 @@ MainWindow::MainWindow(QWidget *parent) :
     _loadingMsgBox->setWindowModality(Qt::WindowModal);
     // needs Qt::Dialog, o.w. does not appear
     _loadingMsgBox->setWindowFlags( Qt::Dialog| Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);  // msg box does not display
+#endif
 
 #ifdef ALT
     _loadingMsgBox = new QMessageBox(
@@ -86,9 +88,11 @@ MainWindow::MainWindow(QWidget *parent) :
 #endif
 
     QLabel* toolbarDisplayLabel = new QLabel("&Display:  ");
+    toolbarDisplayLabel->setFont(_ui->mainMenuFont);
     _toolbarDisplayCB = new QComboBox();
     _toolbarDisplayCB->setObjectName("displaySelectorCombobox");
     _toolbarDisplayCB->setStyleSheet("background-color:white; color:black");
+    _toolbarDisplayCB->setFont(_ui->mainMenuFont);
     toolbarDisplayLabel->setBuddy(_toolbarDisplayCB);
     _ui->mainToolBar->addWidget( toolbarDisplayLabel);
     _ui->mainToolBar->addWidget( _toolbarDisplayCB);
@@ -98,6 +102,7 @@ MainWindow::MainWindow(QWidget *parent) :
     _serialMsgBox->setStandardButtons(QMessageBox::Ok);
     _serialMsgBox->setWindowModality(Qt::WindowModal);
     _serialMsgBox->setModal(true);
+    _serialMsgBox->setFont(_ui->mainMenuFont);
 
     _msgboxQueue = new MsgBoxQueue();
     // TRACE("_msgboxQueue=%p", _msgboxQueue);
@@ -435,7 +440,8 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
     else {
        featuresToShow = monitor->getFeatureList(_feature_selector->_featureListId);
        TRACEF(debugFeatureLists,
-           "features_to_show: %s", ddca_feature_list_string(&featuresToShow, NULL, (char*)" "));
+           "features_to_show: (%d) %s", ddca_feature_list_count(&featuresToShow),
+                                        ddca_feature_list_string(&featuresToShow, NULL, (char*)" "));
 
        if (_feature_selector->_includeOnlyCapabilities || _feature_selector->_includeAllCapabilities) {
           // need to test _parsed_caps is valid
@@ -443,7 +449,9 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
           DDCA_Feature_List caps_features =
                 ddca_feature_list_from_capabilities(monitor->_baseModel->_parsed_caps);
           TRACEF(debugFeatureLists,
-              "Capabilities features: %s", ddca_feature_list_string(&caps_features, NULL, (char*)" "));
+              "Capabilities features: (%d) %s",
+              ddca_feature_list_count(&caps_features),
+              ddca_feature_list_string(&caps_features, NULL, (char*)" "));
           if (_feature_selector ->_includeOnlyCapabilities)
              featuresToShow = ddca_feature_list_and(&featuresToShow, &caps_features);
           else
@@ -453,7 +461,9 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
     }
 
     TRACEF(debugFeatureLists,
-        "Final features_to_show: %s", ddca_feature_list_string(&featuresToShow, NULL, (char*)" "));
+        "Final featuresToShow: (%d) %s",
+        ddca_feature_list_count(&featuresToShow),
+        ddca_feature_list_string(&featuresToShow, NULL, (char*)" "));
 
     // causes async feature reads in VcpThread, then load feature values from model into widgets
     monitor->_baseModel->setFeatureList(featuresToShow, _feature_selector->_showUnsupportedFeatures);
@@ -546,7 +556,24 @@ void MainWindow::for_actionFeatureSelectionDialog_accepted()
       TRACEF(debugFunc, "Signaling featureSelectionChanged()");
       emit featureSelectionChanged();
    }
+   else {
+      TRACEF(debugFunc, "Not signaling featureSelectionChanged()");
+   }
+
+#ifdef UNNEEDED
+   // TODO need semaphore - wait until monitors initialized
+   for(int ndx = 0; ndx < _monitors.size(); ndx++) {
+
+       Monitor * monitor = _monitors[ndx];
+       FeatureSelector fsel = monitor->_curFeatureSelector;
+       bool showUnsupported = fsel._showUnsupportedFeatures;
+       VcpRequestQueue * curQueue = monitor->_requestQueue;
+       VcpRequest request;
+       curQueue->put(request);
+   }
+#endif
 }
+
 
 
 // OtherOptions slots

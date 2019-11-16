@@ -9,6 +9,7 @@
 // file with extension .ui to process.
 
 
+
 #include "mainwindow_ui.h"
 
    Ui_MainWindow::Ui_MainWindow(QMainWindow* mainWindow)
@@ -72,23 +73,30 @@
        actionManufacturer->setObjectName(QString::fromUtf8("actionManufacturer"));
 #endif
 
+
+
+
        // Feature Selection menu action
        actionFeatureSelectionDialog = new QAction(MainWindow);
        actionFeatureSelectionDialog->setObjectName(QString::fromUtf8("actionFeatureSelectionDialog"));
        actionFeatureSelectionDialog->setText(
              QApplication::translate("MainWindow", "&Feature Selection",        nullptr, -1));
+       actionFeatureSelectionDialog->setFont(mainMenuFont);
 
        // Options menu actions
        actionOtherOptionsDialog = new QAction(MainWindow);
        actionOtherOptionsDialog->setObjectName(QString::fromUtf8("actionOtherOptionsDialog"));
        actionOtherOptionsDialog->setText(
-             QApplication::translate("MainWindow", "&Other Options",            nullptr, -1));
+             QApplication::translate("MainWindow", "&NC Feature Values",            nullptr, -1));
+             // was "&Other Options"
+       actionOtherOptionsDialog->setFont(mainMenuFont);
 
        // User Interface menu action
        actionUserInterfaceOptionsDialog = new QAction(MainWindow);
        actionUserInterfaceOptionsDialog->setObjectName(QString::fromUtf8("actionUserInterfaceOptionsDialog"));
        actionUserInterfaceOptionsDialog->setText(
              QApplication::translate("MainWindow", "&User Interface Options",   nullptr, -1));
+       actionUserInterfaceOptionsDialog->setFont(mainMenuFont);
 
        // Actions Menu Actions
        actionRescan = new QAction(MainWindow);
@@ -139,11 +147,13 @@
        // Menu Bar
        menuBar = new QMenuBar(MainWindow);
        menuBar->setObjectName(QString::fromUtf8("menuBar"));
+       menuBar->setFont(mainMenuFont);
        // menuBar->setGeometry(QRect(0, 0, 800, 30));
 
        menuView = new QMenu(menuBar);
        menuView->setObjectName(QString::fromUtf8("menuView"));
        menuView->setTitle(    QApplication::translate("MainWindow", "&View", nullptr, -1));
+       menuView->setFont(mainMenuFont);  // sets the font for menu entries
 
        // menuDisplays = new QMenu(menuBar);
        // menuDisplays->setObjectName(QString::fromUtf8("menuDisplays"));
@@ -152,10 +162,12 @@
        menuActions = new QMenu(menuBar);
        menuActions->setObjectName(QString::fromUtf8("menuActions"));
        menuActions->setTitle(  QApplication::translate("MainWindow", "Actions", nullptr, -1));
+       menuActions->setFont(mainMenuFont); // font for Actions menu entries
 
        menuOptions = new QMenu(menuBar);
        menuOptions->setObjectName(QString::fromUtf8("menuOptions"));
        menuOptions->setTitle( QApplication::translate("MainWindow", "Optio&ns", nullptr, -1));
+       menuOptions->setFont(mainMenuFont);
        menuOptions->addAction(actionFeatureSelectionDialog);
        menuOptions->addAction(actionOtherOptionsDialog);
        menuOptions->addAction(actionUserInterfaceOptionsDialog);
@@ -164,6 +176,7 @@
        menuHelp = new QMenu(menuBar);
        menuHelp->setObjectName(QString::fromUtf8("menuHelp"));
        menuHelp->setTitle(    QApplication::translate("MainWindow", "Help", nullptr, -1));
+       menuHelp->setFont(mainMenuFont);
 
        MainWindow->setMenuBar(menuBar);
 
@@ -186,10 +199,12 @@
 
 
        actionRescan->setText(    QApplication::translate("MainWindow", "&Rescan feature values", nullptr, -1));
+       actionRescan->setFont(mainMenuFont);
        actionRescan->setEnabled(false);
 
        actionRedetect->setText(  QApplication::translate("MainWindow", "&Redetect monitors", nullptr, -1));
        actionRedetect->setEnabled(false);
+       actionRedetect->setFont(mainMenuFont);
 
        menuActions->addAction(actionRescan);
        // menuActions->addAction(actionRedetect);   // FUTURE
@@ -198,8 +213,9 @@
        menuHelp->addAction(actionAboutQt);
 
        actionAbout->setText(QApplication::translate(  "MainWindow", "&About ddcui", nullptr, -1));
+       actionAbout->setFont(mainMenuFont);
        actionAboutQt->setText(QApplication::translate("MainWindow", "About &Qt", nullptr, -1));
-
+       actionAboutQt->setFont(mainMenuFont);
 
        // Tool Bar
        mainToolBar = new QToolBar(MainWindow);
@@ -209,6 +225,7 @@
        // Status Bar
        statusBar = new QStatusBar(MainWindow);
        statusBar->setObjectName(QString::fromUtf8("statusBar"));
+       statusBar->setFont(mainMenuFont);
        MainWindow->setStatusBar(statusBar);
     }
 
@@ -250,6 +267,13 @@
          // sizePolicy.setHeightForWidth(MainWindow->sizePolicy().hasHeightForWidth());
          sizePolicy.setHeightForWidth(false);
          MainWindow->setSizePolicy(sizePolicy);
+
+         mainMenuFont = QFont();
+         mainMenuFont.setPointSize(10);
+         // match settings in UI Designer
+         mainMenuFont.setKerning(true);
+         mainMenuFont.setFamily("DejaVu Sans [Qt Embedded");
+         mainMenuFont.setStyleStrategy(   QFont::PreferDefault);
 
          initActions(MainWindow);
 
