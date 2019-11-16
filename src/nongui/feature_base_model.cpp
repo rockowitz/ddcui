@@ -261,9 +261,10 @@ FeatureBaseModel::setFeatureList(
       bool              reportUnsupported)
 {
    bool debugFunc = debugFeatureLists;
-   debugFunc = false;
-   TRACEF(debugFunc, "Starting. Features: %s",
-         ddca_feature_list_string(&featureList, NULL, (char*) " "));
+   debugFunc = true;
+   TRACEF(debugFunc, "Starting. Features: %s, reportUnsupported: %s",
+         ddca_feature_list_string(&featureList, NULL, (char*) " "),
+         sbool(reportUnsupported) );
    _featuresToShow = featureList;
 
    DDCA_Feature_List unchecked_features =
@@ -274,6 +275,8 @@ FeatureBaseModel::setFeatureList(
                 ddca_feature_list_string(&unchecked_features, NULL, (char*) " "));
    }
 
+   //bool showUnsupported = _monitor->_curFeatureSelector._showUnsupportedFeatures;
+   // TRACEF(debugFunc, "_monitor->curFeatureSelector._showUnsupportedFeatures = %s", sbool(showUnsupported));
    _monitor->_requestQueue->put(new VcpStartInitialLoadRequest);
    for (int ndx = 0; ndx <= 255; ndx++) {
        uint8_t vcp_code = (uint8_t) ndx;
@@ -298,13 +301,14 @@ void FeatureBaseModel::reloadFeatures() {
    TRACEF(debugFunc, "Starting.");
 
    _monitor->_requestQueue->put(new VcpStartInitialLoadRequest);
+   bool showUnsupported = _monitor->_curFeatureSelector._showUnsupportedFeatures;
    int ct = modelVcpValueCount();
    for (int ndx = 0; ndx < ct; ndx++) {
       FeatureValue* fv =  modelVcpValueAt(ndx);
       uint8_t featureCode = fv->featureCode();
       DDCA_Feature_Flags flags = fv->flags();
       if (flags & DDCA_RW) {
-         _monitor->_requestQueue->put( new VcpGetRequest(featureCode));
+         _monitor->_requestQueue->put( new VcpGetRequest(featureCode, showUnsupported));
       }
    }
    _monitor->_requestQueue->put(new VcpEndInitialLoadRequest);
