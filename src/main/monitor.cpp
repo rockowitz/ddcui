@@ -81,7 +81,8 @@ Monitor::getFeatureList(DDCA_Feature_Subset_Id feature_list_id) {
         }
     }
     TRACEF(debugFunc,
-         "Returning: %s", ddca_feature_list_string(&result, NULL, (char*)" "));
+         "Returning: %d features: %s", ddca_feature_list_count(&result),
+                                       ddca_feature_list_string(&result, NULL, (char*)" "));
     return result;
 }
 
