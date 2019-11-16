@@ -258,8 +258,8 @@ void VcpThread::capabilities() {
 // Process RQGetVcp
 void VcpThread::getvcp(uint8_t featureCode, bool reportUnsupported) {
     bool debugFunc = debugThread;
-    // debugFunc = true;
-    TRACEF(debugFunc, "Starting. featureCode=0x%02x, reportUnsupported=%s",
+    debugFunc = false;
+    TRACEF(debugFunc||true, "Starting. featureCode=0x%02x, reportUnsupported=%s",
                             featureCode, sbool(reportUnsupported));
 
     DDCA_Display_Handle                   dh;
