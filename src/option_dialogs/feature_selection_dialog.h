@@ -44,8 +44,10 @@ private slots:
     void on_mfg_radioButton_clicked(bool checked);
     void on_profile_radioButton_clicked(bool checked);
     void on_color_radioButton_clicked(bool checked);
+    void on_scan_radioButton_clicked(bool checked);
 
     void on_allCapabilities_checkbox_stateChanged(int arg1);
+    void on_showUnsupported_checkbox_stateChanged(int arg1);
 
 #ifdef UNUSED
     void on_known_radioButton_clicked(bool checked);

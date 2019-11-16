@@ -48,6 +48,10 @@ void FeatureSelectionDialog::useSelectorData(FeatureSelector * fsel)
         break;
     case DDCA_SUBSET_CAPABILITIES:
         curButton = _ui->capabilities_radioButton;
+        break;
+    case DDCA_SUBSET_SCAN:
+        curButton = _ui->scan_radioButton;
+        break;
     case DDCA_SUBSET_UNSET:
         assert(false);
         break;
@@ -55,10 +59,10 @@ void FeatureSelectionDialog::useSelectorData(FeatureSelector * fsel)
     curButton->setChecked(true);
     // to do: enable/disable other buttons as appropriate
 
-    _ui->includeTable_checkbox->setChecked(   fsel->_includeTableFeatures);
-    _ui->showUnsupported_checkbox->setChecked(fsel->_showUnsupportedFeatures);
-    _ui->onlyCapabilities_checkbox->setChecked(    fsel->_includeOnlyCapabilities);
-    _ui->allCapabilities_checkbox->setChecked(fsel->_includeAllCapabilities);
+    _ui->includeTable_checkbox->setChecked(    fsel->_includeTableFeatures);
+    _ui->showUnsupported_checkbox->setChecked( fsel->_showUnsupportedFeatures);
+    _ui->onlyCapabilities_checkbox->setChecked(fsel->_includeOnlyCapabilities);
+    _ui->allCapabilities_checkbox->setChecked( fsel->_includeAllCapabilities);
 }
 
 
@@ -89,6 +93,8 @@ FeatureSelectionDialog::FeatureSelectionDialog(
                       this, &FeatureSelectionDialog::on_profile_radioButton_clicked);
     QObject::connect(_ui->color_radioButton, &QAbstractButton::clicked,
                       this, &FeatureSelectionDialog::on_color_radioButton_clicked);
+    QObject::connect(_ui->scan_radioButton, &QAbstractButton::clicked,
+                        this, &FeatureSelectionDialog::on_scan_radioButton_clicked);
 
     useSelectorData(_featureSelector);
 }
@@ -144,6 +150,14 @@ void FeatureSelectionDialog::on_known_radioButton_clicked(bool checked) {
    _ui->onlyCapabilities_checkbox->setEnabled(true);
 }
 
+void FeatureSelectionDialog::on_scan_radioButton_clicked(bool checked) {
+   cout << "(on_scan_radioButton_clicked) arg1 = " << checked << endl;
+   _ui->allCapabilities_checkbox->setEnabled(false);
+   _ui->onlyCapabilities_checkbox->setEnabled(false);
+   _ui->allCapabilities_checkbox->setChecked(false);
+   _ui->onlyCapabilities_checkbox->setChecked(false);
+}
+
 
 void FeatureSelectionDialog::on_capabilities_radioButton_clicked(bool checked) {
    cout << "(on_capabilities_radioButton_clicked) arg1 = " << checked << endl;
@@ -196,6 +210,15 @@ void FeatureSelectionDialog::on_allCapabilities_checkbox_stateChanged(int arg1)
 
 
 
+void FeatureSelectionDialog::on_showUnsupported_checkbox_stateChanged(int arg1)
+{
+   cout << "(on_showUnsupported_checkBox_stateChanged) arg1 = " << arg1 << endl;
+   // if (_ui->showUnsupported_checkbox->isChecked() ) {     // or != 0
+   //    _ui->allCapabilities_checkbox->setCheckState(Qt::Unchecked);
+   // }
+}
+
+
 
 #ifdef UNUSED
 void FeatureSelectionDialog::on_showUsupported_checkbox_stateChanged(int arg1)
@@ -212,6 +235,7 @@ void FeatureSelectionDialog::on_includeTable_checkbox_stateChanged(int arg1)
 void FeatureSelectionDialog::on_buttonBox_accepted()
 {
     bool debugFunc = debugFeatureSelection;
+    debugFunc = true;
     TRACEF(debugFunc, "Executing");
     // which button is currently clicked?
 
@@ -226,9 +250,12 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
         feature_list = DDCA_SUBSET_PROFILE;
     else if (_ui->capabilities_radioButton->isChecked())
         feature_list = DDCA_SUBSET_CAPABILITIES;
+    else if (_ui->scan_radioButton->isChecked())
+        feature_list = DDCA_SUBSET_SCAN;
     else
         feature_list = DDCA_SUBSET_KNOWN;    // should never occur
 
+    TRACEF(debugFunc, "Checking for any changes...");
     bool changed = false;
     if (feature_list != _featureSelector->_featureListId) {
        _featureSelector->_featureListId = feature_list;
@@ -269,15 +296,18 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
     if (debugFeatureSelection) {
         TRACE("_feature_selector:");
         _featureSelector->dbgrpt();
-        if (changed)
-           TRACE("Signaling featureSelectionChanged()");
-        else
-           TRACE("NOT Signaling featureSelectionChanged()");
     }
 
-    if (changed)
+    if (changed) {
+       TRACEF(debugFunc, "Signaling featureSelectionChanged()");
        emit featureSelectionChanged();
-    // emit featureSelectionAccepted(feature_list);
+       // emit featureSelectionAccepted(feature_list);
+    }
+    else {
+       TRACEF(debugFunc, "NOT Signaling featureSelectionChanged()");
+    }
+
+
 }
 
 

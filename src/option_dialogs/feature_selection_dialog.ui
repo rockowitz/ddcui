@@ -61,7 +61,7 @@
      <x>30</x>
      <y>60</y>
      <width>531</width>
-     <height>251</height>
+     <height>261</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -153,6 +153,18 @@
      </widget>
     </item>
     <item>
+     <widget class="QRadioButton" name="scan_radioButton">
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>SCAN - All possible features</string>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="QCheckBox" name="allCapabilities_checkbox">
       <property name="font">
        <font>
@@ -194,7 +206,7 @@
        <string>Show unsupported features</string>
       </property>
       <property name="checkable">
-       <bool>false</bool>
+       <bool>true</bool>
       </property>
      </widget>
     </item>
