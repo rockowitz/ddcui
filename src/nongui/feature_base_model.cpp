@@ -289,6 +289,28 @@ FeatureBaseModel::setFeatureList(
    TRACEF(debugFunc, "Done");
 }
 
+// reload specific features, but only if they were already loadeed
+// used when setting one feature requires rereading others
+
+void
+FeatureBaseModel::reloadSpecificFeatures(int ct, uint8_t* features) {
+   for (int ndx = 0; ndx < ct; ndx++) {
+      DDCA_Vcp_Feature_Code vcp_code = features[ndx];
+      if (ddca_feature_list_contains(& _featuresChecked, vcp_code)) {
+         FeatureValue *  fv = modelVcpValueFind(vcp_code);
+         // should alwasy exist, but just in case
+         if (fv) {
+            // is this right?
+            bool showUnsupported =  _monitor->_curFeatureSelector._showUnsupportedFeatures;
+            TRACE("Putting VcpGetRequest(0x%02x, %s) on _requestQueue", vcp_code, sbool(showUnsupported));
+            _monitor->_requestQueue->put( new VcpGetRequest(vcp_code, showUnsupported));
+         }
+         else
+            TRACE("FeatureValue for 0x%02x not found", vcp_code);
+      }
+   }
+
+}
 
 void FeatureBaseModel::setFeatureChecked(uint8_t featureCode) {
    ddca_feature_list_add(&_featuresChecked, featureCode);

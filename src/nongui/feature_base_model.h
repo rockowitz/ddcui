@@ -68,9 +68,10 @@ public:
     void setFeatureList(DDCA_Feature_List featureList, bool reportUnsupported=false);
     void setFeatureChecked(uint8_t featureCode);
     void reloadFeatures();
+    void reloadSpecificFeatures(int ct, uint8_t* features);
 
     // *** Public Member Variables ***
-    const char *        _cls;    // className
+    const char *        _cls;    // classNameS
 
     Monitor *           _monitor;
 
