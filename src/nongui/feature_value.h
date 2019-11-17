@@ -36,6 +36,7 @@ public:
     DDCA_Feature_Flags       flags()       const;
     DDCA_Cap_Vcp *           capVcp()      const;
     DDCA_Non_Table_Vcp_Value val()         const;
+    DDCA_Status              ddcrc()       const;
     void                     setCurrentValue(uint8_t sh, uint8_t sl);
     void                     setCurrentValue(uint16_t newval);
     void                     dbgrpt()      const;

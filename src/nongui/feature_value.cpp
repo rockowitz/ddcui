@@ -105,6 +105,9 @@ FeatureValue::setCurrentValue(uint16_t newval) {
    _value.sl = newval & 0xff;
 }
 
+DDCA_Status FeatureValue::ddcrc() const {
+   return _getvcpStatus;
+}
 
 
 //DDCA_Monitor_Model_Key   FeatureValue::mmid()   const {
