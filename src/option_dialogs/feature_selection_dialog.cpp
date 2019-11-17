@@ -40,8 +40,8 @@ void FeatureSelectionDialog::useSelectorData(FeatureSelector * fsel)
     case DDCA_SUBSET_COLOR:
         curButton = _ui->color_radioButton;
         break;
-    case DDCA_SUBSET_PROFILE:
-        curButton = _ui->profile_radioButton;
+    case DDCA_SUBSET_PROFILE: // removed from dialog, case left to satisfy that all cases addressed
+        // curButton = _ui->profile_radioButton;
         break;
     case DDCA_SUBSET_MFG:
         curButton = _ui->mfg_radioButton;
@@ -89,8 +89,10 @@ FeatureSelectionDialog::FeatureSelectionDialog(
                       this, &FeatureSelectionDialog::on_capabilities_radioButton_clicked);
     QObject::connect(_ui->mfg_radioButton, &QAbstractButton::clicked,
                       this, &FeatureSelectionDialog::on_mfg_radioButton_clicked);
+#ifdef NO_PROFILE_BUTTON
     QObject::connect(_ui->profile_radioButton, &QAbstractButton::clicked,
                       this, &FeatureSelectionDialog::on_profile_radioButton_clicked);
+#endif
     QObject::connect(_ui->color_radioButton, &QAbstractButton::clicked,
                       this, &FeatureSelectionDialog::on_color_radioButton_clicked);
     QObject::connect(_ui->scan_radioButton, &QAbstractButton::clicked,
@@ -246,8 +248,10 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
         feature_list = DDCA_SUBSET_KNOWN;
     else if (_ui->mfg_radioButton->isChecked())
         feature_list = DDCA_SUBSET_MFG;
+#ifdef NO_PROFILE_BUTTON
     else if (_ui->profile_radioButton->isChecked())
         feature_list = DDCA_SUBSET_PROFILE;
+#endif
     else if (_ui->capabilities_radioButton->isChecked())
         feature_list = DDCA_SUBSET_CAPABILITIES;
     else if (_ui->scan_radioButton->isChecked())
