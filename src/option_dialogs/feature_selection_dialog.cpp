@@ -147,13 +147,14 @@ void FeatureSelectionDialog::on_color_radioButton_clicked()
 
 
 void FeatureSelectionDialog::on_known_radioButton_clicked(bool checked) {
-   cout << "(on_known_radioButton_clicked) arg1 = " << checked << endl;
+    // cout << "(on_known_radioButton_clicked) arg1 = " << checked << endl;
    _ui->allCapabilities_checkbox->setEnabled(true);
    _ui->onlyCapabilities_checkbox->setEnabled(true);
 }
 
+
 void FeatureSelectionDialog::on_scan_radioButton_clicked(bool checked) {
-   cout << "(on_scan_radioButton_clicked) arg1 = " << checked << endl;
+    // cout << "(on_scan_radioButton_clicked) arg1 = " << checked << endl;
    _ui->allCapabilities_checkbox->setEnabled(false);
    _ui->onlyCapabilities_checkbox->setEnabled(false);
    _ui->allCapabilities_checkbox->setChecked(false);
@@ -162,7 +163,7 @@ void FeatureSelectionDialog::on_scan_radioButton_clicked(bool checked) {
 
 
 void FeatureSelectionDialog::on_capabilities_radioButton_clicked(bool checked) {
-   cout << "(on_capabilities_radioButton_clicked) arg1 = " << checked << endl;
+    // cout << "(on_capabilities_radioButton_clicked) arg1 = " << checked << endl;
    _ui->allCapabilities_checkbox->setEnabled(false);
    _ui->onlyCapabilities_checkbox->setEnabled(false);
    _ui->allCapabilities_checkbox->setChecked(false);
@@ -171,45 +172,43 @@ void FeatureSelectionDialog::on_capabilities_radioButton_clicked(bool checked) {
 
 
 void FeatureSelectionDialog::on_mfg_radioButton_clicked(bool checked) {
-   cout << "(mfg_radioButton_clicked) arg1 = " << checked << endl;
+    // cout << "(mfg_radioButton_clicked) arg1 = " << checked << endl;
    _ui->allCapabilities_checkbox->setEnabled(false);
    _ui->onlyCapabilities_checkbox->setEnabled(true);
    _ui->allCapabilities_checkbox->setChecked(false);
 }
 
 void FeatureSelectionDialog::on_profile_radioButton_clicked(bool checked) {
-   cout << "(on_profile_radioButton_clicked) arg1 = " << checked << endl;
+    // cout << "(on_profile_radioButton_clicked) arg1 = " << checked << endl;
    _ui->allCapabilities_checkbox->setEnabled(false);
    _ui->onlyCapabilities_checkbox->setEnabled(true);
    _ui->allCapabilities_checkbox->setChecked(false);
 }
 
 void FeatureSelectionDialog::on_color_radioButton_clicked(bool checked) {
-   cout << "(on_color_radioButton_clicked) arg1 = " << checked << endl;
+    // cout << "(on_color_radioButton_clicked) arg1 = " << checked << endl;
    _ui->allCapabilities_checkbox->setEnabled(false);
    _ui->onlyCapabilities_checkbox->setEnabled(true);
    _ui->allCapabilities_checkbox->setChecked(false);
 }
 
 
-
-
 void FeatureSelectionDialog::on_onlyCapabilities_checkbox_stateChanged(int arg1)
 {
-   cout << "(on_onlyCapabilities_checkBox_stateChanged) arg1 = " << arg1 << endl;
+   // cout << "(on_onlyCapabilities_checkBox_stateChanged) arg1 = " << arg1 << endl;
    if (_ui->onlyCapabilities_checkbox->isChecked() ) {     // or != 0
       _ui->allCapabilities_checkbox->setCheckState(Qt::Unchecked);
    }
 }
 
+
 void FeatureSelectionDialog::on_allCapabilities_checkbox_stateChanged(int arg1)
 {
-   cout << "(on_allCapabilities_checkBox_stateChanged) arg1 = " << arg1 << endl;
+   // cout << "(on_allCapabilities_checkBox_stateChanged) arg1 = " << arg1 << endl;
    if (arg1 == 2) {
       _ui->onlyCapabilities_checkbox->setCheckState(Qt::Unchecked);
    }
 }
-
 
 
 void FeatureSelectionDialog::on_showUnsupported_checkbox_stateChanged(int arg1)
@@ -219,7 +218,6 @@ void FeatureSelectionDialog::on_showUnsupported_checkbox_stateChanged(int arg1)
    //    _ui->allCapabilities_checkbox->setCheckState(Qt::Unchecked);
    // }
 }
-
 
 
 #ifdef UNUSED
@@ -310,8 +308,6 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
     else {
        TRACEF(debugFunc, "NOT Signaling featureSelectionChanged()");
     }
-
-
 }
 
 
