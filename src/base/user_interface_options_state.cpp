@@ -24,6 +24,6 @@
     if (newControlKeyRequired != old) {
         controlKeyRequired = newControlKeyRequired;
         TRACE("emitting ckrChanged(%s)", sbool(controlKeyRequired));
-        emit ckrChanged(controlKeyRequired);
+        emit controlKeyRequired_changed(controlKeyRequired);
     }
  }

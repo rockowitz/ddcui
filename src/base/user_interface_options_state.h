@@ -22,7 +22,7 @@ public:
    void setControlKeyRequired(bool onoff);
 
 signals:
-   void ckrChanged(bool onoff);
+   void controlKeyRequired_changed(bool onoff);
 
 private:
    const char * _cls;
