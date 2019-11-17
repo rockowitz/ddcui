@@ -131,12 +131,12 @@ void   FeatureBaseModel::modelVcpValueSet(
     bool debugFunc = debugModel;
     debugFunc = true;
     if (debugFunc)
-        TRACE("feature_code=0x%02x, mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x, ddcrc = %d",
+        TRACE("feature_code=0x%02x, mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x, ddcrc = %s",
                  feature_code, feature_value->mh, feature_value->ml, feature_value->sh, feature_value->sl,
-                 ddcrc);
+                 ddca_rc_name(ddcrc));
 
     _featureStatusCode[feature_code] = ddcrc;
-    if (ddcrc == 0) {
+    // if (ddcrc == 0) {
        int ndx = modelVcpValueIndex(feature_code);
        // printf("(%s) ndx=%d\n", __func__, ndx);  fflush(stdout);
        // FIXME: HACK AROUND LOGIC ERROR
@@ -154,7 +154,8 @@ void   FeatureBaseModel::modelVcpValueSet(
                                       dref,
                                       metadata,
                                       cap_vcp,
-                                      *feature_value);
+                                      *feature_value,
+                                      ddcrc);
            _featureValues->append(fv);
            if (metadata) {
              _featureMetadata[feature_code] = metadata;
@@ -172,11 +173,18 @@ void   FeatureBaseModel::modelVcpValueSet(
            FeatureValue * fv =  _featureValues->at(ndx);
            // fv->_value.sh = feature_value->sh;
            // fv->_value.sl = feature_value->sl;
-           fv->setCurrentValue(feature_value->sh, feature_value->sl);
+
+           // should never fail since it's previously succeeded, but just in case
+           if (ddcrc ==0) {
+              fv->setCurrentValue(feature_value->sh, feature_value->sl);
 
            TRACEF(debugFunc, "=> Emitting signalFeatureUpdated3(), feature code: 0x%02x, sl: 0x%02x",
                     fv->featureCode(), feature_value->sl);
            emit signalFeatureUpdated3(__func__, fv->featureCode(), feature_value->sh, feature_value->sl);
+           }
+           else{
+              TRACE("Unexpected status code %s for previously read feature 0x%02x",
+                   ddca_rc_name(ddcrc), feature_code);
        }
     }
 
