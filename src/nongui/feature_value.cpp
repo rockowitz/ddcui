@@ -27,12 +27,14 @@ FeatureValue::FeatureValue(
         DDCA_Display_Ref         dref,
         DDCA_Feature_Metadata *  finfo,
         DDCA_Cap_Vcp *           cap_vcp,
-        DDCA_Non_Table_Vcp_Value val)
+        DDCA_Non_Table_Vcp_Value val,
+        DDCA_Status              getvcpStatus)
     : _featureCode(feature_code)
     , _dref(dref)
     , _finfo(finfo)
     , _capVcp(cap_vcp)
     , _value(val)
+    , _getvcpStatus(getvcpStatus)
 {
 //    _cls = metaObject()->className();
 

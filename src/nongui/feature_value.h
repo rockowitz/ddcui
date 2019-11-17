@@ -23,7 +23,9 @@ public:
             DDCA_Display_Ref          dref,
             DDCA_Feature_Metadata *   finfo,
             DDCA_Cap_Vcp *            capVcp,
-            DDCA_Non_Table_Vcp_Value  val);
+            DDCA_Non_Table_Vcp_Value  val,
+            DDCA_Status               getvcpStatus=0  // experiment
+            );
 
     ~FeatureValue();
 
@@ -47,6 +49,7 @@ private:
     DDCA_Feature_Metadata *  _finfo  = NULL;
     DDCA_Cap_Vcp *           _capVcp = NULL;
     DDCA_Non_Table_Vcp_Value _value;     // use this or individual bytes? DDCA_Non_Table_Value needed for get_formatted_value call
+    DDCA_Status              _getvcpStatus = 0; // an experiment
 };
 
 Q_DECLARE_METATYPE(FeatureValue)
