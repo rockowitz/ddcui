@@ -51,10 +51,11 @@ public:
 
 class VcpGetRequest: public VcpRequest {
 public:
-    VcpGetRequest(uint8_t featureCode, bool reportUnsupported=false);
+    VcpGetRequest(uint8_t featureCode, bool needMetadata, bool reportUnsupported=false);
     ~VcpGetRequest();
 
     DDCA_Vcp_Feature_Code _featureCode;
+    bool                  _needMetadata;
     bool                  _reportUnsupported = false;
 };
 
