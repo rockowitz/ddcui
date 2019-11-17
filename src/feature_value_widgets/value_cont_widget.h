@@ -28,18 +28,18 @@ public:
     void     setFeatureValue(const FeatureValue &fv) override;
     void     setCurrentShSl(uint16_t newval)         override;
     uint16_t getCurrentShSl()                        override;
-    void setControlKeyRequired(bool onoff)           override;
+    void     setControlKeyRequired(bool onoff)       override;
 
 private:
     void layoutWidget();
 
     EnhancedSlider * _curSlider;
-    QSpinBox*   _curSpinBox;
-    QLabel*     _maxTitle;
-    QLabel*     _maxValue;
-    uint16_t    _newval;
-    QTimer*     _spinBoxTimer;
-    bool        _guiChange = false;
+    QSpinBox*        _curSpinBox;
+    QLabel*          _maxTitle;
+    QLabel*          _maxValue;
+    uint16_t         _newval;
+    QTimer*          _spinBoxTimer;
+    bool             _guiChange = false;
 
 
 private slots:

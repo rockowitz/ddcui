@@ -233,12 +233,16 @@ void ValueContWidget::setFeatureValue(const FeatureValue &fv) {
 
 
 void ValueContWidget::setCurrentShSl(uint16_t newval) {
+   bool debug = false;
+   TRACEF(debug, "newval = 0x%04x", newval);
     ValueBaseWidget::setCurrentShSl(newval);
     _guiChange = false;
 
      int curval = _sh << 8 | _sl;
      TRACEF(debugValueWidgetSignals, "feature=0x%02x, curval=%d", _featureCode , curval);
 
+     // in case the timer is running, don't trigger
+     _spinBoxTimer->stop();
     _curSpinBox->setValue(curval);
     _curSlider->setValue(curval);
 
@@ -250,9 +254,10 @@ void ValueContWidget::setCurrentShSl(uint16_t newval) {
 #endif
 
     _guiChange = true;
+    TRACEF(debug, "Done");
 }
 
-
+// model is changing value
 uint16_t ValueContWidget::getCurrentShSl() {
     int curval = _curSpinBox->value();
     _sh = (curval >> 8) & 0xff;
@@ -269,7 +274,9 @@ void ValueContWidget::onSliderValueChanged(int value) {
 
 
 void ValueContWidget::onSliderReleased() {
-   TRACEF(debugValueWidgetSignals, "feature=0x%02x",  _featureCode);
+   bool debug = debugValueWidgetSignals;
+   // debug = true;
+   TRACEF(debug, "feature=0x%02x",  _featureCode);
 
    int newval = _curSpinBox->value();
 
@@ -295,7 +302,9 @@ void ValueContWidget::onSliderReleased() {
 
 
 void ValueContWidget::onSpinBoxValueChanged(int value) {
-   TRACEF(debugValueWidgetSignals,
+   bool debug = debugValueWidgetSignals;
+   // debug = true;
+   TRACEF(debug,
              "feature=0x%02x, value=%d, _guiChange=%d", _featureCode, value, _guiChange);
 
    int newval = _curSpinBox->value();
@@ -315,11 +324,11 @@ void ValueContWidget::onSpinBoxValueChanged(int value) {
 #endif
       // QTimer::singleShot(1000, this, SLOT(onSpinBoxTimedOut()));
       if (_guiChange) {
-         TRACEF(debugValueWidgetSignals, "Starting timer");
+         TRACEF(debug, "Starting spinbox timer");
          _spinBoxTimer->start();
       }
       else {
-         TRACEF(debugValueWidgetSignals,"Not starting timer");
+         TRACEF(debug,"Not starting spinbox timer");
       }
 #ifdef APPLY_CANCEL
    }
@@ -328,7 +337,9 @@ void ValueContWidget::onSpinBoxValueChanged(int value) {
 }
 
 void ValueContWidget::onSpinBoxTimedOut() {
-   TRACEF(debugValueWidgetSignals,
+   bool debug = debugValueWidgetSignals;
+   // debug = true;
+   TRACEF(debug,
              "feature 0x%02x, _newval=%d, emitting featureValueChanged()", _featureCode, _newval);
 
    uint8_t new_sh = (_newval >> 8) & 0xff;
