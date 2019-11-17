@@ -82,28 +82,28 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
     // ValueStackedWidget * curWidget = this;  // still treated as ValueBaseWidget* in SIGNAL/SLOT versions
 
     QWidget::connect(_contWidget,  &ValueContWidget::featureValueChanged,
-                     this,         &ValueStackedWidget::onContainedWidgetChanged);
+                     this,         &ValueStackedWidget::forContainedWidgetChanged);
 
     QWidget::connect(_ncWidget,    &ValueNcWidget::featureValueChanged,
-                     this,         &ValueStackedWidget::onContainedWidgetChanged);
+                     this,         &ValueStackedWidget::forContainedWidgetChanged);
 
     QWidget::connect(_cncWidgetX14, &ValueNcWidget::featureValueChanged,
-                     this,          &ValueStackedWidget::onContainedWidgetChanged);
+                     this,          &ValueStackedWidget::forContainedWidgetChanged);
 
     QWidget::connect(_bytesWidget,  &ValueBaseWidget::featureValueChanged,
-                     this,          &ValueStackedWidget::onContainedWidgetChanged);
+                     this,          &ValueStackedWidget::forContainedWidgetChanged);
 
 
     QWidget::connect(_resetWidget, &ValueResetWidget::featureValueChanged,
-                     this,         &ValueStackedWidget::onContainedWidgetChanged);
+                     this,         &ValueStackedWidget::forContainedWidgetChanged);
 
 #ifdef WORKS
     QWidget::connect(_ncWidget, SIGNAL(featureValueChanged(     uint8_t, uint8_t, uint8_t)),
-                     curWidget,   SLOT(onContainedWidgetChanged(uint8_t, uint8_t, uint8_t)));
+                     curWidget,   SLOT(forContainedWidgetChanged(uint8_t, uint8_t, uint8_t)));
 
 
     QWidget::connect(_ncWidget, SIGNAL(featureValueChanged(     uint8_t, uint8_t, uint8_t)),
-                      curWidget,  SLOT(onContainedWidgetChanged(uint8_t, uint8_t, uint8_t)));
+                      curWidget,  SLOT(forContainedWidgetChanged(uint8_t, uint8_t, uint8_t)));
 #endif
 }
 
@@ -215,10 +215,10 @@ uint16_t ValueStackedWidget::getCurrentValue() {
 
 
 
-void  ValueStackedWidget::onContainedWidgetChanged(uint8_t feature_code, uint8_t sh, uint8_t sl)
+void  ValueStackedWidget::forContainedWidgetChanged(uint8_t feature_code, uint8_t sh, uint8_t sl)
 {
    bool debug = debugValueWidgetSignals;
-   // debug = true;
+   debug = true;
    TRACEF(debug,
              "feature_code=0x%02x, sh=0x%02x, sl=0x%02x", feature_code, sh, sl);
    assert(feature_code == _featureCode);

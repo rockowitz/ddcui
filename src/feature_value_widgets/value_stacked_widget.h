@@ -70,7 +70,7 @@ private:
     ValueNcplusWidget*  _ncplusWidget;
 
 private slots:
-    void onContainedWidgetChanged(uint8_t feature_code, uint8_t sh, uint8_t sl);
+    void forContainedWidgetChanged(uint8_t feature_code, uint8_t sh, uint8_t sl);
 
 };
 
