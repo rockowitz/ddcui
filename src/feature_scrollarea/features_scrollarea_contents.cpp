@@ -42,7 +42,7 @@ FeaturesScrollAreaContents::FeaturesScrollAreaContents(QWidget * parent) :
 
    // doesn't expand the contents area
    //setSizePolicy( QSizePolicy::MinimumExpanding,  QSizePolicy::MinimumExpanding);
-
+   TRACE("Executing");
 
    if (debugLayout) {
       setStyleSheet("background-color:aqua;");
@@ -56,6 +56,7 @@ FeaturesScrollAreaContents::FeaturesScrollAreaContents(QWidget * parent) :
 
 
 FeaturesScrollAreaContents::~FeaturesScrollAreaContents() {
+   TRACE("Executing");
    // TODO IMPLEMENT!!!
 }
 
