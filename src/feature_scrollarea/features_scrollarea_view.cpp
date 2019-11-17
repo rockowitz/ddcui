@@ -59,6 +59,7 @@ void FeaturesScrollAreaView::freeContents(void) {
 }
 
 
+// how does this get called? is this an implicit connection by name?
 void FeaturesScrollAreaView::onEndInitialLoad(void) {
     bool debug = true;
     TRACEF(debug, "Starting, Monitor=%s", _monitor->_displayInfo->model_name);
@@ -170,14 +171,15 @@ void FeaturesScrollAreaView::onUIValueChanged(
       uint8_t sl)
 {
    bool debug = debugSignals;
-   // debug = true;
+   debug = true;
    TRACEF(debug,
-             "Starting. feature_code = 0x%02x, writeOnly=%s, sh=0x%02x, sl=0x%02x",
+             "Starting. featureCode = 0x%02x, writeOnly=%s, sh=0x%02x, sl=0x%02x",
              featureCode, sbool(writeOnly), sh, sl);
 
    FeatureValue * curFv = _baseModel->modelVcpValueFind(featureCode);
    if (curFv && curFv->val().sh == sh && curFv->val().sl == sl) {
-      TRACE("New value matches model value, Suppressing.");
+      TRACE("featureCode = 0x%02x, New value matches model value, sh=0x%02x, sl=0x%02x, Suppressing.",
+            featureCode, sh, sl);
    }
    else {
       TRACEF(debug, "=> emitting signalVcpRequest() for VcpSetRequst, featureCode=0x%02x", featureCode);
@@ -187,9 +189,13 @@ void FeaturesScrollAreaView::onUIValueChanged(
       // If feature value change affects other features, reread possibly affected features
       switch(featureCode) {
       case 0x05:      // restore factory defaults brightness/contrast
-         emit signalVcpRequest( new VcpGetRequest(0x10) );
-         emit signalVcpRequest( new VcpGetRequest(0x12) );    // what if contrast is unsupported feature?
+      {
+         uint8_t features[2] = {0x10, 0x12};
+         _monitor->_baseModel->reloadSpecificFeatures(2, features);
+         // emit signalVcpRequest( new VcpGetRequest(0x10) );
+         // emit signalVcpRequest( new VcpGetRequest(0x12) );    // what if contrast is unsupported feature?
          break;
+      }
       case 0x04:      // restore factory defaults
       case 0x06:      // restore geometry defaults  - treat as restore factory defaults
       case 0x08:      // restore color defaults     - treat as restore factory defaults
@@ -211,6 +217,8 @@ void FeaturesScrollAreaView::onModelValueChanged(
       uint8_t     sh,
       uint8_t     sl)
 {
+   bool debugFunc = debugSignals;
+   debugFunc = true;
    TRACEF(debugSignals,
              "caller = %s, feature_code = 0x%02x, sh=0x%02x, sl=0x%02x",
              caller, featureCode, sh, sl);
