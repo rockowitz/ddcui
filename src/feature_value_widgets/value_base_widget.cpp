@@ -70,8 +70,8 @@ void ValueBaseWidget::setFeatureValue(const FeatureValue &fv) {
     _controlKeyRequired = globalState._uiOptionsState->controlKeyRequired;
 
     // listen for changes after initialization
-    QObject::connect(globalState._uiOptionsState, &UserInterfaceOptionsState::ckrChanged,
-                    this, &ValueBaseWidget::whenCkrChanged);
+    QObject::connect(globalState._uiOptionsState, &UserInterfaceOptionsState::controlKeyRequired_changed,
+                    this, &ValueBaseWidget::when_controlKeyRequired_changed);
 }
 
 
@@ -105,7 +105,7 @@ bool ValueBaseWidget::getControlKeyRequired() {
    return   _controlKeyRequired ;
 }
 
-void ValueBaseWidget::whenCkrChanged(bool onoff) {
+void ValueBaseWidget::when_controlKeyRequired_changed(bool onoff) {
    // TRACE("Executiong. onoff=%s", sbool(onoff));
    // TRACE("calling setControlKeyRequired()");
    setControlKeyRequired(onoff);

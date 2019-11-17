@@ -47,7 +47,7 @@ signals:
     void featureValueChanged(uint8_t feature_code, uint8_t sh, uint8_t sl);
 
 public slots:
-    void whenCkrChanged(bool onoff);
+    void when_controlKeyRequired_changed(bool onoff);
 
 };
 
