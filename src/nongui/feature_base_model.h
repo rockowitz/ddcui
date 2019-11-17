@@ -43,7 +43,8 @@ public:
              uint8_t                     feature_code,
              DDCA_Display_Ref            dref,   // unnecessary, can get from monitor
              DDCA_Feature_Metadata *     metadata,
-             DDCA_Non_Table_Vcp_Value *  feature_value);
+             DDCA_Non_Table_Vcp_Value *  feature_value,
+             DDCA_Status                 ddcrc);    // ano/dor full blown DDC_Error_info?
     void modelVcpValueUpdate(
              uint8_t                     feature_code,
              uint8_t                     sh,
@@ -104,6 +105,8 @@ private:
     int modelVcpValueIndex(uint8_t feature_code);
 
     QVector<FeatureValue*> * _featureValues;
+    DDCA_Feature_Metadata *  _featureMetadata[256];
+    DDCA_Status              _featureStatusCode[256];    // side table for now, include in FeatureValue?
 #ifdef UNUSED
     DDCA_MCCS_Version_Spec   _vspec;
 #endif

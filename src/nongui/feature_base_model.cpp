@@ -125,51 +125,61 @@ void   FeatureBaseModel::modelVcpValueSet(
                    uint8_t                              feature_code,
                    DDCA_Display_Ref                     dref,
                    DDCA_Feature_Metadata *              metadata,
-                   DDCA_Non_Table_Vcp_Value *           feature_value)
+                   DDCA_Non_Table_Vcp_Value *           feature_value,
+                   DDCA_Status                          ddcrc)
 {
     bool debugFunc = debugModel;
+    debugFunc = true;
     if (debugFunc)
-        TRACE("feature_code=0x%02x, mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x",
-                 feature_code, feature_value->mh, feature_value->ml, feature_value->sh, feature_value->sl);
+        TRACE("feature_code=0x%02x, mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x, ddcrc = %d",
+                 feature_code, feature_value->mh, feature_value->ml, feature_value->sh, feature_value->sl,
+                 ddcrc);
 
-    int ndx = modelVcpValueIndex(feature_code);
-    // printf("(%s) ndx=%d\n", __func__, ndx);  fflush(stdout);
-    // FIXME: HACK AROUND LOGIC ERROR
-    // MAY DO A FULL LOAD MULTIPLE TIMES, E.G if switch table type
-    // assert(ndx < 0);
-    if (ndx < 0) {
-        TRACEF(debugFunc, "Creating new FeatureValue");
+    _featureStatusCode[feature_code] = ddcrc;
+    if (ddcrc == 0) {
+       int ndx = modelVcpValueIndex(feature_code);
+       // printf("(%s) ndx=%d\n", __func__, ndx);  fflush(stdout);
+       // FIXME: HACK AROUND LOGIC ERROR
+       // MAY DO A FULL LOAD MULTIPLE TIMES, E.G if switch table type
+       // assert(ndx < 0);
+       if (ndx < 0) {
+           TRACEF(debugFunc, "Creating new FeatureValue");
 
-        DDCA_Cap_Vcp * cap_vcp = NULL;
-        if (_parsed_caps)
-           cap_vcp = ddcutil_find_cap_vcp(_parsed_caps, feature_code);
+           DDCA_Cap_Vcp * cap_vcp = NULL;
+           if (_parsed_caps)
+              cap_vcp = ddcutil_find_cap_vcp(_parsed_caps, feature_code);
 
-        FeatureValue * fv = new FeatureValue(
-                                   feature_code,
-                                   dref,
-                                   metadata,
-                                   cap_vcp,
-                                   *feature_value);
-        _featureValues->append(fv);
+           FeatureValue * fv = new FeatureValue(
+                                      feature_code,
+                                      dref,
+                                      metadata,
+                                      cap_vcp,
+                                      *feature_value);
+           _featureValues->append(fv);
+           if (metadata) {
+             _featureMetadata[feature_code] = metadata;
+           }
 
-        // Not needed, only thing that matters is end initial load
-        // if (debugSignals)
-        //     printf("(%s::%s) Emitting signalFeatureAdded()\n", _cls, __func__); fflush(stdout);
-        // emit signalFeatureAdded(*fv);
-        // notifyFeatureChangeObservers(feature_code);   // alternative
+           // Not needed, only thing that matters is end initial load
+           // if (debugSignals)
+           //     printf("(%s::%s) Emitting signalFeatureAdded()\n", _cls, __func__); fflush(stdout);
+           // emit signalFeatureAdded(*fv);
+           // notifyFeatureChangeObservers(feature_code);   // alternative
+       }
+       else {
+           // TRACE("Modifying existing FeatureValue");
+
+           FeatureValue * fv =  _featureValues->at(ndx);
+           // fv->_value.sh = feature_value->sh;
+           // fv->_value.sl = feature_value->sl;
+           fv->setCurrentValue(feature_value->sh, feature_value->sl);
+
+           TRACEF(debugFunc, "=> Emitting signalFeatureUpdated3(), feature code: 0x%02x, sl: 0x%02x",
+                    fv->featureCode(), feature_value->sl);
+           emit signalFeatureUpdated3(__func__, fv->featureCode(), feature_value->sh, feature_value->sl);
+       }
     }
-    else {
-        // TRACE("Modifying existing FeatureValue");
 
-        FeatureValue * fv =  _featureValues->at(ndx);
-        // fv->_value.sh = feature_value->sh;
-        // fv->_value.sl = feature_value->sl;
-        fv->setCurrentValue(feature_value->sh, feature_value->sl);
-
-        TRACEF(debugFunc, "=> Emitting signalFeatureUpdated3(), feature code: 0x%02x, sl: 0x%02x",
-                 fv->featureCode(), feature_value->sl);
-        emit signalFeatureUpdated3(__func__, fv->featureCode(), feature_value->sh, feature_value->sl);
-    }
 }
 
 
@@ -180,7 +190,7 @@ FeatureBaseModel::modelVcpValueUpdate(
         uint8_t   sl)
 {
     bool debugFunc = debugModel;
-    // debugFunc = true;
+    debugFunc = true;
     TRACEF(debugFunc, "feature_code=0x%02x, sh=0x%02x, sl=0x%02x", feature_code, sh, sl);
 
     int ndx = modelVcpValueIndex(feature_code);
@@ -281,7 +291,8 @@ FeatureBaseModel::setFeatureList(
    for (int ndx = 0; ndx <= 255; ndx++) {
        uint8_t vcp_code = (uint8_t) ndx;
        if ( ddca_feature_list_contains(&unchecked_features, vcp_code)) {
-           _monitor->_requestQueue->put( new VcpGetRequest(vcp_code, reportUnsupported));
+           bool needMetadata = true;
+           _monitor->_requestQueue->put( new VcpGetRequest(vcp_code, needMetadata, reportUnsupported));
        }
    }
    _monitor->_requestQueue->put(new VcpEndInitialLoadRequest);
@@ -294,20 +305,27 @@ FeatureBaseModel::setFeatureList(
 
 void
 FeatureBaseModel::reloadSpecificFeatures(int ct, uint8_t* features) {
+   bool debugFunc = true;
    for (int ndx = 0; ndx < ct; ndx++) {
       DDCA_Vcp_Feature_Code vcp_code = features[ndx];
       if (ddca_feature_list_contains(& _featuresChecked, vcp_code)) {
+         TRACEF(debugFunc, "vcp_code = 0x%02x, in _features_checked", vcp_code);
          FeatureValue *  fv = modelVcpValueFind(vcp_code);
          // should alwasy exist, but just in case
          if (fv) {
             // is this right?
             bool showUnsupported =  _monitor->_curFeatureSelector._showUnsupportedFeatures;
+            bool needMetadata = false;
             TRACE("Putting VcpGetRequest(0x%02x, %s) on _requestQueue", vcp_code, sbool(showUnsupported));
-            _monitor->_requestQueue->put( new VcpGetRequest(vcp_code, showUnsupported));
+            _monitor->_requestQueue->put( new VcpGetRequest(vcp_code, needMetadata, showUnsupported));
          }
          else
             TRACE("FeatureValue for 0x%02x not found", vcp_code);
       }
+      else {
+         TRACEF(debugFunc, "vcp_code = 0x%02x not in _features_checked", vcp_code);
+      }
+
    }
 
 }
@@ -330,7 +348,8 @@ void FeatureBaseModel::reloadFeatures() {
       uint8_t featureCode = fv->featureCode();
       DDCA_Feature_Flags flags = fv->flags();
       if (flags & DDCA_RW) {
-         _monitor->_requestQueue->put( new VcpGetRequest(featureCode, showUnsupported));
+         bool needMetadata = true;  // a rare possibility
+         _monitor->_requestQueue->put( new VcpGetRequest(featureCode, needMetadata, showUnsupported));
       }
    }
    _monitor->_requestQueue->put(new VcpEndInitialLoadRequest);
