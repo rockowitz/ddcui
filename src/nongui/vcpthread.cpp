@@ -289,25 +289,25 @@ void VcpThread::getvcp(uint8_t featureCode, bool needMetadata, bool reportUnsupp
             //        feature_code, valrec.mh, valrec.ml, valrec.sh, valrec.sl);
         }
 
-        if (ddcrc == 0) {
+    //    if (ddcrc == 0) {
            // should this be here?
-           ddcrc = ddca_get_feature_metadata_by_dh(
+           DDCA_Status ddcrc2 = ddca_get_feature_metadata_by_dh(
                       featureCode,
                       dh,
                       true,       // create_default_if_not_found
                       &finfo);
            TRACEF(debugFunc, "ddca_get_feature_metadata_by_dh() for feature 0x%02x returned %d - %s",
-                     featureCode, ddcrc, ddca_rc_name(ddcrc));
+                     featureCode, ddcrc, ddca_rc_name(ddcrc2));
            if (debugFunc && ddcrc == 0) {
               // ddcui_dbgrpt_ddca_feature_metadata(finfo);
               ddca_dbgrpt_feature_metadata(finfo, 1);
            }
 
-           if (ddcrc != 0) {
+           if (ddcrc2 != 0) {
               rpt_ddca_status(featureCode, __func__, "ddca_get_feature_metadata_by_dh",  ddcrc);
               // cout << "ddca_get_feature_metadata() returned " << ddcrc << endl;
            }
-        }
+   //     }
 
         // if (ddcrc == 0) {
            _baseModel->modelVcpValueSet(featureCode, this->_dref, finfo, &valrec, ddcrc);
@@ -425,7 +425,7 @@ void VcpThread::run() {
         {
             VcpGetRequest* getRqst = static_cast<VcpGetRequest*>(rqst);
             // printf("(VcpThread::run) VcpGetRequest. feature_code=0x%02x\n", getRqst->_featureCode);
-            TRACE("VcpGetRequest. feature code = 0s%02x", getRqst->_featureCode);
+            // TRACE("VcpGetRequest. feature code = 0x%02x", getRqst->_featureCode);
             getvcp(getRqst->_featureCode, getRqst->_needMetadata, getRqst->_reportUnsupported);
             break;
         }
