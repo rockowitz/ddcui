@@ -12,8 +12,11 @@
 #include <QtCore/QVector>
 #include <QtCore/QByteArray>
 
+#include <ddcutil_types.h>
 #include <ddcutil_c_api.h>
+#include <ddcutil_status_codes.h>
 
+#include "base/global_state.h"
 #include "base/ddcui_globals.h"
 #include "base/monitor.h"
 #include "base/ddca_utils.h"
@@ -79,9 +82,18 @@ FeatureValue * FeatureBaseModel::modelVcpValueFind(uint8_t feature_code) {
 
 
 FeatureValue * FeatureBaseModel::modelVcpValueFilteredFind(uint8_t feature_code) {
+   bool debug = false;
    FeatureValue * result = NULL;
    if (ddca_feature_list_contains(&_featuresToShow, feature_code)) {
       result = modelVcpValueFind(feature_code);
+      if (result) {
+         DDCA_Status ddcrc = result->ddcrc();
+         bool showUnsupported = GlobalState::instance()._mainWindow->_feature_selector->_showUnsupportedFeatures;
+         if (!showUnsupported && (ddcrc == DDCRC_REPORTED_UNSUPPORTED || ddcrc == DDCRC_DETERMINED_UNSUPPORTED)) {
+            TRACEF(debug, "Filtering out feature 0x%02x because UNSUPPORTED", result->featureCode());
+            result = NULL;
+         }
+      }
    }
    return result;
 }
