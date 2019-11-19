@@ -10,10 +10,12 @@
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 
+#include "ddcutil_status_codes.h"
 #include "ddcutil_c_api.h"
 
 #include "base/debug_utils.h"
 #include "base/ddcui_globals.h"
+#include "base/feature_selector.h"
 
 
 static bool showDimensionReport = false;
@@ -64,33 +66,59 @@ ValueStdWidget::ValueStdWidget(QWidget *parent):
     _cls = strdup(metaObject()->className());
     // TRACE("Starting");
     layoutWidget();
-
-}
+ }
 
 
 void ValueStdWidget::setValueField() {
     char * s_formatted = NULL;
-    DDCA_Non_Table_Vcp_Value valrec;
-    valrec.mh = _mh;
-    valrec.ml = _ml;
-    valrec.sh = _sh;
-    valrec.sl = _sl;
-    // TRACE("Before calling ddca_format_non_table_vcp_value_by_dref() _featureCode=0x%02x", _featureCode);
-    DDCA_Status rc = ddca_format_non_table_vcp_value_by_dref(
-          _featureCode,
-          _dref,
-          &valrec,
-          &s_formatted);
-    // TRACE("ddca_format_non_table_vcp_value_by_dref() returned %d, s_formatted=%s", rc, s_formatted);
-    if (rc != 0)
-        s_formatted = (char*) "invalid formatted value";   // cast to avoid compiler warning
+    if (_ddcrc == 0) {
+      DDCA_Non_Table_Vcp_Value valrec;
+       valrec.mh = _mh;
+       valrec.ml = _ml;
+       valrec.sh = _sh;
+       valrec.sl = _sl;
+       // TRACE("Before calling ddca_format_non_table_vcp_value_by_dref() _featureCode=0x%02x", _featureCode);
+       DDCA_Status rc = ddca_format_non_table_vcp_value_by_dref(
+             _featureCode,
+             _dref,
+             &valrec,
+             &s_formatted);
+       // TRACE("ddca_format_non_table_vcp_value_by_dref() returned %d, s_formatted=%s", rc, s_formatted);
+       if (rc != 0)
+           s_formatted = (char*) "invalid formatted value";   // cast to avoid compiler warning
 
-    _valueField->setText(QString::fromUtf8(s_formatted));
+       _valueField->setText(QString::fromUtf8(s_formatted));
+    }
+    else {
+       // need to make check at higher level where ValueStackedWidget is addedd to layout
+       // need to check showUnimplementd
+       if (_ddcrc == DDCRC_REPORTED_UNSUPPORTED || _ddcrc == DDCRC_DETERMINED_UNSUPPORTED) {
+          FeatureSelector * fsel = _globalState._mainWindow->_feature_selector;
+          bool showUnsupported = fsel->_showUnsupportedFeatures;
+          TRACE("showUnsupported = %s", sbool(showUnsupported));
+          if (showUnsupported) {
+             // TODO: Use QString !!!
+          s_formatted = (char*) "Unsupported feature";
+
+          _valueField->setText(QString::fromUtf8(s_formatted));
+          }
+       }
+       else {
+          // for shorter msg - ddca_rc_name()
+          QString msg = QString::asprintf("DDC Error.  Status code = %s", ddca_rc_desc(_ddcrc));
+          _valueField->setText(msg);
+
+       }
+
+    }
 }
 
 
 void ValueStdWidget::setFeatureValue(const FeatureValue &fv) {
-    TRACEF(debugValueWidgetSignals, "Starting. feature code: 0x%02x", fv.featureCode());
+   bool debug = debugValueWidgetSignals;
+    debug = true;
+    TRACEF(debug, "Starting. feature code: 0x%02x", fv.featureCode());
+
     ValueBaseWidget::setFeatureValue(fv);
     setValueField();
 }
