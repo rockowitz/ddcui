@@ -295,7 +295,7 @@ void FeaturesScrollAreaView::onModelDdcDetailedError(DdcDetailedError* perec) {
 
 void FeaturesScrollAreaView::onModelDdcFeatureError(DdcFeatureError* perec) {
     bool debugFunc = debugSignals;
-    // debugFunc = true;
+    debugFunc = true;
     TRACEF(debugFunc, "perec=%p, perec->%s", perec, qs2s(perec->repr()) );
     // std::cout << "typeid(perec):  " << typeid(perec).name()  << std::endl;
     // std::cout << "typeid(*perec): " << typeid(*perec).name() << std::endl;
@@ -321,5 +321,6 @@ void FeaturesScrollAreaView::onModelDdcFeatureError(DdcFeatureError* perec) {
                                    icon);
      TRACEF(debugFunc, "Calling _msgboxQueue.put() for qe: %s", qs2s(qe->repr()));
     _msgboxQueue->put(qe);
+    TRACEF(debugFunc, "Done");
 }
 
