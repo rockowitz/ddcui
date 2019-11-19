@@ -8,6 +8,7 @@
 
 #include "base/other_options_state.h"
 #include "user_interface_options_state.h"
+#include "main/mainwindow.h"    // ugh - referencing out of base, to clean up
 
 class GlobalState {
 
@@ -17,9 +18,12 @@ public:
    OtherOptionsState * _otherOptionsState = NULL;
    UserInterfaceOptionsState * _uiOptionsState= NULL;
 
+   MainWindow * _mainWindow;
+
 private:
    GlobalState();
    // No need for destructor.  Created once for life of the program.
+
 };
 
 #endif /* GLOBAL_STATE_H_ */
