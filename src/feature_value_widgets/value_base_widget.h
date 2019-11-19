@@ -10,6 +10,7 @@
 
 #include <ddcutil_c_api.h>
 
+#include "base/global_state.h"
 #include "nongui/feature_value.h"
 
 
@@ -25,8 +26,8 @@ public:
     virtual uint16_t getCurrentShSl();                       // override;
 
     // QSize sizeHint() const override;   //   needed?
-    virtual void setControlKeyRequired(bool onoff);
-    bool getControlKeyRequired();
+    virtual void     setControlKeyRequired(bool onoff);
+    bool             getControlKeyRequired();
 
 
 protected:
@@ -41,6 +42,8 @@ protected:
     uint8_t                 _sh;
     uint8_t                 _sl;
     bool                    _controlKeyRequired;
+    DDCA_Status             _ddcrc;
+    GlobalState&            _globalState = GlobalState::instance();
 
 signals:
     // compiler warning: signals may not be declared virtual

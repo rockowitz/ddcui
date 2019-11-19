@@ -9,6 +9,7 @@
 
 #include "base/ddcui_globals.h"
 #include "base/global_state.h"
+#include "base/feature_selector.h"
 
 ValueBaseWidget::ValueBaseWidget(QWidget *parent)
      : QFrame(parent)             // ValueAbstractWidget(parent)
@@ -52,8 +53,9 @@ ValueBaseWidget::ValueBaseWidget(QWidget *parent)
 
 
 void ValueBaseWidget::setFeatureValue(const FeatureValue &fv) {
-   bool debug = false;
-   TRACEF(debug, "featureCode=0x%02x, capVcp=%p", fv.featureCode(), fv.capVcp());
+   bool debug = true;
+   TRACEF(debug, "featureCode=0x%02x, capVcp=%p, ddcrc=%d",
+                 fv.featureCode(), fv.capVcp(), fv.ddcrc());
 
     _featureCode    = fv.featureCode();
     _dref           = fv.dref();
@@ -64,15 +66,16 @@ void ValueBaseWidget::setFeatureValue(const FeatureValue &fv) {
     _ml             = fv.val().ml;
     _sh             = fv.val().sh;
     _sl             = fv.val().sl;
+    _ddcrc          = fv.ddcrc();
 
-    // when ValueBaseWidget is initialized
-    GlobalState& globalState = GlobalState::instance();
-    _controlKeyRequired = globalState._uiOptionsState->controlKeyRequired;
+    _controlKeyRequired = _globalState._uiOptionsState->controlKeyRequired;
 
     // listen for changes after initialization
-    QObject::connect(globalState._uiOptionsState, &UserInterfaceOptionsState::controlKeyRequired_changed,
+    QObject::connect(_globalState._uiOptionsState, &UserInterfaceOptionsState::controlKeyRequired_changed,
                     this, &ValueBaseWidget::when_controlKeyRequired_changed);
 }
+
+
 
 
 #ifdef UNNEEDED
