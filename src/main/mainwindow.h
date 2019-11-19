@@ -19,7 +19,6 @@
 #include "base/ddcui_globals.h"
 #include "base/other_options_state.h"
 
-
 class FeatureBaseModel;
 class FeatureSelectionDialog;
 class FeatureSelector;
@@ -64,6 +63,13 @@ public:
     void set_feature_list_id(DDCA_Feature_Subset_Id feature_list_id);
 #endif
     WaitingSpinnerWidget*    _spinner;
+
+public:
+    // n. MainWindow is also a singleton, combine with GlobalState?
+    // to do, make private, use accessor function
+    // GlobalState & _globalState;
+
+
 
 signals:
     void featureSelectionChanged();
@@ -128,6 +134,7 @@ private slots:
 
 public:
     UserInterfaceOptionsDialog * _uid = NULL;
+    FeatureSelector *        _feature_selector = NULL;
 
 private:
     void initMonitors();
@@ -140,7 +147,7 @@ private:
     int                      _curDisplayIndex = -1;
     View                     _curView = NoView;
     QComboBox *              _toolbarDisplayCB;
-    FeatureSelector *        _feature_selector = NULL;
+
     OtherOptionsState *      _otherOptionsState = NULL;
     UserInterfaceOptionsState* _uiOptionsState = NULL;
     QVector<Monitor*>        _monitors;
