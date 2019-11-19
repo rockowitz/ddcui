@@ -32,13 +32,11 @@ LoadDfrRequest::LoadDfrRequest()
 
 
 
-VcpGetRequest::VcpGetRequest(DDCA_Vcp_Feature_Code featureCode, bool needMetadata, bool reportUnsupported)
+VcpGetRequest::VcpGetRequest(DDCA_Vcp_Feature_Code featureCode, bool needMetadata )
     : VcpRequest::VcpRequest(VcpRequestType::RQGetVcp)
     , _featureCode(featureCode)
     , _needMetadata(needMetadata)
-    , _reportUnsupported(reportUnsupported)
 {
-    // _featureCode = feature_code;
 }
 
 

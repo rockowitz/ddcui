@@ -256,11 +256,11 @@ void VcpThread::capabilities() {
 
 
 // Process RQGetVcp
-void VcpThread::getvcp(uint8_t featureCode, bool needMetadata, bool reportUnsupported) {
+void VcpThread::getvcp(uint8_t featureCode, bool needMetadata) {
     bool debugFunc = debugThread;
     // debugFunc = true;
-    TRACEF(debugFunc||true, "Starting. featureCode=0x%02x, needMetadata = %s, reportUnsupported=%s",
-                            featureCode, sbool(needMetadata), sbool(reportUnsupported));
+    TRACEF(debugFunc||true, "Starting. featureCode=0x%02x, needMetadata = %s",
+                            featureCode, sbool(needMetadata));
 
     DDCA_Display_Handle                   dh;
     DDCA_Non_Table_Vcp_Value              valrec;
@@ -426,7 +426,7 @@ void VcpThread::run() {
             VcpGetRequest* getRqst = static_cast<VcpGetRequest*>(rqst);
             // printf("(VcpThread::run) VcpGetRequest. feature_code=0x%02x\n", getRqst->_featureCode);
             // TRACE("VcpGetRequest. feature code = 0x%02x", getRqst->_featureCode);
-            getvcp(getRqst->_featureCode, getRqst->_needMetadata, getRqst->_reportUnsupported);
+            getvcp(getRqst->_featureCode, getRqst->_needMetadata);
             break;
         }
         case VcpRequestType::RQSetVcp:

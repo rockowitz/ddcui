@@ -38,7 +38,7 @@ public:
     const char * _cls = "VcpThread";
 
 private:
-    void getvcp(uint8_t feature_code, bool needMetadata, bool reportUnsupported);
+    void getvcp(uint8_t feature_code, bool needMetadata);
     void setvcp(uint8_t feature_code, bool writeOnly, uint16_t newval);
     void capabilities();
     void loadDynamicFeatureRecords();

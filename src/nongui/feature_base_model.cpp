@@ -312,7 +312,7 @@ FeatureBaseModel::setFeatureList(
        uint8_t vcp_code = (uint8_t) ndx;
        if ( ddca_feature_list_contains(&unchecked_features, vcp_code)) {
            bool needMetadata = true;
-           _monitor->_requestQueue->put( new VcpGetRequest(vcp_code, needMetadata, reportUnsupported));
+           _monitor->_requestQueue->put( new VcpGetRequest(vcp_code, needMetadata) );
        }
    }
    _monitor->_requestQueue->put(new VcpEndInitialLoadRequest);
@@ -331,13 +331,11 @@ FeatureBaseModel::reloadSpecificFeatures(int ct, uint8_t* features) {
       if (ddca_feature_list_contains(& _featuresChecked, vcp_code)) {
          TRACEF(debugFunc, "vcp_code = 0x%02x, in _features_checked", vcp_code);
          FeatureValue *  fv = modelVcpValueFind(vcp_code);
-         // should alwasy exist, but just in case
+         // should always exist, but just in case
          if (fv) {
-            // is this right?
-            bool showUnsupported =  _monitor->_curFeatureSelector._showUnsupportedFeatures;
             bool needMetadata = false;
-            TRACE("Putting VcpGetRequest(0x%02x, %s) on _requestQueue", vcp_code, sbool(showUnsupported));
-            _monitor->_requestQueue->put( new VcpGetRequest(vcp_code, needMetadata, showUnsupported));
+            TRACE("Putting VcpGetRequest(0x%02x) on _requestQueue", vcp_code);
+            _monitor->_requestQueue->put( new VcpGetRequest(vcp_code, needMetadata));
          }
          else
             TRACE("FeatureValue for 0x%02x not found", vcp_code);
@@ -361,7 +359,6 @@ void FeatureBaseModel::reloadFeatures() {
    TRACEF(debugFunc, "Starting.");
 
    _monitor->_requestQueue->put(new VcpStartInitialLoadRequest);
-   bool showUnsupported = _monitor->_curFeatureSelector._showUnsupportedFeatures;
    int ct = modelVcpValueCount();
    for (int ndx = 0; ndx < ct; ndx++) {
       FeatureValue* fv =  modelVcpValueAt(ndx);
@@ -369,7 +366,7 @@ void FeatureBaseModel::reloadFeatures() {
       DDCA_Feature_Flags flags = fv->flags();
       if (flags & DDCA_RW) {
          bool needMetadata = true;  // a rare possibility
-         _monitor->_requestQueue->put( new VcpGetRequest(featureCode, needMetadata, showUnsupported));
+         _monitor->_requestQueue->put( new VcpGetRequest(featureCode, needMetadata));
       }
    }
    _monitor->_requestQueue->put(new VcpEndInitialLoadRequest);
