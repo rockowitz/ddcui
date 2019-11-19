@@ -553,11 +553,11 @@ void MainWindow::for_actionFeatureSelectionDialog_accepted()
        _feature_selector->dbgrpt();
    }
    if (_curView == FeaturesView) {
-      TRACEF(debugFunc, "Signaling featureSelectionChanged()");
+      TRACEF(debugFunc, "in FeaturesView, signaling featureSelectionChanged()");
       emit featureSelectionChanged();
    }
    else {
-      TRACEF(debugFunc, "Not signaling featureSelectionChanged()");
+      TRACEF(debugFunc, "Not in FeaturesView, so not signaling featureSelectionChanged()");
    }
 
 #ifdef UNNEEDED
