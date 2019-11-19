@@ -26,7 +26,7 @@ using namespace std;
 void FeatureSelectionDialog::useSelectorData(FeatureSelector * fsel)
 {
     if (debugFeatureSelection) {
-        TRACE("_feature_selector:");
+        TRACE("Setting dialog box widgets from FeatureSelector:");
         fsel->dbgrpt();
     }
 
@@ -180,12 +180,16 @@ void FeatureSelectionDialog::on_mfg_radioButton_clicked(bool checked) {
    _ui->allCapabilities_checkbox->setChecked(false);
 }
 
+
+#ifdef NO_PROFILE_BUTTON
 void FeatureSelectionDialog::on_profile_radioButton_clicked(bool checked) {
     // cout << "(on_profile_radioButton_clicked) arg1 = " << checked << endl;
    _ui->allCapabilities_checkbox->setEnabled(false);
    _ui->onlyCapabilities_checkbox->setEnabled(true);
    _ui->allCapabilities_checkbox->setChecked(false);
 }
+#endif
+
 
 void FeatureSelectionDialog::on_color_radioButton_clicked(bool checked) {
     // cout << "(on_color_radioButton_clicked) arg1 = " << checked << endl;
@@ -237,7 +241,7 @@ void FeatureSelectionDialog::on_includeTable_checkbox_stateChanged(int arg1)
 void FeatureSelectionDialog::on_buttonBox_accepted()
 {
     bool debugFunc = debugFeatureSelection;
-    debugFunc = true;
+    // debugFunc = true;
     TRACEF(debugFunc, "Executing");
     // which button is currently clicked?
 
