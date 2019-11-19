@@ -7,7 +7,7 @@
 #include "nongui/msgbox_queue.h"
 
 
-static bool debug = false;
+static bool debugClass = false;
 
 /* MsgBoxQueueEntry and subclasses */
 
@@ -20,13 +20,13 @@ MsgBoxQueueEntry::MsgBoxQueueEntry(
    , _boxIcon(icon)
 {
      // _type = type;
-   TRACEF(debug, "Executing");
+   TRACEF(debugClass, "Executing");
 }
 
 
 MsgBoxQueueEntry::~MsgBoxQueueEntry()
 {
-   TRACEF(debug, "Executing");
+   TRACEF(debugClass, "Executing");
 }
 
 
@@ -50,7 +50,7 @@ MsgBoxQueue::MsgBoxQueue()
 
 
 void MsgBoxQueue::put(MsgBoxQueueEntry * request) {
-   bool debugFunc = debug;
+   bool debugFunc = debugClass;
    // debugFunc = true;
     // QString r = request->repr();
 
@@ -64,12 +64,12 @@ void MsgBoxQueue::put(MsgBoxQueueEntry * request) {
     // dbgrpt_nolock();
 
     _mutex.unlock();
-    TRACEF(debug, "Done");
+    TRACEF(debugClass, "Done");
 }
 
 
 MsgBoxQueueEntry * MsgBoxQueue::pop() {
-    TRACEF(debug, "Starting");
+    TRACEF(debugClass, "Starting");
     _mutex.lock();
     if (_queue.empty())
         _queueNonempty.wait(&_mutex);
@@ -79,7 +79,7 @@ MsgBoxQueueEntry * MsgBoxQueue::pop() {
     // this->dbgrpt_nolock();
 
     _mutex.unlock();
-    TRACEF(debug, "<- Done. Returning request: %s", qs2s(rqst->repr()) );
+    TRACEF(debugClass, "<- Done. Returning request: %s", qs2s(rqst->repr()) );
     return rqst;
 }
 
