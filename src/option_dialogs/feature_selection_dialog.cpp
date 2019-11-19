@@ -9,6 +9,8 @@
 
 #include <QtWidgets/QRadioButton>
 
+#include <ddcutil_types.h>
+
 #include "base/ddcui_globals.h"
 #include "help/help_dialog.h"
 
@@ -293,7 +295,6 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
          _featureSelector->_includeTableFeatures = _ui->includeTable_checkbox->isChecked();
         changed = true;
      }
-    // TODO: showUnsupported and show-table check boxes
 
     if (debugFeatureSelection) {
         TRACE("_feature_selector:");
