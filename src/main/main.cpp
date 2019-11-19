@@ -13,7 +13,8 @@ extern "C" {
 #include "cmdline/cmd_parser.h"
 }
 
-#include <base/ddcui_globals.h>
+#include "base/global_state.h"
+#include "base/ddcui_globals.h"
 
 // #include <ui_main.h>
 #include "main/mainwindow.h"
@@ -129,7 +130,12 @@ int main(int argc, char *argv[])
 #endif
 
 
+    GlobalState & globalState = GlobalState::instance();
+
+
     MainWindow w;
+    globalState._mainWindow = &w;
+
     w.show();
 
     return a.exec();
