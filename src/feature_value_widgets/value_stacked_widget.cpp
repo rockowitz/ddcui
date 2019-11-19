@@ -116,8 +116,13 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
     _featureCode = fv.featureCode();   // needed since not calling ValueBaseWidget::setFeatureValue()
     // DDCA_MCCS_Version_Spec vspec = fv.vspec();   // unused
 
+    if (fv.ddcrc() != 0) {
+       // use the default standard widget
+
+
+    }
     // alt, test for PRESET, then xb0 (settings) or normal
-    if ( _featureCode == 0x04 ||    // Restore factory defaults
+    else if ( _featureCode == 0x04 ||    // Restore factory defaults
          _featureCode == 0x05 ||    // Restore factory brightness/contrast defaults
          _featureCode == 0x06 ||    // Restore factory geometry defaults
          _featureCode == 0x08 ||    // Restore factory color defaults
