@@ -30,13 +30,13 @@ UserInterfaceOptionsDialog::UserInterfaceOptionsDialog(
     , _state(state)
 {
     _cls = metaObject()->className();
-    TRACE("Constructor starting");
+    TRACEC("Constructor starting");
     // _state = state;
     _ui->setupUi(this);
 
     setWindowTitle("ddcui - User Interface Options");
     // setUSource(state->ncValuesSource);
-    TRACE("Constructor done");
+    TRACEC("Constructor done");
 }
 
 
@@ -60,16 +60,16 @@ void UserInterfaceOptionsDialog::on_actionButtonBox_accepted()
 {
     bool debugFunc = true;
     bool newCtrlKeyRequired  = _ui->ckrCheckBox->isChecked();
-    TRACEF(debugFunc, "Executing. Value read from ckr checkbox; %s", sbool(newCtrlKeyRequired));
+    TRACECF(debugFunc, "Executing. Value read from ckr checkbox; %s", sbool(newCtrlKeyRequired));
 
-    TRACEF(debugFunc, "Calling _state->setControlKey_Required(%s)", sbool(newCtrlKeyRequired));
+    TRACECF(debugFunc, "Calling _state->setControlKey_Required(%s)", sbool(newCtrlKeyRequired));
 
     _state->setControlKeyRequired(newCtrlKeyRequired);
 
     // no, automatically emitted when dialog accepted, by accept() or done()
     // emit userInterfaceDialog_accepted(_state);  // probably not needed
 
-    TRACEF(debugFunc, "Before calling accept()");
+    TRACECF(debugFunc, "Before calling accept()");
     accept();  // causes accepteed() to be emitted
 }
 
@@ -101,7 +101,7 @@ void UserInterfaceOptionsDialog::on_actionButtonBox_helpRequested()
 void UserInterfaceOptionsDialog::on_actionButtonBox_clicked(QAbstractButton* button)
 {
    if(button== (QAbstractButton*) _ui->actionButtonBox->button(QDialogButtonBox::Reset) ){
-      TRACE("Reset");
+      TRACEC("Reset");
 
       // Pressing the reset button does not close the dialog box
       // Reset the state in UserInterfaceOptionsState

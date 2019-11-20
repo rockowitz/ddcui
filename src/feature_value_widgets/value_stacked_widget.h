@@ -45,6 +45,9 @@ public:
 signals:
     void stackedFeatureValueChanged(uint8_t feature_code, uint8_t sh, uint8_t sl);
 
+private slots:
+    void forContainedWidgetChanged(uint8_t feature_code, uint8_t sh, uint8_t sl);
+
 private:
     const char *        _cls;
     uint8_t             _featureCode;
@@ -68,10 +71,6 @@ private:
     ValueCncWidgetX14*  _cncWidgetX14;
     ValueBytesWidget*   _bytesWidget;
     ValueNcplusWidget*  _ncplusWidget;
-
-private slots:
-    void forContainedWidgetChanged(uint8_t feature_code, uint8_t sh, uint8_t sl);
-
 };
 
 #endif // VALUE_STACKED_WIDGET_H

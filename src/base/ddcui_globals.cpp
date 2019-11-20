@@ -17,8 +17,8 @@
 
 const bool debugSignals            = false;
 const bool debugValueWidgetSignals = false;
-const bool debugFeatureLists       = true;
-const bool debugFeatureSelection   = true;
+const bool debugFeatureLists       = false;
+const bool debugFeatureSelection   = false;
 const bool debugLayout             = false;
 const bool debugNcValues           = false;
 
@@ -207,7 +207,8 @@ bool enable_trace_show_thread_id(bool onoff) {
 
 bool printftcmf(
       bool debug,
-      const char * cls,
+      const char * metaclass_classname,
+      const char * cls,     // _cls
       const char * funcname,
       int lineno,
       const char * filename,
@@ -224,8 +225,16 @@ bool printftcmf(
          int    bufsz = strlen(buffer) + 1;
          char * buf2  = (char *) calloc(bufsz+60, sizeof(char));
 
-         char funcbuf[80];
-         if (cls)
+         char funcbuf[160];
+         if (metaclass_classname && cls) {
+            if (strcmp(metaclass_classname, cls) == 0)
+               g_snprintf(funcbuf, sizeof(funcbuf), "%s::%s", metaclass_classname, funcname);
+            else
+               g_snprintf(funcbuf, sizeof(funcbuf), "%s/%s::%s", metaclass_classname, cls, funcname);
+         }
+         else if (metaclass_classname && !cls)
+            g_snprintf(funcbuf, sizeof(funcbuf), "%s::%s", metaclass_classname, funcname);
+         else if (!metaclass_classname && cls)
             g_snprintf(funcbuf, sizeof(funcbuf), "%s::%s", cls, funcname);
          else
             strcpy(funcbuf, funcname);

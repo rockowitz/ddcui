@@ -43,6 +43,8 @@ private:
     void setAuxFieldsXca();
     void setAuxFields();
 
+private:
+    const char *    _cls;
 };
 
 #endif /* VALUE_NCPLUS_WIDGET_H_ */

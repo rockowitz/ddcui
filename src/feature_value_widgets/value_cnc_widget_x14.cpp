@@ -27,8 +27,6 @@
 #include "nongui/feature_base_model.h"
 
 
-
-
 ValueCncWidgetX14::ValueCncWidgetX14(QWidget *parent):
         ValueNcWidget(parent)
 {

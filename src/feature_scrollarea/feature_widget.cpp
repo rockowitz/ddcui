@@ -47,7 +47,7 @@ static void setupFeatureWidgetField(QLabel * w)
 void FeatureWidget::setupFeatureWidget()
 {
    bool debug = false;
-   TRACEF(debug, "Starting");
+   TRACECF(debug, "Starting");
    // setFrameStyle(QFrame::Box);    // something to make it visible for development
 
    QFont font;
@@ -129,7 +129,7 @@ void FeatureWidget::setupFeatureWidget()
    _featureValueStackedWidget->setCurrentIndex(0);
 #endif
 
-   TRACEF(debug, "creating ValueStackedWidget, feature code dummy");
+   TRACECF(debug, "creating ValueStackedWidget, feature code dummy");
    _valueWidget = new ValueStackedWidget();
    _valueWidget->setSizePolicy(adjustableSizePolicy);
 
@@ -165,12 +165,12 @@ void FeatureWidget::setupFeatureWidget()
        this->setStyleSheet("background-color:orange;");
 
        if (!dimensionReportShown) {
-          TRACE("FeatureWidget dimensions:");
+          TRACEC("FeatureWidget dimensions:");
           reportWidgetDimensions(this, _cls, __func__);
           dimensionReportShown = true;
        }
    }
-   TRACEF(debug, "Done");
+   TRACECF(debug, "Done");
 }
 
 
@@ -207,7 +207,7 @@ FeatureWidget::FeatureWidget(FeatureValue& fv, QWidget *parent)
 void FeatureWidget::setFeatureValue(FeatureValue &fv)
 {
    bool debug = false;
-   TRACEF(debug, "feature code = 0x%02x, sets feature value immediately after constructor called",
+   TRACECF(debug, "feature code = 0x%02x, sets feature value immediately after constructor called",
              fv.featureCode());
     // printf("(FeatureWidgetBasic::%s)", __func__);
     // fv.report(); ff;isj)stdpit);
@@ -243,11 +243,11 @@ void FeatureWidget::setFeatureValue(FeatureValue &fv)
 
     DDCA_Status ddcrc =fv.ddcrc();
 
-    TRACEF(debug, "feature=0x%02x, getvcp status=%s", _feature_code , ddca_rc_name(ddcrc) );
+    TRACECF(debug, "feature=0x%02x, getvcp status=%s", _feature_code , ddca_rc_name(ddcrc) );
     // TRACEF(debug, "Before calling valueWidget->setFeatureValue()");
     _valueWidget->setFeatureValue(fv);
 
-    TRACEF(debug, "After calling valueWidget->setFeatureValue()");
+    TRACECF(debug, "After calling valueWidget->setFeatureValue()");
     _layout->addWidget(_valueWidget);
 }
 
@@ -282,7 +282,7 @@ void FeatureWidget::dbgrpt() const
     const char * objname = on1.c_str();
     // printf("%-20s code: 0x%02x, flags: 0x%04x, mh: 0x%02x, ml: 0x%02x, sh: 0x%02x, sl 0x%02x\n",
     //        objname, _feature_code, _feature_flags, _mh, _ml, _sh, _sl);
-    TRACE("%-20s feature code: 0x%02x, flags: 0x%04x", objname, _feature_code, _feature_flags);
+    TRACEC("%-20s feature code: 0x%02x, flags: 0x%04x", objname, _feature_code, _feature_flags);
 }
 
 
@@ -290,11 +290,11 @@ void FeatureWidget::onInternalValueChanged(uint8_t featureCode, uint8_t sh, uint
 {
    bool debug = false;
    debug = debug || debugSignals;
-   TRACEF(debug, "feature_code = 0x%02x, sh=0x%02x, sl=0x%02x", featureCode, sh, sl);
+   TRACECF(debug, "feature_code = 0x%02x, sh=0x%02x, sl=0x%02x", featureCode, sh, sl);
    assert(featureCode == _feature_code);
 
    bool writeOnlyFeature = _feature_flags & DDCA_WO;
-   TRACEF(debug, "-> Calling emit valueChanged, feature_code=0x%02x, writeOnlyFeature=%s, sh=0x%02x, sl=0x%02x",
+   TRACECF(debug, "-> Calling emit valueChanged, feature_code=0x%02x, writeOnlyFeature=%s, sh=0x%02x, sl=0x%02x",
                     featureCode, sbool(writeOnlyFeature), sh, sl);
    emit valueChanged(featureCode, writeOnlyFeature, sh, sl);
 }
@@ -330,8 +330,8 @@ void FeatureWidget::resizeEvent(QResizeEvent * evt)
    QSize oldSz = evt->oldSize();
    QSize newSz = evt->size();
 
-   TRACE("old size = %d, %d\n", oldSz.width(), oldSz.height());
-   TRACE("new size = %d, %d\n", newSz.width(), newSz.height());
+   TRACEC("old size = %d, %d\n", oldSz.width(), oldSz.height());
+   TRACEC("new size = %d, %d\n", newSz.width(), newSz.height());
    evt->ignore();
 }
 #endif

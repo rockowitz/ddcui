@@ -50,9 +50,9 @@ void ValueStdWidget::layoutWidget() {
 
         static bool dimensionReportShown = false;
         if (showDimensionReport && !dimensionReportShown) {
-            TRACE("_valueField dimensions");
+            TRACEC("_valueField dimensions");
             reportWidgetDimensions(_valueField, _cls, __func__);
-            TRACE("ValueStdWidget dimensions");
+            TRACEC("ValueStdWidget dimensions");
             reportWidgetDimensions(this, _cls, __func__);
             dimensionReportShown = true;
         }
@@ -63,10 +63,12 @@ void ValueStdWidget::layoutWidget() {
 ValueStdWidget::ValueStdWidget(QWidget *parent):
         ValueBaseWidget(parent)
 {
+    bool debug = false;
     _cls = strdup(metaObject()->className());
     // TRACE("Starting");
     layoutWidget();
- }
+    TRACEMCF(debug, "TRACECMF. After superclass call");
+}
 
 
 void ValueStdWidget::setValueField() {
@@ -95,7 +97,7 @@ void ValueStdWidget::setValueField() {
        if (_ddcrc == DDCRC_REPORTED_UNSUPPORTED || _ddcrc == DDCRC_DETERMINED_UNSUPPORTED) {
           FeatureSelector * fsel = _globalState._mainWindow->_feature_selector;
           bool showUnsupported = fsel->_showUnsupportedFeatures;
-          TRACE("showUnsupported = %s", sbool(showUnsupported));
+          // TRACEC("showUnsupported = %s", sbool(showUnsupported));
           if (showUnsupported) {
              // TODO: Use QString !!!
           s_formatted = (char*) "Unsupported feature";
@@ -107,18 +109,19 @@ void ValueStdWidget::setValueField() {
           // for shorter msg - ddca_rc_name()
           QString msg = QString::asprintf("DDC Error.  Status code = %s", ddca_rc_desc(_ddcrc));
           _valueField->setText(msg);
-
        }
-
     }
 }
 
 
 void ValueStdWidget::setFeatureValue(const FeatureValue &fv) {
-   bool debug = debugValueWidgetSignals;
-    debug = true;
-    TRACEF(debug, "Starting. feature code: 0x%02x", fv.featureCode());
+    // n.b. does not invoke superclass method
 
+    bool debug = false;
+    debug = debug || debugValueWidgetSignals;
+
+    TRACEMCF(debug, "featureCode=0x%02x, capVcp=%p, ddcrc=%d, Before ValueBaseWidget::setFeatureValue() call",
+                  fv.featureCode(), fv.capVcp(), fv.ddcrc());
     ValueBaseWidget::setFeatureValue(fv);
     setValueField();
 }

@@ -141,22 +141,22 @@ ValueBytesWidget::layoutWidget() {
 
       if (showDimensionReports && !dimensionReportShown) {
 
-          TRACE("_mhTitle dimensions");
+          TRACEC("_mhTitle dimensions");
           reportWidgetDimensions(_mhTitle, _cls, __func__);
 
-          TRACE("_mhWidget dimensions");
+          TRACEC("_mhWidget dimensions");
           reportWidgetDimensions(_mhWidget, _cls, __func__);
 
-          TRACE("_mlTitle dimensions");
+          TRACEC("_mlTitle dimensions");
           reportWidgetDimensions(_mlTitle, _cls, __func__);
 
-          TRACE("_mlWidget dimensions");
+          TRACEC("_mlWidget dimensions");
           reportWidgetDimensions(_mlWidget, _cls, __func__);
 
-          TRACE("_applyButton dimensions");
+          TRACEC("_applyButton dimensions");
           reportWidgetDimensions(_applyButton, _cls, __func__);
 
-          TRACE("ValueBytesWidget dimensions");
+          TRACEC("ValueBytesWidget dimensions");
           reportWidgetDimensions(this, _cls, __func__);
           dimensionReportShown = true;
       }
@@ -169,7 +169,7 @@ ValueBytesWidget::ValueBytesWidget(QWidget *parent)
 {
     _cls = strdup(metaObject()->className());
     bool debug = false;
-    TRACEF(debug, "Starting." );
+    TRACEMCF(debug, "Starting." );
 
     layoutWidget();
 
@@ -185,7 +185,7 @@ ValueBytesWidget::ValueBytesWidget(QWidget *parent)
     connect(_applyButton,  &QPushButton::clicked, this, &ValueBytesWidget::onApplyButtonClicked);
     connect(_cancelButton, &QPushButton::clicked, this, &ValueBytesWidget::onCancelButtonClicked);
 
-    TRACEF(debug, "Done");
+    TRACEMCF(debug, "Done");
 }
 
 
@@ -204,7 +204,7 @@ void ValueBytesWidget::checkAcceptCancelEnabled() {
 
 #ifdef UNUSED
 void ValueBytesWidget::whenShChanged(uint8_t val) {
-   TRACE("val = 0x%02x", val);
+   TRACEC("val = 0x%02x", val);
    _shNew = val;
    _shGood = true;
 
@@ -213,7 +213,7 @@ void ValueBytesWidget::whenShChanged(uint8_t val) {
 
 
 void ValueBytesWidget::whenSlChanged(uint8_t val) {
-   TRACE("val = 0x%02x", val);
+   TRACEC("val = 0x%02x", val);
    _slNew = val;
    _shGood = true;
    this->checkAcceptCancelEnabled();
@@ -223,7 +223,7 @@ void ValueBytesWidget::whenSlChanged(uint8_t val) {
 void ValueBytesWidget::whenStateChanged(NumberEntryWidget * whichWidget, NumberEntryWidget::States newState)
 {
    bool debug = false;
-   TRACEF(debug, "whichWidget = %s, newState = %d", qs2s(whichWidget->objectName()), newState);
+   TRACECF(debug, "whichWidget = %s, newState = %d", qs2s(whichWidget->objectName()), newState);
 
    if (whichWidget == _shWidget)
       _shState = newState;
@@ -243,7 +243,7 @@ void ValueBytesWidget::whenTextValueChanged(bool ok) {
 void ValueBytesWidget::setFeatureValue(const FeatureValue &fv) {
     bool debug = debugValueWidgetSignals;
     // debug = true;
-    TRACEF(debug,
+    TRACEMCF(debug,
               "Starting. feature code: 0x%02x, mh: 0x%02x, ml: 0x%02x, sh: 0x%02x sl: 0x%02x",
               fv.featureCode(),
               fv.val().mh,
@@ -253,7 +253,7 @@ void ValueBytesWidget::setFeatureValue(const FeatureValue &fv) {
 
     ValueBaseWidget::setFeatureValue(fv);
 
-    TRACEF(debug,
+    TRACEMCF(debug,
               "After valueBaseWidget::setFeatureValue() called, feature code: 0x%02x, mh: 0x%02x, ml: 0x%02x, sh: 0x%02x sl: 0x%02x",
               _featureCode,
               _mh,
@@ -281,7 +281,7 @@ void ValueBytesWidget::setFeatureValue(const FeatureValue &fv) {
 // #endif
 
     _guiChange = true;
-    TRACEF(debug, "Done");
+    TRACEMCF(debug, "Done");
 }
 
 
@@ -297,7 +297,7 @@ void ValueBytesWidget::setCurrentShSl(uint16_t newval) {
 
      int baseval = _sh << 8 | _sl;
      assert(baseval == newval);
-     TRACEF(debugValueWidgetSignals, "feature=0x%02x, curval=0%04x", _featureCode , baseval);
+     TRACECF(debugValueWidgetSignals, "feature=0x%02x, curval=0%04x", _featureCode , baseval);
 
         _applyButton->setEnabled(false);
         _cancelButton->setEnabled(false);
@@ -318,16 +318,16 @@ uint16_t ValueBytesWidget::getCurrentShSl() {
 // ifdef APPLY_CANCEL
 void  ValueBytesWidget::onApplyButtonClicked(bool checked) {
    bool debug = debugValueWidgetSignals;
-   debug = false;
+   // debug = true;
    // TRACEF(debug, "Executing. checked=%s", sbool(checked));
 
    uint16_t newval = ( _shWidget->getNewValue() <<8 | _slWidget->getNewValue() );
 
    uint16_t oldval = _sh << 8    | _sl;
 
-   TRACEF(debug, "oldval = 0x%04x, newval = 0x%04x", oldval, newval);
+   TRACECF(debug, "oldval = 0x%04x, newval = 0x%04x", oldval, newval);
    if (newval != oldval) {
-      TRACEF(debug, "Emitting featureValueChanged(). feature code: 0x%02x, new sh: 0x%02x, new sl: 0x%02x",
+      TRACECF(debug, "Emitting featureValueChanged(). feature code: 0x%02x, new sh: 0x%02x, new sl: 0x%02x",
                 _featureCode, newval >>8, newval&0xff);
       emit featureValueChanged(_featureCode, newval >> 8, newval & 0xff);
    }
@@ -345,7 +345,7 @@ void  ValueBytesWidget::onApplyButtonClicked(bool checked) {
 
 
 void  ValueBytesWidget::onCancelButtonClicked(bool checked) {
-    TRACEF(debugValueWidgetSignals, "Executing");
+    TRACECF(debugValueWidgetSignals, "Executing");
 
    _applyButton->setEnabled(false);
    _cancelButton->setEnabled(false);
@@ -356,7 +356,7 @@ void  ValueBytesWidget::onCancelButtonClicked(bool checked) {
 #ifdef OLD
 void ValueBytesWidget::whenEventFieldChanged(int field_number)
 {
-   TRACE("field_number = %d", field_number);
+   TRACEC("field_number = %d", field_number);
    _currentField = field_number;
 
 

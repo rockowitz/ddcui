@@ -32,22 +32,22 @@ public:
 
 
 private:
+    void layoutWidget();
     void checkAcceptCancelEnabled();
 
-    private slots:
-
+private slots:
     // void whenSlChanged(uint8_t val);
     // void whenShChanged(uint8_t val);
-
     // void whenTextValueChanged(bool ok);
-
     // void whenEventFieldChanged(int fieldNumber);
+
     void whenStateChanged(NumberEntryWidget * whichWidget, NumberEntryWidget::States newState);
 
+    void onApplyButtonClicked(bool checked);
+    void onCancelButtonClicked(bool checked);
 
-private:
-    void layoutWidget();
-
+private:   // member variables
+    const char *           _cls;
     QLabel*                _mhTitle;
     NumberEntryWidget *    _mhWidget;
     QLabel*                _mlTitle;
@@ -58,12 +58,12 @@ private:
     NumberEntryWidget *    _slWidget;
     // uint8_t               _sl;
     // uint16_t    _newval;
-    bool        _guiChange = false;
+    bool                   _guiChange = false;
+
     QFont nonMonoFont9;
 
     // bool _shGood = true;
     // bool _slGood = true;
-
     // uint8_t _shNew;
     // uint8_t _slNew;
 
@@ -72,24 +72,8 @@ private:
     NumberEntryWidget::States _slState =  NumberEntryWidget::StateOldValid;
     NumberEntryWidget::States _shState =  NumberEntryWidget::StateOldValid;
 
-
-// #ifdef APPLY_CANCEL
-//    QPushButton *  _applyButton;
-//    QPushButton *  _cancelButton;
-// #endif
-
-// #ifdef APPLY_CANCEL
-private:
-    void onApplyButtonClicked(bool checked);
-    void onCancelButtonClicked(bool checked);
-
-    QPushButton * _applyButton;
-    QPushButton * _cancelButton;
-// #endif
-
-
-
-
+   QPushButton * _applyButton;
+   QPushButton * _cancelButton;
 };
 
 #endif /* VALUE_BYTES_WIDGET_H_ */

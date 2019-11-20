@@ -56,10 +56,10 @@ void FeaturesScrollArea::resizeEvent(QResizeEvent * evt)
    evt->ignore();
 
    if (traceResizeEvents) {
-      TRACE("old size = %d, %d", oldSz.width(), oldSz.height());
-      TRACE("new size = %d, %d", newSz.width(), newSz.height());
-      TRACE("Current contents size %d,%d", contentsSize.width(), contentsSize.height());
-      TRACE("Resizing contents to  %d,%d", newSize.width(), newSize.height());
+      TRACEC("old size = %d, %d", oldSz.width(), oldSz.height());
+      TRACEC("new size = %d, %d", newSz.width(), newSz.height());
+      TRACEC("Current contents size %d,%d", contentsSize.width(), contentsSize.height());
+      TRACEC("Resizing contents to  %d,%d", newSize.width(), newSize.height());
    }
 }
 

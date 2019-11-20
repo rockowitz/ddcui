@@ -20,13 +20,13 @@ MsgBoxQueueEntry::MsgBoxQueueEntry(
    , _boxIcon(icon)
 {
      // _type = type;
-   TRACEF(debugClass, "Executing");
+   TRACECF(debugClass, "Executing");
 }
 
 
 MsgBoxQueueEntry::~MsgBoxQueueEntry()
 {
-   TRACEF(debugClass, "Executing");
+   TRACECF(debugClass, "Executing");
 }
 
 
@@ -55,7 +55,7 @@ void MsgBoxQueue::put(MsgBoxQueueEntry * request) {
     // QString r = request->repr();
 
     char * s = strdup(qs2s(request->repr()));
-    TRACEF(debugFunc, "=> Starting. request: %s, about to lock", s);
+    TRACECF(debugFunc, "=> Starting. request: %s, about to lock", s);
     free(s);
     _mutex.lock();
     _queue.enqueue(request);
@@ -64,12 +64,12 @@ void MsgBoxQueue::put(MsgBoxQueueEntry * request) {
     // dbgrpt_nolock();
 
     _mutex.unlock();
-    TRACEF(debugClass, "Done");
+    TRACECF(debugClass, "Done");
 }
 
 
 MsgBoxQueueEntry * MsgBoxQueue::pop() {
-    TRACEF(debugClass, "Starting");
+    TRACECF(debugClass, "Starting");
     _mutex.lock();
     if (_queue.empty())
         _queueNonempty.wait(&_mutex);
@@ -79,7 +79,7 @@ MsgBoxQueueEntry * MsgBoxQueue::pop() {
     // this->dbgrpt_nolock();
 
     _mutex.unlock();
-    TRACEF(debugClass, "<- Done. Returning request: %s", qs2s(rqst->repr()) );
+    TRACECF(debugClass, "<- Done. Returning request: %s", qs2s(rqst->repr()) );
     return rqst;
 }
 

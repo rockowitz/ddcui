@@ -42,7 +42,7 @@ FeaturesScrollAreaContents::FeaturesScrollAreaContents(QWidget * parent) :
 
    // doesn't expand the contents area
    //setSizePolicy( QSizePolicy::MinimumExpanding,  QSizePolicy::MinimumExpanding);
-   TRACE("Executing");
+   TRACEC("Executing");
 
    if (debugLayout) {
       setStyleSheet("background-color:aqua;");
@@ -56,7 +56,7 @@ FeaturesScrollAreaContents::FeaturesScrollAreaContents(QWidget * parent) :
 
 
 FeaturesScrollAreaContents::~FeaturesScrollAreaContents() {
-   TRACE("Executing");
+   TRACEC("Executing");
    // TODO IMPLEMENT!!!
 }
 
@@ -115,7 +115,7 @@ void FeaturesScrollAreaContents::startInitialLoad(void)
 {
    bool debugFunc = debugWidget;
    debugFunc = false;
-   TRACEF(debugFunc, "Executing");
+   TRACECF(debugFunc, "Executing");
    assert(_containingScrollArea != nullptr);
    // _containingScrollArea->hide();
 
@@ -125,7 +125,7 @@ void FeaturesScrollAreaContents::endInitialLoad()
 {
    bool debugFunc = debugWidget;
    debugFunc = false;
-   TRACEF(debugFunc, "Executing");
+   TRACECF(debugFunc, "Executing");
    assert(_containingScrollArea);
 
    emit showCentralWidgetByWidget(_containingScrollArea);
@@ -141,9 +141,9 @@ void FeaturesScrollAreaContents::addPageChangeObserver(PageChangeObserver * obse
 
 void FeaturesScrollAreaContents::notifyPageChangeObservers(int pageno) {
    int ct = _pageChangeObservers->count();
-   TRACEF(debugSignals, "Starting ct=%d", ct);
+   TRACECF(debugSignals, "Starting ct=%d", ct);
    for (int ndx = 0; ndx < ct; ndx++) {
-       TRACEF(debugSignals, "Notifying observer");
+       TRACECF(debugSignals, "Notifying observer");
        PageChangeObserver*  observer = _pageChangeObservers->at(ndx);
        observer->pageChangedByWidget(_containingScrollArea);
    }
@@ -153,12 +153,12 @@ void FeaturesScrollAreaContents::notifyPageChangeObservers(int pageno) {
 
 void FeaturesScrollAreaContents::resize(int w, int h)
 {
-   TRACE("width = %d, height = %s", w, h);
+   TRACEC("width = %d, height = %s", w, h);
    QWidget::resize(w, h);
 }
 void FeaturesScrollAreaContents::resize(QSize sz)
 {
-   TRACE("width = %d, height = %s", sz.width(), sz.height());
+   TRACEC("width = %d, height = %s", sz.width(), sz.height());
    QWidget::resize(sz);
 }
 
@@ -169,8 +169,8 @@ void FeaturesScrollAreaContents::resizeEvent(QResizeEvent * evt)
       QSize oldSz = evt->oldSize();
       QSize newSz = evt->size();
 
-      TRACE("old size = %d, %d", oldSz.width(), oldSz.height());
-      TRACE("new size = %d, %d", newSz.width(), newSz.height());
+      TRACEC("old size = %d, %d", oldSz.width(), oldSz.height());
+      TRACEC("new size = %d, %d", newSz.width(), newSz.height());
    }
    evt->ignore();
 }

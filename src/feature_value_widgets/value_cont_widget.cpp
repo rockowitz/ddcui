@@ -134,19 +134,19 @@ void ValueContWidget::layoutWidget() {
 
        static bool dimensionReportShown = false;
        if (showDimensionReports && !dimensionReportShown) {
-          TRACE("curSlider dimensions");
+          TRACEC("curSlider dimensions");
           reportWidgetDimensions(_curSlider, _cls, __func__);
 
-           TRACE("_curSpinBox dimensions");
+           TRACEC("_curSpinBox dimensions");
            reportWidgetDimensions(_curSpinBox, _cls, __func__);
 
-           TRACE("_maxTitle dimensions");
+           TRACEC("_maxTitle dimensions");
            reportWidgetDimensions(_maxTitle, _cls, __func__);
 
-           TRACE("_maxValue dimensions");
+           TRACEC("_maxValue dimensions");
            reportWidgetDimensions(_maxValue, _cls, __func__);
 
-           TRACE("ValueContWidget dimensions");
+           TRACEC("ValueContWidget dimensions");
            reportWidgetDimensions(this, _cls, __func__);
            dimensionReportShown = true;
        }
@@ -154,14 +154,16 @@ void ValueContWidget::layoutWidget() {
 }
 
 
-
 ValueContWidget::ValueContWidget(QWidget *parent)
     : ValueBaseWidget(parent)
     , _newval(0)
 {
+    bool debug = false;
     _cls = strdup(metaObject()->className());
-    // TRACE("Starting." );
+    TRACEMCF(debug, "Starting." );
     layoutWidget();
+
+    TRACEMCF(debug, "TRACECMF.  After ValueBaseWidget constructor");
 
     // duplicate
     // connect( _curSlider,  SIGNAL(valueChanged(int)),
@@ -196,13 +198,15 @@ ValueContWidget::ValueContWidget(QWidget *parent)
 
 
 void ValueContWidget::setFeatureValue(const FeatureValue &fv) {
-    TRACEF(debugValueWidgetSignals, "Starting. feature code: 0x%02x", fv.featureCode());
+    bool debug = debugValueWidgetSignals;
+    // debug = true;
+    TRACEMCF(debug, "Starting. feature code: 0x%02x, before ValueBaseWidget::setFeatureValue()", fv.featureCode());
     ValueBaseWidget::setFeatureValue(fv);
 
     int maxval = _mh << 8 | _ml;
     int curval = _sh << 8 | _sl;
 
-    TRACEF(debugValueWidgetSignals,
+    TRACEMCF(debug,
               "feature=0x%02x, curval=%d, maxval=%d", _featureCode, curval, maxval);
 
     // maxval = 99999;   // for testing big numbers
@@ -229,17 +233,18 @@ void ValueContWidget::setFeatureValue(const FeatureValue &fv) {
 #endif
 
     _guiChange = true;
+    TRACEMCF(debug, "Done");
 }
 
 
 void ValueContWidget::setCurrentShSl(uint16_t newval) {
    bool debug = false;
-   TRACEF(debug, "newval = 0x%04x", newval);
+   TRACEMCF(debug, "newval = 0x%04x", newval);
     ValueBaseWidget::setCurrentShSl(newval);
     _guiChange = false;
 
      int curval = _sh << 8 | _sl;
-     TRACEF(debugValueWidgetSignals, "feature=0x%02x, curval=%d", _featureCode , curval);
+     TRACEMCF(debugValueWidgetSignals, "feature=0x%02x, curval=%d", _featureCode , curval);
 
      // in case the timer is running, don't trigger
      _spinBoxTimer->stop();
@@ -254,7 +259,7 @@ void ValueContWidget::setCurrentShSl(uint16_t newval) {
 #endif
 
     _guiChange = true;
-    TRACEF(debug, "Done");
+    TRACECF(debug, "Done");
 }
 
 // model is changing value
@@ -268,7 +273,7 @@ uint16_t ValueContWidget::getCurrentShSl() {
 
 #ifdef UNUSED
 void ValueContWidget::onSliderValueChanged(int value) {
-   TRACEF(debugValueWidgetSignals, "NO ACTION feature=0x%02x, value=%d",  _featureCode, value);
+   TRACECF(debugValueWidgetSignals, "NO ACTION feature=0x%02x, value=%d",  _featureCode, value);
 }
 #endif
 
@@ -276,7 +281,7 @@ void ValueContWidget::onSliderValueChanged(int value) {
 void ValueContWidget::onSliderReleased() {
    bool debug = debugValueWidgetSignals;
    // debug = true;
-   TRACEF(debug, "feature=0x%02x",  _featureCode);
+   TRACECF(debug, "feature=0x%02x",  _featureCode);
 
    int newval = _curSpinBox->value();
 
@@ -304,7 +309,7 @@ void ValueContWidget::onSliderReleased() {
 void ValueContWidget::onSpinBoxValueChanged(int value) {
    bool debug = debugValueWidgetSignals;
    // debug = true;
-   TRACEF(debug,
+   TRACECF(debug,
              "feature=0x%02x, value=%d, _guiChange=%d", _featureCode, value, _guiChange);
 
    int newval = _curSpinBox->value();
@@ -324,11 +329,11 @@ void ValueContWidget::onSpinBoxValueChanged(int value) {
 #endif
       // QTimer::singleShot(1000, this, SLOT(onSpinBoxTimedOut()));
       if (_guiChange) {
-         TRACEF(debug, "Starting spinbox timer");
+         TRACECF(debug, "Starting spinbox timer");
          _spinBoxTimer->start();
       }
       else {
-         TRACEF(debug,"Not starting spinbox timer");
+         TRACECF(debug,"Not starting spinbox timer");
       }
 #ifdef APPLY_CANCEL
    }
@@ -339,7 +344,7 @@ void ValueContWidget::onSpinBoxValueChanged(int value) {
 void ValueContWidget::onSpinBoxTimedOut() {
    bool debug = debugValueWidgetSignals;
    // debug = true;
-   TRACEF(debug,
+   TRACECF(debug,
              "feature 0x%02x, _newval=%d, emitting featureValueChanged()", _featureCode, _newval);
 
    uint8_t new_sh = (_newval >> 8) & 0xff;
@@ -374,7 +379,7 @@ void ValueContWidget::onSpinBoxEditingFinished() {
 
 #ifdef APPLY_CANCEL
 void  ValueContWidget::onApplyButtonClicked(bool checked) {
-   TRACEF(debugValueWidgetSignals, "Executing");
+   TRACECF(debugValueWidgetSignals, "Executing");
 
    uint16_t oldval = _sh << 8 | _sl;
    if (_newval != oldval) {
@@ -390,7 +395,7 @@ void  ValueContWidget::onApplyButtonClicked(bool checked) {
 
 
 void  ValueContWidget::onCancelButtonClicked(bool checked) {
-    TRACEF(debugValueWidgetSignals, "Executing");
+    TRACECF(debugValueWidgetSignals, "Executing");
 
    _applyButton->setEnabled(false);
    _cancelButton->setEnabled(false);

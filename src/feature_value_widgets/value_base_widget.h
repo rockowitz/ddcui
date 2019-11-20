@@ -29,9 +29,14 @@ public:
     virtual void     setControlKeyRequired(bool onoff);
     bool             getControlKeyRequired();
 
+signals:
+    // compiler warning: signals may not be declared virtual
+    void featureValueChanged(uint8_t feature_code, uint8_t sh, uint8_t sl);
 
-protected:
-    char *                  _cls;
+public slots:
+    void when_controlKeyRequired_changed(bool onoff);
+
+protected:      // member variables
     uint8_t                 _featureCode;
     DDCA_Display_Ref        _dref;
     DDCA_Feature_Metadata * _finfo;
@@ -45,13 +50,8 @@ protected:
     DDCA_Status             _ddcrc;
     GlobalState&            _globalState = GlobalState::instance();
 
-signals:
-    // compiler warning: signals may not be declared virtual
-    void featureValueChanged(uint8_t feature_code, uint8_t sh, uint8_t sl);
-
-public slots:
-    void when_controlKeyRequired_changed(bool onoff);
-
+private:        // member variables
+    const char *            _cls;
 };
 
 #endif // VALUE_BASE_WIDGET_H

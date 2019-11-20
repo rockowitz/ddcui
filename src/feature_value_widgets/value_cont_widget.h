@@ -33,29 +33,19 @@ public:
 private:
     void layoutWidget();
 
-    EnhancedSlider * _curSlider;
-    QSpinBox*        _curSpinBox;
-    QLabel*          _maxTitle;
-    QLabel*          _maxValue;
-    uint16_t         _newval;
-    QTimer*          _spinBoxTimer;
-    bool             _guiChange = false;
-
-
-private slots:
-    void onSliderReleased();
-    // void onSliderValueChanged(int value);  // unused
-    // void onSpinBoxEditingFinished();     // unused
-    void onSpinBoxTimedOut();
-    void onSpinBoxValueChanged(int value);
-
 #ifdef UNUSED
 public slots:
     void when_ckrChanged(bool onoff);
 #endif
 
+private slots:
+    void onSliderReleased();
+    // void onSliderValueChanged(int value);  // unused
+     // void onSpinBoxEditingFinished();     // unused
+    void onSpinBoxTimedOut();
+    void onSpinBoxValueChanged(int value);
+
 #ifdef APPLY_CANCEL
-private:
     void onApplyButtonClicked(bool checked);
     void onCancelButtonClicked(bool checked);
 
@@ -63,6 +53,15 @@ private:
     QPushButton * _cancelButton;
 #endif
 
+private:    // member variables
+    const char *     _cls;
+    EnhancedSlider * _curSlider;
+    QSpinBox*        _curSpinBox;
+    QLabel*          _maxTitle;
+    QLabel*          _maxValue;
+    uint16_t         _newval;
+    QTimer*          _spinBoxTimer;
+    bool             _guiChange = false;
 };
 
 #endif // VALUE_CONT_WIDGET_H

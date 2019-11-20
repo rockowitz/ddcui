@@ -90,7 +90,7 @@ FeatureValue * FeatureBaseModel::modelVcpValueFilteredFind(uint8_t feature_code)
          DDCA_Status ddcrc = result->ddcrc();
          bool showUnsupported = GlobalState::instance()._mainWindow->_feature_selector->_showUnsupportedFeatures;
          if (!showUnsupported && (ddcrc == DDCRC_REPORTED_UNSUPPORTED || ddcrc == DDCRC_DETERMINED_UNSUPPORTED)) {
-            TRACEF(debug, "Filtering out feature 0x%02x because UNSUPPORTED", result->featureCode());
+            TRACECF(debug, "Filtering out feature 0x%02x because UNSUPPORTED", result->featureCode());
             result = NULL;
          }
       }
@@ -143,7 +143,7 @@ void   FeatureBaseModel::modelVcpValueSet(
     bool debugFunc = debugModel;
     debugFunc = false;
     if (debugFunc)
-        TRACE("feature_code=0x%02x, mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x, ddcrc = %s",
+        TRACEC("feature_code=0x%02x, mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x, ddcrc = %s",
                  feature_code, feature_value->mh, feature_value->ml, feature_value->sh, feature_value->sl,
                  ddca_rc_name(ddcrc));
 
@@ -155,7 +155,7 @@ void   FeatureBaseModel::modelVcpValueSet(
        // MAY DO A FULL LOAD MULTIPLE TIMES, E.G if switch table type
        // assert(ndx < 0);
        if (ndx < 0) {
-           TRACEF(debugFunc, "Creating new FeatureValue");
+           TRACECF(debugFunc, "Creating new FeatureValue");
 
            DDCA_Cap_Vcp * cap_vcp = NULL;
            if (_parsed_caps)
@@ -190,12 +190,12 @@ void   FeatureBaseModel::modelVcpValueSet(
            if (ddcrc ==0) {
               fv->setCurrentValue(feature_value->sh, feature_value->sl);
 
-           TRACEF(debugFunc, "=> Emitting signalFeatureUpdated3(), feature code: 0x%02x, sl: 0x%02x",
+           TRACECF(debugFunc, "=> Emitting signalFeatureUpdated3(), feature code: 0x%02x, sl: 0x%02x",
                     fv->featureCode(), feature_value->sl);
            emit signalFeatureUpdated3(__func__, fv->featureCode(), feature_value->sh, feature_value->sl);
            }
            else{
-              TRACE("Unexpected status code %s for previously read feature 0x%02x",
+              TRACEC("Unexpected status code %s for previously read feature 0x%02x",
                    ddca_rc_name(ddcrc), feature_code);
        }
     }
@@ -211,14 +211,14 @@ FeatureBaseModel::modelVcpValueUpdate(
 {
     bool debugFunc = debugModel;
     debugFunc = true;
-    TRACEF(debugFunc, "feature_code=0x%02x, sh=0x%02x, sl=0x%02x", feature_code, sh, sl);
+    TRACECF(debugFunc, "feature_code=0x%02x, sh=0x%02x, sl=0x%02x", feature_code, sh, sl);
 
     int ndx = modelVcpValueIndex(feature_code);
     assert (ndx >= 0);
     FeatureValue * fv =  _featureValues->at(ndx);
     fv->setCurrentValue(sh,sl);
 
-    TRACEF(debugFunc || debugSignals, "Emitting signalFeatureUpdated3()");
+    TRACECF(debugFunc || debugSignals, "Emitting signalFeatureUpdated3()");
     emit signalFeatureUpdated3(__func__, feature_code, sh, sl);
 }
 
@@ -246,9 +246,9 @@ FeatureBaseModel::onDdcDetailedError(
    // debugFunc = true;
 
    // TRACEF(debugFunc, "Starting");
-   TRACEF(debugFunc, "perec=%p -> %s", perec, perec->srepr() );
+   TRACECF(debugFunc, "perec=%p -> %s", perec, perec->srepr() );
    // TRACEF(debugFunc, "perec=%p -> %s", perec, perec->sexpl() );
-   TRACEF(debugFunc, "=> emitting signalDdcDetailedError()");
+   TRACECF(debugFunc, "=> emitting signalDdcDetailedError()");
    emit  signalDdcDetailedError(perec);
 }
 
@@ -259,11 +259,11 @@ FeatureBaseModel::onDdcFeatureError(
 {
    bool debugFunc = debugModel;
    // debugFunc = true;
-   TRACEF(debugFunc, "perec=%p -> %s", perec, qs2s(perec->repr()) );
+   TRACECF(debugFunc, "perec=%p -> %s", perec, qs2s(perec->repr()) );
    // std::cout << "typeid(perec):  " << typeid(perec).name()  << std::endl;
    // std::cout << "typeid(*perec): " << typeid(*perec).name() << std::endl;
    // emit signalModelError(featureCode, msg);
-   TRACEF(debugFunc, "=> emitting signalDdcFeatureError()");
+   TRACECF(debugFunc, "=> emitting signalDdcFeatureError()");
    emit  signalDdcFeatureError(perec);
 }
 
@@ -292,7 +292,7 @@ FeatureBaseModel::setFeatureList(
 {
    bool debugFunc = debugFeatureLists;
    debugFunc = true;
-   TRACEF(debugFunc, "Starting. %d features: %s, reportUnsupported: %s",
+   TRACECF(debugFunc, "Starting. %d features: %s, reportUnsupported: %s",
                      ddca_feature_list_count(&featureList),
          ddca_feature_list_string(&featureList, NULL, (char*) " "),
          sbool(reportUnsupported) );
@@ -302,7 +302,7 @@ FeatureBaseModel::setFeatureList(
          ddca_feature_list_and_not(&_featuresToShow, &_featuresChecked);
 
    if (debugFeatureLists) {
-       TRACEF(debugFunc, "Unchecked features: %s",
+       TRACECF(debugFunc, "Unchecked features: %s",
                 ddca_feature_list_string(&unchecked_features, NULL, (char*) " "));
    }
 
@@ -318,7 +318,7 @@ FeatureBaseModel::setFeatureList(
    }
    _monitor->_requestQueue->put(new VcpEndInitialLoadRequest);
 
-   TRACEF(debugFunc, "Done");
+   TRACECF(debugFunc, "Done");
 }
 
 // reload specific features, but only if they were already loadeed
@@ -330,19 +330,19 @@ FeatureBaseModel::reloadSpecificFeatures(int ct, uint8_t* features) {
    for (int ndx = 0; ndx < ct; ndx++) {
       DDCA_Vcp_Feature_Code vcp_code = features[ndx];
       if (ddca_feature_list_contains(& _featuresChecked, vcp_code)) {
-         TRACEF(debugFunc, "vcp_code = 0x%02x, in _features_checked", vcp_code);
+         TRACECF(debugFunc, "vcp_code = 0x%02x, in _features_checked", vcp_code);
          FeatureValue *  fv = modelVcpValueFind(vcp_code);
          // should always exist, but just in case
          if (fv) {
             bool needMetadata = false;
-            TRACE("Putting VcpGetRequest(0x%02x) on _requestQueue", vcp_code);
+            TRACEC("Putting VcpGetRequest(0x%02x) on _requestQueue", vcp_code);
             _monitor->_requestQueue->put( new VcpGetRequest(vcp_code, needMetadata));
          }
          else
-            TRACE("FeatureValue for 0x%02x not found", vcp_code);
+            TRACEC("FeatureValue for 0x%02x not found", vcp_code);
       }
       else {
-         TRACEF(debugFunc, "vcp_code = 0x%02x not in _features_checked", vcp_code);
+         TRACECF(debugFunc, "vcp_code = 0x%02x not in _features_checked", vcp_code);
       }
 
    }
@@ -357,7 +357,7 @@ void FeatureBaseModel::setFeatureChecked(uint8_t featureCode) {
 void FeatureBaseModel::reloadFeatures() {
    bool debugFunc = debugFeatureLists;
    debugFunc = false;
-   TRACEF(debugFunc, "Starting.");
+   TRACECF(debugFunc, "Starting.");
 
    _monitor->_requestQueue->put(new VcpStartInitialLoadRequest);
    int ct = modelVcpValueCount();
@@ -372,7 +372,7 @@ void FeatureBaseModel::reloadFeatures() {
    }
    _monitor->_requestQueue->put(new VcpEndInitialLoadRequest);
 
-   TRACEF(debugFunc, "Done");
+   TRACECF(debugFunc, "Done");
 }
 
 

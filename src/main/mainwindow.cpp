@@ -183,7 +183,7 @@ void MainWindow::initMonitors() {
                             &_dlist);
     assert(ddcrc == 0);
     for (int ndx = 0; ndx < _dlist->ct; ndx++) {
-        TRACEF(debug, "Processing display %d", ndx);
+        TRACECF(debug, "Processing display %d", ndx);
 
         // Add entry for monitor in display selector combo box
 // #ifdef OLD
@@ -291,7 +291,7 @@ void MainWindow::initMonitors() {
 void MainWindow::longRunningTaskStart() {
    bool debug = true;
    // needs counter
-   TRACEF(debug, "Executing");
+   TRACECF(debug, "Executing");
    // _spinner->start();
    // _loadingMsgBox->show();
    QGuiApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
@@ -300,7 +300,7 @@ void MainWindow::longRunningTaskStart() {
 
 void MainWindow::longRunningTaskEnd() {
    bool debug = true;
-   TRACEF(debug, "Executing");
+   TRACECF(debug, "Executing");
    // _spinner->stop();
    // _loadingMsgBox->hide();
    QGuiApplication::restoreOverrideCursor();
@@ -400,7 +400,7 @@ void MainWindow::on_actionCapabilities_triggered()
        DDCA_Status ddcrc = MonitorDescActions::capture_capabilities_report(monitor, dref, &caps_report);
        if (ddcrc != 0) {
            reportDdcApiError("ddca_open_display", ddcrc);
-           TRACE("capture_capabilites_report returned %d", ddcrc);
+           TRACEC("capture_capabilites_report returned %d", ddcrc);
        }
        else {
            // cout << "Parsed capabilities: " << endl;
@@ -439,7 +439,7 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
     }
     else {
        featuresToShow = monitor->getFeatureList(_feature_selector->_featureListId);
-       TRACEF(debugFeatureLists,
+       TRACECF(debugFeatureLists,
            "features_to_show: (%d) %s", ddca_feature_list_count(&featuresToShow),
                                         ddca_feature_list_string(&featuresToShow, NULL, (char*)" "));
 
@@ -448,7 +448,7 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
           // n. simply manipulates data structures, does not perform monitor io
           DDCA_Feature_List caps_features =
                 ddca_feature_list_from_capabilities(monitor->_baseModel->_parsed_caps);
-          TRACEF(debugFeatureLists,
+          TRACECF(debugFeatureLists,
               "Capabilities features: (%d) %s",
               ddca_feature_list_count(&caps_features),
               ddca_feature_list_string(&caps_features, NULL, (char*)" "));
@@ -460,7 +460,7 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
        }
     }
 
-    TRACEF(debugFeatureLists,
+    TRACECF(debugFeatureLists,
         "Final featuresToShow: (%d) %s",
         ddca_feature_list_count(&featuresToShow),
         ddca_feature_list_string(&featuresToShow, NULL, (char*)" "));
@@ -478,14 +478,14 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
 {
     if (debugFeatureSelection) {
 
-        TRACE("Desired view: %d, feature list:", View::FeaturesView);
+        TRACEC("Desired view: %d, feature list:", View::FeaturesView);
         this->_feature_selector->dbgrpt();
     }
 
     int monitorNdx = _toolbarDisplayCB->currentIndex();
     Monitor * monitor = _monitors[monitorNdx];
     if (debugFeatureSelection) {
-        TRACE("Current view: %d, feature list:", _curView);
+        TRACEC("Current view: %d, feature list:", _curView);
         monitor->_curFeatureSelector.dbgrpt();
     }
 
@@ -512,7 +512,7 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
        monitor->_curFeatureSelector   = *_feature_selector;
     }
     else {
-       TRACE("Unchanged view and feature set, no need to load");
+       TRACEC("Unchanged view and feature set, no need to load");
     }
 }
 
@@ -525,7 +525,7 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
 
 void MainWindow::on_actionFeatureSelectionDialog_triggered()
 {
-   TRACE("Executing. _fsd=%p", _fsd);
+   TRACEC("Executing. _fsd=%p", _fsd);
 
     // FeatureSelectionDialog*
    if (_fsd) {
@@ -549,15 +549,15 @@ void MainWindow::for_actionFeatureSelectionDialog_accepted()
    bool debugFunc = debugSignals || debugFeatureSelection;
    debugFunc = true;
    if (debugFunc) {
-       TRACE("Executing");
+       TRACEC("Executing");
        _feature_selector->dbgrpt();
    }
    if (_curView == FeaturesView) {
-      TRACEF(debugFunc, "in FeaturesView, signaling featureSelectionChanged()");
+      TRACECF(debugFunc, "in FeaturesView, signaling featureSelectionChanged()");
       emit featureSelectionChanged();
    }
    else {
-      TRACEF(debugFunc, "Not in FeaturesView, so not signaling featureSelectionChanged()");
+      TRACECF(debugFunc, "Not in FeaturesView, so not signaling featureSelectionChanged()");
    }
 
 #ifdef UNNEEDED
@@ -582,7 +582,7 @@ void MainWindow::on_actionOtherOptionsDialog_triggered()
 {
      // TODO: allocate once and save dialog, cf feature selection
      // display dialog box for selecting features
-    TRACE("triggered");
+    TRACEC("triggered");
 
     OtherOptionsDialog* dialog = new OtherOptionsDialog(this->_otherOptionsState, this);
     QObject::connect(dialog,   &OtherOptionsDialog::ncValuesSourceChanged,
@@ -595,7 +595,7 @@ void MainWindow::on_actionOtherOptionsDialog_triggered()
 // for which it could find no signal
 void MainWindow::for_actionOtherOptionsDialog_ncValuesSourceChanged(NcValuesSource valuesSource )
 {
-   TRACE("valuesSource=%d", valuesSource);
+   TRACEC("valuesSource=%d", valuesSource);
 
    if (_curView == FeaturesView  )   {  // need also check if  FeaturesScrollAreaView
       int monitorNdx = _toolbarDisplayCB->currentIndex();
@@ -603,7 +603,7 @@ void MainWindow::for_actionOtherOptionsDialog_ncValuesSourceChanged(NcValuesSour
       // or emit signal?
       monitor->_featuresScrollAreaView->onNcValuesSourceChanged(valuesSource);
    }
-   TRACE("Done");
+   TRACEC("Done");
 }
 
 
@@ -612,7 +612,7 @@ void MainWindow::for_actionOtherOptionsDialog_ncValuesSourceChanged(NcValuesSour
 // causes the dialog to display
 void MainWindow::on_actionUserInterfaceOptionsDialog_triggered()
 {
-   TRACE("Executing. _uid=%p", _uid);
+   TRACEC("Executing. _uid=%p", _uid);
 
 #ifdef NO  // don't bother keeping the dialog box around and hidden
    if (_uid) {
@@ -633,7 +633,7 @@ void MainWindow::on_actionUserInterfaceOptionsDialog_triggered()
                      this,     &MainWindow::for_actionUserInterfaceOptionsDialog_accept);
     // need a connection for reset?
 
-    TRACE("Calling setControKeyRequired(%s)", sbool(_uiOptionsState->controlKeyRequired) );
+    TRACEC("Calling setControKeyRequired(%s)", sbool(_uiOptionsState->controlKeyRequired) );
     dialog->setDialogBoxControlKeyRequired( _uiOptionsState->controlKeyRequired);
 
     dialog->exec();
@@ -642,8 +642,8 @@ void MainWindow::on_actionUserInterfaceOptionsDialog_triggered()
 
 void MainWindow::for_actionUserInterfaceOptionsDialog_accept()
 {
-   TRACE("Executiong");
-   TRACE("Emitting userIntefaceOptionsChanged");
+   TRACEC("Executiong");
+   TRACEC("Emitting userIntefaceOptionsChanged");
    // need to test if real?
    emit userInterfaceOptionsChanged();
 
@@ -668,14 +668,14 @@ void MainWindow::set_feature_list_id(DDCA_Feature_Subset_Id feature_list_id) {
 //
 
 void MainWindow::on_actionRescan_triggered() {
-   TRACE("Executing");
+   TRACEC("Executing");
    assert(_curView == FeaturesView);
    assert(_curDisplayIndex >= 0);
    _monitors[_curDisplayIndex]->_baseModel->reloadFeatures();
 }
 
 void MainWindow::on_actionRedetect_triggered() {
-   TRACE("Executing");
+   TRACEC("Executing");
 }
 
 
@@ -727,22 +727,22 @@ void MainWindow::showSerialMsgBox(QString title, QString text, QMessageBox::Icon
 
 
 void MainWindow::showCentralWidgetPage(int pageno) {
-   TRACE("===========> Setting current index, pageno = %d", pageno);
+   TRACEC("===========> Setting current index, pageno = %d", pageno);
    _ui->centralWidget->setCurrentIndex(pageno);
    _ui->centralWidget->show();
 }
 
 
 void MainWindow::showCentralWidgetByWidget(QWidget * pageWidget) {
-   TRACE("===========> Setting current index, pageWidget object name = %s",
+   TRACEC("===========> Setting current index, pageWidget object name = %s",
           "dummy"  /* pageWidget->objectName() */);   // utf-8
 
    int pageno = _ui->centralWidget->indexOf(pageWidget);
    if (pageno < 0) {
-      TRACE("page for widget not found");
+      TRACEC("page for widget not found");
    }
    else {
-      TRACE("widget page number: %d\n", pageno);
+      TRACEC("widget page number: %d\n", pageno);
       _ui->centralWidget->setCurrentWidget(pageWidget);
       _ui->centralWidget->show();
    }

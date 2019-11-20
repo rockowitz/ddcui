@@ -25,7 +25,7 @@ MsgBoxThread::MsgBoxThread(
 
 
 void MsgBoxThread::msbgoxClosed(int result) {
-   TRACEF(debugThread, "Releasing semaphore");
+   TRACECF(debugThread, "Releasing semaphore");
    msgboxSemaphore.release();
 }
 
@@ -33,10 +33,10 @@ void MsgBoxThread::msbgoxClosed(int result) {
 void MsgBoxThread::run() {
     forever {
         MsgBoxQueueEntry * rqst = this->_requestQueue->pop();
-        TRACEF(debugThread, "Popped: _boxTitle: %s, _boxText: %s",
+        TRACECF(debugThread, "Popped: _boxTitle: %s, _boxText: %s",
                                 qs2s(rqst->_boxTitle), qs2s(rqst->_boxText));
         msgboxSemaphore.acquire();
-        TRACEF(debugThread, "acquired semaphore");
+        TRACECF(debugThread, "acquired semaphore");
         emit postSerialMsgBox(rqst->_boxTitle, rqst->_boxText, rqst->_boxIcon);
         delete rqst;
     }

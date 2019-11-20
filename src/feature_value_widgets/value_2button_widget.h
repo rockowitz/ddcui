@@ -33,11 +33,12 @@ private slots:
 private:
     void layoutWidget();
 
-    QPushButton * _button1;
-    QPushButton * _button2;
-
-    uint8_t   _val1;
-    uint8_t   _val2;
+private:     // member variables
+    const char *   _cls;
+    QPushButton *  _button1;
+    QPushButton *  _button2;
+    uint8_t        _val1;
+    uint8_t        _val2;
 };
 
 #endif // VALUE_2BUTTON_WIDGET_H

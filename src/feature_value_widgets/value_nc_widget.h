@@ -35,9 +35,6 @@ public:
     void reloadComboBox(NcValuesSource newSource);
 
 protected:
-    QComboBox *   _cb;
-    QHBoxLayout * _layout;
-    QLabel * _extraInfo;
     // void layoutWidgetAux();
 
 private:
@@ -52,6 +49,14 @@ private:
 
 protected slots:
     void combobox_activated(int index);
+
+protected:   // member variables
+    QComboBox *   _cb;
+    QHBoxLayout * _layout;
+    QLabel * _extraInfo;
+
+private:     // member variables
+    const char *                  _cls;
 };
 
 #endif // VALUE_NC_WIDGET_H

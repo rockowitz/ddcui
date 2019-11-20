@@ -35,32 +35,42 @@ bool enable_trace_show_thread_id(bool onoff);
 
 bool printftcmf(
       bool debug,
+      const char * metaclass_classname,
       const char * cls,
       const char * funcname,
       int lineno,
       const char * filename,
       const char * format, ...);
 
-#define TRACE( _FMT, ...) \
+#define TRACEC( _FMT, ...) \
 do { \
-   printftcmf(true, _cls, __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+   printftcmf(true, NULL, _cls, __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
 } while(0)
 
-#define TRACEF(_FLAG, _FMT, ...) \
+#define TRACECF(_FLAG, _FMT, ...) \
 do { \
-   printftcmf(_FLAG, _cls, __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+   printftcmf(_FLAG, NULL, _cls, __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
 } while(0)
 
-#define TRACED( _FMT, ...) \
+#define TRACEM( _FMT, ...) \
 do { \
-   printftcmf(true, metaObject()->className(), __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+   printftcmf(true, metaObject()->className(), NULL,  __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
 } while(0)
 
-#define TRACEDF(_FLAG, _FMT, ...) \
+#define TRACEMF(_FLAG, _FMT, ...) \
 do { \
-   printftcmf(_FLAG, metaObject()->className(), __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+   printftcmf(_FLAG, metaObject()->className(), NULL,  __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
 } while(0)
 
+#define TRACEMC( _FMT, ...) \
+do { \
+   printftcmf(true, metaObject()->className(), _cls,  __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+} while(0)
+
+#define TRACEMCF(_FLAG, _FMT, ...) \
+do { \
+   printftcmf(_FLAG, metaObject()->className(), _cls,  __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+} while(0)
 
 
 inline const char * sbool(bool val) { return (val) ? "true" : "false"; }

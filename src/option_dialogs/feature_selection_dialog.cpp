@@ -26,7 +26,7 @@ using namespace std;
 void FeatureSelectionDialog::useSelectorData(FeatureSelector * fsel)
 {
     if (debugFeatureSelection) {
-        TRACE("Setting dialog box widgets from FeatureSelector:");
+        TRACEC("Setting dialog box widgets from FeatureSelector:");
         fsel->dbgrpt();
     }
 
@@ -242,7 +242,7 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
 {
     bool debugFunc = debugFeatureSelection;
     // debugFunc = true;
-    TRACEF(debugFunc, "Executing");
+    TRACECF(debugFunc, "Executing");
     // which button is currently clicked?
 
     DDCA_Feature_Subset_Id feature_list;
@@ -263,7 +263,7 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
     else
         feature_list = DDCA_SUBSET_KNOWN;    // should never occur
 
-    TRACEF(debugFunc, "Checking for any changes...");
+    TRACECF(debugFunc, "Checking for any changes...");
     bool changed = false;
     if (feature_list != _featureSelector->_featureListId) {
        _featureSelector->_featureListId = feature_list;
@@ -301,17 +301,17 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
      }
 
     if (debugFeatureSelection) {
-        TRACE("_feature_selector:");
+        TRACEC("_feature_selector:");
         _featureSelector->dbgrpt();
     }
 
     if (changed) {
-       TRACEF(debugFunc, "Signaling featureSelectionChanged()");
+       TRACECF(debugFunc, "Signaling featureSelectionChanged()");
        emit featureSelectionChanged();
        // emit featureSelectionAccepted(feature_list);
     }
     else {
-       TRACEF(debugFunc, "NOT Signaling featureSelectionChanged()");
+       TRACECF(debugFunc, "NOT Signaling featureSelectionChanged()");
     }
 }
 

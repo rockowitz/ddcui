@@ -14,22 +14,8 @@
 ValueBaseWidget::ValueBaseWidget(QWidget *parent)
      : QFrame(parent)             // ValueAbstractWidget(parent)
 {
-   // n. will be reset in subclass constructor
-   _cls = strdup(metaObject()->className());
-   // TRACE("Create empty widget");
-
-   // setFrameStyle(QFrame::Box);
-   // int m_left, m_right, m_top, m_bottom;
-   // getContentsMargins(&m_left, &m_top, &m_right, &m_bottom);
-   // printf("(ValueBaseWidget::ValueBaseWidget) Before reset, margins: left=%d, top=%d, right=%d, bottom=%d)\n",
-   //        m_left, m_top, m_right, m_bottom);
-   // returns 1,1,1,1
-   //                 l  t  r   b
-   // setContentsMargins(0, 0, 0, 0);
-   // getContentsMargins(&m_left, &m_top, &m_right, &m_bottom);
-   // printf("(ValueBaseWidget::ValueBaseWidget) After reset, margins: left=%d, top=%d, right=%d, bottom=%d)\n",
-   //        m_left, m_top, m_right, m_bottom);
-
+   bool debug = false;
+   _cls = strdup(metaObject()->className());  // private to this class
 
    //QMargins margins = contentsMargins();
    //printf("(ValueBaseWidget::ValueBaseWidget) margins: left=%d, top=%d, right=%d, bottom=%d)\n",
@@ -49,13 +35,15 @@ ValueBaseWidget::ValueBaseWidget(QWidget *parent)
 //   _finfo->feature_desc = NULL;
    _capVcp = NULL;
    _mh = _ml = _sh = _sl = 0;
+
+   TRACEMCF(debug, "Done");
 }
 
 
 void ValueBaseWidget::setFeatureValue(const FeatureValue &fv) {
-   bool debug = true;
-   TRACEF(debug, "featureCode=0x%02x, capVcp=%p, ddcrc=%d",
-                 fv.featureCode(), fv.capVcp(), fv.ddcrc());
+   bool debug = false;
+   TRACEMCF(debug, "ValueBaseWidget. featureCode=0x%02x, capVcp=%p, ddcrc=%d",
+                    fv.featureCode(), fv.capVcp(), fv.ddcrc());
 
     _featureCode    = fv.featureCode();
     _dref           = fv.dref();
@@ -113,8 +101,6 @@ void ValueBaseWidget::when_controlKeyRequired_changed(bool onoff) {
    // TRACE("calling setControlKeyRequired()");
    setControlKeyRequired(onoff);
 }
-
-
 
 
 #ifdef NO

@@ -24,6 +24,9 @@ private slots:
 
 private:
     void layoutWidget();
+
+private:
+    const char *  _cls;
     QPushButton * _resetButton;
 };
 

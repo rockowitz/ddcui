@@ -102,13 +102,13 @@ void Value2ButtonWidget::setButtonDetail(
 
 
 void Value2ButtonWidget::on_button1_pressed() {
-   TRACEF(debugValueWidgetSignals, "Button 1 pressed. Emitting featureValueChanged");
+   TRACECF(debugValueWidgetSignals, "Button 1 pressed. Emitting featureValueChanged");
    emit featureValueChanged(_featureCode, 0, _val1);
 }
 
 
 void Value2ButtonWidget::on_button2_pressed() {
-   TRACEF(debugValueWidgetSignals, "Button 2 pressed. Emitting featureValueChanged");
+   TRACECF(debugValueWidgetSignals, "Button 2 pressed. Emitting featureValueChanged");
    emit featureValueChanged(_featureCode, 0, _val2);
 }
 

@@ -111,15 +111,13 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
 void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
     bool debug = false;
     debug = debug || debugValueWidgetSignals;
-    TRACEF(debug, "Starting. feature code: 0x%02x", fv.featureCode());
+    TRACEMCF(debug, "Starting. feature code: 0x%02x", fv.featureCode());
     // ValueBaseWidget::setFeatureValue(fv);
     _featureCode = fv.featureCode();   // needed since not calling ValueBaseWidget::setFeatureValue()
     // DDCA_MCCS_Version_Spec vspec = fv.vspec();   // unused
 
     if (fv.ddcrc() != 0) {
-       // use the default standard widget
-
-
+       // use the default standard widget, set in constructor
     }
     // alt, test for PRESET, then xb0 (settings) or normal
     else if ( _featureCode == 0x04 ||    // Restore factory defaults
@@ -153,7 +151,7 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
     }
 
     else if (_featureCode == 0x14) {
-       TRACEF(debug, "_feature_code == 0x14");
+       TRACECF(debug, "_feature_code == 0x14");
        _pageno_selected = _pageno_ncplus;
        _cur_stacked_widget = _ncplusWidget;
        setCurrentIndex(_pageno_ncplus);
@@ -165,13 +163,11 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
        setCurrentIndex(_pageno_ncplus);
     }
 
-
     else if ( _featureCode >= 0xe0) {
        _pageno_selected = _pageno_bytes;
        _cur_stacked_widget = _bytesWidget;
        setCurrentIndex(_pageno_bytes);
     }
-
 
     else if (fv.flags() & DDCA_STD_CONT) {
          // printf("(ValueStackedWidget::%s) DDCA_STD_CONT\n", __func__); fflush(stdout);
@@ -196,9 +192,9 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
         _cur_stacked_widget = _stdWidget;
     }
 
-    TRACEF(debug, "Calling _cur_stacked_widget->setFeatureValue()" );
+    TRACECF(debug, "Calling _cur_stacked_widget->setFeatureValue()" );
     _cur_stacked_widget->setFeatureValue(fv);
-    TRACEF(debug, "Done");
+    TRACECF(debug, "Done");
 }
 
 
@@ -224,11 +220,11 @@ void  ValueStackedWidget::forContainedWidgetChanged(uint8_t feature_code, uint8_
 {
    bool debug = debugValueWidgetSignals;
    debug = true;
-   TRACEF(debug,
+   TRACECF(debug,
              "feature_code=0x%02x, sh=0x%02x, sl=0x%02x", feature_code, sh, sl);
    assert(feature_code == _featureCode);
 
-   TRACEF(debug,
+   TRACECF(debug,
              "-> Calling emit stackedFeatureValueChanged(), feature_code=0x%02x, sh=0x%02x, sl=0x%02x",
              feature_code, sh, sl);
    emit stackedFeatureValueChanged(feature_code, sh, sl);
@@ -245,13 +241,13 @@ bool ValueStackedWidget::hasSlTable() {
 
 
 void ValueStackedWidget::setNcValuesSource(NcValuesSource newsrc) {
-   TRACEF(debugNcValues,
+   TRACECF(debugNcValues,
              "newsrc = %d, _pageno_selected=%d, _pageno_nc=%d",
              newsrc, _pageno_selected, _pageno_nc);
 
    if (_pageno_selected == _pageno_nc) {
       _ncWidget->reloadComboBox(newsrc);
    }
-   TRACEF(debugNcValues, "Done");
+   TRACECF(debugNcValues, "Done");
 }
 

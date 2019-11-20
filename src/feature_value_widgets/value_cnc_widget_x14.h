@@ -38,6 +38,7 @@ public:
 private:
     QLabel * _mhdesc;
     QLabel * _mhlabel;
+    const char * _cls;
 
 #ifdef NO
     QComboBox *    _cb;

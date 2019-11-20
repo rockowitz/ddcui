@@ -120,11 +120,10 @@ void ValueNcplusWidget::layoutWidget() {
 ValueNcplusWidget::ValueNcplusWidget(QWidget *parent):
         ValueNcWidget(parent)
 {
+   bool debug = false;
     _cls = strdup(metaObject()->className());
-    // TRACE("Starting." );
     // layoutWidget();
-    // TRACE("Done");
-
+    TRACEMCF(debug, "Done");
 }
 
 
@@ -187,10 +186,12 @@ void ValueNcplusWidget::setAuxFields() {
 }
 
 void ValueNcplusWidget::setFeatureValue(const FeatureValue &fv) {
-   // DDCA_MCCS_Version_Spec vspec = fv.vspec();   // unused
-   // TRACE("Starting. feature = 0x%02x, vspec = %d.%d", fv.featureCode(), vspec.major, vspec.minor);
-   ValueNcWidget::setFeatureValue(fv);
-   // do layout here since we don't know util the feature is loaded what the required layout is
+   DDCA_MCCS_Version_Spec vspec = fv.vspec();
+   bool debug = false;
+   TRACEMCF(debug, "Starting. feature = 0x%02x, vspec = %d.%d", fv.featureCode(), vspec.major, vspec.minor);
+   TRACEMCF(debug, "TRACECMF. ValueStdWidget. featureCode=0x%02x, capVcp=%p, ddcrc=%d, Before ValueNcWidget::setFeatureValue()",
+                 fv.featureCode(), fv.capVcp(), fv.ddcrc());
+
    ValueNcWidget::setFeatureValue(fv);
    setAuxFields();
    // TRACE("Done");
