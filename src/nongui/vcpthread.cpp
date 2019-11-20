@@ -259,8 +259,8 @@ void VcpThread::capabilities() {
 void VcpThread::getvcp(uint8_t featureCode, bool needMetadata) {
     bool debugFunc = debugThread;
     // debugFunc = true;
-    TRACEF(debugFunc||true, "Starting. featureCode=0x%02x, needMetadata = %s",
-                            featureCode, sbool(needMetadata));
+    TRACEF(debugFunc, "Starting. featureCode=0x%02x, needMetadata = %s",
+                      featureCode, sbool(needMetadata));
 
     DDCA_Display_Handle                   dh;
     DDCA_Non_Table_Vcp_Value              valrec;
