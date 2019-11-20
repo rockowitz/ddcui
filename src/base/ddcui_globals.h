@@ -27,7 +27,7 @@ extern const bool debugSignals            ;
 extern const bool debugValueWidgetSignals ;
 extern const bool debugFeatureLists       ;
 extern const bool debugFeatureSelection   ;
-extern const bool debugNcValues;
+extern const bool debugNcValues           ;
 extern const bool debugLayout             ;
 
 bool enable_trace_show_time(bool onoff);
@@ -51,12 +51,12 @@ do { \
    printftcmf(_FLAG, _cls, __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
 } while(0)
 
-#define TRACE2( _FMT, ...) \
+#define TRACED( _FMT, ...) \
 do { \
    printftcmf(true, metaObject()->className(), __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
 } while(0)
 
-#define TRACEF2(_FLAG, _FMT, ...) \
+#define TRACEDF(_FLAG, _FMT, ...) \
 do { \
    printftcmf(_FLAG, metaObject()->className(), __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
 } while(0)
