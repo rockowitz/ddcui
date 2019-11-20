@@ -243,7 +243,7 @@ void FeatureWidget::setFeatureValue(FeatureValue &fv)
 
     DDCA_Status ddcrc =fv.ddcrc();
 
-    TRACE("feature=0x%02x, getvcp status=%s", _feature_code , ddca_rc_name(ddcrc) );
+    TRACEF(debug, "feature=0x%02x, getvcp status=%s", _feature_code , ddca_rc_name(ddcrc) );
     // TRACEF(debug, "Before calling valueWidget->setFeatureValue()");
     _valueWidget->setFeatureValue(fv);
 
