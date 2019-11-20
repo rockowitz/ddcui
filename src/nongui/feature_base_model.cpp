@@ -141,7 +141,7 @@ void   FeatureBaseModel::modelVcpValueSet(
                    DDCA_Status                          ddcrc)
 {
     bool debugFunc = debugModel;
-    debugFunc = true;
+    debugFunc = false;
     if (debugFunc)
         TRACE("feature_code=0x%02x, mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x, ddcrc = %s",
                  feature_code, feature_value->mh, feature_value->ml, feature_value->sh, feature_value->sl,
@@ -292,7 +292,8 @@ FeatureBaseModel::setFeatureList(
 {
    bool debugFunc = debugFeatureLists;
    debugFunc = true;
-   TRACEF(debugFunc, "Starting. Features: %s, reportUnsupported: %s",
+   TRACEF(debugFunc, "Starting. %d features: %s, reportUnsupported: %s",
+                     ddca_feature_list_count(&featureList),
          ddca_feature_list_string(&featureList, NULL, (char*) " "),
          sbool(reportUnsupported) );
    _featuresToShow = featureList;
