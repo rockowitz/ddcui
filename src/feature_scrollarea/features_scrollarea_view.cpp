@@ -61,7 +61,7 @@ void FeaturesScrollAreaView::freeContents(void) {
 
 // how does this get called? is this an implicit connection by name?
 void FeaturesScrollAreaView::onEndInitialLoad(void) {
-    bool debug = true;
+    bool debug = false;
     TRACECF(debug, "Starting, Monitor=%s", _monitor->_displayInfo->model_name);
 
     // TODO:
