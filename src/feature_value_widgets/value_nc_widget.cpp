@@ -27,6 +27,7 @@
 static bool debugWidget = false;
 static bool showDimensionReports = true;
 
+
 void ValueNcWidget::layoutWidget() {
    // TRACE("Starting");
    _layout = new QHBoxLayout();
@@ -119,7 +120,6 @@ void ValueNcWidget::layoutWidget() {
 }
 
 
-
 ValueNcWidget::ValueNcWidget(QWidget *parent):
         ValueBaseWidget(parent)
 {
@@ -159,7 +159,6 @@ void ValueNcWidget::setFeatureValue(const FeatureValue &fv) {
     _guiChange=true;
 
     TRACEMCF(debug, "Done");
-
 }
 
 
@@ -250,6 +249,7 @@ void ValueNcWidget::reloadComboBox(NcValuesSource newSource) {
    TRACEMF(debugNcValues, "Done");
 }
 
+
 void ValueNcWidget::setCurrentShSl(uint16_t newval) {
    TRACEMF(debugWidget, "Starting. feature 0x%02x, newval=x%04x", _featureCode, newval);
 
@@ -288,10 +288,11 @@ uint16_t ValueNcWidget::getCurrentShSl() {
     return result;
 }
 
+
 void ValueNcWidget::combobox_activated(int index) {
    bool debug = false;
    debug = debug || debugWidget;
-   TRACEMF(debug, "feature 0x%02x, index=%d", _featureCode, index);
+   TRACEMCF(debug, "feature 0x%02x, index=%d", _featureCode, index);
    int ndx = _cb->currentIndex();
    assert(ndx == index);
 
@@ -301,9 +302,9 @@ void ValueNcWidget::combobox_activated(int index) {
    uint8_t new_sl = i & 0xff;
 
    if (new_sh != _sh || new_sl != _sl) {
-      TRACEMF(debug, "Value changed.  New sl: %u, _guiChange=%d", new_sl, _guiChange);
+      TRACEMCF(debug, "Value changed.  New sl: %u, _guiChange=%d", new_sl, _guiChange);
       if (_guiChange) {
-         TRACEMF(debug, "Emitting featureValueChanged, featureCode = 0x%02x, sh=0, new_sl=0x%02x",
+         TRACEMCF(debug, "Emitting featureValueChanged, featureCode = 0x%02x, sh=0, new_sl=0x%02x",
                          _featureCode, new_sl);
          emit featureValueChanged(_featureCode, 0, new_sl);
       }
@@ -311,8 +312,7 @@ void ValueNcWidget::combobox_activated(int index) {
       _sl = new_sl;
    }
    else {
-      TRACEMF(debug, "Value not changed.");
+      TRACEMCF(debug, "Value not changed.");
    }
 }
-
 
