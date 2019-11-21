@@ -116,7 +116,6 @@ void ValueNcplusWidget::layoutWidget() {
 #endif
 
 
-
 ValueNcplusWidget::ValueNcplusWidget(QWidget *parent):
         ValueNcWidget(parent)
 {
@@ -127,7 +126,7 @@ ValueNcplusWidget::ValueNcplusWidget(QWidget *parent):
 }
 
 
-void ValueNcplusWidget::setAuxFieldsX14()
+void ValueNcplusWidget::setAuxFieldsX14()    // Color preset
 {
       // how to pull in x14_color_preset_tolerances from vcp_feature_codes.c instead,
      // or the formatted MH value?
@@ -151,7 +150,7 @@ void ValueNcplusWidget::setAuxFieldsX14()
    }
 }
 
-void ValueNcplusWidget::setAuxFieldsXca() {
+void ValueNcplusWidget::setAuxFieldsXca() {     // OSD
    if ( (_vspec.major == 2 && _vspec.minor >= 2) ) {
       // _auxTitle->setText("Power Mode:");
       const char * s = NULL;
@@ -176,6 +175,7 @@ void ValueNcplusWidget::setAuxFieldsXca() {
    }
 }
 
+
 void ValueNcplusWidget::setAuxFields() {
    if (_featureCode == 0x14) {
       setAuxFieldsX14();
@@ -184,6 +184,7 @@ void ValueNcplusWidget::setAuxFields() {
       setAuxFieldsXca();
    }
 }
+
 
 void ValueNcplusWidget::setFeatureValue(const FeatureValue &fv) {
    DDCA_MCCS_Version_Spec vspec = fv.vspec();
