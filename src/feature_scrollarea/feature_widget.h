@@ -1,6 +1,6 @@
 /* feature_widget.h - Custom widget for displaying/editing a VCP feature */
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef FEATURE_WIDGET_H
@@ -38,9 +38,6 @@ public:
 
     // void simpleFeatureValueChanged(SimpleFeatureValue fv) override;   // SimpleFeatureValueObserver
 
-    uint8_t             _feature_code;
-    QString*            _feature_name;
-
 protected:
     // void resizeEvent(QResizeEvent * event) override;   // UNNEEDED
 
@@ -54,10 +51,16 @@ private:
     void setupFeatureWidget();   // called by constructor
     void setupConnections();          // called by constructor
 
+
+public:            // member variables
+    uint8_t             _feature_code;
+    QString*            _feature_name;
+
+private:
     const char *        _cls;    // className
 
-    // uint8_t             _feature_code;
-   //  QString*            _feature_name;
+    // uint8_t          _feature_code;
+   //  QString*         _feature_name;
     DDCA_Version_Feature_Flags  _feature_flags;      // uint16_t
 
     QHBoxLayout*        _layout;

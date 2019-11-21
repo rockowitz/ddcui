@@ -290,11 +290,11 @@ void FeatureWidget::onInternalValueChanged(uint8_t featureCode, uint8_t sh, uint
 {
    bool debug = false;
    debug = debug || debugSignals;
-   TRACECF(debug, "feature_code = 0x%02x, sh=0x%02x, sl=0x%02x", featureCode, sh, sl);
+   TRACEMCF(debug, "feature_code = 0x%02x, sh=0x%02x, sl=0x%02x", featureCode, sh, sl);
    assert(featureCode == _feature_code);
 
    bool writeOnlyFeature = _feature_flags & DDCA_WO;
-   TRACECF(debug, "-> Calling emit valueChanged, feature_code=0x%02x, writeOnlyFeature=%s, sh=0x%02x, sl=0x%02x",
+   TRACEMCF(debug, "-> Calling emit valueChanged, feature_code=0x%02x, writeOnlyFeature=%s, sh=0x%02x, sl=0x%02x",
                     featureCode, sbool(writeOnlyFeature), sh, sl);
    emit valueChanged(featureCode, writeOnlyFeature, sh, sl);
 }
