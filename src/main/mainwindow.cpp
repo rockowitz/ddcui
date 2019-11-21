@@ -4,6 +4,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "main/mainwindow.h"
+
 #include <assert.h>
 #include <iostream>
 
@@ -14,7 +15,7 @@
 
 #include <ddcutil_c_api.h>
 
-#include "imported/QtWaitingSpinner/waitingspinnerwidget.h"
+// #include "imported/QtWaitingSpinner/waitingspinnerwidget.h"
 
 #include "base/ddcui_globals.h"
 #include "base/debug_utils.h"
@@ -22,15 +23,13 @@
 #include "base/monitor.h"
 #include "base/other_options_state.h"
 
-#include "nongui/vcpthread.h"    // includes vcprequest.h
 #include "nongui/msgbox_queue.h"
+#include "nongui/vcpthread.h"    // includes vcprequest.h
 
 #include "monitor_desc/monitor_desc_actions.h"
 #include "monitor_desc/monitor_desc_ui.h"
 
-#include "msgbox_thread.h"
 #include "feature_value_widgets/value_stacked_widget.h"
-#include "mainwindow_ui.h"
 
 #include "feature_scrollarea/feature_widget.h"
 #include "feature_scrollarea/features_scrollarea_contents.h"
@@ -40,6 +39,9 @@
 #include "option_dialogs/feature_selection_dialog.h"
 #include "option_dialogs/other_options_dialog.h"
 #include "option_dialogs/user_interface_options_dialog.h"
+
+#include "main/mainwindow_ui.h"
+#include "main/msgbox_thread.h"
 
 
 using namespace std;
@@ -145,19 +147,11 @@ MainWindow::MainWindow(QWidget *parent) :
         this,     &MainWindow::featureSelectionChanged,
         this,     &MainWindow::on_actionFeaturesScrollArea_triggered);
 
-     // connect for OtherOptions
-
-#ifdef REF
-     void on_actionUserInterfaceOptionsDialog_triggered();
-     void for_actionUserInterfaceOptionsDialog_accept();
-#endif
-
      // Is this why double call?
      // Why does this need to be explicit, not performed by connectSlotsByName
      // QObject::connect(
      //    this->_ui->actionUserInterfaceOptionsDialog,    &QAction::triggered,
      //    this,     &MainWindow::on_actionUserInterfaceOptionsDialog_triggered);
-
 }
 
 
@@ -601,7 +595,8 @@ void MainWindow::for_actionOtherOptionsDialog_ncValuesSourceChanged(NcValuesSour
 // causes the dialog to display
 void MainWindow::on_actionUserInterfaceOptionsDialog_triggered()
 {
-   TRACEC("Executing. _uid=%p", _uid);
+   bool debug = false;
+   TRACECF(debug, "Executing. _uid=%p", _uid);
 
 #ifdef NO  // don't bother keeping the dialog box around and hidden
    if (_uid) {
@@ -616,18 +611,18 @@ void MainWindow::on_actionUserInterfaceOptionsDialog_triggered()
     //   delete _uid;
 #endif
 
-
     UserInterfaceOptionsDialog* dialog = new UserInterfaceOptionsDialog(this->_uiOptionsState, this);
     QObject::connect(dialog,   &UserInterfaceOptionsDialog::accepted,
                      this,     &MainWindow::for_actionUserInterfaceOptionsDialog_accept);
     // need a connection for reset?
 
-    TRACEC("Calling setControKeyRequired(%s)", sbool(_uiOptionsState->controlKeyRequired) );
+    TRACECF(debug, "Calling setControKeyRequired(%s)", sbool(_uiOptionsState->controlKeyRequired) );
     dialog->setDialogBoxControlKeyRequired( _uiOptionsState->controlKeyRequired);
 
     dialog->exec();
     delete dialog;
 }
+
 
 void MainWindow::for_actionUserInterfaceOptionsDialog_accept()
 {
@@ -641,9 +636,11 @@ void MainWindow::for_actionUserInterfaceOptionsDialog_accept()
    // _uiOptionsState->setControlKeyRequired(newval);
 }
 
+
 DDCA_Feature_Subset_Id MainWindow::feature_list_id() const {
     return this->_feature_list_id;
 }
+
 
 #ifdef UNUSED
 void MainWindow::set_feature_list_id(DDCA_Feature_Subset_Id feature_list_id) {
