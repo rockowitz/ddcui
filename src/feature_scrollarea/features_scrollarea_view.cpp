@@ -170,7 +170,7 @@ void FeaturesScrollAreaView::onUIValueChanged(
       uint8_t sh,
       uint8_t sl)
 {
-   bool debug = false;
+   bool debug = true;
    debug = debug || debugSignals;
    TRACECF(debug, "Starting. featureCode = 0x%02x, writeOnly=%s, sh=0x%02x, sl=0x%02x",
                   featureCode, sbool(writeOnly), sh, sl);
@@ -205,7 +205,6 @@ void FeaturesScrollAreaView::onUIValueChanged(
          break;
       }
    }
-
    TRACECF(debug, "Done");
 }
 

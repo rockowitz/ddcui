@@ -319,12 +319,12 @@ FeatureBaseModel::setFeatureList(
 }
 
 
-// reload specific features, but only if they were already loadeed
+// reload specific features, but only if they were already loaded
 // used when setting one feature requires rereading others
 
 void
 FeatureBaseModel::reloadSpecificFeatures(int ct, uint8_t* features) {
-   bool debugFunc =false;
+   bool debugFunc =true;
    for (int ndx = 0; ndx < ct; ndx++) {
       DDCA_Vcp_Feature_Code vcp_code = features[ndx];
       if (ddca_feature_list_contains(& _featuresChecked, vcp_code)) {
@@ -333,11 +333,11 @@ FeatureBaseModel::reloadSpecificFeatures(int ct, uint8_t* features) {
          // should always exist, but just in case
          if (fv) {
             bool needMetadata = false;
-            TRACEC("Putting VcpGetRequest(0x%02x) on _requestQueue", vcp_code);
+            TRACECF(debugFunc, "Putting VcpGetRequest(0x%02x) on _requestQueue", vcp_code);
             _monitor->_requestQueue->put( new VcpGetRequest(vcp_code, needMetadata));
          }
          else
-            TRACEC("FeatureValue for 0x%02x not found", vcp_code);
+            TRACECF(debugFunc, "FeatureValue for 0x%02x not found", vcp_code);
       }
       else {
          TRACECF(debugFunc, "vcp_code = 0x%02x not in _features_checked", vcp_code);
