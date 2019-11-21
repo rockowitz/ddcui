@@ -286,7 +286,7 @@ FeatureBaseModel::setFeatureList(
       DDCA_Feature_List featureList,
       bool              reportUnsupported)
 {
-   bool debugFunc = true;
+   bool debugFunc = false;
    debugFunc = debugFunc || debugFeatureLists;
 
    TRACECF(debugFunc, "Starting. %d features: %s, reportUnsupported: %s",
@@ -324,7 +324,7 @@ FeatureBaseModel::setFeatureList(
 
 void
 FeatureBaseModel::reloadSpecificFeatures(int ct, uint8_t* features) {
-   bool debugFunc = true;
+   bool debugFunc =false;
    for (int ndx = 0; ndx < ct; ndx++) {
       DDCA_Vcp_Feature_Code vcp_code = features[ndx];
       if (ddca_feature_list_contains(& _featuresChecked, vcp_code)) {
