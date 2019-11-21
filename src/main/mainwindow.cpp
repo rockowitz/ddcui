@@ -529,8 +529,8 @@ void MainWindow::on_actionFeatureSelectionDialog_triggered()
 // explicit connect()
 void MainWindow::for_actionFeatureSelectionDialog_accepted()
 {
-   bool debugFunc = debugSignals || debugFeatureSelection;
-   debugFunc = true;
+   bool debugFunc = false;
+   debugFunc = debugFunc || debugSignals || debugFeatureSelection;
    if (debugFunc) {
        TRACEC("Executing");
        _feature_selector->dbgrpt();
@@ -629,11 +629,10 @@ void MainWindow::on_actionUserInterfaceOptionsDialog_triggered()
 
 void MainWindow::for_actionUserInterfaceOptionsDialog_accept()
 {
-   TRACEC("Executiong");
-   TRACEC("Emitting userIntefaceOptionsChanged");
+   bool debug = false;
+   TRACECF(debug, "Executing, Emitting userIntefaceOptionsChanged");
    // need to test if real?
    emit userInterfaceOptionsChanged();
-
 
    // unneeded here - set in UserInterfaceOptionsCialog
    // _uiOptionsState->setControlKeyRequired(newval);

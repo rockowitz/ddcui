@@ -17,13 +17,14 @@
 
 
  void UserInterfaceOptionsState::setControlKeyRequired(bool onoff) {
+    bool debug = false;
     bool old =   controlKeyRequired;
     bool newControlKeyRequired = onoff;
-    TRACEC("old = %s, new = %s", sbool(controlKeyRequired), sbool(onoff));
+    TRACECF(debug, "old = %s, new = %s", sbool(controlKeyRequired), sbool(onoff));
 
     if (newControlKeyRequired != old) {
         controlKeyRequired = newControlKeyRequired;
         TRACEC("emitting ckrChanged(%s)", sbool(controlKeyRequired));
         emit controlKeyRequired_changed(controlKeyRequired);
     }
- }
+}
