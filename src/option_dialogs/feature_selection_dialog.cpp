@@ -216,7 +216,7 @@ void FeatureSelectionDialog::on_allCapabilities_checkbox_stateChanged(int arg1)
    }
 }
 
-
+#ifdef UNUSED
 void FeatureSelectionDialog::on_showUnsupported_checkbox_stateChanged(int arg1)
 {
    cout << "(on_showUnsupported_checkBox_stateChanged) arg1 = " << arg1 << endl;
@@ -224,6 +224,7 @@ void FeatureSelectionDialog::on_showUnsupported_checkbox_stateChanged(int arg1)
    //    _ui->allCapabilities_checkbox->setCheckState(Qt::Unchecked);
    // }
 }
+#endif
 
 
 #ifdef UNUSED

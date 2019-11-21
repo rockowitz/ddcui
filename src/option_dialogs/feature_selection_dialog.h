@@ -49,7 +49,9 @@ private slots:
     void on_scan_radioButton_clicked(bool checked);
 
     void on_allCapabilities_checkbox_stateChanged(int arg1);
+#ifdef UNUSED
     void on_showUnsupported_checkbox_stateChanged(int arg1);
+#endif
 
 #ifdef UNUSED
     void on_known_radioButton_clicked(bool checked);
