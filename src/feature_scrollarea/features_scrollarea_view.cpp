@@ -1,6 +1,6 @@
 /* features_scrollarea_view.cpp */
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "feature_scrollarea/features_scrollarea_view.h"
@@ -170,11 +170,10 @@ void FeaturesScrollAreaView::onUIValueChanged(
       uint8_t sh,
       uint8_t sl)
 {
-   bool debug = debugSignals;
-   debug = true;
-   TRACECF(debug,
-             "Starting. featureCode = 0x%02x, writeOnly=%s, sh=0x%02x, sl=0x%02x",
-             featureCode, sbool(writeOnly), sh, sl);
+   bool debug = false;
+   debug = debugSignals;
+   TRACECF(debug, "Starting. featureCode = 0x%02x, writeOnly=%s, sh=0x%02x, sl=0x%02x",
+                  featureCode, sbool(writeOnly), sh, sl);
 
    FeatureValue * curFv = _baseModel->modelVcpValueFind(featureCode);
    if (curFv && curFv->val().sh == sh && curFv->val().sl == sl) {
@@ -217,8 +216,9 @@ void FeaturesScrollAreaView::onModelValueChanged(
       uint8_t     sh,
       uint8_t     sl)
 {
-   bool debugFunc = debugSignals;
-   debugFunc = true;
+   bool debugFunc = false;
+   debugFunc = debugSignals;
+
    TRACECF(debugSignals,
              "caller = %s, feature_code = 0x%02x, sh=0x%02x, sl=0x%02x",
              caller, featureCode, sh, sl);
@@ -273,12 +273,7 @@ void FeaturesScrollAreaView::onModelDdcDetailedError(DdcDetailedError* perec) {
    bool debugFunc = debugSignals;
    // debugFunc = true;
 
-    // TRACE("Starting");
     TRACECF(debugFunc, "perec=%p, perec->%s", perec, perec->srepr() );
-    // std::cout << "typeid(perec):  " << typeid(perec).name()  << std::endl;
-    // std::cout << "typeid(*perec): " << typeid(*perec).name() << std::endl;
-
-    // DDCA_Display_Info * dinfo = _monitor->_displayInfo;
 
     QString qstitle = QString("ddcutil Error");
     QString qsexpl  = perec->expl();
@@ -294,11 +289,9 @@ void FeaturesScrollAreaView::onModelDdcDetailedError(DdcDetailedError* perec) {
 
 
 void FeaturesScrollAreaView::onModelDdcFeatureError(DdcFeatureError* perec) {
-    bool debugFunc = debugSignals;
-    debugFunc = true;
+    bool debugFunc = false;
+    debugFunc      = debugSignals;
     TRACECF(debugFunc, "perec=%p, perec->%s", perec, qs2s(perec->repr()) );
-    // std::cout << "typeid(perec):  " << typeid(perec).name()  << std::endl;
-    // std::cout << "typeid(*perec): " << typeid(*perec).name() << std::endl;
 
     DDCA_Display_Info * dinfo = _monitor->_displayInfo;
 
