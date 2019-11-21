@@ -66,7 +66,7 @@ public:
  // void addFeatureChangedObserver(NotifyFeatureChanged func);
     void addFeatureChangeObserver(FeatureChangeObserver *observer);
 #endif
-    void setFeatureList(DDCA_Feature_List featureList, bool reportUnsupported=false);
+    void setFeatureList(DDCA_Feature_List featureList);
     void setFeatureChecked(uint8_t featureCode);
     void reloadFeatures();
     void reloadSpecificFeatures(int ct, uint8_t* features);

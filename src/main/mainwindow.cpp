@@ -449,7 +449,7 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
         ddca_feature_list_string(&featuresToShow, NULL, (char*)" "));
 
     // causes async feature reads in VcpThread, then load feature values from model into widgets
-    monitor->_baseModel->setFeatureList(featuresToShow, _feature_selector->_showUnsupportedFeatures);
+    monitor->_baseModel->setFeatureList(featuresToShow);
 
     // TRACE("Done");
 }

@@ -283,16 +283,14 @@ FeatureBaseModel::mccsVersionSpec()
 
 void
 FeatureBaseModel::setFeatureList(
-      DDCA_Feature_List featureList,
-      bool              reportUnsupported)
+      DDCA_Feature_List featureList)
 {
    bool debugFunc = false;
    debugFunc = debugFunc || debugFeatureLists;
 
-   TRACECF(debugFunc, "Starting. %d features: %s, reportUnsupported: %s",
+   TRACECF(debugFunc, "Starting. %d features: %s",
                      ddca_feature_list_count(&featureList),
-         ddca_feature_list_string(&featureList, NULL, (char*) " "),
-         sbool(reportUnsupported) );
+         ddca_feature_list_string(&featureList, NULL, (char*) " ") );
    _featuresToShow = featureList;
 
    DDCA_Feature_List unchecked_features =
