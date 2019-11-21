@@ -1,6 +1,6 @@
 /* value_base_widget.cpp */
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "feature_value_widgets/value_base_widget.h"
@@ -62,9 +62,6 @@ void ValueBaseWidget::setFeatureValue(const FeatureValue &fv) {
     QObject::connect(_globalState._uiOptionsState, &UserInterfaceOptionsState::controlKeyRequired_changed,
                     this, &ValueBaseWidget::when_controlKeyRequired_changed);
 }
-
-
-
 
 #ifdef UNNEEDED
 // hack to give ValueNcWidget access to parsed capabilities
