@@ -28,6 +28,7 @@ static bool traceResizeEvents = false;
 FeaturesScrollAreaContents::FeaturesScrollAreaContents(QWidget * parent) :
     QWidget(parent)
 {
+   bool debug = false;
    _cls = metaObject()->className();
 
   //  _pageChangeObservers = new QVector<PageChangeObserver*>;
@@ -42,7 +43,7 @@ FeaturesScrollAreaContents::FeaturesScrollAreaContents(QWidget * parent) :
 
    // doesn't expand the contents area
    //setSizePolicy( QSizePolicy::MinimumExpanding,  QSizePolicy::MinimumExpanding);
-   TRACEC("Executing");
+   TRACECF(debug, "Executing");
 
    if (debugLayout) {
       setStyleSheet("background-color:aqua;");

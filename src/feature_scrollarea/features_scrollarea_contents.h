@@ -9,7 +9,6 @@
 #include <QtCore/QSize>
 #include <QtGui/QResizeEvent>
 
-
 #include "nongui/feature_value.h"
 #include "nongui/feature_base_model.h"
 
@@ -53,7 +52,7 @@ public slots:
    void startInitialLoad(void);
    void endInitialLoad();
 
-private:
+private:         // member variables
    const char *        _cls;    // className
    FeatureBaseModel *  _baseModel = NULL;
    QScrollArea *       _containingScrollArea = NULL;
