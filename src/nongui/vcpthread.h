@@ -1,17 +1,16 @@
-/* vcpthread.h */
+/** \file vcpthread.h
+ *
+ * Thread for performing ddca_ API calls, which can perform I2C IO and so can be
+ * slow.  There is one instance of this class, i.e. one thread, for each monitor.
+ */
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
-
-// Thread for performing ddca_ API calls, which can perform I2C IO and so can
-// be slow.  There is one instance of this class, i.e. one thread, for
-// each monitor.
 
 #ifndef VCPTHREAD_H
 #define VCPTHREAD_H
 
 #include <QtCore/QObject>
-#include <QtCore/QThread>
 
 #include "ddcutil_c_api.h"
 
@@ -35,9 +34,10 @@ public:
 
     // Perhaps an init function not in the constructor that opens the display?
 
-    const char * _cls = "VcpThread";
+signals:
+    void postDdcFeatureError(DdcFeatureError& erec);
 
-private:
+private:  // member functions
     void getvcp(uint8_t feature_code, bool needMetadata);
     void setvcp(uint8_t feature_code, bool writeOnly, uint16_t newval);
     void capabilities();
@@ -53,13 +53,11 @@ private:
           DDCA_Error_Detail * erec,
           const char * caller_name,
           const char * ddcra_func_name);
-
     void rpt_verify_error(
           uint8_t      featureCode,
           const char * function,
           uint16_t      expectedValue,
           uint16_t      observedValue);
-
     void rpt_verify_error(
           uint8_t      featureCode,
                 const char * function,
@@ -69,14 +67,13 @@ private:
                 uint8_t      observedSl
                 );
 
+private:       // member variables
+    const char *         _cls = "VcpThread";
     DDCA_Display_Ref     _dref;
     DDCA_Display_Info*   _dinfo;
     VcpRequestQueue*     _requestQueue = NULL;
     FeatureBaseModel*    _baseModel;
     DDCA_Display_Handle  _dh = NULL;
-
-signals:
-    void postDdcFeatureError(DdcFeatureError& erec);
 };
 
 #endif // VCPTHREAD_H

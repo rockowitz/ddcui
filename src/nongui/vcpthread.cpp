@@ -326,11 +326,10 @@ void VcpThread::getvcp(uint8_t featureCode, bool needMetadata) {
 // Process RQSetVcp
 void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint16_t shsl)
 {
-    bool debugFunc = debugThread;
-    // debugFunc = true;
-    TRACECF(debugFunc,
-              "Starting. feature_code=0x%02x.  shsl=0x%04x, writeOnly=%s",
-              feature_code, shsl, sbool(writeOnly));
+    bool debugFunc = false;
+    debugFunc = debugFunc || debugThread;
+    TRACECF(debugFunc, "Starting. feature_code=0x%02x.  shsl=0x%04x, writeOnly=%s",
+                       feature_code, shsl, sbool(writeOnly));
 
     uint8_t sh = (shsl >> 8);
     uint8_t sl = (shsl & 0xff);
@@ -389,7 +388,7 @@ void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint16_t shsl)
     }
 
 bye:
-   ;
+//   ;
     TRACECF(debugFunc, "Done");
 }
 
