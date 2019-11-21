@@ -87,8 +87,11 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
     QWidget::connect(_ncWidget,    &ValueNcWidget::featureValueChanged,
                      this,         &ValueStackedWidget::forContainedWidgetChanged);
 
-    QWidget::connect(_cncWidgetX14, &ValueNcWidget::featureValueChanged,
-                     this,          &ValueStackedWidget::forContainedWidgetChanged);
+    QWidget::connect(_ncplusWidget, &ValueNcplusWidget::featureValueChanged,
+                     this,         &ValueStackedWidget::forContainedWidgetChanged);
+
+    // QWidget::connect(_cncWidgetX14, &ValueNcWidget::featureValueChanged,
+    //                  this,          &ValueStackedWidget::forContainedWidgetChanged);
 
     QWidget::connect(_bytesWidget,  &ValueBaseWidget::featureValueChanged,
                      this,          &ValueStackedWidget::forContainedWidgetChanged);
@@ -218,15 +221,14 @@ uint16_t ValueStackedWidget::getCurrentValue() {
 
 void  ValueStackedWidget::forContainedWidgetChanged(uint8_t feature_code, uint8_t sh, uint8_t sl)
 {
-   bool debug = debugValueWidgetSignals;
-   debug = true;
-   TRACECF(debug,
-             "feature_code=0x%02x, sh=0x%02x, sl=0x%02x", feature_code, sh, sl);
+   bool debug = false;
+   debug = debug || debugValueWidgetSignals;
+   TRACECF(debug, "feature_code=0x%02x, sh=0x%02x, sl=0x%02x", feature_code, sh, sl);
    assert(feature_code == _featureCode);
 
    TRACECF(debug,
-             "-> Calling emit stackedFeatureValueChanged(), feature_code=0x%02x, sh=0x%02x, sl=0x%02x",
-             feature_code, sh, sl);
+           "-> Calling emit stackedFeatureValueChanged(), feature_code=0x%02x, sh=0x%02x, sl=0x%02x",
+           feature_code, sh, sl);
    emit stackedFeatureValueChanged(feature_code, sh, sl);
 
    // printf("(%s::%s) Calling simpleFeatueValueNotify() \n", _cls, __func__);  fflush(stdout);
@@ -241,9 +243,8 @@ bool ValueStackedWidget::hasSlTable() {
 
 
 void ValueStackedWidget::setNcValuesSource(NcValuesSource newsrc) {
-   TRACECF(debugNcValues,
-             "newsrc = %d, _pageno_selected=%d, _pageno_nc=%d",
-             newsrc, _pageno_selected, _pageno_nc);
+   TRACECF(debugNcValues, "newsrc = %d, _pageno_selected=%d, _pageno_nc=%d",
+                          newsrc, _pageno_selected, _pageno_nc);
 
    if (_pageno_selected == _pageno_nc) {
       _ncWidget->reloadComboBox(newsrc);
