@@ -563,22 +563,25 @@ void MainWindow::for_actionFeatureSelectionDialog_accepted()
 
 void MainWindow::on_actionOtherOptionsDialog_triggered()
 {
-     // TODO: allocate once and save dialog, cf feature selection
-     // display dialog box for selecting features
-    TRACEC("triggered");
+   bool debug = false;
+   // TODO: allocate once and save dialog, cf feature selection
+   // display dialog box for selecting features
+   TRACECF(debug, "triggered");
 
-    OtherOptionsDialog* dialog = new OtherOptionsDialog(this->_otherOptionsState, this);
-    QObject::connect(dialog,   &OtherOptionsDialog::ncValuesSourceChanged,
+   OtherOptionsDialog* dialog = new OtherOptionsDialog(this->_otherOptionsState, this);
+   QObject::connect(dialog,   &OtherOptionsDialog::ncValuesSourceChanged,
                      this,     &MainWindow::for_actionOtherOptionsDialog_ncValuesSourceChanged);
-    dialog->exec();
-    delete dialog;
+   dialog->exec();
+   delete dialog;
 }
+
 
 // named for_ .. instead of on_ so that connectSlotsByName doesn't report this as slot
 // for which it could find no signal
 void MainWindow::for_actionOtherOptionsDialog_ncValuesSourceChanged(NcValuesSource valuesSource )
 {
-   TRACEC("valuesSource=%d", valuesSource);
+   bool debug = false;
+   TRACECF(debug, "valuesSource=%d", valuesSource);
 
    if (_curView == FeaturesView  )   {  // need also check if  FeaturesScrollAreaView
       int monitorNdx = _toolbarDisplayCB->currentIndex();
@@ -586,7 +589,7 @@ void MainWindow::for_actionOtherOptionsDialog_ncValuesSourceChanged(NcValuesSour
       // or emit signal?
       monitor->_featuresScrollAreaView->onNcValuesSourceChanged(valuesSource);
    }
-   TRACEC("Done");
+   TRACECF(debug, "Done");
 }
 
 
