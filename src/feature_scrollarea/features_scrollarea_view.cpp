@@ -171,7 +171,7 @@ void FeaturesScrollAreaView::onUIValueChanged(
       uint8_t sl)
 {
    bool debug = false;
-   debug = debugSignals;
+   debug = debug || debugSignals;
    TRACECF(debug, "Starting. featureCode = 0x%02x, writeOnly=%s, sh=0x%02x, sl=0x%02x",
                   featureCode, sbool(writeOnly), sh, sl);
 
@@ -290,7 +290,7 @@ void FeaturesScrollAreaView::onModelDdcDetailedError(DdcDetailedError* perec) {
 
 void FeaturesScrollAreaView::onModelDdcFeatureError(DdcFeatureError* perec) {
     bool debugFunc = false;
-    debugFunc      = debugSignals;
+    debugFunc      = debugFunc || debugSignals;
     TRACECF(debugFunc, "perec=%p, perec->%s", perec, qs2s(perec->repr()) );
 
     DDCA_Display_Info * dinfo = _monitor->_displayInfo;
