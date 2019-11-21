@@ -1,6 +1,6 @@
 /* feature_base_model.cpp - UI independent portion of the data model */
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "nongui/feature_base_model.h"
@@ -140,8 +140,8 @@ void   FeatureBaseModel::modelVcpValueSet(
                    DDCA_Non_Table_Vcp_Value *           feature_value,
                    DDCA_Status                          ddcrc)
 {
-    bool debugFunc = debugModel;
-    debugFunc = false;
+    bool debugFunc = false;
+    debugFunc = debugFunc || debugModel;
     if (debugFunc)
         TRACEC("feature_code=0x%02x, mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x, ddcrc = %s",
                  feature_code, feature_value->mh, feature_value->ml, feature_value->sh, feature_value->sl,
@@ -209,8 +209,9 @@ FeatureBaseModel::modelVcpValueUpdate(
         uint8_t   sh,
         uint8_t   sl)
 {
-    bool debugFunc = debugModel;
-    debugFunc = true;
+    bool debugFunc = false;
+    debugFunc = debugFunc || debugModel;
+
     TRACECF(debugFunc, "feature_code=0x%02x, sh=0x%02x, sl=0x%02x", feature_code, sh, sl);
 
     int ndx = modelVcpValueIndex(feature_code);
@@ -242,13 +243,11 @@ void
 FeatureBaseModel::onDdcDetailedError(
       DdcDetailedError* perec)
 {
-   bool debugFunc = debugModel;
-   // debugFunc = true;
+   bool debugFunc = false;
+   debugFunc = debugFunc || debugModel;
 
-   // TRACEF(debugFunc, "Starting");
    TRACECF(debugFunc, "perec=%p -> %s", perec, perec->srepr() );
-   // TRACEF(debugFunc, "perec=%p -> %s", perec, perec->sexpl() );
-   TRACECF(debugFunc, "=> emitting signalDdcDetailedError()");
+   TRACECF(debugFunc, "Emitting signalDdcDetailedError()");
    emit  signalDdcDetailedError(perec);
 }
 
@@ -257,13 +256,10 @@ void
 FeatureBaseModel::onDdcFeatureError(
       DdcFeatureError* perec)
 {
-   bool debugFunc = debugModel;
-   // debugFunc = true;
+   bool debugFunc = false;
+   debugFunc = debugFunc || debugModel;
    TRACECF(debugFunc, "perec=%p -> %s", perec, qs2s(perec->repr()) );
-   // std::cout << "typeid(perec):  " << typeid(perec).name()  << std::endl;
-   // std::cout << "typeid(*perec): " << typeid(*perec).name() << std::endl;
-   // emit signalModelError(featureCode, msg);
-   TRACECF(debugFunc, "=> emitting signalDdcFeatureError()");
+   TRACECF(debugFunc, "Emitting signalDdcFeatureError()");
    emit  signalDdcFeatureError(perec);
 }
 
@@ -290,8 +286,9 @@ FeatureBaseModel::setFeatureList(
       DDCA_Feature_List featureList,
       bool              reportUnsupported)
 {
-   bool debugFunc = debugFeatureLists;
-   debugFunc = true;
+   bool debugFunc = true;
+   debugFunc = debugFunc || debugFeatureLists;
+
    TRACECF(debugFunc, "Starting. %d features: %s, reportUnsupported: %s",
                      ddca_feature_list_count(&featureList),
          ddca_feature_list_string(&featureList, NULL, (char*) " "),
@@ -321,6 +318,7 @@ FeatureBaseModel::setFeatureList(
    TRACECF(debugFunc, "Done");
 }
 
+
 // reload specific features, but only if they were already loadeed
 // used when setting one feature requires rereading others
 
@@ -344,10 +342,9 @@ FeatureBaseModel::reloadSpecificFeatures(int ct, uint8_t* features) {
       else {
          TRACECF(debugFunc, "vcp_code = 0x%02x not in _features_checked", vcp_code);
       }
-
    }
-
 }
+
 
 void FeatureBaseModel::setFeatureChecked(uint8_t featureCode) {
    ddca_feature_list_add(&_featuresChecked, featureCode);
