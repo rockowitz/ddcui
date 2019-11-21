@@ -171,7 +171,7 @@ void MainWindow::initMonitors() {
    //  ui->displaySelectorComboBox->setSizeAdjustPolicy(QComboBox::AdjustToContents);
    //  ui->displaySelectorComboBox->setMinimumContentsLength(28);   // 2 + 3 + 3 + 3 + 13
 
-   bool debug = true;
+   bool debug = false;
 
     longRunningTaskStart();
     QString msg = QString("Loading display information... ");
@@ -217,21 +217,10 @@ void MainWindow::initMonitors() {
         FeatureBaseModel * baseModel = new FeatureBaseModel(curMonitor);
         baseModel->setObjectName(QString::asprintf("baseModel-%d",ndx));
 
-        initMonitorInfoWidget(
-              curMonitor,
-              _ui->centralWidget);
-
-        initCapabilitiesWidget(
-              curMonitor,
-              _ui->centralWidget);
-
+        initMonitorInfoWidget(curMonitor, _ui->centralWidget);
+        initCapabilitiesWidget(curMonitor, _ui->centralWidget);
         // TRACE("_msgboxQueue=%p", _msgboxQueue);
-        initFeaturesScrollAreaView(
-              curMonitor,
-              baseModel,
-              _ui->centralWidget,
-              _msgboxQueue
-              );
+        initFeaturesScrollAreaView(curMonitor, baseModel, _ui->centralWidget, _msgboxQueue);
 
         QObject::connect(baseModel,  SIGNAL(signalVcpRequest(VcpRequest*)),
                          curMonitor, SLOT(  putVcpRequest(VcpRequest*)));
@@ -289,7 +278,7 @@ void MainWindow::initMonitors() {
 
 
 void MainWindow::longRunningTaskStart() {
-   bool debug = true;
+   bool debug = false;
    // needs counter
    TRACECF(debug, "Executing");
    // _spinner->start();
@@ -299,7 +288,7 @@ void MainWindow::longRunningTaskStart() {
 
 
 void MainWindow::longRunningTaskEnd() {
-   bool debug = true;
+   bool debug = false;
    TRACECF(debug, "Executing");
    // _spinner->stop();
    // _loadingMsgBox->hide();
