@@ -29,14 +29,15 @@ UserInterfaceOptionsDialog::UserInterfaceOptionsDialog(
     ,  _ui(new Ui::  UserInterfaceOptionsDialog)
     , _state(state)
 {
+    bool debug = false;
     _cls = metaObject()->className();
-    TRACEC("Constructor starting");
+    TRACECF(debug, "Constructor starting");
     // _state = state;
     _ui->setupUi(this);
 
     setWindowTitle("ddcui - User Interface Options");
     // setUSource(state->ncValuesSource);
-    TRACEC("Constructor done");
+    TRACECF(debug, "Constructor done");
 }
 
 
@@ -52,8 +53,7 @@ void UserInterfaceOptionsDialog::setDialogBoxControlKeyRequired(bool onoff) {
       stateToSet = Qt::Checked;
 
    _ui->ckrCheckBox->setChecked(stateToSet);
-
-   }
+}
 
 
 void UserInterfaceOptionsDialog::on_actionButtonBox_accepted()
@@ -72,7 +72,6 @@ void UserInterfaceOptionsDialog::on_actionButtonBox_accepted()
     TRACECF(debugFunc, "Before calling accept()");
     accept();  // causes accepteed() to be emitted
 }
-
 
 
 void UserInterfaceOptionsDialog::on_actionButtonBox_helpRequested()
@@ -101,7 +100,7 @@ void UserInterfaceOptionsDialog::on_actionButtonBox_helpRequested()
 void UserInterfaceOptionsDialog::on_actionButtonBox_clicked(QAbstractButton* button)
 {
    if(button== (QAbstractButton*) _ui->actionButtonBox->button(QDialogButtonBox::Reset) ){
-      TRACEC("Reset");
+      // TRACEC("Reset");
 
       // Pressing the reset button does not close the dialog box
       // Reset the state in UserInterfaceOptionsState

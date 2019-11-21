@@ -26,22 +26,17 @@ public:
     void setCkrChanged(bool onoff);
     void setDialogBoxControlKeyRequired(bool onoff);
 
-
-
 signals:
      void ckrChanged(bool onoff);
      void  userInterfaceDialog_accepted(UserInterfaceOptionsState * state);
+
+public:
+    Ui::UserInterfaceOptionsDialog *  _ui;   // why is this pointing to another instance of the same class?
 
 private slots:
     void on_actionButtonBox_accepted();
     void on_actionButtonBox_helpRequested();
     void on_actionButtonBox_clicked(QAbstractButton* button);
-
-
-public:
-    Ui::UserInterfaceOptionsDialog *  _ui;   // why is this pointing to another instance of the same class?
-
-
 
 private:
     const char * _cls;
