@@ -257,8 +257,8 @@ void VcpThread::capabilities() {
 
 // Process RQGetVcp
 void VcpThread::getvcp(uint8_t featureCode, bool needMetadata) {
-    bool debugFunc = debugThread;
-    // debugFunc = true;
+    bool debugFunc = false;
+    debugFunc = debugFunc || debugThread;
     TRACECF(debugFunc, "Starting. featureCode=0x%02x, needMetadata = %s",
                       featureCode, sbool(needMetadata));
 
@@ -297,8 +297,8 @@ void VcpThread::getvcp(uint8_t featureCode, bool needMetadata) {
                       true,       // create_default_if_not_found
                       &finfo);
            TRACECF(debugFunc, "ddca_get_feature_metadata_by_dh() for feature 0x%02x returned %d - %s",
-                     featureCode, ddcrc, ddca_rc_name(ddcrc2));
-           if (debugFunc && ddcrc == 0) {
+                     featureCode, ddcrc2, ddca_rc_name(ddcrc2));
+           if (debugFunc && ddcrc2 == 0) {
               // ddcui_dbgrpt_ddca_feature_metadata(finfo);
               ddca_dbgrpt_feature_metadata(finfo, 1);
            }
