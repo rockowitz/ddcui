@@ -40,11 +40,15 @@ void ValueContWidget::layoutWidget() {
    monoValueFont.setPointSize(9);
    monoValueFont.setFamily(QString::fromUtf8("Monospace"));
 
+   QFont monoValueFont8;
+   monoValueFont.setPointSize(8);
+   monoValueFont.setFamily(QString::fromUtf8("Monospace"));
+
    QFont nonMonoValueFont;
    nonMonoValueFont.setPointSize(8);
 
-   QFont nonMonoFont9;
-   nonMonoFont9.setPointSize(8);
+   // QFont nonMonoFont9;
+   // nonMonoFont9.setPointSize(8);
 
    // _curSlider = new QSlider(Qt::Horizontal);
    _curSlider = new EnhancedSlider(Qt::Horizontal);
@@ -53,27 +57,28 @@ void ValueContWidget::layoutWidget() {
    _curSlider->setSingleStep(1);
    _curSlider->setFixedSize(200,18);
    if (debugLayout)
-   _curSlider->setStyleSheet("background-color:pink;");
+      _curSlider->setStyleSheet("background-color:pink;");
 
    _curSpinBox = new QSpinBox();
    _curSpinBox->setSingleStep(1);
-   _curSpinBox->setFixedSize(65,18);   // extra large for 2 byte values, possible horizontal up/down buttons
+   _curSpinBox->setFixedSize(80,18);   // extra large for 2 byte values, possible horizontal up/down buttons
    _curSpinBox->setAlignment(Qt::AlignRight);
    if (debugLayout)
       _curSpinBox->setStyleSheet("background-color:green;");
 
    _maxTitle = new QLabel("Max:");
-   _maxTitle->setFixedSize(25,18);
+   _maxTitle->setFixedSize(30,18);
    _maxTitle->setFont(nonMonoValueFont);
+   _maxTitle->setContentsMargins(5,0,0,0);
    if (debugLayout)
-   _maxTitle->setStyleSheet("background-color:cyan;");
+      _maxTitle->setStyleSheet("background-color:cyan;");
 
    _maxValue = new QLabel();
-   _maxValue->setFont(monoValueFont);
+   _maxValue->setFont(monoValueFont8);
    // _maxValue->setFrameStyle(QFrame::Sunken | QFrame::Panel);
    _maxValue->setFrameStyle(QFrame::Plain | QFrame::NoFrame);
-   _maxValue->setFixedSize(30,20);
-   _maxValue->setAlignment(Qt::AlignRight);
+   _maxValue->setFixedSize(35,20);
+   _maxValue->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
    if (debugLayout)
    _maxValue->setStyleSheet("background-color:blue;");
@@ -238,16 +243,16 @@ void ValueContWidget::setFeatureValue(const FeatureValue &fv) {
 
 
 void ValueContWidget::setCurrentShSl(uint16_t newval) {
-   bool debug = false;
-   TRACEMCF(debug, "newval = 0x%04x", newval);
+    bool debug = false;
+    TRACEMCF(debug, "newval = 0x%04x", newval);
     ValueBaseWidget::setCurrentShSl(newval);
     _guiChange = false;
 
-     int curval = _sh << 8 | _sl;
-     TRACEMCF(debugValueWidgetSignals, "feature=0x%02x, curval=%d", _featureCode , curval);
+    int curval = _sh << 8 | _sl;
+    TRACEMCF(debugValueWidgetSignals, "feature=0x%02x, curval=%d", _featureCode , curval);
 
-     // in case the timer is running, don't trigger
-     _spinBoxTimer->stop();
+    // in case the timer is running, don't trigger
+    _spinBoxTimer->stop();
     _curSpinBox->setValue(curval);
     _curSlider->setValue(curval);
 
