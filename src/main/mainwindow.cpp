@@ -152,6 +152,10 @@ MainWindow::MainWindow(QWidget *parent) :
      // QObject::connect(
      //    this->_ui->actionUserInterfaceOptionsDialog,    &QAction::triggered,
      //    this,     &MainWindow::on_actionUserInterfaceOptionsDialog_triggered);
+
+     // Start with Monitor Summary of first monitor instead of no view selected
+     if (_monitors.size() > 0)
+        emit signalMonitorSummaryView();
 }
 
 
@@ -460,7 +464,6 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
 void MainWindow::on_actionFeaturesScrollArea_triggered()
 {
     if (debugFeatureSelection) {
-
         TRACEC("Desired view: %d, feature list:", View::FeaturesView);
         this->_feature_selector->dbgrpt();
     }
@@ -473,10 +476,7 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
     }
 
     if (!monitor->supportsDdc()) {
-       QMessageBox::warning(this,
-                            "ddcui",
-                            "Display does not support DDC",
-                            QMessageBox::Ok);
+       QMessageBox::warning(this, "ddcui", "Display does not support DDC", QMessageBox::Ok);
        on_actionMonitorSummary_triggered();
        return;
     }
@@ -495,7 +495,7 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
        monitor->_curFeatureSelector   = *_feature_selector;
     }
     else {
-       TRACEC("Unchanged view and feature set, no need to load");
+       TRACECF(debugFeatureSelection, "Unchanged view and feature set, no need to load");
     }
 }
 
@@ -508,7 +508,8 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
 
 void MainWindow::on_actionFeatureSelectionDialog_triggered()
 {
-   TRACEC("Executing. _fsd=%p", _fsd);
+   bool debug = false;
+   TRACECF(debug, "Executing. _fsd=%p", _fsd);
 
     // FeatureSelectionDialog*
    if (_fsd) {
@@ -656,7 +657,8 @@ void MainWindow::set_feature_list_id(DDCA_Feature_Subset_Id feature_list_id) {
 //
 
 void MainWindow::on_actionRescan_triggered() {
-   TRACEC("Executing");
+   bool debug = false;
+   TRACECF(debug, "Executing");
    assert(_curView == FeaturesView);
    assert(_curDisplayIndex >= 0);
    _monitors[_curDisplayIndex]->_baseModel->reloadFeatures();
