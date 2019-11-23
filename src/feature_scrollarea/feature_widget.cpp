@@ -207,11 +207,8 @@ FeatureWidget::FeatureWidget(FeatureValue& fv, QWidget *parent)
 void FeatureWidget::setFeatureValue(FeatureValue &fv)
 {
    bool debug = false;
-   TRACECF(debug, "feature code = 0x%02x, sets feature value immediately after constructor called",
-             fv.featureCode());
-    // printf("(FeatureWidgetBasic::%s)", __func__);
-    // fv.report(); ff;isj)stdpit);
-    // printf("(%s::%s) _feature_flags = 0x%08x, fv._feature_flags = 0x%08x, fv._finfo
+   TRACECF(debug, "feature code = 0x%02x, ddcrc=%s",
+             fv.featureCode(), ddca_rc_name(fv.ddcrc()));
 
     _feature_code  = fv.featureCode();
     _feature_flags = fv.flags();

@@ -27,16 +27,18 @@ public:
     explicit FeatureWidget(QWidget *parent = nullptr);
     FeatureWidget(FeatureValue& fv, QWidget *parent=nullptr);
 
+    QSize sizeHint() const override;
+
     void setFeatureValue(FeatureValue &fv);
     void setCurrentValue(uint16_t newval);
     bool hasSlTable();
     void setNcValuesSource(NcValuesSource newsrc);
-
     void dbgrpt() const;
-
-    QSize sizeHint() const override;
-
     // void simpleFeatureValueChanged(SimpleFeatureValue fv) override;   // SimpleFeatureValueObserver
+
+public:            // member variables
+    uint8_t             _feature_code;
+    QString*            _feature_name;
 
 protected:
     // void resizeEvent(QResizeEvent * event) override;   // UNNEEDED
@@ -49,12 +51,7 @@ signals:
 
 private:
     void setupFeatureWidget();   // called by constructor
-    void setupConnections();          // called by constructor
-
-
-public:            // member variables
-    uint8_t             _feature_code;
-    QString*            _feature_name;
+    void setupConnections();     // called by constructor
 
 private:
     const char *        _cls;    // className
