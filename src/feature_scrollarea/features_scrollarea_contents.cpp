@@ -57,7 +57,8 @@ FeaturesScrollAreaContents::FeaturesScrollAreaContents(QWidget * parent) :
 
 
 FeaturesScrollAreaContents::~FeaturesScrollAreaContents() {
-   TRACEC("Executing");
+   bool debug = false;
+   TRACECF(debug, "Executing");
    // TODO IMPLEMENT!!!
 }
 
