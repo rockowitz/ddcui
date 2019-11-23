@@ -18,7 +18,7 @@ public:
    OtherOptionsState * _otherOptionsState = NULL;
    UserInterfaceOptionsState * _uiOptionsState= NULL;
 
-   MainWindow * _mainWindow;
+   MainWindow * _mainWindow = NULL;
 
 private:
    GlobalState();

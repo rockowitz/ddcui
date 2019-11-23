@@ -37,17 +37,19 @@ public slots:
     void when_controlKeyRequired_changed(bool onoff);
 
 protected:      // member variables
-    uint8_t                 _featureCode;
-    DDCA_Display_Ref        _dref;
-    DDCA_Feature_Metadata * _finfo;
-    DDCA_Cap_Vcp *          _capVcp;
-    DDCA_MCCS_Version_Spec  _vspec;   // yes, it's in DDCA_Feature_Metadata, but this makes use claearer
-    uint8_t                 _mh;
-    uint8_t                 _ml;
-    uint8_t                 _sh;
-    uint8_t                 _sl;
-    bool                    _controlKeyRequired;
-    DDCA_Status             _ddcrc;
+    // initialized since coverity complains that uninitialized in constructor
+    // will be set by setFeatureValue() before first use
+    uint8_t                 _featureCode = 0;
+    DDCA_Display_Ref        _dref = NULL;
+    DDCA_Feature_Metadata * _finfo = NULL;
+    DDCA_Cap_Vcp *          _capVcp = NULL;
+    DDCA_MCCS_Version_Spec  _vspec = DDCA_VSPEC_UNQUERIED;   // yes, it's in DDCA_Feature_Metadata, but this makes use claearer
+    uint8_t                 _mh = 0;
+    uint8_t                 _ml = 0;
+    uint8_t                 _sh = 0;
+    uint8_t                 _sl = 0;
+    bool                    _controlKeyRequired = false;
+    DDCA_Status             _ddcrc = 0;
     GlobalState&            _globalState = GlobalState::instance();
 
 private:        // member variables

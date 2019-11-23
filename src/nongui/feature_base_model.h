@@ -105,7 +105,7 @@ private:
     int modelVcpValueIndex(uint8_t feature_code);
 
     QVector<FeatureValue*> * _featureValues;
-    DDCA_Feature_Metadata *  _featureMetadata[256];
+    DDCA_Feature_Metadata *  _featureMetadata[256] = {NULL};
     // DDCA_Status              _featureStatusCode[256];    // side table for now, include in FeatureValue?  UNUSED
 #ifdef UNUSED
     DDCA_MCCS_Version_Spec   _vspec;
