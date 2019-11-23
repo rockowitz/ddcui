@@ -67,8 +67,18 @@ private:  // member functions
                 uint8_t      observedSl
                 );
 
+#ifdef FUTURE
+    void rpt_ddca_error(
+          const char * caller_name,
+          const char * ddca_func_name,
+          DDCA_Status  ddcrc,
+          DDCA_Error_Detail * erec,
+          int          feature_code           // -1 if no feature code
+          );
+#endif
+
 private:       // member variables
-    const char *         _cls = "VcpThread";
+    const char *         _cls = "VcpThread";  //= strdup(metaObject()->className());
     DDCA_Display_Ref     _dref;
     DDCA_Display_Info*   _dinfo;
     VcpRequestQueue*     _requestQueue = NULL;

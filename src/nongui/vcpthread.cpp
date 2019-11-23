@@ -20,7 +20,6 @@ using namespace std;
 
 static bool debugThread = false;
 
-
 VcpThread::VcpThread(
         QObject*            parent,
         DDCA_Display_Info * dinfo,
@@ -38,14 +37,44 @@ VcpThread::VcpThread(
 }
 
 
+#ifdef FUTURE
+// a unified error report method
+void VcpThread::rpt_ddca_error(
+      const char * caller_name,
+      const char * ddca_func_name,
+      DDCA_Status  ddcrc,
+      DDCA_Error_Detail * erec,
+      int          feature_code           // -1 if no feature code
+      )
+{
+   bool debug = true;
+   if (feature_code >= 0) {
+      uint8_t vco_code = feature_code & 0xff;
+      TRACECF(debug, "In %s(), %s() for feature 0x%02x returned %d - %s",
+                     caller_name, ddca_func_name, feature_code, ddcrc, ddca_rc_name(ddcrc));
+   }
+   else {
+      TRACECF(debug, "In %s(), %s() returned %d - %s",
+                     caller_name, ddca_func_name, ddcrc, ddca_rc_name(ddcrc));
+   }
+
+      DdcFeatureError* perec = new DdcFeatureError(feature_code, ddca_func_name, ddcrc);
+
+
+}
+#endif
+
+
+
 void VcpThread::rpt_ddca_status(
       uint8_t      feature_code,
       const char * caller_name,
       const char * ddca_func_name,
       DDCA_Status  ddcrc)
 {
-    TRACEC("In %s(), %s() for feature 0x%02x returned %d - %s",
-           caller_name, ddca_func_name, feature_code, ddcrc, ddca_rc_name(ddcrc));
+    bool debug = false;
+    TRACECF(debug, "In %s(), %s() for feature 0x%02x returned %d - %s",
+                   caller_name, ddca_func_name, feature_code, ddcrc, ddca_rc_name(ddcrc));
 
     // QString msg = "generic error msg";
     // emit signalDdcFeatureError(0, msg);
@@ -62,7 +91,6 @@ void VcpThread::rpt_ddca_status(
     // postError(msg);
     // fflush(stdout);
 }
-
 
 
 void VcpThread::rpt_error_detail(
@@ -133,7 +161,6 @@ void VcpThread::rpt_verify_error(
          function,
          expectedSh << 8 | expectedSl,
          observedSh << 8 | observedSl);
-
 }
 
 
@@ -206,7 +233,8 @@ void VcpThread::loadDynamicFeatureRecords()
 
 // Process RQCapabilities
 void VcpThread::capabilities() {
-   bool debugFunc = debugThread;
+   bool debugFunc = false;
+   debugFunc = debugFunc || debugThread;
    // debugFunc = false;
    TRACECF(debugFunc, "Starting. dref=%s", ddca_dref_repr(this->_dref));
    DDCA_Display_Handle dh;
@@ -233,7 +261,7 @@ void VcpThread::capabilities() {
       // usleep(1000000);
       ddcrc = ddca_get_capabilities_string(dh, &caps);
       if (ddcrc != 0) {
-         TRACEC("Error getting capabilities string for %s", ddca_dref_repr(this->_dref));
+         TRACECF(debugFunc, "Error getting capabilities string for %s", ddca_dref_repr(this->_dref));
          // DDCA_Error_Detail * err_detail =  ddca_get_error_detail();
          // ddca_report_error_detail(err_detail, 2);
          rpt_ddca_status(0, __func__, "ddca_get_capabilities_string", ddcrc);
