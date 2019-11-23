@@ -130,8 +130,10 @@ int FeatureBaseModel::modelVcpValueCount(void) const {
  *  the note that actual VCP value. 
  * 
  *  @param  feature_code    VCP feature code
+ *  @param  dref
  *  @param  metadata        feature metadata
- *  @param  feature_value   feature value 
+ *  @param  feature_value   feature value
+ *  @param  ddcrc
  */
 void   FeatureBaseModel::modelVcpValueSet(
                    uint8_t                              feature_code,
@@ -143,61 +145,53 @@ void   FeatureBaseModel::modelVcpValueSet(
     bool debugFunc = false;
     debugFunc = debugFunc || debugModel;
     if (debugFunc)
-        TRACEC("feature_code=0x%02x, mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x, ddcrc = %s",
+        TRACEMCF(debugFunc,
+                 "feature_code=0x%02x, mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x, ddcrc = %s",
                  feature_code, feature_value->mh, feature_value->ml, feature_value->sh, feature_value->sl,
                  ddca_rc_name(ddcrc));
 
-    _featureStatusCode[feature_code] = ddcrc;
-    // if (ddcrc == 0) {
-       int ndx = modelVcpValueIndex(feature_code);
-       // printf("(%s) ndx=%d\n", __func__, ndx);  fflush(stdout);
-       // FIXME: HACK AROUND LOGIC ERROR
-       // MAY DO A FULL LOAD MULTIPLE TIMES, E.G if switch table type
-       // assert(ndx < 0);
-       if (ndx < 0) {
-           TRACECF(debugFunc, "Creating new FeatureValue");
+    int ndx = modelVcpValueIndex(feature_code);
+    if (ndx < 0) {
+        TRACECF(debugFunc, "Creating new FeatureValue");
 
-           DDCA_Cap_Vcp * cap_vcp = NULL;
-           if (_parsed_caps)
-              cap_vcp = ddcutil_find_cap_vcp(_parsed_caps, feature_code);
+        DDCA_Cap_Vcp * cap_vcp = NULL;
+        if (_parsed_caps)
+           cap_vcp = ddcutil_find_cap_vcp(_parsed_caps, feature_code);
 
-           FeatureValue * fv = new FeatureValue(
-                                      feature_code,
-                                      dref,
-                                      metadata,
-                                      cap_vcp,
-                                      *feature_value,
-                                      ddcrc);
-           _featureValues->append(fv);
-           if (metadata) {
-             _featureMetadata[feature_code] = metadata;
-           }
+        FeatureValue * fv = new FeatureValue(
+                                   feature_code,
+                                   dref,
+                                   metadata,
+                                   cap_vcp,
+                                   *feature_value,
+                                   ddcrc);
+        _featureValues->append(fv);
 
-           // Not needed, only thing that matters is end initial load
-           // if (debugSignals)
-           //     printf("(%s::%s) Emitting signalFeatureAdded()\n", _cls, __func__); fflush(stdout);
-           // emit signalFeatureAdded(*fv);
-           // notifyFeatureChangeObservers(feature_code);   // alternative
-       }
-       else {
-           // TRACE("Modifying existing FeatureValue");
+        // Not needed, only thing that matters is end initial load
+        // if (debugSignals)
+        //     printf("(%s::%s) Emitting signalFeatureAdded()\n", _cls, __func__); fflush(stdout);
+        // emit signalFeatureAdded(*fv);
+        // notifyFeatureChangeObservers(feature_code);   // alternative
+    }
+    else {
+        // TRACE("Modifying existing FeatureValue");
 
-           FeatureValue * fv =  _featureValues->at(ndx);
-           // fv->_value.sh = feature_value->sh;
-           // fv->_value.sl = feature_value->sl;
+        FeatureValue * fv =  _featureValues->at(ndx);
+        // fv->_value.sh = feature_value->sh;
+        // fv->_value.sl = feature_value->sl;
 
-           // should never fail since it's previously succeeded, but just in case
-           if (ddcrc ==0) {
+        if ( ddcrc == fv->ddcrc() ) {
               fv->setCurrentValue(feature_value->sh, feature_value->sl);
-
-           TRACECF(debugFunc, "=> Emitting signalFeatureUpdated3(), feature code: 0x%02x, sl: 0x%02x",
-                    fv->featureCode(), feature_value->sl);
+           TRACECF(debugFunc || debugSignals,
+                   "Emitting signalFeatureUpdated3(), feature code: 0x%02x, sl: 0x%02x",
+                   fv->featureCode(), feature_value->sl);
            emit signalFeatureUpdated3(__func__, fv->featureCode(), feature_value->sh, feature_value->sl);
-           }
-           else{
-              TRACEC("Unexpected status code %s for previously read feature 0x%02x",
-                   ddca_rc_name(ddcrc), feature_code);
-       }
+        }
+
+        else {
+           TRACEMCF(debugFunc, "Unexpected status code %s for previously read feature 0x%02x",
+                    ddca_rc_name(ddcrc), fv->featureCode() );
+        }
     }
 
 }
@@ -350,19 +344,24 @@ void FeatureBaseModel::setFeatureChecked(uint8_t featureCode) {
 
 
 void FeatureBaseModel::reloadFeatures() {
-   bool debugFunc = debugFeatureLists;
-   debugFunc = false;
+   bool debugFunc = false;
+   debugFunc = debugFunc || debugFeatureLists;
+
    TRACECF(debugFunc, "Starting.");
 
    _monitor->_requestQueue->put(new VcpStartInitialLoadRequest);
    int ct = modelVcpValueCount();
    for (int ndx = 0; ndx < ct; ndx++) {
       FeatureValue* fv =  modelVcpValueAt(ndx);
-      uint8_t featureCode = fv->featureCode();
-      DDCA_Feature_Flags flags = fv->flags();
-      if (flags & DDCA_RW) {
-         bool needMetadata = true;  // a rare possibility
-         _monitor->_requestQueue->put( new VcpGetRequest(featureCode, needMetadata));
+      // only rescan if previous scan was successful
+      // the logic modelVcpValueSet is too convoluted if not
+      if (fv->ddcrc() == 0) {
+         DDCA_Feature_Flags flags = fv->flags();
+         if (flags & DDCA_READABLE) {
+            uint8_t featureCode = fv->featureCode();
+            bool needMetadata = false;
+            _monitor->_requestQueue->put( new VcpGetRequest(featureCode, needMetadata));
+         }
       }
    }
    _monitor->_requestQueue->put(new VcpEndInitialLoadRequest);
