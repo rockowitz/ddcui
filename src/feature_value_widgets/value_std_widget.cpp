@@ -92,7 +92,7 @@ void ValueStdWidget::setValueField() {
        _valueField->setText(QString::fromUtf8(s_formatted));
     }
     else {
-       // need to make check at higher level where ValueStackedWidget is addedd to layout
+       // need to make check at higher level where ValueStackedWidget is added to layout
        // need to check showUnimplementd
        if (_ddcrc == DDCRC_REPORTED_UNSUPPORTED || _ddcrc == DDCRC_DETERMINED_UNSUPPORTED) {
           FeatureSelector * fsel = _globalState._mainWindow->_feature_selector;
