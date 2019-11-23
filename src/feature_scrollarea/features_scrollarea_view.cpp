@@ -170,7 +170,7 @@ void FeaturesScrollAreaView::onUIValueChanged(
       uint8_t sh,
       uint8_t sl)
 {
-   bool debug = true;
+   bool debug = false;
    debug = debug || debugSignals;
    TRACECF(debug, "Starting. featureCode = 0x%02x, writeOnly=%s, sh=0x%02x, sl=0x%02x",
                   featureCode, sbool(writeOnly), sh, sl);
@@ -181,7 +181,7 @@ void FeaturesScrollAreaView::onUIValueChanged(
             featureCode, sh, sl);
    }
    else {
-      TRACECF(debug, "=> emitting signalVcpRequest() for VcpSetRequst, featureCode=0x%02x", featureCode);
+      TRACECF(debug, "Emitting signalVcpRequest() for VcpSetRequest, featureCode=0x%02x", featureCode);
       VcpRequest * rqst = new VcpSetRequest(featureCode, sh, sl, writeOnly);
       emit signalVcpRequest(rqst);  // used to call into monitor
 
@@ -232,8 +232,8 @@ void FeaturesScrollAreaView::onModelValueChanged(
 
 
 void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc) {
-   bool debugFunc = debugSignals;
-   // debugFunc = true;
+   bool debugFunc = false;
+   debugFunc = debugFunc || debugSignals;
    TRACECF(debugFunc,
              "newsrc=%d - %s, _curNcValuesSource=%d - %s",
              newsrc,             (char*) ncValuesSourceName(newsrc),
@@ -269,9 +269,8 @@ void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc) {
 
 
 void FeaturesScrollAreaView::onModelDdcDetailedError(DdcDetailedError* perec) {
-   bool debugFunc = debugSignals;
-   // debugFunc = true;
-
+    bool debugFunc = false;
+    debugFunc = debugFunc || debugSignals;
     TRACECF(debugFunc, "perec=%p, perec->%s", perec, perec->srepr() );
 
     QString qstitle = QString("ddcutil Error");
