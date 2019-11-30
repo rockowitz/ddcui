@@ -218,7 +218,7 @@ void FeaturesScrollAreaView::onModelValueChanged(
    bool debugFunc = false;
    debugFunc = debugFunc || debugSignals;
 
-   TRACECF(debugSignals,
+   TRACECF(debugFunc,
              "caller = %s, feature_code = 0x%02x, sh=0x%02x, sl=0x%02x",
              caller, featureCode, sh, sl);
 
