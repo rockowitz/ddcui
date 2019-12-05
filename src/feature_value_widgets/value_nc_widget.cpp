@@ -1,6 +1,6 @@
 /* value_nc_widget.cpp */
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "feature_value_widgets/value_nc_widget.h"
@@ -224,7 +224,7 @@ void ValueNcWidget::loadComboBox(NcValuesSource mode) {
        _cb->setCurrentIndex(cur_ndx);
    }
    else {
-       TRACEC("VCP feature 0x%02x: Unable to find value 0x%02x", _featureCode, _sl);
+       TRACEMF(debugNcValues, "VCP feature 0x%02x: Unable to find value 0x%02x", _featureCode, _sl);
        // TODO: add generated entry for observed value
        QString s;
        s.sprintf("x%02x - Unrecognized value", _sl);
