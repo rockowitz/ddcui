@@ -107,8 +107,10 @@ void ValueStdWidget::setValueField() {
        }
        else {
           // for shorter msg - ddca_rc_name()
-          QString msg = QString::asprintf("DDC Error.  Status code = %s", ddca_rc_desc(_ddcrc));
+          QString msg = QString::asprintf("DDC Error.  Status code = %s - %s",
+                ddca_rc_name(_ddcrc), ddca_rc_desc(_ddcrc));
           _valueField->setText(msg);
+          _valueField->setStyleSheet("color:red;");
        }
     }
 }
