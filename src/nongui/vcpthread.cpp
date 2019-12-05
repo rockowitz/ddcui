@@ -305,6 +305,9 @@ void VcpThread::getvcp(uint8_t featureCode, bool needMetadata) {
         ddcrc = ddca_get_non_table_vcp_value(dh, featureCode, &valrec);
         TRACECF(debugFunc, "feature_code=0x%02x, ddca_get_non_table_vcp_value() returned %d - %s",
                   featureCode, ddcrc, ddca_rc_name(ddcrc));
+        // don't need to call rpt_cca_status() if error, error will be reported
+        // in the value field for the feature code
+#ifdef OLD
         if (ddcrc != 0) {
 
            if (ddcrc != DDCRC_REPORTED_UNSUPPORTED) {
@@ -316,6 +319,7 @@ void VcpThread::getvcp(uint8_t featureCode, bool needMetadata) {
             // printf("  opcode:   0x%02x, mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x\n",
             //        feature_code, valrec.mh, valrec.ml, valrec.sh, valrec.sl);
         }
+#endif
 
     //    if (ddcrc == 0) {
            // should this be here?
