@@ -6,6 +6,6 @@
 #ifndef DDCUI_PARMS_H_
 #define DDCUI_PARMS_H_
 
-#define DDCUI_VERSION "0.0.8"
+#define DDCUI_VERSION "0.1.0"
 
 #endif /* DDCUI_PARMS_H_ */
