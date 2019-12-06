@@ -1,14 +1,14 @@
 **ddcui**
 =======
 
-**ddcui** is a graphical user interface for ddcutil, implemented using Qt.
+**ddcui** is a graphical user interface for **ddcutil**, implemented using Qt.
 
-This is early beta level code, and many features are not yet fully implemented, including help and proper reporting of certain VCP features. 
+This is early beta level code, and many features are not yet fully implemented, including online help and proper reporting of certain peculiar VCP features. 
 
 For basic instructions on building **ddcui**, see file ***BUILDING.md***. Both a CMake ***CMakeLists.txt***
-and a Qt ***ddcui.pro*** file are provided. 
+and a Qt ***ddcui.pro*** file are provided.
 
-Additional documentation can be found on the [ddcutil web site](https://github.com/rockowitz)
+Additional documentation can be found on the [ddcutil web site](https://www.ddcutil.com)
 
 Some user interface issues should be noted in advance.
 
@@ -26,7 +26,7 @@ In some, but not all, cases, **ddcui** can be resynced with the actual monitor s
 ***Actions->Rescan Monitor Values***. 
 
 A second issue is that casually swiping a mouse over the feature values section of the GUI, or using the mouse's scroll wheel over the feature values, can unintentionally move a slider value
-and thus change a feature value.  Setting menu item ***Options->User Interface Options->Require Control Key to move sliders*** will change the user
+and thus change a feature value.  Setting menu item ***Options->User Interface Options->Require control key to move sliders*** will change the user
 interface to require that a control key be held down while moving the slider. 
 README.md:
 
