@@ -3,7 +3,7 @@
 
 **ddcui** is a graphical user interface for **ddcutil**, implemented using Qt.
 
-This is early beta level code, and many features are not yet fully implemented, including online help, error reporting, and proper interpretation of certain peculiar VCP features. 
+This is early beta level code. Many features are not yet fully implemented, including online help, error reporting, and proper interpretation of certain peculiar VCP features. 
 
 For basic instructions on building **ddcui**, see file ***BUILDING.md***. Both a CMake ***CMakeLists.txt***
 and a Qt ***ddcui.pro*** file are provided.
