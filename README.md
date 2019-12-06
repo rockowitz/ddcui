@@ -13,7 +13,7 @@ Some user interface issues should be noted in advance.
 
 It is possible for feature values reported in **ddcui** to become out of sync with actual monitor 
 values.
-- If feature values are changed by using the monitor's On Screen Display. 
+- If feature values are changed using the monitor's On Screen Display. 
 - If feature values are changed by another program, including the command line program **ddcutil**. 
 - Some monitors will change their state (e.g. red gain) when the value in the GUI changes.
 However, the monitor still reports the old value, which is shown in **ddcui**.  This is a bug 
