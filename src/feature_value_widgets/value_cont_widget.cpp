@@ -55,16 +55,28 @@ void ValueContWidget::layoutWidget() {
    _curSlider->setFocusPolicy(Qt::StrongFocus);
    _curSlider->setTickPosition(QSlider::TicksBelow);   // alt TicksBothSides
    _curSlider->setSingleStep(1);
-   _curSlider->setFixedSize(200,18);
+   _curSlider->setFixedSize(200,18);  // was 18 , 14 stuffs slider to bottom
    if (debugLayout)
       _curSlider->setStyleSheet("background-color:pink;");
 
    _curSpinBox = new QSpinBox();
    _curSpinBox->setSingleStep(1);
-   _curSpinBox->setFixedSize(80,18);   // extra large for 2 byte values, possible horizontal up/down buttons
+   _curSpinBox->setFixedSize(90,18);   // extra large for 2 byte values, possible horizontal up/down buttons
    _curSpinBox->setAlignment(Qt::AlignRight);
    if (debugLayout)
       _curSpinBox->setStyleSheet("background-color:green;");
+
+#ifdef DOESNT_SOLVE_PROBLEM
+   QWidget * sliderContainer = new QWidget();
+   QLayout * sliderContainerLayout = new QVBoxLayout();     // this??
+   sliderContainerLayout->setContentsMargins(0,2,0,2);
+
+   sliderContainerLayout->addWidget(_curSlider);
+   // AlignTop, AlignBottom, AlignVCenter have no effect
+   bool ok = sliderContainerLayout->setAlignment(_curSlider, Qt::AlignBottom); // Qt::AlignVCenter);
+   assert(ok);
+   sliderContainer->setLayout(sliderContainerLayout);
+#endif
 
    _maxTitle = new QLabel("Max:");
    _maxTitle->setFixedSize(30,18);
@@ -112,7 +124,12 @@ void ValueContWidget::layoutWidget() {
 
     QHBoxLayout * layout = new QHBoxLayout();
     layout->addSpacing(5);
+#ifdef DOESNT_SOLVE_PROBLEM
+    layout->addWidget(sliderContainer);
+#else
     layout->addWidget(_curSlider);
+#endif
+
     layout->addWidget(_curSpinBox);
     layout->addWidget(_maxTitle);
     layout->addWidget(_maxValue);
@@ -214,8 +231,8 @@ void ValueContWidget::setFeatureValue(const FeatureValue &fv) {
     TRACEMCF(debug,
               "feature=0x%02x, curval=%d, maxval=%d", _featureCode, curval, maxval);
 
-    // maxval = 99999;   // for testing big numbers
-    // curval = 99999;
+    maxval = 99999;   // for testing big numbers
+    curval = 99999;
     _guiChange = false;
 
     _curSlider->setTickInterval(maxval/10);
