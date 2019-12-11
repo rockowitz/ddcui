@@ -1,6 +1,6 @@
 //feature_widget_header.cpp
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <QtWidgets/QFrame>
@@ -77,7 +77,7 @@ void FeatureWidgetHeader::layoutWidget() {
 
    setLineWidth(1);
 
-   if (debugLayout) {
+   if (debugLayout || showDimensionReport) {
       setStyleSheet("background-color:beige;");
 
       static bool dimensionsReported = false;
