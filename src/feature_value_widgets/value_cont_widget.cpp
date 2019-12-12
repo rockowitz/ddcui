@@ -61,7 +61,7 @@ void ValueContWidget::layoutWidget() {
 
    _curSpinBox = new QSpinBox();
    _curSpinBox->setSingleStep(1);
-   _curSpinBox->setFixedSize(90,18);   // extra large for 2 byte values, possible horizontal up/down buttons
+   _curSpinBox->setFixedSize(100,18);   // extra large for 2 byte values, possible horizontal up/down buttons
    _curSpinBox->setAlignment(Qt::AlignRight);
    if (debugLayout)
       _curSpinBox->setStyleSheet("background-color:green;");
@@ -231,8 +231,8 @@ void ValueContWidget::setFeatureValue(const FeatureValue &fv) {
     TRACEMCF(debug,
               "feature=0x%02x, curval=%d, maxval=%d", _featureCode, curval, maxval);
 
-    maxval = 99999;   // for testing big numbers
-    curval = 99999;
+    // maxval = 99999;   // for testing big numbers
+    // curval = 99999;
     _guiChange = false;
 
     _curSlider->setTickInterval(maxval/10);
