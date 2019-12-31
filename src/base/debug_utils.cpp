@@ -18,6 +18,60 @@
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QSizePolicy>
 
+#include "base/ddcui_globals.h"
+#include "base/debug_utils.h"
+
+void reportBasicWidgetDimensions(
+      QWidget *    w,
+      const char * caller_class,
+      const char * caller_func,
+      const int    caller_lineno,
+      const char * caller_filename)
+{
+      const char * cls = w->metaObject()->className();
+
+      QSize sizeHint = w->sizeHint();
+      QSize minSize = w->minimumSize();
+      QSize minSizeHint = w->minimumSizeHint();
+      QSize maxSize = w->maximumSize();
+
+      printftcmf(
+         true,
+         caller_class,
+         NULL,
+         caller_func,
+         caller_lineno,
+         caller_filename,
+         "class %-20s:", cls);
+       printf("   size (%d,%d) sizeHint(%d,%d) minimumSize(%d,%d) minimumSizeHint(%d,%d)\n",  // maximumSize(%d,%d)\n",
+            w->width(),          w->height(),
+            sizeHint.width(),     sizeHint.height(),
+            minSize.width(),      minSize.height(),
+            minSizeHint.width(),  minSizeHint.height() );
+         //   maxSize.width(),      maxSize.height()  );
+         QMargins margins = w->contentsMargins();
+         QRect    rect    = w->contentsRect();
+         printf("   contents margins (%d,%d,%d,%d) rectangle (%d,%d) \n",
+               margins.top(), margins.right(), margins.bottom(), margins.left(),
+               rect.width(), rect.height() );
+
+
+}
+
+
+#ifdef NOT_NEEDED
+void reportBasicWindowDimensions2(
+      const char * classname,
+      const char * func,
+      const int    line,
+      const char * filename,
+      const char * format,
+      const char * format, ...)
+{
+}
+#endif
+
+
 
 void reportWidgetChildren(QWidget * w, const char * msg) {
     if (msg)
@@ -172,7 +226,7 @@ void reportWidgetDimensions(
       QWidget *    w,
       const char * className,
       const char * funcName,
-      const char * msg = nullptr)
+      const char * msg)
 {
    int depth = 0;
    int d1 = depth+1;
