@@ -34,6 +34,9 @@ public:
     void     setCurrentShSl(uint16_t newval)         override;
     // uint16_t getCurrentValue() override;
 
+protected:
+    void resizeEvent(QResizeEvent * evt) override;
+
 private:
     // QLabel * _auxTitle;
     // QLabel * _auxDetail;

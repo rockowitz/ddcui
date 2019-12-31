@@ -27,7 +27,7 @@ public:
     explicit FeatureWidget(QWidget *parent = nullptr);
     FeatureWidget(FeatureValue& fv, QWidget *parent=nullptr);
 
-    QSize sizeHint() const override;
+    // QSize sizeHint() const override;
 
     void setFeatureValue(FeatureValue &fv);
     void setCurrentValue(uint16_t newval);
@@ -41,7 +41,7 @@ public:            // member variables
     QString*            _feature_name;
 
 protected:
-    // void resizeEvent(QResizeEvent * event) override;   // UNNEEDED
+    void resizeEvent(QResizeEvent * event) override;
 
 public slots:
     void onInternalValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl);

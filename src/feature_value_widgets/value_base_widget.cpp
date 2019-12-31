@@ -11,6 +11,10 @@
 #include "base/global_state.h"
 #include "base/feature_selector.h"
 
+
+// bool showValueWidgetResizeEvents = false;
+
+
 ValueBaseWidget::ValueBaseWidget(QWidget *parent)
      : QFrame(parent)             // ValueAbstractWidget(parent)
 {
@@ -96,3 +100,29 @@ QSize ValueBaseWidget::sizeHint() const {
     return QSize(w,h);
 }
 #endif
+
+
+#ifdef NO
+void ValueBaseWidget::resizeEvent(QResizeEvent * evt)
+{
+   bool show = false;
+
+   QSize oldSz = evt->oldSize();
+   QSize newSz = evt->size();
+
+   static bool resizeEventsShown = false;
+   if (showValueWidgetResizeEvents && !resizeEventsShown) {
+      show = true;
+      resizeEventsShown = true;
+   }
+
+   if (show) {
+      TRACEC("old size = %d, %d", oldSz.width(), oldSz.height());
+      TRACEC("new size = %d, %d", newSz.width(), newSz.height());
+   }
+
+   evt->ignore();
+}
+#endif
+
+

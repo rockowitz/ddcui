@@ -12,6 +12,7 @@
 #include <QtWidgets/QLabel>
 #include <QtGui/QResizeEvent>
 
+#include "base/ddcui_globals.h"
 #include "base/debug_utils.h"
 
 #include "nongui/feature_base_model.h"
@@ -22,25 +23,33 @@
 #include "feature_value_widgets/value_stacked_widget.h"
 
 
-static bool dimensionReportShown = false;
+static bool showBasicDims    = true  || debugFeatureDimensions;
+static bool showFullDims     = false;
+static bool showResizeEvents = true;
+
+static QFont monoValueFont;
 
 
 // used for all but the value field
-static void setupFeatureWidgetField(QLabel * w)
+static QLabel * createFeatureWidgetField(
+      const char *  objectName,
+      const int     fixedWidth,
+      const char *  dummyValue)
 {
-   // printf("(%s)\n", __func__);  fflush(stdout);
-   int fieldFrameStyle;
-   fieldFrameStyle = QFrame::Sunken | QFrame::Panel;
-   // fieldFrameStyle = QFrame::Plain | QFrame::Box;
+   QLabel * field = new QLabel();
+   field->setObjectName(QString::fromUtf8(objectName));
+   field->setFixedWidth(fixedWidth);
+   field->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::MinimumExpanding);
+   field->setFont(monoValueFont);
+   field->setText(QString::fromUtf8(dummyValue));
 
-   w->setFrameStyle(fieldFrameStyle);
-   // w->setFrameStyle( QFrame::Sunken | QFrame::Panel );
-   // apparently contents margins is the size of the Panel/box
-    w->setContentsMargins(1,1,1,1);  // This is what kills the panel, when set to 0
-    w->setLineWidth(1);
-    // w->setMargin(0);  // deprecated
+   field->setFrameStyle( QFrame::Sunken | QFrame::Panel );
+   // alt: QFrame::Plain | QFrame::Box;
 
-    // w->setStyleSheet("margins: 25px;");
+   field->setContentsMargins(1,1,1,1);  // This is what kills the panel, when set to 0
+   field->setLineWidth(1);
+
+   return field;
 }
 
 
@@ -54,11 +63,12 @@ void FeatureWidget::setupFeatureWidget()
    font.setPointSize(8);
    QWidget::setFont(font);
 
-   QFont monoValueFont;
+   // QFont monoValueFont;
    monoValueFont.setFamily(QString::fromUtf8("Monospace"));
 
    QFont nonMonoValueFont;
 
+#ifdef OLD
    QSizePolicy fixedSizePolicy(QSizePolicy::Fixed,QSizePolicy::MinimumExpanding);
    // fixedSizePolicy.setHorizontalStretch(0);    // needed?
    // fixedSizePolicy.setVerticalStretch(0);
@@ -72,50 +82,13 @@ void FeatureWidget::setupFeatureWidget()
    adjustableSizePolicy.setHorizontalStretch(1);    // needed?
    adjustableSizePolicy.setVerticalStretch(0);
    adjustableSizePolicy.setHeightForWidth(false);
+#endif
 
-   // int fieldFrameStyle = QFrame::Sunken | QFrame::Panel;
-
-   /* Feature Code */
-   _featureCodeField = new QLabel();
-   _featureCodeField->setObjectName(QString::fromUtf8("featureCode"));
-   _featureCodeField->setFixedWidth(30);
-   _featureCodeField->setSizePolicy(fixedSizePolicy);
-   _featureCodeField->setFont(monoValueFont);
-   _featureCodeField->setText(QString::fromUtf8("0x00"));    // dummy
-   setupFeatureWidgetField(_featureCodeField);
-
-   /* Feature Name */
-   _featureNameField = new QLabel();
-   _featureNameField->setObjectName(QString::fromUtf8("featureName"));
-   // _featureNameField->setMinimumWidth(200);
-   // _featureNameField->setMaximumSize(200,20);
-   _featureNameField->setFixedWidth(200);
-   _featureNameField->setSizePolicy(fixedSizePolicy);
+   _featureCodeField = createFeatureWidgetField("featureCode",  30, "x00");
+   _featureNameField = createFeatureWidgetField("featureName", 200, "dummy feature name");
    _featureNameField->setFont(nonMonoValueFont);
-   _featureNameField->setText(QString::fromUtf8("Dummy feature name"));    // dummy
-   setupFeatureWidgetField(_featureNameField);
-
-   /* RW/RO/WO */
-   _featureRwField = new QLabel();
-   _featureRwField->setObjectName(QString::fromUtf8("featureRW"));
-   _featureRwField->setSizePolicy(fixedSizePolicy);
-   _featureRwField->setFixedWidth(25);
-   _featureRwField->setFont(monoValueFont);
-   _featureRwField->setText(QString::fromUtf8("XX"));    // dummy
-  //  _featureCodeField->setFrameStyle(fieldFrameStyle);
-   // _featureRwField->setFrameStyle(QFrame::Sunken | QFrame::Panel);
-   setupFeatureWidgetField(_featureRwField);
-
-   /* MCCS Type */
-   _featureTypeField = new QLabel();
-   _featureTypeField->setObjectName(QString::fromUtf8("featureType"));
-   _featureTypeField->setSizePolicy(fixedSizePolicy);
-   _featureTypeField->setFixedWidth(25);
-   _featureTypeField->setFont(monoValueFont);
-   _featureTypeField->setText(QString::fromUtf8("YY"));    // dummy
-  //  _featureCodeField->setFrameStyle(fieldFrameStyle);
-   // _featureTypeField->setFrameStyle(QFrame::Sunken | QFrame::Panel);
-   setupFeatureWidgetField(_featureTypeField);
+   _featureRwField   = createFeatureWidgetField("featureRW",    25, "XX");    // RW/RO/WO
+   _featureTypeField = createFeatureWidgetField("featureType",  25, "YY");    // MCCS type
 
 #ifdef ALT
    _featureValueStackedWidget = new QStackedWidget(this);
@@ -131,15 +104,16 @@ void FeatureWidget::setupFeatureWidget()
 
    TRACECF(debug, "creating ValueStackedWidget, feature code dummy");
    _valueWidget = new ValueStackedWidget();
-   _valueWidget->setSizePolicy(adjustableSizePolicy);
+   _valueWidget->setSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::MinimumExpanding);
 
    _layout = new QHBoxLayout();
    _layout->addWidget(_featureCodeField);
    _layout->addWidget(_featureNameField);
    _layout->addWidget(_featureRwField);
    _layout->addWidget(_featureTypeField);
-   _layout->addWidget(_valueWidget);
-   _layout->setStretchFactor(_valueWidget, 10);
+  //  _layout->addWidget(_valueWidget);
+   // _layout->setStretchFactor(_valueWidget, 10);
+   _layout->addWidget(_valueWidget, /*stretch*/ 10, Qt::AlignVCenter);
    // layout->addWidget(_featureValueStackedWidget);
 
    // eliminating addStretch() eliminates gap between Type and Value fields, but allows
@@ -148,7 +122,6 @@ void FeatureWidget::setupFeatureWidget()
 
    // _layout->insertStretch(-1, 2);
    _layout->setSpacing(0);   // spacing between widgets inside the (horizontal) layout
-   // _layout->setMargin(0);    // no effect
    _layout->setContentsMargins(0,0,0,0);
 
    // eliminating vlayout restores horizontal spacing between all fields.  why?
@@ -161,15 +134,25 @@ void FeatureWidget::setupFeatureWidget()
 #endif
    setLayout(_layout);
 
-   if (debugLayout) {
+   static bool dimensionReportShown = false;
+   if (debugLayout || showFullDims) {
        this->setStyleSheet("background-color:orange;");
 
        if (!dimensionReportShown) {
-          TRACEC("FeatureWidget dimensions:");
+          TRACEMC("FeatureWidget dimensions:");
           reportWidgetDimensions(this, _cls, __func__);
           dimensionReportShown = true;
        }
    }
+
+   static bool basicDimsShown = false;
+   if (showBasicDims && !basicDimsShown) {
+      REPORT_BASIC_WIDGET_DIMENSIONS(this);
+      REPORT_BASIC_WIDGET_DIMENSIONS(_featureCodeField);
+      REPORT_BASIC_WIDGET_DIMENSIONS(_valueWidget);
+      basicDimsShown = true;
+   }
+
    TRACECF(debug, "Done");
 }
 
@@ -254,7 +237,7 @@ void FeatureWidget::setCurrentValue(uint16_t newval)
     _valueWidget->setCurrentValue(newval);
 }
 
-
+#ifdef UNNEEDED
 QSize FeatureWidget::sizeHint() const
 {
     int w = 700;
@@ -262,6 +245,7 @@ QSize FeatureWidget::sizeHint() const
     // printf("(%s::%s) Returning (%d,%d)\n", _cls, __func__, w, h);  fflush(stdout);
     return QSize(w,h);    // ???
 }
+#endif
 
 
 #ifdef NO
@@ -321,18 +305,35 @@ void FeatureWidget::setNcValuesSource(NcValuesSource newsrc)
    // TRACE("Done");
 }
 
-#ifdef UNNEEDED
 void FeatureWidget::resizeEvent(QResizeEvent * evt)
 {
+   bool show = false;
+
    QSize oldSz = evt->oldSize();
    QSize newSz = evt->size();
 
-   TRACEC("old size = %d, %d\n", oldSz.width(), oldSz.height());
-   TRACEC("new size = %d, %d\n", newSz.width(), newSz.height());
-   evt->ignore();
-}
+   static bool resizeEventsShown = false;
+   if (showResizeEvents && !resizeEventsShown) {
+      show = true;
+      resizeEventsShown = true;
+   }
+
+#ifdef ALT
+
+   int oldWidth = oldSz.width();
+   int oldHeight = oldSz.height();
+   int newWidth = newSz.width();
+   int newHeight = newSz.width();
+   if (oldHeight != newHeight || oldWidth != newWidth) {
+      show = true;
+   }
 #endif
 
+   if (show) {
+      TRACEC("old size = %d, %d", oldSz.width(), oldSz.height());
+      TRACEC("new size = %d, %d", newSz.width(), newSz.height());
+   }
 
-
+   evt->ignore();
+}
 

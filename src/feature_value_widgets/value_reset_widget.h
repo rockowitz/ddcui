@@ -19,6 +19,9 @@ class ValueResetWidget : public ValueBaseWidget
 public:
     ValueResetWidget(QWidget *parent = nullptr);
 
+protected:
+    void resizeEvent(QResizeEvent * evt) override;
+
 private slots:
     void on_resetButton_pressed();
 

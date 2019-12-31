@@ -14,7 +14,7 @@
 #include "feature_widget_header.h"
 
 static bool showDimensionReport = false;
-static bool traceResizeEvents = false;
+static bool showResizeEvents = false;
 
 static void stdLabelSetup(QLabel * l) {
    // l->setFrameStyle(QFrame::NoFrame | QFrame::Plain);
@@ -109,10 +109,9 @@ FeatureWidgetHeader::~FeatureWidgetHeader() {
 }
 
 
-// #ifdef UNNEEDED
 void FeatureWidgetHeader::resizeEvent(QResizeEvent * evt)
 {
-   if (traceResizeEvents) {
+   if (showResizeEvents) {
       QSize oldSz = evt->oldSize();
       QSize newSz = evt->size();
 
@@ -121,7 +120,6 @@ void FeatureWidgetHeader::resizeEvent(QResizeEvent * evt)
    }
    evt->ignore();
 }
-// #endif
 
 
 

@@ -1,6 +1,6 @@
 /* value_std_widget.cpp */
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "feature_value_widgets/value_std_widget.h"
@@ -19,6 +19,8 @@
 
 
 static bool showDimensionReport = false;
+static bool showBasicDims       = false || debugFeatureDimensions;
+static bool showResizeEvents    = false;
 
 
 void ValueStdWidget::layoutWidget() {
@@ -33,6 +35,12 @@ void ValueStdWidget::layoutWidget() {
      _valueField->setFrameStyle( QFrame::Plain | QFrame::NoFrame);  // ValueStdWidget has the frame, not Label
      _valueField->setFont(font);
      _valueField->setIndent(5);
+
+#ifdef COMPILE_ERROR
+     QSizePolicy& sp(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+     sp.setHorizontalStretch(1);
+     _valueField->setSizePolicy(sp);
+#endif
 
      QSizePolicy* sizePolicy = new QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
      sizePolicy->setHorizontalStretch(1);
@@ -57,7 +65,26 @@ void ValueStdWidget::layoutWidget() {
             dimensionReportShown = true;
         }
      }
-}
+
+     static bool basicDimsShown = false;
+     if (showBasicDims && !basicDimsShown) {
+         REPORT_BASIC_WIDGET_DIMENSIONS(this);
+         REPORT_BASIC_WIDGET_DIMENSIONS(this->_valueField);
+
+#ifdef TMI
+         QObjectList  childs = this->children();
+         for (int ndx = 0; ndx < childs.size(); ndx++) {
+             QObject* curobj = childs.at(ndx);
+             QString name   = curobj->objectName();
+             const char *  clsName = curobj->metaObject()->className();
+             printf("   Child: %s, type:%s\n", name.toLatin1().data(), clsName);
+         }
+         fflush(stdout);
+#endif
+
+         basicDimsShown = true;
+      }
+  }
 
 
 ValueStdWidget::ValueStdWidget(QWidget *parent):
@@ -150,4 +177,40 @@ void ValueStdWidget::paintEvent(QPaintEvent *event) {
                 this->ValueBaseWidget::paintEvent(event);
 }
 #endif
+
+
+
+
+void ValueStdWidget::resizeEvent(QResizeEvent * evt)
+{
+   bool show = false;
+
+   QSize oldSz = evt->oldSize();
+   QSize newSz = evt->size();
+
+   static bool sizeShown = false;
+   if (showResizeEvents && !sizeShown) {
+      show = true;
+      sizeShown = true;
+   }
+
+#ifdef ALT
+
+   int oldWidth = oldSz.width();
+   int oldHeight = oldSz.height();
+   int newWidth = newSz.width();
+   int newHeight = newSz.width();
+   if (oldHeight != newHeight || oldWidth != newWidth) {
+      show = true;
+   }
+#endif
+
+   if (show) {
+      TRACEC("old size = %d, %d", oldSz.width(), oldSz.height());
+      TRACEC("new size = %d, %d", newSz.width(), newSz.height());
+   }
+
+   evt->ignore();
+}
+
 

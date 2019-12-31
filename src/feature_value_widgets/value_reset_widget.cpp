@@ -24,6 +24,8 @@
 
 
 static bool showDimensionReport = false;
+static bool showBasicDims = false || debugFeatureDimensions;
+static bool showResizeEvents = false;
 
 void ValueResetWidget::layoutWidget() {
    QFont nonMonoFont;
@@ -60,6 +62,23 @@ void ValueResetWidget::layoutWidget() {
          dimensionReportShown = true;
       }
    }
+
+   static bool basicDimsShown = false;
+   if (showBasicDims && !basicDimsShown) {
+       REPORT_BASIC_WIDGET_DIMENSIONS(this);
+       REPORT_BASIC_WIDGET_DIMENSIONS(this->_resetButton);
+
+       QObjectList  childs = this->children();
+       for (int ndx = 0; ndx < childs.size(); ndx++) {
+           QObject* curobj = childs.at(ndx);
+           QString name   = curobj->objectName();
+           const char *  clsName = curobj->metaObject()->className();
+           printf("   Child: %s, type:%s\n", name.toLatin1().data(), clsName);
+       }
+       fflush(stdout);
+       basicDimsShown = true;
+    }
+
 }
 
 
@@ -81,5 +100,38 @@ ValueResetWidget::ValueResetWidget(QWidget *parent):
 void ValueResetWidget::on_resetButton_pressed() {
    // TRACEF(debugValueWidgetSignals, "Button pressed. Emitting featureValueChanged()");
    emit featureValueChanged(_featureCode, 0, 1);
+}
+
+
+void ValueResetWidget::resizeEvent(QResizeEvent * evt)
+{
+   bool show = false;
+
+   QSize oldSz = evt->oldSize();
+   QSize newSz = evt->size();
+
+   static bool resizeShown = false;
+   if (showResizeEvents && !resizeShown) {
+      show = true;
+      resizeShown = true;
+   }
+
+#ifdef ALT
+
+   int oldWidth = oldSz.width();
+   int oldHeight = oldSz.height();
+   int newWidth = newSz.width();
+   int newHeight = newSz.width();
+   if (oldHeight != newHeight || oldWidth != newWidth) {
+      show = true;
+   }
+#endif
+
+   if (show) {
+      TRACEC("old size = %d, %d", oldSz.width(), oldSz.height());
+      TRACEC("new size = %d, %d", newSz.width(), newSz.height());
+   }
+
+   evt->ignore();
 }
 

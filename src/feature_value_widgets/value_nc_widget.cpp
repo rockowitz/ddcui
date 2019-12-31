@@ -25,7 +25,9 @@
 #include "nongui/feature_base_model.h"
 
 static bool debugWidget = false;
-static bool showDimensionReports = true;
+static bool showDimensionReports = false;
+static bool showBasicDims = true || debugFeatureDimensions;
+static bool showResizeEvents = true;
 
 
 void ValueNcWidget::layoutWidget() {
@@ -46,7 +48,8 @@ void ValueNcWidget::layoutWidget() {
     _extraInfo =  new QLabel("_extraInfo");
 
     // QSizePolicy* sizePolicy = new QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    QSizePolicy sizePolicy = QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    // QSizePolicy sizePolicy = QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    QSizePolicy sizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
     sizePolicy.setControlType(QSizePolicy::ComboBox);
     _cb->setSizePolicy(sizePolicy);
     _cb->setFont(nonMonoFont8);
@@ -54,7 +57,7 @@ void ValueNcWidget::layoutWidget() {
     // whatever the size, large or small, causes big gap between RW and feature value
     _cb->setMaximumWidth(320);
     // _cb->setFrameStyle(QFrame::Sunken | QFrame::Panel);   // not a method
-    _cb->setStyleSheet("background-color:white;color:black;");
+    _cb->setStyleSheet("background-color:white;color:black;padding-left:2px;");
 
     // _extraInfo->setFrameStyle(QFrame::Sunken | QFrame::Panel);  // now set in ValueBaseWidget
     _extraInfo->setMinimumSize(20,10);
@@ -115,6 +118,14 @@ void ValueNcWidget::layoutWidget() {
            reportWidgetDimensions(this, _cls, __func__);
            dimensionReportShown = true;
       }
+   }
+
+   static bool basicDimsShown = false;
+   if (showBasicDims && !basicDimsShown) {
+      REPORT_BASIC_WIDGET_DIMENSIONS(this);
+      REPORT_BASIC_WIDGET_DIMENSIONS(this->_cb);
+
+      basicDimsShown = true;
    }
    // TRACE("Done");
 }
@@ -315,4 +326,27 @@ void ValueNcWidget::combobox_activated(int index) {
       TRACEMCF(debug, "Value not changed.");
    }
 }
+
+
+void ValueNcWidget::resizeEvent(QResizeEvent * evt)
+{
+   bool show = false;
+
+   QSize oldSz = evt->oldSize();
+   QSize newSz = evt->size();
+
+   static bool resizeEventsShown = false;
+   if (showResizeEvents && !resizeEventsShown) {
+      show = true;
+      resizeEventsShown = true;
+   }
+
+   if (show) {
+      TRACEC("old size = %d, %d", oldSz.width(), oldSz.height());
+      TRACEC("new size = %d, %d", newSz.width(), newSz.height());
+   }
+
+   evt->ignore();
+}
+
 

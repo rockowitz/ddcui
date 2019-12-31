@@ -29,6 +29,8 @@
 #include "nongui/feature_base_model.h"
 
 // static bool dimensionReportShown = false;  // unused
+static bool showResizeEvents = true;
+
 
 #ifdef UNUSED
 void ValueNcplusWidget::layoutWidget() {
@@ -122,7 +124,7 @@ ValueNcplusWidget::ValueNcplusWidget(QWidget *parent):
    bool debug = false;
     _cls = strdup(metaObject()->className());
     // layoutWidget();
-    TRACEMCF(debug, "Done");
+    TRACEMCF(debug, "Done, _cls=", _cls);
 }
 
 
@@ -204,3 +206,24 @@ void ValueNcplusWidget::setCurrentShSl(uint16_t newval) {
    setAuxFields();
 }
 
+
+void ValueNcplusWidget::resizeEvent(QResizeEvent * evt)
+{
+   bool show = false;
+
+   QSize oldSz = evt->oldSize();
+   QSize newSz = evt->size();
+
+   static bool resizeEventsShown = false;
+   if (showResizeEvents && !resizeEventsShown) {
+      show = true;
+      resizeEventsShown = true;
+   }
+
+   if (show) {
+      TRACEC("old size = %d, %d", oldSz.width(), oldSz.height());
+      TRACEC("new size = %d, %d", newSz.width(), newSz.height());
+   }
+
+   evt->ignore();
+}

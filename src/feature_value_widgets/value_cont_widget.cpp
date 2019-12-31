@@ -1,6 +1,6 @@
 /* value_cont_widget.cpp */
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "feature_value_widgets/value_cont_widget.h"
@@ -27,9 +27,10 @@
 
 
 static bool showDimensionReports = false;
+static bool showBasicDims  = true || debugFeatureDimensions;
+static bool showResizeEvents = true;
 
 void ValueContWidget::layoutWidget() {
-
    QSizePolicy fixedSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
    fixedSizePolicy.setHorizontalStretch(0);    // needed?
    fixedSizePolicy.setVerticalStretch(0);
@@ -55,7 +56,13 @@ void ValueContWidget::layoutWidget() {
    _curSlider->setFocusPolicy(Qt::StrongFocus);
    _curSlider->setTickPosition(QSlider::TicksBelow);   // alt TicksBothSides
    _curSlider->setSingleStep(1);
-   _curSlider->setFixedSize(200,18);  // was 18 , 14 stuffs slider to bottom
+  // _curSlider->setFixedSize(200,18);  // was 18 , 14 stuffs slider to bottom
+   _curSlider->setMinimumSize(200,10);
+   _curSlider->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+   // Trying to force a bit of space above and below slider
+   // _curSlider->setContentsMargins(3,0,1,0);  // no effect
+   // increases height of rows in at least style adwaita
+   //  _curSlider->setStyleSheet("padding-top:2px;padding-bottom:2px");
    if (debugLayout)
       _curSlider->setStyleSheet("background-color:pink;");
 
@@ -148,7 +155,7 @@ void ValueContWidget::layoutWidget() {
     }
 #endif
     layout->addStretch(10);    // take up all the space at the end - stretch factor = 10
-    layout->setContentsMargins(0,0,0,0);
+    layout->setContentsMargins(1,0,1,0);    // was 0,0,0,0
     setLayout(layout);
 
     if (debugLayout) {
@@ -172,6 +179,36 @@ void ValueContWidget::layoutWidget() {
            reportWidgetDimensions(this, _cls, __func__);
            dimensionReportShown = true;
        }
+    }
+
+    static bool basicDimsShown = false;
+    if (showBasicDims && !basicDimsShown) {
+       REPORT_BASIC_WIDGET_DIMENSIONS(this);
+       REPORT_BASIC_WIDGET_DIMENSIONS(this->_curSlider);
+       REPORT_BASIC_WIDGET_DIMENSIONS(this->_curSpinBox);
+       REPORT_BASIC_WIDGET_DIMENSIONS(this->_maxTitle);
+       REPORT_BASIC_WIDGET_DIMENSIONS(this->_maxValue);
+
+       QObjectList  childs = this->children();
+       for (int ndx = 0; ndx < childs.size(); ndx++) {
+           QObject* curobj = childs.at(ndx);
+           QString name   = curobj->objectName();
+           const char *  clsName = curobj->metaObject()->className();
+           printf("   Child: %s, type:%s\n", name.toLatin1().data(), clsName);
+       }
+       fflush(stdout);
+
+       printf("Children of _curSpinBox:\n");
+       childs = _curSpinBox->children();
+       for (int ndx = 0; ndx < childs.size(); ndx++) {
+           QObject* curobj = childs.at(ndx);
+           QString name   = curobj->objectName();
+           const char *  clsName = curobj->metaObject()->className();
+           printf("   Child: %s, type:%s\n", name.toLatin1().data(), clsName);
+       }
+       fflush(stdout);
+
+       basicDimsShown = true;
     }
 }
 
@@ -449,6 +486,39 @@ void ValueContWidget::leaveEvent(QEvent * event) {
 }
 
 #endif
+
+
+void ValueContWidget::resizeEvent(QResizeEvent * evt)
+{
+   bool show = false;
+
+   QSize oldSz = evt->oldSize();
+   QSize newSz = evt->size();
+
+   static bool sizeShown = false;
+   if (showResizeEvents && !sizeShown) {
+      show = true;
+      sizeShown = true;
+   }
+
+#ifdef ALT
+
+   int oldWidth = oldSz.width();
+   int oldHeight = oldSz.height();
+   int newWidth = newSz.width();
+   int newHeight = newSz.width();
+   if (oldHeight != newHeight || oldWidth != newWidth) {
+      show = true;
+   }
+#endif
+
+   if (show) {
+      TRACEC("old size = %d, %d", oldSz.width(), oldSz.height());
+      TRACEC("new size = %d, %d", newSz.width(), newSz.height());
+   }
+
+   evt->ignore();
+}
 
 
 

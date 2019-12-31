@@ -13,6 +13,7 @@
 #include "base/global_state.h"
 #include "nongui/feature_value.h"
 
+extern bool showValueWidgetResizeEvents;
 
 class ValueBaseWidget : public QFrame    // was ValueAbstractWidget
 {
@@ -28,6 +29,9 @@ public:
     // QSize sizeHint() const override;   //   needed?
     virtual void     setControlKeyRequired(bool onoff);
     bool             getControlKeyRequired();
+
+protected:
+    // void resizeEvent(QResizeEvent * evt) override;
 
 signals:
     // compiler warning: signals may not be declared virtual

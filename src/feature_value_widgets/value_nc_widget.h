@@ -36,6 +36,7 @@ public:
 
 protected:
     // void layoutWidgetAux();
+    void resizeEvent(QResizeEvent * evt) override;
 
 private:
     void layoutWidget();

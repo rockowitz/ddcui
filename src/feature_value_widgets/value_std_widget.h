@@ -22,6 +22,9 @@ public:
     void setFeatureValue(const FeatureValue  &fv) override;
     void setCurrentShSl(uint16_t newval) override;
 
+protected:
+    void resizeEvent(QResizeEvent * evt) override;
+
 private:
     void layoutWidget();
     void setValueField();
