@@ -21,6 +21,7 @@ const bool debugFeatureLists       = false;
 const bool debugFeatureSelection   = false;
 const bool debugLayout             = false;
 const bool debugNcValues           = false;
+const bool debugFeatureDimensions  = false;
 
 
 // from ddcutil glib_util.c

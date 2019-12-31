@@ -29,6 +29,9 @@ extern const bool debugFeatureLists       ;
 extern const bool debugFeatureSelection   ;
 extern const bool debugNcValues           ;
 extern const bool debugLayout             ;
+extern const bool debugFeatureDimensions  ;
+
+       const int  FeatureRowHeight = 22;
 
 bool enable_trace_show_time(bool onoff);
 bool enable_trace_show_thread_id(bool onoff);
