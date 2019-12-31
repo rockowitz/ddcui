@@ -36,6 +36,10 @@ protected:
    void keyPressEvent(QKeyEvent *    ev) override;
    void keyReleaseEvent(QKeyEvent *   ev) override;
 
+   void resizeEvent(QResizeEvent * evt) override;
+
+private:
+   void layoutWidget();
 
 private:
    const char *   _cls;
@@ -43,5 +47,7 @@ private:
    bool     _ctrl_key_required;
 
 };
+
+
 
 #endif /* ENHANCED_SLIDER_H_ */

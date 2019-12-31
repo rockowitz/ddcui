@@ -15,12 +15,26 @@
 
 #include "enhanced_slider.h"
 
+static bool showResizeEvents = true;
+static bool showBasicDims = true;
+
+
+void EnhancedSlider::layoutWidget() {
+    static bool basicDimsShown = false;
+    if (showBasicDims && !basicDimsShown) {
+        REPORT_BASIC_WIDGET_DIMENSIONS(this);
+        basicDimsShown = true;
+     }
+}
+
 EnhancedSlider::EnhancedSlider(QWidget * parent)
         : QSlider(parent)
         , _ctrl_key_is_pressed(false)
         , _ctrl_key_required(false)
 {
    _cls = metaObject()->className();
+
+   layoutWidget();
 }
 
 EnhancedSlider::EnhancedSlider(Qt::Orientation orientation, QWidget * parent)
@@ -29,6 +43,8 @@ EnhancedSlider::EnhancedSlider(Qt::Orientation orientation, QWidget * parent)
   , _ctrl_key_required(false)
 {
    _cls = metaObject()->className();
+
+   layoutWidget();
 }
 
 // EnhancedSlider::~EnhancedSlider() {
@@ -57,8 +73,13 @@ void EnhancedSlider::mouseMoveEvent(QMouseEvent *    ev)
    if (_ctrl_key_is_pressed || !_ctrl_key_required)
       QSlider::mouseMoveEvent(ev);
 
-   // ev->ignore();    // needed?
+   // From QtEvent::accepted documentation:
+   // By default, isAccepted() is set to true, but don't rely on this as subclasses
+   // may choose to clear it in their constructo
+   // So in this and other methods explicitly invoke ev->ignore to propogate the event
+   ev->ignore();
 }
+
 
 void EnhancedSlider::mousePressEvent(QMouseEvent *   ev)
 {
@@ -67,8 +88,9 @@ void EnhancedSlider::mousePressEvent(QMouseEvent *   ev)
    if (_ctrl_key_is_pressed|| !_ctrl_key_required)
       QSlider::mousePressEvent(ev);
 
-   // ev->ignore();    // needed?
+   ev->ignore();
 }
+
 
 void EnhancedSlider::mouseReleaseEvent(QMouseEvent * ev)
 {
@@ -77,8 +99,9 @@ void EnhancedSlider::mouseReleaseEvent(QMouseEvent * ev)
    if (_ctrl_key_is_pressed|| !_ctrl_key_required)
       QSlider::mouseReleaseEvent(ev);
 
-   // ev->ignore();    // needed?
+   ev->ignore();
 }
+
 
 void EnhancedSlider::keyPressEvent(QKeyEvent *   ev)
 {
@@ -88,8 +111,9 @@ void EnhancedSlider::keyPressEvent(QKeyEvent *   ev)
       _ctrl_key_is_pressed = true;
    QSlider::keyPressEvent(ev);
 
-   ev->ignore();    // needed?
+   ev->ignore();
 }
+
 
 void EnhancedSlider::keyReleaseEvent(QKeyEvent *   ev)
 {
@@ -98,10 +122,39 @@ void EnhancedSlider::keyReleaseEvent(QKeyEvent *   ev)
    if (ev->key() == Qt::Key_Control)    // 68
       _ctrl_key_is_pressed = false;
    QSlider::keyPressEvent(ev);
-   ev->ignore();    // needed?
+   ev->ignore();
 }
 
 
+void EnhancedSlider::resizeEvent(QResizeEvent * evt)
+{
+   bool show = false;
 
+   QSize oldSz = evt->oldSize();
+   QSize newSz = evt->size();
 
+   static bool sizeShown = false;
+   if (showResizeEvents && !sizeShown) {
+      show = true;
+      sizeShown = true;
+   }
+
+#ifdef ALT
+
+   int oldWidth = oldSz.width();
+   int oldHeight = oldSz.height();
+   int newWidth = newSz.width();
+   int newHeight = newSz.width();
+   if (oldHeight != newHeight || oldWidth != newWidth) {
+      show = true;
+   }
+#endif
+
+   if (show) {
+      TRACEC("old size = %d, %d", oldSz.width(), oldSz.height());
+      TRACEC("new size = %d, %d", newSz.width(), newSz.height());
+   }
+
+   evt->ignore();
+}
 
