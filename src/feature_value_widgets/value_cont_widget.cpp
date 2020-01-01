@@ -23,7 +23,7 @@
 
 #include "base/ddcui_globals.h"
 #include "base/debug_utils.h"
-#include "base/enhanced_slider.h"
+#include "core_widgets/enhanced_slider.h"
 
 
 static bool showDimensionReports = false;
@@ -519,8 +519,4 @@ void ValueContWidget::resizeEvent(QResizeEvent * evt)
 
    evt->ignore();
 }
-
-
-
-
 

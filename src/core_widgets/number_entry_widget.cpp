@@ -14,8 +14,8 @@
 
 #include "base/ddcui_globals.h"
 #include "base/debug_utils.h"
-#include "base/hex_number_validator.h"
 
+#include "hex_number_validator.h"
 #include "number_entry_widget.h"
  
 // initializes _widgetState to StateOldValid

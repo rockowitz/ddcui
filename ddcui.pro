@@ -59,16 +59,18 @@ SOURCES += \
     src/base/ddca_utils.cpp \
     src/base/ddcui_globals.cpp \
     src/base/debug_utils.cpp \
-    src/base/enhanced_slider.cpp \
     src/base/feature_selector.cpp \
     src/base/global_state.cpp \
-    src/base/hex_number_validator.cpp \
-    src/base/hline_widget.cpp \
-    src/base/number_entry_widget.cpp \
     src/base/other_options_state.cpp \
     src/base/user_interface_options_state.cpp
     
-#   src/base/vertical_scroll_area.cpp \
+SOURCES+= \
+    src/core_widgets/enhanced_slider.cpp \
+    src/core_widgets/hex_number_validator.cpp \
+    src/core_widgets/hline_widget.cpp \
+    src/core_widgets/number_entry_widget.cpp
+
+    #   src/base/vertical_scroll_area.cpp \
 
 SOURCES += \
     src/c_util/string_util.c 
@@ -149,18 +151,20 @@ HEADERS += \
     src/base/ddcui_parms.h \
     src/base/ddca_utils.h \
     src/base/ddcui_globals.h \
-    src/base/enhanced_slider.h \
-    src/base/hex_number_validator.h \
     src/base/debug_utils.h \
     src/base/feature_selector.h \
     src/base/global_state.h \
-    src/base/hline_widget.h \
     src/base/monitor.h \
-    src/base/number_entry_widget.h \
     src/base/other_options_state.h \
     src/base/user_interface_options_state.h
     
-#   src/base/vertical_scroll_area.h
+HEADERS += \
+    src/core_widgets/enhanced_slider.h \
+    src/core_widgets/hex_number_validator.h \
+    src/core_widgets/hline_widget.h \
+    src/core_widgets/number_entry_widget.h
+
+#   src/core_widgets/vertical_scroll_area.h
 
 HEADERS += \
     src/c_util/string_util.h 

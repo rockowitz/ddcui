@@ -88,14 +88,15 @@ set(SOURCES
     src/base/ddca_utils.cpp 
     src/base/ddcui_globals.cpp 
     src/base/debug_utils.cpp 
-    src/base/enhanced_slider.cpp
     src/base/feature_selector.cpp 
     src/base/global_state.cpp 
-    src/base/hex_number_validator.cpp
-    src/base/hline_widget.cpp 
-    src/base/number_entry_widget.cpp
     src/base/user_interface_options_state.cpp
     src/base/other_options_state.cpp 
+
+    src/core_widgets/enhanced_slider.cpp
+    src/core_widgets/hex_number_validator.cpp
+    src/core_widgets/hline_widget.cpp 
+    src/core_widgets/number_entry_widget.cpp
 
     src/cmdline/parsed_cmd.c
     src/cmdline/cmd_parser_aux.c

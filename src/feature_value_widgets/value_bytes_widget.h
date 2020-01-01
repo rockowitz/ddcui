@@ -11,9 +11,10 @@
 
 #include <QtWidgets/QLineEdit>
 
+#include "core_widgets/number_entry_widget.h"
 #include "nongui/feature_value.h"
+
 #include "feature_value_widgets/value_base_widget.h"
-#include "base/number_entry_widget.h"
 
 class QLabel;
 class QPushButton;
