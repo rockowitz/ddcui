@@ -3,10 +3,6 @@
 // Copyright (C) 2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#include <QtCore/QString>
-// #include <QtCore/QtCore>
-// #include <QtWidgets/QListWidgetItem>
-
 #include "ddcui_parms.h"
 
 const bool debugSignals            = false;
@@ -16,5 +12,3 @@ const bool debugFeatureSelection   = false;
 const bool debugLayout             = false;
 const bool debugNcValues           = false;
 const bool debugFeatureDimensions  = false;
-
-
