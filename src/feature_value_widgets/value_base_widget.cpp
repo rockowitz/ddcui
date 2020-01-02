@@ -7,7 +7,7 @@
 
 #include <QtCore/QMargins>
 
-#include "base/ddcui_globals.h"
+#include "../base/core.h"
 #include "base/global_state.h"
 #include "base/feature_selector.h"
 

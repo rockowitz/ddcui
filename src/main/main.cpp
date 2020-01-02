@@ -14,7 +14,7 @@ extern "C" {
 }
 
 #include "base/global_state.h"
-#include "base/ddcui_globals.h"
+#include "../base/core.h"
 
 // #include <ui_main.h>
 #include "main/mainwindow.h"

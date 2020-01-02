@@ -3,8 +3,8 @@
 // Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#include "base/ddcui_globals.h"
 #include "nongui/msgbox_queue.h"
+#include "../base/core.h"
 
 
 static bool debugClass = false;

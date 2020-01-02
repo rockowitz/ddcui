@@ -8,8 +8,8 @@
 
 #include <QtCore/QString>
 
-#include "base/ddcui_globals.h"
 #include "main/msgbox_thread.h"
+#include "../base/core.h"
 
 
 static bool debugThread = false;

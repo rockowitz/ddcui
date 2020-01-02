@@ -13,8 +13,8 @@
 #include "ddcutil_status_codes.h"
 #include "ddcutil_c_api.h"
 
+#include "../base/core.h"
 #include "base/debug_utils.h"
-#include "base/ddcui_globals.h"
 #include "base/feature_selector.h"
 
 

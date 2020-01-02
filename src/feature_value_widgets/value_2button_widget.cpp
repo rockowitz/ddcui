@@ -17,10 +17,10 @@
 #include <QtWidgets/QLayout>
 #include <QtWidgets/QPushButton>
 
-#include "base/ddcui_globals.h"
 #include "base/debug_utils.h"
 
 #include <ddcutil_c_api.h>
+#include "../base/core.h"
 
 static bool showDimensionReport = false;
 

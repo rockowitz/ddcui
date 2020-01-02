@@ -12,9 +12,9 @@
 #include <QtCore/QString>
 
 #include "base/ddca_utils.h"
-#include "base/ddcui_globals.h"
 #include "nongui/ddc_error.h"
 #include "nongui/vcpthread.h"
+#include "../base/core.h"
 
 using namespace std;
 

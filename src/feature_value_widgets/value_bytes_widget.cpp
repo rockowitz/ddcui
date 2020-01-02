@@ -16,9 +16,10 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QHBoxLayout>
+
+#include "../base/core.h"
 // #include <QtWidgets/QVBoxLayout>
 
-#include "base/ddcui_globals.h"
 #include "base/debug_utils.h"
 
 

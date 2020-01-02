@@ -1,23 +1,23 @@
-// ddcui_globals.h
+// core.h
 
 // Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#ifndef DDCUI_GLOBALS_H
-#define DDCUI_GLOBALS_H
+#ifndef CORE_H
+#define CORE_H
 
 #include <sys/types.h>
 #include <sys/syscall.h>
 #include <unistd.h>
 
-#include "config.h"
-
 #include <QtCore/QtCore>
 #include <QtWidgets/QListWidgetItem>
 
+#include "config.h"
+
 #include "ddcui_parms.h"
 
-const QString ddcui_version = DDCUI_VERSION;   // in ddcui_parms.h
+const QString ddcui_version = DDCUI_VERSION;
 
 const int FeatureValueRole  = Qt::UserRole+1;  // DisplayRole, EditorRole, .. etc
 
@@ -82,4 +82,4 @@ const bool useApplyCancel    = true;
 #endif
 
 
-#endif // DDCUI_GLOBALS_H
+#endif // CORE_H

@@ -16,8 +16,8 @@
 #include <ddcutil_c_api.h>
 #include <ddcutil_status_codes.h>
 
+#include "../base/core.h"
 #include "base/global_state.h"
-#include "base/ddcui_globals.h"
 #include "base/monitor.h"
 #include "base/ddca_utils.h"
 

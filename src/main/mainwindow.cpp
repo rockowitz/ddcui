@@ -15,9 +15,9 @@
 
 #include <ddcutil_c_api.h>
 
+#include "../base/core.h"
 // #include "imported/QtWaitingSpinner/waitingspinnerwidget.h"
 
-#include "base/ddcui_globals.h"
 #include "base/ddcui_parms.h"
 #include "base/debug_utils.h"
 #include "base/global_state.h"

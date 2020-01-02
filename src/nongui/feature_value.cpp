@@ -11,8 +11,8 @@
 #include "ddcutil_types.h"
 #include "ddcutil_c_api.h"
 
-#include "base/ddcui_globals.h"
 #include "nongui/feature_value.h"
+#include "../base/core.h"
 
 
 FeatureValue::FeatureValue()

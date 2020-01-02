@@ -13,11 +13,11 @@
 #include <QtGui/QValidator>
 
 #include "base/ddcui_parms.h"
-#include "base/ddcui_globals.h"
 #include "base/debug_utils.h"
 
 #include "hex_number_validator.h"
 #include "number_entry_widget.h"
+#include "../base/core.h"
  
 // initializes _widgetState to StateOldValid
 NumberEntryWidget::NumberEntryWidget(

@@ -10,10 +10,10 @@
 
 #include "c_util/string_util.h"
 
-#include "base/ddcui_globals.h"
 #include "base/debug_utils.h"
 
 #include "enhanced_slider.h"
+#include "../base/core.h"
 
 static bool showResizeEvents = true;
 static bool showBasicDims = true;

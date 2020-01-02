@@ -8,7 +8,7 @@
 #include <assert.h>
 #include <QtCore/QDebug>
 
-#include "base/ddcui_globals.h"
+#include "../base/core.h"
 #include "help/help_dialog.h"
 
 #include "ui_other_options_dialog.h"

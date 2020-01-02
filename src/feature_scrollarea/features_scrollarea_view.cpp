@@ -16,7 +16,7 @@
 #include <string.h>
 #include <typeinfo>
 
-#include "base/ddcui_globals.h"
+#include "../base/core.h"
 #include "base/debug_utils.h"
 #include "base/global_state.h"
 #include "base/monitor.h"

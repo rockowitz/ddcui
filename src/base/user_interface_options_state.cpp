@@ -7,7 +7,8 @@
 // special, causes the user interface compile to look for a dialog named ui_options_state_dialog
 
 #include "user_interface_options_state.h"
-#include "base/ddcui_globals.h"
+
+#include "core.h"
 
 
  UserInterfaceOptionsState::UserInterfaceOptionsState()

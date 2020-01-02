@@ -5,14 +5,15 @@
 
 
 #include "base/debug_utils.h"
-#include "base/ddcui_globals.h"
 #include <QtWidgets/QScrollArea>
 #include <QtCore/QSize>
 
 
 #include "feature_scrollarea/features_scrollarea.h"
+
+#include "../base/core.h"
+#include "../base/core.h"
 #include "feature_scrollarea/features_scrollarea_contents.h"
-#include "base/ddcui_globals.h"
 
 
 static bool showWidgetDimensions = false;

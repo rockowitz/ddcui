@@ -18,8 +18,8 @@
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QSizePolicy>
 
-#include "base/ddcui_globals.h"
 #include "base/debug_utils.h"
+#include "core.h"
 
 void reportBasicWidgetDimensions(
       QWidget *    w,

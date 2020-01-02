@@ -14,7 +14,7 @@
 #include <QtWidgets/QStackedWidget>
 #include <QtWidgets/QVBoxLayout>
 
-#include "base/ddcui_globals.h"
+#include "../base/core.h"
 #include "base/debug_utils.h"
 
 // #include "nongui/simple_feature_value.h"

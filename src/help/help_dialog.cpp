@@ -6,8 +6,8 @@
 #include <QtWidgets/QTextBrowser>
 #include <QtWidgets/QVBoxLayout>
 
-#include "base/ddcui_globals.h"
 #include "help_dialog.h"
+#include "../base/core.h"
 
 
 void HelpDialog2::commonInit() {

@@ -15,8 +15,8 @@
 
 #include <ddcutil_types.h>
 
+#include "../base/core.h"
 #include "base/user_interface_options_state.h"
-#include "base/ddcui_globals.h"
 #include "base/other_options_state.h"
 
 class FeatureBaseModel;

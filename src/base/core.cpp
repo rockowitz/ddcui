@@ -13,7 +13,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "ddcui_globals.h"
+#include "core.h"
 
 
 // from ddcutil glib_util.c

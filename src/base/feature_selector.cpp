@@ -7,9 +7,8 @@
 
 #include <ddcutil_c_api.h>
 
-#include "base/ddcui_globals.h"
-
 #include "feature_selector.h"
+#include "core.h"
 
 bool FeatureSelector::operator==(const FeatureSelector &other) const {
    return (_featureListId         == other._featureListId             &&

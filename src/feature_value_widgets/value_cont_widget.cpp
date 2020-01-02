@@ -19,9 +19,9 @@
 
 #include <QtWidgets/QHBoxLayout>
 
+#include "../base/core.h"
 #include "c_util/string_util.h"
 
-#include "base/ddcui_globals.h"
 #include "base/debug_utils.h"
 #include "core_widgets/enhanced_slider.h"
 
