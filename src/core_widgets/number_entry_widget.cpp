@@ -12,6 +12,7 @@
 #include <QtWidgets/QLineEdit>
 #include <QtGui/QValidator>
 
+#include "base/ddcui_parms.h"
 #include "base/ddcui_globals.h"
 #include "base/debug_utils.h"
 

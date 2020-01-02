@@ -23,13 +23,7 @@ const int FeatureValueRole  = Qt::UserRole+1;  // DisplayRole, EditorRole, .. et
 
 const int FeatureWidgetType = QListWidgetItem::UserType+1;
 
-extern const bool debugSignals            ;
-extern const bool debugValueWidgetSignals ;
-extern const bool debugFeatureLists       ;
-extern const bool debugFeatureSelection   ;
-extern const bool debugNcValues           ;
-extern const bool debugLayout             ;
-extern const bool debugFeatureDimensions  ;
+
 
        const int  FeatureRowHeight = 22;
 

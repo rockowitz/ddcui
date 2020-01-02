@@ -85,6 +85,7 @@ set(SOURCES
 
     src/c_util/string_util.c
 
+    src/base/ddcui_parms.cpp
     src/base/ddca_utils.cpp 
     src/base/ddcui_globals.cpp 
     src/base/debug_utils.cpp 

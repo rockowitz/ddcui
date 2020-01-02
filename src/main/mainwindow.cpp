@@ -18,6 +18,7 @@
 // #include "imported/QtWaitingSpinner/waitingspinnerwidget.h"
 
 #include "base/ddcui_globals.h"
+#include "base/ddcui_parms.h"
 #include "base/debug_utils.h"
 #include "base/global_state.h"
 #include "base/monitor.h"

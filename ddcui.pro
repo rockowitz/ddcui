@@ -57,6 +57,7 @@ SOURCES += \
 
 SOURCES += \
     src/base/ddca_utils.cpp \
+    src/base/ddcui_parms.cpp \
     src/base/ddcui_globals.cpp \
     src/base/debug_utils.cpp \
     src/base/feature_selector.cpp \
