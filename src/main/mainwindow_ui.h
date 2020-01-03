@@ -18,7 +18,7 @@
 #include <QtWidgets/QToolBar>
 
 #include "../base/core.h"
-#include "base/debug_utils.h"
+#include "../base/widget_debug.h"
 
 
 // QT_BEGIN_NAMESPACE

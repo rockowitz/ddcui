@@ -1,20 +1,37 @@
-// debug_utils.h - Functions for debugging Qt layouts
+// widget_debug.h - Functions for debugging Qt layouts
 
 // Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#ifndef BASE_DEBUG_UTILS_H_
-#define BASE_DEBUG_UTILS_H_
+#ifndef WIDGET_DEBUG_H_
+#define WIDGET_DEBUG_H_
 
 class QWidget;
 class QFrame;
 class QLabel;
 class QString;
 
-void reportWidgetChildren(  QWidget * w, const char * msg = nullptr);
-void reportLabelDimensions( QLabel  * l, const char * className, const char * funcName, const char * msg=nullptr);
-void reportFrameDimensions( QFrame  * f, const char * className, const char * funcName, const char * msg=nullptr);
-void reportWidgetDimensions(QWidget * w, const char * className, const char * funcName, const char * msg=nullptr);
+void reportWidgetChildren(
+      QWidget * w,
+      const char * msg = nullptr);
+
+void reportLabelDimensions(
+      QLabel  * l,
+      const char * className,
+      const char * funcName,
+      const char * msg=nullptr);
+
+void reportFrameDimensions(
+      QFrame  * f,
+      const char * className,
+      const char * funcName,
+      const char * msg=nullptr);
+
+void reportWidgetDimensions(
+      QWidget * w,
+      const char * className,
+      const char * funcName,
+      const char * msg=nullptr);
 
 void reportBasicWidgetDimensions(
       QWidget *    w,
@@ -29,6 +46,4 @@ do { \
    reportBasicWidgetDimensions(_widget, this->metaObject()->className(), __func__, __LINE__, __FILE__); \
 } while(0)
 
-
-
-#endif /* BASE_DEBUG_UTILS_H_ */
+#endif /* WIDGET_DEBUG_H_ */

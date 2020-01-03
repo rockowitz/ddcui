@@ -59,7 +59,7 @@ SOURCES += \
     src/base/ddca_utils.cpp \
     src/base/ddcui_parms.cpp \
     src/base/core.cpp \
-    src/base/debug_utils.cpp \
+    src/base/widget_debug.cpp \
     src/base/feature_selector.cpp \
     src/base/global_state.cpp \
     src/base/other_options_state.cpp \
@@ -152,7 +152,7 @@ HEADERS += \
     src/base/ddcui_parms.h \
     src/base/ddca_utils.h \
     src/base/core.h \
-    src/base/debug_utils.h \
+    src/base/widget_debug.h \
     src/base/feature_selector.h \
     src/base/global_state.h \
     src/base/monitor.h \

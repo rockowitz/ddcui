@@ -1,4 +1,4 @@
-// debug_utils.cpp
+// widget_debug.cpp
 
 // Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
@@ -18,8 +18,9 @@
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QSizePolicy>
 
-#include "base/debug_utils.h"
 #include "core.h"
+#include "widget_debug.h"
+
 
 void reportBasicWidgetDimensions(
       QWidget *    w,
@@ -28,34 +29,33 @@ void reportBasicWidgetDimensions(
       const int    caller_lineno,
       const char * caller_filename)
 {
-      const char * cls = w->metaObject()->className();
+    const char * cls = w->metaObject()->className();
 
-      QSize sizeHint = w->sizeHint();
-      QSize minSize = w->minimumSize();
-      QSize minSizeHint = w->minimumSizeHint();
-      QSize maxSize = w->maximumSize();
+    QSize sizeHint = w->sizeHint();
+    QSize minSize = w->minimumSize();
+    QSize minSizeHint = w->minimumSizeHint();
+    QSize maxSize = w->maximumSize();
 
-      printftcmf(
-         true,
-         caller_class,
-         NULL,
-         caller_func,
-         caller_lineno,
-         caller_filename,
-         "class %-20s:", cls);
-       printf("   size (%d,%d) sizeHint(%d,%d) minimumSize(%d,%d) minimumSizeHint(%d,%d)\n",  // maximumSize(%d,%d)\n",
-            w->width(),          w->height(),
-            sizeHint.width(),     sizeHint.height(),
-            minSize.width(),      minSize.height(),
-            minSizeHint.width(),  minSizeHint.height() );
-         //   maxSize.width(),      maxSize.height()  );
-         QMargins margins = w->contentsMargins();
-         QRect    rect    = w->contentsRect();
-         printf("   contents margins (%d,%d,%d,%d) rectangle (%d,%d) \n",
-               margins.top(), margins.right(), margins.bottom(), margins.left(),
-               rect.width(), rect.height() );
+    printftcmf(
+       true,
+       caller_class,
+       NULL,
+       caller_func,
+       caller_lineno,
+       caller_filename,
+       "class %-20s:", cls);
+    printf("   size (%d,%d) sizeHint(%d,%d) minimumSize(%d,%d) minimumSizeHint(%d,%d)\n",  // maximumSize(%d,%d)\n",
+        w->width(),          w->height(),
+        sizeHint.width(),     sizeHint.height(),
+        minSize.width(),      minSize.height(),
+        minSizeHint.width(),  minSizeHint.height() );
+        //   maxSize.width(),      maxSize.height()  );
 
-
+    QMargins margins = w->contentsMargins();
+    QRect    rect    = w->contentsRect();
+    printf("   contents margins (%d,%d,%d,%d) rectangle (%d,%d) \n",
+        margins.top(), margins.right(), margins.bottom(), margins.left(),
+        rect.width(), rect.height() );
 }
 
 

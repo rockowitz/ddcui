@@ -16,11 +16,11 @@
 
 #include <ddcutil_c_api.h>
 
-#include "../base/core.h"
+#include "base/core.h"
 #include "base/ddca_utils.h"
-#include "base/debug_utils.h"
 #include "base/global_state.h"
 #include "base/other_options_state.h"
+#include "base/widget_debug.h"
 
 #include "nongui/feature_base_model.h"
 

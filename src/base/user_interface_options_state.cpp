@@ -1,10 +1,12 @@
 // user_interfacee_options_state.cpp
+//
+// Maintains the current state of the User Interface Options dialog
 
 // Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 // NB was originally named ui_options_state.h etc, but the ui prefix is
-// special, causes the user interface compile to look for a dialog named ui_options_state_dialog
+// special, causes the user interface compiler to look for a dialog named ui_options_state_dialog
 
 #include "user_interface_options_state.h"
 

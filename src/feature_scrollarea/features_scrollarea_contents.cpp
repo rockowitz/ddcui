@@ -14,8 +14,7 @@
 #include <QtCore/QSize>
 
 #include "../base/core.h"
-#include "base/debug_utils.h"
-
+#include "../base/widget_debug.h"
 #include "feature_value_widgets/value_stacked_widget.h"
 #include "feature_scrollarea/feature_widget.h"
 

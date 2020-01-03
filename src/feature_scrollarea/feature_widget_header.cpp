@@ -9,9 +9,8 @@
 #include <QtWidgets/QSizePolicy>
 #include <QtWidgets/QHBoxLayout>
 
-#include "base/debug_utils.h"
-
 #include "feature_widget_header.h"
+#include "../base/widget_debug.h"
 
 static bool showDimensionReport = false;
 static bool showResizeEvents = false;

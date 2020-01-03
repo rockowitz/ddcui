@@ -4,7 +4,6 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 
-#include "base/debug_utils.h"
 #include <QtWidgets/QScrollArea>
 #include <QtCore/QSize>
 
@@ -13,6 +12,7 @@
 
 #include "../base/core.h"
 #include "../base/core.h"
+#include "../base/widget_debug.h"
 #include "feature_scrollarea/features_scrollarea_contents.h"
 
 

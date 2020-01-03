@@ -17,7 +17,7 @@
 #include <typeinfo>
 
 #include "../base/core.h"
-#include "base/debug_utils.h"
+#include "../base/widget_debug.h"
 #include "base/global_state.h"
 #include "base/monitor.h"
 #include "base/other_options_state.h"

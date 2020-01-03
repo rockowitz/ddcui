@@ -12,12 +12,13 @@
 #include <QtWidgets/QLineEdit>
 #include <QtGui/QValidator>
 
+#include "base/core.h"
 #include "base/ddcui_parms.h"
-#include "base/debug_utils.h"
+#include "base/widget_debug.h"
 
 #include "hex_number_validator.h"
 #include "number_entry_widget.h"
-#include "../base/core.h"
+
  
 // initializes _widgetState to StateOldValid
 NumberEntryWidget::NumberEntryWidget(

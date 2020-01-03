@@ -3,25 +3,20 @@
 // Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-
 #include "value_bytes_widget.h"
 
 #include <assert.h>
 #include <string.h>
 
 #include <QtWidgets/QWidget>
-// #include <QtWidgets/QSlider>
-// #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QHBoxLayout>
 
-#include "../base/core.h"
-// #include <QtWidgets/QVBoxLayout>
+#include "base/core.h"
 
-#include "base/debug_utils.h"
-
+#include "base/widget_debug.h"
 
 static bool showDimensionReports = false;
 

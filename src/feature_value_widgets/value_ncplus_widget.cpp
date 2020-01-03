@@ -3,8 +3,6 @@
 // Copyright (C) 2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#include "feature_value_widgets/value_cnc_widget_x14.h"
-#include "feature_value_widgets/value_nc_widget.h"
 #include "feature_value_widgets/value_ncplus_widget.h"
 
 #include <assert.h>
@@ -20,13 +18,16 @@
 
 #include <ddcutil_c_api.h>
 
-#include "../base/core.h"
+#include "base/core.h"
 #include "base/ddca_utils.h"
-#include "base/debug_utils.h"
 #include "base/global_state.h"
 #include "base/other_options_state.h"
+#include "base/widget_debug.h"
 
 #include "nongui/feature_base_model.h"
+
+#include "feature_value_widgets/value_cnc_widget_x14.h"
+#include "feature_value_widgets/value_nc_widget.h"
 
 // static bool dimensionReportShown = false;  // unused
 static bool showResizeEvents = true;

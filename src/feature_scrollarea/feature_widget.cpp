@@ -13,8 +13,7 @@
 #include <QtGui/QResizeEvent>
 
 #include "../base/core.h"
-#include "base/debug_utils.h"
-
+#include "../base/widget_debug.h"
 #include "nongui/feature_base_model.h"
 
 #include "feature_value_widgets/value_cont_widget.h"

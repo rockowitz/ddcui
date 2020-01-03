@@ -14,11 +14,8 @@
 #include <QtWidgets/QStackedWidget>
 #include <QtWidgets/QVBoxLayout>
 
-#include "../base/core.h"
-#include "base/debug_utils.h"
-
-// #include "nongui/simple_feature_value.h"
-// #include "nongui/simple_feature_value_subject.h"
+#include "base/core.h"
+#include "base/widget_debug.h"
 
 #include "feature_value_widgets/value_std_widget.h"
 #include "feature_value_widgets/value_cont_widget.h"
