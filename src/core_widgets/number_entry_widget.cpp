@@ -1,6 +1,6 @@
 // number_entry_widget.cpp
 
-// Copyright (C) 2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <assert.h>
@@ -19,12 +19,30 @@
 #include "hex_number_validator.h"
 #include "number_entry_widget.h"
 
+
+void NumberEntryWidget::layoutWidget(
+      uint8_t bytect,
+      QFont   font,
+      int     style,      // not currently used
+      QSize   size)
+{
+    setMaxLength( 2*bytect);
+    setFont(font);
+    // setFrameStyle(style); ???
+    setFixedSize(size);
+    setAlignment(Qt::AlignRight);
+
+    if (debugLayout)
+       setStyleSheet("background-color:orange;");
+}
+
+
  
 // initializes _widgetState to StateOldValid
 NumberEntryWidget::NumberEntryWidget(
       uint8_t bytect,
       QFont   font,
-      int     style,
+      int     style,      // not currently used
       QSize   size,
       QWidget *parent)
    : QLineEdit(nullptr)
@@ -38,7 +56,7 @@ NumberEntryWidget::NumberEntryWidget(
 
     // *** Constrain what character strings are accepted
 
- /* All three methods work.  All provide that at most 2 hexacecimal characters
+ /* All three methods work.  All provide that at most 2 hexadecimal characters
   * are entered, so the value shown is always valid.  true for 1, 2, what about 3?
   * All three have the same deviciency.
   */
@@ -69,14 +87,7 @@ NumberEntryWidget::NumberEntryWidget(
     setValidator(new HexNumberValidator());
 #endif
 
-    setMaxLength( 2*bytect);
-    setFont(font);
-    // setFrameStyle(style); ???
-    setFixedSize(size);
-    setAlignment(Qt::AlignRight);
-
-    if (debugLayout)
-       setStyleSheet("background-color:orange;");
+    layoutWidget(bytect,font,style,size);
 
     connect(this, &NumberEntryWidget::textEdited,  this, &NumberEntryWidget::onTextEdited);
 }
@@ -90,6 +101,7 @@ NumberEntryWidget::getExistingValue()
    return _curval;
 }
 
+
 uint16_t
 NumberEntryWidget::getNewValue()
 {
@@ -97,6 +109,7 @@ NumberEntryWidget::getNewValue()
    TRACECF(debug, "widget = %s, returning: x%04x", qs2s(this->objectName()), _valueEntered);
    return _valueEntered;
 }
+
 
 // sets the current value
 // changes state to StateOldValue
@@ -121,6 +134,7 @@ NumberEntryWidget::getState()
 {
    return _widgetState;
 }
+
 
 // if widgestate = OldState, do nothing
 // o.w. sets the displayed value to curval

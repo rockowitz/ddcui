@@ -1,6 +1,6 @@
 // number_entry_widget.h
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef NUMBER_ENTRY_WIDGET_H_
@@ -51,7 +51,13 @@ signals:
    void stateChanged(NumberEntryWidget * widget, NumberEntryWidget::States newState);
 
 private:
-   const char *  _cls;
+    void layoutWidget(
+          uint8_t bytect,
+          QFont   font,
+          int     style,      // not currently used
+          QSize   size);
+
+    const char * _cls;
     uint8_t      _bytect;
     uint16_t     _curval;
     uint16_t     _valueEntered = 0;  // valid value displayed but not yet accepted
