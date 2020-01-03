@@ -20,12 +20,11 @@
 const QString ddcui_version = DDCUI_VERSION;
 
 const int FeatureValueRole  = Qt::UserRole+1;  // DisplayRole, EditorRole, .. etc
-
 const int FeatureWidgetType = QListWidgetItem::UserType+1;
 
+const int  FeatureRowHeight = 22;
 
-
-       const int  FeatureRowHeight = 22;
+// Tracing
 
 bool enable_trace_show_time(bool onoff);
 bool enable_trace_show_thread_id(bool onoff);
@@ -70,9 +69,13 @@ do { \
 } while(0)
 
 
+// inline functions
+
 inline const char * sbool(bool val) { return (val) ? "true" : "false"; }
 inline const char * qs2s(QString qstr) {return qstr.toLatin1().data(); }
 
+
+// if every widget has Accept/Cancel buttons
 
 // #define APPLY_CANCEL
 // #define ALT_MOCK_FEATURES
