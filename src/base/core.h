@@ -75,7 +75,7 @@ inline const char * sbool(bool val) { return (val) ? "true" : "false"; }
 inline const char * qs2s(QString qstr) {return qstr.toLatin1().data(); }
 
 
-// if every widget has Accept/Cancel buttons
+// contrik whether every widget has Accept/Cancel buttons
 
 // #define APPLY_CANCEL
 // #define ALT_MOCK_FEATURES

@@ -16,36 +16,8 @@
 
 #include <QtCore/QString>
 
-#ifdef OLD   // use api function ddca_dbgrpt_feature_metadata()
-void
-ddcui_dbgrpt_ddca_feature_metadata(
-      DDCA_Feature_Metadata * meta)
-{
-   assert(meta);
 
-   printf("DDCA_Feature_Metadata at %p:", meta);
-   printf("   VCP code %02X: %s\n", meta->feature_code, meta->feature_name);
-
-   // rpt_vstring(d1, "Version spec: %d.%d", meta->vspec.major, meta->vspec.minor);
-
-   printf("   Description:  %s\n", meta->feature_desc);
-   DDCA_Version_Feature_Flags  vflags = meta->feature_flags;
-   printf("   feature_flags:   0x%04x\n", vflags);
-   // rpt_vstring(d1, "Global_flags: 0x%02x",  info->global_flags);  // TODO: interpretation function
-
-   if(meta->sl_values) {
-      DDCA_Feature_Value_Entry * sl_values = meta->sl_values;
-      printf("Simple NC values:\n");
-      while (sl_values->value_name != NULL) {
-         printf("      0x%02x: %s\n", sl_values->value_code, sl_values->value_name);
-         sl_values++;
-      }
-   }
-   else
-      printf("Simple NC values; No table specified\n");
-}
-#endif
-
+// Parsed Capabilities and Local Feature Value Table
 
 static bool
 cap_vcp_contains(DDCA_Cap_Vcp* cfr, uint8_t feature_code) {
@@ -138,7 +110,6 @@ ddcutil_free_local_feature_value_table(
 }
 
 
-
 Local_Feature_Value_Table *
 ddcutil_merge_feature_values(
       DDCA_Cap_Vcp *             cfr,          // feature values from capabilities
@@ -227,7 +198,6 @@ ddcutil_merge_feature_values(
 }
 
 
-
 DDCA_Cap_Vcp *
 ddcutil_find_cap_vcp(DDCA_Capabilities * parsed_caps, uint8_t feature_code)
 {
@@ -244,6 +214,8 @@ ddcutil_find_cap_vcp(DDCA_Capabilities * parsed_caps, uint8_t feature_code)
    return result;
 }
 
+
+// Error Reporting
 
 void
 format_error_detail_aux(
@@ -287,7 +259,6 @@ format_error_detail_aux(
 }
 
 
-
 QString
 format_error_detail(
       DDCA_Error_Detail * erec,
@@ -297,5 +268,36 @@ format_error_detail(
    QString accum = QString("");
    format_error_detail_aux(erec, causesTitle, indentation_per_depth, 0, accum);
    return accum;
-
 }
+
+
+#ifdef OLD   // use api function ddca_dbgrpt_feature_metadata()
+void
+ddcui_dbgrpt_ddca_feature_metadata(
+      DDCA_Feature_Metadata * meta)
+{
+   assert(meta);
+
+   printf("DDCA_Feature_Metadata at %p:", meta);
+   printf("   VCP code %02X: %s\n", meta->feature_code, meta->feature_name);
+
+   // rpt_vstring(d1, "Version spec: %d.%d", meta->vspec.major, meta->vspec.minor);
+
+   printf("   Description:  %s\n", meta->feature_desc);
+   DDCA_Version_Feature_Flags  vflags = meta->feature_flags;
+   printf("   feature_flags:   0x%04x\n", vflags);
+   // rpt_vstring(d1, "Global_flags: 0x%02x",  info->global_flags);  // TODO: interpretation function
+
+   if(meta->sl_values) {
+      DDCA_Feature_Value_Entry * sl_values = meta->sl_values;
+      printf("Simple NC values:\n");
+      while (sl_values->value_name != NULL) {
+         printf("      0x%02x: %s\n", sl_values->value_code, sl_values->value_name);
+         sl_values++;
+      }
+   }
+   else
+      printf("Simple NC values; No table specified\n");
+}
+#endif
+

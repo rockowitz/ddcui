@@ -1,4 +1,6 @@
 // ddca_utils.h
+//
+// Wrap ddcutil API functionality
 
 // Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
@@ -9,17 +11,14 @@
 #include <ddcutil_types.h>
 #include <QtCore/QString>
 
+
+// NC Feature Values
+
 typedef enum {
    CapsOnly,
    CapsPlusMccs,
    MccsOnly
 } Nc_Values_Merge_Mode;
-
-
-#ifdef OLD
-void ddcui_dbgrpt_ddca_feature_metadata(
-      DDCA_Feature_Metadata * meta);
-#endif
 
 // #define LOCAL_FEATURE_VALUE_TABLE_MARKER0 "LFVT"
 extern  const char * LOCAL_FEATURE_VALUE_TABLE_MARKER;
@@ -39,6 +38,9 @@ void
 ddcutil_free_local_feature_value_table(
       Local_Feature_Value_Table *  table);
 
+
+// Capabilities
+
 DDCA_Cap_Vcp *
 ddcutil_find_cap_vcp(
       DDCA_Capabilities *        parsed_caps,
@@ -50,6 +52,9 @@ free_ddca_feature_value_table(
       DDCA_Feature_Value_Table * table);
 #endif
 
+
+// Error Reporting
+
 QString
 format_error_detail(
       DDCA_Error_Detail * erec,
@@ -57,5 +62,9 @@ format_error_detail(
       int                 indentation_per_depth);
 
 
+#ifdef OLD
+void ddcui_dbgrpt_ddca_feature_metadata(
+      DDCA_Feature_Metadata * meta);
+#endif
 
 #endif /* DDCA_UTILS_H_ */
