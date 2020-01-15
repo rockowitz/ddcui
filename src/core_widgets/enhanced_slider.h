@@ -4,7 +4,7 @@
  *  key is pressed.
  */
 
-// Copyright (C) 2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2019-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <QtWidgets/QWidget>
@@ -43,11 +43,9 @@ private:
 
 private:
    const char *   _cls;
-   bool     _ctrl_key_is_pressed;
-   bool     _ctrl_key_required;
+   bool           _ctrl_key_is_pressed;
+   bool           _ctrl_key_required;
 
 };
-
-
 
 #endif /* ENHANCED_SLIDER_H_ */
