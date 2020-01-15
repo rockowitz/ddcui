@@ -1,6 +1,6 @@
 /* value_2button_widget.cpp - Widget containing 2 named buttons */
 
-// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "feature_value_widgets/value_2button_widget.h"
@@ -26,17 +26,19 @@ static bool showDimensionReport = false;
 
 void Value2ButtonWidget::layoutWidget()
 {
+   _featureValueWidgetHeight = 20;     // set it here for now
+
+   uint8_t buttonHeight = _featureValueWidgetHeight;        // seems to work
    QFont nonMonoFont;
    nonMonoFont.setPointSize(9);
 
    _button1 = new QPushButton();
-   _button1->setMaximumSize(60,20);
+   _button1->setMaximumSize(60,buttonHeight);
 
    _button2 = new QPushButton();
-   _button2->setMaximumSize(60,20);
+   _button2->setMaximumSize(60,buttonHeight);
 
     QSizePolicy* sizePolicy = new QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    // _cb->setHorizontalStretch(0);
     _button1->setSizePolicy(*sizePolicy);
     _button1->setFont(nonMonoFont);
     // _cb->setFrameStyle(QFrame::Sunken | QFrame::Panel);   // not a method
@@ -52,7 +54,6 @@ void Value2ButtonWidget::layoutWidget()
     layout->addStretch(1);
     layout->setContentsMargins(0,0,0,0);
     setLayout(layout);
-    // setVisible(true);
 
     delete sizePolicy;
 
@@ -80,10 +81,8 @@ Value2ButtonWidget::Value2ButtonWidget(
    // TRACE("Starting." );
    layoutWidget();
 
-    QObject::connect(_button1,  SIGNAL(released()),
-                     this,      SLOT(  on_button1_pressed()) );
-    QObject::connect(_button2,  SIGNAL(released()),
-                     this,      SLOT(  on_button2_pressed()) );
+   QObject::connect(_button1, SIGNAL(released()),  this, SLOT(  on_button1_pressed()) );
+   QObject::connect(_button2, SIGNAL(released()),  this, SLOT(  on_button2_pressed()) );
 }
 
 
@@ -97,7 +96,6 @@ void Value2ButtonWidget::setButtonDetail(
    _val2  = val2;
    _button1->setText(name1);
    _button2->setText(name2);
-   // setVisible(true);
 }
 
 
