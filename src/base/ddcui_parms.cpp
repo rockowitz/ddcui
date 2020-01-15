@@ -9,6 +9,6 @@ const bool debugSignals            = false;
 const bool debugValueWidgetSignals = false;
 const bool debugFeatureLists       = false;
 const bool debugFeatureSelection   = false;
-const bool debugLayout             = false;
+const bool debugLayout             = true;
 const bool debugNcValues           = false;
 const bool debugFeatureDimensions  = false;
