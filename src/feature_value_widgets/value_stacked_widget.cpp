@@ -1,6 +1,6 @@
 /* value_stacked_widget.cpp */
 
-// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "feature_value_widgets/value_stacked_widget.h"
@@ -40,7 +40,7 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
     _stdWidget     = new ValueStdWidget();
     _resetWidget   = new ValueResetWidget();
     _2ButtonWidget = new Value2ButtonWidget();
-    _cncWidgetX14  = new ValueCncWidgetX14();
+     _cncWidgetX14  = new ValueCncWidgetX14();
     _bytesWidget   = new ValueBytesWidget();
     _ncplusWidget  = new ValueNcplusWidget();
 
