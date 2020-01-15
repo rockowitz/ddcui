@@ -129,7 +129,7 @@ void EnhancedSlider::keyReleaseEvent(QKeyEvent *   ev)
 
 void EnhancedSlider::resizeEvent(QResizeEvent * evt)
 {
-   bool show = false;
+   bool show = true;
 
    QSize oldSz = evt->oldSize();
    QSize newSz = evt->size();
@@ -151,11 +151,19 @@ void EnhancedSlider::resizeEvent(QResizeEvent * evt)
    }
 #endif
 
-   if (show) {
-      TRACEC("old size = %d, %d", oldSz.width(), oldSz.height());
-      TRACEC("new size = %d, %d", newSz.width(), newSz.height());
-   }
+   TRACECF(show, "old size = %d, %d, new size = %d, %d ",
+                 oldSz.width(), oldSz.height(), newSz.width(), newSz.height());
 
-   evt->ignore();
+   // QSlider::resize(newSz);
+
+   // evt->ignore();
+   evt->accept();  // o.w. get infintely recursive resize()
+   setMinimumHeight(newSz.height() + 20);
+   QSize afterSz = size();
+   TRACECF(show, "after base class resize(): size = %d, %d",
+                afterSz.width(), afterSz.height());
+
+
+
 }
 
