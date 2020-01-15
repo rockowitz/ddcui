@@ -36,7 +36,6 @@ void NumberEntryWidget::layoutWidget(
        setStyleSheet("background-color:orange;");
 }
 
-
  
 // initializes _widgetState to StateOldValid
 NumberEntryWidget::NumberEntryWidget(
