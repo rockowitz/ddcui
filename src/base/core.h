@@ -38,6 +38,12 @@ bool printftcmf(
       const char * filename,
       const char * format, ...);
 
+// Naming conventions:
+//   C    use _cls
+//     F  flag controls whether shown
+//  M     use metaObject->className()
+//  MC
+
 #define TRACEC( _FMT, ...) \
 do { \
    printftcmf(true, NULL, _cls, __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
