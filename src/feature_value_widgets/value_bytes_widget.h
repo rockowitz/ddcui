@@ -1,6 +1,6 @@
 // value_bytes_widget.h
 
-// Copyright (C) 2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef VALUE_BYTES_WIDGET_H_
@@ -28,13 +28,13 @@ public:
     ValueBytesWidget(QWidget *parent = nullptr);
 
     void     setFeatureValue(const FeatureValue &fv) override;
-    void     setCurrentShSl(uint16_t newval)        override;
-    uint16_t getCurrentShSl()                       override;
-
+    void     setCurrentShSl(uint16_t newval)         override;
+    uint16_t getCurrentShSl()                        override;
 
 private:
-    void layoutWidget();
-    void checkAcceptCancelEnabled();
+    QLabel * newTitle(QString title, int titleHeight);
+    void     layoutWidget();
+    void     checkAcceptCancelEnabled();
 
 private slots:
     // void whenSlChanged(uint8_t val);
@@ -60,6 +60,7 @@ private:   // member variables
     // uint8_t               _sl;
     // uint16_t    _newval;
     bool                   _guiChange = false;
+    int                    widgetHeight = 20;
 
     QFont nonMonoFont9;
 

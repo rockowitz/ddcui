@@ -1,6 +1,6 @@
 // value_bytes_widget.cpp
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "value_bytes_widget.h"
@@ -15,7 +15,6 @@
 #include <QtWidgets/QHBoxLayout>
 
 #include "base/core.h"
-
 #include "base/widget_debug.h"
 
 static bool showDimensionReports = false;
@@ -25,13 +24,15 @@ static bool dimensionReportShown = false;
 
 
 QLabel *
-newTitle(QString title) {
+ValueBytesWidget::newTitle(QString title, int titleHeight) {
    QLabel* lab = new QLabel(title);
+
+   // TRACECF(true, "titleHeight=%d",titleHeight);
 
    QFont nonMonoValueFont;
    nonMonoValueFont.setPointSize(8);
 
-   QSize   titleSize = QSize(20,18);
+   QSize   titleSize = QSize(20,titleHeight);
    QFont   titleFont = nonMonoValueFont;
    int     titleFrameStyle = QFrame::Plain | QFrame::NoFrame;
 
@@ -55,6 +56,10 @@ void
 ValueBytesWidget::layoutWidget() {
    nonMonoFont9.setPointSize(8);
 
+   int buttonHeight = widgetHeight;
+   int titleHeight  = widgetHeight - 2;
+   TRACEC("_widgetHeight=%d, widgetHeight=%d", _featureValueWidgetHeight, widgetHeight);
+
    QSizePolicy fixedSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
    fixedSizePolicy.setHorizontalStretch(0);    // needed?
    fixedSizePolicy.setVerticalStretch(0);
@@ -65,14 +70,14 @@ ValueBytesWidget::layoutWidget() {
    monoValueFont.setPointSize(9);
    monoValueFont.setFamily(QString::fromUtf8("Monospace"));
 
-   _mhTitle = newTitle("mh:");
-   _mlTitle = newTitle("ml:");
-   _shTitle = newTitle("sh:");
-   _slTitle = newTitle("sl:");
+   _mhTitle = newTitle("mh:", titleHeight);
+   _mlTitle = newTitle("ml:", titleHeight);
+   _shTitle = newTitle("sh:", titleHeight);
+   _slTitle = newTitle("sl:", titleHeight);
 
    QFont valueFont(monoValueFont);
    int   valueFrameStyle = QFrame::Plain | QFrame::NoFrame;
-   QSize valueSize(30,20);
+   QSize valueSize(30,widgetHeight);
 
    _mhWidget = new NumberEntryWidget( 1, valueFont, valueFrameStyle, valueSize);
    _mlWidget = new NumberEntryWidget( 1, valueFont, valueFrameStyle, valueSize);
@@ -89,10 +94,10 @@ ValueBytesWidget::layoutWidget() {
     QSizePolicy sizePolicy = QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
    _applyButton  = new QPushButton("Apply");
    _cancelButton = new QPushButton("Cancel");
-   _applyButton->setMaximumSize(55,20);
+   _applyButton->setMaximumSize(55,buttonHeight);
    _applyButton->setSizePolicy(sizePolicy);
    _applyButton->setFont(nonMonoFont9);
-   _cancelButton->setMaximumSize(55,20);
+   _cancelButton->setMaximumSize(55,buttonHeight);
    _cancelButton->setSizePolicy(sizePolicy);
    _cancelButton->setFont(nonMonoFont9);
 
