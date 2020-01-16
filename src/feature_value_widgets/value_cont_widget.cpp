@@ -30,7 +30,6 @@
 static bool showDimensionReports = false;
 static bool showBasicDims  = true || debugFeatureDimensions;
 static bool showResizeEvents = true;
-
 void ValueContWidget::layoutWidget() {
    QSizePolicy fixedSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
    fixedSizePolicy.setHorizontalStretch(0);    // needed?
@@ -59,6 +58,7 @@ void ValueContWidget::layoutWidget() {
    _curSlider->setSingleStep(1);
   // _curSlider->setFixedSize(200,18);  // was 18 , 14 stuffs slider to bottom
    _curSlider->setMinimumSize(200,10);
+
    _curSlider->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
    // Trying to force a bit of space above and below slider
    // _curSlider->setContentsMargins(3,0,1,0);  // no effect
@@ -126,9 +126,9 @@ void ValueContWidget::layoutWidget() {
     }
 #endif
 
-   QLabel* spacer = new QLabel();
-   spacer->setFixedSize(10,18);
-
+   // unused
+   //  QLabel* spacer = new QLabel();
+   // spacer->setFixedSize(10,18);
 
     QHBoxLayout * layout = new QHBoxLayout();
     layout->addSpacing(5);
@@ -136,6 +136,9 @@ void ValueContWidget::layoutWidget() {
     layout->addWidget(sliderContainer);
 #else
     layout->addWidget(_curSlider);
+    // crops off tick marks at bottom of slider:
+    // how to shrint the slider size?
+    // layout->setAlignment(_curSlider, Qt::AlignVCenter);
 #endif
 
     layout->addWidget(_curSpinBox);
@@ -491,7 +494,7 @@ void ValueContWidget::leaveEvent(QEvent * event) {
 
 void ValueContWidget::resizeEvent(QResizeEvent * evt)
 {
-   bool show = false;
+   bool show = true;
 
    QSize oldSz = evt->oldSize();
    QSize newSz = evt->size();
@@ -514,8 +517,8 @@ void ValueContWidget::resizeEvent(QResizeEvent * evt)
 #endif
 
    if (show) {
-      TRACEC("old size = %d, %d", oldSz.width(), oldSz.height());
-      TRACEC("new size = %d, %d", newSz.width(), newSz.height());
+      TRACEC("old size = %d, %d, new size = %d, %d ",
+              oldSz.width(), oldSz.height(), newSz.width(), newSz.height());
    }
 
    evt->ignore();
