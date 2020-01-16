@@ -40,7 +40,7 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
     _stdWidget     = new ValueStdWidget();
     _resetWidget   = new ValueResetWidget();
     _2ButtonWidget = new Value2ButtonWidget();
-     _cncWidgetX14  = new ValueCncWidgetX14();
+    _cncWidgetX14  = new ValueCncWidgetX14();
     _bytesWidget   = new ValueBytesWidget();
     _ncplusWidget  = new ValueNcplusWidget();
 
