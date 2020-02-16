@@ -16,6 +16,7 @@
 
 #include <ddcutil_c_api.h>
 
+#include "base/ddcui_parms.h"
 #include "base/core.h"
 #include "base/ddca_utils.h"
 #include "base/global_state.h"
@@ -34,11 +35,9 @@ void ValueNcWidget::layoutWidget() {
    // TRACE("Starting");
    _layout = new QHBoxLayout();
 
-   QFont nonMonoFont8;
-   nonMonoFont8.setPointSize(8);
+   // QFont nonMonoFont8;
+   // nonMonoFont8.setPointSize(8);
 
-   QFont nonMonoFont9;
-   nonMonoFont9.setPointSize(9);
 
    QFont font;
    font.setPointSize(8);
@@ -52,7 +51,8 @@ void ValueNcWidget::layoutWidget() {
     QSizePolicy sizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
     sizePolicy.setControlType(QSizePolicy::ComboBox);
     _cb->setSizePolicy(sizePolicy);
-    _cb->setFont(nonMonoFont8);
+    //_cb->setFont(nonMonoFont8);
+    _cb->setFont(FeatureValueComboBoxFont);
     _cb->setMaximumHeight(20);
     // whatever the size, large or small, causes big gap between RW and feature value
     _cb->setMaximumWidth(320);

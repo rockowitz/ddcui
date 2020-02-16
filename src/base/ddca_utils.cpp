@@ -1,6 +1,6 @@
 // ddca_utils.cpp
 
-// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <assert.h>
@@ -12,10 +12,9 @@
 #include <ddcutil_types.h>
 #include <ddcutil_c_api.h>
 
-#include "ddca_utils.h"
-
 #include <QtCore/QString>
 
+#include "ddca_utils.h"
 
 // Parsed Capabilities and Local Feature Value Table
 
@@ -109,6 +108,11 @@ ddcutil_free_local_feature_value_table(
    }
 }
 
+/* Combines the values for feature as recorded in the capabilities string with
+ *  the value/name pairs from the MCCS spec.
+ */
+
+// MOVE TO API?  WHAT OF USER DEFINED FEATURES?
 
 Local_Feature_Value_Table *
 ddcutil_merge_feature_values(
@@ -217,7 +221,8 @@ ddcutil_find_cap_vcp(DDCA_Capabilities * parsed_caps, uint8_t feature_code)
 
 // Error Reporting
 
-void
+// declaration for recursive call
+static void
 format_error_detail_aux(
       DDCA_Error_Detail * erec,
       QString             causesTitle,
@@ -225,7 +230,8 @@ format_error_detail_aux(
       int                 cur_depth,
       QString&            accum);
 
-void
+
+static void
 format_error_detail_aux(
       DDCA_Error_Detail * erec,
       QString             causesTitle,
@@ -255,12 +261,11 @@ format_error_detail_aux(
                accum);
       }
    }
-
 }
 
 
 QString
-format_error_detail(
+ddcutil_format_error_detail(
       DDCA_Error_Detail * erec,
       QString             causesTitle,
       int                 indentation_per_depth)

@@ -85,14 +85,14 @@ set(SOURCES
 
     src/c_util/string_util.c
 
-    src/base/ddcui_parms.cpp
-    src/base/ddca_utils.cpp 
     src/base/core.cpp 
-    src/base/widget_debug.cpp 
+    src/base/ddca_utils.cpp 
+    src/base/ddcui_parms.cpp
     src/base/feature_selector.cpp 
     src/base/global_state.cpp 
+    src/base/other_options_state.cpp
     src/base/user_interface_options_state.cpp
-    src/base/other_options_state.cpp 
+    src/base/widget_debug.cpp 
 
     src/core_widgets/enhanced_slider.cpp
     src/core_widgets/hex_number_validator.cpp

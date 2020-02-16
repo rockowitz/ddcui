@@ -19,10 +19,13 @@
 static bool showResizeEvents = true;
 static bool showBasicDims = true;
 
+int EnhancedSlider::idGenerator = 1;
 
 void EnhancedSlider::layoutWidget() {
     static bool basicDimsShown = false;
-    if (showBasicDims && !basicDimsShown) {
+  //  TRACEMC("_id (A) = %d", _id);
+    if (showBasicDims && !basicDimsShown && _id == 1) {
+    //    TRACEMC("_id (B) = %d", _id);
         REPORT_BASIC_WIDGET_DIMENSIONS(this);
         basicDimsShown = true;
      }
@@ -44,6 +47,9 @@ EnhancedSlider::EnhancedSlider(Qt::Orientation orientation, QWidget * parent)
   , _ctrl_key_required(false)
 {
    _cls = metaObject()->className();
+   _id = EnhancedSlider::idGenerator++;
+
+   // TRACEMC("===========================> Instance: %d", _id);
 
    layoutWidget();
 }
@@ -67,24 +73,37 @@ void dbgrptQKeyEvent(QKeyEvent * event) {
 }
 
 
-void EnhancedSlider::mouseMoveEvent(QMouseEvent *    ev)
+void EnhancedSlider::mouseMoveEvent(QMouseEvent * ev)
 {
-   // PRINTFCM("Starting, _ctrl_key_is_pressed = %s, _ctrl_key_required = %s",
-   //          SBOOL(_ctrl_key_is_pressed), SBOOL(_ctrl_key_required));
-   if (_ctrl_key_is_pressed || !_ctrl_key_required)
+   // TRACEMC("Starting, _ctrl_key_is_pressed = %s, _ctrl_key_required = %s, enabled=%s",
+   //          SBOOL(_ctrl_key_is_pressed), SBOOL(_ctrl_key_required), SBOOL(QSlider::isEnabled() ) );
+   if (_ctrl_key_is_pressed || !_ctrl_key_required) {
+      // TRACEMC("Passing event to QSlider");
       QSlider::mouseMoveEvent(ev);
+      ev->accept();
+   }
+
 
    // From QtEvent::accepted documentation:
    // By default, isAccepted() is set to true, but don't rely on this as subclasses
-   // may choose to clear it in their constructo
-   // So in this and other methods explicitly invoke ev->ignore to propogate the event
+   // may choose to clear it in their constructors
+   // So in this and other methods explicitly invoke ev->ignore() to propagate the event
+   else
+   ev->ignore();
+}
+
+void EnhancedSlider::wheelEvent(QWheelEvent * ev) {
+   // TRACEMC("Starting, _ctrl_key_is_pressed = %s, _ctrl_key_required = %s, enabled=%s, accepted=%s",
+   //          SBOOL(_ctrl_key_is_pressed), SBOOL(_ctrl_key_required), SBOOL(QSlider::isEnabled()),
+   //          SBOOL(ev->isAccepted()) );
+
    ev->ignore();
 }
 
 
 void EnhancedSlider::mousePressEvent(QMouseEvent *   ev)
 {
-   // PRINTFCM("Starting, _ctrl_key_is_pressed = %s, _ctrl_key_required = %s",
+   // TRACEMC("Starting, _ctrl_key_is_pressed = %s, _ctrl_key_required = %s",
    //          SBOOL(_ctrl_key_is_pressed), SBOOL(_ctrl_key_required));
    if (_ctrl_key_is_pressed|| !_ctrl_key_required)
       QSlider::mousePressEvent(ev);
@@ -129,13 +148,13 @@ void EnhancedSlider::keyReleaseEvent(QKeyEvent *   ev)
 
 void EnhancedSlider::resizeEvent(QResizeEvent * evt)
 {
-   bool show = true;
+   bool show = false;
 
    QSize oldSz = evt->oldSize();
    QSize newSz = evt->size();
 
    static bool sizeShown = false;
-   if (showResizeEvents && !sizeShown) {
+   if (showResizeEvents && !sizeShown && _id == 1) {
       show = true;
       sizeShown = true;
    }
@@ -151,14 +170,15 @@ void EnhancedSlider::resizeEvent(QResizeEvent * evt)
    }
 #endif
 
-   TRACECF(show, "old size = %d, %d, new size = %d, %d ",
-                 oldSz.width(), oldSz.height(), newSz.width(), newSz.height());
+   TRACECF(show, "_id=%d, old size = %d, %d, new size = %d, %d adjusted: %d,%d ",
+                 _id, oldSz.width(), oldSz.height(), newSz.width(), newSz.height());
 
    // QSlider::resize(newSz);
 
    // evt->ignore();
    evt->accept();  // o.w. get infintely recursive resize()
-   setMinimumHeight(newSz.height() + 20);
+   // successfully sets height widget, which forces height of FeatureValueWidget
+   setMinimumHeight(newSz.height() + 5);
    QSize afterSz = size();
    TRACECF(show, "after base class resize(): size = %d, %d",
                 afterSz.width(), afterSz.height());

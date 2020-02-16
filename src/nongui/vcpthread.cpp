@@ -104,7 +104,7 @@ void VcpThread::rpt_error_detail(
                          caller_name, ddca_func_name,
                          erec->status_code, ddca_rc_name(erec->status_code));
 
-   QString smooshed = format_error_detail(erec, QString(""), 3);
+   QString smooshed = ddcutil_format_error_detail(erec, QString(""), 3);
    // TRACE("%s", smooshed.toLatin1().data() );
 
    DdcDetailedError* detailedError = new

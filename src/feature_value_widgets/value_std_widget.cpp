@@ -23,16 +23,17 @@ static bool showResizeEvents    = false;
 
 
 void ValueStdWidget::layoutWidget() {
-   QFont font;
-     font.setPointSize(8);
-     QWidget::setFont(font);
+   // QFont font;
+   //   font.setPointSize(8);
+   //  QWidget::setFont(font);
 
      _valueField = new QLabel();
      _valueField->setAlignment(Qt::AlignLeft);
      // _valueField->setFrameStyle(QFrame::Sunken | QFrame::Panel);  // now set in ValueBaseWidget
      _valueField->setMinimumSize(400,10);
      _valueField->setFrameStyle( QFrame::Plain | QFrame::NoFrame);  // ValueStdWidget has the frame, not Label
-     _valueField->setFont(font);
+     // _valueField->setFont(font);
+     _valueField->setFont(FeatureValueTextFont);
      _valueField->setIndent(5);
 
 #ifdef COMPILE_ERROR

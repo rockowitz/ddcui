@@ -63,6 +63,7 @@ SOURCES += \
     src/base/feature_selector.cpp \
     src/base/global_state.cpp \
     src/base/other_options_state.cpp \
+    src/base/styles.cpp \
     src/base/user_interface_options_state.cpp
     
 SOURCES+= \

@@ -1,6 +1,6 @@
 /* feature_widget.h - Custom widget for displaying/editing a VCP feature */
 
-// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef FEATURE_WIDGET_H

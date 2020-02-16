@@ -1,6 +1,6 @@
 // widget_debug.h - Functions for debugging Qt layouts
 
-// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef WIDGET_DEBUG_H_
@@ -10,6 +10,9 @@ class QWidget;
 class QFrame;
 class QLabel;
 class QString;
+
+const char * sizePolicyName(
+      QSizePolicy::Policy policy);
 
 void reportWidgetChildren(
       QWidget * w,

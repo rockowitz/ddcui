@@ -48,6 +48,8 @@ private slots:
     void onCancelButtonClicked(bool checked);
 
 private:   // member variables
+    static int idGenerator;
+    int _id;
     const char *           _cls;
     QLabel*                _mhTitle;
     NumberEntryWidget *    _mhWidget;

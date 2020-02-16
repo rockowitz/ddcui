@@ -1,6 +1,6 @@
-/* feature_widget.cpp */
+// feature_widget.h - Custom widget for displaying/editing a VCP feature
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "feature_scrollarea/feature_widget.h"
@@ -12,8 +12,8 @@
 #include <QtWidgets/QLabel>
 #include <QtGui/QResizeEvent>
 
-#include "../base/core.h"
-#include "../base/widget_debug.h"
+#include "base/core.h"
+#include "base/widget_debug.h"
 #include "nongui/feature_base_model.h"
 
 #include "feature_value_widgets/value_cont_widget.h"
@@ -26,7 +26,7 @@ static bool showBasicDims    = true  || debugFeatureDimensions;
 static bool showFullDims     = false;
 static bool showResizeEvents = true;
 
-static QFont monoValueFont;
+// static QFont monoValueFont;
 
 
 // used for all but the value field
@@ -38,8 +38,10 @@ static QLabel * createFeatureWidgetField(
    QLabel * field = new QLabel();
    field->setObjectName(QString::fromUtf8(objectName));
    field->setFixedWidth(fixedWidth);
+   // field->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
    field->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::MinimumExpanding);
-   field->setFont(monoValueFont);
+   // field->setFont(monoValueFont);
+   field->setFont(FeatureValueTextFont);
    field->setText(QString::fromUtf8(dummyValue));
 
    field->setFrameStyle( QFrame::Sunken | QFrame::Panel );
@@ -58,14 +60,16 @@ void FeatureWidget::setupFeatureWidget()
    TRACECF(debug, "Starting");
    // setFrameStyle(QFrame::Box);    // something to make it visible for development
 
+#ifdef OLD
    QFont font;
    font.setPointSize(8);
    QWidget::setFont(font);
+#endif
 
    // QFont monoValueFont;
-   monoValueFont.setFamily(QString::fromUtf8("Monospace"));
+   // monoValueFont.setFamily(QString::fromUtf8("Monospace"));
 
-   QFont nonMonoValueFont;
+   // QFont nonMonoValueFont;
 
 #ifdef OLD
    QSizePolicy fixedSizePolicy(QSizePolicy::Fixed,QSizePolicy::MinimumExpanding);
@@ -85,7 +89,8 @@ void FeatureWidget::setupFeatureWidget()
 
    _featureCodeField = createFeatureWidgetField("featureCode",  30, "x00");
    _featureNameField = createFeatureWidgetField("featureName", 200, "dummy feature name");
-   _featureNameField->setFont(nonMonoValueFont);
+   // _featureNameField->setFont(nonMonoValueFont);
+   _featureNameField->setFont(FeatureValueTextFont);
    _featureRwField   = createFeatureWidgetField("featureRW",    25, "XX");    // RW/RO/WO
    _featureTypeField = createFeatureWidgetField("featureType",  25, "YY");    // MCCS type
 
@@ -132,6 +137,10 @@ void FeatureWidget::setupFeatureWidget()
    setLayout(vlayout);
 #endif
    setLayout(_layout);
+
+   setSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::Fixed);
+   setMaximumHeight(FeatureRowHeight);      // with this alone. rows ware narrow, even
+   // setMinimumHeight(FeatureRowHeight);   // with this alone, rows too large, uneven
 
    static bool dimensionReportShown = false;
    if (debugLayout || showFullDims) {
@@ -314,7 +323,7 @@ void FeatureWidget::resizeEvent(QResizeEvent * evt)
    static bool resizeEventsShown = false;
    if (showResizeEvents && !resizeEventsShown) {
       show = true;
-      resizeEventsShown = true;
+      // resizeEventsShown = true;
    }
 
 #ifdef ALT
@@ -329,10 +338,11 @@ void FeatureWidget::resizeEvent(QResizeEvent * evt)
 #endif
 
    if (show) {
-      TRACEC("old size = %d, %d", oldSz.width(), oldSz.height());
-      TRACEC("new size = %d, %d", newSz.width(), newSz.height());
+      TRACEC("old size = %d, %d, new size = %d, %d", oldSz.width(), oldSz.height(),
+      newSz.width(), newSz.height());
    }
 
-   evt->ignore();
+   // evt->ignore();
+   evt->accept();
 }
 

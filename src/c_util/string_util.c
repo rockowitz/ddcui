@@ -1,9 +1,9 @@
 /** @file string_util.c
  *
- *  String utility functions copied from the ddcutil version of string.c
+ *  String utility functions copied from the ddcutil version of string_util.c
  */
 
-// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <stdbool.h>
@@ -37,7 +37,8 @@ bool is_abbrev(const char * value, const char * longname, size_t  minchars) {
    return result;
 }
 
-char * sbool(int val) {return  (val) ? "true" : "false"; }
+// private copy:
+static char * sbool(int val) {return  (val) ? "true" : "false"; }
 
 
 /** Converts a string to a float value.
@@ -71,9 +72,9 @@ bool str_to_float(const char * sval, float * p_fval)
 
    if (debug) {
       if (ok)
-        printf("(%s) sval=%s, Returning: %s, *p_fval = %16.7f\n", __func__, sval, SBOOL(ok), *p_fval);
+        printf("(%s) sval=%s, Returning: %s, *p_fval = %16.7f\n", __func__, sval, sbool(ok), *p_fval);
       else
-        printf("(%s) sval=%s, Returning: %s\n", __func__, sval, SBOOL(ok));
+        printf("(%s) sval=%s, Returning: %s\n", __func__, sval, sbool(ok));
    }
    return ok;
 }

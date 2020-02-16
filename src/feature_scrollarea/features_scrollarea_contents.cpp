@@ -1,6 +1,6 @@
-/* features_scroll_area_contents.cpp */
+// features_scroll_area_contents.cpp - Contains rows of FeatureWidgets
 
-// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "feature_scrollarea/features_scrollarea_contents.h"
@@ -13,8 +13,9 @@
 #include <QtWidgets/QScrollArea>
 #include <QtCore/QSize>
 
-#include "../base/core.h"
-#include "../base/widget_debug.h"
+#include "base/core.h"
+#include "base/widget_debug.h"
+
 #include "feature_value_widgets/value_stacked_widget.h"
 #include "feature_scrollarea/feature_widget.h"
 
@@ -130,9 +131,8 @@ void FeaturesScrollAreaContents::endInitialLoad()
    assert(_containingScrollArea);
 
    emit showCentralWidgetByWidget(_containingScrollArea);
-
-   // notifyPageChangeObservers(123);   // dummy value for now
 }
+
 
 #ifdef PAGE_CHANGE_OBSERVER
 void FeaturesScrollAreaContents::addPageChangeObserver(PageChangeObserver * observer) {
@@ -170,12 +170,14 @@ void FeaturesScrollAreaContents::resizeEvent(QResizeEvent * evt)
       QSize oldSz = evt->oldSize();
       QSize newSz = evt->size();
 
-      TRACEC("old size = %d, %d", oldSz.width(), oldSz.height());
-      TRACEC("new size = %d, %d", newSz.width(), newSz.height());
+      TRACEC("old size = %d, %d   new size = %d, %d",
+              oldSz.width(), oldSz.height(), newSz.width(), newSz.height());
    }
    evt->ignore();
 }
 
-
+int FeaturesScrollAreaContents::maxRowHeight() {
+   return 0;
+}
 
 

@@ -1,6 +1,6 @@
 /* msgbox_thread.cpp */
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <iostream>
@@ -8,9 +8,8 @@
 
 #include <QtCore/QString>
 
+#include "base/core.h"
 #include "main/msgbox_thread.h"
-#include "../base/core.h"
-
 
 static bool debugThread = false;
 
@@ -32,11 +31,17 @@ void MsgBoxThread::msbgoxClosed(int result) {
 
 void MsgBoxThread::run() {
     forever {
+        TRACECF(debugThread, "Waiting to pop"); fflush(stdout);
         MsgBoxQueueEntry * rqst = this->_requestQueue->pop();
-        TRACECF(debugThread, "Popped: _boxTitle: %s, _boxText: %s",
-                                qs2s(rqst->_boxTitle), qs2s(rqst->_boxText));
+
+        //TRACECF(debugThread, "post pop()");
+        //   TRACECF(debugThread, "rqst=%p", rqst);
+        // TRACECF(debugThread, "Popped: _boxTitle: %s, _boxText: %s",
+        //                         qs2s(rqst->_boxTitle), qs2s(rqst->_boxText));
+
+        TRACECF(debugThread, "Popped");
         msgboxSemaphore.acquire();
-        TRACECF(debugThread, "acquired semaphore");
+        TRACECF(debugThread, "Acquired msgboxSemaphore");
         emit postSerialMsgBox(rqst->_boxTitle, rqst->_boxText, rqst->_boxIcon);
         delete rqst;
     }

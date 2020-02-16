@@ -19,10 +19,26 @@
 
 const QString ddcui_version = DDCUI_VERSION;
 
+// Qt
+
 const int FeatureValueRole  = Qt::UserRole+1;  // DisplayRole, EditorRole, .. etc
 const int FeatureWidgetType = QListWidgetItem::UserType+1;
 
-const int  FeatureRowHeight = 22;
+const int  FeatureRowHeight = 20;
+const int  FeatureHeaderHeight = 24;  // so text not clipped at bottom
+
+extern const QFont FeatureValueTextFont;
+extern const QFont FeatureValueMonoFont;
+extern const QFont FeatureValueButtonFont;
+extern const QFont FeatureValueNumberEntryFont;
+extern const QFont FeatureValueComboBoxFont;
+extern const QFont FeatureValueHeaderFont;
+extern QFont MainMenuFont2;
+
+void init_core();
+
+
+
 
 // Tracing
 
@@ -75,20 +91,13 @@ do { \
 } while(0)
 
 
-// inline functions
+// Inline functions
 
 inline const char * sbool(bool val) { return (val) ? "true" : "false"; }
 inline const char * qs2s(QString qstr) {return qstr.toLatin1().data(); }
 
-
-// contrik whether every widget has Accept/Cancel buttons
-
-// #define APPLY_CANCEL
-// #define ALT_MOCK_FEATURES
-
-#ifdef APPLY_CANCEL
-const bool useApplyCancel    = true;
-#endif
+// A macro alternative to sbool()
+#define SBOOL(val) ( (val) ? "true" : "false" )
 
 
 #endif // CORE_H

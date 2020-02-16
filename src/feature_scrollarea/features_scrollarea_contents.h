@@ -1,4 +1,4 @@
-/* features_scrollarea_contents.h */
+// features_scrollarea_contents.h  - Contains rows of FeatureWidgets
 
 // Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
@@ -34,6 +34,9 @@ public:
 
     void resize(int w, int h);
     void resize(QSize sz);
+
+
+    int maxRowHeight();
 
 protected:
     void resizeEvent(QResizeEvent * event) override;

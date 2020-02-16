@@ -56,6 +56,8 @@ private slots:
 #endif
 
 private:    // member variables
+    static int idGenerator;
+    int _id;
     const char *     _cls;
     EnhancedSlider * _curSlider;
     QSpinBox*        _curSpinBox;

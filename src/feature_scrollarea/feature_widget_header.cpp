@@ -9,56 +9,61 @@
 #include <QtWidgets/QSizePolicy>
 #include <QtWidgets/QHBoxLayout>
 
+#include "base/core.h"
+#include "base/widget_debug.h"
+
 #include "feature_widget_header.h"
-#include "../base/widget_debug.h"
+
 
 static bool showDimensionReport = false;
 static bool showResizeEvents = false;
 
-static void stdLabelSetup(QLabel * l) {
+
+static QLabel* stdLabelSetup(QLabel * l) {
    // l->setFrameStyle(QFrame::NoFrame | QFrame::Plain);
    l->setFrameStyle(QFrame::Box | QFrame::Plain);
-   // setMargin()
-   // setindent()
-   //set
+   l->setLineWidth(0);  // eliminates bar between Code|Name Type|Value - why?
 
-   QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-   l->setSizePolicy(sizePolicy);
+   // l->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed);
    // l->setHorizontalPolicy(QSizePolicy::Fixed);
    // l->setVerticalPolicy(QSizePolicy::Fixed);
 
-   QFont font;
-   font.setPointSize(8);
-   font.setWeight(QFont::Bold);
-   l->setFont(font);
+   l->setFont(FeatureValueHeaderFont);
    l->setContentsMargins(0,0,0,0);
-   // l->setMargin(0); //deprecated
    l->setIndent(0);
+
+   return l;
 }
 
 
 void FeatureWidgetHeader::layoutWidget() {
 
-   QLabel * _codeLabel  = new QLabel("Code");
-   QLabel * _nameLabel  = new QLabel("Name");
-   QLabel * _rwLabel    = new QLabel("RW");
-   QLabel * _typeLabel  = new QLabel("Type");
-   QLabel * _valueLabel = new QLabel("Value");
+   QLabel * _codeLabel  = stdLabelSetup( new QLabel("Code")  );
+   QLabel * _nameLabel  = stdLabelSetup( new QLabel("Name")  );
+   QLabel * _rwLabel    = stdLabelSetup( new QLabel("RW")    );
+   QLabel * _typeLabel  = stdLabelSetup( new QLabel("Type")  );
+   QLabel * _valueLabel = stdLabelSetup( new QLabel("Value") );
 
-   stdLabelSetup(_codeLabel);
-   stdLabelSetup(_nameLabel);
-   stdLabelSetup(_rwLabel);
-   stdLabelSetup(_typeLabel);
-   stdLabelSetup(_valueLabel);
-
+   // width
    _codeLabel->setMinimumWidth(30);
    _nameLabel->setFixedWidth(200-2);
    _rwLabel->setFixedWidth(25-1);
    _typeLabel->setFixedWidth(25+1+4);
    _valueLabel->setMinimumWidth(200-4+2);
 
-   QSizePolicy adjSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
-   _valueLabel->setSizePolicy(adjSizePolicy);
+   _nameLabel->setContentsMargins(2,0,0,0);
+   _valueLabel->setContentsMargins(4,0,0,0);
+
+   // no effect
+   // _codeLabel->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding) ;
+   // _codeLabel->setFixedHeight(55);
+
+   // no effect
+   // setMaximumHeight(55);
+   // setMinimumHeight(55);
+   // setFixedHeight(55);
+
+   _valueLabel->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
 
    QHBoxLayout * layout = new QHBoxLayout();
    layout->addWidget(_codeLabel);
@@ -72,7 +77,16 @@ void FeatureWidgetHeader::layoutWidget() {
    setLayout(layout);
 
    setFrameStyle(QFrame::NoFrame | QFrame::Plain);
-   setContentsMargins(1,1,1,1);  // 0,0,0,0 doesn't move "Code" left
+   // setContentsMargins(1,1,1,1);  // 0,0,0,0 doesn't move "Code" left
+
+   // From QLayout doc;
+   // margins around the layout
+   // By default, QLayout uses the values provided by the style.
+   // On most platforms, the margin is 11 pixels in all directions.
+   // layout->setContentsMargins(0,0,0,0); // no apparent effect
+
+   setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+   setFixedHeight( FeatureHeaderHeight );
 
    setLineWidth(1);
 
@@ -80,6 +94,7 @@ void FeatureWidgetHeader::layoutWidget() {
       setStyleSheet("background-color:beige;");
 
       static bool dimensionsReported = false;
+      printf("\nFeatureWidgetHeader dimensions:\n");
       if (showDimensionReport && !dimensionsReported) {
          reportLabelDimensions(_codeLabel,  _cls, __func__, "_codeLabel dimensions");
          reportLabelDimensions(_nameLabel,  _cls, __func__, "_nameLabel dimensions");
@@ -114,8 +129,8 @@ void FeatureWidgetHeader::resizeEvent(QResizeEvent * evt)
       QSize oldSz = evt->oldSize();
       QSize newSz = evt->size();
 
-      TRACEC("old size = %d, %d", oldSz.width(), oldSz.height());
-      TRACEC("new size = %d, %d", newSz.width(), newSz.height());
+      TRACEC("old size = %d, %d   new size = %d, %d", oldSz.width(), oldSz.height(),
+            newSz.width(), newSz.height());
    }
    evt->ignore();
 }

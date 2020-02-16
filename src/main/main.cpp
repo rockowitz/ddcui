@@ -14,7 +14,7 @@ extern "C" {
 }
 
 #include "base/global_state.h"
-#include "../base/core.h"
+#include "base/core.h"
 
 // #include <ui_main.h>
 #include "main/mainwindow.h"
@@ -131,7 +131,7 @@ int main(int argc, char *argv[])
 
 
     GlobalState & globalState = GlobalState::instance();
-
+    init_core();
 
     MainWindow w;
     globalState._mainWindow = &w;

@@ -1,6 +1,9 @@
 // feature_selector.cpp
 
-// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Controls which features are shown, as specified in the
+// Options->Feature Selection dialog.
+
+// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <stdio.h>

@@ -56,7 +56,7 @@ free_ddca_feature_value_table(
 // Error Reporting
 
 QString
-format_error_detail(
+ddcutil_format_error_detail(
       DDCA_Error_Detail * erec,
       QString             causesTitle,
       int                 indentation_per_depth);

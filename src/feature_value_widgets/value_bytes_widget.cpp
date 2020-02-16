@@ -14,9 +14,11 @@
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QHBoxLayout>
 
+#include "base/ddcui_parms.h"
 #include "base/core.h"
 #include "base/widget_debug.h"
 
+int ValueBytesWidget::idGenerator = 1;
 static bool showDimensionReports = false;
 
 static bool titleDimensionReportShown = false;
@@ -29,15 +31,17 @@ ValueBytesWidget::newTitle(QString title, int titleHeight) {
 
    // TRACECF(true, "titleHeight=%d",titleHeight);
 
-   QFont nonMonoValueFont;
-   nonMonoValueFont.setPointSize(8);
+   // QFont nonMonoValueFont;
+   // nonMonoValueFont.setPointSize(8);
 
    QSize   titleSize = QSize(20,titleHeight);
-   QFont   titleFont = nonMonoValueFont;
+   // QFont   titleFont = nonMonoValueFont;
+   // QFont   titleFont = FeatureValueTextFont;
    int     titleFrameStyle = QFrame::Plain | QFrame::NoFrame;
 
    lab->setFixedSize(titleSize);
-   lab->setFont(nonMonoValueFont);
+   // lab->setFont(nonMonoValueFont);
+   lab->setFont(FeatureValueTextFont);
    lab->setFrameStyle(titleFrameStyle);
 
    if (debugLayout) {
@@ -58,24 +62,26 @@ ValueBytesWidget::layoutWidget() {
 
    int buttonHeight = widgetHeight;
    int titleHeight  = widgetHeight - 2;
-   TRACEC("_widgetHeight=%d, widgetHeight=%d", _featureValueWidgetHeight, widgetHeight);
-
+   if (_id == 1) {
+   TRACEC("_id=%d, _widgetHeight=%d, widgetHeight=%d", _id, _featureValueWidgetHeight, widgetHeight);
+   }
    QSizePolicy fixedSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
    fixedSizePolicy.setHorizontalStretch(0);    // needed?
    fixedSizePolicy.setVerticalStretch(0);
    // sizePolicy1.setHeightForWidth(centralWidget->sizePolicy().hasHeightForWidth());
    fixedSizePolicy.setHeightForWidth(false);
 
-   QFont monoValueFont;
-   monoValueFont.setPointSize(9);
-   monoValueFont.setFamily(QString::fromUtf8("Monospace"));
+   // QFont monoValueFont;
+   //  monoValueFont.setPointSize(9);
+   // monoValueFont.setFamily(QString::fromUtf8("Monospace"));
 
    _mhTitle = newTitle("mh:", titleHeight);
    _mlTitle = newTitle("ml:", titleHeight);
    _shTitle = newTitle("sh:", titleHeight);
    _slTitle = newTitle("sl:", titleHeight);
 
-   QFont valueFont(monoValueFont);
+   QFont valueFont = FeatureValueNumberEntryFont;
+   //QFont valueFont(monoValueFont);
    int   valueFrameStyle = QFrame::Plain | QFrame::NoFrame;
    QSize valueSize(30,widgetHeight);
 
@@ -96,10 +102,12 @@ ValueBytesWidget::layoutWidget() {
    _cancelButton = new QPushButton("Cancel");
    _applyButton->setMaximumSize(55,buttonHeight);
    _applyButton->setSizePolicy(sizePolicy);
-   _applyButton->setFont(nonMonoFont9);
+   //_applyButton->setFont(nonMonoFont9);
+   _applyButton->setFont(FeatureValueButtonFont);
    _cancelButton->setMaximumSize(55,buttonHeight);
    _cancelButton->setSizePolicy(sizePolicy);
-   _cancelButton->setFont(nonMonoFont9);
+   _cancelButton->setFont(FeatureValueButtonFont);
+   //_cancelButton->setFont(nonMonoFont9);
 
    _applyButton->setEnabled(false);
    _cancelButton->setEnabled(false);
@@ -137,10 +145,10 @@ ValueBytesWidget::layoutWidget() {
    layout->setContentsMargins(0,0,0,0);
    setLayout(layout);
 
-   if (debugLayout) {
+   if (debugLayout && _id == 1) {
       this->setStyleSheet("background-color:yellow;");
 
-      if (showDimensionReports && !dimensionReportShown) {
+      if (showDimensionReports && !dimensionReportShown  && _id == 1) {
 
           TRACEC("_mhTitle dimensions");
           reportWidgetDimensions(_mhTitle, _cls, __func__);
@@ -172,6 +180,7 @@ ValueBytesWidget::ValueBytesWidget(QWidget *parent)
     bool debug = false;
     TRACEMCF(debug, "Starting." );
 
+    _id = ValueBytesWidget::idGenerator++;
     layoutWidget();
 
     //  connect(_shWidget, &NumberEntryWidget::setCurrentField, this, &ValueBytesWidget::whenEventFieldChanged);

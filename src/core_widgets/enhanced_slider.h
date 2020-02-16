@@ -32,6 +32,7 @@ protected:
    void mouseMoveEvent(QMouseEvent *    ev) override;
    void mousePressEvent(QMouseEvent *   ev) override;
    void mouseReleaseEvent(QMouseEvent * ev) override;
+   void wheelEvent(QWheelEvent * ev) override;
 
    void keyPressEvent(QKeyEvent *    ev) override;
    void keyReleaseEvent(QKeyEvent *   ev) override;
@@ -41,7 +42,11 @@ protected:
 private:
    void layoutWidget();
 
+
+
 private:
+   static int idGenerator;
+   int _id;
    const char *   _cls;
    bool           _ctrl_key_is_pressed;
    bool           _ctrl_key_required;

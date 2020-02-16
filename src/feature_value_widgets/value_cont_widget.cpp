@@ -19,6 +19,7 @@
 
 #include <QtWidgets/QHBoxLayout>
 
+#include "base/ddcui_parms.h"
 #include "base/core.h"
 #include "base/widget_debug.h"
 
@@ -26,10 +27,13 @@
 
 #include "core_widgets/enhanced_slider.h"
 
+int ValueContWidget::idGenerator = 1;
 
 static bool showDimensionReports = false;
 static bool showBasicDims  = true || debugFeatureDimensions;
 static bool showResizeEvents = true;
+
+
 void ValueContWidget::layoutWidget() {
    QSizePolicy fixedSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
    fixedSizePolicy.setHorizontalStretch(0);    // needed?
@@ -37,6 +41,7 @@ void ValueContWidget::layoutWidget() {
    // sizePolicy1.setHeightForWidth(centralWidget->sizePolicy().hasHeightForWidth());
    fixedSizePolicy.setHeightForWidth(false);
 
+#ifdef UNUSED
    QFont monoValueFont;
    monoValueFont.setPointSize(9);
    monoValueFont.setFamily(QString::fromUtf8("Monospace"));
@@ -47,9 +52,12 @@ void ValueContWidget::layoutWidget() {
 
    QFont nonMonoValueFont;
    nonMonoValueFont.setPointSize(8);
+#endif
 
    // QFont nonMonoFont9;
    // nonMonoFont9.setPointSize(8);
+
+   // QFont FeatureTextFont= QFont(FEATURE_VALUE_TEXT_FONT_FAMILY, FEATURE_VALUE_TEXT_FONT_SIZE);
 
    // _curSlider = new QSlider(Qt::Horizontal);
    _curSlider = new EnhancedSlider(Qt::Horizontal);
@@ -69,7 +77,11 @@ void ValueContWidget::layoutWidget() {
 
    _curSpinBox = new QSpinBox();
    _curSpinBox->setSingleStep(1);
-   _curSpinBox->setFixedSize(100,18);   // extra large for 2 byte values, possible horizontal up/down buttons
+  // _curSpinBox->setFixedSize(100,18);   // extra large for 2 byte values, possible horizontal up/down buttons
+   _curSpinBox->setMinimumSize(100,18);   // becomes 52,32  - how?
+   _curSpinBox->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+   _curSpinBox->setFont(FeatureValueNumberEntryFont);
+
    _curSpinBox->setAlignment(Qt::AlignRight);
    if (debugLayout)
       _curSpinBox->setStyleSheet("background-color:green;");
@@ -88,13 +100,15 @@ void ValueContWidget::layoutWidget() {
 
    _maxTitle = new QLabel("Max:");
    _maxTitle->setFixedSize(30,18);
-   _maxTitle->setFont(nonMonoValueFont);
+   // _maxTitle->setFont(nonMonoValueFont);
+   _maxTitle->setFont(FeatureValueTextFont);
    _maxTitle->setContentsMargins(5,0,0,0);
    if (debugLayout)
       _maxTitle->setStyleSheet("background-color:cyan;");
 
    _maxValue = new QLabel();
-   _maxValue->setFont(monoValueFont8);
+   // _maxValue->setFont(monoValueFont8);
+   _maxValue->setFont(FeatureValueTextFont);
    // _maxValue->setFrameStyle(QFrame::Sunken | QFrame::Panel);
    _maxValue->setFrameStyle(QFrame::Plain | QFrame::NoFrame);
    _maxValue->setFixedSize(35,20);
@@ -162,7 +176,7 @@ void ValueContWidget::layoutWidget() {
     layout->setContentsMargins(1,0,1,0);    // was 0,0,0,0
     setLayout(layout);
 
-    if (debugLayout) {
+    if (debugLayout && _id == 1) {
        this->setStyleSheet("background-color:yellow;");
 
        static bool dimensionReportShown = false;
@@ -186,7 +200,7 @@ void ValueContWidget::layoutWidget() {
     }
 
     static bool basicDimsShown = false;
-    if (showBasicDims && !basicDimsShown) {
+    if (showBasicDims && !basicDimsShown && _id == 1) {
        REPORT_BASIC_WIDGET_DIMENSIONS(this);
        REPORT_BASIC_WIDGET_DIMENSIONS(this->_curSlider);
        REPORT_BASIC_WIDGET_DIMENSIONS(this->_curSpinBox);
@@ -224,6 +238,9 @@ ValueContWidget::ValueContWidget(QWidget *parent)
     bool debug = false;
     _cls = strdup(metaObject()->className());
     TRACEMCF(debug, "Starting." );
+    _id = ValueContWidget::idGenerator++;
+
+    // TRACEMC("===========================> Instance: %d", _id);
     layoutWidget();
 
     TRACEMCF(debug, "TRACECMF.  After ValueBaseWidget constructor");
@@ -494,13 +511,13 @@ void ValueContWidget::leaveEvent(QEvent * event) {
 
 void ValueContWidget::resizeEvent(QResizeEvent * evt)
 {
-   bool show = true;
+   bool show = false;
 
    QSize oldSz = evt->oldSize();
    QSize newSz = evt->size();
 
    static bool sizeShown = false;
-   if (showResizeEvents && !sizeShown) {
+   if (showResizeEvents && !sizeShown && _id == 1) {
       show = true;
       sizeShown = true;
    }
@@ -517,8 +534,8 @@ void ValueContWidget::resizeEvent(QResizeEvent * evt)
 #endif
 
    if (show) {
-      TRACEC("old size = %d, %d, new size = %d, %d ",
-              oldSz.width(), oldSz.height(), newSz.width(), newSz.height());
+      TRACEC("_id=%d, old size = %d, %d, new size = %d, %d ",
+              oldSz.width(), oldSz.height(), newSz.width(), newSz.height(), _id);
    }
 
    evt->ignore();

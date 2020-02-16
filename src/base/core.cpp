@@ -13,7 +13,29 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include "ddcui_parms.h"
 #include "core.h"
+
+
+
+
+
+const QFont FeatureValueTextFont(       "SansSerif",  8, QFont::Normal);
+const QFont FeatureValueMonoFont(       "Monospace",  8, QFont::Normal);    // used?
+const QFont FeatureValueButtonFont(     "Serif",      8, QFont::Normal);
+const QFont FeatureValueNumberEntryFont("Monospace",  8, QFont::Normal);
+const QFont FeatureValueComboBoxFont(   "SansSerif",  8, QFont::Normal);
+const QFont FeatureValueHeaderFont(     "SansSerif",  8, QFont::Bold);
+QFont MainMenuFont2(                    "DejaVu Sans [Qt Embedded]",
+                                                     10, QFont::Normal);
+
+
+void init_core() {
+   MainMenuFont2.setKerning(true);
+   MainMenuFont2.setStyleStrategy(   QFont::PreferDefault);
+}
+
+
 
 
 // from ddcutil glib_util.c

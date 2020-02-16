@@ -9,6 +9,8 @@
 // file with extension .ui to process.
 
 
+#include "base/core.h"
+
 
 #include "mainwindow_ui.h"
 
@@ -268,12 +270,16 @@
          sizePolicy.setHeightForWidth(false);
          MainWindow->setSizePolicy(sizePolicy);
 
+#ifdef OLD
          mainMenuFont = QFont();
          mainMenuFont.setPointSize(10);
          // match settings in UI Designer
          mainMenuFont.setKerning(true);
          mainMenuFont.setFamily("DejaVu Sans [Qt Embedded");
          mainMenuFont.setStyleStrategy(   QFont::PreferDefault);
+#endif
+         // mainMenuFont = Styles::instance().mainMenuFont();
+         mainMenuFont = MainMenuFont2;
 
          initActions(MainWindow);
 

@@ -1,10 +1,13 @@
 /* msgbox_queue.cpp - MsgBoxQueue and the MsgBoxQueueEntry class that populates it */
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+#include <QtWidgets/QMessageBox>
+
+#include "base/core.h"
+
 #include "nongui/msgbox_queue.h"
-#include "../base/core.h"
 
 
 static bool debugClass = false;
@@ -20,7 +23,8 @@ MsgBoxQueueEntry::MsgBoxQueueEntry(
    , _boxIcon(icon)
 {
      // _type = type;
-   TRACECF(debugClass, "Executing");
+   TRACECF(debugClass, "Constructor. title=%s, text=%s, icon=%d",
+                       qs2s(title), qs2s(text), icon);
 }
 
 
@@ -32,10 +36,18 @@ MsgBoxQueueEntry::~MsgBoxQueueEntry()
 
 QString MsgBoxQueueEntry::repr() {
    // printf("(MsgBoxQueueEntry::repr)\n"); fflush(stdout);
+   // if (debugClass) {
+   //     TRACEC("  title=%s", qs2s(_boxTitle));
+   //     TRACEC("  text=%s", qs2s(_boxText));
+   //     TRACEC("  icon=%d", _boxIcon);
+   //  }
+
    QString msg = QString("[title=0x%1, text=%2, icon=%3]")
                     .arg(_boxTitle)
                     .arg(_boxText)
                     .arg(_boxIcon);
+
+   // printf("(MsgBoxQueueEntry::repr) returning: %s\n", qs2s(msg)); fflush(stdout);
    return msg;
 }
 
@@ -50,13 +62,17 @@ MsgBoxQueue::MsgBoxQueue()
 
 
 void MsgBoxQueue::put(MsgBoxQueueEntry * request) {
-   bool debugFunc = debugClass;
-   // debugFunc = true;
-    // QString r = request->repr();
+    bool debugFunc = debugClass;
+    // debugFunc = true;
+
+    assert(request);
+
+    QString r = request->repr();
 
     char * s = strdup(qs2s(request->repr()));
     TRACECF(debugFunc, "=> Starting. request: %s, about to lock", s);
     free(s);
+
     _mutex.lock();
     _queue.enqueue(request);
     _queueNonempty.wakeOne();
@@ -79,7 +95,17 @@ MsgBoxQueueEntry * MsgBoxQueue::pop() {
     // this->dbgrpt_nolock();
 
     _mutex.unlock();
-    TRACECF(debugClass, "<- Done. Returning request: %s", qs2s(rqst->repr()) );
+#ifdef NO
+    if (debugClass) {
+        TRACEC("  rqst = %p", rqst);
+        TRACEC("  title=%s", qs2s(rqst->_boxTitle));
+        TRACEC("  text=%s", qs2s(rqst->_boxText));
+        TRACEC("  icon=%d", rqst->_boxIcon);
+        fflush(stdout);
+     }
+#endif
+    const char * s = qs2s(rqst->repr());
+    TRACECF(debugClass, "<- Done. Returning request: %s", s );
     return rqst;
 }
 

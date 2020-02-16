@@ -1,6 +1,8 @@
 // widget_debug.cpp
 
-// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Functions for debugging Qt layouts
+
+// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <glib-2.0/glib.h>
@@ -36,6 +38,10 @@ void reportBasicWidgetDimensions(
     QSize minSizeHint = w->minimumSizeHint();
     QSize maxSize = w->maximumSize();
 
+    QSizePolicy sp = w->sizePolicy();
+    QSizePolicy::Policy hp = sp.horizontalPolicy();
+    QSizePolicy::Policy vp = sp.verticalPolicy();
+
     printftcmf(
        true,
        caller_class,
@@ -43,12 +49,15 @@ void reportBasicWidgetDimensions(
        caller_func,
        caller_lineno,
        caller_filename,
-       "class %-20s:", cls);
-    printf("   size (%d,%d) sizeHint(%d,%d) minimumSize(%d,%d) minimumSizeHint(%d,%d)\n",  // maximumSize(%d,%d)\n",
+       "BASIC WIDGET DIMENSIONS for class %s:, sizePolicy(%s,%s)",
+            cls, sizePolicyName(hp), sizePolicyName(vp) );
+
+    printf("   size (%d,%d) sizeHint(%d,%d) minimumSize(%d,%d) minimumSizeHint(%d,%d) maximumSize(%d,%d) \n",  // maximumSize(%d,%d)\n",
         w->width(),          w->height(),
         sizeHint.width(),     sizeHint.height(),
         minSize.width(),      minSize.height(),
-        minSizeHint.width(),  minSizeHint.height() );
+        minSizeHint.width(),  minSizeHint.height(),
+        maxSize.width(),      maxSize.height() );
         //   maxSize.width(),      maxSize.height()  );
 
     QMargins margins = w->contentsMargins();
@@ -85,6 +94,24 @@ void reportWidgetChildren(QWidget * w, const char * msg) {
     }
     fflush(stdout);
 }
+
+
+const char * sizePolicyName(QSizePolicy::Policy policy) {
+   char * s = NULL;
+   switch(policy) {
+   case QSizePolicy::Fixed:             s = (char*) "Fixed"; break;
+   case QSizePolicy::Minimum:           s = (char*) "Minimum"; break;
+   case QSizePolicy::Maximum:           s = (char*) "Maximum"; break;
+   case QSizePolicy::Preferred:         s = (char*) "Preferred"; break;
+   case QSizePolicy::Expanding:         s = (char*) "Expanding"; break;
+   case QSizePolicy::MinimumExpanding:  s = (char*) "MinimumExpanding"; break;
+   case QSizePolicy::Ignored:           s = (char*) "Ignored"; break;
+   default: s = (char*) "other";
+   }
+   return s;
+}
+
+
 
 
 void reportPolicy(   QSizePolicy::Policy  hp,
@@ -267,11 +294,11 @@ void reportWidgetDimensions(
     QSize frameSize     = w->frameSize();
     printf("%sframeSize:             %d,%d\n", indent,  frameSize.width(), frameSize.height());
 
-
-    int m_left, m_right, m_top, m_bottom;
-    w->getContentsMargins(&m_left, &m_top, &m_right, &m_bottom);
-    printf("%scontents margins:      left=%d, top=%d, right=%d, bottom=%d\n", indent,
-           m_left, m_top, m_right, m_bottom);
+   // both work
+   // int m_left, m_right, m_top, m_bottom;
+   // w->getContentsMargins(&m_left, &m_top, &m_right, &m_bottom);
+   // printf("%scontents margins:      left=%d, top=%d, right=%d, bottom=%d\n", indent,
+   //         m_left, m_top, m_right, m_bottom);
 
     QMargins contentsMargins = w->contentsMargins();
     printf("%scontentsMargins:       left=%d, top=%d, right=%d, bottom=%d\n", indent,
@@ -362,9 +389,7 @@ void reportFrameDimensions(
    // int style = f->frameStyle()
 
    printf("frameWidth:   %d\n",  f->frameWidth() );
-
-   printf("lineWidth:   %d\n", f->lineWidth() );
-
+   printf("lineWidth:    %d\n", f->lineWidth() );
 
    reportWidgetDimensions(f, className, funcName);
 }
