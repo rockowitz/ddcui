@@ -30,8 +30,8 @@
 int ValueContWidget::idGenerator = 1;
 
 static bool showDimensionReports = false;
-static bool showBasicDims  = true || debugFeatureDimensions;
-static bool showResizeEvents = true;
+static bool showBasicDims  = false || debugFeatureDimensions;
+static bool showResizeEvents = false;
 
 
 void ValueContWidget::layoutWidget() {

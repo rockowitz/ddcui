@@ -32,7 +32,7 @@
 #include "feature_scrollarea/features_scrollarea.h"
 
 
-static bool showDimensionReport = true;
+static bool showDimensionReport = false;
 
 
 FeaturesScrollAreaView::FeaturesScrollAreaView(
@@ -61,8 +61,8 @@ void FeaturesScrollAreaView::freeContents(void) {
 
 // how does this get called? is this an implicit connection by name?
 void FeaturesScrollAreaView::onEndInitialLoad(void) {
-    bool debug = true;
-    TRACECF(debug, "Starting, Monitor=%s", _monitor->_displayInfo->model_name);
+    bool debugFunc = false;
+    TRACECF(debugFunc, "Starting, Monitor=%s", _monitor->_displayInfo->model_name);
 
     // TODO:
     // free existing QScrollArea, QScrollAreaContents
@@ -108,7 +108,7 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
 
     int maxHeight1     = 0;
     int maxHintHeight1 = 0;
-    TRACECF(debug, "Create FeatureWidgets for each reported VCP code and"
+    TRACECF(debugFunc, "Create FeatureWidgets for each reported VCP code and"
                    " add them to the layout for ScrollAreaContents...");
     int ct = 0;
     for (int feature_code = 0; feature_code < 256; feature_code++) {
@@ -143,8 +143,8 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
              ct++;
          }
     }
-    TRACECF(debug, "Created %d FeatureWidgets", ct);
-    TRACECF(debug, "Max height, maxHintHeight after widget creation: %d, %d",
+    TRACECF(debugFunc, "Created %d FeatureWidgets", ct);
+    TRACECF(debugFunc, "Max height, maxHintHeight after widget creation: %d, %d",
                    maxHeight1, maxHintHeight1); ;
 
     scrollAreaContents->setLayout(vLayout);
@@ -164,12 +164,14 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
     // what re childern of scrollAreaContents, scrollAreaConents.layout()
 
     // reportWidgetChildren(scrollAreaContents, "children of ScrollAreaContents");
+    // reportWidgetChildren(scrollWrap, "children of ScrollWrap");
 
+#ifdef NO
     QRegularExpression re("^FeatureWidget-");
     // QList<FeatureWidget> children = scrollAreaContents.children();
     // n. find same FeatureValue children using _centralWidget->findChildren(..)
     QList<FeatureWidget*> children2 = scrollAreaContents->findChildren<FeatureWidget*>(re);
-    TRACECF(debug, "Found %d children of scrollAreaContents using regular expression", children2.count());
+    TRACECF(debugFunc, "Found %d children of scrollAreaContents using regular expression", children2.count());
     int maxHeight2 = 0;
     int maxHintHeight2 = 0;
     for (int ndx = 0; ndx < children2.count(); ndx++) {
@@ -182,7 +184,7 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
        QSize hintSize = child->sizeHint();
        int  hintHeight = hintSize.height();
 
-       const char *  clsName = child->metaObject()->className();
+       // const char *  clsName = child->metaObject()->className();
        // TRACECF(debug, "   FeatureValue: %s, type:%s, height=%d, hintHeight=%d",
        //                    qs2s(name), clsName, ht, hintHeight);
 
@@ -192,14 +194,14 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
           maxHintHeight2 = hintHeight;
     }
 
-    TRACECF(debug, "Maximum values of height, hintheight after all widgets added to layout: %d, %d",
+    TRACECF(debugFunc, "Maximum values of height, hintheight after all widgets added to layout: %d, %d",
                    maxHeight2, maxHintHeight2); ;
+#endif
 
-    // reportWidgetChildren(scrollWrap, "children of ScrollWrap");
 
 
 #ifdef NO
-    TRACECF(debug, "Setting height of each FeatureWidget...");
+    TRACECF(debugFunc, "Setting height of each FeatureWidget...");
     for (int ndx = 0; ndx < children2.count(); ndx++) {
        FeatureWidget * child = children2.at(ndx);
        QSize sz = child->size();
@@ -214,7 +216,6 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
 
 
     if (debugLayout) {
-
        static bool dimensionReportShown = false;
        if ( (showDimensionReport && !dimensionReportShown) ) {
            TRACEC("---------------------> scrollAreaContents in QScrollArea");
@@ -233,7 +234,7 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
     _scrollAreaContents = scrollAreaContents;
     _centralStackedWidget->show();
 
-    TRACECF(debug, "Done.  feature count: %d", ct);
+    TRACECF(debugFunc, "Done.  feature count: %d", ct);
 }
 
 QSize FeaturesScrollAreaView::maxRowSize() {

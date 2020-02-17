@@ -58,13 +58,11 @@ ValueBytesWidget::newTitle(QString title, int titleHeight) {
 
 void
 ValueBytesWidget::layoutWidget() {
-   nonMonoFont9.setPointSize(8);
-
    int buttonHeight = widgetHeight;
    int titleHeight  = widgetHeight - 2;
-   if (_id == 1) {
-   TRACEC("_id=%d, _widgetHeight=%d, widgetHeight=%d", _id, _featureValueWidgetHeight, widgetHeight);
-   }
+   // if (_id == 1) {
+   //    TRACEC("_id=%d, _widgetHeight=%d, widgetHeight=%d", _id, _featureValueWidgetHeight, widgetHeight);
+   // }
    QSizePolicy fixedSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
    fixedSizePolicy.setHorizontalStretch(0);    // needed?
    fixedSizePolicy.setVerticalStretch(0);

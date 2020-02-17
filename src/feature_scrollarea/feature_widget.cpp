@@ -22,9 +22,9 @@
 #include "feature_value_widgets/value_stacked_widget.h"
 
 
-static bool showBasicDims    = true  || debugFeatureDimensions;
+static bool showBasicDims    = false  || debugFeatureDimensions;
 static bool showFullDims     = false;
-static bool showResizeEvents = true;
+static bool showResizeEvents = false;
 
 // static QFont monoValueFont;
 

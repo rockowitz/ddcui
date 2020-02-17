@@ -27,78 +27,43 @@
 
 static bool debugWidget = false;
 static bool showDimensionReports = false;
-static bool showBasicDims = true || debugFeatureDimensions;
-static bool showResizeEvents = true;
+static bool showBasicDims = false || debugFeatureDimensions;
+static bool showResizeEvents = false;
 
 
 void ValueNcWidget::layoutWidget() {
-   // TRACE("Starting");
-   _layout = new QHBoxLayout();
-
-   // QFont nonMonoFont8;
-   // nonMonoFont8.setPointSize(8);
-
-
-   QFont font;
-   font.setPointSize(8);
-     // QWidget::setFont(font);
-
+    // TRACE("Starting");
+    _layout = new QHBoxLayout();
     _cb = new QComboBox();
     _extraInfo =  new QLabel("_extraInfo");
 
-    // QSizePolicy* sizePolicy = new QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    // QSizePolicy sizePolicy = QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    QSizePolicy sizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
-    sizePolicy.setControlType(QSizePolicy::ComboBox);
-    _cb->setSizePolicy(sizePolicy);
-    //_cb->setFont(nonMonoFont8);
+    QSizePolicy cbSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+    cbSizePolicy.setControlType(QSizePolicy::ComboBox);
+    _cb->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
     _cb->setFont(FeatureValueComboBoxFont);
-    _cb->setMaximumHeight(20);
+    // _cb->setMaximumHeight(20);
     // whatever the size, large or small, causes big gap between RW and feature value
     _cb->setMaximumWidth(320);
     // _cb->setFrameStyle(QFrame::Sunken | QFrame::Panel);   // not a method
-    _cb->setStyleSheet("background-color:white;color:black;padding-left:2px;");
+    _cb->setStyleSheet("background-color:white;color:black;padding-left:2px");
+    _cb->setContentsMargins(0,0,0,0);
 
     // _extraInfo->setFrameStyle(QFrame::Sunken | QFrame::Panel);  // now set in ValueBaseWidget
     _extraInfo->setMinimumSize(20,10);
     _extraInfo->setFrameStyle( QFrame::Plain | QFrame::NoFrame);  // ValueStdWidget has the frame, not Label
-    _extraInfo->setFont(font);
+    _extraInfo->setFont(FeatureValueTextFont);
     _extraInfo->setIndent(5);
 
-    sizePolicy = QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
-    sizePolicy.setHorizontalStretch(1);
-    _extraInfo->setSizePolicy(sizePolicy);
-    // delete sizePolicy;
-
-#ifdef APPLY_CANCEL
-    if (useApplyCancel) {
-       sizePolicy->setControlType(QSizePolicy::PushButton);
-       _applyButton  = new QPushButton("Apply");
-       _cancelButton = new QPushButton("Cancel");
-       _applyButton->setMaximumSize(55,20);
-       _applyButton->setSizePolicy(*sizePolicy);
-       _applyButton->setFont(nonMonoFont9);
-       _cancelButton->setMaximumSize(55,20);
-       _cancelButton->setSizePolicy(*sizePolicy);
-       _cancelButton->setFont(nonMonoFont9);
-    }
-#endif
+    QSizePolicy extraInfoSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+    extraInfoSizePolicy.setHorizontalStretch(1);
+    _extraInfo->setSizePolicy( extraInfoSizePolicy);
 
     _layout->addSpacing(5);
     _layout->addWidget(_cb);
     // _layout->addStretch(1);
     _layout->addWidget(_extraInfo);
-#ifdef APPLY_CANCEL
-    if (useApplyCancel) {
-       _layout->addWidget(_applyButton);
-       _layout->addWidget(_cancelButton);
-    }
-    else {
-       _layout->addSpacing(10);
-    }
-#else
+
     // _layout->addSpacing(10);
-#endif
     _layout->setContentsMargins(0,0,0,0);
 
    // _layout->addStretch(10);     // apply all added size to end

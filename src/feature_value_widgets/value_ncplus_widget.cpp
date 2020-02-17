@@ -30,7 +30,7 @@
 #include "feature_value_widgets/value_nc_widget.h"
 
 // static bool dimensionReportShown = false;  // unused
-static bool showResizeEvents = true;
+static bool showResizeEvents = false;
 
 
 #ifdef UNUSED

@@ -24,8 +24,8 @@ const QString ddcui_version = DDCUI_VERSION;
 const int FeatureValueRole  = Qt::UserRole+1;  // DisplayRole, EditorRole, .. etc
 const int FeatureWidgetType = QListWidgetItem::UserType+1;
 
-const int  FeatureRowHeight = 20;
-const int  FeatureHeaderHeight = 24;  // so text not clipped at bottom
+extern const int FeatureRowHeight;
+extern const int FeatureHeaderHeight;
 
 extern const QFont FeatureValueTextFont;
 extern const QFont FeatureValueMonoFont;

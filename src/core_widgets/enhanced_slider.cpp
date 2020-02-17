@@ -16,8 +16,8 @@
 #include "enhanced_slider.h"
 
 
-static bool showResizeEvents = true;
-static bool showBasicDims = true;
+static bool showResizeEvents = false;
+static bool showBasicDims = false;
 
 int EnhancedSlider::idGenerator = 1;
 

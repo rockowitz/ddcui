@@ -174,7 +174,6 @@
        menuOptions->addAction(actionOtherOptionsDialog);
        menuOptions->addAction(actionUserInterfaceOptionsDialog);
 
-
        menuHelp = new QMenu(menuBar);
        menuHelp->setObjectName(QString::fromUtf8("menuHelp"));
        menuHelp->setTitle(    QApplication::translate("MainWindow", "Help", nullptr, -1));
