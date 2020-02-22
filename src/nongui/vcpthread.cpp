@@ -234,7 +234,9 @@ void VcpThread::loadDynamicFeatureRecords()
 // Process RQCapabilities
 void VcpThread::capabilities() {
    bool debugFunc = false;
+   bool debugRetry = true;
    debugFunc = debugFunc || debugThread;
+   debugRetry = debugRetry || debugFunc;
    // debugFunc = false;
    TRACECF(debugFunc, "Starting. dref=%s", ddca_dref_repr(this->_dref));
    DDCA_Display_Handle dh;
@@ -259,28 +261,51 @@ void VcpThread::capabilities() {
 
       // TRACEF(debugFunc,"Sleeping for 1000000 msec");
       // usleep(1000000);
-      ddcrc = ddca_get_capabilities_string(dh, &caps);
-      if (ddcrc != 0) {
-         TRACECF(debugFunc, "Error getting capabilities string for %s", ddca_dref_repr(this->_dref));
-         // DDCA_Error_Detail * err_detail =  ddca_get_error_detail();
-         // ddca_report_error_detail(err_detail, 2);
-         rpt_ddca_status(0, __func__, "ddca_get_capabilities_string", ddcrc);
+      bool retryable = true;
+      int retry_count = 0;
+      while (retryable) {
+         retryable = false;
+         ddcrc = ddca_get_capabilities_string(dh, &caps);
+         if (ddcrc != 0) {
+            TRACECF(debugRetry, "Error getting capabilities string for %s, ddcrc=%s",
+                                ddca_dref_repr(this->_dref), ddca_rc_name(ddcrc));
+            // DDCA_Error_Detail * err_detail =  ddca_get_error_detail();
+            // ddca_report_error_detail(err_detail, 2);
+            double curmult = ddca_get_sleep_multiplier();
+            if (curmult <= 2.0f) {
+               curmult = curmult * 2;
+               TRACECF(debugRetry, "Adjusting thread sleep multiplier for %s to %5.2f",
+                                  ddca_dref_repr(this->_dref), curmult);
+               // todo: output message in status bar that retrying
+               ddca_set_sleep_multiplier(curmult);
+               retryable = true;
+               retry_count++;
+            }
+            else {
+               if (retry_count > 0)
+                  TRACECF(debugRetry, "Capabilities check failed after %d retries, retries exhausted", retry_count);
+               rpt_ddca_status(0, __func__, "ddca_get_capabilities_string", ddcrc);
+            }
+         }
+         else if (retry_count > 0) {
+            TRACECF(debugRetry, "Capabilities check succeeded after %d retries", retry_count);
+         }
       }
-      else {
+      if (ddcrc == 0) {
          ddcrc = ddca_parse_capabilities_string(caps, &parsed_caps);
          if (ddcrc != 0)
             rpt_ddca_status(0, __func__, "ddca_parse_capabilities_string", ddcrc);
       }
-
+      _baseModel->setCapabilities(ddcrc, caps, parsed_caps);
+      // TRACECF(debugFunc, "Closing %s",  ddca_dref_repr(this->_dref) );
       ddcrc = ddca_close_display(dh);
       if (ddcrc != 0) {
-          rpt_ddca_status(0, __func__, "ddca_close_display", ddcrc);
-      }
+         rpt_ddca_status(0, __func__, "ddca_close_display", ddcrc);
+      }  // open succeeded
    }
-   _baseModel->setCapabilities(ddcrc, caps, parsed_caps);
 
    TRACECF(debugFunc, "Done. dref=%s", ddca_dref_repr(this->_dref));
-}
+} // function
 
 
 // Process RQGetVcp
