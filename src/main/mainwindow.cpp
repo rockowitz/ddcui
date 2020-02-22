@@ -376,7 +376,15 @@ void MainWindow::on_actionCapabilities_triggered()
 
     Monitor * monitor = _monitors.at(monitorNdx);
 
-    if (!monitor->supportsDdc()) {
+    if (!monitor->capabilities_check_complete()) {
+       QMessageBox::warning(this,
+                            "ddcutil",
+                            "Capabilities check still in progress",
+                            QMessageBox::Ok);
+       // emit signalMonitorSummaryView();   // doesn't work
+       on_actionMonitorSummary_triggered();
+    }
+    else if (!monitor->supportsDdc()) {
        QMessageBox::warning(this,
                             "ddcutil",
                             "Display does not support DDC",
@@ -474,6 +482,12 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
     if (debugFeatureSelection) {
         TRACEC("Current view: %d, feature list:", _curView);
         monitor->_curFeatureSelector.dbgrpt();
+    }
+
+    if (!monitor->capabilities_check_complete()) {
+       QMessageBox::warning(this, "ddcui", "Capabilities check incomplete", QMessageBox::Ok);
+       on_actionMonitorSummary_triggered();
+       return;
     }
 
     if (!monitor->supportsDdc()) {
