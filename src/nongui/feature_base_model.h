@@ -76,6 +76,7 @@ public:
 
     Monitor *           _monitor;
 
+    bool                _caps_check_complete = false;
     DDCA_Status         _caps_status = -999;    // a value that's undefined
     char *              _caps_string = NULL;
     DDCA_Capabilities * _parsed_caps = NULL;

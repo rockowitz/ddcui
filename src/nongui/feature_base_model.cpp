@@ -225,8 +225,10 @@ FeatureBaseModel::setCapabilities(
       char *               capabilities_string,
       DDCA_Capabilities *  parsed_capabilities)
 {
-   // TRACE("capabilities_string=|%s|", capabilities_string);
+   bool debug = false;
+   TRACECF(debug, "ddcrc = %s, capabilities_string=|%s|", ddca_rc_name(ddcrc), capabilities_string);
 
+   _caps_check_complete = true;
    _caps_status = ddcrc;
    _caps_string = capabilities_string;
    _parsed_caps = parsed_capabilities;
