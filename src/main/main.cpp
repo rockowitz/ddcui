@@ -1,6 +1,6 @@
 /* main.cpp */
 
-// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <stdio.h>
@@ -45,12 +45,21 @@ static bool init_ddcutil_library(Parsed_Cmd * parsed_cmd) {
          printf("(%s) adding traced file: %s\n", __func__, filename);
          ddca_add_traced_file(filename);
       }
-
-      uint16_t work = 0;
-      if (parsed_cmd->flags & CMD_FLAG_TIMESTAMP_TRACE) work |= DDCA_TRCOPT_TIMESTAMP;
-      if (parsed_cmd->flags & CMD_FLAG_THREAD_ID_TRACE) work |= DDCA_TRCOPT_THREAD_ID;
-      ddca_set_trace_options((DDCA_Trace_Options) work);
    }
+
+   uint16_t work = 0;
+   if (parsed_cmd->flags & CMD_FLAG_TIMESTAMP_TRACE) work |= DDCA_TRCOPT_TIMESTAMP;
+   if (parsed_cmd->flags & CMD_FLAG_THREAD_ID_TRACE) work |= DDCA_TRCOPT_THREAD_ID;
+
+   ddca_set_trace_options((DDCA_Trace_Options) work);
+
+      // flunks --permissive
+      // ddca_set_trace_options(
+      //       ( (parsed_cmd->flags & CMD_FLAG_TIMESTAMP_TRACE) ?  DDCA_TRCOPT_TIMESTAMP : 0) |
+      //       ( (parsed_cmd->flags & CMD_FLAG_THREAD_ID_TRACE) ?  DDCA_TRCOPT_THREAD_ID : 0)
+      //      );
+
+
 
    ddca_set_trace_groups(parsed_cmd->traced_groups);
 
@@ -86,7 +95,7 @@ static bool init_ddcutil_library(Parsed_Cmd * parsed_cmd) {
       ddca_set_max_tries(       DDCA_MULTI_PART_TRIES, parsed_cmd->max_tries[2]);
    }
    if (parsed_cmd->sleep_multiplier != 1.0f) {
-      ddca_set_global_sleep_multiplier(parsed_cmd->sleep_multiplier);
+      ddca_set_default_sleep_multiplier(parsed_cmd->sleep_multiplier);
    }
 
    // printf("(%s) Done\n", __func__);
@@ -116,6 +125,7 @@ int main(int argc, char *argv[])
     // local, not in ddcutil library
      enable_trace_show_time(     parsed_cmd->flags & CMD_FLAG_TIMESTAMP_TRACE);
      enable_trace_show_thread_id(parsed_cmd->flags & CMD_FLAG_THREAD_ID_TRACE);
+
 
     if (!init_ddcutil_library(parsed_cmd))
        return 1;
