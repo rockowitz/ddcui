@@ -3,8 +3,6 @@
 // Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#include <glib-2.0/glib.h>
-
 #include <assert.h>
 #include <glib-2.0/glib.h>
 #include <inttypes.h>
