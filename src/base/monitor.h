@@ -43,6 +43,7 @@ public:
     ~Monitor();
 
     DDCA_Feature_List getFeatureList(DDCA_Feature_Subset_Id);
+    bool capabilities_check_complete();
     bool supportsDdc();
     void dbgrpt();
 

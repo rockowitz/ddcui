@@ -86,6 +86,15 @@ Monitor::getFeatureList(DDCA_Feature_Subset_Id feature_list_id) {
     return result;
 }
 
+// consider replacing 2 booleans with an enum with 3 states
+
+bool Monitor::capabilities_check_complete() {
+   // considered complete if invalid display
+   bool result = (_displayInfo->dispno != -1);   // dispno -1 if API found display invalid
+   if (result)
+      result = (_baseModel->_caps_check_complete);
+   return result;
+}
 
 bool Monitor::supportsDdc() {
    bool result = (_displayInfo->dispno != -1);   // dispno -1 if API found display invalid
