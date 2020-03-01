@@ -46,6 +46,7 @@ public:
 
     // Actions Menu
     QAction     *actionRescan = NULL;
+    QAction     *actionDebugActionsDialog = NULL;
 
     QAction     *actionFeaturesScrollArea = NULL;
     QAction     *actionUserInterfaceOptionsDialog = NULL;

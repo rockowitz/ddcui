@@ -1,6 +1,6 @@
 // mainwindow_ui.cpp
 
-// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 // Note:  This file cannot be named ui_mainwindow.cpp.
@@ -100,6 +100,13 @@
              QApplication::translate("MainWindow", "&User Interface Options",   nullptr, -1));
        actionUserInterfaceOptionsDialog->setFont(mainMenuFont);
 
+       actionDebugActionsDialog = new QAction(MainWindow);
+       // n.b. objectName used by connectSlotsByName()
+       actionDebugActionsDialog->setObjectName(QString::fromUtf8("actionDebugActionsDialog"));
+       actionDebugActionsDialog->setText(
+             QApplication::translate("MainWindow", "&Debugging",   nullptr, -1));
+       actionDebugActionsDialog->setFont(mainMenuFont);
+
        // Actions Menu Actions
        actionRescan = new QAction(MainWindow);
        actionRescan->setObjectName(QString::fromUtf8("actionRescan"));
@@ -166,6 +173,7 @@
        menuActions->setTitle(  QApplication::translate("MainWindow", "Actions", nullptr, -1));
        menuActions->setFont(mainMenuFont); // font for Actions menu entries
 
+
        menuOptions = new QMenu(menuBar);
        menuOptions->setObjectName(QString::fromUtf8("menuOptions"));
        menuOptions->setTitle( QApplication::translate("MainWindow", "Optio&ns", nullptr, -1));
@@ -209,6 +217,7 @@
 
        menuActions->addAction(actionRescan);
        // menuActions->addAction(actionRedetect);   // FUTURE
+       menuActions->addAction(actionDebugActionsDialog);
 
        menuHelp->addAction(actionAbout);
        menuHelp->addAction(actionAboutQt);
