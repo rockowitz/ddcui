@@ -3,7 +3,10 @@
 // Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+#include <QtCore/QDebug>
 #include <QtWidgets/QMessageBox>
+
+#include <iostream>
 
 #include "base/core.h"
 
@@ -11,6 +14,7 @@
 
 
 static bool debugClass = false;
+
 
 /* MsgBoxQueueEntry and subclasses */
 
@@ -23,8 +27,9 @@ MsgBoxQueueEntry::MsgBoxQueueEntry(
    , _boxIcon(icon)
 {
      // _type = type;
+   printf("(MsgBoxQueueEntry::MsgBoxQueueEntry)\n");  fflush(stdout);
    TRACECF(debugClass, "Constructor. title=%s, text=%s, icon=%d",
-                       qs2s(title), qs2s(text), icon);
+                       QS2S(_boxTitle), QS2S(_boxText), _boxIcon);
 }
 
 
@@ -35,19 +40,16 @@ MsgBoxQueueEntry::~MsgBoxQueueEntry()
 
 
 QString MsgBoxQueueEntry::repr() {
-   // printf("(MsgBoxQueueEntry::repr)\n"); fflush(stdout);
-   // if (debugClass) {
-   //     TRACEC("  title=%s", qs2s(_boxTitle));
-   //     TRACEC("  text=%s", qs2s(_boxText));
-   //     TRACEC("  icon=%d", _boxIcon);
-   //  }
+   // qDebug() << "_boxTitle: " << _boxTitle;
+   // qDebug() << "_boxText: "  << _boxText;
+   // qDebug() << "_boxIcon: "  << _boxIcon;
 
    QString msg = QString("[title=0x%1, text=%2, icon=%3]")
                     .arg(_boxTitle)
                     .arg(_boxText)
                     .arg(_boxIcon);
-
-   // printf("(MsgBoxQueueEntry::repr) returning: %s\n", qs2s(msg)); fflush(stdout);
+   // qDebug() << "Assembled: " << msg;
+   // printf("(MsgBoxQueueEntry::repr) returning: %s\n", QS2S(msg)); fflush(stdout);
    return msg;
 }
 
@@ -64,14 +66,16 @@ MsgBoxQueue::MsgBoxQueue()
 void MsgBoxQueue::put(MsgBoxQueueEntry * request) {
     bool debugFunc = debugClass;
     // debugFunc = true;
+    // printf("(MsgBoxQueue) Starting\n");
+    // printf("(MsgBoxQueue) request=%p\n", request);
 
     assert(request);
 
-    QString r = request->repr();
+    // QString r = request->repr();
 
-    char * s = strdup(qs2s(request->repr()));
-    TRACECF(debugFunc, "=> Starting. request: %s, about to lock", s);
-    free(s);
+    // char * s = strdup(QS2S(r));
+    TRACECF(debugFunc, "-> Before lock. request: %s", QS2S(request->repr()));
+    // free(s);
 
     _mutex.lock();
     _queue.enqueue(request);
@@ -85,7 +89,7 @@ void MsgBoxQueue::put(MsgBoxQueueEntry * request) {
 
 
 MsgBoxQueueEntry * MsgBoxQueue::pop() {
-    TRACECF(debugClass, "Starting");
+    TRACECF(debugClass, "Starting. Before wait");
     _mutex.lock();
     if (_queue.empty())
         _queueNonempty.wait(&_mutex);
@@ -104,18 +108,17 @@ MsgBoxQueueEntry * MsgBoxQueue::pop() {
         fflush(stdout);
      }
 #endif
-    const char * s = qs2s(rqst->repr());
-    TRACECF(debugClass, "<- Done. Returning request: %s", s );
+    TRACECF(debugClass, "<- Done. Returning request: %s", QS2S(rqst->repr()) );
     return rqst;
 }
 
 
 void MsgBoxQueue::dbgrpt_nolock() {
    int ct = _queue.size();
-   printf("Queue contains %d entries", ct);
+   TRACECF(debugClass, "Queue contains %d entries", ct);
    for (int ndx = 0; ndx < ct; ndx++) {
       MsgBoxQueueEntry * rqst = _queue.at(ndx);
-      printf("   %s\n", qs2s( rqst->repr() ) );
+      TRACECF(debugClass, "   %s", QS2S(rqst->repr()) );
    }
 }
 
