@@ -254,7 +254,7 @@ FeatureBaseModel::onDdcFeatureError(
 {
    bool debugFunc = false;
    debugFunc = debugFunc || debugModel;
-   TRACECF(debugFunc, "perec=%p -> %s", perec, qs2s(perec->repr()) );
+   TRACECF(debugFunc, "perec=%p -> %s", perec, QS2S(perec->repr()) );
    TRACECF(debugFunc, "Emitting signalDdcFeatureError()");
    emit  signalDdcFeatureError(perec);
 }
