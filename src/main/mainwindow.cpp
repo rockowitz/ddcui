@@ -41,6 +41,8 @@
 #include "option_dialogs/other_options_dialog.h"
 #include "option_dialogs/user_interface_options_dialog.h"
 
+#include "action_dialogs/debug_actions_dialog.h"
+
 #include "main/mainwindow_ui.h"
 #include "main/msgbox_thread.h"
 
@@ -589,6 +591,7 @@ void MainWindow::on_actionOtherOptionsDialog_triggered()
                      this,     &MainWindow::for_actionOtherOptionsDialog_ncValuesSourceChanged);
    dialog->exec();
    delete dialog;
+   TRACECF(debug, "Done");
 }
 
 
@@ -652,6 +655,37 @@ void MainWindow::for_actionUserInterfaceOptionsDialog_accept()
 
    // unneeded here - set in UserInterfaceOptionsCialog
    // _uiOptionsState->setControlKeyRequired(newval);
+}
+
+// DebugActionsDialog slots
+
+void MainWindow::on_actionDebugActionsDialog_triggered()
+{
+   bool debug = false;
+   // TODO: allocate once and save dialog, cf feature selection
+   // display dialog box for selecting features
+   TRACECF(debug, "triggered");
+
+   DebugActionsDialog* dialog = new DebugActionsDialog(this);
+   QObject::connect(dialog, &DebugActionsDialog::resetStats_triggered,
+                    this,   &MainWindow::for_resetStats_triggered);
+   QObject::connect(dialog, &DebugActionsDialog::reportStats_triggered,
+                    this,   &MainWindow::for_reportStats_triggered);
+   dialog->exec();
+   delete dialog;
+   TRACECF(debug, "Done");
+}
+
+void MainWindow::for_resetStats_triggered() {
+   bool debug = false;
+   TRACECF(debug, "triggered");
+   ddca_reset_stats();
+}
+
+void MainWindow::for_reportStats_triggered(DDCA_Stats_Type stats_type) {
+   bool debug = false;
+   TRACECF(debug, "triggered. stats_type = %d", stats_type);
+   ddca_show_stats(stats_type, 0);
 }
 
 

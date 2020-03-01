@@ -28,6 +28,7 @@ class OtherOptionsDialog;
 class OtherOptionsState;
 class UserInterfaceOptionsDialog;
 class UserInterfaceOptionsState;
+class DebugActionsDialog;
 class QMessageBox;
 class VcpThread;
 class WaitingSpinnerWidget;
@@ -77,6 +78,8 @@ signals:
     void signalCapabilitiesView();
     void signalFeaturesView();
     void userInterfaceOptionsChanged();
+    void showStats();     // needs parm for which
+    void resetStats();
 
 public slots:
     void longRunningTaskStart();
@@ -114,6 +117,10 @@ private slots:
     // Actions Menu
     void on_actionRescan_triggered();
     void on_actionRedetect_triggered();
+    void on_actionDebugActionsDialog_triggered();
+    void for_resetStats_triggered();
+    void for_reportStats_triggered(DDCA_Stats_Type stats_type);
+
 
     // Help Menu
     void on_actionAbout_triggered();
