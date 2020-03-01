@@ -96,7 +96,7 @@ uint16_t
 NumberEntryWidget::getExistingValue()
 {
    bool debug = false;
-   TRACECF(debug, "widget = %s, returning: x%04x", qs2s(this->objectName()), _curval);
+   TRACECF(debug, "widget = %s, returning: x%04x", QS2S(this->objectName()), _curval);
    return _curval;
 }
 
@@ -105,7 +105,7 @@ uint16_t
 NumberEntryWidget::getNewValue()
 {
    bool debug = false;
-   TRACECF(debug, "widget = %s, returning: x%04x", qs2s(this->objectName()), _valueEntered);
+   TRACECF(debug, "widget = %s, returning: x%04x", QS2S(this->objectName()), _valueEntered);
    return _valueEntered;
 }
 
@@ -116,7 +116,7 @@ void
 NumberEntryWidget::setValue(uint16_t newval)
 {
    bool debug = false;
-   TRACECF(debug, "widget = %s, newval = x%04x", qs2s(this->objectName()), newval);
+   TRACECF(debug, "widget = %s, newval = x%04x", QS2S(this->objectName()), newval);
 
    // Set text value in widget
    int textLength = 2 * _bytect;
@@ -142,7 +142,7 @@ void
 NumberEntryWidget::reset()
 {
    bool debug = false;
-   TRACECF(debug, "Starting. widget = %s, _curState = %d", qs2s(this->objectName()),_widgetState);
+   TRACECF(debug, "Starting. widget = %s, _curState = %d", QS2S(this->objectName()),_widgetState);
    if (_widgetState != NumberEntryWidget::StateOldValid ) {
       int textLength = 2*_bytect;
       _valueEntered = 0;
@@ -169,7 +169,7 @@ NumberEntryWidget::onTextEdited(const QString &text) {
          emit NumberEntryWidget::valueChanged8( newval & 0xff);
       }
       else {
-         TRACEC("Not a number: %s", qs2s(text));
+         TRACEC("Not a number: %s", QS2S(text));
       }
    }
    TRACEC("emitting NumberEntryWidet::isValidValue, _fieldNumber = %d, ok=%s",
@@ -201,7 +201,7 @@ NumberEntryWidget::onTextEdited(const QString &text) {
             newState = NumberEntryWidget::StateNewValid;
       }
       else {
-         TRACEC("Not a number: %s", qs2s(text));
+         TRACEC("Not a number: %s", QS2S(text));
       }
    }
 

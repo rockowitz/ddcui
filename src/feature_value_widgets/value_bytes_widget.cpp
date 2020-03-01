@@ -231,7 +231,7 @@ void ValueBytesWidget::whenSlChanged(uint8_t val) {
 void ValueBytesWidget::whenStateChanged(NumberEntryWidget * whichWidget, NumberEntryWidget::States newState)
 {
    bool debug = false;
-   TRACECF(debug, "whichWidget = %s, newState = %d", qs2s(whichWidget->objectName()), newState);
+   TRACECF(debug, "whichWidget = %s, newState = %d", QS2S(whichWidget->objectName()), newState);
 
    if (whichWidget == _shWidget)
       _shState = newState;

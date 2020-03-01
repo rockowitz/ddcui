@@ -129,7 +129,7 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
              QString name   = w->objectName();
              const char *  clsName = w->metaObject()->className();
              // printf("   Child: %s, type:%s, height=%d, hintHeight=%d\n",
-             //            qs2s(name), clsName, ht, hintHeight);
+             //            QS2S(name), clsName, ht, hintHeight);
 
              if (ht > maxHeight1)
                 maxHeight1 = ht;
@@ -178,7 +178,7 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
        // printf("  ndx=%d\n", ndx);
        FeatureWidget * child = children2.at(ndx);
        QString name   = child->objectName();
-       // TRACEC("name = %s", qs2s(name));
+       // TRACEC("name = %s", QS2S(name));
 
        int ht = child->height();
        QSize hintSize = child->sizeHint();
@@ -186,7 +186,7 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
 
        // const char *  clsName = child->metaObject()->className();
        // TRACECF(debug, "   FeatureValue: %s, type:%s, height=%d, hintHeight=%d",
-       //                    qs2s(name), clsName, ht, hintHeight);
+       //                    QS2S(name), clsName, ht, hintHeight);
 
        if (ht > maxHeight2)
           maxHeight2 = ht;
@@ -359,7 +359,7 @@ void FeaturesScrollAreaView::onModelDdcDetailedError(DdcDetailedError* perec) {
                                        qstitle,
                                        qsexpl,
                                        icon);
-   TRACECF(debugFunc, "Calling _msgboxQueue.put() for qe: %s", qs2s(qe->repr()));
+   TRACECF(debugFunc, "Calling _msgboxQueue.put() for qe: %s", QS2S(qe->repr()));
    _msgboxQueue->put(qe);
 }
 
@@ -367,7 +367,7 @@ void FeaturesScrollAreaView::onModelDdcDetailedError(DdcDetailedError* perec) {
 void FeaturesScrollAreaView::onModelDdcFeatureError(DdcFeatureError* perec) {
     bool debugFunc = false;
     debugFunc      = debugFunc || debugSignals;
-    TRACECF(debugFunc, "perec=%p, perec->%s", perec, qs2s(perec->repr()) );
+    TRACECF(debugFunc, "perec=%p, perec->%s", perec, QS2S(perec->repr()) );
 
     DDCA_Display_Info * dinfo = _monitor->_displayInfo;
 
@@ -388,7 +388,7 @@ void FeaturesScrollAreaView::onModelDdcFeatureError(DdcFeatureError* perec) {
                                    qstitle,
                                    qsexpl,
                                    icon);
-     TRACECF(debugFunc, "Calling _msgboxQueue.put() for qe: %s", qs2s(qe->repr()));
+     TRACECF(debugFunc, "Calling _msgboxQueue.put() for qe: %s", QS2S(qe->repr()));
     _msgboxQueue->put(qe);
     TRACECF(debugFunc, "Done");
 }
