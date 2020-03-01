@@ -1,6 +1,6 @@
 /* vcprequest.h - VcpRequestQueue and the VcpRequest classes that populate the queue */
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef VCPREQUEST_H
@@ -14,14 +14,17 @@
 
 #include <ddcutil_c_api.h>
 
-
 enum VcpRequestType {
    RQGetVcp,
    RQSetVcp,
    RQStartInitialLoad,
    RQEndInitialLoad,
    RQCapabilities,
-   RQLoadDfr
+   RQLoadDfr,
+#ifdef NOT_NEEDED
+   RQDumpStats,
+   RQResetStats
+#endif
 };
 
 /* VcpRequest classes */
@@ -34,6 +37,24 @@ public:
 
     VcpRequestType _type;
 };
+
+#ifdef NOT_NEEDED
+class VcpDumpStatsRequest: public VcpRequest {
+public:
+   VcpDumpStatsRequest(DDCA_Stats_Type stats_type);
+   ~VcpDumpStatsRequest();
+
+   DDCA_Stats_Type _stats_type;
+};
+
+
+class VcpResetStatsRequest: public VcpRequest {
+public:
+   VcpResetStatsRequest();
+   ~VcpResetStatsRequest();
+};
+#endif
+
 
 
 class VcpCapRequest: public VcpRequest {

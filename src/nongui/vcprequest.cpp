@@ -1,6 +1,6 @@
 /* vcprequest.cpp - VcpRequestQueue and the classes that populate it */
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 // #include <string.h>
@@ -19,6 +19,18 @@ VcpRequest::~VcpRequest()
 {
 }
 
+#ifdef NOT_NEEDED
+VcpDumpStatsRequest::VcpDumpStatsRequest(DDCA_Stats_Type stats_type)
+    : VcpRequest::VcpRequest(VcpRequestType::RQDumpStats)
+    , _stats_type(stats_type)
+{
+}
+
+VcpResetStatsRequest::VcpResetStatsRequest()
+: VcpRequest::VcpRequest(VcpRequestType::RQResetStats)
+{
+}
+#endif
 
 VcpCapRequest::VcpCapRequest()
     : VcpRequest::VcpRequest(VcpRequestType::RQCapabilities)
