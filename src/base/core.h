@@ -1,6 +1,6 @@
 // core.h
 
-// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef CORE_H
@@ -38,9 +38,9 @@ extern QFont MainMenuFont2;
 void init_core();
 
 
-
-
+//
 // Tracing
+//
 
 bool enable_trace_show_time(bool onoff);
 bool enable_trace_show_thread_id(bool onoff);
@@ -94,10 +94,13 @@ do { \
 // Inline functions
 
 inline const char * sbool(bool val) { return (val) ? "true" : "false"; }
-inline const char * qs2s(QString qstr) {return qstr.toLatin1().data(); }
+// wrong.  on function end the underlying QByteArray is free'd, so the
+// returned pointer is invalid
+// inline const char * qs2s(QString qstr) {return qstr.toLatin1().data(); }
 
 // A macro alternative to sbool()
 #define SBOOL(val) ( (val) ? "true" : "false" )
+#define QS2S(qstr)  qstr.toLatin1().data()
 
 
 #endif // CORE_H
