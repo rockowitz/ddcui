@@ -4,7 +4,7 @@
  * slow.  There is one instance of this class, i.e. one thread, for each monitor.
  */
 
-// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef VCPTHREAD_H
@@ -41,6 +41,7 @@ signals:
 private:  // member functions
     void getvcp(uint8_t feature_code, bool needMetadata);
     void setvcp(uint8_t feature_code, bool writeOnly, uint16_t newval);
+    void adjustRetries();
     void capabilities();
     void loadDynamicFeatureRecords();
     void startInitialLoad(void);

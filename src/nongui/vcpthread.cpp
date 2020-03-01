@@ -1,6 +1,6 @@
 /* vcpthread.cpp */
 
-// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <iostream>
@@ -82,14 +82,10 @@ void VcpThread::rpt_ddca_status(
 
     DdcFeatureError* perec = new DdcFeatureError(feature_code, ddca_func_name, ddcrc);
 
-    // printf("(VcpThread::rpt_ddca_status) Woff\n"); fflush(stdout);
-    // TRACE("Built DdcFeatureError.  srepr: %s, sexpl: %s", qs2s(perec->repr()), qs2s(perec->expl()));
+    TRACEC("Built DdcFeatureError.  srepr: %s, sexpl: %s", QS2S(perec->repr()), QS2S(perec->expl()));
     // just call function, no need to signal:
     // postDdcFeatureError(erec);
     _baseModel->onDdcFeatureError(perec);
-
-    // postError(msg);
-    // fflush(stdout);
 }
 
 
@@ -231,6 +227,21 @@ void VcpThread::loadDynamicFeatureRecords()
 }
 
 
+void VcpThread::adjustRetries() {
+   bool debugFunc = true;
+   // TRACECF(debugFunc, "Starting");
+   // quick and dirty just to test the functionality
+   uint16_t writeReadMax = ddca_get_max_tries(DDCA_WRITE_READ_TRIES);
+   uint16_t multiMax     = ddca_get_max_tries(DDCA_MULTI_PART_TRIES);
+   uint16_t newWriteReadMax  = (writeReadMax/2) + 1;
+   uint16_t newMultiMax = (multiMax/2) + 1;
+   TRACECF(debugFunc, "writeReadMax %d -> %d, multiMax %d -> %d",
+                   writeReadMax, newWriteReadMax, multiMax, newMultiMax);
+   ddca_set_max_tries(DDCA_WRITE_READ_TRIES, newWriteReadMax);
+   ddca_set_max_tries(DDCA_MULTI_PART_TRIES, newMultiMax);
+}
+
+
 // Process RQCapabilities
 void VcpThread::capabilities() {
    bool debugFunc = false;
@@ -278,6 +289,7 @@ void VcpThread::capabilities() {
                                   ddca_dref_repr(this->_dref), curmult);
                // todo: output message in status bar that retrying
                ddca_set_sleep_multiplier(curmult);
+               adjustRetries();
                retryable = true;
                retry_count++;
             }
