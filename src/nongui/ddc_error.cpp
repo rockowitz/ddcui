@@ -1,6 +1,6 @@
 // ddc_error.cpp
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "ddcutil_c_api.h"
@@ -18,7 +18,7 @@ DdcError::DdcError()
 DdcError::DdcError(
       const char *  ddcFunction,
       DDCA_Status   ddcErrno)
-    : _ddcErrno(   ddcErrno)
+    : _ddcErrno(ddcErrno)
     , _ddcFunction(QString(ddcFunction))
 {
     // printf("(DdcError::DdcError) Executing\n"); fflush(stdout);
@@ -89,10 +89,7 @@ DdcDetailedError::DdcDetailedError(
 {
    printf("(DdcDetailedError::DdcDetailedError) Executing B\n"); fflush(stdout);
    _detail = detail;
-
 }
-
-
 
 
 DdcDetailedError::DdcDetailedError(
@@ -100,17 +97,15 @@ DdcDetailedError::DdcDetailedError(
       : DdcError()
 {
     _ddcFunction = erec._ddcFunction;
-
-    // _ddcFunction    = new QString(erec._ddcFunction);
     _ddcErrno    = erec._ddcErrno;
-    // _detail      = erec._detail;
-     _detail  = erec._detail;
+    _detail      = erec._detail;
 }
 
 
 DdcDetailedError::~DdcDetailedError() {
    // TODO Auto-generated destructor stub
 }
+
 
 QString DdcDetailedError::repr() {
    // printf("(DdcDetailedError::repr) Executing\n"); fflush(stdout);
@@ -124,14 +119,11 @@ QString DdcDetailedError::repr() {
 
 QString DdcDetailedError::expl() {
    //  printf("(DdcDetailedError::expl) Starting.\n"); fflush(stdout);
-   QString msg = QString("%1")
-                               .arg(_detail)
-                               ;
+   QString msg = QString("%1").arg(_detail);
    // printf("(DdcDetailedError::expl) msg: %s\n", strdup(msg.toLatin1().data()) ); fflush(stdout);
    // std::cout << "(DdcVerifyError::expl) Returning: " << msg << std::endl;
    return msg;
 }
-
 
 
 
@@ -179,8 +171,6 @@ QString DdcFeatureError::repr() {
                     .arg(s);
    return msg;
 }
-
-
 
 
 QString DdcFeatureError::expl() {
