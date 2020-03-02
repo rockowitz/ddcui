@@ -126,8 +126,8 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
              QSize hintSize = w->sizeHint();
              int  hintHeight = hintSize.height();
 
-             QString name   = w->objectName();
-             const char *  clsName = w->metaObject()->className();
+             // QString name   = w->objectName();
+             // const char *  clsName = w->metaObject()->className();
              // printf("   Child: %s, type:%s, height=%d, hintHeight=%d\n",
              //            QS2S(name), clsName, ht, hintHeight);
 
