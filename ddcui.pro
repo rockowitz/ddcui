@@ -53,7 +53,10 @@ INCLUDEPATH += src
 
 
 SOURCES += \
-    src/imported/QtWaitingSpinner/waitingspinnerwidget.cpp
+    src/imported/QtWaitingSpinner/waitingspinnerwidget.cpp \
+    src/option_dialogs/feature_selection_dialog.cpp \
+    src/option_dialogs/other_options_dialog.cpp \
+    src/option_dialogs/user_interface_options_dialog.cpp
 
 SOURCES += \
     src/base/ddca_utils.cpp \
@@ -147,7 +150,10 @@ SOURCES += \
 # Each group of header files depends only on the groups above it.
 
 HEADERS += \
-    src/imported/QtWaitingSpinner/waitingspinnerwidget.h
+    src/imported/QtWaitingSpinner/waitingspinnerwidget.h \
+    src/option_dialogs/feature_selection_dialog.h \
+    src/option_dialogs/other_options_dialog.h \
+    src/option_dialogs/user_interface_options_dialog.h
 
 HEADERS += \
     src/base/ddcui_parms.h \
@@ -241,7 +247,8 @@ HEADERS += \
 FORMS += \
     src/option_dialogs/feature_selection_dialog.ui \
     src/option_dialogs/other_options_dialog.ui \
-    src/option_dialogs/user_interface_options_dialog.ui
+    src/option_dialogs/user_interface_options_dialog.ui \
+    src/action_dialogs/debug.ui
 
     # src/help/help_dialog0.ui
 

@@ -24,7 +24,7 @@
 bool is_abbrev(const char * value, const char * longname, size_t  minchars) {
    bool result = false;
    if (value && longname) {
-      int vlen = strlen(value);
+      long unsigned int vlen = strlen(value);
       if ( vlen >= minchars &&
            vlen <= strlen(longname) &&
            memcmp(value, longname, vlen) == 0   // n. returns 0 if vlen == 0
