@@ -17,7 +17,7 @@ DebugActionsDialog::DebugActionsDialog(QWidget *parent)
     :  QDialog(parent)
     ,  _ui(new Ui::DebugActionsDialog)
 {
-    bool debug = true;
+    bool debug = false;
     _cls = metaObject()->className();
     TRACECF(debug, "Constructor starting");
     _ui->setupUi(this);
@@ -84,41 +84,41 @@ void DebugActionsDialog::on_actionButtonBox_helpRequested()
 
 
 void DebugActionsDialog::for_actionAllStatsButton_clicked(bool onoff) {
-   bool debug = true;
+   bool debug = false;
    TRACECF(debug, "Executing");
    emit reportStats_triggered(DDCA_STATS_ALL);
 }
 
 void DebugActionsDialog::for_actionCallsStatsButton_clicked(bool onoff) {
-   bool debug = true;
+   bool debug = false;
    TRACECF(debug, "Executing");
    emit reportStats_triggered(DDCA_STATS_CALLS);
 }
 
 void DebugActionsDialog::for_actionErrorsStatsButton_clicked(bool onoff) {
-   bool debug = true;
+   bool debug = false;
    TRACECF(debug, "Executing");
    emit reportStats_triggered(DDCA_STATS_ERRORS);
 }
 
 void DebugActionsDialog::for_actionTriesStatsButton_clicked(bool onoff) {
-   bool debug = true;
+   bool debug = false;
    TRACECF(debug, "Executing");
    emit reportStats_triggered(DDCA_STATS_TRIES);
 }
 
 void DebugActionsDialog::for_actionElapsedStatsButton_clicked(bool onoff) {
-   bool debug = true;
-   printf("_cls = %s\n", _cls);
-   printf("Z ");
-   fflush(stdout);
+   bool debug = false;
+   //  printf("_cls = %s\n", _cls);
+   // printf("Z ");
+   // fflush(stdout);
    TRACECF(debug, "Executing");
    emit reportStats_triggered(DDCA_STATS_ELAPSED);
 }
 
 void DebugActionsDialog::for_actionResetStatsButton_clicked(bool onoff)
 {
-   bool debug = true;
+   bool debug = false;
    TRACECF(debug, "Executing");
    emit resetStats_triggered();
 }

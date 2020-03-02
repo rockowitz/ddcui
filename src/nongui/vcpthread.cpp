@@ -82,7 +82,7 @@ void VcpThread::rpt_ddca_status(
 
     DdcFeatureError* perec = new DdcFeatureError(feature_code, ddca_func_name, ddcrc);
 
-    TRACEC("Built DdcFeatureError.  srepr: %s, sexpl: %s", QS2S(perec->repr()), QS2S(perec->expl()));
+    TRACECF(debug, "Built DdcFeatureError.  srepr: %s, sexpl: %s", QS2S(perec->repr()), QS2S(perec->expl()));
     // just call function, no need to signal:
     // postDdcFeatureError(erec);
     _baseModel->onDdcFeatureError(perec);
