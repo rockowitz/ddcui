@@ -138,6 +138,8 @@ set(SOURCES
     src/option_dialogs/other_options_dialog.cpp
     src/option_dialogs/user_interface_options_dialog.cpp
 
+    src/action_dialogs/debug_actions_dialog.cpp
+
     src/main/monitor.cpp 
     src/main/mainwindow_ui.cpp
     src/main/mainwindow.cpp 
@@ -155,6 +157,7 @@ set(UI_SOURCES
     src/option_dialogs/feature_selection_dialog.ui
     src/option_dialogs/other_options_dialog.ui
     src/option_dialogs/user_interface_options_dialog.ui
+	src/action_dialogs/debug_actions_dialog.ui
    )
 
 # must come before add_executable(): 
@@ -167,6 +170,26 @@ add_executable(ddcui ${SOURCES})
 target_compile_options(ddcui PUBLIC "-fPIC"  ${coverity_cflags})
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+
+get_property(dirs TARGET ddcui PROPERTY INCLUDE_DIRECTORIES)
+# foreach(dir ${dirs})
+#   message(STATUS "dir='${dir}'")
+# endforeach()
+
+message( STATUS "CMAKE_CURRENT_BINARY_DIR:     ${CMAKE_CURRENT_BINARY_DIR}" )
+# INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}/ddcui_autogen)
+# INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}/ddcui_autogen/include)
+
+get_property(dirs TARGET ddcui PROPERTY INCLUDE_DIRECTORIES)
+
+message( STATUS "INCLUDE_DIRECTORIES:     ${dirs}" )
+foreach(d ${dirs})
+  message(STATUS "${d}")
+endforeach()
+message( STATUS "CMAKE_AUTOUIC:           ${CMAKE_AUTOUIC}")
+message( STATUS "AUTOGEN_BUILD_DIR:       ${AUTOGEN_BUILD_DIR}")
+
+
 
 # set_property(TARGET ddcui PROPERTY AUTOUIC)
 
