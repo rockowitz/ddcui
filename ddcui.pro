@@ -53,12 +53,6 @@ INCLUDEPATH += src
 
 
 SOURCES += \
-    src/imported/QtWaitingSpinner/waitingspinnerwidget.cpp \
-    src/option_dialogs/feature_selection_dialog.cpp \
-    src/option_dialogs/other_options_dialog.cpp \
-    src/option_dialogs/user_interface_options_dialog.cpp
-
-SOURCES += \
     src/base/ddca_utils.cpp \
     src/base/ddcui_parms.cpp \
     src/base/core.cpp \
@@ -66,7 +60,6 @@ SOURCES += \
     src/base/feature_selector.cpp \
     src/base/global_state.cpp \
     src/base/other_options_state.cpp \
-    src/base/styles.cpp \
     src/base/user_interface_options_state.cpp
     
 SOURCES+= \
@@ -131,6 +124,7 @@ SOURCES += \
  #  src/help/help_dialog0.cpp \
 
 SOURCES += \
+    src/action_dialogs/debug_actions_dialog.cpp \
     src/option_dialogs/feature_selection_dialog.cpp \
     src/option_dialogs/other_options_dialog.cpp \
     src/option_dialogs/user_interface_options_dialog.cpp
@@ -148,12 +142,6 @@ SOURCES += \
 #     c_feature_widget.cpp
 
 # Each group of header files depends only on the groups above it.
-
-HEADERS += \
-    src/imported/QtWaitingSpinner/waitingspinnerwidget.h \
-    src/option_dialogs/feature_selection_dialog.h \
-    src/option_dialogs/other_options_dialog.h \
-    src/option_dialogs/user_interface_options_dialog.h
 
 HEADERS += \
     src/base/ddcui_parms.h \
@@ -230,7 +218,8 @@ HEADERS += \
 HEADERS += \
     src/option_dialogs/feature_selection_dialog.h \
     src/option_dialogs/other_options_dialog.h \
-    src/option_dialogs/user_interface_options_dialog.h
+    src/option_dialogs/user_interface_options_dialog.h \
+    src/action_dialogs/debug_actions_dialog.h
 
 HEADERS += \
     src/main/msgbox_thread.h \
@@ -248,7 +237,7 @@ FORMS += \
     src/option_dialogs/feature_selection_dialog.ui \
     src/option_dialogs/other_options_dialog.ui \
     src/option_dialogs/user_interface_options_dialog.ui \
-    src/action_dialogs/debug.ui
+    src/action_dialogs/debug_actions_dialog.ui
 
     # src/help/help_dialog0.ui
 
