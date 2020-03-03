@@ -48,12 +48,15 @@ DebugActionsDialog::~DebugActionsDialog()
 }
 
 
+//
+// QButtonBox actions
+//
+
 void DebugActionsDialog::on_actionButtonBox_accepted()
 {
     bool debugFunc = false;
 
-
-    // no, automatically emitted when dialog accepted, by accept() or done()
+    // not needed, automatically emitted when dialog accepted, by accept() or done()
     // emit userInterfaceDialog_accepted(_state);  // probably not needed
 
     TRACECF(debugFunc, "Before calling accept()");
@@ -82,6 +85,10 @@ void DebugActionsDialog::on_actionButtonBox_helpRequested()
     hd->show();
 }
 
+
+//
+// Actions for stats buttons
+//
 
 void DebugActionsDialog::for_actionAllStatsButton_clicked(bool onoff) {
    bool debug = false;
