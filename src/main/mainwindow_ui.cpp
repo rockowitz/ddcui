@@ -104,7 +104,7 @@
        // n.b. objectName used by connectSlotsByName()
        actionDebugActionsDialog->setObjectName(QString::fromUtf8("actionDebugActionsDialog"));
        actionDebugActionsDialog->setText(
-             QApplication::translate("MainWindow", "&Debugging",   nullptr, -1));
+             QApplication::translate("MainWindow", "&Debug",   nullptr, -1));
        actionDebugActionsDialog->setFont(mainMenuFont);
 
        // Actions Menu Actions
