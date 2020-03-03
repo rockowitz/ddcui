@@ -12,7 +12,7 @@
 
 #include <ddcutil_c_api.h>
 
-#include "../base/core.h"
+#include "base/core.h"
 #include "nongui/vcpthread.h"    // includes vcprequest.h
 #include "nongui/feature_value.h"
 
@@ -24,7 +24,6 @@ Monitor::Monitor(DDCA_Display_Info * display_info, int monitorNumber)
     ,  _baseModel(NULL)
  //   ,  _cls(metaObject()->className()) // -Wreorder
     ,  _requestQueue(NULL)
-
 {
    _cls = metaObject()->className();
    _page_moninfo     = _page_capabilities     = NULL;
@@ -38,6 +37,7 @@ Monitor::Monitor(DDCA_Display_Info * display_info, int monitorNumber)
 
 Monitor::~Monitor() {
 }
+
 
 void Monitor::dbgrpt() {
    printf("_monitorNumber:      %d\n",    _monitorNumber);
@@ -75,7 +75,6 @@ Monitor::getFeatureList(DDCA_Feature_Subset_Id feature_list_id) {
               if (ddcrc == 0) {
                  result = ddca_feature_list_or(&result, &mfgFeatureList);
               }
-
            }
            _features.insert(feature_list_id, result);
         }
@@ -85,6 +84,7 @@ Monitor::getFeatureList(DDCA_Feature_Subset_Id feature_list_id) {
                                        ddca_feature_list_string(&result, NULL, (char*)" "));
     return result;
 }
+
 
 // consider replacing 2 booleans with an enum with 3 states
 
@@ -96,13 +96,13 @@ bool Monitor::capabilities_check_complete() {
    return result;
 }
 
+
 bool Monitor::supportsDdc() {
    bool result = (_displayInfo->dispno != -1);   // dispno -1 if API found display invalid
    if (result)
       result = (_baseModel->_caps_status == 0 && _baseModel->_parsed_caps);  // got capabilities?
    return result;
 }
-
 
 
 void Monitor::putVcpRequest(VcpRequest * rqst) {
