@@ -3,6 +3,7 @@
 // Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+#include <glib-2.0/glib.h>
 #include <iostream>
 #include <string.h>
 
@@ -11,10 +12,10 @@
 
 #include <QtCore/QString>
 
+#include "base/core.h"
 #include "base/ddca_utils.h"
 #include "nongui/ddc_error.h"
 #include "nongui/vcpthread.h"
-#include "../base/core.h"
 
 using namespace std;
 
@@ -189,19 +190,56 @@ void VcpThread::rpt_verify_error(
 }
 
 
+DDCA_Status VcpThread::perform_open_display(DDCA_Display_Handle * dh_loc) {
+   bool debugFunc = false;
+   debugFunc = debugFunc || debugThread;
+
+   TRACECF(debugFunc, "Starting. dref=%s", ddca_dref_repr(this->_dref));
+
+   // DDCA_Display_Handle dh;
+
+   DDCA_Status ddcrc = ddca_open_display2(this->_dref, false, dh_loc);
+   if (ddcrc != 0) {
+       rpt_ddca_status(0, __func__, "ddca_open_display2", ddcrc);
+   }
+
+   if (ddcrc == 0  && !_threadDescriptionPublished) {
+      TRACECF(debugFunc, "calling ddca_set_thread_description()");
+      // ddca_register_thread_dref(this->_dref);
+      ddca_append_thread_description( ddca_dref_repr(this->_dref) );
+      _threadDescriptionPublished = true;
+   }
+   TRACECF(debugFunc, "Returning %d", ddcrc);
+   return ddcrc;
+}
+
+
+DDCA_Status VcpThread::perform_close_display(DDCA_Display_Handle dh) {
+   bool debugFunc = false;
+   debugFunc = debugFunc || debugThread;
+
+   DDCA_Status ddcrc = ddca_close_display(dh);
+   TRACECF(debugFunc, "ddca_close_display() returned %d, dref=%s", ddcrc, ddca_dref_repr(this->_dref));
+   if (ddcrc != 0) {
+      rpt_ddca_status(0, __func__, "ddca_close_display", ddcrc);
+   }
+   return ddcrc;
+}
+
+
+// need perform_close_display() to invalidate the display handle
+
+
 void VcpThread::loadDynamicFeatureRecords()
 {
    bool debugFunc = debugThread;
-   // debugFunc = true;
+   debugFunc = debugFunc || debugThread;
    TRACECF(debugFunc, "Starting. dref=%s", ddca_dref_repr(this->_dref));
 
    DDCA_Display_Handle dh;
 
-   DDCA_Status ddcrc = ddca_open_display2(this->_dref, false, &dh);
-   if (ddcrc != 0) {
-       rpt_ddca_status(0, __func__, "ddca_open_display2", ddcrc);
-   }
-   else {
+   DDCA_Status ddcrc = perform_open_display(&dh);
+   if (ddcrc == 0) {
       ddcrc = ddca_dfr_check_by_dh(dh);
       if (ddcrc != 0) {
          if (ddcrc == DDCRC_NOT_FOUND) {
@@ -217,10 +255,7 @@ void VcpThread::loadDynamicFeatureRecords()
          }
       }
 
-      ddcrc = ddca_close_display(dh);
-      if (ddcrc != 0) {
-          rpt_ddca_status(0, __func__, "ddca_close_display", ddcrc);
-      }
+      ddcrc = perform_close_display(dh);
    }
 
    TRACECF(debugFunc, "Done. dref=%s", ddca_dref_repr(this->_dref));
@@ -231,20 +266,21 @@ void VcpThread::adjustRetries() {
    bool debugFunc = true;
    // TRACECF(debugFunc, "Starting");
    // quick and dirty just to test the functionality
+   // TODO: Wrap in reads/writes in lock
    uint16_t writeReadMax = ddca_get_max_tries(DDCA_WRITE_READ_TRIES);
-   uint16_t multiMax     = ddca_get_max_tries(DDCA_MULTI_PART_TRIES);
+   uint16_t multiMax     = ddca_get_max_tries(DDCA_MULTI_PART_READ_TRIES);
    uint16_t newWriteReadMax  = (writeReadMax/2) + 1;
    uint16_t newMultiMax = (multiMax/2) + 1;
    TRACECF(debugFunc, "writeReadMax %d -> %d, multiMax %d -> %d",
                    writeReadMax, newWriteReadMax, multiMax, newMultiMax);
    ddca_set_max_tries(DDCA_WRITE_READ_TRIES, newWriteReadMax);
-   ddca_set_max_tries(DDCA_MULTI_PART_TRIES, newMultiMax);
+   ddca_set_max_tries(DDCA_MULTI_PART_READ_TRIES, newMultiMax);
 }
 
 
 // Process RQCapabilities
 void VcpThread::capabilities() {
-   bool debugFunc = false;
+   bool debugFunc = debugThread;
    bool debugRetry = true;
    debugFunc = debugFunc || debugThread;
    debugRetry = debugRetry || debugFunc;
@@ -254,11 +290,9 @@ void VcpThread::capabilities() {
    char *              caps = NULL;
    DDCA_Capabilities * parsed_caps = NULL;
 
-   DDCA_Status ddcrc = ddca_open_display2(this->_dref, false, &dh);
-   if (ddcrc != 0) {
-         rpt_ddca_status(0, __func__, "ddca_open_display2", ddcrc);
-   }
-   else {
+   DDCA_Status ddcrc = perform_open_display(&dh);
+   if (ddcrc == 0) {
+
 #ifdef MOVED
       // TEMPORARY LOCATION - SHOULD BE A SEPARATE RQCheckDFR
       ddcrc = ddca_dfr_check_by_dh(dh);
@@ -283,7 +317,7 @@ void VcpThread::capabilities() {
             // DDCA_Error_Detail * err_detail =  ddca_get_error_detail();
             // ddca_report_error_detail(err_detail, 2);
             double curmult = ddca_get_sleep_multiplier();
-            if (curmult <= 2.0f) {
+            if (curmult <= 2.0f) {    // retry possible
                curmult = curmult * 2;
                TRACECF(debugRetry, "Adjusting thread sleep multiplier for %s to %5.2f",
                                   ddca_dref_repr(this->_dref), curmult);
@@ -292,29 +326,30 @@ void VcpThread::capabilities() {
                adjustRetries();
                retryable = true;
                retry_count++;
-            }
-            else {
+            }   // end, ddca_get_capabilities() failure, retry possible
+            else {  // failure, can't retry
                if (retry_count > 0)
                   TRACECF(debugRetry, "Capabilities check failed after %d retries, retries exhausted", retry_count);
                rpt_ddca_status(0, __func__, "ddca_get_capabilities_string", ddcrc);
-            }
-         }
+            }  // end, failure, can't retry
+         }  // ddca_get_capabilities() failed
          else if (retry_count > 0) {
             TRACECF(debugRetry, "Capabilities check succeeded after %d retries", retry_count);
          }
-      }
-      if (ddcrc == 0) {
+      } // end of while() loop calling ddca_get_capabilies()
+
+      if (ddcrc == 0) {   // ddca_get_capabilities() succeeded, try to parse
          ddcrc = ddca_parse_capabilities_string(caps, &parsed_caps);
          if (ddcrc != 0)
             rpt_ddca_status(0, __func__, "ddca_parse_capabilities_string", ddcrc);
       }
+      // if ddcrc != 0, caps may be NULL, parsed_caps definitely NULL
+      // whatever the case, tell _baseModel the result
       _baseModel->setCapabilities(ddcrc, caps, parsed_caps);
-      // TRACECF(debugFunc, "Closing %s",  ddca_dref_repr(this->_dref) );
-      ddcrc = ddca_close_display(dh);
-      if (ddcrc != 0) {
-         rpt_ddca_status(0, __func__, "ddca_close_display", ddcrc);
-      }  // open succeeded
-   }
+
+      TRACECF(debugFunc, "Closing %s",  ddca_dref_repr(this->_dref) );
+      ddcrc = perform_close_display(dh);
+   }  // open succeeded
 
    TRACECF(debugFunc, "Done. dref=%s", ddca_dref_repr(this->_dref));
 } // function
@@ -331,19 +366,16 @@ void VcpThread::getvcp(uint8_t featureCode, bool needMetadata) {
     DDCA_Non_Table_Vcp_Value              valrec;
     DDCA_Feature_Metadata *               finfo;
 
-    DDCA_Status ddcrc = ddca_open_display2(this->_dref, false, &dh);
-    if (ddcrc != 0) {
-          rpt_ddca_status(0, __func__, "ddca_open_display2", ddcrc);
-    }
-    else {
+    DDCA_Status ddcrc = perform_open_display(&dh);
+    if (ddcrc == 0) {
        QString msg;
        _baseModel->setStatusMsg(msg.sprintf("Reading feature 0x%02x",featureCode));
 
-        ddcrc = ddca_get_non_table_vcp_value(dh, featureCode, &valrec);
-        TRACECF(debugFunc, "feature_code=0x%02x, ddca_get_non_table_vcp_value() returned %d - %s",
+       ddcrc = ddca_get_non_table_vcp_value(dh, featureCode, &valrec);
+       TRACECF(debugFunc, "feature_code=0x%02x, ddca_get_non_table_vcp_value() returned %d - %s",
                   featureCode, ddcrc, ddca_rc_name(ddcrc));
-        // don't need to call rpt_cca_status() if error, error will be reported
-        // in the value field for the feature code
+       // don't need to call rpt_ddca_status() if error, error will be reported
+       // in the value field for the feature code
 #ifdef OLD
         if (ddcrc != 0) {
 
@@ -357,9 +389,8 @@ void VcpThread::getvcp(uint8_t featureCode, bool needMetadata) {
             //        feature_code, valrec.mh, valrec.ml, valrec.sh, valrec.sl);
         }
 #endif
-
-    //    if (ddcrc == 0) {
-           // should this be here?
+       if (ddcrc == 0) {  // if get_nontable_vcp_value() succeeded
+           // TODO:  get metadata once and cache
            DDCA_Status ddcrc2 = ddca_get_feature_metadata_by_dh(
                       featureCode,
                       dh,
@@ -376,18 +407,14 @@ void VcpThread::getvcp(uint8_t featureCode, bool needMetadata) {
               rpt_ddca_status(featureCode, __func__, "ddca_get_feature_metadata_by_dh",  ddcrc);
               // cout << "ddca_get_feature_metadata() returned " << ddcrc << endl;
            }
-   //     }
 
-        // if (ddcrc == 0) {
+           // whether or not succeeded, the _baseModel so FeatureValueWidget can display error
            _baseModel->modelVcpValueSet(featureCode, this->_dref, finfo, &valrec, ddcrc);
-        // }
-        _baseModel->setFeatureChecked(featureCode);
 
-        ddcrc = ddca_close_display(dh);
-        if (ddcrc != 0) {
-           rpt_ddca_status(0, __func__, "ddca_close_display", ddcrc);
-        }
-    }
+           _baseModel->setFeatureChecked(featureCode);
+       }  // end, get value succeeded
+       ddcrc = perform_close_display(dh);
+    }  // open succeeded
     TRACECF(debugThread, "Done");
 }
 
@@ -406,58 +433,51 @@ void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint16_t shsl)
     // rpt_ddca_status(feature_code, __func__, "ddca_bogus", 0);
 
     DDCA_Display_Handle dh;
-    DDCA_Status ddcrc = ddca_open_display2(this->_dref, false, &dh);
-    if (ddcrc != 0) {
-        TRACECF(debugFunc, "ddca_open_display2() returned %d", ddcrc);
-        rpt_ddca_status(feature_code, __func__, "ddca_open_display2", ddcrc);
-        goto bye;
-    }
+    DDCA_Status ddcrc = perform_open_display(&dh);
+    if (ddcrc == 0) {
+       ddca_enable_verify(false);
+       // TRACE( "ddca_is_verify_enabled() returned: %s", sbool( ddca_is_verify_enabled()));
+       // ddca_enable_verify(!writeOnly);
+       // uint8_t verified_hi_byte = 0;   // unused
+       // uint8_t verified_lo_byte = 0;   // unused
+       // need to update mh, ml, use a valrec
+       // ddcrc = ddca_set_non_table_vcp_value_verify(dh, feature_code, 0, sl, &verified_hi_byte, &verified_lo_byte);
 
-    ddca_enable_verify(false);
-    // TRACE( "ddca_is_verify_enabled() returned: %s", sbool( ddca_is_verify_enabled()));
-    // ddca_enable_verify(!writeOnly);
-    // uint8_t verified_hi_byte = 0;   // unused
-    // uint8_t verified_lo_byte = 0;   // unused
-    // need to update mh, ml, use a valrec
-    // ddcrc = ddca_set_non_table_vcp_value_verify(dh, feature_code, 0, sl, &verified_hi_byte, &verified_lo_byte);
-
-    ddcrc = ddca_set_non_table_vcp_value(dh, feature_code, sh, sl);
-    if (ddcrc != 0) {
-        TRACECF(debugFunc, "ddca_set_non_table_vcp_value() returned %d - %s", ddcrc, ddca_rc_name(ddcrc));
-        rpt_ddca_status(feature_code, __func__, "ddca_set_non_table_vcp_value", ddcrc);
-        goto bye;
-    }
-//    else {
+       ddcrc = ddca_set_non_table_vcp_value(dh, feature_code, sh, sl);
+       if (ddcrc != 0) {
+          TRACECF(debugFunc, "ddca_set_non_table_vcp_value() returned %d - %s", ddcrc, ddca_rc_name(ddcrc));
+          rpt_ddca_status(feature_code, __func__, "ddca_set_non_table_vcp_value", ddcrc);
+          goto bye;
+       }
        if (!writeOnly) {
-            DDCA_Non_Table_Vcp_Value  valrec;
-            ddcrc = ddca_get_non_table_vcp_value(dh, feature_code, &valrec);
-            if (ddcrc != 0) {
+           DDCA_Non_Table_Vcp_Value  valrec;
+           ddcrc = ddca_get_non_table_vcp_value(dh, feature_code, &valrec);
+           if (ddcrc != 0) {
                 rpt_ddca_status(feature_code, __func__, "ddca_get_nontable_vcp_value", ddcrc);
-            }
-            else {
-                TRACECF(debugFunc, "ddca_get_nontable_vcp_value() after ddca_set_non_table_vcp_value():");
-                TRACECF(debugFunc, "  opcode: 0x%02x, requested: sh=0x%02x, sl=0x%02x, observed: mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x",
+           }
+           else {
+              TRACECF(debugFunc, "ddca_get_nontable_vcp_value() after ddca_set_non_table_vcp_value():");
+              TRACECF(debugFunc, "  opcode: 0x%02x, requested: sh=0x%02x, sl=0x%02x, observed: mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x",
                          feature_code, sh, sl, valrec.mh, valrec.ml, valrec.sh, valrec.sl);
 
-                if ((sl != valrec.sl || sh != valrec.sh)) {
-                   // TRACE("Calling rpt_verify_error()");
-                   rpt_verify_error(feature_code, "ddca_set_non_table_vcp_value", sh, sl, valrec.sh, valrec.sl);
-                }
-                // 10/2019 coming here even if verify error???
-                TRACECF(debugFunc, "Calling _baseModel->modelVcpValueUpdate()");
-                _baseModel->modelVcpValueUpdate(feature_code, valrec.sh, valrec.sl);
-            }
-       }
-  //  }
-
-    ddcrc = ddca_close_display(dh);
-    if (ddcrc != 0) {
-        TRACECF(debugFunc, "ddca_close_display() returned %d", ddcrc);
-        rpt_ddca_status(0, __func__, "ddca_close_display", ddcrc);
-    }
+              if ((sl != valrec.sl || sh != valrec.sh)) {
+                 // TRACE("Calling rpt_verify_error()");
+                 rpt_verify_error(feature_code, "ddca_set_non_table_vcp_value", sh, sl, valrec.sh, valrec.sl);
+              }    // ddca_set_non_table_vcp_value() succeeded
+              // 10/2019 coming here even if verify error???
+              TRACECF(debugFunc, "Calling _baseModel->modelVcpValueUpdate()");
+              _baseModel->modelVcpValueUpdate(feature_code, valrec.sh, valrec.sl);
+           }  // ddca_get_non_table_vcp_value() succeeded
+       }     // !writeOnly
 
 bye:
-//   ;
+       ddcrc = ddca_close_display(dh);
+       TRACECF(debugFunc, "ddca_close_display() returned %d", ddcrc);
+       if (ddcrc != 0) {
+           TRACECF(debugFunc, "ddca_close_display() returned %d", ddcrc);
+           rpt_ddca_status(0, __func__, "ddca_close_display", ddcrc);
+       }
+    }   // open succeeded
     TRACECF(debugFunc, "Done");
 }
 

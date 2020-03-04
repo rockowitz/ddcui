@@ -42,6 +42,8 @@ private:  // member functions
     void getvcp(uint8_t feature_code, bool needMetadata);
     void setvcp(uint8_t feature_code, bool writeOnly, uint16_t newval);
     void adjustRetries();
+    DDCA_Status perform_open_display(DDCA_Display_Handle * dh_loc);
+    DDCA_Status perform_close_display(DDCA_Display_Handle dh);
     void capabilities();
     void loadDynamicFeatureRecords();
     void startInitialLoad(void);
@@ -86,6 +88,7 @@ private:       // member variables
     VcpRequestQueue*     _requestQueue = NULL;
     FeatureBaseModel*    _baseModel;
     DDCA_Display_Handle  _dh = NULL;
+    bool                 _threadDescriptionPublished = false;
 };
 
 #endif // VCPTHREAD_H
