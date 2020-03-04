@@ -673,7 +673,6 @@ void MainWindow::on_actionDebugActionsDialog_triggered()
                     this,   &MainWindow::for_reportStats_triggered);
    dialog->exec();
    delete dialog;
-   TRACECF(debug, "Done");
 }
 
 void MainWindow::for_resetStats_triggered() {
