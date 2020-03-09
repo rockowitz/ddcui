@@ -5,13 +5,13 @@
 
 #include <QtWidgets/QTextBrowser>
 #include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QWidget>
 
 #include "help_dialog.h"
 #include "../base/core.h"
 
 
 void HelpDialog2::commonInit() {
-    // TRACE("Executing");
     setAttribute(Qt::WA_DeleteOnClose);
     setAttribute(Qt::WA_GroupLeader);
 
@@ -20,10 +20,22 @@ void HelpDialog2::commonInit() {
     setWindowFlags(flags);
 
     _textBrowser = new QTextBrowser;
+    // _textBrowser->setFontPointSize(20.0);
+    _textBrowser->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     QVBoxLayout* mainLayout = new QVBoxLayout();
     mainLayout->addWidget(_textBrowser);
+    _buttons = new QDialogButtonBox(QDialogButtonBox::Close);
+    mainLayout->addWidget(_buttons);
     setLayout(mainLayout);
-    setMinimumSize(800,600);
+    setMinimumSize(600,400);
+
+    // QMetaObject::connect_slots_by_name(this);
+    QObject::connect(
+           _buttons, &QDialogButtonBox::rejected,
+           this,          &HelpDialog2::on_buttonBox_rejected);
+    QObject::connect(
+           _buttons, &QDialogButtonBox::accepted,
+           this,          &HelpDialog2::on_buttonBox_accepted);
 }
 
 
@@ -39,12 +51,23 @@ HelpDialog2::HelpDialog2(QString title, QString& htmlText, QWidget* parent)
     : QDialog(parent)
     ,_cls(strdup(metaObject()->className()) )
 {
-    // TRACE("title=%s, htmlText=%s", qs2s(title), qs2s(htmlText));
+    TRACEC("title=%s, htmlText=%s", QS2S(title), QS2S(htmlText));
     commonInit();
     setWindowTitle(title);
     _textBrowser->setText(htmlText);
     show();   // not showing - why?
 }
+
+#ifdef UNFINISHED
+HelpDialog2::HelpDialog2(char * simpleFn, char * title, QWidget* parent)
+   : QDialog(parent)
+   ,_cls(strdup(metaObject()->className()) )
+{
+   commonInit();
+   setWindowtitle(title);
+}
+#endif
+
 
 
 HelpDialog2::~HelpDialog2() {
@@ -55,3 +78,37 @@ HelpDialog2::~HelpDialog2() {
 void HelpDialog2::setText(QString& htmlText) {
    _textBrowser->setText(htmlText);
 }
+
+void HelpDialog2::on_buttonBox_accepted() {
+   TRACEC("Executing");
+}
+
+void HelpDialog2::on_buttonBox_rejected() {
+   TRACEC("Executing");
+   this->close();
+}
+
+
+
+
+
+void viewHelp(QString simpleFn, QString title, QWidget * parent) {
+   // QString fn = QString(simpleFn).prepend(":/docs/");
+   QString fn = QString(":/docs/").append(simpleFn);
+   QFile f(fn);
+   f.open(QFile::ReadOnly | QFile::Text);
+   QTextStream in(&f);
+   QString htmlText = in.readAll();
+
+   // qDebug() << htmlText;
+
+   HelpDialog2* hd = new HelpDialog2(parent);
+   hd->setText(htmlText);
+      // hd->_textBrowser->setSource(fn);
+   hd->setWindowTitle( title );
+   hd->exec();
+   // delete hd;
+}
+
+
+
