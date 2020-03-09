@@ -93,6 +93,7 @@ static bool init_ddcutil_library(Parsed_Cmd * parsed_cmd) {
    }
    if (parsed_cmd->max_tries[2] > 0) {
       ddca_set_max_tries(       DDCA_MULTI_PART_READ_TRIES, parsed_cmd->max_tries[2]);
+      ddca_set_max_tries(       DDCA_MULTI_PART_WRITE_TRIES, parsed_cmd->max_tries[2]);
    }
    if (parsed_cmd->sleep_multiplier != 1.0f) {
       ddca_set_default_sleep_multiplier(parsed_cmd->sleep_multiplier);
