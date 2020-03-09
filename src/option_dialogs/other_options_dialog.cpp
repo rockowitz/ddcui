@@ -70,6 +70,8 @@ void OtherOptionsDialog::on_buttonBox_accepted()
 
 void OtherOptionsDialog::on_buttonBox_helpRequested()
 {
+   TRACEC("Starting");
+#ifdef OLD
     // TRACE();
     QString fn(":/docs/nc_values.html");
     QFile f(fn);
@@ -87,6 +89,10 @@ void OtherOptionsDialog::on_buttonBox_helpRequested()
     hd->setText(htmlText);
     hd->setWindowTitle("ddcui Help - Other Options");
     hd->show();
+    showHelp(
+#endif
+
+    viewHelp(QString("nc_values.html"), QString("ddcui Help -X Other Options"), this);
 }
 
 
