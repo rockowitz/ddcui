@@ -17,6 +17,7 @@
 
 #include "../base/core.h"
 #include "../base/widget_debug.h"
+#include "help/help_dialog.h"
 // #include "imported/QtWaitingSpinner/waitingspinnerwidget.h"
 
 #include "base/ddcui_parms.h"
@@ -681,10 +682,11 @@ void MainWindow::for_resetStats_triggered() {
    ddca_reset_stats();
 }
 
-void MainWindow::for_reportStats_triggered(DDCA_Stats_Type stats_type) {
+void MainWindow::for_reportStats_triggered(DDCA_Stats_Type stats_type, bool show_thread_data) {
    bool debug = false;
    TRACECF(debug, "triggered. stats_type = %d", stats_type);
-   ddca_show_stats(stats_type, 0);
+   // TO DO: Make per/thread setting a checkbox on dialog
+   ddca_show_stats(stats_type, show_thread_data, 0);
 }
 
 
@@ -748,6 +750,14 @@ void MainWindow::on_actionAbout_triggered()
 void MainWindow::on_actionAbout_Qt_triggered()
 {
     QMessageBox::aboutQt(this, "About Qt");
+}
+
+
+
+void MainWindow::on_actionContentsHelp_triggered()
+{
+    TRACEC("Executing");
+    viewHelp(QString("help_general.html"), QString("ddcui Help - Overview"), this);
 }
 
 
