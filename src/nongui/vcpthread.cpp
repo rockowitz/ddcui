@@ -262,6 +262,7 @@ void VcpThread::loadDynamicFeatureRecords()
 }
 
 
+#ifdef TEST_ADJUST_RETRIES
 void VcpThread::adjustRetries() {
    bool debugFunc = true;
    // TRACECF(debugFunc, "Starting");
@@ -276,12 +277,13 @@ void VcpThread::adjustRetries() {
    ddca_set_max_tries(DDCA_WRITE_READ_TRIES, newWriteReadMax);
    ddca_set_max_tries(DDCA_MULTI_PART_READ_TRIES, newMultiMax);
 }
+#endif
 
 
 // Process RQCapabilities
 void VcpThread::capabilities() {
    bool debugFunc = debugThread;
-   bool debugRetry = true;
+   bool debugRetry = false;
    debugFunc = debugFunc || debugThread;
    debugRetry = debugRetry || debugFunc;
    // debugFunc = false;
@@ -322,8 +324,9 @@ void VcpThread::capabilities() {
                TRACECF(debugRetry, "Adjusting thread sleep multiplier for %s to %5.2f",
                                   ddca_dref_repr(this->_dref), curmult);
                // todo: output message in status bar that retrying
-               ddca_set_sleep_multiplier(curmult);
-               adjustRetries();
+               // RETRYING DOESN"T HELP
+               // ddca_set_sleep_multiplier(curmult);
+               // adjustRetries();
                retryable = true;
                retry_count++;
             }   // end, ddca_get_capabilities() failure, retry possible
