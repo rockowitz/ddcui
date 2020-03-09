@@ -1,0 +1,48 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+    <head>
+        <title>General Help (T)</title>
+    </head>
+    <h3>Views</h3>
+    <body>
+        For each detected display, the <em>View</em> menu provides 3 different views of monitor information. 
+        Either 1 or any of the 3 can be selected depending on whether DDC communication with the display is successful. 
+        <br><br>
+        The views are: 
+        <ul>
+            <li>
+                <em>Monitor Summary</em> - Identifying information about the monitor, along with the first 128 bytes of the monitor's EDID block, 
+                in hex form.
+ 
+            
+<li><em>Capabilities</em> - Reports the capabilities string returned by the monitor, along with interpretation based on the MCCS specification. 
+            </li>
+<li>
+            <em>Features</em> - 
+
+            Displays each of the feature codes detected, and allows for editing of feature values where appropriate.  Errors for individual features are reported here.
+        </li>
+</ul>
+
+Rows in the <em>Features</em> view have the following fields:
+                <ul> <li>Feature code - A one byte hexadecimal number </li>
+                    <li>Feature name - Can vary depending on the version of the Monitor Control Command Specification that the monitor 
+                        implements.</li>
+                    <li><em>RW, RO, WO</em> - indicates if the feature can be read and/or written. </li>
+                    <li>Type field. - <em>C</em> for "continuous" features, and <em>NC</em> for "non-continuous".  Continuous features can take any of range of values
+                            up to some maximum value, for example feature x10 brightness typically takes values in the range 0..100 or the range 0.255. Non-continous features are those that can take one of a limited set of values, for example x60 Input Source, and also those that have a 
+                            feature-specific definition, e.g. x9c Display Firmware Level, or xd9 VCP Version. As the MCCS specification has evolved,
+                            <em>NC</em> has become a grab-bag for any feature not clearly continuous. 
+                        </li>
+                   <li> Feature Value - The form of the feature value field depends on the feature.  Modifyable continous features have a slider and spin box, either of which can be used to change the value, which can be changed. Modifyable  non-continuous features that can be changed typically have a drop down combo box showing the possible values. 
+                   Features in the range xE0..xFF are reserved for manufacturer use.  As <em>ddcui</em> does not know how to 
+                   interpret them, it simply allows for editing the individual bytes of the value.
+                    </li>
+                       </ul>
+
+
+
+
+
+    </body>
+</html>
