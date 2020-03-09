@@ -71,6 +71,7 @@ private:
     QAction     *actionRedetect = NULL;
 
     // Help Menu
+    QAction     *actionContentsHelp;
     QAction     *actionAbout= NULL;
     QAction     *actionAboutQt= NULL;
 

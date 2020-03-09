@@ -121,6 +121,8 @@
 
        // Help Menu Actions
 
+       actionContentsHelp = new QAction(MainWindow);
+       actionContentsHelp->setObjectName(QString("actionContentsHelp"));
        actionAbout = new QAction(MainWindow);
        actionAbout->setObjectName(QString::fromUtf8("actionAbout"));
        actionAboutQt = new QAction(MainWindow);
@@ -201,13 +203,10 @@
 
        menuView->addAction(actionFeaturesScrollArea);
 
-       actionMonitorSummary->setText(    QApplication::translate("MainWindow", "&Monitor Summary", nullptr, -1));
-       actionCapabilities->setText(      QApplication::translate("MainWindow", "&Capabilities", nullptr, -1));
-
-          actionFeaturesScrollArea->setText(QApplication::translate("MainWindow", "&Features", nullptr, -1));
-
-
-       actionRescan->setText(    QApplication::translate("MainWindow", "&Rescan feature values", nullptr, -1));
+       actionMonitorSummary->setText(    QApplication::translate("MainWindow", "&Monitor Summary",       nullptr, -1));
+       actionCapabilities->setText(      QApplication::translate("MainWindow", "&Capabilities",          nullptr, -1));
+       actionFeaturesScrollArea->setText(QApplication::translate("MainWindow", "&Features",              nullptr, -1));
+       actionRescan->setText(            QApplication::translate("MainWindow", "&Rescan feature values", nullptr, -1));
        actionRescan->setFont(mainMenuFont);
        actionRescan->setEnabled(false);
 
@@ -219,9 +218,12 @@
        // menuActions->addAction(actionRedetect);   // FUTURE
        menuActions->addAction(actionDebugActionsDialog);
 
+       menuHelp->addAction(actionContentsHelp);
        menuHelp->addAction(actionAbout);
        menuHelp->addAction(actionAboutQt);
 
+       actionContentsHelp->setText(QApplication::translate(  "MainWindow", "Contents", nullptr, -1));
+       actionContentsHelp->setFont(mainMenuFont);
        actionAbout->setText(QApplication::translate(  "MainWindow", "&About ddcui", nullptr, -1));
        actionAbout->setFont(mainMenuFont);
        actionAboutQt->setText(QApplication::translate("MainWindow", "About &Qt", nullptr, -1));

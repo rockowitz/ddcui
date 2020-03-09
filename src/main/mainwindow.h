@@ -119,12 +119,13 @@ private slots:
     void on_actionRedetect_triggered();
     void on_actionDebugActionsDialog_triggered();
     void for_resetStats_triggered();
-    void for_reportStats_triggered(DDCA_Stats_Type stats_type);
+    void for_reportStats_triggered(DDCA_Stats_Type stats_type, bool showTheadData);
 
 
     // Help Menu
     void on_actionAbout_triggered();
     void on_actionAbout_Qt_triggered();
+    void on_actionContentsHelp_triggered();
 
     // Tool Bar
     void displaySelectorCombobox_currentIndexChanged(int index);
