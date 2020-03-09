@@ -5,6 +5,7 @@
 
 #include <assert.h>
 #include <QtCore/QDebug>
+#include <QtWidgets/QCheckBox>
 
 #include "base/core.h"
 #include "help/help_dialog.h"
@@ -37,7 +38,9 @@ DebugActionsDialog::DebugActionsDialog(QWidget *parent)
             this,                    &DebugActionsDialog::for_actionErrorsStatsButton_clicked);
     connect(_ui->elapsed_pushButton, &QPushButton::clicked,
             this,                    &DebugActionsDialog::for_actionElapsedStatsButton_clicked);
-
+    connect(_ui->extendedStats_checkBox,
+                                     &QCheckBox::stateChanged,
+             this   ,                 &DebugActionsDialog::for_actionExtendedStatsCheckBox_stateChanged);
     TRACECF(debug, "Constructor done. _cls = %s", _cls);
 }
 
@@ -66,7 +69,9 @@ void DebugActionsDialog::on_actionButtonBox_accepted()
 
 void DebugActionsDialog::on_actionButtonBox_helpRequested()
 {
+
     // TRACE();
+#ifdef OLD
     QString fn(":/docs/uioptions.html");   // -> debug_actions.html
     QFile f(fn);
     f.open(QFile::ReadOnly | QFile::Text);
@@ -83,6 +88,8 @@ void DebugActionsDialog::on_actionButtonBox_helpRequested()
     hd->setText(htmlText);
     hd->setWindowTitle("ddcui Help - Debugging Actions");
     hd->show();
+#endif
+    viewHelp("actions_debug.html", "ddcui Help - Debugging Actions", this);
 }
 
 
@@ -93,35 +100,47 @@ void DebugActionsDialog::on_actionButtonBox_helpRequested()
 void DebugActionsDialog::for_actionAllStatsButton_clicked(bool onoff) {
    bool debug = false;
    TRACECF(debug, "Executing");
-   emit reportStats_triggered(DDCA_STATS_ALL);
+   bool isChecked =  _ui->extendedStats_checkBox->isChecked();
+   emit reportStats_triggered(DDCA_STATS_ALL, isChecked );
 }
 
 void DebugActionsDialog::for_actionCallsStatsButton_clicked(bool onoff) {
    bool debug = false;
    TRACECF(debug, "Executing");
-   emit reportStats_triggered(DDCA_STATS_CALLS);
+   bool isChecked =  _ui->extendedStats_checkBox->isChecked();
+   emit reportStats_triggered(DDCA_STATS_CALLS, isChecked );
 }
 
 void DebugActionsDialog::for_actionErrorsStatsButton_clicked(bool onoff) {
    bool debug = false;
    TRACECF(debug, "Executing");
-   emit reportStats_triggered(DDCA_STATS_ERRORS);
+   bool isChecked =  _ui->extendedStats_checkBox->isChecked();
+   emit reportStats_triggered(DDCA_STATS_ERRORS, isChecked );
 }
 
 void DebugActionsDialog::for_actionTriesStatsButton_clicked(bool onoff) {
    bool debug = false;
    TRACECF(debug, "Executing");
-   emit reportStats_triggered(DDCA_STATS_TRIES);
+   bool isChecked =  _ui->extendedStats_checkBox->isChecked();
+   emit reportStats_triggered(DDCA_STATS_TRIES, isChecked );
 }
 
 void DebugActionsDialog::for_actionElapsedStatsButton_clicked(bool onoff) {
    bool debug = false;
    //  printf("_cls = %s\n", _cls);
    // printf("Z ");
-   // fflush(stdout);
+   // fflush(stdout);SA
    TRACECF(debug, "Executing");
-   emit reportStats_triggered(DDCA_STATS_ELAPSED);
+   bool isChecked =  _ui->extendedStats_checkBox->isChecked();
+   emit reportStats_triggered(DDCA_STATS_ELAPSED, isChecked );
 }
+
+void DebugActionsDialog::for_actionExtendedStatsCheckBox_stateChanged(int newState) {
+   bool debug = true;
+      bool checked =  _ui->extendedStats_checkBox->isChecked() ;
+   TRACECF(debug, "Executing. checked = %s, newState x = %d",  sbool( checked), newState  );
+}
+
 
 void DebugActionsDialog::for_actionResetStatsButton_clicked(bool onoff)
 {

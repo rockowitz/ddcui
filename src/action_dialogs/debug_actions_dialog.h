@@ -28,7 +28,7 @@ public:
 
     signals:
     void resetStats_triggered();
-    void reportStats_triggered(DDCA_Stats_Type stats_type);
+    void reportStats_triggered(DDCA_Stats_Type stats_type, bool extended);
 
 private slots:
     void on_actionButtonBox_accepted();
@@ -39,6 +39,9 @@ private slots:
     void for_actionErrorsStatsButton_clicked(bool onoff);
     void for_actionTriesStatsButton_clicked(bool onoff);
     void for_actionElapsedStatsButton_clicked(bool onoff);
+
+    void for_actionExtendedStatsCheckBox_stateChanged(int newState);
+
 
     void for_actionResetStatsButton_clicked(bool onoff);
 

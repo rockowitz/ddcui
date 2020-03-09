@@ -56,7 +56,7 @@
      <x>20</x>
      <y>40</y>
      <width>171</width>
-     <height>241</height>
+     <height>261</height>
     </rect>
    </property>
    <property name="title">
@@ -125,6 +125,19 @@
     </property>
     <property name="text">
      <string>Elapsed</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="extendedStats_checkBox">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>230</y>
+      <width>121</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Extended Stats</string>
     </property>
    </widget>
   </widget>
