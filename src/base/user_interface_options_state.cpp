@@ -23,11 +23,11 @@
     bool debug = false;
     bool old =   controlKeyRequired;
     bool newControlKeyRequired = onoff;
-    TRACECF(debug, "old = %s, new = %s", sbool(controlKeyRequired), sbool(onoff));
+    TRACECF(debug, "old = %s, new = %s", SBOOL(controlKeyRequired), SBOOL(onoff));
 
     if (newControlKeyRequired != old) {
         controlKeyRequired = newControlKeyRequired;
-        TRACECF(debug, "emitting ckrChanged(%s)", sbool(controlKeyRequired));
+        TRACECF(debug, "emitting ckrChanged(%s)", SBOOL(controlKeyRequired));
         emit controlKeyRequired_changed(controlKeyRequired);
     }
 }

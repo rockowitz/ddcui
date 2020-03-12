@@ -363,7 +363,7 @@ void VcpThread::getvcp(uint8_t featureCode, bool needMetadata) {
     bool debugFunc = false;
     debugFunc = debugFunc || debugThread;
     TRACECF(debugFunc, "Starting. featureCode=0x%02x, needMetadata = %s",
-                      featureCode, sbool(needMetadata));
+                      featureCode, SBOOL(needMetadata));
 
     DDCA_Display_Handle                   dh;
     DDCA_Non_Table_Vcp_Value              valrec;
@@ -428,7 +428,7 @@ void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint16_t shsl)
     bool debugFunc = false;
     debugFunc = debugFunc || debugThread;
     TRACECF(debugFunc, "Starting. feature_code=0x%02x.  shsl=0x%04x, writeOnly=%s",
-                       feature_code, shsl, sbool(writeOnly));
+                       feature_code, shsl, SBOOL(writeOnly));
 
     uint8_t sh = (shsl >> 8);
     uint8_t sl = (shsl & 0xff);
@@ -439,7 +439,7 @@ void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint16_t shsl)
     DDCA_Status ddcrc = perform_open_display(&dh);
     if (ddcrc == 0) {
        ddca_enable_verify(false);
-       // TRACE( "ddca_is_verify_enabled() returned: %s", sbool( ddca_is_verify_enabled()));
+       // TRACE( "ddca_is_verify_enabled() returned: %s", SBOOL( ddca_is_verify_enabled()));
        // ddca_enable_verify(!writeOnly);
        // uint8_t verified_hi_byte = 0;   // unused
        // uint8_t verified_lo_byte = 0;   // unused

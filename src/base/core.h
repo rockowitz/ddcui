@@ -93,7 +93,7 @@ do { \
 
 // Inline functions
 
-inline const char * sbool(bool val) { return (val) ? "true" : "false"; }
+// inline const char * sbool(bool val) { return (val) ? "true" : "false"; }
 // wrong.  on function end the underlying QByteArray is free'd, so the
 // returned pointer is invalid
 // inline const char * qs2s(QString qstr) {return qstr.toLatin1().data(); }
@@ -101,6 +101,5 @@ inline const char * sbool(bool val) { return (val) ? "true" : "false"; }
 // A macro alternative to sbool()
 #define SBOOL(val) ( (val) ? "true" : "false" )
 #define QS2S(qstr)  qstr.toLatin1().data()
-
 
 #endif // CORE_H

@@ -15,7 +15,7 @@
 #include "cmdline/parsed_cmd.h"
 
 
-static inline char * sbool(int b) {
+static inline char * SBOOL(int b) {
    return (b) ? "true" : "false";
 }
 
@@ -41,7 +41,7 @@ void dbgrpt_parsed_cmd(Parsed_Cmd * parsed_cmd) {
    if (parsed_cmd) {
       printf("   stats:                     0x%08x\n",   parsed_cmd->stats_types);
 #ifdef UNIMPLEMENTED
-      printf("   timestamp_trace:           %s\n",      sbool(parsed_cmd->flags & CMD_FLAG_TIMESTAMP_TRACE));
+      printf("   timestamp_trace:           %s\n",      SBOOL(parsed_cmd->flags & CMD_FLAG_TIMESTAMP_TRACE));
 #endif
       printf("   traced_groups              0x%08x\n",  parsed_cmd->traced_groups);
       if (parsed_cmd->traced_functions) {
@@ -62,13 +62,13 @@ void dbgrpt_parsed_cmd(Parsed_Cmd * parsed_cmd) {
       char buf[20];
       snprintf(buf,20, "%d,%d,%d", parsed_cmd->max_tries[0], parsed_cmd->max_tries[1], parsed_cmd->max_tries[2] );
       printf("   max_retries:               %s\n", buf);
-      printf("   report_freed_exceptions:   %s\n", sbool( parsed_cmd->flags & CMD_FLAG_REPORT_FREED_EXCP) );
-      printf("   enable udf:                %s\n", sbool(parsed_cmd->flags & CMD_FLAG_ENABLE_UDF) );
-      printf("   nousb                      %s\n", sbool(parsed_cmd->flags & CMD_FLAG_NOUSB) );
-      printf("   display ddc errors:        %s\n", sbool(parsed_cmd->flags & CMD_FLAG_DDCDATA) );
-      printf("   timestamp prefix:          %s\n", sbool(parsed_cmd->flags & CMD_FLAG_TIMESTAMP_TRACE) );
-      printf("   thread_id prefix:          %s\n", sbool(parsed_cmd->flags & CMD_FLAG_THREAD_ID_TRACE) );
-      printf("   show styles:               %s\n", sbool(parsed_cmd->flags & CMD_FLAG_SHOW_STYLES) );
+      printf("   report_freed_exceptions:   %s\n", SBOOL( parsed_cmd->flags & CMD_FLAG_REPORT_FREED_EXCP) );
+      printf("   enable udf:                %s\n", SBOOL(parsed_cmd->flags & CMD_FLAG_ENABLE_UDF) );
+      printf("   nousb                      %s\n", SBOOL(parsed_cmd->flags & CMD_FLAG_NOUSB) );
+      printf("   display ddc errors:        %s\n", SBOOL(parsed_cmd->flags & CMD_FLAG_DDCDATA) );
+      printf("   timestamp prefix:          %s\n", SBOOL(parsed_cmd->flags & CMD_FLAG_TIMESTAMP_TRACE) );
+      printf("   thread_id prefix:          %s\n", SBOOL(parsed_cmd->flags & CMD_FLAG_THREAD_ID_TRACE) );
+      printf("   show styles:               %s\n", SBOOL(parsed_cmd->flags & CMD_FLAG_SHOW_STYLES) );
       printf("   sleep multiplier:         %9.1f\n", parsed_cmd->sleep_multiplier);
 
    }

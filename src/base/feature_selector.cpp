@@ -27,9 +27,9 @@ bool FeatureSelector::operator!=(const FeatureSelector &other) const {
 
 void FeatureSelector::dbgrpt() {
    printf("   feature_list_id:          %d - %s\n", _featureListId, ddca_feature_list_id_name(_featureListId));
-   printf("   includeTableFeatures:     %s\n", sbool(_includeTableFeatures));
-   printf("   showUnsupportedFeatures:  %s\n", sbool(_showUnsupportedFeatures));
-   printf("   includeOnlyCapabilities:  %s\n", sbool(_includeOnlyCapabilities));
-   printf("   includeAllCapabilities:   %s\n", sbool(_includeAllCapabilities));
+   printf("   includeTableFeatures:     %s\n", SBOOL(_includeTableFeatures));
+   printf("   showUnsupportedFeatures:  %s\n", SBOOL(_showUnsupportedFeatures));
+   printf("   includeOnlyCapabilities:  %s\n", SBOOL(_includeOnlyCapabilities));
+   printf("   includeAllCapabilities:   %s\n", SBOOL(_includeAllCapabilities));
    fflush(stdout);
 }

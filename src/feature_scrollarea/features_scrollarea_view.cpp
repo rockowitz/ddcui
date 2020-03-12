@@ -251,7 +251,7 @@ void FeaturesScrollAreaView::onUIValueChanged(
    bool debug = false;
    debug = debug || debugSignals;
    TRACECF(debug, "Starting. featureCode = 0x%02x, writeOnly=%s, sh=0x%02x, sl=0x%02x",
-                  featureCode, sbool(writeOnly), sh, sl);
+                  featureCode, SBOOL(writeOnly), sh, sl);
 
    FeatureValue * curFv = _baseModel->modelVcpValueFind(featureCode);
    if (curFv && curFv->val().sh == sh && curFv->val().sl == sl) {

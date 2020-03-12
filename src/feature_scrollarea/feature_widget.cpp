@@ -284,7 +284,7 @@ void FeatureWidget::onInternalValueChanged(uint8_t featureCode, uint8_t sh, uint
 
    bool writeOnlyFeature = _feature_flags & DDCA_WO;
    TRACEMCF(debug, "-> Calling emit valueChanged, feature_code=0x%02x, writeOnlyFeature=%s, sh=0x%02x, sl=0x%02x",
-                    featureCode, sbool(writeOnlyFeature), sh, sl);
+                    featureCode, SBOOL(writeOnlyFeature), sh, sl);
    emit valueChanged(featureCode, writeOnlyFeature, sh, sl);
 }
 
@@ -301,7 +301,7 @@ void FeatureWidget::simpleFeatureValueChanged(SimpleFeatureValue fv) {
 bool FeatureWidget::hasSlTable()
 {
    bool result = _valueWidget->hasSlTable();
-   // TRACE("Returning: %s", sbool(result));
+   // TRACE("Returning: %s", SBOOL(result));
    return result;
 }
 

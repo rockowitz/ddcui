@@ -138,7 +138,7 @@ void DebugActionsDialog::for_actionElapsedStatsButton_clicked(bool onoff) {
 void DebugActionsDialog::for_actionExtendedStatsCheckBox_stateChanged(int newState) {
    bool debug = true;
       bool checked =  _ui->extendedStats_checkBox->isChecked() ;
-   TRACECF(debug, "Executing. checked = %s, newState x = %d",  sbool( checked), newState  );
+   TRACECF(debug, "Executing. checked = %s, newState x = %d",  SBOOL( checked), newState  );
 }
 
 

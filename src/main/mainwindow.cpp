@@ -639,7 +639,7 @@ void MainWindow::on_actionUserInterfaceOptionsDialog_triggered()
                      this,     &MainWindow::for_actionUserInterfaceOptionsDialog_accept);
     // need a connection for reset?
 
-    TRACECF(debug, "Calling setControKeyRequired(%s)", sbool(_uiOptionsState->controlKeyRequired) );
+    TRACECF(debug, "Calling setControKeyRequired(%s)", SBOOL(_uiOptionsState->controlKeyRequired) );
     dialog->setDialogBoxControlKeyRequired( _uiOptionsState->controlKeyRequired);
 
     dialog->exec();

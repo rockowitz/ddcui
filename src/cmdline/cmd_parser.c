@@ -2,7 +2,7 @@
  * ddcui command line parser for ddcui
  */
 
-// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <config.h>
@@ -17,6 +17,7 @@
 #include <ddcutil_types.h>
 #include <ddcutil_c_api.h>
 
+// #include "base/core.h"
 #include "c_util/string_util.h"
 
 #include "base/ddcui_parms.h"
@@ -25,9 +26,12 @@
 #include "cmdline/parsed_cmd.h"
 #include "cmdline/cmd_parser.h"
 
+//#include "base/core.h"
+
 // Variables used by callback functions
 static DDCA_Stats_Type   stats_work    = DDCA_STATS_NONE;
 char *   maxtrywork      = NULL;
+
 
 
 // Callback function for processing --stats
