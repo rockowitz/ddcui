@@ -686,7 +686,28 @@ void MainWindow::for_reportStats_triggered(DDCA_Stats_Type stats_type, bool show
    bool debug = false;
    TRACECF(debug, "triggered. stats_type = %d", stats_type);
    // TO DO: Make per/thread setting a checkbox on dialog
-   ddca_show_stats(stats_type, show_thread_data, 0);
+   // ddca_show_stats(stats_type, show_thread_data, 0);
+   capture_stats(stats_type, show_thread_data);
+}
+
+void MainWindow::capture_stats(DDCA_Stats_Type stats_type, bool show_thread_data) {
+       ddca_start_capture(DDCA_CAPTURE_NOOPTS);
+       // DDCA_Output_Level saved_ol = ddca_get_output_level();
+       // ddca_set_output_level(DDCA_OL_VERBOSE);
+       ddca_show_stats(stats_type, show_thread_data, 0);
+       // ddca_set_output_level(saved_ol);
+       char * s = ddca_end_capture();  // API's buffer, do not free
+
+       QString qs(s);
+       const QFont& textFont = QFont(       "Monospace",  9, QFont::Normal);
+       // viewHelpByTextX(qs, QString("Statistics Report"), textFont,  this);
+       HelpDialog2* hd = new HelpDialog2(this);
+       hd->setFont(textFont);
+       hd->setText(qs);
+          // hd->_textBrowser->setSource(fn);
+       hd->setWindowTitle( "Execution Statistics" );
+       hd->exec();     // always modal
+       // delete hd;   // causes crash
 }
 
 

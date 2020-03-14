@@ -121,6 +121,8 @@ private slots:
     void for_resetStats_triggered();
     void for_reportStats_triggered(DDCA_Stats_Type stats_type, bool showTheadData);
 
+    void capture_stats(DDCA_Stats_Type stats_type, bool show_thread_data);
+
 
     // Help Menu
     void on_actionAbout_triggered();
