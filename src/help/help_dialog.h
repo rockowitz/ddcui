@@ -12,6 +12,8 @@
 class QTextBrowser;
 
 void viewHelp(QString simpleFn, QString title,  QWidget * parent = nullptr);
+void viewHelpByText(QString text, QString title,  QWidget * parent = nullptr);
+void viewHelpByTextX(QString text, QString title, QFont font, QWidget *parent=nullptr);
 
 class HelpDialog2 : public QDialog {
 

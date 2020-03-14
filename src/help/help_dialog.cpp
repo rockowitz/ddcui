@@ -89,6 +89,27 @@ void HelpDialog2::on_buttonBox_rejected() {
 }
 
 
+void viewHelpByText(QString text, QString title, QWidget * parent) {
+
+   HelpDialog2* hd = new HelpDialog2(parent);
+   hd->setText(text);
+      // hd->_textBrowser->setSource(fn);
+   hd->setWindowTitle( title );
+   hd->exec();
+}
+
+
+void viewHelpByTextX(QString text, QString title, QFont font,QWidget * parent) {
+
+   HelpDialog2* hd = new HelpDialog2(parent);
+   hd->setFont(font);
+   hd->setText(text);
+      // hd->_textBrowser->setSource(fn);
+   hd->setWindowTitle( title );
+   hd->exec();     // always modal
+}
+
+
 
 
 
