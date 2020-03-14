@@ -221,7 +221,7 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
 // #ifdef REPLACE_NTSA
    if (maxtrywork) {
        bool saved_debug = debug;
-       debug = true;
+       debug = false;
        // DBGMSF(debug, "retrywork, argument = |%s|", maxtrywork );
        if (debug)
           printf("(%s) maxtrywork, argument = |%s|\n", __func__, maxtrywork);
