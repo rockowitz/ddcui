@@ -12,6 +12,7 @@
 #include <string.h>
 /** \endcond */
 
+#include "c_util/data_structures.h"
 #include "cmdline/parsed_cmd.h"
 
 
@@ -19,6 +20,16 @@ static inline char * SBOOL(int b) {
    return (b) ? "true" : "false";
 }
 
+
+const char * trival_repr(Optional_True_False value) {
+   char * result = NULL;
+   switch(value) {
+   case TRIVAL_TRUE:    result = "true";   break;
+   case TRIVAL_FALSE:   result = "false";   break;
+   case TRIVAL_UNSET:   result = "not set"; break;
+   }
+   return result;
+}
 
 
 /** Allocates new Parsed_Cmd data structure, sets default values.
@@ -33,6 +44,115 @@ Parsed_Cmd *  new_parsed_cmd() {
    parsed_cmd->sleep_multiplier = 1.0;
    return parsed_cmd;
 }
+
+
+
+Value_Name_Title view_table[] = {
+   VNT(VIEW_UNSET,         NULL),
+   VNT(VIEW_SUMMARY,       "Summary"),
+   VNT(VIEW_CAPABILITIES,  "Capabilities"),
+   VNT(VIEW_FEATURES,      "Features"),
+   VN_END
+};
+
+/*
+ * typedef enum {
+   FS_UNSET = 0,
+   FS_MCCS,
+   FS_CAPABILITIES,
+   FS_MANUFACTURER,
+   FS_COLOR,
+   FS_SCAN
+} Parsed_Feature_Set;
+
+
+ *
+ */
+
+Value_Name_Title feature_set_table[] = {
+      VNT(FS_UNSET,          NULL),
+      VNT(FS_MCCS,          "MCCS"),
+      VNT(FS_CAPABILITIES,  "Capabilities"),
+      VNT(FS_MANUFACTURER,  "Manufacturer"),
+      VNT(FS_COLOR,         "Color"),
+      VNT(FS_SCAN,          "Scan"),
+      VNT_END
+};
+
+Value_Name_Title nc_values_source_table[] = {
+       VNT(  NC_VALUES_SOURCE_UNSET,        NULL),
+       VNT(  NC_VALUES_SOURCE_MCCS,         "MCCS"),
+       VNT(  NC_VALUES_SOURCE_CAPABILITIES, "Capabilities"),
+       VNT(  NC_VALUES_SOURCE_BOTH,         "Both"),
+       VNT_END
+};
+
+
+
+
+/*
+ * typedef enum {
+   FS_UNSET = 0,
+   FS_MCCS,
+   FS_CAPABILITIES,
+   FS_MANUFACTURER,
+   FS_COLOR,
+   FS_SCAN
+} Parsed_Feature_Set;
+
+ *
+ */
+
+
+
+
+
+const char * get_feature_set_table_entry_name(Parsed_Feature_Set value) {
+   return vnt_name(feature_set_table, value);
+}
+
+
+const char * get_view_table_entry_name(Parsed_View pv) {
+   return vnt_name(view_table, pv);
+}
+
+
+Parsed_View  find_view_table_value(const char * value) {
+   return vnt_find_id(
+              view_table,
+              value,
+              true,      // search by description, not symbolic name
+              true,      // ignore case
+              VIEW_UNSET);
+
+}
+
+const char * get_nc_values_source_table_entry_name(Parsed_NC_Values_Source src) {
+   return vnt_name(nc_values_source_table, src);
+}
+
+
+Parsed_NC_Values_Source  find_nc_values_source_table_value(const char * value) {
+   return vnt_find_id(
+              nc_values_source_table,
+              value,
+              true,      // search by description, not symbolic name
+              true,      // ignore case
+              VIEW_UNSET);
+
+}
+
+
+Parsed_Feature_Set       find_feature_set_table_value(char * value) {
+   return vnt_find_id(
+              feature_set_table,
+              value,
+              true,      // search by description, not symbolic name
+              true,      // ignore case
+              FS_UNSET);
+}
+
+
 
 
 // Debugging function
@@ -69,7 +189,20 @@ void dbgrpt_parsed_cmd(Parsed_Cmd * parsed_cmd) {
       printf("   timestamp prefix:          %s\n", SBOOL(parsed_cmd->flags & CMD_FLAG_TIMESTAMP_TRACE) );
       printf("   thread_id prefix:          %s\n", SBOOL(parsed_cmd->flags & CMD_FLAG_THREAD_ID_TRACE) );
       printf("   show styles:               %s\n", SBOOL(parsed_cmd->flags & CMD_FLAG_SHOW_STYLES) );
+
+      printf("   include all capabilities:  %s\n", SBOOL(parsed_cmd->flags & CMD_FLAG_NC_VALUES_ALL_IN_CAPABILITIES) );
+      printf("   ignore capabilities        %s\n", SBOOL(parsed_cmd->flags & CMD_FLAG_NC_VALUES_MUST_BE_IN_CAPABILITIES) );
+      printf("   require control key:       %s\n", SBOOL(parsed_cmd->flags & CMD_FLAG_UI_REQUIRE_CONTROL_KEY) );
+      printf("   initial view:              %s\n", get_view_table_entry_name(parsed_cmd->view) );
+      printf("   default feature set:       %s\n", get_feature_set_table_entry_name(parsed_cmd->feature_set));
+
       printf("   sleep multiplier:         %9.1f\n", parsed_cmd->sleep_multiplier);
+#ifdef REF
+      Optional_True_False nc_values_all_in_capabilities;
+      Optional_True_False nc_values_must_be_in_capabilities;
+#endif
+      printf("  nc_values_must_be_in_capabilities: %s\n", trival_repr(parsed_cmd->nc_values_must_be_in_capabilities));
+      printf("  nc_values_all_in_capabilities: %s\n",     trival_repr(parsed_cmd->nc_values_all_in_capabilities));
 
    }
 }

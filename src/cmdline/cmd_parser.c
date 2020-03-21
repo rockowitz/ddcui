@@ -87,7 +87,7 @@ gboolean stats_arg_func(const    gchar* option_name,
  *          NULL if execution should be terminated
  */
 Parsed_Cmd * parse_command(int argc, char * argv[]) {
-   bool debug = false;
+   bool debug = true;
 
    if (debug) {
       printf("(%s) Starting\n", __func__ );
@@ -113,6 +113,20 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
    gchar**  trace_filenames        = NULL;
    gchar**  trace_functions        = NULL;
    char *   sleep_multiplier_work  = NULL;
+
+   gchar*   view_work              = NULL;
+   gchar*   nc_values_source_work  = NULL;
+   gchar*   feature_set_work       = NULL;
+   gboolean control_key_required   = false;
+   gboolean show_unsupported_features = false;
+
+   gboolean include_only_capabilities = true;     // hack, default value shouldn't be set here
+   gboolean include_all_capabilities = false;
+
+   gboolean only_capabilities_true_set  = false;
+   gboolean only_capabilities_false_set = false;
+   gboolean all_capabilities_true_set   = false;
+   gboolean all_capabilities_false_set  = false;
 
    GOptionEntry option_entries[] = {
    //  long_name short flags option-type          gpointer           description                    arg description
@@ -148,10 +162,41 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
       {"thread-id",'\0',   0, G_OPTION_ARG_NONE,   &thread_id_trace_flag, "Prepend trace msgs with thread id",     NULL},
       {"tid",      '\0',   0, G_OPTION_ARG_NONE,   &thread_id_trace_flag, "Prepend trace msgs with thread id",     NULL},
 
+      {"view",     '\0',   0, G_OPTION_ARG_STRING,   &view_work,            "Initial view",             "Summary|Capabilities|Features"},
+      {"require-control-key",
+                   '\0',   0, G_OPTION_ARG_NONE,     &control_key_required, "Control key must be pressed to move slider", NULL},
+     {"nc-values-source",
+                   '\0',   0, G_OPTION_ARG_STRING,   &nc_values_source_work,  "Initial NC values source",   "MMCS|Capabilities|Both"},
+
+      {"feature-set",
+                   '\0',   0, G_OPTION_ARG_STRING,   &feature_set_work,  "Feature set selection",
+                                                                       "MMCS|Capabilities|Manufacturer|Color|Scan"},
+
+      {"show-unsupported",
+                   '\0',   0, G_OPTION_ARG_NONE,      &show_unsupported_features, "Show unsupported features", NULL},
+      {"only-capabilities",
+                   '\0',   0, G_OPTION_ARG_NONE,      &only_capabilities_true_set, "Include only values in capabilities", NULL},
+      {"not-only-capabilities",
+                    '\0',  0, G_OPTION_ARG_NONE,      &only_capabilities_false_set, "Do not exclude values only in MCCS", NULL},
+      {"all-capabilities",
+                   '\0',   0, G_OPTION_ARG_NONE,      &all_capabilities_true_set, "Include all values in capabilities", NULL},
+      {"not-all-capabilities",
+                     '\0', 0, G_OPTION_ARG_NONE,      &all_capabilities_false_set, "Negate include all values in capabilities", NULL},
+
+
+
+
+#ifdef REF
+                               _ui->showUnsupported_checkbox->setChecked( fsel->_showUnsupportedFeatures);
+                               _ui->onlyCapabilities_checkbox->setChecked(fsel->_includeOnlyCapabilities);
+                               _ui->allCapabilities_checkbox->setChecked( fsel->_includeAllCapabilities);
+#endif
 
 // Pre-GUI queries
       {"styles",   '\0',   0, G_OPTION_ARG_NONE,     &show_styles_flag,     "List known styles",        NULL},
       {"version",  'V',    0, G_OPTION_ARG_NONE,     &version_flag,         "Show version information", NULL},
+
+
 
       // collect to verify that does not exist
       {G_OPTION_REMAINING,
@@ -216,7 +261,36 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
    SET_CMDFLAG(CMD_FLAG_NOUSB,             nousb_flag);
    SET_CMDFLAG(CMD_FLAG_SHOW_STYLES,       show_styles_flag);
 
+   SET_CMDFLAG(CMD_FLAG_UI_REQUIRE_CONTROL_KEY, control_key_required);
+   SET_CMDFLAG(CMD_FLAG_SHOW_UNSUPPORTED,       show_unsupported_features);
+   SET_CMDFLAG(CMD_FLAG_NC_VALUES_ALL_IN_CAPABILITIES, include_all_capabilities);
+   SET_CMDFLAG(CMD_FLAG_NC_VALUES_MUST_BE_IN_CAPABILITIES, include_only_capabilities);
+
 #undef SET_CMDFLAG
+
+#ifdef REF
+   Optional_True_False nc_values_all_in_capabilities;
+   Optional_True_False nc_values_must_be_in_capabilities;
+#endif
+
+   if (all_capabilities_true_set || all_capabilities_false_set) {
+      if (all_capabilities_true_set)
+         parsed_cmd->nc_values_all_in_capabilities = TRIVAL_TRUE;
+      else
+         parsed_cmd->nc_values_all_in_capabilities = TRIVAL_FALSE;
+   }
+   else
+      parsed_cmd->nc_values_all_in_capabilities = TRIVAL_UNSET;
+
+   if (only_capabilities_true_set || only_capabilities_false_set) {
+      if (only_capabilities_true_set)
+         parsed_cmd->nc_values_must_be_in_capabilities = TRIVAL_TRUE;
+      else
+         parsed_cmd->nc_values_must_be_in_capabilities = TRIVAL_FALSE;
+   }
+   else
+      parsed_cmd->nc_values_must_be_in_capabilities = TRIVAL_UNSET;
+
 
 // #ifdef REPLACE_NTSA
    if (maxtrywork) {
@@ -335,6 +409,48 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
          parsed_cmd->traced_files = trace_filenames;
       }
 
+      if (view_work) {
+         printf("view_work = %p -> |%s|\n", view_work, view_work);
+         Parsed_View pv = find_view_table_value(view_work);
+         if (pv == VIEW_UNSET) {
+            fprintf(stderr, "Unrecognized: %s\n", view_work);
+            ok = false;
+         }
+         else{
+            parsed_cmd->view = pv;
+         }
+      }
+
+
+      if (nc_values_source_work) {
+         printf("nc_values_source_work = %p -> |%s|\n", nc_values_source_work, nc_values_source_work);
+         Parsed_NC_Values_Source src = find_nc_values_source_table_value(nc_values_source_work);
+         if (src == VIEW_UNSET) {
+            fprintf(stderr, "Unrecognized: %s\n", nc_values_source_work);
+            ok = false;
+         }
+         else{
+            parsed_cmd->nc_values_source = src;
+         }
+      }
+
+#define VALUE_LOOKUP(_ENUM, _NAME, _NOT_FOUND_VALUE) \
+      if (_NAME ## _work) {                          \
+         _ENUM src = find_ ## _NAME ##_table_value(_NAME ## _work);                  \
+         if (src == _NOT_FOUND_VALUE) {                                        \
+            fprintf(stderr, "Unrecognized: %s\n", _NAME ## _work);             \
+            ok = false;                                                        \
+         }                                                                     \
+         else{                                                                 \
+            parsed_cmd->_NAME = src;                                           \
+         }                                                                     \
+      }
+
+      VALUE_LOOKUP(Parsed_Feature_Set, feature_set, FS_UNSET);
+
+
+
+
 
       if (cmd_and_args && cmd_and_args[0]) {
       // int rest_ct = 0;   // unused
@@ -351,6 +467,7 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
          ok = false;
 
       }
+
 
    if (version_flag) {
       printf("ddcui %s\n", DDCUI_VERSION);
@@ -380,6 +497,6 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
       parsed_cmd = NULL;
    }
 
-   // DBGMSF(debug, "Returning: %p", parsed_cmd);
+   printf("Returning: %p\n", parsed_cmd);
    return parsed_cmd;
 }
