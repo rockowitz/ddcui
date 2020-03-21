@@ -3,6 +3,7 @@
 // Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+#include <errno.h>
 #include <glib-2.0/glib.h>
 #include <iostream>
 #include <string.h>
@@ -319,6 +320,11 @@ void VcpThread::capabilities() {
             // DDCA_Error_Detail * err_detail =  ddca_get_error_detail();
             // ddca_report_error_detail(err_detail, 2);
             double curmult = ddca_get_sleep_multiplier();
+            if (ddcrc == -EBADF) {
+               TRACEC("EBADF");
+               continue;
+            }
+
             if (curmult <= 2.0f) {    // retry possible
                curmult = curmult * 2;
                TRACECF(debugRetry, "Adjusting thread sleep multiplier for %s to %5.2f",
