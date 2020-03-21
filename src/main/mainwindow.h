@@ -19,6 +19,8 @@
 #include "base/user_interface_options_state.h"
 #include "base/other_options_state.h"
 
+#include "cmdline/parsed_cmd.h"
+
 class FeatureBaseModel;
 class FeatureSelectionDialog;
 class FeatureSelector;
@@ -52,7 +54,8 @@ public:
         FeaturesView
     };
 
-    explicit MainWindow(QWidget *parent = 0);
+    // explicit
+    MainWindow(Parsed_Cmd * parsed_cmd, QWidget *parent = 0);
     ~MainWindow();
 
     void reportDdcApiError(QString funcname, int rc) const;

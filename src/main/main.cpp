@@ -64,13 +64,6 @@ static bool init_ddcutil_library(Parsed_Cmd * parsed_cmd) {
    ddca_set_trace_groups(parsed_cmd->traced_groups);
 
    /*
-   CMD_FLAG_TIMESTAMP_TRACE     = 0x0008,  // prepend trace and debug msgs with elapsed time
-   CMD_FLAG_REPORT_FREED_EXCP   = 0x0200,
-   CMD_FLAG_ENABLE_UDF        = 0x100000,
-   CMD_FLAG_NOUSB             = 0x200000,
-   */
-
-   /*
    *  Must be called before any API call that triggers display identification
    *
    *  @param onoff
@@ -92,8 +85,7 @@ static bool init_ddcutil_library(Parsed_Cmd * parsed_cmd) {
       ddca_set_max_tries(       DDCA_WRITE_READ_TRIES, parsed_cmd->max_tries[1]);
    }
    if (parsed_cmd->max_tries[2] > 0) {
-      ddca_set_max_tries(       DDCA_MULTI_PART_READ_TRIES, parsed_cmd->max_tries[2]);
-      ddca_set_max_tries(       DDCA_MULTI_PART_WRITE_TRIES, parsed_cmd->max_tries[2]);
+      ddca_set_max_tries(       DDCA_MULTI_PART_TRIES, parsed_cmd->max_tries[2]);
    }
    if (parsed_cmd->sleep_multiplier != 1.0f) {
       ddca_set_default_sleep_multiplier(parsed_cmd->sleep_multiplier);
@@ -144,7 +136,7 @@ int main(int argc, char *argv[])
     GlobalState & globalState = GlobalState::instance();
     init_core();
 
-    MainWindow w;
+    MainWindow w(parsed_cmd);
     globalState._mainWindow = &w;
 
     w.show();

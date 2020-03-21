@@ -51,7 +51,53 @@
 using namespace std;
 
 
-MainWindow::MainWindow(QWidget *parent) :
+NcValuesSource parsedNcValuesSource_to_NcValuesSource(Parsed_NC_Values_Source val) {
+   NcValuesSource ncvs = NcValuesFromBoth;      // put something
+   // yes, the values in NcValuesSource and Parsed_NC_Values_Source match, but relying on that is brittle
+   if (val != NC_VALUES_SOURCE_UNSET) {
+      switch(val) {
+      case NC_VALUES_SOURCE_MCCS:          ncvs = NcValuesFromMccs;          break;
+      case NC_VALUES_SOURCE_CAPABILITIES:  ncvs = NcValuesFromCapabilities;  break;
+      case NC_VALUES_SOURCE_BOTH:          ncvs = NcValuesFromBoth;          break;
+      case NC_VALUES_SOURCE_UNSET:         assert(false);  // impossible case to exhaust all values in switch
+      };
+   }
+   else {
+      ncvs = NcValuesFromCapabilities;   // default
+   }
+   return ncvs;
+}
+
+
+DDCA_Feature_Subset_Id parsedFeatureSet_to_ddcaFeatureSubsetId(Parsed_Feature_Set fs) {
+   DDCA_Feature_Subset_Id  fsid = DDCA_SUBSET_UNSET;   // dummy value
+         switch(fs) {
+         case FS_UNSET:        fsid = DDCA_SUBSET_UNSET;        break;
+         case FS_MCCS:         fsid = DDCA_SUBSET_KNOWN;        break;
+         case FS_CAPABILITIES: fsid = DDCA_SUBSET_CAPABILITIES; break;
+         case FS_MANUFACTURER: fsid = DDCA_SUBSET_MFG;          break;
+         case FS_COLOR:        fsid = DDCA_SUBSET_COLOR;        break;
+         case FS_SCAN:         fsid = DDCA_SUBSET_SCAN;         break;
+         }
+   return fsid;
+}
+
+
+
+#ifdef REF
+DDCA_SUBSET_UNSET = 0,      ///< No subset selected
+DDCA_SUBSET_KNOWN,          ///< All features defined in a MCCS spec
+DDCA_SUBSET_COLOR,          ///< Color related features
+DDCA_SUBSET_PROFILE,        ///< Features saved and restored by loadvcp/setvcp
+DDCA_SUBSET_MFG,            ///< Feature codes reserved for manufacturer use (0x0e..0xff)
+DDCA_SUBSET_CAPABILITIES,   ///< Feature codes specified in capabilities string
+DDCA_SUBSET_SCAN            ///< All feature codes other than known write-only or table
+#endif
+
+
+
+
+MainWindow::MainWindow(Parsed_Cmd * parsed_cmd, QWidget *parent) :
     QMainWindow(parent),
     _ui(new Ui_MainWindow(this))
     // _ui(new Ui::MainWindow)
@@ -130,11 +176,34 @@ MainWindow::MainWindow(QWidget *parent) :
     GlobalState& globalState = GlobalState::instance();
 
     _feature_selector   = new FeatureSelector();
+    if (parsed_cmd->feature_set) {
+       _feature_selector->_featureListId =
+             parsedFeatureSet_to_ddcaFeatureSubsetId(parsed_cmd->feature_set);
+    }
+
+    _feature_selector->_showUnsupportedFeatures = parsed_cmd->flags & CMD_FLAG_SHOW_UNSUPPORTED;
+
+    if (parsed_cmd->nc_values_must_be_in_capabilities == TRIVAL_TRUE)
+       _feature_selector->_includeOnlyCapabilities = true;
+    else if (parsed_cmd->nc_values_must_be_in_capabilities == TRIVAL_FALSE)
+       _feature_selector->_includeOnlyCapabilities = false;
+
+    if (parsed_cmd->nc_values_all_in_capabilities == TRIVAL_TRUE)
+       _feature_selector->_includeAllCapabilities = true;
+    else if (parsed_cmd->nc_values_all_in_capabilities == TRIVAL_FALSE)
+       _feature_selector->_includeAllCapabilities = false;
+
+   //  _feature_selector->_includeOnlyCapabilities = parsed_cmd->flags & CMD_FLAG_NC_VALUES_MUST_BE_IN_CAPABILITIES;
+   // _feature_selector->_includeAllCapabilities  = parsed_cmd->flags & CMD_FLAG_NC_VALUES_ALL_IN_CAPABILITIES;
 
     _otherOptionsState = new OtherOptionsState;
+    if (parsed_cmd->nc_values_source != NC_VALUES_SOURCE_UNSET) {
+       _otherOptionsState->ncValuesSource = parsedNcValuesSource_to_NcValuesSource(parsed_cmd->nc_values_source);
+    }
     globalState._otherOptionsState = _otherOptionsState;
 
     _uiOptionsState = new UserInterfaceOptionsState;
+    _uiOptionsState->controlKeyRequired = parsed_cmd->flags & CMD_FLAG_UI_REQUIRE_CONTROL_KEY;
     globalState._uiOptionsState = _uiOptionsState;
 
     // reportWidgetChildren(_ui->centralWidget, "Children of centralWidget, after initMonitors():");
@@ -665,7 +734,9 @@ void MainWindow::on_actionDebugActionsDialog_triggered()
    bool debug = false;
    // TODO: allocate once and save dialog, cf feature selection
    // display dialog box for selecting features
-   TRACECF(debug, "triggered");
+
+   // TRACECF(debug, "triggered");
+   // assert(false);  // for testing
 
    DebugActionsDialog* dialog = new DebugActionsDialog(this);
    QObject::connect(dialog, &DebugActionsDialog::resetStats_triggered,
