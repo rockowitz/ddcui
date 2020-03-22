@@ -8,6 +8,19 @@
 
 #include <ddcutil_types.h>
 
+// Used to distinguish between an explicit option set vs no option set,
+// in which case the default value will be used
+typedef enum {
+   TRIVAL_UNSET,
+   TRIVAL_FALSE,
+   TRIVAL_TRUE
+} Optional_True_False;      // what's the term used for kernel configuration?
+
+const char * trival_repr(Optional_True_False value);
+
+
+// View Menu
+
 typedef enum {
    VIEW_UNSET = 0,     // unset or invalid
    VIEW_SUMMARY,
@@ -16,15 +29,7 @@ typedef enum {
 } Parsed_View;
 
 
-/*
- typedef enum {
-   NcValuesFromMccs,
-   NcValuesFromCapabilities,
-   NcValuesFromBoth,
-} NcValuesSource;
-
- */
-
+// Options Menu
 
 typedef enum {
    FS_UNSET = 0,
@@ -35,10 +40,6 @@ typedef enum {
    FS_SCAN
 } Parsed_Feature_Set;
 
-
-
-
-
 typedef enum {
    NC_VALUES_SOURCE_UNSET = 0,
    NC_VALUES_SOURCE_MCCS,
@@ -46,7 +47,7 @@ typedef enum {
    NC_VALUES_SOURCE_BOTH
 } Parsed_NC_Values_Source;
 
-
+// General
 
 typedef enum {
    CMD_FLAG_NONE                   = 0x000000,
@@ -58,18 +59,8 @@ typedef enum {
    CMD_FLAG_NOUSB                  = 0x000020,
    CMD_FLAG_SHOW_STYLES            = 0x000040,
    CMD_FLAG_UI_REQUIRE_CONTROL_KEY = 0x000080,
-   CMD_FLAG_NC_VALUES_ALL_IN_CAPABILITIES = 0x000100,
-   CMD_FLAG_NC_VALUES_MUST_BE_IN_CAPABILITIES = 0x000200,
-   CMD_FLAG_SHOW_UNSUPPORTED       = 0x000400,
+   CMD_FLAG_SHOW_UNSUPPORTED       = 0x000100,
 } Parsed_Cmd_Flags;
-
-typedef enum {
-   TRIVAL_UNSET,
-   TRIVAL_FALSE,
-   TRIVAL_TRUE
-} Optional_True_False;      // what's the term used for kernel configuration?
-
-const char * trival_repr(Optional_True_False value);
 
 
 #define PARSED_CMD_MARKER  "PCMD"
@@ -90,17 +81,20 @@ typedef struct {
 
 } Parsed_Cmd;
 
-const char * get_feature_set_table_entry_name(Parsed_Feature_Set value);
 
-const char * get_view_table_entry_name(Parsed_View pv);
+// VNT Table Lookup
 
-Parsed_View  find_view_table_value(const char * value);
+const char *             get_feature_set_table_symbol(Parsed_Feature_Set feature_set_id);
 
-const char * get_nc_values_source_table_entry_name(Parsed_NC_Values_Source src);
+const char *             get_view_table_symbol(Parsed_View view_id);
+Parsed_View              find_view_table_value(const char * value);
+
+const char *             get_nc_values_source_table_symbol(Parsed_NC_Values_Source src_id);
 Parsed_NC_Values_Source  find_nc_values_source_table_value(const char * value);
 Parsed_Feature_Set       find_feature_set_table_value( char * value);
 
 
+// Lifecycle and debug
 
 Parsed_Cmd *  new_parsed_cmd();
 void          free_parsed_cmd(Parsed_Cmd * parsed_cmd);

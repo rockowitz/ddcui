@@ -1,5 +1,5 @@
 /* \file cmd_parser.c
- * ddcui command line parser for ddcui
+ * ddcui command line parser
  */
 
 // Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
@@ -17,22 +17,17 @@
 #include <ddcutil_types.h>
 #include <ddcutil_c_api.h>
 
-// #include "base/core.h"
 #include "c_util/string_util.h"
-
 #include "base/ddcui_parms.h"
 
 #include "cmdline/cmd_parser_aux.h"
 #include "cmdline/parsed_cmd.h"
 #include "cmdline/cmd_parser.h"
 
-//#include "base/core.h"
 
-// Variables used by callback functions
-static DDCA_Stats_Type   stats_work    = DDCA_STATS_NONE;
-char *   maxtrywork      = NULL;
-
-
+// Variables used by callback function
+static DDCA_Stats_Type  stats_work = DDCA_STATS_NONE;
+static char *           maxtrywork = NULL;
 
 // Callback function for processing --stats
 gboolean stats_arg_func(const    gchar* option_name,
@@ -78,7 +73,6 @@ gboolean stats_arg_func(const    gchar* option_name,
 }
 
 
-
 /** Primary parsing function
  *
  *  \param  argc      number of command line arguments
@@ -87,7 +81,7 @@ gboolean stats_arg_func(const    gchar* option_name,
  *          NULL if execution should be terminated
  */
 Parsed_Cmd * parse_command(int argc, char * argv[]) {
-   bool debug = true;
+   bool debug = false;
 
    if (debug) {
       printf("(%s) Starting\n", __func__ );
@@ -119,9 +113,6 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
    gchar*   feature_set_work       = NULL;
    gboolean control_key_required   = false;
    gboolean show_unsupported_features = false;
-
-   gboolean include_only_capabilities = true;     // hack, default value shouldn't be set here
-   gboolean include_all_capabilities = false;
 
    gboolean only_capabilities_true_set  = false;
    gboolean only_capabilities_false_set = false;
@@ -263,15 +254,8 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
 
    SET_CMDFLAG(CMD_FLAG_UI_REQUIRE_CONTROL_KEY, control_key_required);
    SET_CMDFLAG(CMD_FLAG_SHOW_UNSUPPORTED,       show_unsupported_features);
-   SET_CMDFLAG(CMD_FLAG_NC_VALUES_ALL_IN_CAPABILITIES, include_all_capabilities);
-   SET_CMDFLAG(CMD_FLAG_NC_VALUES_MUST_BE_IN_CAPABILITIES, include_only_capabilities);
 
 #undef SET_CMDFLAG
-
-#ifdef REF
-   Optional_True_False nc_values_all_in_capabilities;
-   Optional_True_False nc_values_must_be_in_capabilities;
-#endif
 
    if (all_capabilities_true_set || all_capabilities_false_set) {
       if (all_capabilities_true_set)
@@ -372,7 +356,6 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
       }
    }
 
-
    // #ifdef MULTIPLE_TRACE
       if (trace_classes) {
          DDCA_Trace_Group traceClasses = 0x00;
@@ -410,7 +393,7 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
       }
 
       if (view_work) {
-         printf("view_work = %p -> |%s|\n", view_work, view_work);
+         // printf("view_work = %p -> |%s|\n", view_work, view_work);
          Parsed_View pv = find_view_table_value(view_work);
          if (pv == VIEW_UNSET) {
             fprintf(stderr, "Unrecognized: %s\n", view_work);
@@ -423,7 +406,7 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
 
 
       if (nc_values_source_work) {
-         printf("nc_values_source_work = %p -> |%s|\n", nc_values_source_work, nc_values_source_work);
+         // printf("nc_values_source_work = %p -> |%s|\n", nc_values_source_work, nc_values_source_work);
          Parsed_NC_Values_Source src = find_nc_values_source_table_value(nc_values_source_work);
          if (src == VIEW_UNSET) {
             fprintf(stderr, "Unrecognized: %s\n", nc_values_source_work);
@@ -434,9 +417,10 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
          }
       }
 
+// Does this macro make code cleaner or more obscure?
 #define VALUE_LOOKUP(_ENUM, _NAME, _NOT_FOUND_VALUE) \
       if (_NAME ## _work) {                          \
-         _ENUM src = find_ ## _NAME ##_table_value(_NAME ## _work);                  \
+         _ENUM src = find_ ## _NAME ##_table_value(_NAME ## _work);            \
          if (src == _NOT_FOUND_VALUE) {                                        \
             fprintf(stderr, "Unrecognized: %s\n", _NAME ## _work);             \
             ok = false;                                                        \
@@ -448,9 +432,7 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
 
       VALUE_LOOKUP(Parsed_Feature_Set, feature_set, FS_UNSET);
 
-
-
-
+#undef VALUE_LOOKUP
 
       if (cmd_and_args && cmd_and_args[0]) {
       // int rest_ct = 0;   // unused
@@ -461,19 +443,17 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
       //    }
       // }
 
-         char * s = g_strjoinv(" ",cmd_and_args);
-         printf("Unrecognized: %s\n", s);
-         free(s);
-         ok = false;
-
-      }
-
+      char * s = g_strjoinv(" ",cmd_and_args);
+      fprintf(stderr, "Unrecognized: %s\n", s);
+      free(s);
+      ok = false;
+   }
 
    if (version_flag) {
       printf("ddcui %s\n", DDCUI_VERSION);
        puts("");
       // if no command specified, include license in version information and terminate
-         puts("Copyright (C) 2018-2019 Sanford Rockowitz");
+         puts("Copyright (C) 2018-2020 Sanford Rockowitz");
          puts("License GPLv2: GNU GPL version 2 or later <http://gnu.org/licenses/gpl.html>");
          puts("This is free software: you are free to change and redistribute it.");
          puts("There is NO WARRANTY, to the extent permitted by law.");
@@ -481,12 +461,8 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
          exit(0);
    }
 
-   if (show_styles_flag) {
-   }
-
    // DBGMSF(debug, "Calling g_option_context_free(), context=%p...", context);
    g_option_context_free(context);
-
 
    if (debug) {
       dbgrpt_parsed_cmd(parsed_cmd);
@@ -497,6 +473,7 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
       parsed_cmd = NULL;
    }
 
-   printf("Returning: %p\n", parsed_cmd);
+   if (debug)
+      printf("Returning: %p\n", parsed_cmd);
    return parsed_cmd;
 }
