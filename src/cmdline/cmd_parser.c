@@ -162,7 +162,7 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
       {"thread-id",'\0',   0, G_OPTION_ARG_NONE,   &thread_id_trace_flag, "Prepend trace msgs with thread id",     NULL},
       {"tid",      '\0',   0, G_OPTION_ARG_NONE,   &thread_id_trace_flag, "Prepend trace msgs with thread id",     NULL},
 
-      {"view",     '\0',   0, G_OPTION_ARG_STRING,   &view_work,            "Initial view",             "Summary|Capabilities|Features"},
+//    {"view",     '\0',   0, G_OPTION_ARG_STRING,   &view_work,            "Initial view",             "Summary|Capabilities|Features"},
       {"require-control-key",
                    '\0',   0, G_OPTION_ARG_NONE,     &control_key_required, "Control key must be pressed to move slider", NULL},
      {"nc-values-source",
