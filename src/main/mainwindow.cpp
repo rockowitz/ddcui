@@ -47,7 +47,6 @@
 #include "main/mainwindow_ui.h"
 #include "main/msgbox_thread.h"
 
-
 using namespace std;
 
 
@@ -81,20 +80,6 @@ DDCA_Feature_Subset_Id parsedFeatureSet_to_ddcaFeatureSubsetId(Parsed_Feature_Se
          }
    return fsid;
 }
-
-
-
-#ifdef REF
-DDCA_SUBSET_UNSET = 0,      ///< No subset selected
-DDCA_SUBSET_KNOWN,          ///< All features defined in a MCCS spec
-DDCA_SUBSET_COLOR,          ///< Color related features
-DDCA_SUBSET_PROFILE,        ///< Features saved and restored by loadvcp/setvcp
-DDCA_SUBSET_MFG,            ///< Feature codes reserved for manufacturer use (0x0e..0xff)
-DDCA_SUBSET_CAPABILITIES,   ///< Feature codes specified in capabilities string
-DDCA_SUBSET_SCAN            ///< All feature codes other than known write-only or table
-#endif
-
-
 
 
 MainWindow::MainWindow(Parsed_Cmd * parsed_cmd, QWidget *parent) :
@@ -231,14 +216,6 @@ MainWindow::MainWindow(Parsed_Cmd * parsed_cmd, QWidget *parent) :
 // #ifdef WORKS
         emit signalMonitorSummaryView();
 // #endif
-#ifdef REF
-     typedef enum {
-        VIEW_UNSET = 0,     // unset or invalid
-        VIEW_SUMMARY,
-        VIEW_CAPABILITIES,
-        VIEW_FEATURES
-     } Parsed_View;
-#endif
 #ifdef BAD   // get dialog box that capabilities incomplete before man screen appears
      if (parsed_cmd->view == VIEW_UNSET || parsed_cmd->view == VIEW_SUMMARY)
         emit signalMonitorSummaryView();
@@ -667,7 +644,6 @@ void MainWindow::for_actionFeatureSelectionDialog_accepted()
 }
 
 
-
 // OtherOptions slots
 
 void MainWindow::on_actionOtherOptionsDialog_triggered()
@@ -750,6 +726,7 @@ void MainWindow::for_actionUserInterfaceOptionsDialog_accept()
 
 // DebugActionsDialog slots
 
+
 void MainWindow::on_actionDebugActionsDialog_triggered()
 {
    bool debug = false;
@@ -768,11 +745,13 @@ void MainWindow::on_actionDebugActionsDialog_triggered()
    delete dialog;
 }
 
+
 void MainWindow::for_resetStats_triggered() {
    bool debug = false;
    TRACECF(debug, "triggered");
    ddca_reset_stats();
 }
+
 
 void MainWindow::for_reportStats_triggered(DDCA_Stats_Type stats_type, bool show_thread_data) {
    bool debug = false;
@@ -781,6 +760,7 @@ void MainWindow::for_reportStats_triggered(DDCA_Stats_Type stats_type, bool show
    // ddca_show_stats(stats_type, show_thread_data, 0);
    capture_stats(stats_type, show_thread_data);
 }
+
 
 void MainWindow::capture_stats(DDCA_Stats_Type stats_type, bool show_thread_data) {
        ddca_start_capture(DDCA_CAPTURE_NOOPTS);
@@ -826,6 +806,7 @@ void MainWindow::on_actionRescan_triggered() {
    assert(_curDisplayIndex >= 0);
    _monitors[_curDisplayIndex]->_baseModel->reloadFeatures();
 }
+
 
 void MainWindow::on_actionRedetect_triggered() {
    TRACEC("Executing");
