@@ -228,7 +228,28 @@ MainWindow::MainWindow(Parsed_Cmd * parsed_cmd, QWidget *parent) :
 
      // Start with Monitor Summary of first monitor instead of no view selected
      if (_monitors.size() > 0)
+// #ifdef WORKS
         emit signalMonitorSummaryView();
+// #endif
+#ifdef REF
+     typedef enum {
+        VIEW_UNSET = 0,     // unset or invalid
+        VIEW_SUMMARY,
+        VIEW_CAPABILITIES,
+        VIEW_FEATURES
+     } Parsed_View;
+#endif
+#ifdef BAD   // get dialog box that capabilities incomplete before man screen appears
+     if (parsed_cmd->view == VIEW_UNSET || parsed_cmd->view == VIEW_SUMMARY)
+        emit signalMonitorSummaryView();
+     else if (parsed_cmd->view == VIEW_CAPABILITIES) {
+        emit signalCapabilitiesView();
+     }
+     else {
+        assert (parsed_cmd->view == VIEW_FEATURES);
+        emit signalFeaturesView();
+     }
+#endif
 }
 
 
