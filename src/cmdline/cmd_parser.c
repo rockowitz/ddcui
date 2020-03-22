@@ -108,7 +108,9 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
    gchar**  trace_functions        = NULL;
    char *   sleep_multiplier_work  = NULL;
 
+#ifdef DISABLE_VIEW_OPTION
    gchar*   view_work              = NULL;
+#endif
    gchar*   nc_values_source_work  = NULL;
    gchar*   feature_set_work       = NULL;
    gboolean control_key_required   = false;
@@ -153,7 +155,9 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
       {"thread-id",'\0',   0, G_OPTION_ARG_NONE,   &thread_id_trace_flag, "Prepend trace msgs with thread id",     NULL},
       {"tid",      '\0',   0, G_OPTION_ARG_NONE,   &thread_id_trace_flag, "Prepend trace msgs with thread id",     NULL},
 
-//    {"view",     '\0',   0, G_OPTION_ARG_STRING,   &view_work,            "Initial view",             "Summary|Capabilities|Features"},
+#ifdef DISABLE_VIEW_OPTION
+      {"view",     '\0',   0, G_OPTION_ARG_STRING,   &view_work,            "Initial view",             "Summary|Capabilities|Features"},
+#endif
       {"require-control-key",
                    '\0',   0, G_OPTION_ARG_NONE,     &control_key_required, "Control key must be pressed to move slider", NULL},
      {"nc-values-source",
@@ -392,6 +396,7 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
          parsed_cmd->traced_files = trace_filenames;
       }
 
+#ifdef DISABLE_VIEW_OPTION
       if (view_work) {
          // printf("view_work = %p -> |%s|\n", view_work, view_work);
          Parsed_View pv = find_view_table_value(view_work);
@@ -403,6 +408,7 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
             parsed_cmd->view = pv;
          }
       }
+#endif
 
 
       if (nc_values_source_work) {
