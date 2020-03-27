@@ -6,7 +6,7 @@
 #ifndef DDCUI_PARMS_H_
 #define DDCUI_PARMS_H_
 
-#define DDCUI_VERSION "0.1.0"
+#define DDCUI_VERSION "0.1.1-dev"
 
 #ifdef TOO_MUCH_INDIRECTION
 #define FEATURE_VALUE_MONO_FONT_SIZE  8
