@@ -94,32 +94,35 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
 
    Parsed_Cmd * parsed_cmd = new_parsed_cmd();
 
-   gboolean ddc_flag               = false;
-   gboolean enable_udf_flag        = false;
-   gboolean nousb_flag             = false;
-   gboolean report_freed_excp_flag = false;
-   gboolean timestamp_trace_flag = false;
-   gboolean thread_id_trace_flag = false;
-   gboolean version_flag           = false;
-   gboolean show_styles_flag       = false;
-   gchar**  cmd_and_args           = NULL;
-   gchar**  trace_classes          = NULL;
-   gchar**  trace_filenames        = NULL;
-   gchar**  trace_functions        = NULL;
-   char *   sleep_multiplier_work  = NULL;
+   gboolean ddc_flag                = false;
+   gboolean enable_udf_flag         = false;
+   gboolean nousb_flag              = false;
+   gboolean report_freed_excp_flag  = false;
+   gboolean timestamp_trace_flag    = false;
+   gboolean thread_id_trace_flag    = false;
+   gboolean version_flag            = false;
+   gboolean show_styles_flag        = false;
+   gchar**  cmd_and_args            = NULL;
+   gchar**  trace_classes           = NULL;
+   gchar**  trace_filenames         = NULL;
+   gchar**  trace_functions         = NULL;
+   char *   sleep_multiplier_work   = NULL;
 
 #ifdef DISABLE_VIEW_OPTION
-   gchar*   view_work              = NULL;
+   gchar*   view_work               = NULL;
 #endif
-   gchar*   nc_values_source_work  = NULL;
-   gchar*   feature_set_work       = NULL;
-   gboolean control_key_required   = false;
+   gchar*   nc_values_source_work   = NULL;
+   gchar*   feature_set_work        = NULL;
+   gboolean control_key_required    = false;
    gboolean show_unsupported_features = false;
 
    gboolean only_capabilities_true_set  = false;
    gboolean only_capabilities_false_set = false;
    gboolean all_capabilities_true_set   = false;
    gboolean all_capabilities_false_set  = false;
+
+   gboolean debug_parse             = false;
+   gboolean parse_only              = false;
 
    GOptionEntry option_entries[] = {
    //  long_name short flags option-type          gpointer           description                    arg description
@@ -142,7 +145,6 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
 #endif
       {"sleep-multiplier", '\0', 0,
                                  G_OPTION_ARG_STRING,   &sleep_multiplier_work, "Multiplication factor for DDC sleeps", "number"},
-
 
   // debugging
       {"excp",     '\0',   0, G_OPTION_ARG_NONE,     &report_freed_excp_flag,  "Report freed exceptions", NULL},
@@ -178,21 +180,22 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
       {"not-all-capabilities",
                      '\0', 0, G_OPTION_ARG_NONE,      &all_capabilities_false_set, "Negate include all values in capabilities", NULL},
 
-
-
-
 #ifdef REF
                                _ui->showUnsupported_checkbox->setChecked( fsel->_showUnsupportedFeatures);
                                _ui->onlyCapabilities_checkbox->setChecked(fsel->_includeOnlyCapabilities);
                                _ui->allCapabilities_checkbox->setChecked( fsel->_includeAllCapabilities);
 #endif
+// Display selection
+      {"model",    '\0',   0, G_OPTION_ARG_STRING, &parsed_cmd->model,                "Model of default display",              NULL},
+//    {"bus",      '\0',   0, G_OPTION_ARG_INT,    &parsed_cmd->busno,    "I2C bus number",                        "integer"},
 
 // Pre-GUI queries
       {"styles",   '\0',   0, G_OPTION_ARG_NONE,     &show_styles_flag,     "List known styles",        NULL},
       {"version",  'V',    0, G_OPTION_ARG_NONE,     &version_flag,         "Show version information", NULL},
 
-
-
+// Debug parser
+      {"debug-parse", '\0', 0, G_OPTION_ARG_NONE,    &debug_parse,           "Show parse result",        NULL},
+      {"parse-only",  '\0', 0, G_OPTION_ARG_NONE,    &parse_only,            "Exit after parsing",       NULL},
       // collect to verify that does not exist
       {G_OPTION_REMAINING,
                  '\0', 0,  G_OPTION_ARG_STRING_ARRAY, &cmd_and_args, NULL,   NULL},
@@ -279,6 +282,9 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
    else
       parsed_cmd->nc_values_must_be_in_capabilities = TRIVAL_UNSET;
 
+   // if (model) {
+   //    parsed_cmd->model = strdup(model);
+   // }
 
 // #ifdef REPLACE_NTSA
    if (maxtrywork) {
@@ -470,11 +476,11 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
    // DBGMSF(debug, "Calling g_option_context_free(), context=%p...", context);
    g_option_context_free(context);
 
-   if (debug) {
+   if (debug || debug_parse) {
       dbgrpt_parsed_cmd(parsed_cmd);
    }
 
-   if (!ok) {
+   if (!ok || parse_only) {
       free_parsed_cmd(parsed_cmd);
       parsed_cmd = NULL;
    }

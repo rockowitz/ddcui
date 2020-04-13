@@ -78,7 +78,8 @@ typedef struct {
    float               sleep_multiplier;
    Optional_True_False nc_values_all_in_capabilities;
    Optional_True_False nc_values_must_be_in_capabilities;
-
+   char *              model;
+   int                 busno;
 } Parsed_Cmd;
 
 

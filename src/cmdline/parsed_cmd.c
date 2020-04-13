@@ -43,6 +43,7 @@ Parsed_Cmd *  new_parsed_cmd() {
    // n. all flags are false, byte values 0, integers 0, pointers NULL because of calloc
    // parsed_cmd->flags |= CMD_FLAG_ENABLE_UDF;
    parsed_cmd->sleep_multiplier = 1.0;
+   parsed_cmd->busno = -1;
    return parsed_cmd;
 }
 
@@ -144,22 +145,24 @@ void dbgrpt_parsed_cmd(Parsed_Cmd * parsed_cmd) {
 
       char buf[20];
       snprintf(buf,20, "%d,%d,%d", parsed_cmd->max_tries[0], parsed_cmd->max_tries[1], parsed_cmd->max_tries[2] );
-      printf("   max_retries:               %s\n", buf);
-      printf("   report_freed_exceptions:   %s\n", SBOOL(parsed_cmd->flags & CMD_FLAG_REPORT_FREED_EXCP) );
-      printf("   enable udf:                %s\n", SBOOL(parsed_cmd->flags & CMD_FLAG_ENABLE_UDF) );
-      printf("   nousb                      %s\n", SBOOL(parsed_cmd->flags & CMD_FLAG_NOUSB) );
-      printf("   display ddc errors:        %s\n", SBOOL(parsed_cmd->flags & CMD_FLAG_DDCDATA) );
-      printf("   timestamp prefix:          %s\n", SBOOL(parsed_cmd->flags & CMD_FLAG_TIMESTAMP_TRACE) );
-      printf("   thread_id prefix:          %s\n", SBOOL(parsed_cmd->flags & CMD_FLAG_THREAD_ID_TRACE) );
-      printf("   show styles:               %s\n", SBOOL(parsed_cmd->flags & CMD_FLAG_SHOW_STYLES) );
+      printf("   max_retries:               %s\n",   buf);
+      printf("   report_freed_exceptions:   %s\n",   SBOOL(parsed_cmd->flags & CMD_FLAG_REPORT_FREED_EXCP) );
+      printf("   enable udf:                %s\n",   SBOOL(parsed_cmd->flags & CMD_FLAG_ENABLE_UDF) );
+      printf("   nousb                      %s\n",   SBOOL(parsed_cmd->flags & CMD_FLAG_NOUSB) );
+      printf("   display ddc errors:        %s\n",   SBOOL(parsed_cmd->flags & CMD_FLAG_DDCDATA) );
+      printf("   timestamp prefix:          %s\n",   SBOOL(parsed_cmd->flags & CMD_FLAG_TIMESTAMP_TRACE) );
+      printf("   thread_id prefix:          %s\n",   SBOOL(parsed_cmd->flags & CMD_FLAG_THREAD_ID_TRACE) );
+      printf("   show styles:               %s\n",   SBOOL(parsed_cmd->flags & CMD_FLAG_SHOW_STYLES) );
       printf("   sleep multiplier:         %9.1f\n", parsed_cmd->sleep_multiplier);
 
-      printf("   require control key:       %s\n", SBOOL(parsed_cmd->flags & CMD_FLAG_UI_REQUIRE_CONTROL_KEY) );
-      printf("   initial view:              %s\n", get_view_table_symbol(parsed_cmd->view) );
-      printf("   default feature set:       %s\n", get_feature_set_table_symbol(parsed_cmd->feature_set));
-      printf("   NC values source:          %s\n", get_nc_values_source_table_symbol(parsed_cmd->nc_values_source));
+      printf("   require control key:       %s\n",   SBOOL(parsed_cmd->flags & CMD_FLAG_UI_REQUIRE_CONTROL_KEY) );
+      printf("   initial view:              %s\n",   get_view_table_symbol(parsed_cmd->view) );
+      printf("   default feature set:       %s\n",   get_feature_set_table_symbol(parsed_cmd->feature_set));
+      printf("   NC values source:          %s\n",   get_nc_values_source_table_symbol(parsed_cmd->nc_values_source));
       printf("   nc_values_must_be_in_capabilities: %s\n", trival_repr(parsed_cmd->nc_values_must_be_in_capabilities));
       printf("   nc_values_all_in_capabilities:     %s\n", trival_repr(parsed_cmd->nc_values_all_in_capabilities));
+      printf("   initial model:             %s\n",   parsed_cmd->model);
+      printf("   initial bus number:        %d\n",   parsed_cmd->busno);
    }
 }
 
