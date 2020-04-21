@@ -31,7 +31,7 @@ signals:
     void postSerialMsgBox(QString boxTitle, QString boxText, QMessageBox::Icon boxIcon);
 
 private:
-    void showSerialMsgBox(QString title, QString text, QMessageBox::Icon icon);
+     // void showSerialMsgBox(QString title, QString text, QMessageBox::Icon icon);
 
     MsgBoxQueue*          _requestQueue = NULL;
     // QWidget*               _parent = NULL;
