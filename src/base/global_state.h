@@ -1,6 +1,6 @@
 // global_state.h
 
-// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef GLOBAL_STATE_H_
@@ -19,11 +19,11 @@ public:
    UserInterfaceOptionsState * _uiOptionsState= NULL;
 
    MainWindow * _mainWindow = NULL;
+   MsgBoxThread * _msgBoxThread = NULL;
 
 private:
    GlobalState();
    // No need for destructor.  Created once for life of the program.
-
 };
 
 #endif /* GLOBAL_STATE_H_ */
