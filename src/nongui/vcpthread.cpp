@@ -284,6 +284,7 @@ void VcpThread::adjustRetries() {
 // Process RQCapabilities
 void VcpThread::capabilities() {
    bool debugFunc = debugThread;
+   debugFunc = false;
    bool debugRetry = false;
    debugFunc = debugFunc || debugThread;
    debugRetry = debugRetry || debugFunc;
@@ -292,6 +293,7 @@ void VcpThread::capabilities() {
    DDCA_Display_Handle dh;
    char *              caps = NULL;
    DDCA_Capabilities * parsed_caps = NULL;
+   int retry_count = 0;
 
    DDCA_Status ddcrc = perform_open_display(&dh);
    if (ddcrc == 0) {
@@ -310,7 +312,8 @@ void VcpThread::capabilities() {
       // TRACEF(debugFunc,"Sleeping for 1000000 msec");
       // usleep(1000000);
       bool retryable = true;
-      int retry_count = 0;
+
+      // While retrying here?  Retries already occurred in library? (4/2020)
       while (retryable) {
          retryable = false;
          ddcrc = ddca_get_capabilities_string(dh, &caps);
@@ -352,15 +355,22 @@ void VcpThread::capabilities() {
          if (ddcrc != 0)
             rpt_ddca_status(0, __func__, "ddca_parse_capabilities_string", ddcrc);
       }
+      // rpt_ddca_status(0, __func__, "dummy function", -99);   // *** TEMP ***
       // if ddcrc != 0, caps may be NULL, parsed_caps definitely NULL
       // whatever the case, tell _baseModel the result
       _baseModel->setCapabilities(ddcrc, caps, parsed_caps);
 
-      TRACECF(debugFunc, "Closing %s",  ddca_dref_repr(this->_dref) );
-      ddcrc = perform_close_display(dh);
+      if (ddcrc == -EBADF) {
+         TRACECF(debugFunc, "ddca_get_capabilities_string() returned -EBADF. Skipping close. dh=%s",
+                            ddca_dref_repr(this->_dref));
+      }
+      else {
+         TRACECF(debugFunc, "Closing %s",  ddca_dref_repr(this->_dref) );
+         ddcrc = perform_close_display(dh);
+      }
    }  // open succeeded
 
-   TRACECF(debugFunc, "Done. dref=%s", ddca_dref_repr(this->_dref));
+   TRACECF(debugFunc, "Done.     dref=%s, retry_count=%d", ddca_dref_repr(this->_dref), retry_count);
 } // function
 
 
