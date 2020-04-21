@@ -18,6 +18,7 @@
 #include "../base/core.h"
 #include "base/user_interface_options_state.h"
 #include "base/other_options_state.h"
+#include "nongui/msgbox_queue.h"
 
 #include "cmdline/parsed_cmd.h"
 
@@ -34,6 +35,7 @@ class DebugActionsDialog;
 class QMessageBox;
 class VcpThread;
 class WaitingSpinnerWidget;
+class MsgBoxThread;
 
 // namespace Ui {
 // class MainWindow;
@@ -57,6 +59,8 @@ public:
     // explicit
     MainWindow(Parsed_Cmd * parsed_cmd, QWidget *parent = 0);
     ~MainWindow();
+
+    void initSerialMsgbox();
 
     void reportDdcApiError(QString funcname, int rc) const;
     // void pageChanged(int pageno) override;
@@ -83,6 +87,7 @@ signals:
     void userInterfaceOptionsChanged();
     void showStats();     // needs parm for which
     void resetStats();
+    void reportApplicationEventLoopStarted();
 
 public slots:
     void longRunningTaskStart();
@@ -91,6 +96,7 @@ public slots:
     void showSerialMsgBox(QString title, QString text, QMessageBox::Icon icon);
 
 private slots:
+    void start_msgBoxThread();
     // View Menu
     void on_actionMonitorSummary_triggered();
     void on_actionCapabilities_triggered();
@@ -150,7 +156,7 @@ public:
     FeatureSelector *        _feature_selector = NULL;
 
 private:
-    void initMonitors();
+    void initMonitors(Parsed_Cmd * parsed_cmd);
     void loadMonitorFeatures(Monitor * monitor);
 
     const char *             _cls;
@@ -170,6 +176,8 @@ private:
     QMessageBox*             _serialMsgBox = nullptr;
     QMessageBox*             _loadingMsgBox;
     MsgBoxQueue*             _msgboxQueue = nullptr;
+    MsgBoxThread *           _msgBoxThread = nullptr;
+    QList<MsgBoxQueueEntry*> _deferredMsgs;
 
     FeatureSelectionDialog*  _fsd = NULL;
     OtherOptionsDialog*      _ood = NULL;       // for future use

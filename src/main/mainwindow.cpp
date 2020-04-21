@@ -8,6 +8,11 @@
 #include <assert.h>
 #include <iostream>
 
+#include <QtWidgets/QApplication>
+#include <QtGui/QScreen>
+#include <QtCore/QList>
+
+
 #include <QtCore/QThread>
 #include <QtGui/QFont>
 #include <QtWidgets/QWidget>
@@ -15,6 +20,7 @@
 
 #include <ddcutil_c_api.h>
 
+#include "base/global_state.h"
 #include "../base/core.h"
 #include "../base/widget_debug.h"
 #include "help/help_dialog.h"
@@ -82,6 +88,37 @@ DDCA_Feature_Subset_Id parsedFeatureSet_to_ddcaFeatureSubsetId(Parsed_Feature_Se
    return fsid;
 }
 
+void MainWindow::initSerialMsgbox() {
+   // QMessageBox for displaying error messages, one at a time
+#ifdef OUT
+   _serialMsgBox = new QMessageBox(this);
+   _serialMsgBox->setStandardButtons(QMessageBox::Ok);
+   _serialMsgBox->setWindowModality(Qt::WindowModal);
+   _serialMsgBox->setModal(true);
+   _serialMsgBox->setFont(_ui->mainMenuFont);
+#endif
+   // _msgboxQueue = new MsgBoxQueue();
+   // TRACE("_msgboxQueue=%p", _msgboxQueue);
+   _msgBoxThread = new MsgBoxThread(_msgboxQueue);
+
+#ifdef NO
+   QObject::connect(
+         _serialMsgBox, &QMessageBox::finished,
+         _msgBoxThread, &MsgBoxThread::msbgoxClosed
+         );
+#endif
+   QObject::connect(
+         _msgBoxThread, &MsgBoxThread::postSerialMsgBox,
+         this, &MainWindow::showSerialMsgBox
+         );
+
+   // Tried deferring until after MainWindow::show() in hopes that dialog box appears over main window
+   // msgBoxThread->start();
+
+    GlobalState& globalState = GlobalState::instance();
+    globalState._msgBoxThread = _msgBoxThread;
+}
+
 
 MainWindow::MainWindow(Parsed_Cmd * parsed_cmd, QWidget *parent) :
     QMainWindow(parent),
@@ -125,6 +162,15 @@ MainWindow::MainWindow(Parsed_Cmd * parsed_cmd, QWidget *parent) :
                             Qt::FramelessWindowHint | Qt::Dialog);on_actionButtonBox_accepted
 #endif
 
+    // Register metatypes for primitive types here.
+    // Metatypes for classes are registered with the class definition.
+    qRegisterMetaType<uint8_t>("uint8_t");
+    qRegisterMetaType<bool>("bool");       // needed?
+
+    qRegisterMetaType<NcValuesSource>("NcValuesSource");
+    qRegisterMetaType<QMessageBox::Icon>("QMessageBox::Icon");
+
+
     QLabel* toolbarDisplayLabel = new QLabel("&Display:  ");
     toolbarDisplayLabel->setFont(_ui->mainMenuFont);
     _toolbarDisplayCB = new QComboBox();
@@ -135,17 +181,20 @@ MainWindow::MainWindow(Parsed_Cmd * parsed_cmd, QWidget *parent) :
     _ui->mainToolBar->addWidget( toolbarDisplayLabel);
     _ui->mainToolBar->addWidget( _toolbarDisplayCB);
 
+#ifdef MOVED
     // QMessageBox for displaying error messages, one at a time
     _serialMsgBox = new QMessageBox(this);
     _serialMsgBox->setStandardButtons(QMessageBox::Ok);
     _serialMsgBox->setWindowModality(Qt::WindowModal);
     _serialMsgBox->setModal(true);
     _serialMsgBox->setFont(_ui->mainMenuFont);
+#endif
 
     _msgboxQueue = new MsgBoxQueue();
     // TRACE("_msgboxQueue=%p", _msgboxQueue);
-    MsgBoxThread * msgBoxThread = new MsgBoxThread(_msgboxQueue);
+    // MsgBoxThread * msgBoxThread = new MsgBoxThread(_msgboxQueue);
 
+#ifdef MOVED
     QObject::connect(
           _serialMsgBox, &QMessageBox::finished,
           msgBoxThread, &MsgBoxThread::msbgoxClosed
@@ -154,12 +203,19 @@ MainWindow::MainWindow(Parsed_Cmd * parsed_cmd, QWidget *parent) :
           msgBoxThread, &MsgBoxThread::postSerialMsgBox,
           this, &MainWindow::showSerialMsgBox
           );
+#endif
 
-    msgBoxThread->start();
+    // try deferring until after MainWindow::show() in hopes that
+    // dialog box appears over main window
+    // msgBoxThread->start();
+     GlobalState& globalState = GlobalState::instance();
+#ifdef MOVED
+     globalState._msgBoxThread = msgBoxThread;
+#endif
 
     // reportWidgetChildren(ui->centralWidget, "Children of centralWidget, before initMonitors():");
-    initMonitors();
-    GlobalState& globalState = GlobalState::instance();
+    initMonitors(parsed_cmd);
+    // GlobalState& globalState = GlobalState::instance();
 
     _feature_selector   = new FeatureSelector();
     if (parsed_cmd->feature_set) {
@@ -194,13 +250,6 @@ MainWindow::MainWindow(Parsed_Cmd * parsed_cmd, QWidget *parent) :
 
     // reportWidgetChildren(_ui->centralWidget, "Children of centralWidget, after initMonitors():");
 
-    // Register metatypes for primitive types here.
-    // Metatypes for classes are registered with the class definition.
-    qRegisterMetaType<uint8_t>("uint8_t");
-    qRegisterMetaType<bool>("bool");       // needed?
-
-    qRegisterMetaType<NcValuesSource>("NcValuesSource");
-    qRegisterMetaType<QMessageBox::Icon>("QMessageBox::Icon");
 
      QObject::connect(
         this,     &MainWindow::featureSelectionChanged,
@@ -228,6 +277,24 @@ MainWindow::MainWindow(Parsed_Cmd * parsed_cmd, QWidget *parent) :
         emit signalFeaturesView();
      }
 #endif
+
+     initSerialMsgbox();     // sets _msgBoxThread
+
+
+#ifdef NO
+      // DOESN"T SOLVE INVALID MODEL MSGBOX POSITIONING
+
+      QObject::connect(
+         this,     &MainWindow::reportApplicationEventLoopStarted,
+         this,     &MainWindow::start_msgBoxThread);
+#endif
+
+      start_msgBoxThread();
+
+#ifdef NO // not true
+     TRACEMC("Emitting reportApplicationEventLoopStarted()");
+     emit reportApplicationEventLoopStarted();   // will not be delivered until application event loop started
+#endif
 }
 
 
@@ -237,7 +304,7 @@ MainWindow::~MainWindow()
 }
 
 
-void MainWindow::initMonitors() {
+void MainWindow::initMonitors(Parsed_Cmd * parsed_cmd) {
    //  ui->displaySelectorComboBox->setSizeAdjustPolicy(QComboBox::AdjustToContents);
    //  ui->displaySelectorComboBox->setMinimumContentsLength(28);   // 2 + 3 + 3 + 3 + 13
 
@@ -252,15 +319,18 @@ void MainWindow::initMonitors() {
                             true,        	// include invalid displays
                             &_dlist);
     assert(ddcrc == 0);
+
+    int initialDisplayIndex = -1;
+    // QString qmodel(parsed_cmd->model);
+
     for (int ndx = 0; ndx < _dlist->ct; ndx++) {
         TRACECF(debug, "Processing display %d", ndx);
 
+
         // Add entry for monitor in display selector combo box
-// #ifdef OLD
         QString mfg_id     = _dlist->info[ndx].mfg_id;
         QString model_name = _dlist->info[ndx].model_name;
         QString sn         = _dlist->info[ndx].sn;
-// #endif
 #ifdef ALT
         QString mfg_id     = _dlist->info[ndx].mmid.mfg_id;
         QString model_name = _dlist->info[ndx].mmid.model_name;
@@ -277,10 +347,20 @@ void MainWindow::initMonitors() {
         int monitorNumber = ndx+1;
         _toolbarDisplayCB->addItem(s, QVariant(monitorNumber));
 
+        TRACECF(debug, "ndx=%d, parsed_cmd->model = |%s|, _dlist->info[ndx].model_name = |%s|",
+                ndx, parsed_cmd->model, _dlist->info[ndx].model_name);
+        if (parsed_cmd->model) {
+           QString userModelParm(parsed_cmd->model);
+           if (QString(userModelParm) == model_name) {
+              initialDisplayIndex = ndx;
+              TRACECF(debug, "model found, ndx=%d", ndx);
+           }
+        }
+
         // Create Monitor instance, initialize data structures
         Monitor * curMonitor = new Monitor(&_dlist->info[ndx], monitorNumber);
         _monitors.append(curMonitor);
-        // TRACE("After curMonitor = new Monitor()");
+        // TRACEC("After curMonitor = new Monitor()");
         // ddca_report_display_info(&_dlist->info[ndx], 3);
 
         curMonitor->_requestQueue = new VcpRequestQueue();
@@ -318,7 +398,30 @@ void MainWindow::initMonitors() {
         }
     }
 
-    _toolbarDisplayCB->setCurrentIndex(0);    // *** Can set to 1 instead of 0 for testing ***
+    _deferredMsgs = QList<MsgBoxQueueEntry*>();
+    // TRACECF(true, "initialDisplayIndex = %d", initialDisplayIndex);
+    if (parsed_cmd->model) {
+       if (initialDisplayIndex < 0) {
+          // queue status dialog
+          initialDisplayIndex = 0;
+
+          QString qsTitle = QString("ddcutil Error");
+          QString qsDetail = QString("Invalid Model: %1").arg(parsed_cmd->model);
+          QMessageBox::Icon icon = QMessageBox::Warning;
+
+
+
+          MsgBoxQueueEntry * qe = new MsgBoxQueueEntry(qsTitle, qsDetail, icon);
+          _deferredMsgs.append(qe);
+          // _msgboxQueue->put(qe);
+       }
+    }
+    else {
+       initialDisplayIndex = 0;
+    }
+    // TRACECF(true, "initialDisplayIndex (2) = %d", initialDisplayIndex);
+
+    _toolbarDisplayCB->setCurrentIndex(initialDisplayIndex);    // *** Can set to 1 instead of 0 for testing ***
 
     connect(_toolbarDisplayCB, SIGNAL(currentIndexChanged(int)),
             this,              SLOT(  displaySelectorCombobox_currentIndexChanged(int)));
@@ -405,6 +508,23 @@ void MainWindow::displaySelectorCombobox_activated(int index) {
    printf("(%s::%s) index=%d\n", _cls, __func__, index); fflush(stdout);
 }
 #endif
+
+
+void MainWindow::start_msgBoxThread() {
+   TRACEMC("Executing");
+
+   TRACEMC("Putting %d MsgBoxQueueEntry on _msgboxQueue", _deferredMsgs.count());
+   for (int ndx = 0; ndx < _deferredMsgs.count(); ndx++) {
+      MsgBoxQueueEntry * qe = _deferredMsgs.at(ndx);
+    _msgboxQueue->put(qe);
+   }
+
+   // Causes ye ole EBADF, recursion crash ins
+   // too much indirection, there should be a member variable MainWindow._msgBoxThread
+   // GlobalState & globalState = GlobalState::instance();
+   // globalState._msgBoxThread->start();
+   _msgBoxThread->start();
+}
 
 
 //
@@ -856,15 +976,128 @@ void MainWindow::on_actionContentsHelp_triggered()
 }
 
 
+void whereIsApplication() {
+   printf("Application screens\n");
+   QApplication* qGuiApplication = qApp;
+
+   QList<QScreen*> screens = qGuiApplication->screens();
+   for(int ndx=0; ndx < screens.count();ndx++) {
+        QScreen* screen = screens.at(ndx);
+        QRect geometry  = screen->availableGeometry();
+        QSize availableSize = screen->availableSize();
+        QSize size = screen->size();
+        QSize virtualSize = screen->virtualSize();
+        printf("screen[%d]\n", ndx);
+        printf("  geometry: left=%d, top=%d, right=%d, bottom=%d\n",
+               geometry.left(), geometry.top(), geometry.right(), geometry.bottom() );
+        printf("  availableSize: %d,%d\n", availableSize.width(), availableSize.height());
+        printf("  Size: %d,%d\n", size.width(), size.height());
+        printf("  virtualSize: %d,%d\n", virtualSize.width(), virtualSize.height());
+   }
+
+   QDesktopWidget * desktopWidget = QApplication::desktop();
+   printf("Desktop widget width, height: %d,%d\n", desktopWidget->width(),  desktopWidget->height() );
+   printf("screen count: %d\n", desktopWidget->screenCount() );
+   printf("is virtual desktop: %s\n", SBOOL( desktopWidget->isVirtualDesktop() ) );
+   QRect geometry  = desktopWidget->availableGeometry();
+   printf("  geometry: left=%d, top=%d, right=%d, bottom=%d\n",
+          geometry.left(), geometry.top(), geometry.right(), geometry.bottom() );
+
+
+}
+
+void whereAmI(QWidget * w, const char * msg) {
+   if (msg)
+      printf("%s\n", msg);
+   else
+      printf("This widget:\n");
+
+   printf("   x,y (upper left == pos) =%d,%d\n", w->x(), w->y());
+   printf("   width,height = %d,%d\n", w->width(), w->height() );
+   // QScreen * screen = w->screen();   // bit in 5.12
+   printf("   isWindow(): %s\n", SBOOL(w->isWindow() )) ;
+   if (w->isWindow() ) {
+      QWindow* wind = dynamic_cast<QWindow*>(w);
+#ifdef OUT
+      QScreen * screen = wind->screen();  // this is the line that causes crash
+      QRect geometry  = screen->availableGeometry();
+      printf("  screen geometry: left=%d, top=%d, right=%d, bottom=%d\n",
+             geometry.left(), geometry.top(), geometry.right(), geometry.bottom() );
+#endif
+   }
+
+}
+
 //
 // Miscellaneous Slots
 //
 
 void MainWindow::showSerialMsgBox(QString title, QString text, QMessageBox::Icon icon) {
+   bool debugFunc = true;
+   TRACEMCF(debugFunc, "Starting. text=%s", QS2S(text));
+// #ifdef DIALOG_BOX_STILL_ON_SEPARATE_SCREEN
+   QMessageBox * serialMbox2 = new QMessageBox(this);
+   serialMbox2->setStandardButtons(QMessageBox::Ok);
+   serialMbox2->setWindowModality(Qt::WindowModal);
+   serialMbox2->setModal(true);
+   serialMbox2->setFont(_ui->mainMenuFont);
+   serialMbox2->setText(text);
+   serialMbox2->setWindowTitle(title);
+   serialMbox2->setIcon(icon);
+
+   QObject::connect(
+         serialMbox2, &QMessageBox::finished,
+         _msgBoxThread, &MsgBoxThread::msbgoxClosed
+         );
+
+   serialMbox2->exec();
+   TRACEMCF(debugFunc, "Done.     After serialMsgBox2->exec() returns.");
+// #endif
+
+#ifdef OLD
+
+#ifdef NO
    _serialMsgBox->setText(text);
    _serialMsgBox->setWindowTitle(title);
    _serialMsgBox->setIcon(icon);
+   // _serialMsgBox->show();
+   // _serialMsgBox->move(this->width()/2, this->height()/2);
+#endif
+
+#ifdef DOSESNT_SOLVE_POSITION_PROBLEM
+   // puts it in the middle of screen 1, not the middle of the main window
+   QSize mSize = _serialMsgBox->sizeHint(); // here's what you want, not m.width()/height()
+   QRect screenRect = QDesktopWidget().screen()->rect();
+   // puts in center of first screen, not screen containing main window
+   _serialMsgBox->move( QPoint( screenRect.width()/2 - mSize.width()/2,
+                   screenRect.height()/2 - mSize.height()/2 ) );
+
+   QPoint position = _serialMsgBox->pos();
+   TRACEC("_serialMsgBox position = %d,%d", x(), y());
+#endif
+
+#ifdef NO
+   _serialMsgBox->show();
+#endif
+
+#ifdef BAD
+// #ifdef IS_THIS_WHATS_TRIGGERING_BADF_IN_FILEIO_WRITER // Yes!
+   whereIsApplication();
+
+   const char * msg = "mainWindow";
+   whereAmI(this, msg);
+#endif
+#ifdef OUT
+
+   whereAmI(_serialMsgBox, "_serialMsgBox");
+#endif
+#ifdef NO
+
    _serialMsgBox->exec();
+#endif
+
+#endif
+
 }
 
 
