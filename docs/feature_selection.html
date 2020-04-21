@@ -10,10 +10,11 @@
         The feature groups are: 
         <ul>
             <li>
-                <em>Known</em> - All features defined in the MCCS specification.
+                <em>MCCS</em> - All features defined in the MCCS specification.
                 Includes features in the manufacturer specific range (xe0..xff)
-                Note that the defined features vary by MCCS version, as reported by the monitor.
-            </li>
+                Note that feature definitions vary by MCCS version.  <em>ddcui</em> depends 
+               on monitors correctly reporting their MCCS version. 
+                        </li>
 <li><em>Capabilities</em> - All features defined in the capabilities string.
             <li>
                 <em>Scan</em> - Examine all possible feature codes, except those known to be read-only or of type Table.
@@ -29,13 +30,14 @@
         The features reported can further be refined by the following filters.  Not all filters apply to every group.
         <ul>
             <li>
-<em>Include all features in capabilities string</em>
-- Add all features in the capabilities string to those in the group.
-<li>
-                <em>Exclude features not in capabilities string</em> - Include only features in the group that are also found in the Capabilities string
+                <em>Include all features in capabilities string</em>
+                - Add all features in the capabilities string to those in the group.
+            <li>
+                <em>Exclude features not in capabilities string</em> 
+                - Include only features in the group that are also found in the Capabilities string
             </li>
             <li>
-                <em>Show Unsupported Features</em> - Include features that are reported as unsupported.
+                <em>Show Unsupported Features</em> - Include features in the group that are reported as unsupported.
             </li>
             <li>
                 <em>Include Table Features</em> - Include features of type Table.  

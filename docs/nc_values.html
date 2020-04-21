@@ -12,7 +12,7 @@
         
         <br>
         <list>
-        <li> <bold>MCCS</bold> - The VESA Monitor Control Command Set specification lists valid values for simple Non-Continuous (NC) features. 
+        <li> <em>MCCS</em> - The VESA Monitor Control Command Set specification lists valid values for simple Non-Continuous (NC) features. 
 Values are a hex number from x00 to xff (0 to 255. For each
 the specification defines the meaning of the value. For example, for feature code x14 (Select color preset) value x01 means "sRGB". 
 <p>
@@ -20,7 +20,7 @@ The advantage
 of this source is completeness.  
 Valid values can vary by MCCS version, and <bold>ddcui</bold> takes this into account. The disadvantage is that the drop down list of values for a feature will likely include
 values that do not apply to the particular monitor.  Also, there may be additional manufacturer specific values.
-<li><bold>Capabilites String</bold> 
+<li><em>Capabilites String</em> 
 - The capabilities string returned by the monitor indicates the allowed values for a feature.  Unfortunately, the capabilities string
 is sometimes wrong.  The capabilities string reports only hex numbers for feature codes and allowed values. The interpretation of values 
 is still taken, if possible, from MCCS.
