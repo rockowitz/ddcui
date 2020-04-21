@@ -15,6 +15,7 @@ extern "C" {
 
 #include "base/global_state.h"
 #include "base/core.h"
+#include "main/msgbox_thread.h"
 
 // #include <ui_main.h>
 #include "main/mainwindow.h"
@@ -139,7 +140,13 @@ int main(int argc, char *argv[])
     MainWindow w(parsed_cmd);
     globalState._mainWindow = &w;
 
+    // without w.show(), initial serial message box does not appear over MainWindow
     w.show();
 
+    // w.initSerialMsgbox();
+    // how to defer until after main event loop started, i.e. a.exec() called
+    // globalState._msgBoxThread->start();
+
+    printf("(%s) Calling Application::exec()\n", __func__);
     return a.exec();
 }
