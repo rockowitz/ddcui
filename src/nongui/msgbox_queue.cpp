@@ -67,16 +67,9 @@ MsgBoxQueue::MsgBoxQueue()
 void MsgBoxQueue::put(MsgBoxQueueEntry * request) {
     bool debugFunc = debugClass;
     // debugFunc = true;
-    // printf("(MsgBoxQueue) Starting\n");
-    // printf("(MsgBoxQueue) request=%p\n", request);
 
     assert(request);
-
-    // QString r = request->repr();
-
-    // char * s = strdup(QS2S(r));
-    TRACECF(debugFunc, "-> Before lock. request: %s", QS2S(request->repr()));
-    // free(s);
+    TRACECF(debugFunc || true, "-> Before lock. request: %s", QS2S(request->repr()));
 
     _mutex.lock();
     _queue.enqueue(request);
@@ -90,7 +83,9 @@ void MsgBoxQueue::put(MsgBoxQueueEntry * request) {
 
 
 MsgBoxQueueEntry * MsgBoxQueue::pop() {
-    TRACECF(debugClass, "Starting. Before wait");
+    bool debugFunc = debugClass;
+    // debugFunc = true;
+    TRACECF(debugFunc, "Starting. Before wait");
     _mutex.lock();
     if (_queue.empty())
         _queueNonempty.wait(&_mutex);
@@ -109,7 +104,7 @@ MsgBoxQueueEntry * MsgBoxQueue::pop() {
         fflush(stdout);
      }
 #endif
-    TRACECF(debugClass, "<- Done. Returning request: %s", QS2S(rqst->repr()) );
+    TRACECF(debugFunc || true, "<- Done. Returning request: %s", QS2S(rqst->repr()) );
     return rqst;
 }
 
