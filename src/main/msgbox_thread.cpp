@@ -7,12 +7,15 @@
 #include <string.h>
 
 #include <QtCore/QString>
+#include <QtCore/QThread>
 
 #include "base/core.h"
 #include "main/msgbox_thread.h"
 
-static bool debugThread = false;
+static bool debugThread = true;
 
+// dangerous, would clobber if multiple instances of this class,
+// but can't get it to compile as a member variable;
 static QSemaphore msgboxSemaphore(1);
 
 
@@ -30,19 +33,55 @@ void MsgBoxThread::msbgoxClosed(int result) {
 
 
 void MsgBoxThread::run() {
+#ifdef NO
+    // If this thread starts reading before the QApplication's event loop,
+    // the dialog box will not appear on top of the main window
+    // Trying to delay by triggering off a signal that the main event loop
+    // has started
+    // DIDN'T SOLVE PROBLEM.
+#endif
+
+   // Crude but effective.  Just sleep before starting loop reading messages and
+   // displaying SerailMsgBox
+    long initial_sleep_millis =  500;
+    TRACECF(debugThread, "Sleeping for %d milliseconds", initial_sleep_millis);
+     QThread::msleep(initial_sleep_millis);
+     TRACECF(debugThread, "Initial sleep complete");
+
     forever {
         TRACECF(debugThread, "Waiting to pop"); fflush(stdout);
         MsgBoxQueueEntry * rqst = this->_requestQueue->pop();
+        TRACECF(debugThread, "Popped: _boxTitle: %s, _boxText: %s",
+                                QS2S(rqst->_boxTitle), QS2S(rqst->_boxText));
 
-        //TRACECF(debugThread, "post pop()");
-        //   TRACECF(debugThread, "rqst=%p", rqst);
-        // TRACECF(debugThread, "Popped: _boxTitle: %s, _boxText: %s",
-        //                         qs2s(rqst->_boxTitle), qs2s(rqst->_boxText));
-
-        TRACECF(debugThread, "Popped");
         msgboxSemaphore.acquire();
         TRACECF(debugThread, "Acquired msgboxSemaphore");
         emit postSerialMsgBox(rqst->_boxTitle, rqst->_boxText, rqst->_boxIcon);
+        // showSerialMsgBox(rqst->_boxTitle, rqst->_boxText, rqst->_boxIcon);
         delete rqst;
     }
 }
+
+#ifdef NO
+void MsgBoxThread::showSerialMsgBox(QString title, QString text, QMessageBox::Icon icon) {
+// #ifdef DIALOG_BOX_STILL_ON_SEPARATE_SCREEN
+   QMessageBox * serialMbox2 = new QMessageBox(parent);
+   serialMbox2->setStandardButtons(QMessageBox::Ok);
+   serialMbox2->setWindowModality(Qt::WindowModal);
+   serialMbox2->setModal(true);
+//    serialMbox2->setFont(_ui->mainMenuFont);
+   serialMbox2->setText(text);
+   serialMbox2->setWindowTitle(title);
+   serialMbox2->setIcon(icon);
+
+   QObject::connect(
+         serialMbox2, &QMessageBox::finished,
+         this, &MsgBoxThread::msbgoxClosed
+         );
+
+   serialMbox2->exec();
+
+}
+#endif
+
+
