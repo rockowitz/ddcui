@@ -49,4 +49,10 @@ do { \
    reportBasicWidgetDimensions(_widget, this->metaObject()->className(), __func__, __LINE__, __FILE__); \
 } while(0)
 
+void whereIsApplication();
+void whereAmI(QWidget * w, const char * msg);
+
+
+
+
 #endif /* WIDGET_DEBUG_H_ */

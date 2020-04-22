@@ -8,8 +8,8 @@
 #include <assert.h>
 #include <iostream>
 
-#include <QtWidgets/QApplication>
-#include <QtGui/QScreen>
+// #include <QtWidgets/QApplication>
+// #include <QtGui/QScreen>
 #include <QtCore/QList>
 
 
@@ -975,59 +975,6 @@ void MainWindow::on_actionContentsHelp_triggered()
     viewHelp(QString("help_general.html"), QString("ddcui Help - Overview"), this);
 }
 
-
-void whereIsApplication() {
-   printf("Application screens\n");
-   QApplication* qGuiApplication = qApp;
-
-   QList<QScreen*> screens = qGuiApplication->screens();
-   for(int ndx=0; ndx < screens.count();ndx++) {
-        QScreen* screen = screens.at(ndx);
-        QRect geometry  = screen->availableGeometry();
-        QSize availableSize = screen->availableSize();
-        QSize size = screen->size();
-        QSize virtualSize = screen->virtualSize();
-        printf("screen[%d]\n", ndx);
-        printf("  geometry: left=%d, top=%d, right=%d, bottom=%d\n",
-               geometry.left(), geometry.top(), geometry.right(), geometry.bottom() );
-        printf("  availableSize: %d,%d\n", availableSize.width(), availableSize.height());
-        printf("  Size: %d,%d\n", size.width(), size.height());
-        printf("  virtualSize: %d,%d\n", virtualSize.width(), virtualSize.height());
-   }
-
-   QDesktopWidget * desktopWidget = QApplication::desktop();
-   printf("Desktop widget width, height: %d,%d\n", desktopWidget->width(),  desktopWidget->height() );
-   printf("screen count: %d\n", desktopWidget->screenCount() );
-   printf("is virtual desktop: %s\n", SBOOL( desktopWidget->isVirtualDesktop() ) );
-   QRect geometry  = desktopWidget->availableGeometry();
-   printf("  geometry: left=%d, top=%d, right=%d, bottom=%d\n",
-          geometry.left(), geometry.top(), geometry.right(), geometry.bottom() );
-
-
-}
-
-void whereAmI(QWidget * w, const char * msg) {
-   if (msg)
-      printf("%s\n", msg);
-   else
-      printf("This widget:\n");
-
-   printf("   x,y (upper left == pos) =%d,%d\n", w->x(), w->y());
-   printf("   width,height = %d,%d\n", w->width(), w->height() );
-   // QScreen * screen = w->screen();   // bit in 5.12
-   printf("   isWindow(): %s\n", SBOOL(w->isWindow() )) ;
-   if (w->isWindow() ) {
-      QWindow* wind = dynamic_cast<QWindow*>(w);
-#ifdef OUT
-      QScreen * screen = wind->screen();  // this is the line that causes crash
-      QRect geometry  = screen->availableGeometry();
-      printf("  screen geometry: left=%d, top=%d, right=%d, bottom=%d\n",
-             geometry.left(), geometry.top(), geometry.right(), geometry.bottom() );
-#endif
-   }
-
-}
-
 //
 // Miscellaneous Slots
 //
@@ -1054,49 +1001,15 @@ void MainWindow::showSerialMsgBox(QString title, QString text, QMessageBox::Icon
    TRACEMCF(debugFunc, "Done.     After serialMsgBox2->exec() returns.");
 // #endif
 
-#ifdef OLD
 
 #ifdef NO
    _serialMsgBox->setText(text);
    _serialMsgBox->setWindowTitle(title);
    _serialMsgBox->setIcon(icon);
-   // _serialMsgBox->show();
-   // _serialMsgBox->move(this->width()/2, this->height()/2);
-#endif
-
-#ifdef DOSESNT_SOLVE_POSITION_PROBLEM
-   // puts it in the middle of screen 1, not the middle of the main window
-   QSize mSize = _serialMsgBox->sizeHint(); // here's what you want, not m.width()/height()
-   QRect screenRect = QDesktopWidget().screen()->rect();
-   // puts in center of first screen, not screen containing main window
-   _serialMsgBox->move( QPoint( screenRect.width()/2 - mSize.width()/2,
-                   screenRect.height()/2 - mSize.height()/2 ) );
-
-   QPoint position = _serialMsgBox->pos();
-   TRACEC("_serialMsgBox position = %d,%d", x(), y());
-#endif
-
-#ifdef NO
    _serialMsgBox->show();
-#endif
-
-#ifdef BAD
-// #ifdef IS_THIS_WHATS_TRIGGERING_BADF_IN_FILEIO_WRITER // Yes!
-   whereIsApplication();
-
-   const char * msg = "mainWindow";
-   whereAmI(this, msg);
-#endif
-#ifdef OUT
-
-   whereAmI(_serialMsgBox, "_serialMsgBox");
-#endif
-#ifdef NO
-
    _serialMsgBox->exec();
 #endif
 
-#endif
 
 }
 

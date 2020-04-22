@@ -20,6 +20,11 @@
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QSizePolicy>
 
+#include <QtWidgets/QApplication>
+#include <QtGui/QScreen>
+#include <QtWidgets/QDesktopWidget>
+#include <QtGui/QWindow>
+
 #include "core.h"
 #include "widget_debug.h"
 
@@ -409,4 +414,60 @@ void reportLabelDimensions(
 
    reportFrameDimensions(label, className, funcName, NULL);
 }
+
+
+
+
+void whereIsApplication() {
+   printf("Application screens\n");
+   QApplication* qGuiApplication = qApp;
+
+   QList<QScreen*> screens = qGuiApplication->screens();
+   for(int ndx=0; ndx < screens.count();ndx++) {
+        QScreen* screen = screens.at(ndx);
+        QRect geometry  = screen->availableGeometry();
+        QSize availableSize = screen->availableSize();
+        QSize size = screen->size();
+        QSize virtualSize = screen->virtualSize();
+        printf("screen[%d]\n", ndx);
+        printf("  geometry: left=%d, top=%d, right=%d, bottom=%d\n",
+               geometry.left(), geometry.top(), geometry.right(), geometry.bottom() );
+        printf("  availableSize: %d,%d\n", availableSize.width(), availableSize.height());
+        printf("  Size: %d,%d\n", size.width(), size.height());
+        printf("  virtualSize: %d,%d\n", virtualSize.width(), virtualSize.height());
+   }
+
+   QDesktopWidget * desktopWidget = QApplication::desktop();
+   printf("Desktop widget width, height: %d,%d\n", desktopWidget->width(),  desktopWidget->height() );
+   printf("screen count: %d\n", desktopWidget->screenCount() );
+   printf("is virtual desktop: %s\n", SBOOL( desktopWidget->isVirtualDesktop() ) );
+   QRect geometry  = desktopWidget->availableGeometry();
+   printf("  geometry: left=%d, top=%d, right=%d, bottom=%d\n",
+          geometry.left(), geometry.top(), geometry.right(), geometry.bottom() );
+
+
+}
+
+void whereAmI(QWidget * w, const char * msg) {
+   if (msg)
+      printf("%s\n", msg);
+   else
+      printf("This widget:\n");
+
+   printf("   x,y (upper left == pos) =%d,%d\n", w->x(), w->y());
+   printf("   width,height = %d,%d\n", w->width(), w->height() );
+   // QScreen * screen = w->screen();   // bit in 5.12
+   printf("   isWindow(): %s\n", SBOOL(w->isWindow() )) ;
+   if (w->isWindow() ) {
+      QWindow* wind = dynamic_cast<QWindow*>(w);
+#ifdef OUT
+      QScreen * screen = wind->screen();  // this is the line that causes crash
+      QRect geometry  = screen->availableGeometry();
+      printf("  screen geometry: left=%d, top=%d, right=%d, bottom=%d\n",
+             geometry.left(), geometry.top(), geometry.right(), geometry.bottom() );
+#endif
+   }
+
+}
+
 
