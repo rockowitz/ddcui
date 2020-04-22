@@ -222,13 +222,11 @@ DDCA_Status VcpThread::perform_close_display(DDCA_Display_Handle dh) {
    DDCA_Status ddcrc = ddca_close_display(dh);
    TRACECF(debugFunc, "ddca_close_display() returned %d, dref=%s", ddcrc, ddca_dref_repr(this->_dref));
    if (ddcrc != 0) {
+      // n. returns DDCRC_INVALID_STATE if already closed
       rpt_ddca_status(0, __func__, "ddca_close_display", ddcrc);
    }
    return ddcrc;
 }
-
-
-// need perform_close_display() to invalidate the display handle
 
 
 void VcpThread::loadDynamicFeatureRecords()
@@ -297,23 +295,11 @@ void VcpThread::capabilities() {
 
    DDCA_Status ddcrc = perform_open_display(&dh);
    if (ddcrc == 0) {
-
-#ifdef MOVED
-      // TEMPORARY LOCATION - SHOULD BE A SEPARATE RQCheckDFR
-      ddcrc = ddca_dfr_check_by_dh(dh);
-      if (ddcrc != 0) {
-         TRACECF(debugFunc, "ddca_dfr_check_by_dh() returned %s", ddca_rc_name(ddcrc));
-         DDCA_Error_Detail * erec = ddca_get_error_detail();
-         ddca_report_error_detail(erec, 1);
-         ddca_free_error_detail(erec);
-      }
-#endif
-
       // TRACEF(debugFunc,"Sleeping for 1000000 msec");
       // usleep(1000000);
       bool retryable = true;
 
-      // While retrying here?  Retries already occurred in library? (4/2020)
+      // Why retrying here?  Retries already occurred in libddcutil? (4/2020)
       while (retryable) {
          retryable = false;
          ddcrc = ddca_get_capabilities_string(dh, &caps);
@@ -341,12 +327,12 @@ void VcpThread::capabilities() {
             }   // end, ddca_get_capabilities() failure, retry possible
             else {  // failure, can't retry
                if (retry_count > 0)
-                  TRACECF(debugRetry, "Capabilities check failed after %d retries, retries exhausted", retry_count);
+                  TRACECF(debugRetry || true, "Capabilities check failed after %d retries, retries exhausted", retry_count);
                rpt_ddca_status(0, __func__, "ddca_get_capabilities_string", ddcrc);
             }  // end, failure, can't retry
          }  // ddca_get_capabilities() failed
          else if (retry_count > 0) {
-            TRACECF(debugRetry, "Capabilities check succeeded after %d retries", retry_count);
+            TRACECF(debugRetry || true, "Capabilities check succeeded after %d retries", retry_count);
          }
       } // end of while() loop calling ddca_get_capabilies()
 
