@@ -172,7 +172,6 @@ private:
     QVector<Monitor*>        _monitors;
     DDCA_Feature_Subset_Id   _feature_list_id = DDCA_SUBSET_KNOWN;
     QVector<VcpThread*>      _vcp_threads;
-    // WaitingSpinnerWidget*    _spinner;
     QMessageBox*             _serialMsgBox = nullptr;
     QMessageBox*             _loadingMsgBox;
     MsgBoxQueue*             _msgboxQueue = nullptr;
