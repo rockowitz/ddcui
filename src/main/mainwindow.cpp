@@ -24,7 +24,6 @@
 #include "../base/core.h"
 #include "../base/widget_debug.h"
 #include "help/help_dialog.h"
-// #include "imported/QtWaitingSpinner/waitingspinnerwidget.h"
 
 #include "base/ddcui_parms.h"
 #include "base/global_state.h"
@@ -130,27 +129,6 @@ MainWindow::MainWindow(Parsed_Cmd * parsed_cmd, QWidget *parent) :
 
     // _ui->setupUi(this);
 
-#ifdef OLD
-    // with either ApplicationModal or WindowModal, moving the application does not move the spinner with it
-    // _loadingMsgBox has same problem
-    _spinner = new WaitingSpinnerWidget(
-                      Qt::WindowModal,    // alt WindowModal, ApplicationModal, NonModal
-                      nullptr,     // parent   - if set to this, spinning widget does not display
-                                     //            if set to this->_ui won't compile
-                                     //                      &this->_ui, &this
-                      true,         // centerOnParent
-                      true);        // disableParentWhenSpinning
-    // TRACE("Spinner Settings: ");
-    // QColor wcolor = _spinner->color();
-    // TRACE("   color:      %s", qs2s(wcolor.name()));
-
-    _loadingMsgBox = new QMessageBox(this);
-    _loadingMsgBox->setText("Loading...");
-    _loadingMsgBox->setStandardButtons(QMessageBox::NoButton);
-    _loadingMsgBox->setWindowModality(Qt::WindowModal);
-    // needs Qt::Dialog, o.w. does not appear
-    _loadingMsgBox->setWindowFlags( Qt::Dialog| Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);  // msg box does not display
-#endif
 
 #ifdef ALT
     _loadingMsgBox = new QMessageBox(
