@@ -8,21 +8,17 @@
 #include <assert.h>
 #include <iostream>
 
-// #include <QtWidgets/QApplication>
-// #include <QtGui/QScreen>
 #include <QtCore/QList>
-
-
 #include <QtCore/QThread>
 #include <QtGui/QFont>
-#include <QtWidgets/QWidget>
 #include <QtWidgets/QMessageBox>
+#include <QtWidgets/QWidget>
 
 #include <ddcutil_c_api.h>
 
+#include "base/core.h"
 #include "base/global_state.h"
-#include "../base/core.h"
-#include "../base/widget_debug.h"
+#include "base/widget_debug.h"
 #include "help/help_dialog.h"
 
 #include "base/ddcui_parms.h"
