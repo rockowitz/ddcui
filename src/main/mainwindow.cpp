@@ -52,7 +52,7 @@ using namespace std;
 
 //
 // Constructor, Destructor, Initialization
-
+//
 
 void MainWindow::initSerialMsgbox() {
    // QMessageBox for displaying error messages, one at a time
