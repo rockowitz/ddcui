@@ -211,7 +211,10 @@ private:
     QMessageBox*               _loadingMsgBox;
     MsgBoxQueue*               _msgboxQueue = nullptr;
     MsgBoxThread *             _msgBoxThread = nullptr;
-    QList<MsgBoxQueueEntry*>   _deferredMsgs;
+
+    // Accumulates messages that will be shown in the SerialMsgBox once
+    // initialization is sufficiently complete.  Not needed.
+    // QList<MsgBoxQueueEntry*>   _deferredMsgs;
 
     FeatureSelectionDialog*    _fsd = NULL;
     OtherOptionsDialog*        _ood = NULL;       // for future use

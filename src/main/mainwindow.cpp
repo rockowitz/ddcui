@@ -60,7 +60,7 @@ using namespace std;
 
 void MainWindow::initSerialMsgbox() {
    // QMessageBox for displaying error messages, one at a time
-#ifdef OUT
+#ifdef PERSISTENT_SERIAL_MSG_BOX
    _serialMsgBox = new QMessageBox(this);
    _serialMsgBox->setStandardButtons(QMessageBox::Ok);
    _serialMsgBox->setWindowModality(Qt::WindowModal);
@@ -71,12 +71,13 @@ void MainWindow::initSerialMsgbox() {
    // TRACE("_msgboxQueue=%p", _msgboxQueue);
    _msgBoxThread = new MsgBoxThread(_msgboxQueue);
 
-#ifdef NO
+#ifdef PERSISTENT_SERIAL_MSG_BOX
    QObject::connect(
          _serialMsgBox, &QMessageBox::finished,
          _msgBoxThread, &MsgBoxThread::msbgoxClosed
          );
 #endif
+
    QObject::connect(
          _msgBoxThread, &MsgBoxThread::postSerialMsgBox,
          this, &MainWindow::showSerialMsgBox
@@ -93,33 +94,24 @@ void MainWindow::initSerialMsgbox() {
 void MainWindow::start_msgBoxThread() {
    TRACEMC("Executing");
 
+#ifdef DEFERRED_MSG_QUEUE
    TRACEMC("Putting %d MsgBoxQueueEntry on _msgboxQueue", _deferredMsgs.count());
    for (int ndx = 0; ndx < _deferredMsgs.count(); ndx++) {
       MsgBoxQueueEntry * qe = _deferredMsgs.at(ndx);
     _msgboxQueue->put(qe);
    }
+#endif
 
-   // Causes ye ole EBADF, recursion crash ins
-   // too much indirection, there should be a member variable MainWindow._msgBoxThread
-   // GlobalState & globalState = GlobalState::instance();
-   // globalState._msgBoxThread->start();
    _msgBoxThread->start();
 }
 
 
-
-
 void MainWindow::initMonitors(Parsed_Cmd * parsed_cmd) {
-   //  ui->displaySelectorComboBox->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-   //  ui->displaySelectorComboBox->setMinimumContentsLength(28);   // 2 + 3 + 3 + 3 + 13
-
-   bool debug = false;
+    bool debug = false;
 
     longRunningTaskStart();
-    QString msg = QString("Loading display information... ");
-    _ui->statusBar->showMessage(msg);
+    _ui->statusBar->showMessage(QString("Loading display information..."));
 
-    // ddca_set_trace_groups(DDCA_TRC_API);
     DDCA_Status ddcrc = ddca_get_display_info_list2(
                             true,         // include invalid displays
                             &_dlist);
@@ -139,7 +131,7 @@ void MainWindow::initMonitors(Parsed_Cmd * parsed_cmd) {
         QString mfg_id     = _dlist->info[ndx].mmid.mfg_id;
         QString model_name = _dlist->info[ndx].mmid.model_name;
 #endif
-        // QString s = QString::number(ndx+1) + ":  " + model_name;
+
         QString s = model_name;
         if (s.isEmpty() ) {
            if ( sn.isEmpty() )
@@ -151,6 +143,8 @@ void MainWindow::initMonitors(Parsed_Cmd * parsed_cmd) {
         int monitorNumber = ndx+1;
         _toolbarDisplayCB->addItem(s, QVariant(monitorNumber));
 
+        // Check if the model name of this monitor matches one specified
+        // on the command line.
         TRACECF(debug, "ndx=%d, parsed_cmd->model = |%s|, _dlist->info[ndx].model_name = |%s|",
                 ndx, parsed_cmd->model, _dlist->info[ndx].model_name);
         if (parsed_cmd->model) {
@@ -173,7 +167,6 @@ void MainWindow::initMonitors(Parsed_Cmd * parsed_cmd) {
 
         initMonitorInfoWidget(curMonitor, _ui->centralWidget);
         initCapabilitiesWidget(curMonitor, _ui->centralWidget);
-        // TRACE("_msgboxQueue=%p", _msgboxQueue);
         initFeaturesScrollAreaView(curMonitor, baseModel, _ui->centralWidget, _msgboxQueue);
 
         QObject::connect(baseModel,  SIGNAL(signalVcpRequest(VcpRequest*)),
@@ -202,7 +195,9 @@ void MainWindow::initMonitors(Parsed_Cmd * parsed_cmd) {
         }
     }
 
-    _deferredMsgs = QList<MsgBoxQueueEntry*>();
+#ifdef DEFERRED_MSG_QUEUE
+    _deferredMsgs = QList<MsgBoxQueueEntry*>();  // not needed,
+#endif
     // TRACECF(true, "initialDisplayIndex = %d", initialDisplayIndex);
     if (parsed_cmd->model) {
        if (initialDisplayIndex < 0) {
@@ -212,12 +207,11 @@ void MainWindow::initMonitors(Parsed_Cmd * parsed_cmd) {
           QString qsTitle = QString("ddcutil Error");
           QString qsDetail = QString("Invalid Model: %1").arg(parsed_cmd->model);
           QMessageBox::Icon icon = QMessageBox::Warning;
-
-
-
           MsgBoxQueueEntry * qe = new MsgBoxQueueEntry(qsTitle, qsDetail, icon);
-          _deferredMsgs.append(qe);
-          // _msgboxQueue->put(qe);
+#ifdef DEFERRED_MSG_QUEUE
+          _deferredMsgs.append(qe);     // not needed
+#endif
+          _msgboxQueue->put(qe);
        }
     }
     else {
@@ -225,7 +219,7 @@ void MainWindow::initMonitors(Parsed_Cmd * parsed_cmd) {
     }
     // TRACECF(true, "initialDisplayIndex (2) = %d", initialDisplayIndex);
 
-    _toolbarDisplayCB->setCurrentIndex(initialDisplayIndex);    // *** Can set to 1 instead of 0 for testing ***
+    _toolbarDisplayCB->setCurrentIndex(initialDisplayIndex);
 
     connect(_toolbarDisplayCB, SIGNAL(currentIndexChanged(int)),
             this,              SLOT(  displaySelectorCombobox_currentIndexChanged(int)));
@@ -248,12 +242,10 @@ void MainWindow::initMonitors(Parsed_Cmd * parsed_cmd) {
             this,      &MainWindow::on_actionFeaturesScrollArea_triggered);
 
     // Set message in status bar
-    msg = QString("Detected ") + QString::number(_dlist->ct) + QString(" displays.");
+    QString msg = QString("Detected ") + QString::number(_dlist->ct) + QString(" displays.");
     _ui->statusBar->showMessage(msg);
     longRunningTaskEnd();
 }
-
-
 
 
 
@@ -340,11 +332,7 @@ MainWindow::MainWindow(Parsed_Cmd * parsed_cmd, QWidget *parent) :
     _uiOptionsState = new UserInterfaceOptionsState(parsed_cmd);
     globalState._uiOptionsState = _uiOptionsState;
 
-
-    // reportWidgetChildren(_ui->centralWidget, "Children of centralWidget, after initMonitors():");
-
-
-     QObject::connect(
+    QObject::connect(
         this,     &MainWindow::featureSelectionChanged,
         this,     &MainWindow::on_actionFeaturesScrollArea_triggered);
 
@@ -359,6 +347,7 @@ MainWindow::MainWindow(Parsed_Cmd * parsed_cmd, QWidget *parent) :
 // #ifdef WORKS
         emit signalMonitorSummaryView();
 // #endif
+
 #ifdef BAD   // get dialog box that capabilities incomplete before man screen appears
      if (parsed_cmd->view == VIEW_UNSET || parsed_cmd->view == VIEW_SUMMARY)
         emit signalMonitorSummaryView();
@@ -373,21 +362,25 @@ MainWindow::MainWindow(Parsed_Cmd * parsed_cmd, QWidget *parent) :
 
      initSerialMsgbox();     // sets _msgBoxThread
 
+     start_msgBoxThread();
 
-#ifdef NO
-      // DOESN"T SOLVE INVALID MODEL MSGBOX POSITIONING
+#ifdef DOESNT_SOLVE_PROBLEM
+      // An attempt to address the problem of the Message Box for "early" messages
+      // doesn't appear centered over the application.
+      // The problem is that DialogBoxes have their own event loop, so can get ahead
+      // of the main application.
+      // This solution waits until the main application event loop is running
+      // before starting the message box thread.
+      // Should work, but it didn't.
 
       QObject::connect(
          this,     &MainWindow::reportApplicationEventLoopStarted,
          this,     &MainWindow::start_msgBoxThread);
-#endif
 
-      start_msgBoxThread();
-
-#ifdef NO // not true
      TRACEMC("Emitting reportApplicationEventLoopStarted()");
      emit reportApplicationEventLoopStarted();   // will not be delivered until application event loop started
 #endif
+
 }
 
 
