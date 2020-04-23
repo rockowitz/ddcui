@@ -10,16 +10,19 @@
 
 #include <QtCore/QObject>
 
+#include "cmdline/parsed_cmd.h"
 
 class UserInterfaceOptionsState : public QObject {
    Q_OBJECT
 
 public:
    UserInterfaceOptionsState();
+   UserInterfaceOptionsState(Parsed_Cmd* parsed_cmd);
+   UserInterfaceOptionsState(UserInterfaceOptionsState &other);
 
    static const bool CkrDefault = false;
 
-   bool controlKeyRequired = CkrDefault;
+   bool _controlKeyRequired = CkrDefault;
 
    void setControlKeyRequired(bool onoff);
 

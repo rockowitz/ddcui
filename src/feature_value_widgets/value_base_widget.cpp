@@ -48,7 +48,7 @@ void ValueBaseWidget::setFeatureValue(const FeatureValue &fv) {
     _sl             = fv.val().sl;
     _ddcrc          = fv.ddcrc();
 
-    _controlKeyRequired = _globalState._uiOptionsState->controlKeyRequired;
+    _controlKeyRequired = _globalState._uiOptionsState->_controlKeyRequired;
 
     // listen for changes after initialization
     QObject::connect(_globalState._uiOptionsState, &UserInterfaceOptionsState::controlKeyRequired_changed,

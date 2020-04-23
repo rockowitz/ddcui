@@ -106,7 +106,7 @@ void UserInterfaceOptionsDialog::on_actionButtonBox_clicked(QAbstractButton* but
       // Reset the state in UserInterfaceOptionsState
       // Do not emit a changed() message and do not close the dialog
 
-      _state->controlKeyRequired = UserInterfaceOptionsState::CkrDefault;
+      _state->_controlKeyRequired = UserInterfaceOptionsState::CkrDefault;
        setDialogBoxControlKeyRequired(UserInterfaceOptionsState::CkrDefault);
    }
 }

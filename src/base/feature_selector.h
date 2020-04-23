@@ -9,11 +9,23 @@
 #ifndef FEATURE_SELECTOR_H
 #define FEATURE_SELECTOR_H
 
+#include <QtCore/QObject>
+
 #include "ddcutil_types.h"
 
-class FeatureSelector {
+#include "cmdline/parsed_cmd.h"
+
+
+class FeatureSelector    // : public QObject
+{
+ //   Q_OBJECT
+
 public:
-   //  FeatureSelector();
+
+   FeatureSelector();
+   FeatureSelector(Parsed_Cmd * parsedCmd);
+
+    FeatureSelector(const FeatureSelector &other);
 
     DDCA_Feature_Subset_Id _featureListId           = DDCA_SUBSET_KNOWN;
     bool                   _showUnsupportedFeatures = false;
@@ -21,10 +33,16 @@ public:
     bool                   _includeOnlyCapabilities = true;
     bool                   _includeAllCapabilities  = false;
 
+
+    void applyParsedOptions(Parsed_Cmd * parased_cmd);
+
     bool operator==(const FeatureSelector& sel2) const;
     bool operator!=(const FeatureSelector& sel2) const;
 
     void dbgrpt();
+
+private:
+   //  void applyParsedOptions(Parsed_Cmd * parsed_cmd);
 };
 
 #endif // FEATURE_SELECTOR_H

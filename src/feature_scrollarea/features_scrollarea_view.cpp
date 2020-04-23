@@ -230,7 +230,7 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
     }
 
     GlobalState& globalState = GlobalState::instance();
-    _curNcValuesSource = globalState._otherOptionsState->ncValuesSource;
+    _curNcValuesSource = globalState._otherOptionsState->_ncValuesSource;
     _scrollAreaContents = scrollAreaContents;
     _centralStackedWidget->show();
 

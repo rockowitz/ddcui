@@ -39,7 +39,7 @@ OtherOptionsDialog::OtherOptionsDialog(OtherOptionsState * state, QWidget *paren
     ui->setupUi(this);
 
     setWindowTitle("ddcui - Other Options");
-    setUiSource(state->ncValuesSource);
+    setUiSource(state->_ncValuesSource);
 }
 
 
@@ -51,19 +51,19 @@ OtherOptionsDialog::~OtherOptionsDialog()
 
 void OtherOptionsDialog::on_buttonBox_accepted()
 {
-    NcValuesSource oldsrc = _state->ncValuesSource;
+    NcValuesSource oldsrc = _state->_ncValuesSource;
 
     if (ui->capabilitiesNcValuesButton->isChecked() )
-        _state->ncValuesSource = NcValuesFromCapabilities;
+        _state->_ncValuesSource = NcValuesFromCapabilities;
     else if (ui->bothNcValuesButton->isChecked() )
-        _state->ncValuesSource = NcValuesFromBoth;
+        _state->_ncValuesSource = NcValuesFromBoth;
     else {
        assert(  ui->mccsNcValuesButton->isChecked() );
-       _state->ncValuesSource = NcValuesFromMccs;
+       _state->_ncValuesSource = NcValuesFromMccs;
     }
 
-    if (_state->ncValuesSource != oldsrc) {
-        emit ncValuesSourceChanged(_state->ncValuesSource);
+    if (_state->_ncValuesSource != oldsrc) {
+        emit ncValuesSourceChanged(_state->_ncValuesSource);
     }
 }
 

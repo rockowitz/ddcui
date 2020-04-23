@@ -54,41 +54,6 @@
 
 using namespace std;
 
-
-// For initializing Feature Selection dialog box
-NcValuesSource parsedNcValuesSource_to_NcValuesSource(Parsed_NC_Values_Source val) {
-   NcValuesSource ncvs = NcValuesFromBoth;      // put something
-   // yes, the values in NcValuesSource and Parsed_NC_Values_Source match, but relying on that is brittle
-   if (val != NC_VALUES_SOURCE_UNSET) {
-      switch(val) {
-      case NC_VALUES_SOURCE_MCCS:          ncvs = NcValuesFromMccs;          break;
-      case NC_VALUES_SOURCE_CAPABILITIES:  ncvs = NcValuesFromCapabilities;  break;
-      case NC_VALUES_SOURCE_BOTH:          ncvs = NcValuesFromBoth;          break;
-      // case NC_VALUES_SOURCE_UNSET:         assert(false);  // impossible case to exhaust all values in switch
-                                                              // was there to avoid compiler warning
-      };
-   }
-   else {
-      ncvs = NcValuesFromCapabilities;   // default
-   }
-   return ncvs;
-}
-
-// For feature selection dialog
-DDCA_Feature_Subset_Id parsedFeatureSet_to_ddcaFeatureSubsetId(Parsed_Feature_Set fs) {
-   DDCA_Feature_Subset_Id  fsid = DDCA_SUBSET_UNSET;   // dummy value
-         switch(fs) {
-         case FS_UNSET:        fsid = DDCA_SUBSET_UNSET;        break;
-         case FS_MCCS:         fsid = DDCA_SUBSET_KNOWN;        break;
-         case FS_CAPABILITIES: fsid = DDCA_SUBSET_CAPABILITIES; break;
-         case FS_MANUFACTURER: fsid = DDCA_SUBSET_MFG;          break;
-         case FS_COLOR:        fsid = DDCA_SUBSET_COLOR;        break;
-         case FS_SCAN:         fsid = DDCA_SUBSET_SCAN;         break;
-         }
-   return fsid;
-}
-
-
 //
 // Constructor, Destructor, Initialization
 
@@ -368,36 +333,13 @@ MainWindow::MainWindow(Parsed_Cmd * parsed_cmd, QWidget *parent) :
     initMonitors(parsed_cmd);
     // GlobalState& globalState = GlobalState::instance();
 
-    _feature_selector   = new FeatureSelector();
-    if (parsed_cmd->feature_set) {
-       _feature_selector->_featureListId =
-             parsedFeatureSet_to_ddcaFeatureSubsetId(parsed_cmd->feature_set);
-    }
-
-    _feature_selector->_showUnsupportedFeatures = parsed_cmd->flags & CMD_FLAG_SHOW_UNSUPPORTED;
-
-    if (parsed_cmd->nc_values_must_be_in_capabilities == TRIVAL_TRUE)
-       _feature_selector->_includeOnlyCapabilities = true;
-    else if (parsed_cmd->nc_values_must_be_in_capabilities == TRIVAL_FALSE)
-       _feature_selector->_includeOnlyCapabilities = false;
-
-    if (parsed_cmd->nc_values_all_in_capabilities == TRIVAL_TRUE)
-       _feature_selector->_includeAllCapabilities = true;
-    else if (parsed_cmd->nc_values_all_in_capabilities == TRIVAL_FALSE)
-       _feature_selector->_includeAllCapabilities = false;
-
-   //  _feature_selector->_includeOnlyCapabilities = parsed_cmd->flags & CMD_FLAG_NC_VALUES_MUST_BE_IN_CAPABILITIES;
-   // _feature_selector->_includeAllCapabilities  = parsed_cmd->flags & CMD_FLAG_NC_VALUES_ALL_IN_CAPABILITIES;
-
-    _otherOptionsState = new OtherOptionsState;
-    if (parsed_cmd->nc_values_source != NC_VALUES_SOURCE_UNSET) {
-       _otherOptionsState->ncValuesSource = parsedNcValuesSource_to_NcValuesSource(parsed_cmd->nc_values_source);
-    }
+    // Initialize Options menu
+    _feature_selector   = new FeatureSelector(parsed_cmd);
+    _otherOptionsState = new OtherOptionsState(parsed_cmd);
     globalState._otherOptionsState = _otherOptionsState;
-
-    _uiOptionsState = new UserInterfaceOptionsState;
-    _uiOptionsState->controlKeyRequired = parsed_cmd->flags & CMD_FLAG_UI_REQUIRE_CONTROL_KEY;
+    _uiOptionsState = new UserInterfaceOptionsState(parsed_cmd);
     globalState._uiOptionsState = _uiOptionsState;
+
 
     // reportWidgetChildren(_ui->centralWidget, "Children of centralWidget, after initMonitors():");
 
@@ -958,8 +900,8 @@ void MainWindow::on_actionUserInterfaceOptionsDialog_triggered()
                      this,     &MainWindow::for_actionUserInterfaceOptionsDialog_accept);
     // need a connection for reset?
 
-    TRACECF(debug, "Calling setControKeyRequired(%s)", SBOOL(_uiOptionsState->controlKeyRequired) );
-    dialog->setDialogBoxControlKeyRequired( _uiOptionsState->controlKeyRequired);
+    TRACECF(debug, "Calling setControKeyRequired(%s)", SBOOL(_uiOptionsState->_controlKeyRequired) );
+    dialog->setDialogBoxControlKeyRequired( _uiOptionsState->_controlKeyRequired);
 
     dialog->exec();
     delete dialog;

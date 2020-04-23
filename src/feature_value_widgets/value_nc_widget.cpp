@@ -125,7 +125,7 @@ void ValueNcWidget::setFeatureValue(const FeatureValue &fv) {
     _guiChange = false;
 
     GlobalState& globalState = GlobalState::instance();
-    NcValuesSource sourceMode = globalState._otherOptionsState->ncValuesSource;
+    NcValuesSource sourceMode = globalState._otherOptionsState->_ncValuesSource;
     _curNcValuesSource = sourceMode;
     loadComboBox(sourceMode);
 

@@ -10,6 +10,8 @@
 
 #include <QtCore/QObject>
 
+#include "cmdline/parsed_cmd.h"
+
 // move inside class?
 typedef enum {
    NcValuesFromMccs,
@@ -23,7 +25,11 @@ class OtherOptionsState : public QObject {
 public:
    static const NcValuesSource DefaultNcValuesSource = NcValuesFromCapabilities;
 
-   NcValuesSource ncValuesSource = DefaultNcValuesSource;
+   OtherOptionsState();
+   OtherOptionsState(Parsed_Cmd * parsedCmd);
+   OtherOptionsState(const OtherOptionsState &other);
+
+   NcValuesSource _ncValuesSource = DefaultNcValuesSource;
 };
 
 const char * ncValuesSourceName(NcValuesSource source) ;
