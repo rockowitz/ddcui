@@ -42,7 +42,7 @@ void MsgBoxThread::run() {
 #endif
 
    // Crude but effective.  Just sleep before starting loop reading messages and
-   // displaying SerailMsgBox
+   // displaying SerialMsgBox
     long initial_sleep_millis =  500;
     TRACECF(debugThread, "Sleeping for %d milliseconds", initial_sleep_millis);
      QThread::msleep(initial_sleep_millis);
