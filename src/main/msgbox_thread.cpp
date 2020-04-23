@@ -1,4 +1,8 @@
-/* msgbox_thread.cpp */
+/** \file msgbox_thread.cpp
+ *
+ *  This thread reads from a queue of error messages to be displayed in a
+ *  dialog box. This avoids a flurry of simultaneous dialog boxes.
+ */
 
 // Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
@@ -57,6 +61,8 @@ void MsgBoxThread::run() {
         msgboxSemaphore.acquire();
         TRACECF(debugThread, "Acquired msgboxSemaphore");
         emit postSerialMsgBox(rqst->_boxTitle, rqst->_boxText, rqst->_boxIcon);
+        // requires MainWindow; clearer since MainWindow::showSerialMsgBox is what gets called
+        // but would require knowing MainWindow
         // showSerialMsgBox(rqst->_boxTitle, rqst->_boxText, rqst->_boxIcon);
         delete rqst;
     }

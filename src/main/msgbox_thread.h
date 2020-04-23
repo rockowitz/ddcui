@@ -1,4 +1,8 @@
-/* msgbox_thread.h */
+/** \file msgbox_thread.h
+ *
+ * This thread reads from a queue of error messages to be displayed in a
+ *  dialog box. This avoids a flurry of simultaneous dialog boxes.
+ */
 
 // Copyright (C) 2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
