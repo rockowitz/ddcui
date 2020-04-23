@@ -88,7 +88,7 @@ void MainWindow::initSerialMsgbox() {
 
 
 void MainWindow::start_msgBoxThread() {
-   TRACEMC("Executing");
+   // TRACEMC("Executing");
 
 #ifdef DEFERRED_MSG_QUEUE
    TRACEMC("Putting %d MsgBoxQueueEntry on _msgboxQueue", _deferredMsgs.count());
@@ -401,7 +401,7 @@ void MainWindow::setStatusMsg(QString msg) {
 //
 
 void MainWindow::showSerialMsgBox(QString title, QString text, QMessageBox::Icon icon) {
-   bool debugFunc = true;
+   bool debugFunc = false;
    TRACEMCF(debugFunc, "Starting. text=%s", QS2S(text));
 // #ifdef DIALOG_BOX_STILL_ON_SEPARATE_SCREEN
    QMessageBox * serialMbox2 = new QMessageBox(this);

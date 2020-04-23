@@ -12,7 +12,7 @@
 #include "base/core.h"
 #include "main/msgbox_thread.h"
 
-static bool debugThread = true;
+static bool debugThread = false;
 
 // dangerous, would clobber if multiple instances of this class,
 // but can't get it to compile as a member variable;
@@ -41,9 +41,9 @@ void MsgBoxThread::run() {
     // DIDN'T SOLVE PROBLEM.
 #endif
 
-   // Crude but effective.  Just sleep before starting loop reading messages and
-   // displaying SerialMsgBox
-    long initial_sleep_millis =  500;
+    // Crude but effective.  Just sleep before starting loop reading messages and
+    // displaying SerialMsgBox
+    long initial_sleep_millis =  MSGBOX_THREAD_RUN_DELAY_MILLIS;
     TRACECF(debugThread, "Sleeping for %d milliseconds", initial_sleep_millis);
      QThread::msleep(initial_sleep_millis);
      TRACECF(debugThread, "Initial sleep complete");

@@ -147,6 +147,6 @@ int main(int argc, char *argv[])
     // how to defer until after main event loop started, i.e. a.exec() called
     // globalState._msgBoxThread->start();
 
-    printf("(%s) Calling Application::exec()\n", __func__);
+    // printf("(%s) Calling Application::exec()\n", __func__);
     return a.exec();
 }

@@ -39,6 +39,8 @@
 #endif
 
 
+#define MSGBOX_THREAD_RUN_DELAY_MILLIS 200
+
 extern const bool debugSignals            ;
 extern const bool debugValueWidgetSignals ;
 extern const bool debugFeatureLists       ;

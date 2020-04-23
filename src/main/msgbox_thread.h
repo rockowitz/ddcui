@@ -22,13 +22,12 @@ public:
     MsgBoxThread(MsgBoxQueue *requestQueue);
     void run() override;
 
-
+signals:
+    void postSerialMsgBox(QString boxTitle, QString boxText, QMessageBox::Icon boxIcon);
 
 public slots:
     void msbgoxClosed(int result);
 
-signals:
-    void postSerialMsgBox(QString boxTitle, QString boxText, QMessageBox::Icon boxIcon);
 
 private:
      // void showSerialMsgBox(QString title, QString text, QMessageBox::Icon icon);
@@ -37,8 +36,6 @@ private:
     // QWidget*               _parent = NULL;
     const char *          _cls = "MsgBoxThread";
     const int             n = 1;
-    // how to create a QSemaphore member variable?
-    // QSemaphore            msgboxSemaphore2(1);
 };
 
 #endif // MSGBOX_THREAD_H

@@ -69,7 +69,7 @@ void MsgBoxQueue::put(MsgBoxQueueEntry * request) {
     // debugFunc = true;
 
     assert(request);
-    TRACECF(debugFunc || true, "-> Before lock. request: %s", QS2S(request->repr()));
+    TRACECF(debugFunc, "-> Before lock. request: %s", QS2S(request->repr()));
 
     _mutex.lock();
     _queue.enqueue(request);
@@ -104,7 +104,7 @@ MsgBoxQueueEntry * MsgBoxQueue::pop() {
         fflush(stdout);
      }
 #endif
-    TRACECF(debugFunc || true, "<- Done. Returning request: %s", QS2S(rqst->repr()) );
+    TRACECF(debugFunc, "<- Done. Returning request: %s", QS2S(rqst->repr()) );
     return rqst;
 }
 
