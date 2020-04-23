@@ -121,6 +121,13 @@ private slots:
 
     void on_actionFeaturesScrollArea_triggered();
 
+    // Actions Menu
+    void on_actionRescan_triggered();
+    void on_actionRedetect_triggered();
+    void on_actionDebugActionsDialog_triggered();
+    void for_resetStats_triggered();
+    void for_reportStats_triggered(DDCA_Stats_Type stats_type, bool showTheadData);
+
     // Options Menu
     void on_actionFeatureSelectionDialog_triggered();
     void for_actionFeatureSelectionDialog_accepted();
@@ -139,12 +146,7 @@ private slots:
     void on_actionUserInterfaceOptionsDialog_triggered();
     void for_actionUserInterfaceOptionsDialog_accept();
 
-    // Actions Menu
-    void on_actionRescan_triggered();
-    void on_actionRedetect_triggered();
-    void on_actionDebugActionsDialog_triggered();
-    void for_resetStats_triggered();
-    void for_reportStats_triggered(DDCA_Stats_Type stats_type, bool showTheadData);
+
 
     // Help Menu
     void on_actionAbout_triggered();
@@ -155,15 +157,15 @@ private slots:
     void displaySelectorCombobox_currentIndexChanged(int index);
     // void displaySelectorCombobox_activated(int index);
 
-    //
-    // *** General methods ***
-    //
+ //
+ // *** General methods ***
+ //
 
-    // *** public general methods
+    // public general methods ***
 public:
     void reportDdcApiError(QString funcname, int rc) const;
 
-    // *** private general methods
+    // private general methods ***
 private:
     // used only by slotfor_reportStats_triggered()
       void capture_stats(DDCA_Stats_Type stats_type, bool show_thread_data);
@@ -179,17 +181,18 @@ private:
      void set_feature_list_id(DDCA_Feature_Subset_Id feature_list_id);
  #endif
 
-    //
-    // *** Member Variables ***
-    //
 
-    // *** public member variables
+//
+// *** Member Variables ***
+//
+
+    // public member variables ***
 
 public:
     UserInterfaceOptionsDialog * _uid = NULL;
     FeatureSelector *        _feature_selector = NULL;
 
-    // *** private member variables
+    // private member variables ***
 
 private:
     const char *               _cls;
@@ -212,9 +215,6 @@ private:
 
     FeatureSelectionDialog*    _fsd = NULL;
     OtherOptionsDialog*        _ood = NULL;       // for future use
-    DDCA_Feature_Subset_Id feature_list_id() const;
-
-
 
 };
 
