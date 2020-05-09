@@ -173,12 +173,12 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
                    '\0',   0, G_OPTION_ARG_NONE,      &show_unsupported_features, "Show unsupported features", NULL},
       {"only-capabilities",
                    '\0',   0, G_OPTION_ARG_NONE,      &only_capabilities_true_set, "Include only values in capabilities", NULL},
-      {"not-only-capabilities",
-                    '\0',  0, G_OPTION_ARG_NONE,      &only_capabilities_false_set, "Do not exclude values only in MCCS", NULL},
+//    {"not-only-capabilities",
+//                 '\0',  0, G_OPTION_ARG_NONE,      &only_capabilities_false_set, "Do not exclude values only in MCCS", NULL},
       {"all-capabilities",
                    '\0',   0, G_OPTION_ARG_NONE,      &all_capabilities_true_set, "Include all values in capabilities", NULL},
-      {"not-all-capabilities",
-                     '\0', 0, G_OPTION_ARG_NONE,      &all_capabilities_false_set, "Negate include all values in capabilities", NULL},
+//      {"not-all-capabilities",
+//                     '\0', 0, G_OPTION_ARG_NONE,      &all_capabilities_false_set, "Negate include all values in capabilities", NULL},
 
 #ifdef REF
                                _ui->showUnsupported_checkbox->setChecked( fsel->_showUnsupportedFeatures);
