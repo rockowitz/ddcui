@@ -102,6 +102,7 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
    gboolean thread_id_trace_flag    = false;
    gboolean version_flag            = false;
    gboolean show_styles_flag        = false;
+   gboolean show_active_style_flag  = false;
    gchar**  cmd_and_args            = NULL;
    gchar**  trace_classes           = NULL;
    gchar**  trace_filenames         = NULL;
@@ -191,6 +192,7 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
 
 // Pre-GUI queries
       {"styles",   '\0',   0, G_OPTION_ARG_NONE,     &show_styles_flag,     "List known styles",        NULL},
+      {"show-style", '\0', 0, G_OPTION_ARG_NONE,     &show_active_style_flag, "Show active style",      NULL},
       {"version",  'V',    0, G_OPTION_ARG_NONE,     &version_flag,         "Show version information", NULL},
 
 // Debug parser
@@ -258,6 +260,7 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
    SET_CMDFLAG(CMD_FLAG_ENABLE_UDF,        enable_udf_flag);
    SET_CMDFLAG(CMD_FLAG_NOUSB,             nousb_flag);
    SET_CMDFLAG(CMD_FLAG_SHOW_STYLES,       show_styles_flag);
+   SET_CMDFLAG(CMD_FLAG_SHOW_ACTIVE_STYLE, show_active_style_flag);
 
    SET_CMDFLAG(CMD_FLAG_UI_REQUIRE_CONTROL_KEY, control_key_required);
    SET_CMDFLAG(CMD_FLAG_SHOW_UNSUPPORTED,       show_unsupported_features);

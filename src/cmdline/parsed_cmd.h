@@ -60,6 +60,7 @@ typedef enum {
    CMD_FLAG_SHOW_STYLES            = 0x000040,
    CMD_FLAG_UI_REQUIRE_CONTROL_KEY = 0x000080,
    CMD_FLAG_SHOW_UNSUPPORTED       = 0x000100,
+   CMD_FLAG_SHOW_ACTIVE_STYLE      = 0x000200,
 } Parsed_Cmd_Flags;
 
 

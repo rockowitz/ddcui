@@ -153,6 +153,7 @@ void dbgrpt_parsed_cmd(Parsed_Cmd * parsed_cmd) {
       printf("   timestamp prefix:          %s\n",   SBOOL(parsed_cmd->flags & CMD_FLAG_TIMESTAMP_TRACE) );
       printf("   thread_id prefix:          %s\n",   SBOOL(parsed_cmd->flags & CMD_FLAG_THREAD_ID_TRACE) );
       printf("   show styles:               %s\n",   SBOOL(parsed_cmd->flags & CMD_FLAG_SHOW_STYLES) );
+      printf("   show active style:         %s\n",   SBOOL(parsed_cmd->flags & CMD_FLAG_SHOW_ACTIVE_STYLE) );
       printf("   sleep multiplier:         %9.1f\n", parsed_cmd->sleep_multiplier);
 
       printf("   require control key:       %s\n",   SBOOL(parsed_cmd->flags & CMD_FLAG_UI_REQUIRE_CONTROL_KEY) );

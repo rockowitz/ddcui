@@ -116,6 +116,11 @@ int main(int argc, char *argv[])
        return 0;
     }
 
+    if (parsed_cmd->flags & CMD_FLAG_SHOW_ACTIVE_STYLE) {
+       const char * styleClass = QApplication::style()->metaObject()->className();
+       printf("Active style: %s\n", styleClass);
+    }
+
     // local, not in ddcutil library
      enable_trace_show_time(     parsed_cmd->flags & CMD_FLAG_TIMESTAMP_TRACE);
      enable_trace_show_thread_id(parsed_cmd->flags & CMD_FLAG_THREAD_ID_TRACE);
