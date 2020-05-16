@@ -81,6 +81,7 @@ typedef struct {
    Optional_True_False nc_values_must_be_in_capabilities;
    char *              model;
    int                 busno;
+   DDCA_Feature_List   custom_feature_list;
 } Parsed_Cmd;
 
 

@@ -3,6 +3,7 @@
 // Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+
 /** \cond */
 #include <assert.h>
 #include <glib-2.0/glib.h>
@@ -11,6 +12,8 @@
 #include <stdio.h>
 #include <string.h>
 /** \endcond */
+
+#include "ddcutil_c_api.h"
 
 #include "c_util/data_structures.h"
 #include "cmdline/parsed_cmd.h"
@@ -159,6 +162,7 @@ void dbgrpt_parsed_cmd(Parsed_Cmd * parsed_cmd) {
       printf("   require control key:       %s\n",   SBOOL(parsed_cmd->flags & CMD_FLAG_UI_REQUIRE_CONTROL_KEY) );
       printf("   initial view:              %s\n",   get_view_table_symbol(parsed_cmd->view) );
       printf("   default feature set:       %s\n",   get_feature_set_table_symbol(parsed_cmd->feature_set));
+      printf("   custom feature set:        %s\n",   ddca_feature_list_string(&parsed_cmd->custom_feature_list, "",","));
       printf("   NC values source:          %s\n",   get_nc_values_source_table_symbol(parsed_cmd->nc_values_source));
       printf("   nc_values_must_be_in_capabilities: %s\n", trival_repr(parsed_cmd->nc_values_must_be_in_capabilities));
       printf("   nc_values_all_in_capabilities:     %s\n", trival_repr(parsed_cmd->nc_values_all_in_capabilities));
