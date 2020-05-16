@@ -9,10 +9,15 @@
 #ifndef STRING_UTIL_H
 #define STRING_UTIL_H
 
+
 #include <stdbool.h>
+
+#include "coredefs.h"
 
 bool is_abbrev(const char * value, const char * longname, size_t  minchars);
 
 bool str_to_float(const char * sval, float * p_fval);
+
+bool any_one_byte_hex_string_to_byte_in_buf(const char * s, Byte * result);
 
 #endif
