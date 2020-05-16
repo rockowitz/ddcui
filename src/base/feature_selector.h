@@ -32,9 +32,10 @@ public:
     bool                   _includeTableFeatures    = false;
     bool                   _includeOnlyCapabilities = true;
     bool                   _includeAllCapabilities  = false;
+    DDCA_Feature_List      _customFeatureList       = DDCA_EMPTY_FEATURE_LIST;
 
 
-    void applyParsedOptions(Parsed_Cmd * parased_cmd);
+    void applyParsedOptions(Parsed_Cmd * parsed_cmd);
 
     bool operator==(const FeatureSelector& sel2) const;
     bool operator!=(const FeatureSelector& sel2) const;

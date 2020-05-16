@@ -33,10 +33,16 @@ DDCA_Feature_Subset_Id parsedFeatureSet_to_ddcaFeatureSubsetId(Parsed_Feature_Se
 
 
 void FeatureSelector::applyParsedOptions(Parsed_Cmd * parsed_cmd) {
-   if (parsed_cmd->feature_set) {
+   if (ddca_feature_list_count(&parsed_cmd->custom_feature_list) > 0) {
+      _customFeatureList = parsed_cmd->custom_feature_list;
+      _featureListId = DDCA_SUBSET_UNSET;
+   }
+
+   else if (parsed_cmd->feature_set) {
        _featureListId =
              parsedFeatureSet_to_ddcaFeatureSubsetId(parsed_cmd->feature_set);
     }
+
 
     _showUnsupportedFeatures = parsed_cmd->flags & CMD_FLAG_SHOW_UNSUPPORTED;
 
