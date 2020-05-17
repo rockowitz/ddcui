@@ -640,7 +640,9 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
     DDCA_Feature_List featuresToShow = DDCA_EMPTY_FEATURE_LIST;
     if (_feature_selector->_featureListId == DDCA_SUBSET_CAPABILITIES) {
        featuresToShow = ddca_feature_list_from_capabilities(monitor->_baseModel->_parsed_caps);
-
+    }
+    else if (_feature_selector->_featureListId = DDCA_SUBSET_CUSTOM) {
+       featuresToShow = _feature_selector->_customFeatureList;
     }
     else {
        featuresToShow = monitor->getFeatureList(_feature_selector->_featureListId);
