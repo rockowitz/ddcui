@@ -274,8 +274,8 @@ void FeatureSelectionDialog::on_includeTable_checkbox_stateChanged(int arg1)
 
 void FeatureSelectionDialog::on_buttonBox_accepted()
 {
-    bool debugFunc = debugFeatureSelection ||true;
-    debugFunc = true;
+    bool debugFunc = false;
+    debugFunc |= debugFeatureSelection;
     TRACECF(debugFunc, "Executing");
     // which button is currently clicked?
 
@@ -297,48 +297,38 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
         fsid = DDCA_SUBSET_SCAN;
     else if (_ui->custom_radioButton->isChecked()) {
         fsid = DDCA_SUBSET_CUSTOM;
-        QString x = _ui->custom_lineEdit->text();
-        char * y = QS2S(x);
-        TRACECF(true, "text: %p", y);
-        TRACECF(true, "text: %d - |%s|", strlen(y), y);
+        char * y = QS2S( _ui->custom_lineEdit->text());
+        TRACECF(debugFunc, "text: %d - |%s|", strlen(y), y);
         char ** error_msgs = NULL;
         bool ok = true;
         flist = parse_custom_feature_list(y, &error_msgs);
-        if (error_msgs) {
-             fprintf(stderr, "Errors in custom features\n");
-             int ndx = 0;
-             while (error_msgs[ndx]) {
-                TRACECF(true,"Invalid custom feature:   %s", error_msgs[ndx]);
-
-                QString qsexpl = QString::asprintf(
-                                  "Invalid custom feature:  %s", error_msgs[ndx]);
-                QString qstitle = "Feature Code Error";
-                QMessageBox::Icon icon = QMessageBox::Critical;
-                MsgBoxQueueEntry * qe = new MsgBoxQueueEntry(
-                                           qstitle,
-                                           qsexpl,
-                                           icon);
-               TRACECF(debugFunc, "Calling _msgboxQueue.put() for qe: %s", QS2S(qe->repr()));
-               GlobalState & globalState = GlobalState::instance();
-               globalState._mainWindow->_msgboxQueue->put(qe);
-
-
-                free(error_msgs[ndx]);
-                ndx++;
+        if (ddca_feature_list_count(&flist) == 0) {
+           QString qstitle = "Feature Code Error";
+           QMessageBox::Icon icon = QMessageBox::Critical;
+           MsgBoxQueue * msgboxQueue = GlobalState::instance()._mainWindow->_msgboxQueue;
+           if (error_msgs) {
+              // fprintf(stderr, "Errors in custom features\n");
+              int ndx = 0;
+              while (error_msgs[ndx]) {
+                 // TRACECF(true,"Invalid custom feature:   %s", error_msgs[ndx]);
+                 QString qsexpl = QString::asprintf("%s", error_msgs[ndx]);
+                 MsgBoxQueueEntry * qe = new MsgBoxQueueEntry(qstitle,qsexpl,icon);
+                 TRACECF(debugFunc, "Calling _msgboxQueue.put() for qe: %s", QS2S(qe->repr()));
+                 msgboxQueue->put(qe);
+                 free(error_msgs[ndx]);
+                 ndx++;
              }
-             ok = false;
-        }
-        else if ( ddca_feature_list_count(&flist) == 0) {
-              // put up dialog box
-              TRACECF(true, "No custom features specified");
-              ok = false;
-        }
-
-        if (!ok) {
+           }
+           else {
+              QString qsexpl("No custom features specified");
+              MsgBoxQueueEntry * qe = new MsgBoxQueueEntry(qstitle,qsexpl,icon);
+              TRACECF(debugFunc, "Calling _msgboxQueue.put() for qe: %s", QS2S(qe->repr()));
+              msgboxQueue->put(qe);
+           }
            return;
-        }
+        }   // feature_list_count == 0
+    }   // custom_radioButton
 
-    }
     else
         fsid = DDCA_SUBSET_KNOWN;    // should never occur
 
