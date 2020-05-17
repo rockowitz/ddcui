@@ -43,31 +43,31 @@ void FeatureSelectionDialog::useSelectorData(FeatureSelector * fsel)
     switch(local_fsid) {
     case DDCA_SUBSET_KNOWN:
         curButton = _ui->known_radioButton;
-        _ui->custom2_lineEdit->setEnabled(false);
+        _ui->custom_lineEdit->setEnabled(false);
         break;
     case DDCA_SUBSET_COLOR:
         curButton = _ui->color_radioButton;
-        _ui->custom2_lineEdit->setEnabled(false);
+        _ui->custom_lineEdit->setEnabled(false);
         break;
     case DDCA_SUBSET_PROFILE: // removed from dialog, case left to satisfy that all cases addressed
         // curButton = _ui->profile_radioButton;
         break;
     case DDCA_SUBSET_MFG:
         curButton = _ui->mfg_radioButton;
-        _ui->custom2_lineEdit->setEnabled(false);
+        _ui->custom_lineEdit->setEnabled(false);
         break;
     case DDCA_SUBSET_CAPABILITIES:
         curButton = _ui->capabilities_radioButton;
-        _ui->custom2_lineEdit->setEnabled(false);
+        _ui->custom_lineEdit->setEnabled(false);
         break;
     case DDCA_SUBSET_SCAN:
         curButton = _ui->scan_radioButton;
-        _ui->custom2_lineEdit->setEnabled(false);
+        _ui->custom_lineEdit->setEnabled(false);
         break;
     case DDCA_SUBSET_CUSTOM:
-       curButton = _ui->custom2_radioButton;
-       _ui->custom2_lineEdit->setText( ddca_feature_list_string(&fsel->_customFeatureList, "", " ") );
-       _ui->custom2_lineEdit->setEnabled(true);
+       curButton = _ui->custom_radioButton;
+       _ui->custom_lineEdit->setText( ddca_feature_list_string(&fsel->_customFeatureList, "", " ") );
+       _ui->custom_lineEdit->setEnabled(true);
        break;
     case DDCA_SUBSET_UNSET:
         assert(false);
@@ -114,8 +114,8 @@ FeatureSelectionDialog::FeatureSelectionDialog(
                       this, &FeatureSelectionDialog::on_color_radioButton_clicked);
     QObject::connect(_ui->scan_radioButton, &QAbstractButton::clicked,
                         this, &FeatureSelectionDialog::on_scan_radioButton_clicked);
-    QObject::connect(_ui->custom2_radioButton, &QAbstractButton::clicked,
-                        this, &FeatureSelectionDialog::on_custom2_radioButton_clicked);
+    QObject::connect(_ui->custom_radioButton, &QAbstractButton::clicked,
+                        this, &FeatureSelectionDialog::on_custom_radioButton_clicked);
 
     useSelectorData(_featureSelector);
 }
@@ -169,7 +169,7 @@ void FeatureSelectionDialog::on_known_radioButton_clicked(bool checked) {
     // cout << "(on_known_radioButton_clicked) arg1 = " << checked << endl;
    _ui->allCapabilities_checkbox->setEnabled(true);
    _ui->onlyCapabilities_checkbox->setEnabled(true);
-   _ui->custom2_lineEdit->setEnabled(false);
+   _ui->custom_lineEdit->setEnabled(false);
 }
 
 
@@ -179,7 +179,7 @@ void FeatureSelectionDialog::on_scan_radioButton_clicked(bool checked) {
    _ui->onlyCapabilities_checkbox->setEnabled(false);
    _ui->allCapabilities_checkbox->setChecked(false);
    _ui->onlyCapabilities_checkbox->setChecked(false);
-   _ui->custom2_lineEdit->setEnabled(false);
+   _ui->custom_lineEdit->setEnabled(false);
 }
 
 
@@ -189,7 +189,7 @@ void FeatureSelectionDialog::on_capabilities_radioButton_clicked(bool checked) {
    _ui->onlyCapabilities_checkbox->setEnabled(false);
    _ui->allCapabilities_checkbox->setChecked(false);
    _ui->onlyCapabilities_checkbox->setChecked(false);
-   _ui->custom2_lineEdit->setEnabled(false);
+   _ui->custom_lineEdit->setEnabled(false);
 }
 
 
@@ -198,7 +198,7 @@ void FeatureSelectionDialog::on_mfg_radioButton_clicked(bool checked) {
    _ui->allCapabilities_checkbox->setEnabled(false);
    _ui->onlyCapabilities_checkbox->setEnabled(true);
    _ui->allCapabilities_checkbox->setChecked(false);
-   _ui->custom2_lineEdit->setEnabled(false);
+   _ui->custom_lineEdit->setEnabled(false);
 }
 
 
@@ -217,17 +217,17 @@ void FeatureSelectionDialog::on_color_radioButton_clicked(bool checked) {
    _ui->allCapabilities_checkbox->setEnabled(false);
    _ui->onlyCapabilities_checkbox->setEnabled(true);
    _ui->allCapabilities_checkbox->setChecked(false);
-   _ui->custom2_lineEdit->setEnabled(false);
+   _ui->custom_lineEdit->setEnabled(false);
 }
 
-void FeatureSelectionDialog::on_custom2_radioButton_clicked(bool checked) {
+void FeatureSelectionDialog::on_custom_radioButton_clicked(bool checked) {
     // cout << "(on_color_radioButton_clicked) arg1 = " << checked << endl;
    _ui->allCapabilities_checkbox->setEnabled(false);
    _ui->allCapabilities_checkbox->setChecked(false);
    _ui->onlyCapabilities_checkbox->setEnabled(true);
    _ui->onlyCapabilities_checkbox->setChecked(false);
 
-   _ui->custom2_lineEdit->setEnabled(true);
+   _ui->custom_lineEdit->setEnabled(true);
 }
 
 
@@ -295,9 +295,9 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
         fsid = DDCA_SUBSET_CAPABILITIES;
     else if (_ui->scan_radioButton->isChecked())
         fsid = DDCA_SUBSET_SCAN;
-    else if (_ui->custom2_radioButton->isChecked()) {
+    else if (_ui->custom_radioButton->isChecked()) {
         fsid = DDCA_SUBSET_CUSTOM;
-        QString x = _ui->custom2_lineEdit->text();
+        QString x = _ui->custom_lineEdit->text();
         char * y = QS2S(x);
         TRACECF(true, "text: %p", y);
         TRACECF(true, "text: %d - |%s|", strlen(y), y);
