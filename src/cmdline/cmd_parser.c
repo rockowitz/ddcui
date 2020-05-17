@@ -19,6 +19,7 @@
 
 #include "c_util/string_util.h"
 #include "base/ddcui_parms.h"
+#include "base/feature_list.h"
 
 #include "cmdline/cmd_parser_aux.h"
 #include "cmdline/parsed_cmd.h"
@@ -73,6 +74,7 @@ gboolean stats_arg_func(const    gchar* option_name,
 }
 
 
+
 /** Primary parsing function
  *
  *  \param  argc      number of command line arguments
@@ -114,6 +116,7 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
 #endif
    gchar*   nc_values_source_work   = NULL;
    gchar*   feature_set_work        = NULL;
+   gchar*   custom_feature_set_work = NULL;
    gboolean control_key_required    = false;
    gboolean show_unsupported_features = false;
 
@@ -170,6 +173,9 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
                    '\0',   0, G_OPTION_ARG_STRING,   &feature_set_work,  "Feature set selection",
                                                                        "MMCS|Capabilities|Manufacturer|Color|Scan"},
 
+     {"custom-feature-set",
+                  '\0',   0, G_OPTION_ARG_STRING,   &custom_feature_set_work, "User feature set definition",
+                                                                    "comma separated list of feature codes"},
       {"show-unsupported",
                    '\0',   0, G_OPTION_ARG_NONE,      &show_unsupported_features, "Show unsupported features", NULL},
       {"only-capabilities",
@@ -350,6 +356,28 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
     }
 // #endif
 
+   if (custom_feature_set_work) {
+      // Null_Terminated_String_Array error_msgs;
+      char ** error_msgs;
+      DDCA_Feature_List flist = parse_custom_feature_list(custom_feature_set_work, &error_msgs);
+      parsed_cmd->custom_feature_list = flist;
+      printf("wolf 1\n");
+      // ASSERT_IFF( ddca_feature_list_count(&flist) == 0, error_msgs);
+      if (error_msgs) {
+        ntsa_show(error_msgs);
+        fprintf(stderr, "Errors in --custom-feature-set:\n");
+        int ndx = 0;
+        while (error_msgs[ndx]) {
+           fprintf(stderr, "   %s\n", error_msgs[ndx]);
+           free(error_msgs[ndx]);
+           ndx++;
+        }
+      }
+      if ( ddca_feature_list_count(&flist) == 0)
+         ok = false;
+   }
+
+
 
    if (sleep_multiplier_work) {
       // DBGMSF(debug, "sleep_multiplier_work = |%s|", sleep_multiplier_work);
@@ -448,6 +476,17 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
       VALUE_LOOKUP(Parsed_Feature_Set, feature_set, FS_UNSET);
 
 #undef VALUE_LOOKUP
+
+      if (parsed_cmd->feature_set != FS_UNSET &&
+          ddca_feature_list_count(&parsed_cmd->custom_feature_list) > 0)
+      {
+         fprintf(stderr, "--feature-set and --custom-feature-set are mutually exclusive\n");
+         ok = false;
+      }
+      // fixup, is this the right place?
+      // if (ddca_feature_list_count(&parsed_cmd->custom_feature_list) > 0)
+      //    parsed_cmd->feature_set = FS_CUSTOM;
+
 
       if (cmd_and_args && cmd_and_args[0]) {
       // int rest_ct = 0;   // unused
