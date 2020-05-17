@@ -8,7 +8,7 @@
 const bool debugSignals            = false;
 const bool debugValueWidgetSignals = false;
 const bool debugFeatureLists       = false;
-const bool debugFeatureSelection   = false;
+const bool debugFeatureSelection   = true;
 const bool debugLayout             = false;
 const bool debugNcValues           = false;
 const bool debugFeatureDimensions  = false;
