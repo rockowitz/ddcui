@@ -357,27 +357,25 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
 // #endif
 
    if (custom_feature_set_work) {
-      // Null_Terminated_String_Array error_msgs;
-      char ** error_msgs;
+      char ** error_msgs;         // Null_Terminated_String_Array error_msgs;
       DDCA_Feature_List flist = parse_custom_feature_list(custom_feature_set_work, &error_msgs);
       parsed_cmd->custom_feature_list = flist;
-      printf("wolf 1\n");
-      // ASSERT_IFF( ddca_feature_list_count(&flist) == 0, error_msgs);
-      if (error_msgs) {
-        ntsa_show(error_msgs);
-        fprintf(stderr, "Errors in --custom-feature-set:\n");
-        int ndx = 0;
-        while (error_msgs[ndx]) {
-           fprintf(stderr, "   %s\n", error_msgs[ndx]);
-           free(error_msgs[ndx]);
-           ndx++;
-        }
-      }
-      if ( ddca_feature_list_count(&flist) == 0)
+      if (ddca_feature_list_count(&flist) == 0) {
          ok = false;
+         if (error_msgs) {
+            fprintf(stderr, "Errors in --custom-feature-set:\n");
+            int ndx = 0;
+            while (error_msgs[ndx]) {
+               fprintf(stderr, "   %s\n", error_msgs[ndx]);
+               free(error_msgs[ndx]);
+               ndx++;
+            }
+         }
+         else {
+            fprintf(stderr, "Empty --custom-feature-set\n");
+         }
+      }
    }
-
-
 
    if (sleep_multiplier_work) {
       // DBGMSF(debug, "sleep_multiplier_work = |%s|", sleep_multiplier_work);
