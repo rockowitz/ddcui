@@ -21,13 +21,12 @@ class FeatureSelector    // : public QObject
  //   Q_OBJECT
 
 public:
-
    FeatureSelector();
    FeatureSelector(Parsed_Cmd * parsedCmd);
 
     FeatureSelector(const FeatureSelector &other);
 
-    DDCA_Feature_Subset_Id _featureListId           = DDCA_SUBSET_KNOWN;
+    DDCA_Feature_Subset_Id _featureSubsetId         = DDCA_SUBSET_KNOWN;
     bool                   _showUnsupportedFeatures = false;
     bool                   _includeTableFeatures    = false;
     bool                   _includeOnlyCapabilities = true;

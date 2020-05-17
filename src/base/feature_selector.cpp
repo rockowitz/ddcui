@@ -32,41 +32,62 @@ DDCA_Feature_Subset_Id parsedFeatureSet_to_ddcaFeatureSubsetId(Parsed_Feature_Se
 }
 
 
+bool defaultIncludeOnlyCapabilities(DDCA_Feature_Subset_Id fsid) {
+   bool result = false;
+   if (fsid == DDCA_SUBSET_CAPABILITIES)
+      result = true;
+   return result;
+}
+
+
+bool defaultIncludeAllCapabilities(DDCA_Feature_Subset_Id fsid) {
+   bool result = false;
+   if (fsid == DDCA_SUBSET_CAPABILITIES)
+      result = true;
+   return result;
+}
+
 
 void FeatureSelector::applyParsedOptions(Parsed_Cmd * parsed_cmd) {
+   bool debug = true;
+
    if (ddca_feature_list_count(&parsed_cmd->custom_feature_list) > 0) {
-      printf("(applyParsedOptions) feature list count > 0\n");
+      // printf("(applyParsedOptions) feature list count > 0\n");
       _customFeatureList = parsed_cmd->custom_feature_list;
-      printf("(applyParsedOptions) setting _featureListId = DDCA_SUBSET_CUSTOM\n");
-      _featureListId = DDCA_SUBSET_CUSTOM;
+      // printf("(applyParsedOptions) setting _featureListId = DDCA_SUBSET_CUSTOM\n");
+      _featureSubsetId = DDCA_SUBSET_CUSTOM;
    }
 
    else if (parsed_cmd->feature_set) {
-      printf("(applyParsedOptions) feature set passed\n");
-       _featureListId =
+      // printf("(applyParsedOptions) feature set passed\n");
+       _featureSubsetId =
              parsedFeatureSet_to_ddcaFeatureSubsetId(parsed_cmd->feature_set);
     }
    else
-      _featureListId = DDCA_SUBSET_KNOWN;      // default
-
+      _featureSubsetId = DDCA_SUBSET_KNOWN;      // default
 
     _showUnsupportedFeatures = parsed_cmd->flags & CMD_FLAG_SHOW_UNSUPPORTED;
 
-    if (parsed_cmd->nc_values_must_be_in_capabilities == TRIVAL_TRUE)
+    if (parsed_cmd->include_only_capabilities_features == TRIVAL_TRUE)
        _includeOnlyCapabilities = true;
-    else if (parsed_cmd->nc_values_must_be_in_capabilities == TRIVAL_FALSE)
+    else if (parsed_cmd->include_only_capabilities_features == TRIVAL_FALSE)
       _includeOnlyCapabilities = false;
+    else {
+      _includeOnlyCapabilities = defaultIncludeOnlyCapabilities(_featureSubsetId);
+    }
 
-    if (parsed_cmd->nc_values_all_in_capabilities == TRIVAL_TRUE)
+    if (parsed_cmd->include_all_capabilities_features == TRIVAL_TRUE)
        _includeAllCapabilities = true;
-    else if (parsed_cmd->nc_values_all_in_capabilities == TRIVAL_FALSE)
-       _includeAllCapabilities = false;
+    else if (parsed_cmd->include_all_capabilities_features == TRIVAL_FALSE)
+      _includeAllCapabilities = false;
+    else {
+      _includeAllCapabilities = defaultIncludeAllCapabilities(_featureSubsetId);
+    }
 
-   //  _feature_selector->_includeOnlyCapabilities = parsed_cmd->flags & CMD_FLAG_NC_VALUES_MUST_BE_IN_CAPABILITIES;
-   // _feature_selector->_includeAllCapabilities  = parsed_cmd->flags & CMD_FLAG_NC_VALUES_ALL_IN_CAPABILITIES;
-
-    printf("(applyParsedOptions) Done _feature_List_Id = %d\n", _featureListId);
-    dbgrpt();
+    if (debug) {
+       printf("(applyParsedOptions) Done _feature_List_Id = %d\n", _featureSubsetId);
+       dbgrpt();
+    }
 }
 
 
@@ -78,7 +99,7 @@ FeatureSelector::FeatureSelector(Parsed_Cmd * parsedCmd) {
 }
 
 FeatureSelector::FeatureSelector(const FeatureSelector &other) {
-   _featureListId           = other._featureListId;
+   _featureSubsetId           = other._featureSubsetId;
    _includeTableFeatures    = other._includeTableFeatures     ;
    _showUnsupportedFeatures = other._showUnsupportedFeatures ;
    _includeOnlyCapabilities = other._includeOnlyCapabilities ;
@@ -87,7 +108,7 @@ FeatureSelector::FeatureSelector(const FeatureSelector &other) {
 
 
 bool FeatureSelector::operator==(const FeatureSelector &other) const {
-   return (_featureListId         == other._featureListId             &&
+   return (_featureSubsetId         == other._featureSubsetId             &&
            _includeTableFeatures    == other._includeTableFeatures    &&
            _showUnsupportedFeatures == other._showUnsupportedFeatures &&
            _includeOnlyCapabilities == other._includeOnlyCapabilities &&
@@ -101,7 +122,7 @@ bool FeatureSelector::operator!=(const FeatureSelector &other) const {
 
 
 void FeatureSelector::dbgrpt() {
-   printf("   feature_list_id:          %d - %s\n", _featureListId, ddca_feature_list_id_name(_featureListId));
+   printf("   feature_list_id:          %d - %s\n", _featureSubsetId, ddca_feature_list_id_name(_featureSubsetId));
    printf("   custom features:          %s\n", ddca_feature_list_string(&_customFeatureList, "", ", "));
    printf("   includeTableFeatures:     %s\n", SBOOL(_includeTableFeatures));
    printf("   showUnsupportedFeatures:  %s\n", SBOOL(_showUnsupportedFeatures));
