@@ -47,6 +47,7 @@ private slots:
 #endif
     void on_color_radioButton_clicked(bool checked);
     void on_scan_radioButton_clicked(bool checked);
+    void on_custom2_radioButton_clicked(bool checked);
 
     void on_allCapabilities_checkbox_stateChanged(int arg1);
 #ifdef UNUSED
