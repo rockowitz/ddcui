@@ -6,6 +6,7 @@
 // Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+#include <assert.h>
 #include <ctype.h>
 #include <errno.h>
 #include <stdbool.h>
@@ -180,15 +181,15 @@ bool hhs_to_byte_in_buf(const char * s, Byte * result)
    if (strlen(s) != 2)
       ok = false;
    else {
-   char * endptr = NULL;
-   errno = 0;
-   long longtemp = strtol(s, &endptr, 16 );
-   int errsv = errno;
-   if (endptr != s+2 || errsv != 0) {
-      ok = false;
-   }
-   else
-      *result = (Byte) longtemp;
+      char * endptr = NULL;
+      errno = 0;
+      long longtemp = strtol(s, &endptr, 16 );
+      int errsv = errno;
+      if (endptr != s+2 || errsv != 0) {
+         ok = false;
+      }
+      else
+         *result = (Byte) longtemp;
    }
 
    // printf("(%s) Returning ok=%d\n", __func__, ok);
@@ -223,6 +224,223 @@ bool any_one_byte_hex_string_to_byte_in_buf(const char * s, Byte * result)
    free(suc0);
    // printf("(%s) returning %d, *result=0x%02x\n", __func__, ok, *result);
    return ok;
+}
+
+
+/** Frees a null terminated array of strings.
+ *
+ *  @param string_array null terminated array of pointers to strings
+ *  @param free_strings if try, each string in the array is freed as well
+ */
+void ntsa_free(Null_Terminated_String_Array string_array, bool free_strings) {
+   if (string_array) {
+      if (free_strings) {
+      int ndx = 0;
+      while (string_array[ndx] != NULL)
+         free(string_array[ndx++]);
+      }
+      free(string_array);
+   }
+}
+
+
+/* Reports the contents of a #Null_Terminated_String_Array.
+ *
+ * @param string_array null-terminated string array
+ *
+ * @remark This is not a **report** function as that would make string_util
+ * depend on report_util, creating a circular dependency within util
+ */
+void ntsa_show(Null_Terminated_String_Array string_array) {
+   assert(string_array);
+   printf("Null_Terminated_String_Array at %p:\n", string_array);
+   int ndx = 0;
+   while (string_array[ndx]) {
+      printf("  %p: |%s|\n", string_array[ndx], string_array[ndx]);
+      ndx++;
+   }
+   printf("Total entries: %d\n", ndx);
+}
+
+
+/** Returns the number of strings in a null terminated array of strings.
+ *
+ * @param  string_array null terminated array of pointers to strings
+ * @return number of strings in the array
+ */
+int ntsa_length(Null_Terminated_String_Array string_array) {
+   assert(string_array);
+   int ndx = 0;
+   while (string_array[ndx] != NULL) {
+      ndx++;
+   }
+   return ndx;
+}
+
+
+
+/** Converts a #Null_Terminated_String_Array to a GPtrArray of pointers to strings.
+ * The underlying strings are referenced, not duplicated.
+ *
+ * @param  ntsa  null-terminated array of strings
+ * @return newly allocate GPtrArray
+ */
+GPtrArray * ntsa_to_g_ptr_array(Null_Terminated_String_Array ntsa) {
+   int len = ntsa_length(ntsa);
+   GPtrArray * garray = g_ptr_array_sized_new(len);
+   int ndx;
+   for (ndx=0; ndx<len; ndx++) {
+      g_ptr_array_add(garray, ntsa[ndx]);
+   }
+   return garray;
+}
+
+
+/** Converts a GPtrArray of pointers to strings to a Null_Terminated_String_Array.
+ *
+ * @param gparray pointer to GPtrArray
+ * @param duplicate if true, the strings are duplicated
+ *                  if false, the pointers are copied
+ * @return null-terminated array of string pointers
+ */
+Null_Terminated_String_Array
+g_ptr_array_to_ntsa(
+      GPtrArray * gparray,
+      bool        duplicate)
+{
+   assert(gparray);
+   Null_Terminated_String_Array ntsa = calloc(gparray->len+1, sizeof(char *));
+   for (int ndx=0; ndx < gparray->len; ndx++) {
+      if (duplicate)
+         ntsa[ndx] = strdup(g_ptr_array_index(gparray,ndx));
+      else
+         ntsa[ndx] = g_ptr_array_index(gparray,ndx);
+   }
+   return ntsa;
+}
+
+
+
+/** Splits a string based on a list of delimiter characters.
+ *
+ *  @param  str_to_split     string to be split
+ *  @param  delims           string of delimiter characters
+ *  @return null terminated array of pieces
+ *
+ * Note: Each character in delims is used as an individual test.
+ * The full string is NOT a delimiter string.
+ */
+Null_Terminated_String_Array strsplit(const char * str_to_split, const char * delims) {
+   bool debug = false;
+   int max_pieces = (strlen(str_to_split)+1);
+   if (debug)
+      printf("(%s) str_to_split=|%s|, delims=|%s|, max_pieces=%d\n", __func__, str_to_split, delims, max_pieces);
+
+   char** workstruct = calloc(sizeof(char *), max_pieces+1);
+   int piecect = 0;
+
+   char * str_to_split_dup = strdup(str_to_split);
+   char * rest = str_to_split_dup;
+   char * token;
+   // originally token assignment was in while() clause, but valgrind
+   // complaining about uninitialized variable, trying to figure out why
+   token = strsep(&rest, delims);      // n. overwrites character found
+   while (token) {
+      // printf("(%s) token: |%s|\n", __func__, token);
+      if (strlen(token) > 0)
+         workstruct[piecect++] = strdup(token);
+      token = strsep(&rest, delims);
+   }
+   if (debug)
+      printf("(%s) piecect=%d\n", __func__, piecect);
+   char ** result = calloc(sizeof(char *), piecect+1);
+   // n. workstruct[piecect] == NULL because we used calloc()
+   memcpy(result, workstruct, (piecect+1)*sizeof(char*) );
+   if (debug) {
+      int ndx = 0;
+      char * curpiece = result[ndx];
+      while (curpiece != NULL) {
+         printf("(%s) curpiece=%p |%s|\n", __func__, curpiece, curpiece);
+         ndx++;
+         curpiece = result[ndx];
+
+      }
+   }
+   free(workstruct);
+   free(str_to_split_dup);
+   return result;
+}
+
+
+/** Splits a string into segments, each of which is no longer
+ *  that a specified number of characters.  If delimiters are
+ *  specified, then they are used to split the string into segments.
+ *  Otherwise all segments, except possibly the last, are
+ *  **max_piece_length** in length.
+ *
+ *  @param  str_to_split     string to be split
+ *  @param  max_piece_length maximum length of each segment
+ *  @param  delims           string of delimiter characters
+ *  @return null terminated array of pieces
+ *
+ * @remark
+ * Each character in **delims** is used as an individual test.
+ * The full string is NOT a delimiter string.
+ */
+Null_Terminated_String_Array
+strsplit_maxlength(
+      const char *  str_to_split,
+      uint16_t      max_piece_length,
+      const char *  delims)
+{
+   bool debug = false;
+   if (debug)
+      printf("(%s) max_piece_length=%u, delims=|%s|, str_to_split=|%s|\n",
+             __func__, max_piece_length, delims, str_to_split);
+
+   GPtrArray * pieces = g_ptr_array_sized_new(20);
+   char * str_to_split2 = strdup(str_to_split);   // work around constness
+   char * start = str_to_split2;
+   char * str_to_split2_end = str_to_split2 + strlen(str_to_split);
+   if (debug)
+      printf("(%s)x start=%p, str_to_split2_end=%p\n", __func__, start, str_to_split2_end);
+   while (start < str_to_split2_end) {
+      if (debug)
+         printf("(%s) start=%p, str_to_split2_end=%p\n", __func__, start, str_to_split2_end);
+      char * end = start + max_piece_length;
+      if (end > str_to_split2_end)
+         end = str_to_split2_end;
+      // int cursize = end-start;
+      // printf("(%s) end=%p, start=%p, cursize=%d, max_piece_length=%d\n",
+      //        __func__, end, start, cursize, max_piece_length);
+      if ( end < str_to_split2_end) {
+         // printf("(%s) Need to split. \n", __func__);
+         if (delims) {
+            char * last = end-1;
+            while(last >= start) {
+               // printf("(%s) last = %p\n", __func__, last);
+               if (strchr(delims, *last)) {
+                  end = last+1;
+                  break;
+               }
+               last--;
+            }
+         }
+      }
+      char * piece = strndup(start, end-start);
+      g_ptr_array_add(pieces, piece);
+      start = start + strlen(piece);
+   }
+
+   // for some reason, if g_ptr_array_to_ntsa() is called with duplicate=false and
+   // g_ptr_array(pieces, false) is called, valgrind complains about memory leak
+   Null_Terminated_String_Array result = g_ptr_array_to_ntsa(pieces, /*duplicate=*/ true);
+   g_ptr_array_set_free_func(pieces, g_free);
+   g_ptr_array_free(pieces, true);
+   free(str_to_split2);
+   if (debug)
+      ntsa_show(result);
+   return result;
 }
 
 
