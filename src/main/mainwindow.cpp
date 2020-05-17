@@ -638,14 +638,14 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
     _ui->statusBar->showMessage(msg);
 
     DDCA_Feature_List featuresToShow = DDCA_EMPTY_FEATURE_LIST;
-    if (_feature_selector->_featureListId == DDCA_SUBSET_CAPABILITIES) {
+    if (_feature_selector->_featureSubsetId == DDCA_SUBSET_CAPABILITIES) {
        featuresToShow = ddca_feature_list_from_capabilities(monitor->_baseModel->_parsed_caps);
     }
-    else if (_feature_selector->_featureListId = DDCA_SUBSET_CUSTOM) {
+    else if (_feature_selector->_featureSubsetId = DDCA_SUBSET_CUSTOM) {
        featuresToShow = _feature_selector->_customFeatureList;
     }
     else {
-       featuresToShow = monitor->getFeatureList(_feature_selector->_featureListId);
+       featuresToShow = monitor->getFeatureList(_feature_selector->_featureSubsetId);
        TRACECF(debugFeatureLists,
            "features_to_show: (%d) %s", ddca_feature_list_count(&featuresToShow),
                                         ddca_feature_list_string(&featuresToShow, NULL, (char*)" "));
