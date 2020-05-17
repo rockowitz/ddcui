@@ -26,6 +26,7 @@ DDCA_Feature_Subset_Id parsedFeatureSet_to_ddcaFeatureSubsetId(Parsed_Feature_Se
          case FS_MANUFACTURER: fsid = DDCA_SUBSET_MFG;          break;
          case FS_COLOR:        fsid = DDCA_SUBSET_COLOR;        break;
          case FS_SCAN:         fsid = DDCA_SUBSET_SCAN;         break;
+         case FS_CUSTOM:       fsid = DDCA_SUBSET_CUSTOM;       break;
          }
    return fsid;
 }
@@ -34,14 +35,19 @@ DDCA_Feature_Subset_Id parsedFeatureSet_to_ddcaFeatureSubsetId(Parsed_Feature_Se
 
 void FeatureSelector::applyParsedOptions(Parsed_Cmd * parsed_cmd) {
    if (ddca_feature_list_count(&parsed_cmd->custom_feature_list) > 0) {
+      printf("(applyParsedOptions) feature list count > 0\n");
       _customFeatureList = parsed_cmd->custom_feature_list;
-      _featureListId = DDCA_SUBSET_UNSET;
+      printf("(applyParsedOptions) setting _featureListId = DDCA_SUBSET_CUSTOM\n");
+      _featureListId = DDCA_SUBSET_CUSTOM;
    }
 
    else if (parsed_cmd->feature_set) {
+      printf("(applyParsedOptions) feature set passed\n");
        _featureListId =
              parsedFeatureSet_to_ddcaFeatureSubsetId(parsed_cmd->feature_set);
     }
+   else
+      _featureListId = DDCA_SUBSET_KNOWN;      // default
 
 
     _showUnsupportedFeatures = parsed_cmd->flags & CMD_FLAG_SHOW_UNSUPPORTED;
@@ -59,6 +65,8 @@ void FeatureSelector::applyParsedOptions(Parsed_Cmd * parsed_cmd) {
    //  _feature_selector->_includeOnlyCapabilities = parsed_cmd->flags & CMD_FLAG_NC_VALUES_MUST_BE_IN_CAPABILITIES;
    // _feature_selector->_includeAllCapabilities  = parsed_cmd->flags & CMD_FLAG_NC_VALUES_ALL_IN_CAPABILITIES;
 
+    printf("(applyParsedOptions) Done _feature_List_Id = %d\n", _featureListId);
+    dbgrpt();
 }
 
 
@@ -86,15 +94,15 @@ bool FeatureSelector::operator==(const FeatureSelector &other) const {
            _includeAllCapabilities  == other._includeAllCapabilities);
 }
 
+
 bool FeatureSelector::operator!=(const FeatureSelector &other) const {
    return !(*this == other);
 }
 
 
-
-
 void FeatureSelector::dbgrpt() {
    printf("   feature_list_id:          %d - %s\n", _featureListId, ddca_feature_list_id_name(_featureListId));
+   printf("   custom features:          %s\n", ddca_feature_list_string(&_customFeatureList, "", ", "));
    printf("   includeTableFeatures:     %s\n", SBOOL(_includeTableFeatures));
    printf("   showUnsupportedFeatures:  %s\n", SBOOL(_showUnsupportedFeatures));
    printf("   includeOnlyCapabilities:  %s\n", SBOOL(_includeOnlyCapabilities));
