@@ -30,7 +30,9 @@ using namespace std;
 
 void FeatureSelectionDialog::useSelectorData(FeatureSelector * fsel)
 {
-    if (debugFeatureSelection) {
+    bool debugFunc = true;
+    debugFunc = debugFunc || debugFeatureSelection;
+    if (debugFunc) {
         TRACEC("Setting dialog box widgets from FeatureSelector:");
         fsel->dbgrpt();
     }
@@ -39,15 +41,19 @@ void FeatureSelectionDialog::useSelectorData(FeatureSelector * fsel)
     // switch is exhaustive, so curButton is always assigned, however -Wmaybe-uninitialized
     // flags the curButton->setChecked() line  Assign a dummy value to quiet the warning
     curButton = _ui->known_radioButton;   // dummy value
-    DDCA_Feature_Subset_Id local_fsid = fsel->_featureListId;
+    DDCA_Feature_Subset_Id local_fsid = fsel->_featureSubsetId;
     switch(local_fsid) {
     case DDCA_SUBSET_KNOWN:
         curButton = _ui->known_radioButton;
         _ui->custom_lineEdit->setEnabled(false);
+        _ui->allCapabilities_checkbox->setEnabled(true);
+        _ui->onlyCapabilities_checkbox->setEnabled(true);
         break;
     case DDCA_SUBSET_COLOR:
         curButton = _ui->color_radioButton;
         _ui->custom_lineEdit->setEnabled(false);
+        _ui->allCapabilities_checkbox->setEnabled(false);
+        _ui->onlyCapabilities_checkbox->setEnabled(true);
         break;
     case DDCA_SUBSET_PROFILE: // removed from dialog, case left to satisfy that all cases addressed
         // curButton = _ui->profile_radioButton;
@@ -55,27 +61,41 @@ void FeatureSelectionDialog::useSelectorData(FeatureSelector * fsel)
     case DDCA_SUBSET_MFG:
         curButton = _ui->mfg_radioButton;
         _ui->custom_lineEdit->setEnabled(false);
+        _ui->allCapabilities_checkbox->setEnabled(false);
+        _ui->onlyCapabilities_checkbox->setEnabled(true);
         break;
     case DDCA_SUBSET_CAPABILITIES:
         curButton = _ui->capabilities_radioButton;
         _ui->custom_lineEdit->setEnabled(false);
+        _ui->allCapabilities_checkbox->setEnabled(false);
+        _ui->onlyCapabilities_checkbox->setEnabled(false);
         break;
     case DDCA_SUBSET_SCAN:
         curButton = _ui->scan_radioButton;
         _ui->custom_lineEdit->setEnabled(false);
+        _ui->allCapabilities_checkbox->setEnabled(false);
+        _ui->onlyCapabilities_checkbox->setEnabled(false);
         break;
     case DDCA_SUBSET_CUSTOM:
        curButton = _ui->custom_radioButton;
        _ui->custom_lineEdit->setText( ddca_feature_list_string(&fsel->_customFeatureList, "", " ") );
        _ui->custom_lineEdit->setEnabled(true);
+       _ui->allCapabilities_checkbox->setEnabled(false);
+       _ui->onlyCapabilities_checkbox->setEnabled(true);
        break;
     case DDCA_SUBSET_UNSET:
         assert(false);
         break;
     }
+    _ui->showUnsupported_checkbox->setEnabled(true);   // true for all feature sets
+
     curButton->setChecked(true);
     // to do: enable/disable other buttons as appropriate
 
+    if (debugFunc) {
+       TRACEC("fsel before setting flag checkboxes:");
+       fsel->dbgrpt();
+    }
     _ui->includeTable_checkbox->setChecked(    fsel->_includeTableFeatures);
     _ui->showUnsupported_checkbox->setChecked( fsel->_showUnsupportedFeatures);
     _ui->onlyCapabilities_checkbox->setChecked(fsel->_includeOnlyCapabilities);
@@ -275,12 +295,12 @@ void FeatureSelectionDialog::on_includeTable_checkbox_stateChanged(int arg1)
 void FeatureSelectionDialog::on_buttonBox_accepted()
 {
     bool debugFunc = false;
-    debugFunc |= debugFeatureSelection;
+    debugFunc == debugFunc || debugFeatureSelection;
     TRACECF(debugFunc, "Executing");
-    // which button is currently clicked?
 
     DDCA_Feature_List flist;
     DDCA_Feature_Subset_Id fsid;
+    // which feature selection button is currently checked?
     if (_ui->color_radioButton->isChecked())
         fsid = DDCA_SUBSET_COLOR;
     else if (_ui->known_radioButton->isChecked())
@@ -325,7 +345,7 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
               TRACECF(debugFunc, "Calling _msgboxQueue.put() for qe: %s", QS2S(qe->repr()));
               msgboxQueue->put(qe);
            }
-           return;
+           return;   // there's a custom feature error, don't exit dialog
         }   // feature_list_count == 0
     }   // custom_radioButton
 
@@ -334,14 +354,15 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
 
     TRACECF(debugFunc, "Checking for any changes...");
     bool changed = false;
-    if (fsid != _featureSelector->_featureListId) {
-       _featureSelector->_featureListId = fsid;
+    if (fsid != _featureSelector->_featureSubsetId) {
+       _featureSelector->_featureSubsetId = fsid;
        changed = true;
     }
-    if (fsid == DDCA_SUBSET_CUSTOM) {
+    else if (fsid == DDCA_SUBSET_CUSTOM) {
        DDCA_Feature_List old_flist = _featureSelector->_customFeatureList;
        // need an equality function in the interface
-       if (memcmp(&flist, &old_flist, sizeof(DDCA_Feature_List)) != 0) {
+       // if (memcmp(&flist, &old_flist, sizeof(DDCA_Feature_List)) != 0) {
+       if (!ddca_feature_list_eq(&flist, &old_flist)) {
           _featureSelector->_customFeatureList = flist;
           changed = true;
        }
@@ -377,7 +398,7 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
         changed = true;
      }
 
-    if (debugFeatureSelection) {
+    if (debugFunc) {
         TRACEC("_feature_selector:");
         _featureSelector->dbgrpt();
     }
