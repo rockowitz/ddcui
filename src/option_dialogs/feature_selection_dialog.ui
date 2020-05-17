@@ -82,7 +82,7 @@
        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This is tooltip text&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
       <property name="text">
-       <string>&amp;MCCS - All features defined in Monitor Control Command Set</string>
+       <string>&amp;MCCS - Features defined in the Monitor Control Command Set</string>
       </property>
      </widget>
     </item>
@@ -103,7 +103,7 @@
        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This is whats this text&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
       <property name="text">
-       <string>CAPABILITIES - All features defined in capabilities string</string>
+       <string>CAPABILITIES - Features specified in the capabilities string</string>
       </property>
       <property name="checkable">
        <bool>true</bool>
@@ -142,7 +142,7 @@
        </font>
       </property>
       <property name="text">
-       <string>SCAN - All possible features</string>
+       <string>SCAN - All possible feature codes</string>
       </property>
      </widget>
     </item>
@@ -150,6 +150,11 @@
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
        <widget class="QRadioButton" name="custom_radioButton">
+           <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
         <property name="text">
          <string>CUSTOM  </string>
         </property>
@@ -171,7 +176,7 @@
        </font>
       </property>
       <property name="text">
-       <string>Include all features in capabilities string</string>
+       <string>Include all features in the capabilities string</string>
       </property>
      </widget>
     </item>
@@ -183,7 +188,7 @@
        </font>
       </property>
       <property name="text">
-       <string>Exclude features not in capabilities string</string>
+       <string>Include only features in the capabilities string</string>
       </property>
      </widget>
     </item>
