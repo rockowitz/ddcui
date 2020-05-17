@@ -273,27 +273,25 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
 
 #undef SET_CMDFLAG
 
+
    if (all_capabilities_true_set || all_capabilities_false_set) {
       if (all_capabilities_true_set)
-         parsed_cmd->nc_values_all_in_capabilities = TRIVAL_TRUE;
+         parsed_cmd->include_all_capabilities_features = TRIVAL_TRUE;
       else
-         parsed_cmd->nc_values_all_in_capabilities = TRIVAL_FALSE;
+         parsed_cmd->include_all_capabilities_features = TRIVAL_FALSE;
    }
    else
-      parsed_cmd->nc_values_all_in_capabilities = TRIVAL_UNSET;
+      parsed_cmd->include_all_capabilities_features = TRIVAL_UNSET;
 
    if (only_capabilities_true_set || only_capabilities_false_set) {
       if (only_capabilities_true_set)
-         parsed_cmd->nc_values_must_be_in_capabilities = TRIVAL_TRUE;
+         parsed_cmd->include_only_capabilities_features = TRIVAL_TRUE;
       else
-         parsed_cmd->nc_values_must_be_in_capabilities = TRIVAL_FALSE;
+         parsed_cmd->include_only_capabilities_features = TRIVAL_FALSE;
    }
    else
-      parsed_cmd->nc_values_must_be_in_capabilities = TRIVAL_UNSET;
+      parsed_cmd->include_only_capabilities_features = TRIVAL_UNSET;
 
-   // if (model) {
-   //    parsed_cmd->model = strdup(model);
-   // }
 
 // #ifdef REPLACE_NTSA
    if (maxtrywork) {
@@ -376,6 +374,8 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
          }
       }
    }
+
+
 
    if (sleep_multiplier_work) {
       // DBGMSF(debug, "sleep_multiplier_work = |%s|", sleep_multiplier_work);
@@ -481,36 +481,41 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
          fprintf(stderr, "--feature-set and --custom-feature-set are mutually exclusive\n");
          ok = false;
       }
-      // fixup, is this the right place?
-      // if (ddca_feature_list_count(&parsed_cmd->custom_feature_list) > 0)
-      //    parsed_cmd->feature_set = FS_CUSTOM;
+
+      if (all_capabilities_true_set && only_capabilities_true_set) {
+         if (parsed_cmd->feature_set != FS_CAPABILITIES) {
+            fprintf(stderr, "--all-capabilities and --only-capabilities are mutually exclusive"
+                            " except when --feature-set = CAPABILITIES\n");
+            ok = false;
+         }
+      }
 
 
       if (cmd_and_args && cmd_and_args[0]) {
-      // int rest_ct = 0;   // unused
-      // don't pull debug into the if clause, need rest_ct to be set
-      // if (cmd_and_args) {
-      //    for (; cmd_and_args[rest_ct] != NULL; rest_ct++) {
-      //          DBGMSF(debug, "cmd_and_args[%d]: %s", rest_ct, cmd_and_args[rest_ct]);
-      //    }
-      // }
+         // int rest_ct = 0;   // unused
+         // don't pull debug into the if clause, need rest_ct to be set
+         // if (cmd_and_args) {
+         //    for (; cmd_and_args[rest_ct] != NULL; rest_ct++) {
+         //          DBGMSF(debug, "cmd_and_args[%d]: %s", rest_ct, cmd_and_args[rest_ct]);
+         //    }
+         // }
 
-      char * s = g_strjoinv(" ",cmd_and_args);
-      fprintf(stderr, "Unrecognized: %s\n", s);
-      free(s);
-      ok = false;
-   }
+         char * s = g_strjoinv(" ",cmd_and_args);
+         fprintf(stderr, "Unrecognized: %s\n", s);
+         free(s);
+         ok = false;
+      }
 
    if (version_flag) {
       printf("ddcui %s\n", DDCUI_VERSION);
-       puts("");
+      puts("");
       // if no command specified, include license in version information and terminate
-         puts("Copyright (C) 2018-2020 Sanford Rockowitz");
-         puts("License GPLv2: GNU GPL version 2 or later <http://gnu.org/licenses/gpl.html>");
-         puts("This is free software: you are free to change and redistribute it.");
-         puts("There is NO WARRANTY, to the extent permitted by law.");
+      puts("Copyright (C) 2018-2020 Sanford Rockowitz");
+      puts("License GPLv2: GNU GPL version 2 or later <http://gnu.org/licenses/gpl.html>");
+      puts("This is free software: you are free to change and redistribute it.");
+      puts("There is NO WARRANTY, to the extent permitted by law.");
 
-         exit(0);
+      exit(0);
    }
 
    // DBGMSF(debug, "Calling g_option_context_free(), context=%p...", context);
