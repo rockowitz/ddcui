@@ -67,22 +67,22 @@ typedef enum {
 
 #define PARSED_CMD_MARKER  "PCMD"
 typedef struct {
-   char                marker[4];   // PARSED_CMD_MARKER
-   DDCA_Stats_Type     stats_types;
-   DDCA_Trace_Group    traced_groups;
-   char **             traced_files;
-   char **             traced_functions;
-   int                 max_tries[3];
-   Parsed_Cmd_Flags    flags;
-   Parsed_View         view;
-   Parsed_Feature_Set  feature_set;
+   char                    marker[4];   // PARSED_CMD_MARKER
+   DDCA_Stats_Type         stats_types;
+   DDCA_Trace_Group        traced_groups;
+   char **                 traced_files;
+   char **                 traced_functions;
+   int                     max_tries[3];
+   Parsed_Cmd_Flags        flags;
+   Parsed_View             view;
+   Parsed_Feature_Set      feature_set;
    Parsed_NC_Values_Source nc_values_source;
-   float               sleep_multiplier;
-   Optional_True_False nc_values_all_in_capabilities;
-   Optional_True_False nc_values_must_be_in_capabilities;
-   char *              model;
-   int                 busno;
-   DDCA_Feature_List   custom_feature_list;
+   float                   sleep_multiplier;
+   Optional_True_False     include_all_capabilities_features;
+   Optional_True_False     include_only_capabilities_features;
+   char *                  model;
+   int                     busno;
+   DDCA_Feature_List       custom_feature_list;
 } Parsed_Cmd;
 
 

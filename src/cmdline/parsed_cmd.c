@@ -165,8 +165,8 @@ void dbgrpt_parsed_cmd(Parsed_Cmd * parsed_cmd) {
       printf("   default feature set:       %s\n",   get_feature_set_table_symbol(parsed_cmd->feature_set));
       printf("   custom feature set:        %s\n",   ddca_feature_list_string(&parsed_cmd->custom_feature_list, "",","));
       printf("   NC values source:          %s\n",   get_nc_values_source_table_symbol(parsed_cmd->nc_values_source));
-      printf("   nc_values_must_be_in_capabilities: %s\n", trival_repr(parsed_cmd->nc_values_must_be_in_capabilities));
-      printf("   nc_values_all_in_capabilities:     %s\n", trival_repr(parsed_cmd->nc_values_all_in_capabilities));
+      printf("   include all  capabilities features: %s\n", trival_repr(parsed_cmd->include_all_capabilities_features));
+      printf("   include_only capabilities features: %s\n", trival_repr(parsed_cmd->include_only_capabilities_features));
       printf("   initial model:             %s\n",   parsed_cmd->model);
       printf("   initial bus number:        %d\n",   parsed_cmd->busno);
    }
