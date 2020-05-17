@@ -1,6 +1,6 @@
 /** \file parsed_cmd.c - parsed ddcui command line */
 
-// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 
@@ -68,6 +68,7 @@ Value_Name_Title feature_set_table[] = {
       VNT(FS_MANUFACTURER,  "Manufacturer"),
       VNT(FS_COLOR,         "Color"),
       VNT(FS_SCAN,          "Scan"),
+      VNT(FS_CUSTOM,        "Custom"),
       VNT_END
 };
 

@@ -37,7 +37,8 @@ typedef enum {
    FS_CAPABILITIES,
    FS_MANUFACTURER,
    FS_COLOR,
-   FS_SCAN
+   FS_SCAN,
+   FS_CUSTOM
 } Parsed_Feature_Set;
 
 typedef enum {
