@@ -19,10 +19,8 @@ extern "C"
 {
 #endif
 
-
 DDCA_Feature_List parse_custom_feature_list(
       char * features_work,
-//      char ** error_msgs_loc);
       Null_Terminated_String_Array * error_msgs_loc);
 
 #ifdef __cplusplus
