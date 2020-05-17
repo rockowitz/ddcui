@@ -89,6 +89,7 @@ set(SOURCES
     src/base/core.cpp 
     src/base/ddca_utils.cpp 
     src/base/ddcui_parms.cpp
+	src/base/feature_list.c
     src/base/feature_selector.cpp 
     src/base/global_state.cpp 
     src/base/other_options_state.cpp
