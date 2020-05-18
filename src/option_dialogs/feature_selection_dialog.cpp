@@ -30,7 +30,7 @@ using namespace std;
 
 void FeatureSelectionDialog::useSelectorData(FeatureSelector * fsel)
 {
-    bool debugFunc = true;
+    bool debugFunc = false;
     debugFunc = debugFunc || debugFeatureSelection;
     if (debugFunc) {
         TRACEC("Setting dialog box widgets from FeatureSelector:");
