@@ -10,10 +10,9 @@
 
 #include <ddcutil_c_api.h>
 
-#include "feature_selector.h"
-#include "core.h"
+#include "base/core.h"
+#include "base/feature_selector.h"
 #include "cmdline/parsed_cmd.h"
-
 
 
 // For feature selection dialog
@@ -49,7 +48,7 @@ bool defaultIncludeAllCapabilities(DDCA_Feature_Subset_Id fsid) {
 
 
 void FeatureSelector::applyParsedOptions(Parsed_Cmd * parsed_cmd) {
-   bool debug = true;
+   bool debug = false;
 
    if (ddca_feature_list_count(&parsed_cmd->custom_feature_list) > 0) {
       // printf("(applyParsedOptions) feature list count > 0\n");
@@ -85,7 +84,7 @@ void FeatureSelector::applyParsedOptions(Parsed_Cmd * parsed_cmd) {
     }
 
     if (debug) {
-       printf("(applyParsedOptions) Done _feature_List_Id = %d\n", _featureSubsetId);
+       TRACEC("Done.");
        dbgrpt();
     }
 }

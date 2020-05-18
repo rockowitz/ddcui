@@ -18,7 +18,7 @@
 
 class FeatureSelector    // : public QObject
 {
- //   Q_OBJECT
+    // Q_OBJECT
 
 public:
    FeatureSelector();
@@ -42,6 +42,7 @@ public:
     void dbgrpt();
 
 private:
+    const char * _cls = "FeatureSelector";
    //  void applyParsedOptions(Parsed_Cmd * parsed_cmd);
 };
 
