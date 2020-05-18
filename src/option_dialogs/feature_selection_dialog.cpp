@@ -294,7 +294,7 @@ void FeatureSelectionDialog::on_includeTable_checkbox_stateChanged(int arg1)
 
 void FeatureSelectionDialog::on_buttonBox_accepted()
 {
-    bool debugFunc = false;
+    bool debugFunc = true;
     debugFunc == debugFunc || debugFeatureSelection;
     TRACECF(debugFunc, "Executing");
 
@@ -352,11 +352,16 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
     else
         fsid = DDCA_SUBSET_KNOWN;    // should never occur
 
-    TRACECF(debugFunc, "Checking for any changes...");
+    const char * s = ddca_feature_list_string(&flist, "x", ",");
+    TRACECF(debugFunc, "custom feature list: %s", s);
+    TRACECF(debugFunc, "Checking for any changes...fsid=%d, _featureSelector->featureSubsetId = %d",
+               fsid, _featureSelector->_featureSubsetId);
     bool changed = false;
     if (fsid != _featureSelector->_featureSubsetId) {
        _featureSelector->_featureSubsetId = fsid;
+       _featureSelector->_customFeatureList = flist;
        changed = true;
+       TRACEC("feature set changed");
     }
     else if (fsid == DDCA_SUBSET_CUSTOM) {
        DDCA_Feature_List old_flist = _featureSelector->_customFeatureList;
