@@ -362,7 +362,7 @@ void VcpThread::capabilities() {
 
 // Process RQGetVcp
 void VcpThread::getvcp(uint8_t featureCode, bool needMetadata) {
-    bool debugFunc = false;
+    bool debugFunc = true;
     debugFunc = debugFunc || debugThread;
     TRACECF(debugFunc, "Starting. featureCode=0x%02x, needMetadata = %s",
                       featureCode, SBOOL(needMetadata));
@@ -394,7 +394,7 @@ void VcpThread::getvcp(uint8_t featureCode, bool needMetadata) {
             //        feature_code, valrec.mh, valrec.ml, valrec.sh, valrec.sl);
         }
 #endif
-       if (ddcrc == 0) {  // if get_nontable_vcp_value() succeeded
+      // if (ddcrc == 0) {  // if get_nontable_vcp_value() succeeded
            // TODO:  get metadata once and cache
            DDCA_Status ddcrc2 = ddca_get_feature_metadata_by_dh(
                       featureCode,
@@ -417,7 +417,9 @@ void VcpThread::getvcp(uint8_t featureCode, bool needMetadata) {
            _baseModel->modelVcpValueSet(featureCode, this->_dref, finfo, &valrec, ddcrc);
 
            _baseModel->setFeatureChecked(featureCode);
-       }  // end, get value succeeded
+       // }  // end, get value succeeded
+
+
        ddcrc = perform_close_display(dh);
     }  // open succeeded
     TRACECF(debugThread, "Done");
