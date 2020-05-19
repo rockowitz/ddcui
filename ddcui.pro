@@ -34,16 +34,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 # CONFIG += apply_cancel
-
 apply_cancel {
    APPLY_CANCEL_FLAG = 1
-   message("setting APPLY_CANCEL_FLAG");
+   # message("setting APPLY_CANCEL_FLAG");
 }
 else {
-   message("not setting APPLY_CANCEL_FLAG")
+   # message("not setting APPLY_CANCEL_FLAG")
    APPLY_CANCEL_FLAG = 0
 }
-  
 
 versionconfig.input = qconfig.h.in
 versionconfig.output = config.h
@@ -51,16 +49,16 @@ QMAKE_SUBSTITUTES += versionconfig
 
 INCLUDEPATH += src
 
-
 SOURCES += \
     src/base/ddca_utils.cpp \
     src/base/ddcui_parms.cpp \
     src/base/core.cpp \
-    src/base/widget_debug.cpp \
+    src/base/feature_list.c \
     src/base/feature_selector.cpp \
     src/base/global_state.cpp \
     src/base/other_options_state.cpp \
-    src/base/user_interface_options_state.cpp
+    src/base/user_interface_options_state.cpp \
+    src/base/widget_debug.cpp
     
 SOURCES+= \
     src/core_widgets/enhanced_slider.cpp \
@@ -71,6 +69,7 @@ SOURCES+= \
     #   src/base/vertical_scroll_area.cpp \
 
 SOURCES += \
+    src/c_util/data_structures.c \
     src/c_util/string_util.c 
 
 SOURCES += \
@@ -90,7 +89,7 @@ SOURCES += \
 #   src/nongui/simple_feature_value_subject.cpp \
 #   src/nongui/simple_feature_value.cpp
 
-#     src/nongui/feature_change_observer.cpp \
+#   src/nongui/feature_change_observer.cpp 
 
 SOURCES += \
     src/monitor_desc/monitor_desc_ui.cpp \
@@ -107,7 +106,6 @@ SOURCES += \
     src/feature_value_widgets/value_reset_widget.cpp \
     src/feature_value_widgets/value_stacked_widget.cpp \
     src/feature_value_widgets/value_std_widget.cpp 
-
 
 SOURCES += \
     src/feature_scrollarea/features_scrollarea.cpp \
@@ -141,18 +139,20 @@ SOURCES += \
 # SOURCES += \
 #     c_feature_widget.cpp
 
+
 # Each group of header files depends only on the groups above it.
 
 HEADERS += \
     src/base/ddcui_parms.h \
     src/base/ddca_utils.h \
     src/base/core.h \
-    src/base/widget_debug.h \
+    src/base/feature_list.h \
     src/base/feature_selector.h \
     src/base/global_state.h \
     src/base/monitor.h \
     src/base/other_options_state.h \
-    src/base/user_interface_options_state.h
+    src/base/user_interface_options_state.h \
+    src/base/widget_debug.h
     
 HEADERS += \
     src/core_widgets/enhanced_slider.h \
@@ -163,13 +163,13 @@ HEADERS += \
 #   src/core_widgets/vertical_scroll_area.h
 
 HEADERS += \
+    src/c_util/data_structures.h
     src/c_util/string_util.h 
 
 HEADERS += \
     src/cmdline/parsed_cmd.h \
     src/cmdline/cmd_parser_aux.h \
     src/cmdline/cmd_parser.h
-
 
 HEADERS += \
     src/nongui/ddc_error.h \
@@ -199,7 +199,6 @@ HEADERS += \
     src/feature_value_widgets/value_reset_widget.h \
     src/feature_value_widgets/value_2button_widget.h \
     src/feature_value_widgets/value_stacked_widget.h
-
 
 HEADERS += \
     src/feature_scrollarea/features_scrollarea.h \
