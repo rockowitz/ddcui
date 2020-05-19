@@ -647,8 +647,8 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
     else {
        featuresToShow = monitor->getFeatureList(_feature_selector->_featureSubsetId);
        TRACECF(debugFeatureLists,
-           "features_to_show: (%d) %s", ddca_feature_list_count(&featuresToShow),
-                                        ddca_feature_list_string(&featuresToShow, NULL, (char*)" "));
+           "features_to_show: (%d) %s", ddca_feature_list_count(featuresToShow),
+                                        ddca_feature_list_string(featuresToShow, NULL, (char*)" "));
 
        if (_feature_selector->_includeOnlyCapabilities || _feature_selector->_includeAllCapabilities) {
           // need to test _parsed_caps is valid
@@ -657,20 +657,20 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
                 ddca_feature_list_from_capabilities(monitor->_baseModel->_parsed_caps);
           TRACECF(debugFeatureLists,
               "Capabilities features: (%d) %s",
-              ddca_feature_list_count(&caps_features),
-              ddca_feature_list_string(&caps_features, NULL, (char*)" "));
+              ddca_feature_list_count(caps_features),
+              ddca_feature_list_string(caps_features, NULL, (char*)" "));
           if (_feature_selector ->_includeOnlyCapabilities)
-             featuresToShow = ddca_feature_list_and(&featuresToShow, &caps_features);
+             featuresToShow = ddca_feature_list_and(featuresToShow, caps_features);
           else
-             featuresToShow = ddca_feature_list_or(&featuresToShow, &caps_features);
+             featuresToShow = ddca_feature_list_or(featuresToShow, caps_features);
 
        }
     }
 
     TRACECF(debugFeatureLists,
         "Final featuresToShow: (%d) %s",
-        ddca_feature_list_count(&featuresToShow),
-        ddca_feature_list_string(&featuresToShow, NULL, (char*)" "));
+        ddca_feature_list_count(featuresToShow),
+        ddca_feature_list_string(featuresToShow, NULL, (char*)" "));
 
     // causes async feature reads in VcpThread, then load feature values from model into widgets
     monitor->_baseModel->setFeatureList(featuresToShow);

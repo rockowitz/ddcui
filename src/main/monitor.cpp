@@ -73,15 +73,15 @@ Monitor::getFeatureList(DDCA_Feature_Subset_Id feature_list_id) {
                          DDCA_SUBSET_MFG, _displayInfo->dref, include_table_features, &mfgFeatureList);
               TRACECF(debugFunc, "ddca_get_feature_list_by_dref(DDCA_SUBSET_MFG) returned %d", ddcrc);
               if (ddcrc == 0) {
-                 result = ddca_feature_list_or(&result, &mfgFeatureList);
+                 result = ddca_feature_list_or(result, mfgFeatureList);
               }
            }
            _features.insert(feature_list_id, result);
         }
     }
     TRACECF(debugFunc,
-         "Returning: %d features: %s", ddca_feature_list_count(&result),
-                                       ddca_feature_list_string(&result, NULL, (char*)" "));
+         "Returning: %d features: %s", ddca_feature_list_count(result),
+                                       ddca_feature_list_string(result, NULL, (char*)" "));
     return result;
 }
 

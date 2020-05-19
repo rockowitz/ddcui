@@ -76,7 +76,7 @@ void FeatureSelectionDialog::useSelectorData(FeatureSelector * fsel)
         break;
     case DDCA_SUBSET_CUSTOM:
        curButton = _ui->custom_radioButton;
-       _ui->custom_lineEdit->setText( ddca_feature_list_string(&fsel->_customFeatureList, "", " ") );
+       _ui->custom_lineEdit->setText( ddca_feature_list_string(fsel->_customFeatureList, "", " ") );
        _ui->custom_lineEdit->setEnabled(true);
        _ui->allCapabilities_checkbox->setEnabled(false);
        _ui->onlyCapabilities_checkbox->setEnabled(true);
@@ -321,7 +321,7 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
         TRACECF(debugFunc, "text: %d - |%s|", strlen(y), y);
         char ** error_msgs = NULL;
         flist = parse_custom_feature_list(y, &error_msgs);
-        if (ddca_feature_list_count(&flist) == 0) {
+        if (ddca_feature_list_count(flist) == 0) {
            QString qstitle = "Feature Code Error";
            QMessageBox::Icon icon = QMessageBox::Critical;
            MsgBoxQueue * msgboxQueue = GlobalState::instance()._mainWindow->_msgboxQueue;
@@ -351,7 +351,7 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
     else
         fsid = DDCA_SUBSET_KNOWN;    // should never occur
 
-    const char * s = ddca_feature_list_string(&flist, "x", ",");
+    const char * s = ddca_feature_list_string(flist, "x", ",");
     TRACECF(debugFunc, "custom feature list: %s", s);
     TRACECF(debugFunc, "Checking for any changes...fsid=%d, _featureSelector->featureSubsetId = %d",
                fsid, _featureSelector->_featureSubsetId);
@@ -366,7 +366,7 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
        DDCA_Feature_List old_flist = _featureSelector->_customFeatureList;
        // need an equality function in the interface
        // if (memcmp(&flist, &old_flist, sizeof(DDCA_Feature_List)) != 0) {
-       if (!ddca_feature_list_eq(&flist, &old_flist)) {
+       if (!ddca_feature_list_eq(flist, old_flist)) {
           _featureSelector->_customFeatureList = flist;
           changed = true;
        }

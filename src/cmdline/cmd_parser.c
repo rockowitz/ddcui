@@ -358,7 +358,7 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
       char ** error_msgs;         // Null_Terminated_String_Array error_msgs;
       DDCA_Feature_List flist = parse_custom_feature_list(custom_feature_set_work, &error_msgs);
       parsed_cmd->custom_feature_list = flist;
-      if (ddca_feature_list_count(&flist) == 0) {
+      if (ddca_feature_list_count(flist) == 0) {
          ok = false;
          if (error_msgs) {
             fprintf(stderr, "Errors in --custom-feature-set:\n");
@@ -476,7 +476,7 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
 #undef VALUE_LOOKUP
 
       if (parsed_cmd->feature_set != FS_UNSET &&
-          ddca_feature_list_count(&parsed_cmd->custom_feature_list) > 0)
+          ddca_feature_list_count(parsed_cmd->custom_feature_list) > 0)
       {
          fprintf(stderr, "--feature-set and --custom-feature-set are mutually exclusive\n");
          ok = false;

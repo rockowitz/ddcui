@@ -1,6 +1,6 @@
 /* feature_base_model.cpp - UI independent portion of the data model */
 
-// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2030 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "nongui/feature_base_model.h"
@@ -84,7 +84,7 @@ FeatureValue * FeatureBaseModel::modelVcpValueFind(uint8_t feature_code) {
 FeatureValue * FeatureBaseModel::modelVcpValueFilteredFind(uint8_t feature_code) {
    bool debug = false;
    FeatureValue * result = NULL;
-   if (ddca_feature_list_contains(&_featuresToShow, feature_code)) {
+   if (ddca_feature_list_contains(_featuresToShow, feature_code)) {
       result = modelVcpValueFind(feature_code);
       if (result) {
          DDCA_Status ddcrc = result->ddcrc();
@@ -285,16 +285,16 @@ FeatureBaseModel::setFeatureList(
    debugFunc = debugFunc || debugFeatureLists;
 
    TRACECF(debugFunc, "Starting. %d features: %s",
-                     ddca_feature_list_count(&featureList),
-         ddca_feature_list_string(&featureList, NULL, (char*) " ") );
+                     ddca_feature_list_count(featureList),
+         ddca_feature_list_string(featureList, NULL, (char*) " ") );
    _featuresToShow = featureList;
 
    DDCA_Feature_List unchecked_features =
-         ddca_feature_list_and_not(&_featuresToShow, &_featuresChecked);
+         ddca_feature_list_and_not(_featuresToShow, _featuresChecked);
 
    if (debugFeatureLists) {
        TRACECF(debugFunc, "Unchecked features: %s",
-                ddca_feature_list_string(&unchecked_features, NULL, (char*) " "));
+                ddca_feature_list_string(unchecked_features, NULL, (char*) " "));
    }
 
    //bool showUnsupported = _monitor->_curFeatureSelector._showUnsupportedFeatures;
@@ -302,7 +302,7 @@ FeatureBaseModel::setFeatureList(
    _monitor->_requestQueue->put(new VcpStartInitialLoadRequest);
    for (int ndx = 0; ndx <= 255; ndx++) {
        uint8_t vcp_code = (uint8_t) ndx;
-       if ( ddca_feature_list_contains(&unchecked_features, vcp_code)) {
+       if ( ddca_feature_list_contains(unchecked_features, vcp_code)) {
            bool needMetadata = true;
            _monitor->_requestQueue->put( new VcpGetRequest(vcp_code, needMetadata) );
        }
@@ -321,7 +321,7 @@ FeatureBaseModel::reloadSpecificFeatures(int ct, uint8_t* features) {
    bool debugFunc =true;
    for (int ndx = 0; ndx < ct; ndx++) {
       DDCA_Vcp_Feature_Code vcp_code = features[ndx];
-      if (ddca_feature_list_contains(& _featuresChecked, vcp_code)) {
+      if (ddca_feature_list_contains(_featuresChecked, vcp_code)) {
          TRACECF(debugFunc, "vcp_code = 0x%02x, in _features_checked", vcp_code);
          FeatureValue *  fv = modelVcpValueFind(vcp_code);
          // should always exist, but just in case

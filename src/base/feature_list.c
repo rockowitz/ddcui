@@ -90,7 +90,7 @@ DDCA_Feature_List parse_custom_feature_list(
      }
 
     if (debug) {
-       const char * s = ddca_feature_list_string(&feature_list, /*prefix*/ "x", /*sepstr*/ ",");
+       const char * s = ddca_feature_list_string(feature_list, /*prefix*/ "x", /*sepstr*/ ",");
        printf("Returning feature list: %s\n", s);
        if (*error_msgs_loc) {
           printf("(parse_custom_feature_list) Returning error messages:\n");

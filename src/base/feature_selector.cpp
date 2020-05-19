@@ -50,7 +50,7 @@ bool defaultIncludeAllCapabilities(DDCA_Feature_Subset_Id fsid) {
 void FeatureSelector::applyParsedOptions(Parsed_Cmd * parsed_cmd) {
    bool debug = false;
 
-   if (ddca_feature_list_count(&parsed_cmd->custom_feature_list) > 0) {
+   if (ddca_feature_list_count(parsed_cmd->custom_feature_list) > 0) {
       // printf("(applyParsedOptions) feature list count > 0\n");
       _customFeatureList = parsed_cmd->custom_feature_list;
       // printf("(applyParsedOptions) setting _featureListId = DDCA_SUBSET_CUSTOM\n");
@@ -122,7 +122,7 @@ bool FeatureSelector::operator!=(const FeatureSelector &other) const {
 
 void FeatureSelector::dbgrpt() {
    printf("   feature_list_id:          %d - %s\n", _featureSubsetId, ddca_feature_list_id_name(_featureSubsetId));
-   printf("   custom features:          %s\n", ddca_feature_list_string(&_customFeatureList, "", ", "));
+   printf("   custom features:          %s\n", ddca_feature_list_string(_customFeatureList, "", ", "));
    printf("   includeTableFeatures:     %s\n", SBOOL(_includeTableFeatures));
    printf("   showUnsupportedFeatures:  %s\n", SBOOL(_showUnsupportedFeatures));
    printf("   includeOnlyCapabilities:  %s\n", SBOOL(_includeOnlyCapabilities));
