@@ -641,7 +641,7 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
     if (_feature_selector->_featureSubsetId == DDCA_SUBSET_CAPABILITIES) {
        featuresToShow = ddca_feature_list_from_capabilities(monitor->_baseModel->_parsed_caps);
     }
-    else if (_feature_selector->_featureSubsetId = DDCA_SUBSET_CUSTOM) {
+    else if (_feature_selector->_featureSubsetId == DDCA_SUBSET_CUSTOM) {
        featuresToShow = _feature_selector->_customFeatureList;
     }
     else {
@@ -704,7 +704,7 @@ void MainWindow::on_actionRedetect_triggered() {
 
 void MainWindow::on_actionDebugActionsDialog_triggered()
 {
-   bool debug = false;
+   // bool debug = false;
    // TODO: allocate once and save dialog, cf feature selection
    // display dialog box for selecting features
 
