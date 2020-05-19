@@ -19,8 +19,7 @@ NcValuesSource parsedNcValuesSource_to_NcValuesSource(Parsed_NC_Values_Source va
       case NC_VALUES_SOURCE_MCCS:          ncvs = NcValuesFromMccs;          break;
       case NC_VALUES_SOURCE_CAPABILITIES:  ncvs = NcValuesFromCapabilities;  break;
       case NC_VALUES_SOURCE_BOTH:          ncvs = NcValuesFromBoth;          break;
-      // case NC_VALUES_SOURCE_UNSET:         assert(false);  // impossible case to exhaust all values in switch
-                                                              // was there to avoid compiler warning
+      case NC_VALUES_SOURCE_UNSET:         assert(false);  // impossible case to avoid compiler warning
       };
    }
    else {
@@ -36,7 +35,7 @@ OtherOptionsState::OtherOptionsState(Parsed_Cmd * parsed_cmd) {
       _ncValuesSource = parsedNcValuesSource_to_NcValuesSource(parsed_cmd->nc_values_source);
 }
 
-OtherOptionsState::OtherOptionsState(const OtherOptionsState &other) {
+OtherOptionsState::OtherOptionsState(const OtherOptionsState &other) : QObject() {
    _ncValuesSource = other._ncValuesSource;
 }
 
