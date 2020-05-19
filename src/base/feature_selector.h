@@ -36,6 +36,7 @@ public:
 
     void applyParsedOptions(Parsed_Cmd * parsed_cmd);
 
+    FeatureSelector& operator=(const FeatureSelector& sel2) = default;
     bool operator==(const FeatureSelector& sel2) const;
     bool operator!=(const FeatureSelector& sel2) const;
 
