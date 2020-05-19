@@ -444,8 +444,6 @@ void whereIsApplication() {
    QRect geometry  = desktopWidget->availableGeometry();
    printf("  geometry: left=%d, top=%d, right=%d, bottom=%d\n",
           geometry.left(), geometry.top(), geometry.right(), geometry.bottom() );
-
-
 }
 
 void whereAmI(QWidget * w, const char * msg) {
@@ -459,15 +457,13 @@ void whereAmI(QWidget * w, const char * msg) {
    // QScreen * screen = w->screen();   // bit in 5.12
    printf("   isWindow(): %s\n", SBOOL(w->isWindow() )) ;
    if (w->isWindow() ) {
-      QWindow* wind = dynamic_cast<QWindow*>(w);
 #ifdef OUT
+      QWindow* wind = dynamic_cast<QWindow*>(w);
       QScreen * screen = wind->screen();  // this is the line that causes crash
       QRect geometry  = screen->availableGeometry();
       printf("  screen geometry: left=%d, top=%d, right=%d, bottom=%d\n",
              geometry.left(), geometry.top(), geometry.right(), geometry.bottom() );
 #endif
    }
-
 }
-
 
