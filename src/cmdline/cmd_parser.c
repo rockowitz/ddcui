@@ -449,7 +449,7 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
       if (nc_values_source_work) {
          // printf("nc_values_source_work = %p -> |%s|\n", nc_values_source_work, nc_values_source_work);
          Parsed_NC_Values_Source src = find_nc_values_source_table_value(nc_values_source_work);
-         if (src == VIEW_UNSET) {
+         if (src == NC_VALUES_SOURCE_UNSET) {
             fprintf(stderr, "Unrecognized: %s\n", nc_values_source_work);
             ok = false;
          }
