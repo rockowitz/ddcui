@@ -310,7 +310,7 @@ g_ptr_array_to_ntsa(
 {
    assert(gparray);
    Null_Terminated_String_Array ntsa = calloc(gparray->len+1, sizeof(char *));
-   for (int ndx=0; ndx < gparray->len; ndx++) {
+   for (guint ndx=0; ndx < gparray->len; ndx++) {
       if (duplicate)
          ntsa[ndx] = strdup(g_ptr_array_index(gparray,ndx));
       else
