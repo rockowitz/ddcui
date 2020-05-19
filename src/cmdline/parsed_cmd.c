@@ -110,7 +110,7 @@ Parsed_NC_Values_Source  find_nc_values_source_table_value(const char * value) {
               value,
               true,      // search by description, not symbolic name
               true,      // ignore case
-              VIEW_UNSET);
+              NC_VALUES_SOURCE_UNSET);
 }
 
 Parsed_Feature_Set       find_feature_set_table_value(char * value) {
