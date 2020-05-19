@@ -44,9 +44,12 @@ FeatureValue::FeatureValue(
 //    _cap_vcp         = cap_vcp;
 //    _value           = val;
 
-   printf("(FeatureValue::FeatureValue) feature_code=0x%02x, finfo=%p, cap_vcp=%p\n", feature_code, _finfo, cap_vcp);
-   ddca_dbgrpt_feature_metadata(_finfo, 2);
-   fflush(stdout);
+   bool debugFunc = false;
+   if (debugFunc) {
+      printf("(FeatureValue::FeatureValue) feature_code=0x%02x, finfo=%p, cap_vcp=%p\n", feature_code, _finfo, cap_vcp);
+      ddca_dbgrpt_feature_metadata(_finfo, 2);
+      fflush(stdout);
+   }
    if (_finfo)
        assert(_featureCode  == _finfo->feature_code);
 

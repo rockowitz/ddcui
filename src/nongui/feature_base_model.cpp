@@ -142,7 +142,7 @@ void   FeatureBaseModel::modelVcpValueSet(
                    DDCA_Non_Table_Vcp_Value *           feature_value,
                    DDCA_Status                          ddcrc)
 {
-    bool debugFunc = true;
+    bool debugFunc = false;
     debugFunc = debugFunc || debugModel;
     if (debugFunc)
         TRACEMCF(debugFunc,
