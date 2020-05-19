@@ -47,7 +47,7 @@
     </font>
    </property>
    <property name="text">
-    <string>Debugging Actions</string>
+    <string>Execution Statistics</string>
    </property>
   </widget>
   <widget class="QGroupBox" name="dumpStatsGroupBox">
@@ -144,7 +144,7 @@
   <widget class="QPushButton" name="resetStats_pushButton">
    <property name="geometry">
     <rect>
-     <x>40</x>
+     <x>60</x>
      <y>310</y>
      <width>88</width>
      <height>34</height>

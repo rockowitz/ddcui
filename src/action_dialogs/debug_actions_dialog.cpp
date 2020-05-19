@@ -89,7 +89,7 @@ void DebugActionsDialog::on_actionButtonBox_helpRequested()
     hd->setWindowTitle("ddcui Help - Debugging Actions");
     hd->show();
 #endif
-    viewHelp("actions_debug.html", "ddcui Help - Debugging Actions", this);
+    viewHelp("actions_debug.html", "ddcui Help - Execution Statistics", this);
 }
 
 

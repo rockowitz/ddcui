@@ -33,9 +33,10 @@ void HelpDialog2::commonInit() {
     QObject::connect(
            _buttons, &QDialogButtonBox::rejected,
            this,          &HelpDialog2::on_buttonBox_rejected);
-    QObject::connect(
-           _buttons, &QDialogButtonBox::accepted,
-           this,          &HelpDialog2::on_buttonBox_accepted);
+    // There's only a Cancel button, so signal accepted() never sent
+    // QObject::connect(
+    //        _buttons, &QDialogButtonBox::accepted,
+    //        this,          &HelpDialog2::on_buttonBox_accepted);
 }
 
 
@@ -79,12 +80,13 @@ void HelpDialog2::setText(QString& htmlText) {
    _textBrowser->setText(htmlText);
 }
 
-void HelpDialog2::on_buttonBox_accepted() {
-   TRACEC("Executing");
-}
+// doesn't occur - there's only a Cancel button
+// void HelpDialog2::on_buttonBox_accepted() {
+//    TRACEC("Executing");
+// }
 
 void HelpDialog2::on_buttonBox_rejected() {
-   TRACEC("Executing");
+   // TRACEC("Executing");
    this->close();
 }
 
