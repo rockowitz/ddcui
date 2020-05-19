@@ -26,7 +26,8 @@
  }
 
  UserInterfaceOptionsState::UserInterfaceOptionsState(UserInterfaceOptionsState &other)
-     : _cls(metaObject()->className())
+     : QObject()
+     , _cls(metaObject()->className())
  {
     _controlKeyRequired = other._controlKeyRequired;
  }
