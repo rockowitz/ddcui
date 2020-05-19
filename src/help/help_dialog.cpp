@@ -1,14 +1,14 @@
 // help_dialog.cpp
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <QtWidgets/QTextBrowser>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
+#include "base/core.h"
 #include "help_dialog.h"
-#include "../base/core.h"
 
 
 void HelpDialog2::commonInit() {
@@ -33,7 +33,7 @@ void HelpDialog2::commonInit() {
     QObject::connect(
            _buttons, &QDialogButtonBox::rejected,
            this,          &HelpDialog2::on_buttonBox_rejected);
-    // There's only a Cancel button, so signal accepted() never sent
+    // There's only a Cancel button
     // QObject::connect(
     //        _buttons, &QDialogButtonBox::accepted,
     //        this,          &HelpDialog2::on_buttonBox_accepted);
@@ -81,9 +81,10 @@ void HelpDialog2::setText(QString& htmlText) {
 }
 
 // doesn't occur - there's only a Cancel button
-// void HelpDialog2::on_buttonBox_accepted() {
-//    TRACEC("Executing");
-// }
+// but referenced in generated UI code
+void HelpDialog2::on_buttonBox_accepted() {
+   TRACEC("Executing");
+}
 
 void HelpDialog2::on_buttonBox_rejected() {
    // TRACEC("Executing");
