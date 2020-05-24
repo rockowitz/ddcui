@@ -169,6 +169,7 @@ void dbgrpt_parsed_cmd(Parsed_Cmd * parsed_cmd) {
       printf("   include_only capabilities features: %s\n", trival_repr(parsed_cmd->include_only_capabilities_features));
       printf("   initial model:             %s\n",   parsed_cmd->model);
       printf("   initial bus number:        %d\n",   parsed_cmd->busno);
+      printf("   enable sleep suppression   %s\n",    trival_repr(parsed_cmd->enable_sleep_suppression) );
    }
 }
 
