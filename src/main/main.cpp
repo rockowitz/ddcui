@@ -64,14 +64,7 @@ static bool init_ddcutil_library(Parsed_Cmd * parsed_cmd) {
 
    ddca_set_trace_groups(parsed_cmd->traced_groups);
 
-   /*
-   *  Must be called before any API call that triggers display identification
-   *
-   *  @param onoff
-   *  @retval  DDCRC_OK                success
-   *  @retval  DDCRC_INVALID_OPERATION display identification has already occurred
-   *  @retval  DDCRC_UNIMPLEMENTED     ddcutil not built with USB monitor support
-   */
+   // Must be called before any API call that triggers display identification
    // DDCA_Status rc =  // unused, comment out for now, need to properly set
    ddca_enable_usb_display_detection(parsed_cmd->flags & CMD_FLAG_NOUSB);
 
@@ -90,6 +83,11 @@ static bool init_ddcutil_library(Parsed_Cmd * parsed_cmd) {
    }
    if (parsed_cmd->sleep_multiplier != 1.0f) {
       ddca_set_default_sleep_multiplier(parsed_cmd->sleep_multiplier);
+   }
+
+   if (parsed_cmd->enable_sleep_suppression != TRIVAL_UNSET) {
+      bool val = (parsed_cmd->enable_sleep_suppression = TRIVAL_TRUE) ? true : false;
+      ddca_enable_sleep_suppression(val);
    }
 
    // printf("(%s) Done\n", __func__);
