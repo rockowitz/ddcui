@@ -105,6 +105,8 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
    gboolean version_flag            = false;
    gboolean show_styles_flag        = false;
    gboolean show_active_style_flag  = false;
+   gboolean less_sleep_true_set         = false;
+   gboolean less_sleep_false_set        = false;
    gchar**  cmd_and_args            = NULL;
    gchar**  trace_classes           = NULL;
    gchar**  trace_filenames         = NULL;
@@ -120,6 +122,7 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
    gboolean control_key_required    = false;
    gboolean show_unsupported_features = false;
 
+
    gboolean only_capabilities_true_set  = false;
    gboolean only_capabilities_false_set = false;
    gboolean all_capabilities_true_set   = false;
@@ -127,6 +130,13 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
 
    gboolean debug_parse             = false;
    gboolean parse_only              = false;
+
+   gboolean f1_flag        = false;
+   gboolean f2_flag        = false;
+   gboolean f3_flag        = false;
+   gboolean f4_flag        = false;
+   gboolean f5_flag        = false;
+   gboolean f6_flag        = false;
 
    GOptionEntry option_entries[] = {
    //  long_name short flags option-type          gpointer           description                    arg description
@@ -140,7 +150,7 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
                            G_OPTION_ARG_NONE,     &enable_udf_flag,  "Disable user defined feature support", NULL},
       {"nousb",  '\0',  0, G_OPTION_ARG_NONE,     &nousb_flag,       "Do not detect USB devices", NULL},
 
-      // tuning
+      // library tuning
       {"maxtries",'\0', 0, G_OPTION_ARG_STRING,   &maxtrywork,       "Max try adjustment",  "comma separated list" },
 #ifdef UNIMPLEMENTED
       // unclear how to implement in GUI environment
@@ -149,6 +159,9 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
 #endif
       {"sleep-multiplier", '\0', 0,
                                  G_OPTION_ARG_STRING,   &sleep_multiplier_work, "Multiplication factor for DDC sleeps", "number"},
+      {"less-sleep" ,'\0', 0, G_OPTION_ARG_NONE, &less_sleep_true_set, "Eliminate some sleeps",  NULL},
+      {"sleep-less" ,'\0', 0, G_OPTION_ARG_NONE, &less_sleep_true_set, "Eliminate some sleeps",  NULL},
+      {"not-sleep-less", '\0', 0, G_OPTION_ARG_NONE, &less_sleep_false_set, "Do not eliminate some sleeps", NULL},
 
   // debugging
       {"excp",     '\0',   0, G_OPTION_ARG_NONE,     &report_freed_excp_flag,  "Report freed exceptions", NULL},
@@ -200,6 +213,16 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
       {"styles",   '\0',   0, G_OPTION_ARG_NONE,     &show_styles_flag,     "List known styles",        NULL},
       {"show-style", '\0', 0, G_OPTION_ARG_NONE,     &show_active_style_flag, "Show active style",      NULL},
       {"version",  'V',    0, G_OPTION_ARG_NONE,     &version_flag,         "Show version information", NULL},
+
+// Undocumented library flag options
+      {"f1",      '\0', 0,  G_OPTION_ARG_NONE,     &f1_flag,         "Special flag 1",    NULL},
+      {"f2",      '\0', 0,  G_OPTION_ARG_NONE,     &f2_flag,         "Special flag 2",    NULL},
+      {"f3",      '\0', 0,  G_OPTION_ARG_NONE,     &f3_flag,         "Special flag 3",    NULL},
+      {"f4",      '\0', 0,  G_OPTION_ARG_NONE,     &f4_flag,         "Special flag 4",    NULL},
+      {"f5",      '\0', 0,  G_OPTION_ARG_NONE,     &f5_flag,         "Special flag 5",    NULL},
+      {"f6",      '\0', 0,  G_OPTION_ARG_NONE,     &f6_flag,         "Special flag 6",    NULL},
+
+
 
 // Debug parser
       {"debug-parse", '\0', 0, G_OPTION_ARG_NONE,    &debug_parse,           "Show parse result",        NULL},
@@ -270,6 +293,13 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
 
    SET_CMDFLAG(CMD_FLAG_UI_REQUIRE_CONTROL_KEY, control_key_required);
    SET_CMDFLAG(CMD_FLAG_SHOW_UNSUPPORTED,       show_unsupported_features);
+
+   SET_CMDFLAG(CMD_FLAG_F1,                f1_flag);
+   SET_CMDFLAG(CMD_FLAG_F2,                f2_flag);
+   SET_CMDFLAG(CMD_FLAG_F3,                f3_flag);
+   SET_CMDFLAG(CMD_FLAG_F4,                f4_flag);
+   SET_CMDFLAG(CMD_FLAG_F5,                f5_flag);
+   SET_CMDFLAG(CMD_FLAG_F6,                f6_flag);
 
 #undef SET_CMDFLAG
 
@@ -374,6 +404,12 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
          }
       }
    }
+
+   parsed_cmd->enable_sleep_suppression = TRIVAL_UNSET;
+   if (less_sleep_true_set)
+      parsed_cmd->enable_sleep_suppression = TRIVAL_TRUE;
+   else if (less_sleep_false_set)
+      parsed_cmd->enable_sleep_suppression = TRIVAL_FALSE;
 
 
 
