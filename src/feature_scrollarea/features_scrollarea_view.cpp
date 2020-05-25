@@ -276,6 +276,8 @@ void FeaturesScrollAreaView::onUIValueChanged(
       case 0x04:      // restore factory defaults
       case 0x06:      // restore geometry defaults  - treat as restore factory defaults
       case 0x08:      // restore color defaults     - treat as restore factory defaults
+      // alternatively, handle x14 handled in feature_base_model, is that the right place or this?
+      // reload all, all color, or just the features documented in spec 2.2 as affected?
       case 0x14:      // select color preset        - treat as restore factory defaults
          _monitor->_baseModel->reloadFeatures();
          break;
@@ -310,7 +312,7 @@ void FeaturesScrollAreaView::onModelValueChanged(
 
 
 void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc) {
-   bool debugFunc = false;
+   bool debugFunc = true;
    debugFunc = debugFunc || debugSignals;
    TRACECF(debugFunc,
              "newsrc=%d - %s, _curNcValuesSource=%d - %s",
