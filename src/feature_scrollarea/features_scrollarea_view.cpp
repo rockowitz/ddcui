@@ -349,7 +349,7 @@ void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc) {
 
 
 void FeaturesScrollAreaView::onModelDdcDetailedError(DdcDetailedError* perec) {
-    bool debugFunc = true;
+    bool debugFunc = false;
     debugFunc = debugFunc || debugSignals;
     TRACECF(debugFunc, "perec=%p, perec->%s", perec, perec->srepr() );
 
