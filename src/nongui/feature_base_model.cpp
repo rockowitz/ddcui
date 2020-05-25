@@ -1,6 +1,6 @@
 /* feature_base_model.cpp - UI independent portion of the data model */
 
-// Copyright (C) 2018-2030 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "nongui/feature_base_model.h"
@@ -16,7 +16,7 @@
 #include <ddcutil_c_api.h>
 #include <ddcutil_status_codes.h>
 
-#include "../base/core.h"
+#include "base/core.h"
 #include "base/global_state.h"
 #include "base/monitor.h"
 #include "base/ddca_utils.h"
@@ -37,6 +37,17 @@ FeatureBaseModel::FeatureBaseModel(Monitor * monitor)
     _featureChangeObservers = new QVector<FeatureChangeObserver*>;
 #endif
     ddca_feature_list_clear(&_featuresChecked);
+
+    // There ought to be a cleaner way
+    _featuresTouchedByX14 = DDCA_EMPTY_FEATURE_LIST;
+    ddca_feature_list_add(&_featuresTouchedByX14, 0x16);
+    ddca_feature_list_add(&_featuresTouchedByX14, 0x18);
+    ddca_feature_list_add(&_featuresTouchedByX14, 0x1a);
+    ddca_feature_list_add(&_featuresTouchedByX14, 0x6c);
+    ddca_feature_list_add(&_featuresTouchedByX14, 0x6e);
+    ddca_feature_list_add(&_featuresTouchedByX14, 0x70);
+    ddca_feature_list_add(&_featuresTouchedByX14, 0x0b);
+    ddca_feature_list_add(&_featuresTouchedByX14, 0x0c);
 }
 
 
@@ -146,9 +157,9 @@ void   FeatureBaseModel::modelVcpValueSet(
     debugFunc = debugFunc || debugModel;
     if (debugFunc)
         TRACEMCF(debugFunc,
-                 "feature_code=0x%02x, mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x, ddcrc = %s",
+                 "feature_code=0x%02x, mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x, ddcrc = %s, _initialLoadActive=%s",
                  feature_code, feature_value->mh, feature_value->ml, feature_value->sh, feature_value->sl,
-                 ddca_rc_name(ddcrc));
+                 ddca_rc_name(ddcrc), SBOOL(_initialLoadActive));
 
     int ndx = modelVcpValueIndex(feature_code);
     if (ndx < 0) {
@@ -203,10 +214,11 @@ FeatureBaseModel::modelVcpValueUpdate(
         uint8_t   sh,
         uint8_t   sl)
 {
-    bool debugFunc = false;
+    bool debugFunc = true;
     debugFunc = debugFunc || debugModel;
 
-    TRACECF(debugFunc, "feature_code=0x%02x, sh=0x%02x, sl=0x%02x", feature_code, sh, sl);
+    TRACECF(debugFunc, "feature_code=0x%02x, sh=0x%02x, sl=0x%02x, _initialLoadActive=%s",
+          feature_code, sh, sl, SBOOL(_initialLoadActive));
 
     int ndx = modelVcpValueIndex(feature_code);
     assert (ndx >= 0);
@@ -215,6 +227,31 @@ FeatureBaseModel::modelVcpValueUpdate(
 
     TRACECF(debugFunc || debugSignals, "Emitting signalFeatureUpdated3()");
     emit signalFeatureUpdated3(__func__, feature_code, sh, sl);
+
+#ifdef FUTURE
+    if (!_initialLoadActive) {
+       if (feature_code == 0x14) {
+          TRACECF(debugFunc, "_featuresTouchedByX14: %s",
+                  ddca_feature_list_string(_featuresTouchedByX14, "x", ", "));
+          TRACECF(debugFunc, "_featuresToShow: %s",
+                  ddca_feature_list_string(_featuresToShow, "x", ", "));
+          DDCA_Feature_List featuresTouched =
+             ddca_feature_list_and(_featuresToShow, _featuresTouchedByX14 );
+          TRACECF(debugFunc, "featuresTouched: %s",
+                  ddca_feature_list_string(featuresTouched, "x", ", "));
+          // there ought to be an iterator
+          for (int vcp_code = 0; vcp_code < 256; vcp_code++) {
+             if ( ddca_feature_list_contains(featuresTouched, vcp_code) ) {
+                TRACECF(debugFunc, "putting VcpGetRequest for feature 0x%02x on queue",
+                                   vcp_code);
+                bool needMetadata = false;
+                _monitor->_requestQueue->put( new VcpGetRequest(vcp_code, needMetadata) );
+             }
+          }
+       }
+    }
+#endif
+
 }
 
 
@@ -393,12 +430,14 @@ void FeatureBaseModel::dbgrpt() {
 
 
 void  FeatureBaseModel::modelStartInitialLoad(void) {
+   _initialLoadActive = true;
     // TRACE("=> Emitting signalStartInitialLoad");
     emit signalStartInitialLoad();
 }
 
 
 void  FeatureBaseModel::modelEndInitialLoad(void) {
+   _initialLoadActive = false;
     // TRACE("=> Emitting signalEndInitialLoad");
     signalEndInitialLoad();
 }

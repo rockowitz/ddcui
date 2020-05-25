@@ -119,6 +119,10 @@ private:
 private:
     DDCA_Feature_List   _featuresToShow;
     DDCA_Feature_List   _featuresChecked;
+// ifdef FUTURE
+    DDCA_Feature_List   _featuresTouchedByX14 = DDCA_EMPTY_FEATURE_LIST;
+// #endif
+    bool                _initialLoadActive = false;
 
 };
 
