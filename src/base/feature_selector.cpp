@@ -33,7 +33,10 @@ DDCA_Feature_Subset_Id parsedFeatureSet_to_ddcaFeatureSubsetId(Parsed_Feature_Se
 
 bool defaultIncludeOnlyCapabilities(DDCA_Feature_Subset_Id fsid) {
    bool result = false;
-   if (fsid == DDCA_SUBSET_CAPABILITIES)
+   if (fsid == DDCA_SUBSET_KNOWN        ||
+       fsid == DDCA_SUBSET_CAPABILITIES ||
+       fsid == DDCA_SUBSET_MFG          ||
+       fsid == DDCA_SUBSET_COLOR)
       result = true;
    return result;
 }
