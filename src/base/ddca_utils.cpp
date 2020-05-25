@@ -108,6 +108,26 @@ ddcutil_free_local_feature_value_table(
    }
 }
 
+
+
+const char * nc_values_merge_mode_name(Nc_Values_Merge_Mode merge_mode) {
+   // char * s = NULL;
+   switch(merge_mode) {
+   case CapsOnly:
+      return "CapsOnly";
+      break;
+   case CapsPlusMccs:
+      return "CapsPlusMccs";
+      break;
+   case MccsOnly:
+      return"MccsOnly";
+      break;
+   }
+   return "Error";
+}
+
+
+
 /* Combines the values for feature as recorded in the capabilities string with
  *  the value/name pairs from the MCCS spec.
  */
@@ -122,8 +142,8 @@ ddcutil_merge_feature_values(
 {
    bool debug = false;
    if (debug) {
-      printf("(%s) cfr=%p, mccsTable=%p, mergeMode=%d\n",
-             __func__, cfr, mccsTable, mergeMode);
+      printf("(%s) cfr=%p, mccsTable=%p, mergeMode=%d=%s\n",
+             __func__, cfr, mccsTable, mergeMode, nc_values_merge_mode_name(mergeMode));
       if (cfr) {
          printf("(%s) cfr->feature_code=0x%02x, cfr->value_ct=%d\n",
                 __func__, cfr->feature_code, cfr->value_ct);
@@ -161,34 +181,38 @@ ddcutil_merge_feature_values(
    int resultCt = 0;
    // Don't assume the values are ordered.
    // Results in a O(n**2) algorithm, but the lists are short.
-   for (int featureCode = 0; featureCode < 256; featureCode++) {
+   for (int featureValue = 0; featureValue < 256; featureValue++) {
+      // printf("(%s) featureValue = 0x%04x\n", __func__, featureValue);
       bool emit = false;
-      bool featureInCaps = cfr && cap_vcp_contains(cfr, featureCode);
+      bool featureInCaps = cfr && cap_vcp_contains(cfr, featureValue);
       DDCA_Feature_Value_Entry * slEntry = NULL;
       switch(mergeMode) {
       case CapsOnly:
          if (featureInCaps) {
-            slEntry = find_feature_value_entry(mccsTable, featureCode);
+            slEntry = find_feature_value_entry(mccsTable, featureValue);
             emit = true;
          }
          break;
       case CapsPlusMccs:
-         slEntry = find_feature_value_entry(mccsTable, featureCode);
+         slEntry = find_feature_value_entry(mccsTable, featureValue);
          if (featureInCaps || slEntry)
             emit = true;
          break;
       case MccsOnly:
-         slEntry = find_feature_value_entry(mccsTable, featureCode);
+         slEntry = find_feature_value_entry(mccsTable, featureValue);
          if (slEntry)
             emit = true;
          break;
       }
       if (emit) {
-         result->values[resultCt].value_code = featureCode;
+         result->values[resultCt].value_code = featureValue;
          if (slEntry)
             result->values[resultCt].value_name = strdup(slEntry->value_name);
          else
-            result->values[resultCt].value_name = g_strdup_printf("Value 0x%02x", featureCode);
+            result->values[resultCt].value_name = g_strdup_printf("Value 0x%02x", featureValue);
+         // printf("(%s) Adding value 0x%02x, name=%s\n", __func__,
+         //        result->values[resultCt].value_code,
+         //       result->values[resultCt].value_name) ;
          resultCt++;
       }
    }

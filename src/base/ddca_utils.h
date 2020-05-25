@@ -2,7 +2,7 @@
 //
 // Wrap ddcutil API functionality
 
-// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef DDCA_UTILS_H_
@@ -19,6 +19,8 @@ typedef enum {
    CapsPlusMccs,
    MccsOnly
 } Nc_Values_Merge_Mode;
+
+const char * nc_values_merge_mode_name(Nc_Values_Merge_Mode merge_mode);
 
 // #define LOCAL_FEATURE_VALUE_TABLE_MARKER0 "LFVT"
 extern  const char * LOCAL_FEATURE_VALUE_TABLE_MARKER;
