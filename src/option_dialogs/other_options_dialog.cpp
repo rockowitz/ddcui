@@ -15,6 +15,8 @@
 
 void OtherOptionsDialog::setUiSource(NcValuesSource source)
 {
+   bool debugFunc = false;
+   TRACEMF(debugFunc, "Executing. source=%d=%s", source, ncValuesSourceName(source) );
    switch(source) {
    case NcValuesFromCapabilities:
        ui->capabilitiesNcValuesButton->setChecked(true);
