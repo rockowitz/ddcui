@@ -51,7 +51,7 @@ message( STATUS "Qt5Help_INCLUDE_DIRS:       ${Qt5Help_INCLUDE_DIRS}" )
 find_package (PkgConfig REQUIRED)
 pkg_check_modules(GLIB2 REQUIRED glib-2.0)
 
-pkg_check_modules(DDCUTIL REQUIRED ddcutil>=0.9.6)
+pkg_check_modules(DDCUTIL REQUIRED ddcutil>=0.9.9)
 message("Set by pkg-config:" )
 message( STATUS "GLIB2_INCLUDE_DIRS:    ${GLIB2_INCLUDE_DIRS}" )
 message( STATUS "GLIB2_LIBRARIES:       ${GLIB2_LIBRARIES}" )
@@ -73,16 +73,17 @@ include_directories(SYSTEM ${Qt5Widgets_INCLUDE_DIRS} ${Qt5Gui_INCLUDE_DIRS} ${Q
                            ${GLIB2_INCLUDE_DIRS} ${DDCUTIL_INCLUDE_DIRS} )
 
 # both work:
-OPTION(APPLY_CANCEL "Use Accept/Cancel buttons" OFF)
+# OPTION(APPLY_CANCEL "Use Accept/Cancel buttons" OFF)
+set(APPLY_CANCEL OFF)
 # set(COVERITY_DUMMIES OFF)
+
+
 configure_file(cconfig.h.in config.h)
 
 
 include_directories(src)
 
 set(SOURCES
-    src/imported/QtWaitingSpinner/waitingspinnerwidget.cpp
-
     src/c_util/data_structures.c
     src/c_util/string_util.c
 
@@ -120,7 +121,7 @@ set(SOURCES
     src/feature_value_widgets/value_nc_widget.cpp 
     src/feature_value_widgets/value_cnc_widget_x14.cpp
     src/feature_value_widgets/value_ncplus_widget.cpp
-	src/feature_value_widgets/value_reset_widget.cpp 
+    src/feature_value_widgets/value_reset_widget.cpp 
     src/feature_value_widgets/value_2button_widget.cpp 
     src/feature_value_widgets/value_stacked_widget.cpp 
     src/feature_value_widgets/value_std_widget.cpp 
@@ -159,7 +160,7 @@ set(UI_SOURCES
     src/option_dialogs/feature_selection_dialog.ui
     src/option_dialogs/other_options_dialog.ui
     src/option_dialogs/user_interface_options_dialog.ui
-	src/action_dialogs/debug_actions_dialog.ui
+    src/action_dialogs/debug_actions_dialog.ui
    )
 
 # must come before add_executable(): 
@@ -212,4 +213,4 @@ if(NOT TARGET uninstall)
 
     add_custom_target(uninstall
         COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
-endif()
+endif
