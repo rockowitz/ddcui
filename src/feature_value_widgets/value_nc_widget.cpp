@@ -187,7 +187,7 @@ void ValueNcWidget::loadComboBox(NcValuesSource mode) {
            // printf("(%s) value code: 0x%02x, value_name: %s\n",
            //        __func__, cur->value_code, cur->value_name);  fflush(stdout);
            QString s;
-           s.sprintf("x%02x - %s", cur->value_code, cur->value_name);
+           s.asprintf("x%02x - %s", cur->value_code, cur->value_name);
            _cb->addItem(s, QVariant(cur->value_code));
            cur++;
        }
@@ -203,7 +203,7 @@ void ValueNcWidget::loadComboBox(NcValuesSource mode) {
        TRACEMF(debugNcValues, "VCP feature 0x%02x: Unable to find value 0x%02x", _featureCode, _sl);
        // TODO: add generated entry for observed value
        QString s;
-       s.sprintf("x%02x - Unrecognized value", _sl);
+       s.asprintf("x%02x - Unrecognized value", _sl);
        _cb->addItem(s, QVariant(_sl));
        cur_ndx = _cb->count()-1;
        _cb->setCurrentIndex(cur_ndx);
