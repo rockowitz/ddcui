@@ -6,8 +6,9 @@
 // Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#include "other_options_state.h"
+#include <assert.h>
 
+#include "other_options_state.h"
 
 
 // For Other-Options dialog
@@ -28,6 +29,7 @@ NcValuesSource parsedNcValuesSource_to_NcValuesSource(Parsed_NC_Values_Source va
    return ncvs;
 }
 
+
 OtherOptionsState::OtherOptionsState() {}
 
 OtherOptionsState::OtherOptionsState(Parsed_Cmd * parsed_cmd) {
@@ -35,10 +37,10 @@ OtherOptionsState::OtherOptionsState(Parsed_Cmd * parsed_cmd) {
       _ncValuesSource = parsedNcValuesSource_to_NcValuesSource(parsed_cmd->nc_values_source);
 }
 
+
 OtherOptionsState::OtherOptionsState(const OtherOptionsState &other) : QObject() {
    _ncValuesSource = other._ncValuesSource;
 }
-
 
 
 const char *

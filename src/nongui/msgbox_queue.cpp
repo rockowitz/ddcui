@@ -6,6 +6,7 @@
 #include <QtCore/QDebug>
 #include <QtWidgets/QMessageBox>
 
+#include <assert.h>
 #include <iostream>
 
 #include "base/core.h"
@@ -123,5 +124,4 @@ void MsgBoxQueue::dbgrpt() {
    _mutex.lock();
    dbgrpt_nolock();
    _mutex.unlock();
-
 }
