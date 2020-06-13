@@ -90,7 +90,7 @@ set(SOURCES
     src/base/core.cpp 
     src/base/ddca_utils.cpp 
     src/base/ddcui_parms.cpp
-	src/base/feature_list.c
+    src/base/feature_list.c
     src/base/feature_selector.cpp 
     src/base/global_state.cpp 
     src/base/other_options_state.cpp
@@ -213,4 +213,4 @@ if(NOT TARGET uninstall)
 
     add_custom_target(uninstall
         COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
-endif
+endif()
