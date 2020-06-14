@@ -1,19 +1,18 @@
 ddcui
 =======
 
-ddcui is an alpha version of a graphical user interface for ddcutil, implemented using Qt. 
+ddcui is a beta version of a graphical user interface for ddcutil, implemented using Qt. 
 
-It currently must be built from source. For basic instructions, see file ***BUILDING.md***. 
+For a guide to building ddcui from source, see [Building ddcui](http://www.ddcutil.com/building_ddcui)
+in the ddcutil documentation.
 
-There are several situations that the GUI currently does not have a good way to handle:
+There are some situations that ddcui does not have a good way to handle:
 
 - Some monitors will change their state (e.g. red gain) when the value in the GUI changes.
 However, the value reported by the monitor is unchanged.
 - Conversely, some monitors report a newly set value, but the observed state of the monitor
 is unchanged.
-- Casually swiping a mouse over the GUI can unintentionally change a slider value. It may be
-necessary to add individual buttons for each feature controlling whether the feature value
-is chnageable.
+
 
 ## User Support
 
