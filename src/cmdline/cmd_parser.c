@@ -567,6 +567,6 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
    }
 
    if (debug)
-      printf("Returning: %p\n", parsed_cmd);
+      printf("Returning: %p\n", (void*) parsed_cmd);
    return parsed_cmd;
 }

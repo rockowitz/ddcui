@@ -16,6 +16,7 @@
 
 #include "string_util.h"
 
+
 /** Compares 2 strings for equality, handling nulls
  *
  *  @param s1  first string
@@ -30,7 +31,6 @@ bool streq(const char * s1, const char * s2) {
       result = true;
    return result;
 }
-
 
 
 /** Tests if one string is a valid abbreviation of another.
@@ -98,8 +98,6 @@ bool str_ends_with(const char * value_to_test, const char * suffix) {
 }
 
 
-
-
 // private copy:
 static char * sbool(int val) {return  (val) ? "true" : "false"; }
 
@@ -141,6 +139,7 @@ bool str_to_float(const char * sval, float * p_fval)
    }
    return ok;
 }
+
 
 /** Creates an upper case copy of an ASCII string
  *
@@ -197,8 +196,6 @@ bool hhs_to_byte_in_buf(const char * s, Byte * result)
 }
 
 
-
-
 /** Converts a hex string representing a single byte into its byte value.
  *  This is a more lenient version of hhs_to_byte_in_buf(), allowing
  *  the value to begin with "0x" or "x", or end with "h".  The allowed
@@ -253,7 +250,7 @@ void ntsa_free(Null_Terminated_String_Array string_array, bool free_strings) {
  */
 void ntsa_show(Null_Terminated_String_Array string_array) {
    assert(string_array);
-   printf("Null_Terminated_String_Array at %p:\n", string_array);
+   printf("Null_Terminated_String_Array at %p:\n", (void*) string_array);
    int ndx = 0;
    while (string_array[ndx]) {
       printf("  %p: |%s|\n", string_array[ndx], string_array[ndx]);

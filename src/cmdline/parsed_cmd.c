@@ -128,7 +128,7 @@ Parsed_Feature_Set       find_feature_set_table_value(char * value) {
  * \param parsed_cmd  instance to report
  */
 void dbgrpt_parsed_cmd(Parsed_Cmd * parsed_cmd) {
-   printf("(%s) Parsed_Cmd at %p\n", __func__, parsed_cmd);
+   printf("(%s) Parsed_Cmd at %p\n", __func__, (void *) parsed_cmd);
    if (parsed_cmd) {
       printf("   stats:                     0x%08x\n",  parsed_cmd->stats_types);
       printf("   traced_groups              0x%08x\n",  parsed_cmd->traced_groups);
