@@ -416,8 +416,6 @@ void reportLabelDimensions(
 }
 
 
-
-
 void whereIsApplication() {
    printf("Application screens\n");
    QApplication* qGuiApplication = qApp;
@@ -439,12 +437,15 @@ void whereIsApplication() {
 
    QDesktopWidget * desktopWidget = QApplication::desktop();
    printf("Desktop widget width, height: %d,%d\n", desktopWidget->width(),  desktopWidget->height() );
+#ifdef FOR_TESTING
    printf("screen count: %d\n", desktopWidget->screenCount() );
    printf("is virtual desktop: %s\n", SBOOL( desktopWidget->isVirtualDesktop() ) );
    QRect geometry  = desktopWidget->availableGeometry();
    printf("  geometry: left=%d, top=%d, right=%d, bottom=%d\n",
           geometry.left(), geometry.top(), geometry.right(), geometry.bottom() );
+#endif
 }
+
 
 void whereAmI(QWidget * w, const char * msg) {
    if (msg)
