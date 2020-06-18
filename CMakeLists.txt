@@ -202,6 +202,7 @@ target_link_libraries(ddcui Qt5::Widgets ${GLIB2_LIBRARIES} ${DDCUTIL_LIBRARIES}
 
 install(TARGETS ddcui DESTINATION bin)
 install(FILES man/ddcui.1 DESTINATION share/man/man1)
+install(FILES AUTHORS ChangeLog COPYING NEWS.md README.md DESTINATION share/doc/ddcui)
 
 
 # per https://gitlab.kitware.com/cmake/community/wikis/FAQ#can-i-do-make-uninstall-with-cmake
