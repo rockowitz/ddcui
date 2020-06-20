@@ -40,6 +40,10 @@ show_libpath
 show_pkgconfig_path
 todo
 TODO
+<<<<<<< HEAD
 ddcui.pro.user*
 *md0
 *.bak
+=======
+src/base/new/
+>>>>>>> README.md: copy version on branch 0.1.1-dev
