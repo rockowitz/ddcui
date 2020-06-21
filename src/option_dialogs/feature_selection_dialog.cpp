@@ -349,7 +349,7 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
     }   // custom_radioButton
 
     else
-        fsid = DDCA_SUBSET_KNOWN;    // should never occur
+        assert(false);   // should never occur
 
     const char * s = ddca_feature_list_string(flist, "x", ",");
     TRACECF(debugFunc, "custom feature list: %s", s);
