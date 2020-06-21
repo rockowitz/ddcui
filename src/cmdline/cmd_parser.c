@@ -105,8 +105,8 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
    gboolean version_flag            = false;
    gboolean show_styles_flag        = false;
    gboolean show_active_style_flag  = false;
-   gboolean less_sleep_true_set         = false;
-   gboolean less_sleep_false_set        = false;
+   gboolean less_sleep_true_set     = false;
+   gboolean less_sleep_false_set    = false;
    gchar**  cmd_and_args            = NULL;
    gchar**  trace_classes           = NULL;
    gchar**  trace_filenames         = NULL;
@@ -161,7 +161,7 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
                                  G_OPTION_ARG_STRING,   &sleep_multiplier_work, "Multiplication factor for DDC sleeps", "number"},
       {"less-sleep" ,'\0', 0, G_OPTION_ARG_NONE, &less_sleep_true_set, "Eliminate some sleeps",  NULL},
       {"sleep-less" ,'\0', 0, G_OPTION_ARG_NONE, &less_sleep_true_set, "Eliminate some sleeps",  NULL},
-      {"not-sleep-less", '\0', 0, G_OPTION_ARG_NONE, &less_sleep_false_set, "Do not eliminate some sleeps", NULL},
+      {"no-sleep-less", '\0', 0, G_OPTION_ARG_NONE, &less_sleep_false_set, "Do not eliminate some sleeps", NULL},
 
   // debugging
       {"excp",     '\0',   0, G_OPTION_ARG_NONE,     &report_freed_excp_flag,  "Report freed exceptions", NULL},
