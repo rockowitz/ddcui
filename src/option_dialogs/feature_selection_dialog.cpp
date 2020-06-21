@@ -294,7 +294,7 @@ void FeatureSelectionDialog::on_includeTable_checkbox_stateChanged(int arg1)
 
 void FeatureSelectionDialog::on_buttonBox_accepted()
 {
-    bool debugFunc = true;
+    bool debugFunc = false;
     debugFunc = debugFunc || debugFeatureSelection;
     TRACECF(debugFunc, "Executing");
 
@@ -318,7 +318,7 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
     else if (_ui->custom_radioButton->isChecked()) {
         fsid = DDCA_SUBSET_CUSTOM;
         char * y = QS2S( _ui->custom_lineEdit->text());
-        TRACECF(debugFunc, "text: %d - |%s|", strlen(y), y);
+        // TRACECF(debugFunc, "text: %d - |%s|", strlen(y), y);
         char ** error_msgs = NULL;
         customFlist = parse_custom_feature_list(y, &error_msgs);
         if (ddca_feature_list_count(customFlist) == 0) {
