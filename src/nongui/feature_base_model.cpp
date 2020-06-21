@@ -214,7 +214,7 @@ FeatureBaseModel::modelVcpValueUpdate(
         uint8_t   sh,
         uint8_t   sl)
 {
-    bool debugFunc = true;
+    bool debugFunc = false;
     debugFunc = debugFunc || debugModel;
 
     TRACECF(debugFunc, "feature_code=0x%02x, sh=0x%02x, sl=0x%02x, _initialLoadActive=%s",
