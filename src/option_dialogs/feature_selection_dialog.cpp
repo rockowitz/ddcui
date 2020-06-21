@@ -294,11 +294,11 @@ void FeatureSelectionDialog::on_includeTable_checkbox_stateChanged(int arg1)
 
 void FeatureSelectionDialog::on_buttonBox_accepted()
 {
-    bool debugFunc = false;
+    bool debugFunc = true;
     debugFunc = debugFunc || debugFeatureSelection;
     TRACECF(debugFunc, "Executing");
 
-    DDCA_Feature_List flist;
+    DDCA_Feature_List customFlist = DDCA_EMPTY_FEATURE_LIST;
     DDCA_Feature_Subset_Id fsid;
     // which feature selection button is currently checked?
     if (_ui->color_radioButton->isChecked())
@@ -320,8 +320,8 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
         char * y = QS2S( _ui->custom_lineEdit->text());
         TRACECF(debugFunc, "text: %d - |%s|", strlen(y), y);
         char ** error_msgs = NULL;
-        flist = parse_custom_feature_list(y, &error_msgs);
-        if (ddca_feature_list_count(flist) == 0) {
+        customFlist = parse_custom_feature_list(y, &error_msgs);
+        if (ddca_feature_list_count(customFlist) == 0) {
            QString qstitle = "Feature Code Error";
            QMessageBox::Icon icon = QMessageBox::Critical;
            MsgBoxQueue * msgboxQueue = GlobalState::instance()._mainWindow->_msgboxQueue;
@@ -346,28 +346,28 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
            }
            return;   // there's a custom feature error, don't exit dialog
         }   // feature_list_count == 0
+
+        const char * s = ddca_feature_list_string(customFlist, "x", ",");
+        TRACECF(debugFunc, "custom feature list: %s", s);
     }   // custom_radioButton
 
     else
         assert(false);   // should never occur
 
-    const char * s = ddca_feature_list_string(flist, "x", ",");
-    TRACECF(debugFunc, "custom feature list: %s", s);
+
     TRACECF(debugFunc, "Checking for any changes...fsid=%d, _featureSelector->featureSubsetId = %d",
                fsid, _featureSelector->_featureSubsetId);
     bool changed = false;
     if (fsid != _featureSelector->_featureSubsetId) {
        _featureSelector->_featureSubsetId = fsid;
-       _featureSelector->_customFeatureList = flist;
+       _featureSelector->_customFeatureList = customFlist;
        changed = true;
        TRACECF(debugFunc,"feature set changed");
     }
     else if (fsid == DDCA_SUBSET_CUSTOM) {
        DDCA_Feature_List old_flist = _featureSelector->_customFeatureList;
-       // need an equality function in the interface
-       // if (memcmp(&flist, &old_flist, sizeof(DDCA_Feature_List)) != 0) {
-       if (!ddca_feature_list_eq(flist, old_flist)) {
-          _featureSelector->_customFeatureList = flist;
+       if (!ddca_feature_list_eq(customFlist, old_flist)) {
+          _featureSelector->_customFeatureList = customFlist;
           changed = true;
        }
     }
