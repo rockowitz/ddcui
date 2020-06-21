@@ -86,7 +86,7 @@ static bool init_ddcutil_library(Parsed_Cmd * parsed_cmd) {
    }
 
    if (parsed_cmd->enable_sleep_suppression != TRIVAL_UNSET) {
-      bool val = (parsed_cmd->enable_sleep_suppression = TRIVAL_TRUE) ? true : false;
+      bool val = (parsed_cmd->enable_sleep_suppression == TRIVAL_TRUE) ? true : false;
       ddca_enable_sleep_suppression(val);
    }
 
