@@ -311,7 +311,7 @@ void FeaturesScrollAreaView::onModelValueChanged(
 
 
 void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc) {
-   bool debugFunc = true;
+   bool debugFunc = false;
    debugFunc = debugFunc || debugSignals;
    TRACECF(debugFunc,
              "newsrc=%d - %s, _curNcValuesSource=%d - %s",
