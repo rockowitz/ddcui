@@ -173,6 +173,8 @@ Local_Feature_Value_Table * ValueNcWidget::getComboBoxEntries(NcValuesSource mod
 
 
 void ValueNcWidget::loadComboBox(NcValuesSource mode) {
+   bool debugFunc = false;
+   debugFunc = debugFunc || debugNcValues;
    TRACEMF(debugNcValues, "feature 0x%02x, newSource=%d-%s", _featureCode, mode, ncValuesSourceName(mode) );
 
    // In case we're called to reload the combobox values, delete existing values
@@ -184,10 +186,10 @@ void ValueNcWidget::loadComboBox(NcValuesSource mode) {
    DDCA_Feature_Value_Entry * cur = table->values;
    if (cur) {
        while (cur->value_name) {
-           // printf("(%s) value code: 0x%02x, value_name: %s\n",
-           //        __func__, cur->value_code, cur->value_name);  fflush(stdout);
-           QString s;
-           s.asprintf("x%02x - %s", cur->value_code, cur->value_name);
+           TRACEMF(debugFunc, "value code: 0x%02x, value_name: %s",
+                   cur->value_code, cur->value_name);
+           QString s = QString::asprintf("x%02x - %s", cur->value_code, cur->value_name);
+           // TRACEMF(debugNcValues, "text being added: %s", QS2S(s));
            _cb->addItem(s, QVariant(cur->value_code));
            cur++;
        }
@@ -197,13 +199,15 @@ void ValueNcWidget::loadComboBox(NcValuesSource mode) {
    // - set current value in combo box
    int cur_ndx = findItem(_sl);
    if (cur_ndx >= 0) {
+      TRACEMF(debugNcValues, "VCP features 0x%02x, _sl=0x%02x, cur_ndx = %d",
+              _featureCode, _sl, cur_ndx);
        _cb->setCurrentIndex(cur_ndx);
+       // TRACEMF(debugFunc, "currentIndex after set: %d", _cb->currentIndex());
    }
    else {
        TRACEMF(debugNcValues, "VCP feature 0x%02x: Unable to find value 0x%02x", _featureCode, _sl);
-       // TODO: add generated entry for observed value
-       QString s;
-       s.asprintf("x%02x - Unrecognized value", _sl);
+       // Add generated entry for observed value
+       QString s = QString::asprintf("x%02x - Unrecognized value", _sl);
        _cb->addItem(s, QVariant(_sl));
        cur_ndx = _cb->count()-1;
        _cb->setCurrentIndex(cur_ndx);
