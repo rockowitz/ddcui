@@ -932,7 +932,7 @@ void MainWindow::on_actionAbout_triggered()
 {
     QString ddcutil_version = ddca_ddcutil_version_string();
     uint8_t build_opts = ddca_build_options();
-    QString ans1 = (build_opts & DDCA_BUILT_WITH_ADL) ? "true" : "false";
+    // QString ans1 = (build_opts & DDCA_BUILT_WITH_ADL) ? "true" : "false";
     QString ans2 = (build_opts & DDCA_BUILT_WITH_USB) ? "true" : "false";
     QString ans3 = (ddca_is_udf_enabled()) ? "true" : "false";
 
@@ -943,7 +943,7 @@ void MainWindow::on_actionAbout_triggered()
     msg = msg + "ddcui version:    " + ddcui_version   + "\n";
     msg = msg + "   User defined features enabled:      " + ans3 + "\n\n";
     msg = msg + "ddcutil version:  " + ddcutil_version + "\n";
-    msg = msg + "   Built with support for ADL connected monitors: " + ans1 + "\n";
+ // msg = msg + "   Built with support for ADL connected monitors: " + ans1 + "\n";
     msg = msg + "   Built with support for USB connected monitors: " + ans2;
     // mbox.setInformativeText(msg);
     // mbox.exec();
