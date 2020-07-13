@@ -1,6 +1,6 @@
 /* value_cont_widget.h - Widget for displaying/editing a Continuous VCP feature value */
 
-// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef VALUE_CONT_WIDGET_H
@@ -31,6 +31,7 @@ public:
 
 protected:
     void resizeEvent(QResizeEvent * event)           override;
+    void subLayout();
 
 private:
     void layoutWidget();
@@ -47,13 +48,7 @@ private slots:
     void onSpinBoxTimedOut();
     void onSpinBoxValueChanged(int value);
 
-#ifdef APPLY_CANCEL
-    void onApplyButtonClicked(bool checked);
-    void onCancelButtonClicked(bool checked);
 
-    QPushButton * _applyButton;
-    QPushButton * _cancelButton;
-#endif
 
 private:    // member variables
     static int idGenerator;
