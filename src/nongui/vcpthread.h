@@ -18,6 +18,7 @@
 #include "nongui/ddc_error.h"
 #include "nongui/feature_base_model.h"
 #include "nongui/vcprequest.h"
+#include "nongui/ddca_simulator.h"
 
 class QString;
 
@@ -89,6 +90,8 @@ private:       // member variables
     FeatureBaseModel*    _baseModel;
     DDCA_Display_Handle  _dh = NULL;
     bool                 _threadDescriptionPublished = false;
+
+    DdcaSimulator *     _ddcaSimulator = NULL;
 };
 
 #endif // VCPTHREAD_H

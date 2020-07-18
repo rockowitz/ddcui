@@ -34,6 +34,8 @@ VcpThread::VcpThread(
 {
     _dref         = dinfo->dref;   // transitional
 
+    _ddcaSimulator = new DdcaSimulator();
+
     // ddca_report_display_info(dinfo, 4);
     // ddca_dbgrpt_display_ref(_dref, 4);
 }
@@ -360,9 +362,11 @@ void VcpThread::capabilities() {
 } // function
 
 
+
+
 // Process RQGetVcp
 void VcpThread::getvcp(uint8_t featureCode, bool needMetadata) {
-    bool debugFunc = false;
+    bool debugFunc = true;
     debugFunc = debugFunc || debugThread;
     TRACECF(debugFunc, "Starting. featureCode=0x%02x, needMetadata = %s",
                       featureCode, SBOOL(needMetadata));
@@ -376,7 +380,16 @@ void VcpThread::getvcp(uint8_t featureCode, bool needMetadata) {
        QString msg;
        _baseModel->setStatusMsg(msg.sprintf("Reading feature 0x%02x",featureCode));
 
-       ddcrc = ddca_get_non_table_vcp_value(dh, featureCode, &valrec);
+       bool simulated = _ddcaSimulator->simulateGetNonTableVcpValue(
+                           _dinfo->vcp_version,
+                           dh,
+                           featureCode,
+                           &valrec,
+                           &ddcrc);
+       if (!simulated) {
+          // TRACEC("non-simulated");
+          ddcrc = ddca_get_non_table_vcp_value(dh, featureCode, &valrec);
+       }
        TRACECF(debugFunc, "feature_code=0x%02x, ddca_get_non_table_vcp_value() returned %d - %s",
                   featureCode, ddcrc, ddca_rc_name(ddcrc));
        // don't need to call rpt_ddca_status() if error, error will be reported
@@ -429,7 +442,7 @@ void VcpThread::getvcp(uint8_t featureCode, bool needMetadata) {
 // Process RQSetVcp
 void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint16_t shsl)
 {
-    bool debugFunc = false;
+    bool debugFunc = true;
     debugFunc = debugFunc || debugThread;
     TRACECF(debugFunc, "Starting. feature_code=0x%02x.  shsl=0x%04x, writeOnly=%s",
                        feature_code, shsl, SBOOL(writeOnly));
@@ -450,7 +463,17 @@ void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint16_t shsl)
        // need to update mh, ml, use a valrec
        // ddcrc = ddca_set_non_table_vcp_value_verify(dh, feature_code, 0, sl, &verified_hi_byte, &verified_lo_byte);
 
-       ddcrc = ddca_set_non_table_vcp_value(dh, feature_code, sh, sl);
+       bool simulated = _ddcaSimulator->simulateSetNonTableVcpValue(
+                           _dinfo->vcp_version,
+                           dh,
+                           feature_code,
+                           sh,
+                           sl,
+                           &ddcrc);
+       if (!simulated) {
+          // TRACEC("non-simulated");
+          ddcrc = ddca_set_non_table_vcp_value(dh, feature_code, sh, sl);
+       }
        if (ddcrc != 0) {
           TRACECF(debugFunc, "ddca_set_non_table_vcp_value() returned %d - %s", ddcrc, ddca_rc_name(ddcrc));
           rpt_ddca_status(feature_code, __func__, "ddca_set_non_table_vcp_value", ddcrc);
@@ -458,7 +481,17 @@ void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint16_t shsl)
        }
        if (!writeOnly) {
            DDCA_Non_Table_Vcp_Value  valrec;
-           ddcrc = ddca_get_non_table_vcp_value(dh, feature_code, &valrec);
+
+           bool simulated = _ddcaSimulator->simulateGetNonTableVcpValue(
+                                   _dinfo->vcp_version,
+                                   dh,
+                                   feature_code,
+                                   &valrec,
+                                   &ddcrc);
+           if (!simulated) {
+               // TRACEC("non-simulated");
+               ddcrc = ddca_get_non_table_vcp_value(dh, feature_code, &valrec);
+           }
            if (ddcrc != 0) {
                 rpt_ddca_status(feature_code, __func__, "ddca_get_nontable_vcp_value", ddcrc);
            }
