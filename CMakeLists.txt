@@ -109,6 +109,7 @@ set(SOURCES
     src/cmdline/cmd_parser.c
 
     src/nongui/ddc_error.cpp 
+    src/nongui/ddca_simulator.cpp
     src/nongui/feature_base_model.cpp 
     src/nongui/feature_value.cpp 
     src/nongui/msgbox_queue.cpp
@@ -118,16 +119,19 @@ set(SOURCES
     src/monitor_desc/monitor_desc_ui.cpp 
     src/monitor_desc/monitor_desc_actions.cpp
 
-    src/feature_value_widgets/value_base_widget.cpp 
+    src/feature_value_widgets/value_2button_widget.cpp 
+    src/feature_value_widgets/value_base_widget.cpp
+    src/feature_value_widgets/value_bytes_widget.cpp
+    src/feature_value_widgets/value_cnc_widget_x14.cpp
     src/feature_value_widgets/value_cont_widget.cpp 
     src/feature_value_widgets/value_nc_widget.cpp 
-    src/feature_value_widgets/value_cnc_widget_x14.cpp
     src/feature_value_widgets/value_ncplus_widget.cpp
+    src/feature_value_widgets/value_new_cont_widget.cpp 
     src/feature_value_widgets/value_reset_widget.cpp 
-    src/feature_value_widgets/value_2button_widget.cpp 
+    src/feature_value_widgets/value_simple_cont_widget.cpp
+    src/feature_value_widgets/value_special_widget_x62.cpp
     src/feature_value_widgets/value_stacked_widget.cpp 
     src/feature_value_widgets/value_std_widget.cpp 
-    src/feature_value_widgets/value_bytes_widget.cpp
 
     src/feature_scrollarea/features_scrollarea_ui.cpp 
     src/feature_scrollarea/feature_widget.cpp 
