@@ -7,13 +7,11 @@
 
 #include <QtCore/QMargins>
 
-#include "../base/core.h"
+#include "base/core.h"
 #include "base/global_state.h"
 #include "base/feature_selector.h"
 
-
 // bool showValueWidgetResizeEvents = false;
-
 
 ValueBaseWidget::ValueBaseWidget(QWidget *parent)
      : QFrame(parent)             // ValueAbstractWidget(parent)
@@ -76,14 +74,17 @@ uint16_t ValueBaseWidget::getCurrentShSl() {
     return result;
 }
 
+
 void ValueBaseWidget::setControlKeyRequired(bool onoff) {
    // TRACE("onoff = %s", sbool(onoff) );
    _controlKeyRequired = onoff;
 }
 
+
 bool ValueBaseWidget::getControlKeyRequired() {
    return   _controlKeyRequired ;
 }
+
 
 void ValueBaseWidget::when_controlKeyRequired_changed(bool onoff) {
    // TRACE("Executiong. onoff=%s", sbool(onoff));
@@ -100,7 +101,6 @@ QSize ValueBaseWidget::sizeHint() const {
     return QSize(w,h);
 }
 #endif
-
 
 #ifdef NO
 void ValueBaseWidget::resizeEvent(QResizeEvent * evt)
@@ -124,5 +124,4 @@ void ValueBaseWidget::resizeEvent(QResizeEvent * evt)
    evt->ignore();
 }
 #endif
-
 
