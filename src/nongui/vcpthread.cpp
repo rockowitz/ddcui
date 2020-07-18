@@ -366,7 +366,7 @@ void VcpThread::capabilities() {
 
 // Process RQGetVcp
 void VcpThread::getvcp(uint8_t featureCode, bool needMetadata) {
-    bool debugFunc = true;
+    bool debugFunc = false;
     debugFunc = debugFunc || debugThread;
     TRACECF(debugFunc, "Starting. featureCode=0x%02x, needMetadata = %s",
                       featureCode, SBOOL(needMetadata));
@@ -442,7 +442,7 @@ void VcpThread::getvcp(uint8_t featureCode, bool needMetadata) {
 // Process RQSetVcp
 void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint16_t shsl)
 {
-    bool debugFunc = true;
+    bool debugFunc = false;
     debugFunc = debugFunc || debugThread;
     TRACECF(debugFunc, "Starting. feature_code=0x%02x.  shsl=0x%04x, writeOnly=%s",
                        feature_code, shsl, SBOOL(writeOnly));
