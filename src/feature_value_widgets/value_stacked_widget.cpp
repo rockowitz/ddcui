@@ -19,6 +19,7 @@
 
 #include "feature_value_widgets/value_std_widget.h"
 #include "feature_value_widgets/value_cont_widget.h"
+#include "feature_value_widgets/value_new_cont_widget.h"
 #include "feature_value_widgets/value_nc_widget.h"
 #include "feature_value_widgets/value_cnc_widget_x14.h"
 #include "feature_value_widgets/value_bytes_widget.h"
@@ -35,7 +36,8 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
     // this->setObjectName(QString::fromUtf8("value_stacked_widget"));   // ambiguous
     // setGeometry(QRect(209,6, 181, 20));
 
-    _contWidget    = new ValueContWidget();
+    _newContWidget    = new ValueNewContWidget();
+    _simpleContWidget = new ValueSimpleContWidget(1,0xff);
     _ncWidget      = new ValueNcWidget();
     _stdWidget     = new ValueStdWidget();
     _resetWidget   = new ValueResetWidget();
@@ -43,6 +45,8 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
     _cncWidgetX14  = new ValueCncWidgetX14();
     _bytesWidget   = new ValueBytesWidget();
     _ncplusWidget  = new ValueNcplusWidget();
+    _contWidget    = new ValueContWidget();
+    _specialWidgetX62 = new ValueSpecialWidgetX62();
 
     // relying on _pageno_xxx order corresponds to addWidget() order
     _pageno_cont    = 0;
@@ -53,8 +57,11 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
     _pageno_x14     = 5;
     _pageno_bytes   = 6;
     _pageno_ncplus  = 7;
+    _pageno_simple_cont = 8;
+    _pageno_old_cont = 9;
+    _pageno_x62;
 
-    addWidget(_contWidget);
+    addWidget(_newContWidget);
     addWidget(_ncWidget);
     addWidget(_stdWidget);
     addWidget(_resetWidget);
@@ -62,6 +69,9 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
     addWidget(_cncWidgetX14);
     addWidget(_bytesWidget);
     addWidget(_ncplusWidget);
+    addWidget(_simpleContWidget);
+    addWidget(_contWidget);     // for comparison
+    addWidget(_specialWidgetX62);
 
     if (debugLayout) {
         if (!dimensionReportShown) {
@@ -73,13 +83,26 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
     }
 
     _pageno_selected = _pageno_std;    // default
-    setCurrentIndex(_pageno_selected);
+    // setCurrentIndex(_pageno_selected);
+    setCurrentWidget(_stdWidget);
     _cur_stacked_widget = _stdWidget;
 
     // ValueStackedWidget * curWidget = this;  // still treated as ValueBaseWidget* in SIGNAL/SLOT versions
 
+    QWidget::connect(_newContWidget,  &ValueNewContWidget::featureValueChanged,
+                     this,         &ValueStackedWidget::forContainedWidgetChanged);
+
     QWidget::connect(_contWidget,  &ValueContWidget::featureValueChanged,
                      this,         &ValueStackedWidget::forContainedWidgetChanged);
+
+    QWidget::connect(_simpleContWidget,  &ValueSimpleContWidget::featureValueChanged,
+                     this,         &ValueStackedWidget::forContainedWidgetChanged);
+
+    QWidget::connect(_specialWidgetX62,  &ValueSpecialWidgetX62::featureValueChanged,
+                      this,         &ValueStackedWidget::forContainedWidgetChanged);
+    // needed?
+    QWidget::connect(_specialWidgetX62,  &ValueSimpleContWidget::featureValueChanged,
+                      this,         &ValueStackedWidget::forContainedWidgetChanged);
 
     QWidget::connect(_ncWidget,    &ValueNcWidget::featureValueChanged,
                      this,         &ValueStackedWidget::forContainedWidgetChanged);
@@ -87,6 +110,7 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
     QWidget::connect(_ncplusWidget, &ValueNcplusWidget::featureValueChanged,
                      this,         &ValueStackedWidget::forContainedWidgetChanged);
 
+    // why disabled?
     // QWidget::connect(_cncWidgetX14, &ValueNcWidget::featureValueChanged,
     //                  this,          &ValueStackedWidget::forContainedWidgetChanged);
 
@@ -108,13 +132,20 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
 }
 
 
+bool vspec_eq(DDCA_MCCS_Version_Spec vspec1, DDCA_MCCS_Version_Spec vspec2) {
+   bool result = false;
+   if (vspec1.major == vspec2.major && vspec1.minor == vspec2.minor)
+      result = true;
+   return result;
+}
+
 void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
     bool debug = false;
     debug = debug || debugValueWidgetSignals;
     TRACEMCF(debug, "Starting. feature code: 0x%02x", fv.featureCode());
     // ValueBaseWidget::setFeatureValue(fv);
     _featureCode = fv.featureCode();   // needed since not calling ValueBaseWidget::setFeatureValue()
-    // DDCA_MCCS_Version_Spec vspec = fv.vspec();   // unused
+    DDCA_MCCS_Version_Spec vspec = fv.vspec();   // unused
 
     if (fv.ddcrc() != 0) {
        // use the default standard widget, set in constructor
@@ -126,7 +157,9 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
          _featureCode == 0x08 ||    // Restore factory color defaults
          _featureCode == 0x0a )     // Restore factory TV defaults
     {
-       setCurrentIndex(_pageno_reset);
+       _pageno_selected = _pageno_reset;
+       // setCurrentIndex(_pageno_reset);
+       setCurrentWidget(_resetWidget);
        _cur_stacked_widget = _resetWidget;
     }
 
@@ -134,9 +167,44 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
        // fv.flags marks it as DDCA_COMPLEX_CONT, but just treat it a normal continuous feature
          // printf("(ValueStackedWidget::%s) x0c\n", __func__); fflush(stdout);
         _pageno_selected = _pageno_cont;
-        _cur_stacked_widget = _contWidget;
-        setCurrentIndex(_pageno_selected);
+        //_cur_stacked_widget = _newContWidget;
+        // setCurrentIndex(_pageno_selected);
+        setCurrentWidget(_newContWidget);
+        _cur_stacked_widget == _newContWidget;
      }
+
+    else if (_featureCode == 0x14) {
+       TRACECF(debug, "_feature_code == 0x14");
+       _pageno_selected = _pageno_ncplus;
+       _cur_stacked_widget = _ncplusWidget;
+       setCurrentIndex(_pageno_ncplus);
+    }
+
+    else if (  _featureCode == 0x62    // Audio volume
+                 &&
+                 (vspec_eq(vspec, DDCA_VSPEC_V30) || vspec_eq(vspec, DDCA_VSPEC_V22) )
+              )
+      {
+         TRACEC( "setting _specialWidgetX62");
+         _pageno_selected = _pageno_x62;
+         _cur_stacked_widget = _specialWidgetX62;
+         // setCurrentIndex(_pageno_selected);
+         setCurrentWidget(_cur_stacked_widget);
+      }
+
+    else if (  (vspec_eq(vspec, DDCA_VSPEC_V30) ||
+                vspec_eq(vspec, DDCA_VSPEC_V22) )
+               &&
+               ( _featureCode == 0x8f ||     // Audio Treble
+                 _featureCode == 0x91 ||     // Audio Bass
+                 _featureCode == 0x93 )      // Audio Balance
+           )
+    {
+       _pageno_selected = _pageno_simple_cont;
+       _cur_stacked_widget = _simpleContWidget;
+       // setCurrentIndex(_pageno_simple_cont);
+       setCurrentWidget(_cur_stacked_widget);
+    }
 
     else if (_featureCode == 0xb0) {
        // printf("(%s::%s) B0\n", _cls, __func__);
@@ -150,30 +218,39 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
        setCurrentIndex(_pageno_selected);
     }
 
-    else if (_featureCode == 0x14) {
-       TRACECF(debug, "_feature_code == 0x14");
-       _pageno_selected = _pageno_ncplus;
-       _cur_stacked_widget = _ncplusWidget;
-       setCurrentIndex(_pageno_ncplus);
-    }
 
     else if ( _featureCode == 0xca) {
        _pageno_selected = _pageno_ncplus;;
        _cur_stacked_widget = _ncplusWidget;
-       setCurrentIndex(_pageno_ncplus);
+       // setCurrentIndex(_pageno_ncplus);
+       setCurrentWidget(_cur_stacked_widget);
     }
 
     else if ( _featureCode >= 0xe0) {
        _pageno_selected = _pageno_bytes;
        _cur_stacked_widget = _bytesWidget;
-       setCurrentIndex(_pageno_bytes);
+       // setCurrentIndex(_pageno_bytes);
+       setCurrentWidget(_cur_stacked_widget);
     }
+
+
+    // *** temp for comparison ***
+    else if (_featureCode == 0x12 ||
+             _featureCode == 0x16 )
+    {
+       _pageno_selected = _pageno_old_cont;
+       _cur_stacked_widget = _contWidget;
+       // setCurrentIndex(_pageno_selected);
+       setCurrentWidget(_cur_stacked_widget);
+   }
+
 
     else if (fv.flags() & DDCA_STD_CONT) {
          // printf("(ValueStackedWidget::%s) DDCA_STD_CONT\n", __func__); fflush(stdout);
         _pageno_selected = _pageno_cont;
-        _cur_stacked_widget = _contWidget;
-        setCurrentIndex(_pageno_selected);
+        _cur_stacked_widget = _newContWidget;
+        // setCurrentIndex(_pageno_selected);
+        setCurrentWidget(_cur_stacked_widget);
     }
     else if ( (fv.flags() & DDCA_SIMPLE_NC) &&
               (fv.flags() & DDCA_WRITABLE)
@@ -182,14 +259,16 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
         // printf("(ValueStackedWidget::%s) DDCA_SIMPLE_NC\n", __func__); fflush(stdout);
         _pageno_selected = _pageno_nc;
         _cur_stacked_widget = _ncWidget;
-        setCurrentIndex(_pageno_selected);
+        // setCurrentIndex(_pageno_selected);
+        setCurrentWidget(_cur_stacked_widget);
     }
     else {
         // printf("(ValueStackedWidget::%s) default case, _stdWidget\n",  __func__); fflush(stdout);
 
         _pageno_selected = _pageno_std;
-        setCurrentIndex(_pageno_selected);
+        // setCurrentIndex(_pageno_selected);
         _cur_stacked_widget = _stdWidget;
+        setCurrentWidget(_cur_stacked_widget);
     }
 
     TRACECF(debug, "Calling _cur_stacked_widget->setFeatureValue()" );
