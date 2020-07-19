@@ -13,6 +13,28 @@
 
 // bool showValueWidgetResizeEvents = false;
 
+QComboBox * ValueBaseWidget::newComboBox() {
+   QComboBox * cb = new QComboBox();
+
+   QSizePolicy cbSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+   cbSizePolicy.setControlType(QSizePolicy::ComboBox);
+   cb->setSizePolicy(cbSizePolicy);
+   cb->setFont(FeatureValueComboBoxFont);
+
+   // _cb->setMaximumHeight(20);
+   // whatever the size, large or small, causes big gap between RW and feature value
+   cb->setMaximumWidth(320);
+   cb->setMinimumWidth(80);
+
+   // _cb->setFrameStyle(QFrame::Sunken | QFrame::Panel);   // not a method
+   cb->setStyleSheet("background-color:white;color:black;padding-left:2px");
+   cb->setContentsMargins(0,0,0,0);
+
+   return cb;
+}
+
+
+
 ValueBaseWidget::ValueBaseWidget(QWidget *parent)
      : QFrame(parent)             // ValueAbstractWidget(parent)
 {

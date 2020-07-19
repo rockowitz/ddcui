@@ -7,6 +7,7 @@
 #define VALUE_BASE_WIDGET_H
 
 #include <QtWidgets/QFrame>
+#include <QtWidgets/QComboBox>
 
 #include <ddcutil_c_api.h>
 
@@ -32,6 +33,8 @@ public:          //methods
 
 protected:       // methods
     // void resizeEvent(QResizeEvent * evt) override;
+    QComboBox * newComboBox();
+
 
 signals:
     // compiler warning: signals may not be declared virtual
