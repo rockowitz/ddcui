@@ -3,7 +3,6 @@
 // Copyright (C) 2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-
 #include "base/ddcui_parms.h"
 #include "core_widgets/enhanced_slider.h"
 #include "value_simple_cont_widget.h"
@@ -14,21 +13,7 @@ static bool debugWidget = true;
 void ValueSpecialWidgetX62::createInitialWidgets() {
    bool debug = false;
    TRACECF(debug, "Starting.  ValueSpecialWidgetX62::createInitialWidgets()");
-   _cb = new QComboBox();
-   QSizePolicy cbSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
-   cbSizePolicy.setControlType(QSizePolicy::ComboBox);
-   // _cb->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
-   _cb->setSizePolicy(cbSizePolicy);
-   _cb->setFont(FeatureValueComboBoxFont);
-   _cb->setMinimumWidth(80);
-   _cb->setStyleSheet("background-color:white;color:black;padding-left:2px");
-   _cb->setContentsMargins(0,0,0,0);
-
-#ifdef REF
-   // _cb->setMaximumHeight(20);
-   // whatever the size, large or small, causes big gap between RW and feature value
-   _cb->setMaximumWidth(320);
-#endif
+   _cb = newFormattedComboBox();
 
    if (debugLayout)
       _cb->setStyleSheet("background-color:cyan;");
@@ -51,7 +36,8 @@ void ValueSpecialWidgetX62::layoutWidget(QHBoxLayout * layout) {
     layout->addSpacing(5+10);
     // layout->addWidget(spacer);
     layout->addStretch(10);    // take up all the space at the end - stretch factor = 10
-    layout->setContentsMargins(1,0,1,0);    // was 0,0,0,0
+    // layout->setContentsMargins(1,0,1,0);    // was 0,0,0,0
+    layout->setContentsMargins(0,0,0,0);
     setLayout(layout);
     TRACECF(debug, "Done. ValueSpecialWidgetX62::layoutWidget" );
 }
