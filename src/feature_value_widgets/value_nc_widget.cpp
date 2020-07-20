@@ -33,23 +33,11 @@ static bool showResizeEvents = false;
 
 void ValueNcWidget::layoutWidget() {
     // TRACE("Starting");
-    _layout = new QHBoxLayout();
-    _cb = new QComboBox();
+
+    _cb = newFormattedComboBox();
+
     _extraInfo =  new QLabel("_extraInfo");
-
-    QSizePolicy cbSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
-    cbSizePolicy.setControlType(QSizePolicy::ComboBox);
-    _cb->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
-    _cb->setFont(FeatureValueComboBoxFont);
-    // _cb->setMaximumHeight(20);
-    // whatever the size, large or small, causes big gap between RW and feature value
-    _cb->setMaximumWidth(320);
-    // _cb->setFrameStyle(QFrame::Sunken | QFrame::Panel);   // not a method
-    _cb->setStyleSheet("background-color:white;color:black;padding-left:2px");
-    _cb->setContentsMargins(0,0,0,0);
-
-    // _extraInfo->setFrameStyle(QFrame::Sunken | QFrame::Panel);  // now set in ValueBaseWidget
-    _extraInfo->setMinimumSize(20,10);
+    _extraInfo->setMinimumSize(20,10);   // changing has no effect
     _extraInfo->setFrameStyle( QFrame::Plain | QFrame::NoFrame);  // ValueStdWidget has the frame, not Label
     _extraInfo->setFont(FeatureValueTextFont);
     _extraInfo->setIndent(5);
@@ -58,6 +46,7 @@ void ValueNcWidget::layoutWidget() {
     extraInfoSizePolicy.setHorizontalStretch(1);
     _extraInfo->setSizePolicy( extraInfoSizePolicy);
 
+    _layout = new QHBoxLayout();
     _layout->addSpacing(5);
     _layout->addWidget(_cb);
     // _layout->addStretch(1);
@@ -84,6 +73,7 @@ void ValueNcWidget::layoutWidget() {
            dimensionReportShown = true;
       }
    }
+
 
    static bool basicDimsShown = false;
    if (showBasicDims && !basicDimsShown) {
