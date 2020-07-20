@@ -33,7 +33,7 @@ public:          //methods
 
 protected:       // methods
     // void resizeEvent(QResizeEvent * evt) override;
-    QComboBox * newComboBox();
+    QComboBox * newFormattedComboBox();
 
 
 signals:
