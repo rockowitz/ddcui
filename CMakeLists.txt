@@ -103,6 +103,7 @@ set(SOURCES
     src/core_widgets/hex_number_validator.cpp
     src/core_widgets/hline_widget.cpp 
     src/core_widgets/number_entry_widget.cpp
+    src/core_widgets/spin_slider.cpp
 
     src/cmdline/parsed_cmd.c
     src/cmdline/cmd_parser_aux.c
