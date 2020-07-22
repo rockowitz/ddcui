@@ -613,8 +613,8 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
     }
 
     // TODO Combine View, features view
-    if (_curView                     != View::FeaturesView                     ||
-        _curDisplayIndex             != monitorNdx                             ||
+    if (_curView                     != View::FeaturesView  ||
+        _curDisplayIndex             != monitorNdx          ||
         monitor->_curFeatureSelector != *_feature_selector )
     {
        loadMonitorFeatures(monitor);
