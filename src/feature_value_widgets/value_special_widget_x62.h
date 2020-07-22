@@ -7,6 +7,7 @@
 #define VALUE_SPECIAL_WIDGET_X62_H_
 
 #include "config.h"
+#include "base/ddcui_parms.h"
 
 #include "nongui/feature_value.h"
 #include "feature_value_widgets/value_simple_cont_widget.h"

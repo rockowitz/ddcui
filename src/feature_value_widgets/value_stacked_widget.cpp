@@ -31,13 +31,15 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
     : QStackedWidget(parent)
     , _featureCode(0)              // appease Coverity
 {
+    bool debug = false;
     _cls = strdup(metaObject()->className());
+    TRACECF(debug, "Starting");
 
     // this->setObjectName(QString::fromUtf8("value_stacked_widget"));   // ambiguous
     // setGeometry(QRect(209,6, 181, 20));
 
     _newContWidget    = new ValueNewContWidget();
-    _simpleContWidget = new ValueSimpleContWidget(1,0xff);
+    _simpleContWidget = new ValueSimpleContWidget();
     _ncWidget      = new ValueNcWidget();
     _stdWidget     = new ValueStdWidget();
     _resetWidget   = new ValueResetWidget();
@@ -129,6 +131,8 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
     QWidget::connect(_ncWidget, SIGNAL(featureValueChanged(     uint8_t, uint8_t, uint8_t)),
                       curWidget,  SLOT(forContainedWidgetChanged(uint8_t, uint8_t, uint8_t)));
 #endif
+
+    TRACECF(debug, "Done.");
 }
 
 
@@ -165,12 +169,11 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
 
     else if (_featureCode == 0x0c) {
        // fv.flags marks it as DDCA_COMPLEX_CONT, but just treat it a normal continuous feature
-         // printf("(ValueStackedWidget::%s) x0c\n", __func__); fflush(stdout);
+       // printf("(ValueStackedWidget::%s) x0c\n", __func__); fflush(stdout);
         _pageno_selected = _pageno_cont;
-        //_cur_stacked_widget = _newContWidget;
+        _cur_stacked_widget = _newContWidget;
         // setCurrentIndex(_pageno_selected);
-        setCurrentWidget(_newContWidget);
-        _cur_stacked_widget == _newContWidget;
+        setCurrentWidget(_cur_stacked_widget);
      }
 
     else if (_featureCode == 0x14) {
@@ -185,7 +188,7 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
                  (vspec_eq(vspec, DDCA_VSPEC_V30) || vspec_eq(vspec, DDCA_VSPEC_V22) )
               )
       {
-         TRACEC( "setting _specialWidgetX62");
+         // TRACEC( "setting _specialWidgetX62");
          _pageno_selected = _pageno_x62;
          _cur_stacked_widget = _specialWidgetX62;
          // setCurrentIndex(_pageno_selected);
@@ -204,6 +207,10 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
        _cur_stacked_widget = _simpleContWidget;
        // setCurrentIndex(_pageno_simple_cont);
        setCurrentWidget(_cur_stacked_widget);
+       if (_featureCode == 0x93)
+          _simpleContWidget->setRange(0x01, 0xfe);
+       else
+          _simpleContWidget->setRange(0x01, 0xff);
     }
 
     else if (_featureCode == 0xb0) {
@@ -233,7 +240,7 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
        setCurrentWidget(_cur_stacked_widget);
     }
 
-
+#ifdef OUT
     // *** temp for comparison ***
     else if (_featureCode == 0x12 ||
              _featureCode == 0x16 )
@@ -243,6 +250,7 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
        // setCurrentIndex(_pageno_selected);
        setCurrentWidget(_cur_stacked_widget);
    }
+#endif
 
 
     else if (fv.flags() & DDCA_STD_CONT) {

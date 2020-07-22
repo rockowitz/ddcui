@@ -35,7 +35,7 @@ protected:
 
 // private:
     void layoutWidget(QHBoxLayout * layout) ;
-    void additionalWidgets();
+    // void additionalWidgets();
 
 
 private slots:
@@ -47,8 +47,10 @@ private slots:
 
 private:    // member variables
     const char *     _cls;
+#ifdef MOVED
      QLabel*          _maxTitle;
      QLabel*          _maxValue;
+#endif
 };
 
 #endif // VALUE_NEW_CONT_WIDGET_H
