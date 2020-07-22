@@ -110,11 +110,22 @@ FeatureSelector::FeatureSelector(const FeatureSelector &other) {
 
 
 bool FeatureSelector::operator==(const FeatureSelector &other) const {
-   return (_featureSubsetId         == other._featureSubsetId             &&
-           _includeTableFeatures    == other._includeTableFeatures    &&
-           _showUnsupportedFeatures == other._showUnsupportedFeatures &&
-           _includeOnlyCapabilities == other._includeOnlyCapabilities &&
-           _includeAllCapabilities  == other._includeAllCapabilities);
+   bool debugFunc = false;
+   bool result = (_featureSubsetId         == other._featureSubsetId             &&
+                  _includeTableFeatures    == other._includeTableFeatures    &&
+                  _showUnsupportedFeatures == other._showUnsupportedFeatures &&
+                  _includeOnlyCapabilities == other._includeOnlyCapabilities &&
+                  _includeAllCapabilities  == other._includeAllCapabilities);
+   if (result && _featureSubsetId == DDCA_SUBSET_CUSTOM) {
+         TRACECF(debugFunc, "Comparing %s to %s",
+                  ddca_feature_list_string(_customFeatureList, "x", ","),
+                  ddca_feature_list_string(other._customFeatureList, "x", ",") );
+
+         result = ddca_feature_list_eq(_customFeatureList, other._customFeatureList);
+   }
+   TRACECF(debugFunc, "Returning: %s", SBOOL(result));
+
+   return result;
 }
 
 
