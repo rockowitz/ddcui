@@ -61,7 +61,7 @@ void FeaturesScrollAreaView::freeContents(void) {
 // how does this get called? is this an implicit connection by name?
 void FeaturesScrollAreaView::onEndInitialLoad(void) {
     bool debugFunc = false;
-    TRACECF(debugFunc, "Starting, Monitor=%s", _monitor->_displayInfo->model_name);
+    TRACEMCF(debugFunc, "Starting, Monitor=%s", _monitor->_displayInfo->model_name);
 
     // TODO:
     // free existing QScrollArea, QScrollAreaContents
@@ -107,7 +107,7 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
 
     int maxHeight1     = 0;
     int maxHintHeight1 = 0;
-    TRACECF(debugFunc, "Create FeatureWidgets for each reported VCP code and"
+    TRACEMCF(debugFunc, "Create FeatureWidgets for each reported VCP code and"
                    " add them to the layout for ScrollAreaContents...");
     int ct = 0;
     for (int feature_code = 0; feature_code < 256; feature_code++) {
@@ -142,8 +142,8 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
              ct++;
          }
     }
-    TRACECF(debugFunc, "Created %d FeatureWidgets", ct);
-    TRACECF(debugFunc, "Max height, maxHintHeight after widget creation: %d, %d",
+    TRACEMCF(debugFunc, "Created %d FeatureWidgets", ct);
+    TRACEMCF(debugFunc, "Max height, maxHintHeight after widget creation: %d, %d",
                    maxHeight1, maxHintHeight1); ;
 
     scrollAreaContents->setLayout(vLayout);
@@ -170,7 +170,7 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
     // QList<FeatureWidget> children = scrollAreaContents.children();
     // n. find same FeatureValue children using _centralWidget->findChildren(..)
     QList<FeatureWidget*> children2 = scrollAreaContents->findChildren<FeatureWidget*>(re);
-    TRACECF(debugFunc, "Found %d children of scrollAreaContents using regular expression", children2.count());
+    TRACEMCF(debugFunc, "Found %d children of scrollAreaContents using regular expression", children2.count());
     int maxHeight2 = 0;
     int maxHintHeight2 = 0;
     for (int ndx = 0; ndx < children2.count(); ndx++) {
@@ -184,7 +184,7 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
        int  hintHeight = hintSize.height();
 
        // const char *  clsName = child->metaObject()->className();
-       // TRACECF(debug, "   FeatureValue: %s, type:%s, height=%d, hintHeight=%d",
+       // TRACEMCF(debug, "   FeatureValue: %s, type:%s, height=%d, hintHeight=%d",
        //                    QS2S(name), clsName, ht, hintHeight);
 
        if (ht > maxHeight2)
@@ -193,14 +193,14 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
           maxHintHeight2 = hintHeight;
     }
 
-    TRACECF(debugFunc, "Maximum values of height, hintheight after all widgets added to layout: %d, %d",
+    TRACEMCF(debugFunc, "Maximum values of height, hintheight after all widgets added to layout: %d, %d",
                    maxHeight2, maxHintHeight2); ;
 #endif
 
 
 
 #ifdef NO
-    TRACECF(debugFunc, "Setting height of each FeatureWidget...");
+    TRACEMCF(debugFunc, "Setting height of each FeatureWidget...");
     for (int ndx = 0; ndx < children2.count(); ndx++) {
        FeatureWidget * child = children2.at(ndx);
        QSize sz = child->size();
@@ -233,7 +233,7 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
     _scrollAreaContents = scrollAreaContents;
     _centralStackedWidget->show();
 
-    TRACECF(debugFunc, "Done.  feature count: %d", ct);
+    TRACEMCF(debugFunc, "Done.  feature count: %d", ct);
 }
 
 QSize FeaturesScrollAreaView::maxRowSize() {
@@ -249,20 +249,24 @@ void FeaturesScrollAreaView::onUIValueChanged(
 {
    bool debug = false;
    debug = debug || debugSignals;
-   TRACECF(debug, "Starting. featureCode = 0x%02x, writeOnly=%s, sh=0x%02x, sl=0x%02x",
+   TRACEMCF(debug, "Starting. featureCode = 0x%02x, writeOnly=%s, sh=0x%02x, sl=0x%02x",
                   featureCode, SBOOL(writeOnly), sh, sl);
 
+   // *** Critical code point. This is what prevents infinite loop after getvcp returns a new value,
+   // *** which then changes the UI valuem, which then would trigger a setvcp/getvcp call to
+   // *** set and verify the new value, etc.
    FeatureValue * curFv = _baseModel->modelVcpValueFind(featureCode);
    if (curFv && curFv->val().sh == sh && curFv->val().sl == sl) {
       TRACEC("featureCode = 0x%02x, New value matches model value, sh=0x%02x, sl=0x%02x, Suppressing.",
             featureCode, sh, sl);
    }
    else {
-      TRACECF(debug, "Emitting signalVcpRequest() for VcpSetRequest, featureCode=0x%02x", featureCode);
+      TRACEMCF(debug, "Emitting signalVcpRequest() for VcpSetRequest, featureCode=0x%02x", featureCode);
       VcpRequest * rqst = new VcpSetRequest(featureCode, sh, sl, writeOnly);
       emit signalVcpRequest(rqst);  // used to call into monitor
 
       // If feature value change affects other features, reread possibly affected features
+      TRACEMCF(debug, "Rereading possibly affected features");
       switch(featureCode) {
       case 0x05:      // restore factory defaults brightness/contrast
       {
@@ -284,7 +288,7 @@ void FeaturesScrollAreaView::onUIValueChanged(
          break;
       }
    }
-   TRACECF(debug, "Done");
+   TRACEMCF(debug, "Done");
 }
 
 
@@ -297,7 +301,7 @@ void FeaturesScrollAreaView::onModelValueChanged(
    bool debugFunc = false;
    debugFunc = debugFunc || debugSignals;
 
-   TRACECF(debugFunc,
+   TRACEMCF(debugFunc,
              "caller = %s, feature_code = 0x%02x, sh=0x%02x, sl=0x%02x",
              caller, featureCode, sh, sl);
 
@@ -313,7 +317,7 @@ void FeaturesScrollAreaView::onModelValueChanged(
 void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc) {
    bool debugFunc = false;
    debugFunc = debugFunc || debugSignals;
-   TRACECF(debugFunc,
+   TRACEMCF(debugFunc,
              "newsrc=%d - %s, _curNcValuesSource=%d - %s",
              newsrc,             (char*) ncValuesSourceName(newsrc),
              _curNcValuesSource, (char*) ncValuesSourceName(_curNcValuesSource));
@@ -334,23 +338,23 @@ void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc) {
 
           FeatureWidget * curWidget = dynamic_cast<FeatureWidget*>(curobj);
           if (curWidget) {
-             TRACECF(debugFunc, "dynamic_cast succeeded");
+             TRACEMCF(debugFunc, "dynamic_cast succeeded");
              if (curWidget->hasSlTable()) {
-                TRACECF(debugFunc, "feature_code=0x%02x, has SL table", curWidget->_feature_code);
+                TRACEMCF(debugFunc, "feature_code=0x%02x, has SL table", curWidget->_feature_code);
                 curWidget->setNcValuesSource(newsrc);
              }
           }
       }
       _curNcValuesSource = newsrc;
    }
-   TRACECF(debugFunc, "Done");
+   TRACEMCF(debugFunc, "Done");
 }
 
 
 void FeaturesScrollAreaView::onModelDdcDetailedError(DdcDetailedError* perec) {
     bool debugFunc = false;
     debugFunc = debugFunc || debugSignals;
-    TRACECF(debugFunc, "perec=%p, perec->%s", perec, perec->srepr() );
+    TRACEMCF(debugFunc, "perec=%p, perec->%s", perec, perec->srepr() );
 
     QString qstitle = QString("ddcutil Error");
     QString qsexpl  = perec->expl();
@@ -360,7 +364,7 @@ void FeaturesScrollAreaView::onModelDdcDetailedError(DdcDetailedError* perec) {
                                        qstitle,
                                        qsexpl,
                                        icon);
-   TRACECF(debugFunc, "Calling _msgboxQueue.put() for qe: %s", QS2S(qe->repr()));
+   TRACEMCF(debugFunc, "Calling _msgboxQueue.put() for qe: %s", QS2S(qe->repr()));
    _msgboxQueue->put(qe);
 }
 
@@ -368,7 +372,7 @@ void FeaturesScrollAreaView::onModelDdcDetailedError(DdcDetailedError* perec) {
 void FeaturesScrollAreaView::onModelDdcFeatureError(DdcFeatureError* perec) {
     bool debugFunc = false;
     debugFunc      = debugFunc || debugSignals;
-    TRACECF(debugFunc, "perec=%p, perec->%s", perec, QS2S(perec->repr()) );
+    TRACEMCF(debugFunc, "perec=%p, perec->%s", perec, QS2S(perec->repr()) );
 
     DDCA_Display_Info * dinfo = _monitor->_displayInfo;
 
@@ -389,8 +393,8 @@ void FeaturesScrollAreaView::onModelDdcFeatureError(DdcFeatureError* perec) {
                                    qstitle,
                                    qsexpl,
                                    icon);
-     TRACECF(debugFunc, "Calling _msgboxQueue.put() for qe: %s", QS2S(qe->repr()));
+     TRACEMCF(debugFunc, "Calling _msgboxQueue.put() for qe: %s", QS2S(qe->repr()));
     _msgboxQueue->put(qe);
-    TRACECF(debugFunc, "Done");
+    TRACEMCF(debugFunc, "Done");
 }
 
