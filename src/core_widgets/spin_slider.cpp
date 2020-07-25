@@ -89,32 +89,14 @@ SpinSlider::SpinSlider(QWidget * parent)
 
 void SpinSlider::setFeatureCode(uint8_t featureCode) {
    _featureCode = featureCode;
-   _featureCodeSet = true;
+   _isFeatureCodeSet = true;
 }
+
 
 void SpinSlider::setRange(int minval, int maxval) {
     _slider->setTickInterval((maxval-minval)/10);
     _slider->setRange(minval, maxval);
     _spinBox->setRange(minval, maxval);
-#ifdef OLD
-    _slider->setMaximum(maxval);
-    _slider->setMinimum(minval);
-    _spinBox->setMaximum(maxval);
-    _spinBox->setMinimum(minval);
-#endif
-}
-
-
-// called
-void     SpinSlider::setValue(int val)  {
-   // _slider->setValue(val);
-   // _spinBox->setValue(val);  // needed?  what about _guiChange
-   setShSl(val);
-}
-
-
-int SpinSlider::value() {
-   return _slider->value();
 }
 
 
@@ -127,21 +109,22 @@ void  SpinSlider::setEnabled(bool enabled) {
 // Called by the containing class to update the widget
 void SpinSlider::setShSl(uint16_t newval) {
     bool debug = false;
-    TRACEMCF(debug, "newval = 0x%04x", newval);
+    // TRACEMCF(debug, "newval = 0x%04x", newval);
     // ValueBaseWidget::setCurrentShSl(newval);
-    _guiChange = false;
+    // _guiChange = false;
 
     uint8_t sh = newval >> 8;
     uint8_t sl = newval & 0xff;
     int curval = sh << 8 | sl;
-    TRACEMCF(debug, "feature=0x%02x, curval=%d", _featureCode , curval);
+    TRACEMCF(debug, "Starting. feature=0x%02x, newval=%d, curval=%d", _featureCode , curval);
 
+    TRACEMF(debug, "Calling _spinBoxTime->stop(), _spinBox->setValue()");
     // in case the timer is running, don't trigger
     _spinBoxTimer->stop();
     _spinBox->setValue(curval);
     // _slider->setValue(curval);
 
-    _guiChange = true;
+    // _guiChange = true;
     TRACECF(debug, "Done");
 }
 
@@ -158,9 +141,9 @@ uint16_t SpinSlider::getShSl() {
 
 
 void SpinSlider::onSliderReleased() {
-   bool debug = debugValueWidgetSignals;
-   debug = false;
-   TRACECF(debug, "feature=0x%02x",  _featureCode);
+   bool debug = false;
+   debug = debug || debugValueWidgetSignals;
+   // TRACECF(debug, "feature=0x%02x",  _featureCode);
 
    int newval = _spinBox->value();
 
@@ -178,48 +161,49 @@ void SpinSlider::onSliderReleased() {
 
 
 void SpinSlider::onSpinBoxValueChanged(int value) {
-   bool debug = debugValueWidgetSignals;
-   debug = false;
-   TRACECF(debug, "feature=0x%02x, value=%d, _guiChange=%d=%s",
-                  _featureCode, value, _guiChange, SBOOL(_guiChange));
+   bool debug = false;
+   debug = debug || debugValueWidgetSignals;
+   // TRACECF(debug, "feature=0x%02x, value=%d, _guiChange=%d=%s",
+   //                _featureCode, value, _guiChange, SBOOL(_guiChange));
+   TRACECF(debug, "feature=0x%02x, value=%d", _featureCode, value);
 
    int newval = _spinBox->value();
 
-   // Do not immediately signal featureValueChanged() - this generates too many API calls.
-   // instead only emit featureValueChanged() after multiple changes occur or the final change is made
+   // Do not immediately signal valueChanged() - this generates too many API calls.
+   // instead only emit valueChanged() after multiple changes occur or the final change is made
    // uint8_t new_sh = (newval >> 8) & 0xff;
    // uint8_t new_sl = newval & 0xff;
    // if (debugValueWidgetSignals)
    //    printf("(%s::%s) sh=0x%02x, sl=0x%02x \n", _cls, __func__, new_sh, new_sl); fflush(stdout);
    _latestSpinBoxValue = newval & 0xffff;
 
-   if (_guiChange) {
+   // if (_guiChange || true) {   // *** TEMP ***
       TRACECF(debug, "Starting spinbox timer");
       _spinBoxTimer->start();
-   }
-   else {
-      TRACECF(debug,"Not starting spinbox timer");
-   }
+   // }
+   // else {
+   //    TRACECF(debug,"Not starting spinbox timer");
+   // }
 }
 
 
 void SpinSlider::onSpinBoxTimedOut() {
-   bool debug = debugValueWidgetSignals;
-   debug = false;
-   TRACECF(debug, "feature 0x%02x, _latestSpinBoxValue=%d, emitting featureValueChanged()",
-                  _featureCode, _latestSpinBoxValue);
+   bool debug = false;
+   debug = debug || debugValueWidgetSignals;
 
    uint8_t new_sh = (_latestSpinBoxValue >> 8) & 0xff;
    uint8_t new_sl = _latestSpinBoxValue & 0xff;
+
+   TRACECF(debug, "feature 0x%02x, _latestSpinBoxValue=%d, new_sh=0x%02x, new_sl=0x%02x, "
+                  "emitting featureValueChanged()",
+                  _featureCode, _latestSpinBoxValue, new_sh, new_sl);
    emit featureValueChanged(_featureCode, new_sh, new_sl);
 }
 
 
-// This is wrong.  Need to set at class level, not for individual instances
+// TODO: Set at class level, not for individual instances
 void SpinSlider::setControlKeyRequired(bool onoff) {
    // TRACE("onoff=%s", sbool(onoff));
    _slider->setControlKeyRequired(onoff);
 }
-
-
 

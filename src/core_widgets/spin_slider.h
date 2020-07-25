@@ -21,8 +21,8 @@ class SpinSlider : public QWidget {
 public:
    // allocation and initialization
    SpinSlider(QWidget * parent = nullptr);
-   void  setRange(int minval, int maxval);
-   void  setFeatureCode(uint8_t featureCode);
+   void     setRange(int minval, int maxval);
+   void     setFeatureCode(uint8_t featureCode);
 
    // For containing class
    void     setShSl(uint16_t newval) ;
@@ -30,36 +30,30 @@ public:
    void     setControlKeyRequired(bool onoff)   ;
    void     setEnabled(bool enabled);
 
-   // For slider <-> spinbox communication
-   void     setValue(int val);
-   int      value();
-
 signals:
     // compiler warning: signals may not be declared virtual
-    void featureValueChanged(uint8_t feature_code, uint8_t sh, uint8_t sl);
+    void    featureValueChanged(uint8_t feature_code, uint8_t sh, uint8_t sl);
 
 private slots:
-    // for spinbox<->slider synchronization
-    void onSliderReleased();
-    // void onSliderValueChanged(int value);  // unused
-     // void onSpinBoxEditingFinished();     // unused
-    void onSpinBoxTimedOut();
-    void onSpinBoxValueChanged(int value);
+    // for signaling valueChanged():
+    void    onSliderReleased();
+    void    onSpinBoxValueChanged(int value);
+    void    onSpinBoxTimedOut();
 
-private:      // methods
-   void       createWidgets();
-   QLayout *  layoutWidget();
+private:        // methods
+   void     createWidgets();
+   QLayout* layoutWidget();
 
-private:      // member variables
+private:        // member variables
    const char *     _cls;
    EnhancedSlider * _slider;
-   // bool          _ctrl_key_required;
    QSpinBox *       _spinBox;
    QTimer *         _spinBoxTimer;
    uint8_t          _featureCode;
-   bool             _featureCodeSet = true;  // for assert()
-   bool             _guiChange = true;
+   bool             _isFeatureCodeSet = true;  // for assert()
    uint16_t         _latestSpinBoxValue;
+   // bool          _guiChange = true;
+   // enum          _valueChangeSource { ChangedByModel, ChangedByGUI };
 };
 
 #endif /* SLIDER_SPINNER_H_ */
