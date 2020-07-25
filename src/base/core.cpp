@@ -179,27 +179,24 @@ bool printftcmf(
          va_start(args, format);
          char * buffer = g_strdup_vprintf(format, args);
          va_end(args);
-         int    bufsz = strlen(buffer) + 1;
-         int    buf2sz = bufsz+60;
-         char * buf2  = (char *) calloc(buf2sz, sizeof(char));
 
-         char funcbuf[160];
+         char * funcbuf = NULL;
          if (metaclass_classname && cls) {
             if (strcmp(metaclass_classname, cls) == 0) {
-               g_snprintf(funcbuf, sizeof(funcbuf), "%s::%s", metaclass_classname, funcname);
+               funcbuf = g_strdup_printf("%s::%s", metaclass_classname, funcname);
             }
             else {
-               g_snprintf(funcbuf, sizeof(funcbuf), "%s/%s::%s", metaclass_classname, cls, funcname);
+               funcbuf = g_strdup_printf("%s/%s::%s", metaclass_classname, cls, funcname);
             }
          }
          else if (metaclass_classname && !cls) {
-            g_snprintf(funcbuf, sizeof(funcbuf), "%s::%s", metaclass_classname, funcname);
+            funcbuf = g_strdup_printf("%s::%s", metaclass_classname, funcname);
          }
          else if (!metaclass_classname && cls) {
-            g_snprintf(funcbuf, sizeof(funcbuf), "%s::%s", cls, funcname);
+            funcbuf = g_strdup_printf("%s::%s", cls, funcname);
          }
          else {
-            strcpy(funcbuf, funcname);
+            funcbuf = g_strdup(funcname);
          }
          // printf("(printfcmf) len class::func field in funcbuf: %ld, value=|%s|\n",
          //        strlen(funcbuf), funcbuf);
@@ -222,17 +219,19 @@ bool printftcmf(
          fflush(stdout);
 #endif
 
-         g_snprintf(buf2, buf2sz, "%s%s(%-30s) %s\n",
+         char * buf2 = g_strdup_printf("%s%s(%-30s) %s",
                                   thread_prefix,
                                   elapsed_prefix,
                                   funcbuf,
                                   buffer);
 
          fputs(buf2, stdout);    // no automatic terminating null
+         fputs("\n", stdout);    //  if \n at end of format string for buf2 it's sometimes unrecognized
          fflush(stdout);
 
          free(buffer);
          free(buf2);
+         free(funcbuf);
          msg_emitted = true;
       //}
 
