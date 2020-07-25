@@ -98,8 +98,8 @@ void VcpThread::rpt_error_detail(
       const char * caller_name,
       const char * ddca_func_name)
 {
-   bool debugFunc = debugThread;
-   // debugFunc = true;
+   bool debugFunc = false;
+   debugFunc = debugFunc ||debugThread;
    TRACECF(debugFunc, "In %s(), %s()  returned DDCA_Error_Detail with status %d - %s",
                          caller_name, ddca_func_name,
                          erec->status_code, ddca_rc_name(erec->status_code));
@@ -360,8 +360,6 @@ void VcpThread::capabilities() {
 
    TRACECF(debugFunc, "Done.     dref=%s, retry_count=%d", ddca_dref_repr(this->_dref), retry_count);
 } // function
-
-
 
 
 // Process RQGetVcp
