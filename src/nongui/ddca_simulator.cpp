@@ -74,6 +74,7 @@ bool  DdcaSimulator::DdcaSimulator::simulateGetNonTableVcpValue(
       DDCA_Non_Table_Vcp_Value*  valrec,
       DDCA_Status *              pddcrc)
 {
+   bool debug = true;
    if (!simulationEnabled)
       return false;
 
@@ -89,21 +90,23 @@ bool  DdcaSimulator::DdcaSimulator::simulateGetNonTableVcpValue(
 
       if (ddcrc == DDCRC_OK) {
          if (simVals.contains(featureCode)) {
+            // override with value set by a previous call
             uint16_t savedVal = simVals.value(featureCode);
             valrec->sh =  savedVal >> 8;
             valrec->sl =  savedVal & 0xff;
-            TRACEC("feature 0x%02x, returning simulated sh=0x%02x, sl=0x%02x",
-                   featureCode, valrec->sh, valrec->sl);
+            // TRACEC("feature 0x%02x, returning simulated sh=0x%02x, sl=0x%02x",
+            //       featureCode, valrec->sh, valrec->sl);
          }
       }
       *pddcrc = ddcrc;
       simulated = true;
    }
    if (simulated)
-      TRACEC("Feature 0x%02x, vspec=%d.%d, returning %s. ddcrc=%s. mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x",
+      TRACECF(debug,
+           "Feature 0x%02x, vspec=%d.%d, returning %s. ddcrc=%s. mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x",
             featureCode, vspec.major, vspec.minor,
             SBOOL(simulated),  ddca_rc_name(ddcrc), valrec->mh, valrec->ml, valrec->sh, valrec->sl);
-    return simulated;
+   return simulated;
 }
 
 
@@ -115,6 +118,7 @@ bool DdcaSimulator::simulateSetNonTableVcpValue(
       uint8_t                    sl,
       DDCA_Status *              pddcrc)
 {
+   bool debug = true;
    if (!simulationEnabled)
       return false;
 
@@ -129,8 +133,8 @@ bool DdcaSimulator::simulateSetNonTableVcpValue(
       *pddcrc = DDCRC_OK;
    }
    if (simulated)
-      TRACEC("Feature 0x%02x, returning %s. ddcrc=%s",
-            featureCode, SBOOL(simulated),  ddca_rc_name(*pddcrc) );
+      TRACECF(debug, "Feature 0x%02x, vspec=%d.%d. returning %s. ddcrc=%s",
+           featureCode, vspec.major, vspec.minor, SBOOL(simulated),  ddca_rc_name(*pddcrc) );
     return simulated;
 }
 
