@@ -13,8 +13,8 @@
 
 // bool showValueWidgetResizeEvents = false;
 
-
-QComboBox * ValueBaseWidget::newFormattedComboBox() {
+// utility method that provides consistent formatting for comboboxes
+QComboBox * ValueBaseWidget::createFormattedComboBox() {
    QComboBox * cb = new QComboBox();
 
    QSizePolicy cbSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
@@ -66,13 +66,8 @@ void ValueBaseWidget::setFeatureValue(const FeatureValue &fv) {
     _sh             = fv.val().sh;
     _sl             = fv.val().sl;
     _ddcrc          = fv.ddcrc();
-
-    _controlKeyRequired = _globalState._uiOptionsState->_controlKeyRequired;
-
-    // listen for changes after initialization
-    QObject::connect(_globalState._uiOptionsState, &UserInterfaceOptionsState::controlKeyRequired_changed,
-                    this, &ValueBaseWidget::when_controlKeyRequired_changed);
 }
+
 
 #ifdef UNNEEDED
 // hack to give ValueNcWidget access to parsed capabilities
@@ -93,24 +88,6 @@ void ValueBaseWidget::setCurrentShSl(uint16_t newval) {
 uint16_t ValueBaseWidget::getCurrentShSl() {
     uint16_t result = (_sh << 8) | _sl;
     return result;
-}
-
-
-void ValueBaseWidget::setControlKeyRequired(bool onoff) {
-   // TRACE("onoff = %s", sbool(onoff) );
-   _controlKeyRequired = onoff;
-}
-
-
-bool ValueBaseWidget::getControlKeyRequired() {
-   return   _controlKeyRequired ;
-}
-
-
-void ValueBaseWidget::when_controlKeyRequired_changed(bool onoff) {
-   // TRACE("Executiong. onoff=%s", sbool(onoff));
-   // TRACE("calling setControlKeyRequired()");
-   setControlKeyRequired(onoff);
 }
 
 
