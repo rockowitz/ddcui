@@ -200,10 +200,11 @@ void SpinSlider::onSpinBoxTimedOut() {
    emit featureValueChanged(_featureCode, new_sh, new_sl);
 }
 
-
+#ifdef OLD
 // TODO: Set at class level, not for individual instances
 void SpinSlider::setControlKeyRequired(bool onoff) {
    // TRACE("onoff=%s", sbool(onoff));
-   _slider->setControlKeyRequired(onoff);
+   _slider->oldSetControlKeyRequired(onoff);
 }
+#endif
 

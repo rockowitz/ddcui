@@ -27,7 +27,6 @@ public:
    // For containing class
    void     setShSl(uint16_t newval) ;
    uint16_t getShSl();
-   void     setControlKeyRequired(bool onoff)   ;
    void     setEnabled(bool enabled);
 
 signals:
@@ -52,8 +51,7 @@ private:        // member variables
    uint8_t          _featureCode;
    bool             _isFeatureCodeSet = true;  // for assert()
    uint16_t         _latestSpinBoxValue;
-   // bool          _guiChange = true;
-   // enum          _valueChangeSource { ChangedByModel, ChangedByGUI };
+   // enum          _valueChangeInitiator { ChangedByModel, ChangedByGUI };
 };
 
 #endif /* SLIDER_SPINNER_H_ */
