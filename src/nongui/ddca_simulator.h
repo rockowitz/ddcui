@@ -33,7 +33,7 @@ public:
 
 private:
    const char *   _cls;    // className
-   bool           simulationEnabled = true;  // eventually make this externally controllable
+   bool           simulationEnabled = false;  // eventually make this externally controllable
 };
 
 #endif /* DDCA_SIMULATOR_H_ */
