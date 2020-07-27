@@ -257,7 +257,7 @@ void FeaturesScrollAreaView::onUIValueChanged(
    // *** set and verify the new value, etc.
    FeatureValue * curFv = _baseModel->modelVcpValueFind(featureCode);
    if (curFv && curFv->val().sh == sh && curFv->val().sl == sl) {
-      TRACEC("featureCode = 0x%02x, New value matches model value, sh=0x%02x, sl=0x%02x, Suppressing.",
+      TRACEMCF(debug, "featureCode = 0x%02x, New value matches model value, sh=0x%02x, sl=0x%02x, Suppressing.",
             featureCode, sh, sl);
    }
    else {
