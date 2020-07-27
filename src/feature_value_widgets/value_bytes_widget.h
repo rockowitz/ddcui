@@ -18,6 +18,7 @@
 
 class QLabel;
 class QPushButton;
+class QComboBox;
 
 
 class ValueBytesWidget : public ValueBaseWidget
@@ -33,17 +34,12 @@ public:
 
 private:
     QLabel * newTitle(QString title, int titleHeight);
+    void     createWidgets();
     void     layoutWidget();
     void     checkAcceptCancelEnabled();
 
 private slots:
-    // void whenSlChanged(uint8_t val);
-    // void whenShChanged(uint8_t val);
-    // void whenTextValueChanged(bool ok);
-    // void whenEventFieldChanged(int fieldNumber);
-
-    void whenStateChanged(NumberEntryWidget * whichWidget, NumberEntryWidget::States newState);
-
+    void when_combobox_activated(int index);
     void onApplyButtonClicked(bool checked);
     void onCancelButtonClicked(bool checked);
 
@@ -52,32 +48,20 @@ private:   // member variables
     int _id;
     const char *           _cls;
     QLabel*                _mhTitle;
-    NumberEntryWidget *    _mhWidget;
+    QLabel*                _mhValue;
     QLabel*                _mlTitle;
-    NumberEntryWidget *    _mlWidget;
+    QLabel*                _mlValue;
     QLabel*                _shTitle;
-    NumberEntryWidget *    _shWidget;
+    QComboBox *            _shValue;
     QLabel*                _slTitle;
-    NumberEntryWidget *    _slWidget;
-    // uint8_t               _sl;
-    // uint16_t    _newval;
+    QComboBox *            _slValue;
+    QPushButton *          _applyButton;
+    QPushButton *          _cancelButton;
     bool                   _guiChange = false;
-    int                    widgetHeight = 20;
-
-    QFont nonMonoFont9;
-
-    // bool _shGood = true;
-    // bool _slGood = true;
-    // uint8_t _shNew;
-    // uint8_t _slNew;
-
-    int _currentField = 0;
-
-    NumberEntryWidget::States _slState =  NumberEntryWidget::StateOldValid;
-    NumberEntryWidget::States _shState =  NumberEntryWidget::StateOldValid;
-
-   QPushButton * _applyButton;
-   QPushButton * _cancelButton;
+    const int              widgetHeight = 20;
+    // QFont nonMonoFont9;
+    uint8_t                _shNew;
+    uint8_t                _slNew;
 };
 
 #endif /* VALUE_BYTES_WIDGET_H_ */
