@@ -13,7 +13,7 @@ static bool debugWidget = true;
 void ValueSpecialWidgetX62::createInitialWidgets() {
    bool debug = false;
    TRACECF(debug, "Starting.  ValueSpecialWidgetX62::createInitialWidgets()");
-   _cb = newFormattedComboBox();
+   _cb = createFormattedComboBox();
 
    if (debugLayout)
       _cb->setStyleSheet("background-color:cyan;");
@@ -65,7 +65,6 @@ ValueSpecialWidgetX62::ValueSpecialWidgetX62(QWidget *parent)
 }
 
 
-
 void ValueSpecialWidgetX62::setFeatureValue(const FeatureValue &fv) {
    bool debug = false;
 
@@ -108,11 +107,11 @@ void ValueSpecialWidgetX62::setCurrentShSl(uint16_t newval) {
 
     newval = newval & 0xff;
     int oldCbIndex = _cb->currentIndex();
-    int oldSlider = _spinSlider->getShSl();
+    int oldSlider  = _spinSlider->getShSl();
 
     if (newval == 0) {
      //  if (oldCbIndex != 0) {
-          TRACEC("newval = 0, oldCbIndex != 0");
+          TRACECF(debugFunc, "newval = 0, oldCbIndex != 0");
           // // _guiChange = true;
           _cb->setCurrentIndex(0);
           _spinSlider->setEnabled(false);
@@ -120,7 +119,7 @@ void ValueSpecialWidgetX62::setCurrentShSl(uint16_t newval) {
     }
     else if (newval == 255) {
    //    if (oldCbIndex != 2) {
-          TRACEC("newval = 255, oldCbIndex != 2");
+          TRACECF(debugFunc,"newval = 255, oldCbIndex != 2");
           // // _guiChange = true;
           _cb->setCurrentIndex(2);
           _spinSlider->setEnabled(false);
@@ -128,9 +127,9 @@ void ValueSpecialWidgetX62::setCurrentShSl(uint16_t newval) {
     }
     else {   // newval = 1.254
     //   if (oldCbIndex != 1) {
-          TRACEC("newval = %d, oldCbIndex != 1", newval);
+          TRACECF(debugFunc, "newval = %d, oldCbIndex != 1", newval);
           // // _guiChange = true;
-          _cb->setCurrentIndex(1);  // ??
+          _cb->setCurrentIndex(1);
           _spinSlider->setShSl(newval);
           _spinSlider->setEnabled(true);
 
@@ -197,7 +196,8 @@ void ValueSpecialWidgetX62::combobox_activated(int index) {
       new_sl = 255;
 
    if (new_sh != _sh || new_sl != _sl) {
-      TRACEMCF(debug, "Value changed.  New sl: %u, _guiChange=%d", new_sl, _guiChange);
+      TRACEMCF(debug, "Value changed.  New sl: %u", new_sl);
+      // TRACEMCF(debug, "Value changed.  New sl: %u, _guiChange=%d", new_sl, _guiChange);
       // if (_guiChange) {
          TRACEMCF(debug, "Emitting featureValueChanged, featureCode = 0x%02x, sh=0, new_sl=0x%02x",
                          _featureCode, new_sl);
