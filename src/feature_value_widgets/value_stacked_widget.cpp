@@ -333,6 +333,9 @@ void ValueStackedWidget::setNcValuesSource(NcValuesSource newsrc) {
    if (_pageno_selected == _pageno_nc) {
       _ncWidget->reloadComboBox(newsrc);
    }
+   else if (_pageno_selected == _pageno_ncplus) {
+      _ncplusWidget->reloadComboBox(newsrc);
+   }
    TRACECF(debugNcValues, "Done");
 }
 

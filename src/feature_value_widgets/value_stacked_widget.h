@@ -8,10 +8,6 @@
 
 #include <QtWidgets/QStackedWidget>
 
-// #include "nongui/simple_feature_value.h"
-// #include "nongui/simple_feature_value_subject.h"
-
-// #include "value_abstract_widget.h"
 #include "value_base_widget.h"
 #include "value_std_widget.h"
 #include "value_cont_widget.h"
@@ -68,16 +64,16 @@ private:
     int                 _pageno_old_cont;     // for comparison
     int                 _pageno_x62;
 
-    ValueStdWidget*        _stdWidget;
-    ValueNewContWidget*    _newContWidget;
-    ValueSimpleContWidget* _simpleContWidget;
-    ValueNcWidget*         _ncWidget;
-    ValueResetWidget*      _resetWidget;
-    Value2ButtonWidget* _2ButtonWidget;
-    ValueCncWidgetX14*  _cncWidgetX14;
-    ValueBytesWidget*   _bytesWidget;
-    ValueNcplusWidget*  _ncplusWidget;
-    ValueContWidget*    _contWidget;    // for comparison
+    ValueStdWidget*         _stdWidget;
+    ValueNewContWidget*     _newContWidget;
+    ValueSimpleContWidget*  _simpleContWidget;
+    ValueNcWidget*          _ncWidget;
+    ValueResetWidget*       _resetWidget;
+    Value2ButtonWidget*     _2ButtonWidget;
+    ValueCncWidgetX14*      _cncWidgetX14;
+    ValueBytesWidget*       _bytesWidget;
+    ValueNcplusWidget*      _ncplusWidget;
+    ValueContWidget*        _contWidget;    // for comparison
     ValueSpecialWidgetX62* _specialWidgetX62;
 
 };
