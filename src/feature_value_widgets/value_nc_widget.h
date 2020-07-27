@@ -39,6 +39,7 @@ protected:
     void resizeEvent(QResizeEvent * evt) override;
 
 private:
+    void createWidgets();
     void layoutWidget();
 
 #ifdef APPLY_CANCEL

@@ -31,30 +31,29 @@ static bool showBasicDims = false || debugFeatureDimensions;
 static bool showResizeEvents = false;
 
 
+void ValueNcWidget::createWidgets() {
+   _cb = createFormattedComboBox();   // in ValueBaseWidget
+
+   _extraInfo =  new QLabel("_extraInfo");
+   _extraInfo->setMinimumSize(20,10);   // changing has no effect
+   _extraInfo->setFrameStyle( QFrame::Plain | QFrame::NoFrame);  // ValueStdWidget has the frame, not Label
+   _extraInfo->setFont(FeatureValueTextFont);
+   _extraInfo->setIndent(5);
+
+   QSizePolicy extraInfoSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+   extraInfoSizePolicy.setHorizontalStretch(1);
+   _extraInfo->setSizePolicy( extraInfoSizePolicy);
+}
+
+
 void ValueNcWidget::layoutWidget() {
     // TRACE("Starting");
-
-    _cb = newFormattedComboBox();
-
-    _extraInfo =  new QLabel("_extraInfo");
-    _extraInfo->setMinimumSize(20,10);   // changing has no effect
-    _extraInfo->setFrameStyle( QFrame::Plain | QFrame::NoFrame);  // ValueStdWidget has the frame, not Label
-    _extraInfo->setFont(FeatureValueTextFont);
-    _extraInfo->setIndent(5);
-
-    QSizePolicy extraInfoSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
-    extraInfoSizePolicy.setHorizontalStretch(1);
-    _extraInfo->setSizePolicy( extraInfoSizePolicy);
-
-    _layout = new QHBoxLayout();
     _layout->addSpacing(5);
     _layout->addWidget(_cb);
     // _layout->addStretch(1);
     _layout->addWidget(_extraInfo);
-
     // _layout->addSpacing(10);
     _layout->setContentsMargins(0,0,0,0);
-
    // _layout->addStretch(10);     // apply all added size to end
 
    setLayout(_layout);
@@ -93,6 +92,8 @@ ValueNcWidget::ValueNcWidget(QWidget *parent):
     _cls = strdup(metaObject()->className());
     TRACEMCF(debug, "Starting." );
 
+    _layout = new QHBoxLayout();
+    createWidgets();
     layoutWidget();
 
     QObject::connect(_cb,  SIGNAL(activated(int)),
