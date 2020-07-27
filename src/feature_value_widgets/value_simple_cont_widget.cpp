@@ -35,7 +35,7 @@ static bool showResizeEvents = false;
 
 void ValueSimpleContWidget::additionalWidgets() {
    bool debug = false;
-   TRACECF(debug, " ValueNewContWidget. Starting." );
+   TRACEMCF(debug, " ValueNewContWidget. Starting." );
    // max value fields
 
    _maxTitle = new QLabel("Max:");
@@ -53,42 +53,41 @@ void ValueSimpleContWidget::additionalWidgets() {
    _maxValue->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
    if (debugLayout)
       _maxValue->setStyleSheet("background-color:orange;");
-   TRACECF(debug, " ValueNewContWidget. Done." );
+   TRACEMCF(debug, " ValueNewContWidget. Done." );
 }
 
 
 void ValueSimpleContWidget::createWidgets() {
     bool debug = false;
-    TRACECF(debug, "Starting.  ValueSimpleContWidget::createWidgets()");
+    TRACEMCF(debug, "Starting.  ValueSimpleContWidget::createWidgets()");
+#ifdef UNUSED
     QSizePolicy fixedSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
     fixedSizePolicy.setHorizontalStretch(0);    // needed?
     fixedSizePolicy.setVerticalStretch(0);
     fixedSizePolicy.setHeightForWidth(false);
+#endif
 
     _spinSlider = new SpinSlider();
 
-    TRACECF(debug, "Done.  ValueSimpleContWidget::createWidgets()");
+    TRACEMCF(debug, "Done.  ValueSimpleContWidget::createWidgets()");
 }
 
 
 void ValueSimpleContWidget::layoutWidget(QHBoxLayout * layout) {
     bool debug = false;
-    TRACECF(debug, "Starting ValueSimpleContWidget." );
+    TRACEMCF(debug, "Starting ValueSimpleContWidget." );
 
     layout->addSpacing(5);
-
     layout->addWidget(_spinSlider);
-
     layout->addWidget(_maxTitle);
     layout->addWidget(_maxValue);
-
     layout->addStretch(10);    // take up all the space at the end - stretch factor = 10
     layout->setContentsMargins(1,0,1,0);    // was 0,0,0,0
     setLayout(layout);
 
     debugSimpleContLayout();
 
-    TRACECF(debug, "Done. ValueSimpleContWidget" );
+    TRACEMCF(debug, "Done. ValueSimpleContWidget" );
 }
 
 
@@ -116,7 +115,7 @@ ValueSimpleContWidget::ValueSimpleContWidget(QWidget *parent)
 
 void ValueSimpleContWidget::setRange(int minval, int maxval) {
    bool debug = false;
-   TRACECF(debug, "minval=%d, maxval=%d", minval, maxval);
+   TRACEMCF(debug, "minval=%d, maxval=%d", minval, maxval);
    assert (_minval < 0 && _maxval < 0);
    assert (minval >= 0 && maxval >= 0);
    _minval = minval;
@@ -124,12 +123,12 @@ void ValueSimpleContWidget::setRange(int minval, int maxval) {
 
    _maxTitle->setText(QString("Range:"));
    _maxValue->setText( QString::asprintf("%d-%d", minval, maxval) );
-   TRACECF(debug, "Done");
+   TRACEMCF(debug, "Done");
 }
 
 void ValueSimpleContWidget::setFeatureValue(const FeatureValue &fv) {
-    bool debug = debugValueWidgetSignals;
-    debug = false;
+    bool debug = false;
+    debug = debug || debugValueWidgetSignals;
     // _guiChange = false;
     TRACEMCF(debug, "ValueSimpleContWidget. Starting. feature code: 0x%02x, before ValueBaseWidget::setFeatureValue()", fv.featureCode());
     ValueBaseWidget::setFeatureValue(fv);
@@ -148,6 +147,7 @@ void ValueSimpleContWidget::setFeatureValue(const FeatureValue &fv) {
     // curval = 99999;
     // _guiChange = false;
 
+    TRACEMCF(debug, "Calling  _spinSlider->setFeatureCode(), setRange(), setShSl()");
     _spinSlider->setFeatureCode(fv.featureCode());
     _spinSlider->setRange(_minval, _maxval);
     _spinSlider->setShSl(curval);
@@ -159,17 +159,18 @@ void ValueSimpleContWidget::setFeatureValue(const FeatureValue &fv) {
 
 void ValueSimpleContWidget::setCurrentShSl(uint16_t newval) {
     bool debug = false;
+    debug = debug || debugValueWidgetSignals;
     TRACEMCF(debug, "newval = 0x%04x", newval);
     ValueBaseWidget::setCurrentShSl(newval);
     // _guiChange = false;
 
     int curval = _sh << 8 | _sl;
-    TRACEMCF(debugValueWidgetSignals, "feature=0x%02x, curval=%d", _featureCode , curval);
+    TRACEMCF(debug, "feature=0x%02x, curval=%d", _featureCode , curval);
 
     _spinSlider->setShSl(curval);
 
     // _guiChange = true;
-    TRACECF(debug, "Done");
+    TRACEMCF(debug, "Done");
 }
 
 
@@ -185,21 +186,24 @@ uint16_t ValueSimpleContWidget::getCurrentShSl() {
 
 void ValueSimpleContWidget::onFeatureValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl) {
    bool debug = false;
-   TRACECF(debug, "featureCode=0x%02x, sh=0x%02x, sl=0x%02x, _guiChange=%d=%s, _featureCode=0x%02x",
-                  featureCode, sh, sl, _guiChange, SBOOL(_guiChange), _featureCode);
+   // TRACEMCF(debug, "featureCode=0x%02x, sh=0x%02x, sl=0x%02x, _guiChange=%d=%s, _featureCode=0x%02x",
+   //                featureCode, sh, sl, _guiChange, SBOOL(_guiChange), _featureCode);
+   TRACEMCF(debug, "featureCode=0x%02x, sh=0x%02x, sl=0x%02x,_featureCode=0x%02x",
+                  featureCode, sh, sl, _featureCode);
    // if (_guiChange) {
-      TRACECF(debug, "Emitting featureValueCHanged(0x%02x, 0x%02x, 0x%02x)", _featureCode, sh, sl);
+      TRACEMCF(debug, "Emitting featureValueChanged(0x%02x, 0x%02x, 0x%02x)", _featureCode, sh, sl);
       emit featureValueChanged(_featureCode, sh, sl);
    // }
 }
 
 
+#ifdef OLD
 void ValueSimpleContWidget::setControlKeyRequired(bool onoff) {
    // TRACE("onoff=%s", sbool(onoff) );
    ValueBaseWidget::setControlKeyRequired(onoff);
    _spinSlider->setControlKeyRequired(onoff);
 }
-
+#endif
 
 #ifdef UNUSED
 void ValueSimpleContWidget::onSpinBoxEditingFinished() {
@@ -264,8 +268,8 @@ void ValueSimpleContWidget::resizeEvent(QResizeEvent * evt)
 }
 
 
-void ValueSimpleContWidget::debugSimpleContLayout() {
-
+void ValueSimpleContWidget::debugSimpleContLayout()
+{
     if (debugLayout && _id == 1) {
        this->setStyleSheet("background-color:yellow;");
 
@@ -300,11 +304,8 @@ void ValueSimpleContWidget::debugSimpleContLayout() {
     if (showBasicDims && !basicDimsShown && _id == 1) {
        REPORT_BASIC_WIDGET_DIMENSIONS(this);
        REPORT_BASIC_WIDGET_DIMENSIONS(this->_spinSlider);
-
-#ifdef FOR_SUBCLASS
        REPORT_BASIC_WIDGET_DIMENSIONS(this->_maxTitle);
        REPORT_BASIC_WIDGET_DIMENSIONS(this->_maxValue);
-#endif
 
        QObjectList  childs = this->children();
        for (int ndx = 0; ndx < childs.size(); ndx++) {

@@ -34,7 +34,6 @@ public:
     void     setFeatureValue(const FeatureValue &fv) override;
     void     setCurrentShSl(uint16_t newval)         override;
     uint16_t getCurrentShSl()                        override;
-    void     setControlKeyRequired(bool onoff)       override;
 
 protected:   // methods
     void resizeEvent(QResizeEvent * event)           override;
@@ -42,32 +41,25 @@ protected:   // methods
     void createWidgets();
     void additionalWidgets();
 
-#ifdef UNUSED
-public slots:
-    void when_ckrChanged(bool onoff);
-#endif
-
-protected:   // member variables
-    int           _minval = -1;
-    int           _maxval = -1;
-    SpinSlider *  _spinSlider;
-
-    uint16_t      _newval;
-    bool          _guiChange = false;
-    QLabel*          _maxTitle;
-    QLabel*          _maxValue;
-
 private slots:
     void onFeatureValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl);
 
 private:     // methods
     void debugSimpleContLayout();
 
-private:    // member variables
+protected:   // member variables
+    int           _minval = -1;
+    int           _maxval = -1;
+    SpinSlider *  _spinSlider;
+    uint16_t      _newval;
+    // bool       _guiChange = false;
+    QLabel*       _maxTitle;
+    QLabel*       _maxValue;
+
+private:     // member variables
     static int    idGenerator;
     int           _id;
     const char *  _cls;
-
 };
 
 #endif // VALUE_SIMPLE_CONT_WIDGET_H
