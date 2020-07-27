@@ -10,6 +10,7 @@
 
 #include "user_interface_options_state.h"
 #include "cmdline/parsed_cmd.h"
+#include "core_widgets/enhanced_slider.h"
 
 #include "core.h"
 
@@ -23,6 +24,7 @@
      : _cls(metaObject()->className())
  {
     _controlKeyRequired = parsed_cmd->flags & CMD_FLAG_UI_REQUIRE_CONTROL_KEY;
+    EnhancedSlider::setControlKeyRequired(_controlKeyRequired);
  }
 
  UserInterfaceOptionsState::UserInterfaceOptionsState(UserInterfaceOptionsState &other)
@@ -40,8 +42,9 @@
     TRACECF(debug, "old = %s, new = %s", SBOOL(_controlKeyRequired), SBOOL(onoff));
 
     if (newControlKeyRequired != old) {
+       EnhancedSlider::setControlKeyRequired(newControlKeyRequired);
         _controlKeyRequired = newControlKeyRequired;
-        TRACECF(debug, "emitting ckrChanged(%s)", SBOOL(_controlKeyRequired));
-        emit controlKeyRequired_changed(_controlKeyRequired);
+        // TRACECF(debug, "emitting ckrChanged(%s)", SBOOL(_controlKeyRequired));
+        // emit controlKeyRequired_changed(_controlKeyRequired);
     }
 }
