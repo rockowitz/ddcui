@@ -11,11 +11,6 @@
 #include "nongui/feature_value.h"
 #include "feature_value_widgets/value_simple_cont_widget.h"
 
-class QSlider;
-class QSpinBox;
-class QLabel;
-class QPushButton;
-class EnhancedSlider;
 
 class ValueNewContWidget : public ValueSimpleContWidget
 {
@@ -23,34 +18,12 @@ class ValueNewContWidget : public ValueSimpleContWidget
 
 public:
     ValueNewContWidget(QWidget *parent = nullptr);
-
     void     setFeatureValue(const FeatureValue &fv) override;
-    // void     setCurrentShSl(uint16_t newval)         override;
-    // uint16_t getCurrentShSl()                        override;
-    // void     setControlKeyRequired(bool onoff)       override;
 
-protected:
-    // void resizeEvent(QResizeEvent * event)           override;
-    // void subLayout();
-
-// private:
+private:
     void layoutWidget(QHBoxLayout * layout) ;
-    // void additionalWidgets();
 
-
-private slots:
-//    void onSliderReleased();
-//    void onSpinBoxTimedOut();
-//    void onSpinBoxValueChanged(int value);
-
-
-
-private:    // member variables
     const char *     _cls;
-#ifdef MOVED
-     QLabel*          _maxTitle;
-     QLabel*          _maxValue;
-#endif
 };
 
 #endif // VALUE_NEW_CONT_WIDGET_H
