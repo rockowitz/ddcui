@@ -109,7 +109,6 @@ ddcutil_free_local_feature_value_table(
 }
 
 
-
 const char * nc_values_merge_mode_name(Nc_Values_Merge_Mode merge_mode) {
    // char * s = NULL;
    switch(merge_mode) {
@@ -125,7 +124,6 @@ const char * nc_values_merge_mode_name(Nc_Values_Merge_Mode merge_mode) {
    }
    return "Error";
 }
-
 
 
 /* Combines the values for feature as recorded in the capabilities string with
@@ -155,7 +153,7 @@ ddcutil_merge_feature_values(
       fflush(stdout);
    }
    assert(cfr);
-   assert(mccsTable);
+   // assert(mccsTable);
 
    Local_Feature_Value_Table * result = NULL;
    int maxEntries = 0;
