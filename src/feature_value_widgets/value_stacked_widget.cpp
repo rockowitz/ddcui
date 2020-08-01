@@ -144,7 +144,7 @@ bool vspec_eq(DDCA_MCCS_Version_Spec vspec1, DDCA_MCCS_Version_Spec vspec2) {
 }
 
 void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
-    bool debug = true;
+    bool debug = false;
     debug = debug || debugValueWidgetSignals;
     TRACEMCF(debug, "Starting. feature code: 0x%02x", fv.featureCode());
     if (debug)
@@ -227,7 +227,6 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
        setCurrentIndex(_pageno_selected);
     }
 
-
     else if ( _featureCode == 0xca) {
        _pageno_selected = _pageno_ncplus;;
        _cur_stacked_widget = _ncplusWidget;
@@ -236,11 +235,11 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
     }
 
     else if ( _featureCode >= 0xe0) {
-       DDCA_Cap_Vcp * capvcp = fv.capVcp();
-       TRACEMC("feature 0x%02x, capvcp = %p", _featureCode, capvcp);
+       // TRACEMC("feature 0x%02x, capvcp = %p", _featureCode, capvcp);
        // TRACEMC("feature 0x%02x, value count %d", _featureCode, fv.capVcp()->value_ct);
-       if (capvcp && capvcp->value_ct > 0) {
-          TRACEMC("capabilities string for feature 0x%02x has vcp value list, treat it as simple NC", _featureCode);
+       DDCA_Cap_Vcp * capvcp = fv.capVcp();
+       if (capvcp && capvcp->value_ct > 0) {   // segfaults if use fv.capvcp() instead of capvcp
+          // TRACEMC("capabilities string for feature 0x%02x has vcp value list, treat it as simple NC", _featureCode);
           _pageno_selected = _pageno_nc;
           _cur_stacked_widget = _ncWidget;
           setCurrentWidget(_cur_stacked_widget);
