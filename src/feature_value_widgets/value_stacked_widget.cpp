@@ -144,9 +144,11 @@ bool vspec_eq(DDCA_MCCS_Version_Spec vspec1, DDCA_MCCS_Version_Spec vspec2) {
 }
 
 void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
-    bool debug = false;
+    bool debug = true;
     debug = debug || debugValueWidgetSignals;
     TRACEMCF(debug, "Starting. feature code: 0x%02x", fv.featureCode());
+    if (debug)
+       fv.dbgrpt();
     // ValueBaseWidget::setFeatureValue(fv);
     _featureCode = fv.featureCode();   // needed since not calling ValueBaseWidget::setFeatureValue()
     DDCA_MCCS_Version_Spec vspec = fv.vspec();   // unused
@@ -234,10 +236,21 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
     }
 
     else if ( _featureCode >= 0xe0) {
-       _pageno_selected = _pageno_bytes;
-       _cur_stacked_widget = _bytesWidget;
-       // setCurrentIndex(_pageno_bytes);
-       setCurrentWidget(_cur_stacked_widget);
+       DDCA_Cap_Vcp * capvcp = fv.capVcp();
+       TRACEMC("feature 0x%02x, capvcp = %p", _featureCode, capvcp);
+       // TRACEMC("feature 0x%02x, value count %d", _featureCode, fv.capVcp()->value_ct);
+       if (capvcp && capvcp->value_ct > 0) {
+          TRACEMC("capabilities string for feature 0x%02x has vcp value list, treat it as simple NC", _featureCode);
+          _pageno_selected = _pageno_nc;
+          _cur_stacked_widget = _ncWidget;
+          setCurrentWidget(_cur_stacked_widget);
+       }
+       else {
+          _pageno_selected = _pageno_bytes;
+          _cur_stacked_widget = _bytesWidget;
+          // setCurrentIndex(_pageno_bytes);
+          setCurrentWidget(_cur_stacked_widget);
+       }
     }
 
 #ifdef OUT
