@@ -207,7 +207,7 @@ ddcutil_merge_feature_values(
          if (slEntry)
             result->values[resultCt].value_name = strdup(slEntry->value_name);
          else
-            result->values[resultCt].value_name = g_strdup_printf("Value 0x%02x", featureValue);
+            result->values[resultCt].value_name = g_strdup_printf("(%d)", featureValue);
          // printf("(%s) Adding value 0x%02x, name=%s\n", __func__,
          //        result->values[resultCt].value_code,
          //       result->values[resultCt].value_name) ;
