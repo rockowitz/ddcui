@@ -255,6 +255,8 @@ MainWindow::MainWindow(Parsed_Cmd * parsed_cmd, QWidget *parent) :
 
     // _ui->setupUi(this);
 
+    // setWindowIcon(QIcon(":/icons/cinema_display_blue.png"));
+
 
 #ifdef ALT
     _loadingMsgBox = new QMessageBox(
