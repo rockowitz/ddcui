@@ -1,0 +1,14 @@
+#!/bin/sh
+
+cleandir=/shared/playproj/ddcui/icons/work/t3
+sizes=(16x16 32x32 64x64 128x128 scalable)
+
+echo $cleandir
+sudo rm -rf $cleandir
+
+for sz in ${sizes[@]}
+do
+  echo "Creating: $sz"
+  mkdir -p $cleandir/$sz/apps
+done
+

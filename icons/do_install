@@ -1,0 +1,29 @@
+#!/bin/sh
+
+source=/shared/playproj/ddcui/icons/work
+# target=/shared/playproj/ddcui/icons/work/t3
+target=/usr/local/share/icons/hicolor
+
+
+ # sudo rm -rf t2
+ # sudo mkdir t2
+ for sc in 16x16 32x32 48x48 128x128
+ do
+   echo $sc
+   srcfile=$source/hicolor/$sc/apps/ddcui.png
+   dstfile=$target/$sc/apps/ddcui.png
+   echo $srcfile
+   echo $dstfile
+   sudo cp $srcfile $dstfile 
+   sudo chown root:root $dstfile 
+   
+ done
+ destdir=$target/scalable/apps
+ sudo mkdir -p $destdir
+ sudo cp $source/hicolor/scalable/apps/ddcui.svg  $tdestdir/ddcui.svg
+ # suco cp hicolor/16x16/apps/ddcui.png $target/16x16/apps/ddcui.png
+ # suco cp hicolor/32x32/apps/ddcui.png $target/32x32/apps/ddcui.png
+
+ # sudo cp  -r $source/hicolor t3
+ sudo find $target -name "ddcui.*" | xargs ls -l
+ # install -t t2 icons
