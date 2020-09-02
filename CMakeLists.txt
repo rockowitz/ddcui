@@ -210,6 +210,23 @@ target_link_libraries(ddcui Qt5::Widgets ${GLIB2_LIBRARIES} ${DDCUTIL_LIBRARIES}
 install(TARGETS ddcui DESTINATION bin)
 install(FILES man/ddcui.1 DESTINATION share/man/man1)
 install(FILES AUTHORS ChangeLog COPYING NEWS.md README.md DESTINATION share/doc/ddcui)
+install(FILES ddcui.desktop  DESTINATION share/applications)
+install(FILES ddcui.appdata.xml DESTINATION share/metainfo)
+# fails, ${CMAKE_INSTALL_DATAROOTDIR} is null
+# install(FILES ddcui.desktop  DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/applications)
+install(FILES icons/ddcui-128px.png DESTINATION share/icons/hicolor/128x128/apps RENAME ddcui.png)
+install(FILES icons/ddcui-48px.png  DESTINATION share/icons/hicolor/48x48/apps   RENAME ddcui.png)
+install(FILES icons/ddcui-32px.png  DESTINATION share/icons/hicolor/32x32/apps   RENAME ddcui.png)
+install(FILES icons/ddcui-16px.png  DESTINATION share/icons/hicolor/16x16/apps   RENAME ddcui.png)
+install(FILES icons/ddcui.svg       DESTINATION share/icons/hicolor/scalable/apps)
+
+
+# Example: 
+#   copy_desktop_file_without_cruft("${CMAKE_CURRENT_SOURCE_DIR}/src/Gui/org.kde.trojita.desktop"# "${CMAKE_CURRENT_BINARY_DIR}/org.kde.trojita-DesktopGui.desktop")
+#    install(TARGETS trojita RUNTIME DESTINATION bin)
+#    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/org.kde.trojita-DesktopGui.desktop DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/applications/" RENAME org.kde.trojita.desktop)
+
+
 
 
 # per https://gitlab.kitware.com/cmake/community/wikis/FAQ#can-i-do-make-uninstall-with-cmake
