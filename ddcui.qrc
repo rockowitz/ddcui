@@ -5,5 +5,8 @@
     <file>docs/nc_values.html</file>
     <file>docs/uioptions.html</file>
     <file>docs/help_general.html</file>
+    <file>icons/ddcui.ico</file>
+    <file>icons/ddcui_multires.ico</file>
+    <file>icons/ddcui.png</file>
 </qresource>
 </RCC>
