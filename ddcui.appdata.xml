@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>ddcutil
+<!-- Copyright 2020 Sanford Rockowitz rockowitz@minsoft.com> -->
+<component>
+  <id type="desktop">ddcui.desktop</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <name>ddcui</name>
+  <project_license>GPL-2.0-or-later</project_license>
+  <summary>Graphical User Interface for <em>ddcutil</em></summary>
+   <url type="homepage">http://www.ddcutil.com/</url> 
+
+  <description>
+<p>ddcui provides a graphical user interface for ddcutil, enabling the user to easily query and change monitor settings.
+ such as brightness and color levels.
+ </p>
+<p>
+A particular use case for ddcui is as part of color profile management. Monitor calibration is relative to the monitor color settings currently in effect, e.g. red gain. ddcui allows color related settings to be saved at the time a monitor is calibrated, and then restored when the calibration is applied.</p>
+</description>
+
+
+  <screenshots>
+    <screenshot type="default">
+      <image> https://www.ddcutil.com/images/ddcutil_screenshot1.jpg</image>
+      <!-- <image>image height="708" width="1000">https://raw.githubusercontent.com/ddcutilproject/ddcutil/master/doc/en/images/ andt2.png</image> -->
+      <caption>Get all settings for a monitor</caption>
+    </screenshot>
+  </screenshots>
+
+  <update_contact>rockowitz2@minsoft.com></update_contact>
+  <url type="homepage">https://www.ddcutil.com</url>
+  <url type="bugtracker">https://github.com/rockowitz/ddcui/issues</url>
+  <url type="faq">https://www.ddcutil.com/faq</url>
+  <developer_name>Sanford Rockowitz</developer_name>
+  <releases>
+    <release version="0.1.2" date="2029-06-28"/>
+    <release version="0.1.1" date="2020-06-01"/>
+    <release version="0.1.0" date="2019-12-07"/>
+  </releases>
+<!--
+  <icon type="remote" width="64" height="64">https://www.ddcutil.com/images/ddcutil-64.png</icon>
+  <icon type="url"    width="64" height="64">https://www.ddcutil.com/images/ddcutil-64.png</icon>
+-->
+</component>
