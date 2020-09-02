@@ -99,6 +99,7 @@ int main(int argc, char *argv[])
 {
     // will remove any arguments that it recognizes, e.g. --widgetcount
     QApplication a(argc, argv);
+    a.setWindowIcon(QIcon(":/icons/ddcui_multires.ico"));
 
     Parsed_Cmd * parsed_cmd = parse_command(argc, argv);
     if (!parsed_cmd)
