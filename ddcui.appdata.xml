@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Copyright 2020 Sanford Rockowitz rockowitz@minsoft.com> -->
 <component>
-  <id type="desktop">ddcui.desktop</id>
+  <id type="desktop">ddcutil.ddcui</id>
   <name>ddcui</name>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-2.0-or-later</project_license>
   <summary>Graphical User Interface for <em>ddcutil</em></summary>
   <description>
     <p><em>ddcui</em> provides a graphical user interface to a monitor's Virtual Control Panel, enabling the user to easily query and change settings that are normally accessed using the monitor's on screen display. </p>
-       such as brightness and color levels. </p>
   </description>
   <screenshots>
     <screenshot type="default">
@@ -30,4 +29,5 @@
   <icon type="remote" width="128" height="128">https://www.ddcutil.com/images/ddcui-128px.png</icon>
   <icon type="url"    width="128" height="128">https://www.ddcutil.com/images/ddcui-128px.png</icon>
   -->
+<launchable type="desktop-id">ddcui</launchable>
 </component>
