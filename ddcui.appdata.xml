@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<component type="desktop-application">
-  <id>com.ddcutil.ddcui</id>
+<!-- Copyright 2020 Sanford Rockowitz rockowitz@minsoft.com> -->
+
+<component type="desktop-application">                                <!-- generated -->
+ <!-- <component>   -->                                               <!-- old -->
+
+   <id>com.ddcutil.ddcui</id>                <!-- generated -->
+  <!-- <id type="desktop">ddcui.desktop</id>  -->   <!--old-->
   
   <name>ddcui</name>
   <summary>GUI for ddcutil</summary>
