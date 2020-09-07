@@ -45,4 +45,9 @@
     <release version="0.1.2" date="2020-06-28"/>
   </releases>
 
+  <!-- releases actual only: -->
+  <icon type="local" width="128" height="128">/usr/share/icons/hicolor/128x128/apps/ddcui-128px.png</icon> 
+  <icon type="remote" width="128" height="128">https://www.ddcutil.com/images/ddcui-128px.png</icon>
+  <icon type="url"    width="128" height="128">https://www.ddcutil.com/images/ddcui-128px.png</icon>
+
 </component>
