@@ -1,53 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Copyright 2020 Sanford Rockowitz rockowitz@minsoft.com> -->
+<!--
+The spec for the metainfo.xml/appdata.xml file has evolved.  Old definitions continue to be 
+supported. There is variation in the files in /usr/share/metainfo.  Tutorials and other 
+documentation may be using old spec deinitions, which is confusing. 
 
-<!-- <component type="desktop-application">  -->                               <!-- generated -->
- <component>                                                 <!-- old -->  <!-- ok -->
-<!-- 
-   <id>com.ddcutil.ddcui</id>  -->               <!-- generated -->
-  <id type="desktop">ddcui.desktop</id>    <!--old. ok -->
-  
-  <name>ddcui</name>
-  <summary>GUI for ddcutil</summary>
-  
+For detailed discussion of how the spec has evolved, see the following sections of 
+the appstream spec at www.freedesktop.org/software/appstream/docs: 
+
+   2.1.2  Generic Component, Filesystem locations
+   2.2.1  Desktop Applications, Introduction
+   2.2.2  Desktop Applications, File specifiction
+   3.1,4  Collection Metadata, Valid tags for all component types
+
+-->
+
+<component type="desktop-application">  
+  <id>com.ddcutil.ddcui</id>                <!-- generated -->
   <metadata_license>FSFAP</metadata_license>
   <project_license>GPL-2.0-or-later</project_license>
-  
+  <name>ddcui</name>
+  <summary>Manage monitor settings</summary>
   <description>
     <p>
-      long text of description
+    Communicates with a monitor's Virtual Control Panel (VCP) to query and change monitor settings.
+    Monitor settings include such things as brightness, red gain, and power on hours. In general, anything 
+    that can be accessed using the monitor's On Screen Display can more easily accessed using this application.
+    </p> 
+    <p>
+    ddcutil normally communicates with a monitor's Virtual Control Panel using the DDC/CI protocol.  Alternatively, 
+    some monitors support communication over USB. 
     </p>
   </description>
   
   <launchable type="desktop-id">ddcui.desktop</launchable>
   <screenshots>
-  <!-- generated:  -->
-<!--     <screenshot type="default">                                         
-      <image>http://www.ddcutil.com/images/ddcui_features.png</image>
-    </screenshot> -->
-<!-- actual -->  
-<screenshot type="default">
+    <screenshot type="default">
       <image> https://www.ddcutil.com/images/ddcui_features.png</image>
       <!-- <image>image height="708" width="1000">https://raw.githubusercontent.com/ddcutilproject/ddcutil/master/doc/en/images/andt2.png</image> -->
       <caption>Feature Detail View</caption>
     </screenshot>
   </screenshots>
 
-  <update_contact>rockowitz2@minsoft.com></update_contact>                       <!-- actual -->  
-  <developer_name>Sanford Rockowitz</developer_name>                             <!-- actual -->  
-  <url type="homepage">https://www.ddcutil.com</url>                             <!-- actual -->  
-  <url type="bugtracker">https://github.com/rockowitz/ddcui/issues</url>        <!-- actual -->  
+  <update_contact>rockowitz@minsoft.com></update_contact>                      
+  <developer_name>Sanford Rockowitz</developer_name>                            
+  <url type="homepage">https://www.ddcutil.com</url>                            
+  <url type="bugtracker">https://github.com/rockowitz/ddcui/issues</url>        
   <url type="faq">https://www.ddcutil.com/faq</url>
 
-  <!-- releases actual only: -->
   <releases>
     <release version="0.1.3" date="2020-09-02"/>
     <release version="0.1.2" date="2020-06-28"/>
   </releases>
 
-  <!-- releases actual only: -->
-  <icon type="local" width="128" height="128">/usr/share/icons/hicolor/128x128/apps/ddcui-128px.png</icon> 
-  <icon type="remote" width="128" height="128">https://www.ddcutil.com/images/ddcui-128px.png</icon>
-  <icon type="url"    width="128" height="128">https://www.ddcutil.com/images/ddcui-128px.png</icon>
+  <!-- when building in COPR: 
+     + appstream-util validate-relax --nonet /builddir/build/BUILDROOT/ddcui-0.1.3-1.fc32.x86_64/usr/share/metainfo/ddcui.appdata.xml
+       /builddir/build/BUILDROOT/ddcui-0.1.3-1.fc32.x86_64/usr/share/metainfo/ddcui.appdata.xml: FAILED:  
+     ? tag-invalid           : <icon> not allowed in desktop appdata
 
+  <icon type="remote" width="128" height="128">https://www.ddcutil.com/images/ddcui-128px.png</icon>
+-->
 </component>
