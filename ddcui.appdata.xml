@@ -22,9 +22,9 @@ the appstream spec at www.freedesktop.org/software/appstream/docs:
   <summary>Manage monitor settings</summary>
   <description>
     <p>
-    Communicates with a monitor's Virtual Control Panel (VCP) to query and change monitor settings.
-    Monitor settings include such things as brightness, red gain, and power on hours. In general, anything 
-    that can be accessed using the monitor's On Screen Display can more easily accessed using this application.
+    Communicates with a monitor's Virtual Control Panel (VCP) to query and change monitor settings, 
+    such as brightness, red gain, and power on hours. In general, anything 
+    that can be accessed using the monitor's On Screen Display can more easily be accessed using this application.
     </p> 
     <p>
     ddcutil normally communicates with the monitor using the DDC/CI protocol on an I2C device exposed by the video driver.  
@@ -53,7 +53,7 @@ the appstream spec at www.freedesktop.org/software/appstream/docs:
   </releases>
 
   <!-- when building in COPR: 
-     + appstream-util validate-relax --nonet /builddir/build/BUILDROOT/ddcui-0.1.3-1.fc32.x86_64/usr/share/metainfo/ddcui.appdata.xml
+     + appstream-util validate-relax &hyphen;&hyphen; nonet /builddir/build/BUILDROOT/ddcui-0.1.3-1.fc32.x86_64/usr/share/metainfo/ddcui.appdata.xml
        /builddir/build/BUILDROOT/ddcui-0.1.3-1.fc32.x86_64/usr/share/metainfo/ddcui.appdata.xml: FAILED:  
      ? tag-invalid           : <icon> not allowed in desktop appdata
 
