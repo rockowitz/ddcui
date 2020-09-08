@@ -12,11 +12,10 @@ the appstream spec at www.freedesktop.org/software/appstream/docs:
    2.2.1  Desktop Applications, Introduction
    2.2.2  Desktop Applications, File specifiction
    3.1,4  Collection Metadata, Valid tags for all component types
-
 -->
 
 <component type="desktop-application">  
-  <id>com.ddcutil.ddcui</id>                <!-- generated -->
+  <id>com.ddcutil.ddcui</id>             
   <metadata_license>FSFAP</metadata_license>
   <project_license>GPL-2.0-or-later</project_license>
   <name>ddcui</name>
@@ -28,8 +27,8 @@ the appstream spec at www.freedesktop.org/software/appstream/docs:
     that can be accessed using the monitor's On Screen Display can more easily accessed using this application.
     </p> 
     <p>
-    ddcutil normally communicates with a monitor's Virtual Control Panel using the DDC/CI protocol.  Alternatively, 
-    some monitors support communication over USB. 
+    ddcutil normally communicates with the monitor using the DDC/CI protocol on an I2C device exposed by the video driver.  
+    Alternatively, some monitors support VCP communication using USB. 
     </p>
   </description>
   
