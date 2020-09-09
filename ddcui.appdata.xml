@@ -28,7 +28,7 @@ the appstream spec at www.freedesktop.org/software/appstream/docs:
     </p> 
     <p>
     ddcutil normally communicates with the monitor using the DDC/CI protocol on an I2C device exposed by the video driver.  
-    Alternatively, some monitors support VCP communication using USB. 
+    Alternatively, ddcutil supports monitors that use USB for VCP communication. 
     </p>
   </description>
   
