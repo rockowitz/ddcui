@@ -22,8 +22,8 @@ the appstream spec at www.freedesktop.org/software/appstream/docs:
   <summary>Manage monitor settings</summary>
   <description>
     <p>
-    Communicates with a monitor's Virtual Control Panel (VCP) to query and change monitor settings, 
-    such as brightness, red gain, and power on hours. In general, anything 
+    Communicates with a monitor's Virtual Control Panel (VCP) to query or change monitor settings, 
+    such as brightness, red gain, and power on hours. In general, settings and information
     that can be accessed using the monitor's On Screen Display can more easily be accessed using this application.
     </p> 
     <p>
