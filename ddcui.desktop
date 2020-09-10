@@ -2,12 +2,12 @@
 Version=1.1
 Name=ddcui
 GenericName=Monitor Settings
-Comment=Graphical user interface for ddcutil
+Comment=Access a monitor's Virtual Control Panel
 Keywords=ddcutil;DDC/CI;MCCS
 Exec=ddcui
 TryExec=ddcui
 Icon=ddcui
 Terminal=false
 Type=Application
-Categories=System;Utility;Settings;HardwareSettings
+Categories=Settings;HardwareSettings
 X-Desktop-File-Install-Version=0.24
