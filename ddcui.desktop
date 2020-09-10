@@ -2,7 +2,7 @@
 Version=1.1
 Name=ddcui
 GenericName=Monitor Settings
-Comment=Access a monitor's Virtual Control Panel
+Comment=Control monitor settings
 Keywords=ddcutil;DDC/CI;MCCS
 Exec=ddcui
 TryExec=ddcui
