@@ -9,5 +9,5 @@ TryExec=ddcui
 Icon=ddcui
 Terminal=false
 Type=Application
-Categories=Settings;HardwareSettings
+Categories=Settings;HardwareSettings;
 X-Desktop-File-Install-Version=0.24
