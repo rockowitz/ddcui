@@ -39,6 +39,14 @@ the appstream spec at www.freedesktop.org/software/appstream/docs:
       <!-- <image>image height="708" width="1000">https://raw.githubusercontent.com/ddcutilproject/ddcutil/master/doc/en/images/andt2.png</image> -->
       <caption>Feature Detail View</caption>
     </screenshot>
+    <screenshot>
+      <image> https://www.ddcutil.com/images/ddcui_summary.png</image>
+      <caption>Summary View</caption>
+    </screenshot>
+    <screenshot>
+      <image> https://www.ddcutil.com/images/ddcui_capabilities.png</image>
+      <caption>Capabilities View</caption>
+    </screenshot>
   </screenshots>
 
   <update_contact>rockowitz@minsoft.com></update_contact>                      
