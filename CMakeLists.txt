@@ -222,7 +222,7 @@ install(FILES icons/ddcui-16px.png  DESTINATION share/icons/hicolor/16x16/apps  
 install(FILES icons/ddcui.svg       DESTINATION share/icons/hicolor/scalable/apps)
 
 # GNOME classic only looks in pixmaps for icons:
-install(FILES icons/ddcui-48px.png  DESTINATION share/pixmaps RENAME ddcui.png)
+# install(FILES icons/ddcui-48px.png  DESTINATION share/pixmaps RENAME ddcui.png)
 
 
 
