@@ -30,6 +30,10 @@ void OtherOptionsDialog::setUiSource(NcValuesSource source)
    }
 }
 
+void OtherOptionsDialog::setUseLatestNcValueNames(bool newval) {
+   ui->latestNcValueNamesCheckbox->setChecked(newval);
+}
+
 
 OtherOptionsDialog::OtherOptionsDialog(OtherOptionsState * state, QWidget *parent) :
     QDialog(parent),
@@ -42,6 +46,7 @@ OtherOptionsDialog::OtherOptionsDialog(OtherOptionsState * state, QWidget *paren
 
     setWindowTitle("ddcui - Other Options");
     setUiSource(state->_ncValuesSource);
+    setUseLatestNcValueNames(state->_useLatestNcValueNames);
 }
 
 
@@ -54,6 +59,7 @@ OtherOptionsDialog::~OtherOptionsDialog()
 void OtherOptionsDialog::on_buttonBox_accepted()
 {
     NcValuesSource oldsrc = _state->_ncValuesSource;
+    bool           oldUseLatestNames = _state->_useLatestNcValueNames;
 
     if (ui->capabilitiesNcValuesButton->isChecked() )
         _state->_ncValuesSource = NcValuesFromCapabilities;
@@ -64,8 +70,10 @@ void OtherOptionsDialog::on_buttonBox_accepted()
        _state->_ncValuesSource = NcValuesFromMccs;
     }
 
-    if (_state->_ncValuesSource != oldsrc) {
-        emit ncValuesSourceChanged(_state->_ncValuesSource);
+    _state->_useLatestNcValueNames = ui->latestNcValueNamesCheckbox->isChecked();
+
+    if (_state->_ncValuesSource != oldsrc || _state->_useLatestNcValueNames != oldUseLatestNames) {
+        emit ncValuesSourceChanged(_state->_ncValuesSource, _state->_useLatestNcValueNames);
     }
 }
 
@@ -104,6 +112,9 @@ void OtherOptionsDialog::on_buttonBox_clicked(QAbstractButton* button)
    if(button== (QAbstractButton*) ui->buttonBox->button(QDialogButtonBox::Reset) ){
       // TRACE("Reset");
       setUiSource(OtherOptionsState::DefaultNcValuesSource);
+      ui->latestNcValueNamesCheckbox->setChecked(OtherOptionsState::DefaultUseMaximalNcValueNames);
+
+
       // on_buttonBox_accepted();  // do not actually change until OK
 
       // NcValuesSource oldsrc = _state->ncValuesSource;

@@ -1,6 +1,6 @@
 // other_options_dialog.h
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef OTHER_OPTIONS_DIALOG_H
@@ -24,7 +24,7 @@ public:
     ~OtherOptionsDialog();
 
 signals:
-     void ncValuesSourceChanged(NcValuesSource valuesSource);
+     void ncValuesSourceChanged(NcValuesSource valuesSource, bool useLatestNcValueNames);
 
 private slots:
     void on_buttonBox_accepted();
@@ -33,6 +33,8 @@ private slots:
 
 private:
     void setUiSource(NcValuesSource source);
+
+    void setUseLatestNcValueNames(bool newval);
 
     Ui::OtherOptionsDialog *ui;
     const char * _cls;
