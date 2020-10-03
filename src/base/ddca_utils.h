@@ -37,6 +37,11 @@ ddcutil_merge_feature_values(
       Nc_Values_Merge_Mode       merge_mode);
 
 void
+ddcutil_adjust_local_feature_value_names(
+      Local_Feature_Value_Table * local_table,
+      DDCA_Feature_Value_Entry *  alt_names);
+
+void
 ddcutil_free_local_feature_value_table(
       Local_Feature_Value_Table *  table);
 

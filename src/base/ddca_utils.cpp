@@ -224,6 +224,27 @@ ddcutil_merge_feature_values(
 }
 
 
+void
+ddcutil_adjust_local_feature_value_names(
+      Local_Feature_Value_Table * local_table,
+      DDCA_Feature_Value_Entry *  alt_names)
+{
+   assert(local_table);
+   if (alt_names) {
+      for (DDCA_Feature_Value_Entry * curEntry = local_table->values;
+           curEntry->value_code && curEntry->value_name;
+           curEntry++)
+      {
+         DDCA_Feature_Value_Entry * altEntry =
+         find_feature_value_entry(alt_names, curEntry->value_code);
+         if (altEntry) {
+            free(curEntry->value_name);
+            curEntry->value_name = altEntry->value_name;
+         }
+      }
+   }
+}
+
 DDCA_Cap_Vcp *
 ddcutil_find_cap_vcp(DDCA_Capabilities * parsed_caps, uint8_t feature_code)
 {
