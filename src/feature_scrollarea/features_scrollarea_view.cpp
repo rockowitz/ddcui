@@ -314,7 +314,7 @@ void FeaturesScrollAreaView::onModelValueChanged(
 }
 
 
-void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc) {
+void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc, bool newUseLatestNames) {
    bool debugFunc = false;
    debugFunc = debugFunc || debugSignals;
    TRACEMCF(debugFunc,
@@ -322,7 +322,7 @@ void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc) {
              newsrc,             (char*) ncValuesSourceName(newsrc),
              _curNcValuesSource, (char*) ncValuesSourceName(_curNcValuesSource));
 
-   if (newsrc != _curNcValuesSource) {
+   if (newsrc != _curNcValuesSource || newUseLatestNames != _curUseLatestNcValueNames) {
       // reportWidgetChildren(_scrollAreaContents, (const char *) "Children of FeatuersScrollAreaView");
 
       QObjectList  childs = _scrollAreaContents->children();
@@ -341,7 +341,7 @@ void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc) {
              TRACEMCF(debugFunc, "dynamic_cast succeeded");
              if (curWidget->hasSlTable()) {
                 TRACEMCF(debugFunc, "feature_code=0x%02x, has SL table", curWidget->_feature_code);
-                curWidget->setNcValuesSource(newsrc);
+                curWidget->setNcValuesSource(newsrc, newUseLatestNames);
              }
           }
       }
