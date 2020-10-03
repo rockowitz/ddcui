@@ -40,6 +40,7 @@ OtherOptionsState::OtherOptionsState(Parsed_Cmd * parsed_cmd) {
 
 OtherOptionsState::OtherOptionsState(const OtherOptionsState &other) : QObject() {
    _ncValuesSource = other._ncValuesSource;
+   _useLatestNcValueNames = other._useLatestNcValueNames;
 }
 
 

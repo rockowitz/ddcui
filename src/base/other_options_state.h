@@ -24,12 +24,14 @@ class OtherOptionsState : public QObject {
 
 public:
    static const NcValuesSource DefaultNcValuesSource = NcValuesFromCapabilities;
+   static const bool           DefaultUseMaximalNcValueNames = false;
 
    OtherOptionsState();
    OtherOptionsState(Parsed_Cmd * parsedCmd);
    OtherOptionsState(const OtherOptionsState &other);
 
    NcValuesSource _ncValuesSource = DefaultNcValuesSource;
+   bool           _useLatestNcValueNames = DefaultUseMaximalNcValueNames;
 };
 
 const char * ncValuesSourceName(NcValuesSource source) ;
