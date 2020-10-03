@@ -21,14 +21,14 @@ the appstream spec at www.freedesktop.org/software/appstream/docs:
   <name>ddcui</name>
   <summary>Manage monitor settings</summary>
   <description>
-    <p>
-    Communicates with a monitor's Virtual Control Panel (VCP) to query or change monitor settings, 
+    <p> Communicates with a monitor's Virtual Control Panel (VCP) to query or change monitor settings, 
     such as brightness, red gain, and power on hours. In general, settings and information
     that can be accessed using the monitor's On Screen Display can more easily be accessed using this application.
     </p> 
-    <p>
-    ddcutil normally communicates with the monitor using the DDC/CI protocol on an I2C device exposed by the video driver.  
-    Alternatively, ddcutil supports monitors that use USB for VCP communication. 
+    <p> ddcui normally communicates with the monitor using the DDC/CI protocol on a /dev/i2c device exposed by the video driver.  
+    Alternatively, ddcui supports monitors that use USB for VCP communication. 
+    </p>
+    <p>The corresponding command line program is ddcutil.
     </p>
   </description>
   
@@ -55,6 +55,7 @@ the appstream spec at www.freedesktop.org/software/appstream/docs:
   <url type="bugtracker">https://github.com/rockowitz/ddcui/issues</url>        
   <url type="faq">https://www.ddcutil.com/faq</url>
 
+  <!-- COPR replaces <releases> with its own list. -->
   <releases>
     <release version="0.1.3" date="2020-09-02"/>
     <release version="0.1.2" date="2020-06-28"/>
