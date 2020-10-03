@@ -35,7 +35,7 @@ public:
     void     setCurrentValue(uint16_t newval);
     // uint16_t getCurrentValue();
     bool     hasSlTable();
-    void     setNcValuesSource(NcValuesSource newsrc);
+    void     setNcValuesSource(NcValuesSource newsrc, bool newUseLatestNames);
 
     // QSize sizeHint() const override;
     // void paintEvent(QPaintEvent *event) override;

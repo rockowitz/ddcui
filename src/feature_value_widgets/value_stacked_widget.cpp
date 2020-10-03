@@ -338,15 +338,15 @@ bool ValueStackedWidget::hasSlTable() {
 }
 
 
-void ValueStackedWidget::setNcValuesSource(NcValuesSource newsrc) {
-   TRACECF(debugNcValues, "newsrc = %d, _pageno_selected=%d, _pageno_nc=%d",
-                          newsrc, _pageno_selected, _pageno_nc);
+void ValueStackedWidget::setNcValuesSource(NcValuesSource newsrc, bool newUseLatestNcValueNames) {
+   TRACECF(debugNcValues, "newsrc = %d, newUseLatestNcValueNames = %s, _pageno_selected=%d, _pageno_nc=%d",
+                          newsrc, SBOOL(newUseLatestNcValueNames), _pageno_selected, _pageno_nc);
 
    if (_pageno_selected == _pageno_nc) {
-      _ncWidget->reloadComboBox(newsrc);
+      _ncWidget->reloadComboBox(newsrc, newUseLatestNcValueNames);
    }
    else if (_pageno_selected == _pageno_ncplus) {
-      _ncplusWidget->reloadComboBox(newsrc);
+      _ncplusWidget->reloadComboBox(newsrc, newUseLatestNcValueNames);
    }
    TRACECF(debugNcValues, "Done");
 }
