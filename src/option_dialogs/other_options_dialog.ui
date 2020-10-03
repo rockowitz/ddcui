@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>477</width>
-    <height>149</height>
+    <height>192</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,7 +23,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>100</y>
+     <y>140</y>
      <width>341</width>
      <height>32</height>
     </rect>
@@ -127,6 +127,19 @@
    <attribute name="buttonGroup">
     <string notr="true">ncValueSourceButtonGroup</string>
    </attribute>
+  </widget>
+  <widget class="QCheckBox" name="latestNcValueNamesCheckbox">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>100</y>
+     <width>251</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Force latest NC value names</string>
+   </property>
   </widget>
  </widget>
  <resources/>
