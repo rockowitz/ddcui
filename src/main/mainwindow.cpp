@@ -844,7 +844,7 @@ void MainWindow::on_actionOtherOptionsDialog_triggered()
 
    OtherOptionsDialog* dialog = new OtherOptionsDialog(this->_otherOptionsState, this);
    QObject::connect(dialog,   &OtherOptionsDialog::ncValuesSourceChanged,
-                     this,     &MainWindow::for_actionOtherOptionsDialog_ncValuesSourceChanged);
+                     this,    &MainWindow::for_actionOtherOptionsDialog_ncValuesSourceChanged);
    dialog->exec();
    delete dialog;
    TRACECF(debug, "Done");
@@ -853,16 +853,17 @@ void MainWindow::on_actionOtherOptionsDialog_triggered()
 
 // named for_ .. instead of on_ so that connectSlotsByName doesn't report this as slot
 // for which it could find no signal
-void MainWindow::for_actionOtherOptionsDialog_ncValuesSourceChanged(NcValuesSource valuesSource )
+void MainWindow::for_actionOtherOptionsDialog_ncValuesSourceChanged(
+                     NcValuesSource valuesSource, bool useLatestNcValueNames )
 {
-   bool debug = false;
-   TRACECF(debug, "valuesSource=%d", valuesSource);
+   bool debug = true;
+   TRACECF(debug, "valuesSource=%d, useLatestNcValueNames=%s", valuesSource, SBOOL(useLatestNcValueNames));
 
    if (_curView == FeaturesView  )   {  // need also check if  FeaturesScrollAreaView
       int monitorNdx = _toolbarDisplayCB->currentIndex();
       Monitor * monitor = _monitors[monitorNdx];
       // or emit signal?
-      monitor->_featuresScrollAreaView->onNcValuesSourceChanged(valuesSource);
+      monitor->_featuresScrollAreaView->onNcValuesSourceChanged(valuesSource, useLatestNcValueNames);
    }
    TRACECF(debug, "Done");
 }
