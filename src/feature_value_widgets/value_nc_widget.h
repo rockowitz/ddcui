@@ -32,7 +32,7 @@ public:
     int findItem(uint8_t sl_value);
     Local_Feature_Value_Table * getComboBoxEntries(NcValuesSource mode);
     void loadComboBox(NcValuesSource mode);
-    void reloadComboBox(NcValuesSource newSource);
+    void reloadComboBox(NcValuesSource newSource, bool useLatestNames);
 
 protected:
     // void layoutWidgetAux();
@@ -47,6 +47,7 @@ private:
     QPushButton *  _cancelButton;
 #endif
     NcValuesSource _curNcValuesSource = OtherOptionsState::DefaultNcValuesSource;
+    bool           _curUseLatestNcValueNames = OtherOptionsState::DefaultUseMaximalNcValueNames;
     bool           _guiChange = false;
 
 protected slots:
