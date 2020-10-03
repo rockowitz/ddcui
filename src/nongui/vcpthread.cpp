@@ -418,13 +418,12 @@ void VcpThread::getvcp(uint8_t featureCode, bool needMetadata) {
               // ddcui_dbgrpt_ddca_feature_metadata(finfo);
               ddca_dbgrpt_feature_metadata(finfo, 1);
            }
-
            if (ddcrc2 != 0) {
               rpt_ddca_status(featureCode, __func__, "ddca_get_feature_metadata_by_dh",  ddcrc);
               // cout << "ddca_get_feature_metadata() returned " << ddcrc << endl;
            }
 
-           // whether or not succeeded, the _baseModel so FeatureValueWidget can display error
+           // whether or not succeeded, set feature info in  _baseModel so FeatureValueWidget can display error
            _baseModel->modelVcpValueSet(featureCode, this->_dref, finfo, &valrec, ddcrc);
 
            _baseModel->setFeatureChecked(featureCode);
