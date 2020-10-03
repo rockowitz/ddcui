@@ -306,10 +306,10 @@ bool FeatureWidget::hasSlTable()
 }
 
 
-void FeatureWidget::setNcValuesSource(NcValuesSource newsrc)
+void FeatureWidget::setNcValuesSource(NcValuesSource newsrc, bool useLatestNcValueNames)
 {
    // TRACE("newsrc = %d-%s", newsrc, ncValuesSourceName(newsrc));
-   _valueWidget->setNcValuesSource(newsrc);
+   _valueWidget->setNcValuesSource(newsrc, useLatestNcValueNames);
    // TRACE("Done");
 }
 

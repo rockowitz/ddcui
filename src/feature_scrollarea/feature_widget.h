@@ -32,7 +32,7 @@ public:
     void setFeatureValue(FeatureValue &fv);
     void setCurrentValue(uint16_t newval);
     bool hasSlTable();
-    void setNcValuesSource(NcValuesSource newsrc);
+    void setNcValuesSource(NcValuesSource newsrc, bool useLatestNcValueNames);
     void dbgrpt() const;
     // void simpleFeatureValueChanged(SimpleFeatureValue fv) override;   // SimpleFeatureValueObserver
 
