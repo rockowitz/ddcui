@@ -843,8 +843,10 @@ void MainWindow::on_actionOtherOptionsDialog_triggered()
    TRACECF(debug, "triggered");
 
    OtherOptionsDialog* dialog = new OtherOptionsDialog(this->_otherOptionsState, this);
-   QObject::connect(dialog,   &OtherOptionsDialog::ncValuesSourceChanged,
-                     this,    &MainWindow::for_actionOtherOptionsDialog_ncValuesSourceChanged);
+   // QObject::connect(dialog,   &OtherOptionsDialog::ncValuesSourceChanged,
+   //                   this,    &MainWindow::for_actionOtherOptionsDialog_ncValuesSourceChanged);
+   // QObject::connect(_otherOptionsState,   &OtherOptionsState::ncValuesSourceChanged,
+   //                  this,    &MainWindow::for_actionOtherOptionsDialog_ncValuesSourceChanged);
    dialog->exec();
    delete dialog;
    TRACECF(debug, "Done");
