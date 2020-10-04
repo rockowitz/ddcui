@@ -46,7 +46,7 @@ FeaturesScrollAreaView::FeaturesScrollAreaView(
     , _baseModel(model)
     , _centralStackedWidget(centralStackedWidget)
     , _msgboxQueue(msgboxQueue)
-    , _curNcValuesSource(OtherOptionsState::DefaultNcValuesSource)  // , _curNcValuesSource(NcValuesSourceUnset)
+    // , _curNcValuesSource(OtherOptionsState::DefaultNcValuesSource)  // , _curNcValuesSource(NcValuesSourceUnset)
     , _controlKeyRequired(false)
 {
    // TRACE("Executing. _msgboxQueue=%p", _msgboxQueue);
@@ -228,8 +228,8 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
        }
     }
 
-    GlobalState& globalState = GlobalState::instance();
-    _curNcValuesSource = globalState._otherOptionsState->_ncValuesSource;
+    // GlobalState& globalState = GlobalState::instance();
+    // _curNcValuesSource = globalState._otherOptionsState->_ncValuesSource;
     _scrollAreaContents = scrollAreaContents;
     _centralStackedWidget->show();
 
@@ -317,12 +317,16 @@ void FeaturesScrollAreaView::onModelValueChanged(
 void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc, bool newUseLatestNames) {
    bool debugFunc = false;
    debugFunc = debugFunc || debugSignals;
-   TRACEMCF(debugFunc,
-             "newsrc=%d - %s, _curNcValuesSource=%d - %s",
-             newsrc,             (char*) ncValuesSourceName(newsrc),
-             _curNcValuesSource, (char*) ncValuesSourceName(_curNcValuesSource));
+   TRACEMF(debugFunc, "newsrc=%d=%s, newUseLatestNames=%s",
+                       newsrc, (char *) ncValuesSourceName(newsrc), SBOOL(newUseLatestNames));
 
-   if (newsrc != _curNcValuesSource || newUseLatestNames != _curUseLatestNcValueNames) {
+   // TRACEMCF(debugFunc,
+   //           "newsrc=%d=%s, _curNcValuesSource=%d=%s, newUseLatestNames=%s,_curUseLatestNcValueNames=%s",
+   //           newsrc,             (char*) ncValuesSourceName(newsrc),
+   //           _curNcValuesSource, (char*) ncValuesSourceName(_curNcValuesSource),
+   //           SBOOL(newUseLatestNames), SBOOL(_curUseLatestNcValueNames));
+
+   // if (newsrc != _curNcValuesSource || newUseLatestNames != _curUseLatestNcValueNames) {
       // reportWidgetChildren(_scrollAreaContents, (const char *) "Children of FeatuersScrollAreaView");
 
       QObjectList  childs = _scrollAreaContents->children();
@@ -338,14 +342,15 @@ void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc, bool
 
           FeatureWidget * curWidget = dynamic_cast<FeatureWidget*>(curobj);
           if (curWidget) {
-             TRACEMCF(debugFunc, "dynamic_cast succeeded");
+             // TRACEMCF(debugFunc, "dynamic_cast succeeded");
              if (curWidget->hasSlTable()) {
                 TRACEMCF(debugFunc, "feature_code=0x%02x, has SL table", curWidget->_feature_code);
                 curWidget->setNcValuesSource(newsrc, newUseLatestNames);
              }
           }
-      }
-      _curNcValuesSource = newsrc;
+      // }
+      // _curNcValuesSource = newsrc;
+      // _curUseLatestNcValueNames = newUseLatestNames;
    }
    TRACEMCF(debugFunc, "Done");
 }
