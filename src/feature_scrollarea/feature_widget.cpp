@@ -308,10 +308,12 @@ bool FeatureWidget::hasSlTable()
 
 void FeatureWidget::setNcValuesSource(NcValuesSource newsrc, bool useLatestNcValueNames)
 {
-   // TRACE("newsrc = %d-%s", newsrc, ncValuesSourceName(newsrc));
+   bool debug = false;
+   TRACEMF(debug, "newsrc = %d-%s", newsrc, ncValuesSourceName(newsrc));
    _valueWidget->setNcValuesSource(newsrc, useLatestNcValueNames);
-   // TRACE("Done");
+   TRACEMF(debug, "Done");
 }
+
 
 void FeatureWidget::resizeEvent(QResizeEvent * evt)
 {
