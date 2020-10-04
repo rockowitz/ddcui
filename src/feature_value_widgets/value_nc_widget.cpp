@@ -116,7 +116,7 @@ void ValueNcWidget::setFeatureValue(const FeatureValue &fv) {
     NcValuesSource sourceMode = globalState._otherOptionsState->_ncValuesSource;
     _curNcValuesSource = sourceMode;
     _curUseLatestNcValueNames = globalState._otherOptionsState->_useLatestNcValueNames;
-    loadComboBox(sourceMode);
+    loadComboBox();
 
     // _extraInfo->setText("default extra text");
     _extraInfo->setText("");
@@ -131,18 +131,24 @@ void ValueNcWidget::setFeatureValue(const FeatureValue &fv) {
  *  @param  mode
  *  @return dynamically allocated feature value table, caller must free
  */
-Local_Feature_Value_Table * ValueNcWidget::getComboBoxEntries(
-      NcValuesSource mode) {
-   bool debugFunc = true;
+Local_Feature_Value_Table *
+ValueNcWidget::getComboBoxEntries() {
+   bool debugFunc = false;
    debugFunc =  debugFunc || debugNcValues;
-   TRACEMF(debugFunc, "feature 0x%02x, newSource=%d-%s",
-                            _featureCode, mode, ncValuesSourceName(mode) );
+
+   NcValuesSource mode = _curNcValuesSource;
+
+   TRACEMF(debugFunc, "feature 0x%02x, mode=%d=%s, _curUseLatestNcValueNames=%s",
+                      _featureCode, mode, ncValuesSourceName(mode), SBOOL(_curUseLatestNcValueNames) );
 
    DDCA_Cap_Vcp dummyCapVcp;
    dummyCapVcp.feature_code = _featureCode;
    dummyCapVcp.value_ct = 0;
 
+   // TRACEMF(debugFunc, "Wolf 1, _finfo=%p", _finfo);
+   // TRACEMF(debugFunc, "Wolf 1a, _finfo->sl_values=%p", _finfo->sl_values);
    DDCA_Feature_Value_Entry * entries = _finfo->sl_values;
+   // TRACEMF(debugFunc, "Wolf 2");
    Nc_Values_Merge_Mode merge_mode = MccsOnly;  // pointless initialization to avoid -Wmaybe-unitialized
    switch(mode) {
    case NcValuesFromMccs:           merge_mode = MccsOnly;      break;
@@ -154,34 +160,41 @@ Local_Feature_Value_Table * ValueNcWidget::getComboBoxEntries(
       TRACEMF(debugFunc, "_featureCode=0x%02x, using dummyCapVcp", _featureCode);
       capVcp = &dummyCapVcp;
    }
-
+   TRACEMF(debugFunc, "Wolf 3");
    Local_Feature_Value_Table * result =
       ddcutil_merge_feature_values(
                 capVcp,        // DDCA_Cap_Vcp *, _capVcp or &dummyCapVcp, i.e. feature values from capabilities string
                 entries,       // DDCA_Feature_Value_Table, _finfo.sl_values, i.e. feature values/names from MCCS spec
                 merge_mode);   // Nc_Values_Merge_Mode
 
+   TRACEMF(debugFunc, "_curUseLatestNcValueNames = %s", SBOOL(_curUseLatestNcValueNames));
    if (_curUseLatestNcValueNames) {
       TRACEMF(debugFunc, "replacing sl values");
       ddcutil_adjust_local_feature_value_names(result, _finfo->latest_sl_values);
    }
 
+   TRACEMF(debugFunc, "Done. Returning: ");
+   if (debugFunc)
+      ddcutil_dbgrpt_local_feature_value_table(result);
+
    return result;
 }
 
 
-void ValueNcWidget::loadComboBox(NcValuesSource mode) {
-   bool debugFunc = true;
+void ValueNcWidget::loadComboBox() {
+   bool debugFunc = false;
    debugFunc = debugFunc || debugNcValues;
-   TRACEMF(debugFunc, "feature 0x%02x, newSource=%d-%s",
-                          _featureCode, mode, ncValuesSourceName(mode) );
+
+   NcValuesSource mode = _curNcValuesSource;
+   TRACEMF(debugFunc, "feature 0x%02x, mode=%d=%s, _useLatestNcValueNames=%s",
+                          _featureCode, mode, ncValuesSourceName(mode), SBOOL(_curUseLatestNcValueNames) );
 
    // In case we're called to reload the combobox values, delete existing values
    for (int ndx = _cb->count()-1; ndx >= 0; ndx--) {
       _cb->removeItem(ndx);
    }
 
-   Local_Feature_Value_Table * table = getComboBoxEntries(mode);
+   Local_Feature_Value_Table * table = getComboBoxEntries();
    DDCA_Feature_Value_Entry * cur = table->values;
    if (cur) {
        while (cur->value_name) {
@@ -211,25 +224,30 @@ void ValueNcWidget::loadComboBox(NcValuesSource mode) {
        cur_ndx = _cb->count()-1;
        _cb->setCurrentIndex(cur_ndx);
    }
+
+   TRACEMF(debugFunc, "Done");
 }
 
 
 void ValueNcWidget::reloadComboBox(NcValuesSource newSource, bool newUseLatestNames) {
-   bool debugFunc = true;
+   bool debugFunc = false;
    debugFunc = debugFunc || debugNcValues;
-   TRACEMF(debugFunc, "newSource=%d-%s, _curNcValuesSource=%d-%s, newUseLatestNames=%s",
-         newSource, ncValuesSourceName(newSource),
-         _curNcValuesSource, ncValuesSourceName(_curNcValuesSource),
-         SBOOL(newUseLatestNames) );
+   TRACEMF(debugFunc, "feature=0x%02x, newSource=%d=%s, _curNcValuesSource=%d=%s,",
+                      _featureCode,
+                       newSource,         ncValuesSourceName(newSource),
+                      _curNcValuesSource, ncValuesSourceName(_curNcValuesSource) );
+   TRACEMF(debugFunc, "              newUseLatestNames=%s, _curUseLatestNcValueNames=%s",
+                      SBOOL(newUseLatestNames),
+                      SBOOL(_curUseLatestNcValueNames) );
+
    if (newSource != _curNcValuesSource || newUseLatestNames != _curUseLatestNcValueNames) {
       _curNcValuesSource = newSource;
       _curUseLatestNcValueNames = newUseLatestNames;
       _guiChange = false;
-      loadComboBox(newSource);
+      loadComboBox();
       _guiChange = true;
-
-
    }
+
    TRACEMF(debugFunc, "Done");
 }
 
@@ -253,7 +271,7 @@ void ValueNcWidget::setCurrentShSl(uint16_t newval) {
     _guiChange = true;
 }
 
-
+// returns -1 if not found
 int ValueNcWidget::findItem(uint8_t sl_value) {
     int result = _cb->findData(QVariant(sl_value));
     return result;
@@ -321,5 +339,4 @@ void ValueNcWidget::resizeEvent(QResizeEvent * evt)
 
    evt->ignore();
 }
-
 

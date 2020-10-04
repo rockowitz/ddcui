@@ -22,6 +22,8 @@ class ValueNcWidget : public ValueBaseWidget
 {
     Q_OBJECT
 
+// *** Methods ***
+
 public:
     ValueNcWidget(QWidget *parent = nullptr);
 
@@ -29,29 +31,31 @@ public:
     void     setCurrentShSl(uint16_t newval) override;
     uint16_t getCurrentShSl() override;
 
-    int findItem(uint8_t sl_value);
-    Local_Feature_Value_Table * getComboBoxEntries(NcValuesSource mode);
-    void loadComboBox(NcValuesSource mode);
-    void reloadComboBox(NcValuesSource newSource, bool useLatestNames);
+public slots:
+    void     reloadComboBox(NcValuesSource newSource, bool useLatestNames);
 
 protected:
-    // void layoutWidgetAux();
-    void resizeEvent(QResizeEvent * evt) override;
+    // void  layoutWidgetAux();
+    void     resizeEvent(QResizeEvent * evt) override;
+
+protected slots:
+    void     combobox_activated(int index);
 
 private:
-    void createWidgets();
-    void layoutWidget();
+    void     createWidgets();
+    void     layoutWidget();
+    int      findItem(uint8_t sl_value);
+    Local_Feature_Value_Table *
+             getComboBoxEntries();
+    void     loadComboBox();
 
-#ifdef APPLY_CANCEL
-    QPushButton *  _applyButton;
-    QPushButton *  _cancelButton;
-#endif
+
+// *** Member Variables ***
+
+private:   // member variables
     NcValuesSource _curNcValuesSource = OtherOptionsState::DefaultNcValuesSource;
     bool           _curUseLatestNcValueNames = OtherOptionsState::DefaultUseMaximalNcValueNames;
     bool           _guiChange = false;
-
-protected slots:
-    void combobox_activated(int index);
 
 protected:   // member variables
     QComboBox *   _cb;
