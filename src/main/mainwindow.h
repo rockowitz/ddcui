@@ -138,15 +138,16 @@ private slots:
 #endif
 
     void on_actionOtherOptionsDialog_triggered();
+#ifdef OLD
     void for_actionOtherOptionsDialog_ncValuesSourceChanged(
             NcValuesSource valuesSource, bool useLatestNcValueNames);
+#endif
 #ifdef UNUSED
     void on_actionOtherOptionsDialog_accepted();
 #endif
 
     void on_actionUserInterfaceOptionsDialog_triggered();
     void for_actionUserInterfaceOptionsDialog_accept();
-
 
 
     // Help Menu

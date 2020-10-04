@@ -852,7 +852,7 @@ void MainWindow::on_actionOtherOptionsDialog_triggered()
    TRACECF(debug, "Done");
 }
 
-
+#ifdef OLD
 // named for_ .. instead of on_ so that connectSlotsByName doesn't report this as slot
 // for which it could find no signal
 void MainWindow::for_actionOtherOptionsDialog_ncValuesSourceChanged(
@@ -869,6 +869,7 @@ void MainWindow::for_actionOtherOptionsDialog_ncValuesSourceChanged(
    }
    TRACECF(debug, "Done");
 }
+#endif
 
 // Options->User Interface Options slots: UserInterfaceOptionsDialog
 
