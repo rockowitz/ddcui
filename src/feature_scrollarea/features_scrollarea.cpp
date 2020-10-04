@@ -1,32 +1,26 @@
 // features_scrollarea.cpp
 
-// Copyright (C) 2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2019-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
-
 
 #include <QtWidgets/QScrollArea>
 #include <QtCore/QSize>
-
-
-#include "feature_scrollarea/features_scrollarea.h"
-
-#include "../base/core.h"
-#include "../base/core.h"
-#include "../base/widget_debug.h"
+#include "base/core.h"
+#include "base/widget_debug.h"
 #include "feature_scrollarea/features_scrollarea_contents.h"
-
+#include "feature_scrollarea/features_scrollarea.h"
 
 static bool showWidgetDimensions = false;
 static bool traceResizeEvents = false;
 
-void FeaturesScrollArea::layoutWidget() {
 
+void FeaturesScrollArea::layoutWidget() {
    if (debugLayout) {
       setStyleSheet("background-color:maroon;");
-
       static bool widgetDimensionsReported = false;
       if (showWidgetDimensions && !widgetDimensionsReported) {
          reportWidgetDimensions(this, _cls, __func__, "FeatureScrollAreaContents dimensions");
+         widgetDimensionsReported = true;
       }
    }
 }
@@ -39,6 +33,7 @@ FeaturesScrollArea::FeaturesScrollArea(QWidget *parent)
    // TRACE("Executing");
    layoutWidget();
 }
+
 
 FeaturesScrollArea::~FeaturesScrollArea()
 {
