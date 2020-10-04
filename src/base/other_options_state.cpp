@@ -44,6 +44,17 @@ OtherOptionsState::OtherOptionsState(const OtherOptionsState &other) : QObject()
 }
 
 
+void OtherOptionsState::changeNcValuesSource(NcValuesSource mode, bool useLatestNcValueNames) {
+   bool changed = (mode != _ncValuesSource || useLatestNcValueNames != _useLatestNcValueNames);
+   _ncValuesSource = mode;
+   _useLatestNcValueNames = useLatestNcValueNames;
+   if (changed)
+      emit ncValuesSourceChanged(_ncValuesSource, _useLatestNcValueNames);
+
+}
+
+
+
 const char *
 ncValuesSourceName(NcValuesSource source)
 {

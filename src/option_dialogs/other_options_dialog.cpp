@@ -44,7 +44,7 @@ OtherOptionsDialog::OtherOptionsDialog(OtherOptionsState * state, QWidget *paren
     // _state = state;
     ui->setupUi(this);
 
-    setWindowTitle("ddcui - Other Options");
+    setWindowTitle("NC Feature Values");
     setUiSource(state->_ncValuesSource);
     setUseLatestNcValueNames(state->_useLatestNcValueNames);
 }
@@ -61,48 +61,25 @@ void OtherOptionsDialog::on_buttonBox_accepted()
     NcValuesSource oldsrc = _state->_ncValuesSource;
     bool           oldUseLatestNames = _state->_useLatestNcValueNames;
 
+    NcValuesSource newsrc;
+
     if (ui->capabilitiesNcValuesButton->isChecked() )
-        _state->_ncValuesSource = NcValuesFromCapabilities;
+       newsrc = NcValuesFromCapabilities;
     else if (ui->bothNcValuesButton->isChecked() )
-        _state->_ncValuesSource = NcValuesFromBoth;
+        newsrc = NcValuesFromBoth;
     else {
        assert(  ui->mccsNcValuesButton->isChecked() );
-       _state->_ncValuesSource = NcValuesFromMccs;
+       newsrc = NcValuesFromMccs;
     }
 
-    _state->_useLatestNcValueNames = ui->latestNcValueNamesCheckbox->isChecked();
-
-    if (_state->_ncValuesSource != oldsrc || _state->_useLatestNcValueNames != oldUseLatestNames) {
-        emit ncValuesSourceChanged(_state->_ncValuesSource, _state->_useLatestNcValueNames);
-    }
+    _state->changeNcValuesSource(newsrc, ui->latestNcValueNamesCheckbox->isChecked());
 }
 
 
 void OtherOptionsDialog::on_buttonBox_helpRequested()
 {
    TRACEC("Starting");
-#ifdef OLD
-    // TRACE();
-    QString fn(":/docs/nc_values.html");
-    QFile f(fn);
-    f.open(QFile::ReadOnly | QFile::Text);
-    QTextStream in(&f);
-
-    QString htmlText = in.readAll();
-
-    // qDebug() << htmlText;
-
-    // doesn't show dialog box
-    // HelpDialog2("ddcui Help - Other Options", htmlText, this);
-
-    HelpDialog2* hd = new HelpDialog2(this);
-    hd->setText(htmlText);
-    hd->setWindowTitle("ddcui Help - Other Options");
-    hd->show();
-    showHelp(
-#endif
-
-    viewHelp(QString("nc_values.html"), QString("ddcui Help -X Other Options"), this);
+   viewHelp(QString("nc_values.html"), QString("ddcui Help -X Other Options"), this);
 }
 
 
@@ -113,16 +90,5 @@ void OtherOptionsDialog::on_buttonBox_clicked(QAbstractButton* button)
       // TRACE("Reset");
       setUiSource(OtherOptionsState::DefaultNcValuesSource);
       ui->latestNcValueNamesCheckbox->setChecked(OtherOptionsState::DefaultUseMaximalNcValueNames);
-
-
-      // on_buttonBox_accepted();  // do not actually change until OK
-
-      // NcValuesSource oldsrc = _state->ncValuesSource;
-      //  _state->ncValuesSource = OtherOptionsState::DefaultNcValuesSource;
-      //   setUiSource(_state->ncValuesSource);
-      //   if (_state->ncValuesSource != oldsrc) {
-      //       emit ncValuesSourceChanged(_state->ncValuesSource);
-      //   }
    }
 }
-
