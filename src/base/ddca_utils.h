@@ -45,6 +45,10 @@ void
 ddcutil_free_local_feature_value_table(
       Local_Feature_Value_Table *  table);
 
+void
+ddcutil_dbgrpt_local_feature_value_table(
+      Local_Feature_Value_Table * table);
+
 
 // Capabilities
 

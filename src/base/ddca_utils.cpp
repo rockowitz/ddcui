@@ -67,7 +67,7 @@ int_max(int v1, int v2) {
 
 const char * LOCAL_FEATURE_VALUE_TABLE_MARKER = "LFVT";
 
-Local_Feature_Value_Table *
+static Local_Feature_Value_Table *
 new_local_feature_value_table(int entry_ct) {
    bool debug = false;
    int reqd_size = sizeof(Local_Feature_Value_Table) + entry_ct * sizeof(DDCA_Feature_Value_Entry);
@@ -81,9 +81,7 @@ new_local_feature_value_table(int entry_ct) {
 
 
 void
-ddcutil_free_local_feature_value_table(
-      Local_Feature_Value_Table * table)
-{
+ddcutil_free_local_feature_value_table(Local_Feature_Value_Table * table) {
    bool debug = false;
    if (debug) {
       printf("(%s) Starting. table=%p\n", __func__, table);  fflush(stdout);
@@ -93,12 +91,13 @@ ddcutil_free_local_feature_value_table(
       assert(memcmp(table->marker, LOCAL_FEATURE_VALUE_TABLE_MARKER, 4) == 0);
       DDCA_Feature_Value_Entry * cur = table->values;
       while (cur) {
-         if (cur->value_name)
+         if (cur->value_name) {
             free(cur->value_name);
-         if (cur->value_code != 0 || cur->value_name)
             cur++;
-         else
+         }
+         else {
             cur = NULL;
+         }
       }
       free(table);
    }
@@ -108,8 +107,22 @@ ddcutil_free_local_feature_value_table(
    }
 }
 
+void
+ddcutil_dbgrpt_local_feature_value_table(Local_Feature_Value_Table * table) {
+   printf("Local_Feature_Value_Table at %p\n", table);
+   if (table) {
+      assert(memcmp(table->marker, LOCAL_FEATURE_VALUE_TABLE_MARKER, 4) == 0);
+      DDCA_Feature_Value_Entry * cur = table->values;
+      while (cur->value_name) {
+         printf("   0x%02x, %p -> %s\n", cur->value_code, cur->value_name, cur->value_name);
+         cur++;
+      }
+   }
+}
 
-const char * nc_values_merge_mode_name(Nc_Values_Merge_Mode merge_mode) {
+
+const char *
+nc_values_merge_mode_name(Nc_Values_Merge_Mode merge_mode) {
    // char * s = NULL;
    switch(merge_mode) {
    case CapsOnly:
@@ -168,13 +181,6 @@ ddcutil_merge_feature_values(
       maxEntries =  feature_value_entry_ct(mccsTable) + 1;
       break;
    }
-#ifdef OLD
-   int reqd_size = sizeof(Local_Feature_Value_Table) + maxEntries * sizeof(DDCA_Feature_Value_Entry);
-   if (debug) {
-      printf("(%s) maxEntries = %d, reqd_size = %d\n", __func__, maxEntries, reqd_size); fflush(stdout);
-   }
-   result = (Local_Feature_Value_Table*) calloc(1,reqd_size);
-#endif
    result = new_local_feature_value_table(maxEntries);
    int resultCt = 0;
    // Don't assume the values are ordered.
@@ -229,21 +235,35 @@ ddcutil_adjust_local_feature_value_names(
       Local_Feature_Value_Table * local_table,
       DDCA_Feature_Value_Entry *  alt_names)
 {
+   bool debug = false;
    assert(local_table);
    if (alt_names) {
+      if (debug) {
+         printf("(%s) alt_names at %p:\n", __func__, alt_names);
+         for (DDCA_Feature_Value_Entry * cur = alt_names; cur->value_name; cur++) {
+             printf("(%s)    code: 0x%02x, name=%p->%s\n",
+                    __func__, cur->value_code, cur->value_name, cur->value_name);
+         }
+      }
+
       for (DDCA_Feature_Value_Entry * curEntry = local_table->values;
-           curEntry->value_code && curEntry->value_name;
+           curEntry->value_name;
            curEntry++)
       {
          DDCA_Feature_Value_Entry * altEntry =
          find_feature_value_entry(alt_names, curEntry->value_code);
          if (altEntry) {
+            if (debug) {
+               printf("(%s) code=0x%02x, new value name: %p -> %s\n",
+                      __func__, curEntry->value_code, altEntry->value_name, altEntry->value_name);
+            }
             free(curEntry->value_name);
-            curEntry->value_name = altEntry->value_name;
+            curEntry->value_name = strdup(altEntry->value_name);
          }
       }
    }
 }
+
 
 DDCA_Cap_Vcp *
 ddcutil_find_cap_vcp(DDCA_Capabilities * parsed_caps, uint8_t feature_code)
