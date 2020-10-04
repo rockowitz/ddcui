@@ -164,7 +164,6 @@ void FeatureWidget::setupFeatureWidget()
    TRACECF(debug, "Done");
 }
 
-
 void FeatureWidget::setupConnections()
 {
    QObject::connect(_valueWidget, &ValueStackedWidget::stackedFeatureValueChanged,
@@ -189,7 +188,9 @@ FeatureWidget::FeatureWidget(FeatureValue& fv, QWidget *parent)
    , _cls(metaObject()->className())
 {
     setupFeatureWidget();
+#ifdef PASS_NC_VALUE_PARMS
     setupConnections();
+#endif
     setFeatureValue(fv);
 }
 
@@ -305,7 +306,7 @@ bool FeatureWidget::hasSlTable()
    return result;
 }
 
-
+#ifdef PASS_NC_PARMS
 void FeatureWidget::setNcValuesSource(NcValuesSource newsrc, bool useLatestNcValueNames)
 {
    bool debug = false;
@@ -313,6 +314,7 @@ void FeatureWidget::setNcValuesSource(NcValuesSource newsrc, bool useLatestNcVal
    _valueWidget->setNcValuesSource(newsrc, useLatestNcValueNames);
    TRACEMF(debug, "Done");
 }
+#endif
 
 
 void FeatureWidget::resizeEvent(QResizeEvent * evt)

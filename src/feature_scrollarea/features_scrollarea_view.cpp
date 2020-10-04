@@ -313,7 +313,7 @@ void FeaturesScrollAreaView::onModelValueChanged(
    curWidget->setCurrentValue(newval);
 }
 
-
+#ifdef PASS_NC_PARMS
 void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc, bool newUseLatestNames) {
    bool debugFunc = false;
    debugFunc = debugFunc || debugSignals;
@@ -354,6 +354,7 @@ void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc, bool
    }
    TRACEMCF(debugFunc, "Done");
 }
+#endif
 
 
 void FeaturesScrollAreaView::onModelDdcDetailedError(DdcDetailedError* perec) {

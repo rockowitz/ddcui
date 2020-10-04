@@ -39,7 +39,6 @@ public:
 
     void freeContents(void);    // unimplemented
 
-
     QSize maxRowSize();
 
 signals:
@@ -50,7 +49,9 @@ public slots:
     void onEndInitialLoad(void);
     void onUIValueChanged(uint8_t feature_code, bool writeOnly, uint8_t sh, uint8_t sl);
     void onModelValueChanged(const char * caller, uint8_t featureCode, uint8_t sh, uint8_t sl);
+#ifdef PASS_NC_PARMS
     void onNcValuesSourceChanged(NcValuesSource newsrc, bool useLatestNcValueNames);
+#endif
     void onModelDdcDetailedError(DdcDetailedError* perec);
     void onModelDdcFeatureError(DdcFeatureError* perec);
 
@@ -61,8 +62,10 @@ private:        // member variables
     QStackedWidget *   _centralStackedWidget;
     MsgBoxQueue *      _msgboxQueue;
 
+#ifdef PASS_NC_PARMS
     NcValuesSource     _curNcValuesSource;    // how to properly initialize?
     bool               _curUseLatestNcValueNames;
+#endif
     bool               _controlKeyRequired;
     FeaturesScrollAreaContents * _scrollAreaContents = NULL;
 
