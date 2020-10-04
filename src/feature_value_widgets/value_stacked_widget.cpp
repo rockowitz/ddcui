@@ -132,6 +132,11 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
                       curWidget,  SLOT(forContainedWidgetChanged(uint8_t, uint8_t, uint8_t)));
 #endif
 
+   QWidget::connect(GlobalState::instance()._otherOptionsState,
+                                            &OtherOptionsState::ncValuesSourceChanged,
+               this,                        &ValueStackedWidget::setNcValuesSource );
+
+
     TRACECF(debug, "Done.");
 }
 
@@ -291,6 +296,17 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
         setCurrentWidget(_cur_stacked_widget);
     }
 
+#ifdef NO
+    if (_pageno_selected == _pageno_nc || _pageno_selected == _pageno_ncplus) {
+       QWidget::connect(GlobalState::instance()._otherOptionsState, &OtherOptionsState::ncValuesSourceChanged,
+               _ncWidget,                        &ValueNcWidget::reloadComboBox );
+    }
+    else if (_pageno_selected == _pageno_ncplus) {
+       QWidget::connect(GlobalState::instance()._otherOptionsState, &OtherOptionsState::ncValuesSourceChanged,
+               _ncplusWidget,                        &ValueNcWidget::reloadComboBox );
+    }
+#endif
+
     TRACECF(debug, "Calling _cur_stacked_widget->setFeatureValue()" );
     _cur_stacked_widget->setFeatureValue(fv);
     TRACECF(debug, "Done");
@@ -339,8 +355,10 @@ bool ValueStackedWidget::hasSlTable() {
 
 
 void ValueStackedWidget::setNcValuesSource(NcValuesSource newsrc, bool newUseLatestNcValueNames) {
-   TRACECF(debugNcValues, "newsrc = %d, newUseLatestNcValueNames = %s, _pageno_selected=%d, _pageno_nc=%d",
-                          newsrc, SBOOL(newUseLatestNcValueNames), _pageno_selected, _pageno_nc);
+   bool debugFunc = false;
+   debugFunc = debugFunc || debugNcValues;
+   TRACECF(debugFunc, "newsrc=%d, newUseLatestNcValueNames=%s, _pageno_selected=%d, _pageno_nc=%d, _pageno_ncplus=%d",
+                      newsrc, SBOOL(newUseLatestNcValueNames), _pageno_selected, _pageno_nc, _pageno_ncplus);
 
    if (_pageno_selected == _pageno_nc) {
       _ncWidget->reloadComboBox(newsrc, newUseLatestNcValueNames);
@@ -348,6 +366,6 @@ void ValueStackedWidget::setNcValuesSource(NcValuesSource newsrc, bool newUseLat
    else if (_pageno_selected == _pageno_ncplus) {
       _ncplusWidget->reloadComboBox(newsrc, newUseLatestNcValueNames);
    }
-   TRACECF(debugNcValues, "Done");
+   TRACECF(debugFunc, "Done");
 }
 

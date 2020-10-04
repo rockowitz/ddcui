@@ -35,6 +35,8 @@ public:
     void     setCurrentValue(uint16_t newval);
     // uint16_t getCurrentValue();
     bool     hasSlTable();
+
+public slots:
     void     setNcValuesSource(NcValuesSource newsrc, bool newUseLatestNames);
 
     // QSize sizeHint() const override;
