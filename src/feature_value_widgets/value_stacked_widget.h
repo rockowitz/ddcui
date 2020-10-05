@@ -34,7 +34,9 @@ public:
     void     setFeatureValue(const FeatureValue &fv);
     void     setCurrentValue(uint16_t newval);
     // uint16_t getCurrentValue();
+#ifdef NC_FEATURE_VALUES2
     bool     hasSlTable();
+#endif
 
 public slots:
     void     setNcValuesSource(NcValuesSource newsrc, bool newUseLatestNames);

@@ -347,11 +347,12 @@ void  ValueStackedWidget::forContainedWidgetChanged(uint8_t feature_code, uint8_
    // simpleFeatureValueNotify(SimpleFeatureValue(feature_code, sh, sl));
 }
 
-
+#ifdef NC_FEATURE_VALUES2
 bool ValueStackedWidget::hasSlTable() {
    bool result = (_pageno_selected == _pageno_nc || _pageno_selected == _pageno_ncplus);
    return result;
 }
+#endif
 
 
 void ValueStackedWidget::setNcValuesSource(NcValuesSource newsrc, bool newUseLatestNcValueNames) {
