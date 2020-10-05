@@ -31,7 +31,9 @@ public:
 
     void setFeatureValue(FeatureValue &fv);
     void setCurrentValue(uint16_t newval);
+#ifdef PASS_NC_PARMS2
     bool hasSlTable();
+#endif
 #ifdef PASS_NC_PARMS
     void setNcValuesSource(NcValuesSource newsrc, bool useLatestNcValueNames);
 #endif

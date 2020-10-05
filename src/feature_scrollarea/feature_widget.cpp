@@ -298,13 +298,14 @@ void FeatureWidget::simpleFeatureValueChanged(SimpleFeatureValue fv) {
 }
 #endif
 
-
+#ifdef PASS_NC_PARMS2
 bool FeatureWidget::hasSlTable()
 {
    bool result = _valueWidget->hasSlTable();
    // TRACE("Returning: %s", SBOOL(result));
    return result;
 }
+#endif
 
 #ifdef PASS_NC_PARMS
 void FeatureWidget::setNcValuesSource(NcValuesSource newsrc, bool useLatestNcValueNames)
