@@ -13,6 +13,7 @@
 #include <stdint.h>
 /** \endcond */
 
+#include "coredefs.h"
 
 // Identifier id to name and description lookup
 //
@@ -76,6 +77,32 @@ char * vnt_interpret_flags(
       Value_Name_Title_Table  bitname_table,
       bool                    use_title,
       char *                  sepstr);
+
+
+/** An opaque data structure containing 256 flags */
+typedef void * Byte_Bit_Flags;
+
+Byte_Bit_Flags bbf_create();
+void           bbf_free(Byte_Bit_Flags flags);
+void           bbf_set(Byte_Bit_Flags flags, Byte val);
+bool           bbf_is_set(Byte_Bit_Flags flags, Byte val);
+Byte_Bit_Flags bbf_subtract(Byte_Bit_Flags bbflags1, Byte_Bit_Flags bbflags2);
+char *         bbf_repr(Byte_Bit_Flags flags, char * buffer, int buflen);
+int            bbf_count_set(Byte_Bit_Flags flags);  // number of bits set
+int            bbf_to_bytes(Byte_Bit_Flags  flags, Byte * buffer, int buflen);
+char *         bbf_to_string(Byte_Bit_Flags flags, char * buffer, int buflen);
+bool           bbf_store_bytehex_list(Byte_Bit_Flags flags, char * start, int len);
+
+/** Opaque iterator for #Byte_Bit_Flags */
+typedef void * Byte_Bit_Flags_Iterator;
+
+Byte_Bit_Flags_Iterator
+               bbf_iter_new(Byte_Bit_Flags bbflags);
+void           bbf_iter_free(Byte_Bit_Flags_Iterator bbf_iter);
+void           bbf_iter_reset(Byte_Bit_Flags_Iterator bbf_iter);
+int            bbf_iter_next(Byte_Bit_Flags_Iterator bbf_iter);
+
+
 
 
 #endif /* DATA_STRUCTURES_H_ */
