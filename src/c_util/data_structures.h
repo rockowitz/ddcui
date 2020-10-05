@@ -79,30 +79,31 @@ char * vnt_interpret_flags(
       char *                  sepstr);
 
 
-/** An opaque data structure containing 256 flags */
-typedef void * Byte_Bit_Flags;
 
-Byte_Bit_Flags bbf_create();
-void           bbf_free(Byte_Bit_Flags flags);
-void           bbf_set(Byte_Bit_Flags flags, Byte val);
-bool           bbf_is_set(Byte_Bit_Flags flags, Byte val);
-Byte_Bit_Flags bbf_subtract(Byte_Bit_Flags bbflags1, Byte_Bit_Flags bbflags2);
-char *         bbf_repr(Byte_Bit_Flags flags, char * buffer, int buflen);
-int            bbf_count_set(Byte_Bit_Flags flags);  // number of bits set
-int            bbf_to_bytes(Byte_Bit_Flags  flags, Byte * buffer, int buflen);
-char *         bbf_to_string(Byte_Bit_Flags flags, char * buffer, int buflen);
-bool           bbf_store_bytehex_list(Byte_Bit_Flags flags, char * start, int len);
+typedef struct {
+   uint8_t bytes[32];
+} Bit_Set_256;
 
-/** Opaque iterator for #Byte_Bit_Flags */
-typedef void * Byte_Bit_Flags_Iterator;
+extern const Bit_Set_256 EMPTY_BIT_SET_256;
 
-Byte_Bit_Flags_Iterator
-               bbf_iter_new(Byte_Bit_Flags bbflags);
-void           bbf_iter_free(Byte_Bit_Flags_Iterator bbf_iter);
-void           bbf_iter_reset(Byte_Bit_Flags_Iterator bbf_iter);
-int            bbf_iter_next(Byte_Bit_Flags_Iterator bbf_iter);
+Bit_Set_256    bs256_add(Bit_Set_256 flags, Byte val);
+bool           bs256_contains(Bit_Set_256 flags, Byte val);
+bool           bs256_eq(Bit_Set_256 set1, Bit_Set_256 set2);
+Bit_Set_256    bs256_or(Bit_Set_256 set1, Bit_Set_256 set2);         // union
+Bit_Set_256    bs256_and(Bit_Set_256 set1, Bit_Set_256 set2);        // intersection
+Bit_Set_256    bs256_and_not(Bit_Set_256 set1, Bit_Set_256 set2);    // subtract
+int            bs256_count(Bit_Set_256 set);
+char *         bs256_to_string(Bit_Set_256 set, const char * value_prefix, const char * septr);
 
 
+/** Opaque iterator for Bit_Set_256 */
+typedef void * Bit_Set_256_Iterator;
+
+Bit_Set_256_Iterator
+               bs256_iter_new(Bit_Set_256 bs256lags);
+void           bs256_iter_free(Bit_Set_256_Iterator iter);
+void           bs256_iter_reset(Bit_Set_256_Iterator iter);
+int            bs256_iter_next(Bit_Set_256_Iterator  iter);
 
 
 #endif /* DATA_STRUCTURES_H_ */
