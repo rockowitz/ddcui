@@ -268,6 +268,7 @@ Bit_Set_256 bs256_and_not(
 }
 
 
+// #ifdef OLD
 int bs256_count(
    Bit_Set_256 bbset)
 {
@@ -284,6 +285,30 @@ int bs256_count(
    // printf("(%s) returning: %d\n", __func__, result);
    return result;
 }
+// #endif
+
+
+#ifdef COMPILE_ERRORS
+int bs256_count(
+      Bit_Set_256 bbset)
+{
+   // regard the array of 32 bytes as an array of 8 4-byte unsigned integers
+   uint64_t  list2 = (uint64_t) bbset.bytes;
+   unsigned int ct = 0;
+   for (int ndx = 0; ndx < 4; ndx++) {
+      // clever algorithm for counting number of bits per Brian Kernihgan
+      uint64_t v = list2[ndx];
+      for (; v; ct++) {
+        v &= v - 1; // clear the least significant bit set
+      }
+      // DBGMSG("feature_list_count() returning: %d", ct);
+   }
+// #ifdef OLD
+   assert(ct == bs256_count0(bbset));
+// #endif
+   return ct;
+}
+#endif
 
 
 char *
