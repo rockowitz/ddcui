@@ -52,18 +52,16 @@ private:
 
 // *** Member Variables ***
 
-private:   // member variables
+protected:
+    QComboBox *    _cb;
+    QHBoxLayout *  _layout;
+    QLabel *       _extraInfo;
+
+private:
     NcValuesSource _curNcValuesSource = OtherOptionsState::DefaultNcValuesSource;
     bool           _curUseLatestNcValueNames = OtherOptionsState::DefaultUseMaximalNcValueNames;
     bool           _guiChange = false;
-
-protected:   // member variables
-    QComboBox *   _cb;
-    QHBoxLayout * _layout;
-    QLabel * _extraInfo;
-
-private:     // member variables
-    const char *                  _cls;
+    const char *   _cls;
 };
 
 #endif // VALUE_NC_WIDGET_H
