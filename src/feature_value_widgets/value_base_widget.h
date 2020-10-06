@@ -9,7 +9,7 @@
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QComboBox>
 
-#include <ddcutil_c_api.h>
+#include <ddcutil_types.h>
 
 #include "base/global_state.h"
 #include "nongui/feature_value.h"
