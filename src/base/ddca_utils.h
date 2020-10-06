@@ -18,6 +18,7 @@ Bit_Set_256 bs256_from_sl_values(DDCA_Feature_Value_Entry * sl_values);
 
 // NC Feature Values
 
+#ifdef OLD
 typedef enum {
    CapsOnly,
    CapsPlusMccs,
@@ -25,7 +26,9 @@ typedef enum {
 } Nc_Values_Merge_Mode;
 
 const char * nc_values_merge_mode_name(Nc_Values_Merge_Mode merge_mode);
+#endif
 
+#ifdef UNUSED
 // #define LOCAL_FEATURE_VALUE_TABLE_MARKER0 "LFVT"
 extern  const char * LOCAL_FEATURE_VALUE_TABLE_MARKER;
 typedef struct {
@@ -33,7 +36,9 @@ typedef struct {
    unsigned char              flags;       // for future use, no flags yet defined
    DDCA_Feature_Value_Entry   values[0];
 } Local_Feature_Value_Table;
+#endif
 
+#ifdef OLD
 Local_Feature_Value_Table *
 ddcutil_merge_feature_values(
       DDCA_Cap_Vcp *             capabilities_feature_record,
@@ -44,7 +49,9 @@ void
 ddcutil_adjust_local_feature_value_names(
       Local_Feature_Value_Table * local_table,
       DDCA_Feature_Value_Entry *  alt_names);
+#endif
 
+#ifdef UNUSED
 void
 ddcutil_free_local_feature_value_table(
       Local_Feature_Value_Table *  table);
@@ -52,7 +59,7 @@ ddcutil_free_local_feature_value_table(
 void
 ddcutil_dbgrpt_local_feature_value_table(
       Local_Feature_Value_Table * table);
-
+#endif
 
 // Capabilities
 

@@ -47,6 +47,7 @@ bs256_from_sl_values(DDCA_Feature_Value_Entry * sl_values) {
 
 // Parsed Capabilities and Local Feature Value Table
 
+#ifdef UNUSED
 static bool
 cap_vcp_contains(DDCA_Cap_Vcp* cfr, uint8_t feature_code) {
    // printf("(%s) cfr=%p, feature_code=0x%02x\n", __func__, cfr, feature_code); fflush(stdout);
@@ -60,7 +61,6 @@ cap_vcp_contains(DDCA_Cap_Vcp* cfr, uint8_t feature_code) {
    // printf("(%s) Returning %d\n", __func__, result);
    return result;
 }
-
 
 static DDCA_Feature_Value_Entry *
 find_feature_value_entry(DDCA_Feature_Value_Entry * sl_values, uint8_t feature_code) {
@@ -86,14 +86,17 @@ feature_value_entry_ct(DDCA_Feature_Value_Entry * sl_values) {
    }
    return ct;
 }
+#endif
 
-
+#ifdef OLD
 static inline int
 int_max(int v1, int v2) {
    return (( v1 > v2) ? v1 : v2);
 }
+#endif
 
 
+#ifdef UNUSED
 const char * LOCAL_FEATURE_VALUE_TABLE_MARKER = "LFVT";
 
 static Local_Feature_Value_Table *
@@ -148,8 +151,10 @@ ddcutil_dbgrpt_local_feature_value_table(Local_Feature_Value_Table * table) {
       }
    }
 }
+#endif
 
 
+#ifdef OLD
 const char *
 nc_values_merge_mode_name(Nc_Values_Merge_Mode merge_mode) {
    // char * s = NULL;
@@ -166,8 +171,10 @@ nc_values_merge_mode_name(Nc_Values_Merge_Mode merge_mode) {
    }
    return "Error";
 }
+#endif
 
 
+#ifdef OLD
 /* Combines the values for feature as recorded in the capabilities string with
  *  the value/name pairs from the MCCS spec.
  */
@@ -257,8 +264,9 @@ ddcutil_merge_feature_values(
    }
    return result;
 }
+#endif
 
-
+#ifdef OLD
 void
 ddcutil_adjust_local_feature_value_names(
       Local_Feature_Value_Table * local_table,
@@ -292,6 +300,7 @@ ddcutil_adjust_local_feature_value_names(
       }
    }
 }
+#endif
 
 
 DDCA_Cap_Vcp *
