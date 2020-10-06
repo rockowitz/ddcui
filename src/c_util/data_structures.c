@@ -1,6 +1,6 @@
 // data_structures.c
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <assert.h>
@@ -194,13 +194,30 @@ Bit_Set_256 bs256_add(
     Bit_Set_256 flags,
     Byte val)
 {
+    bool debug = false;
+
     Bit_Set_256 result = flags;
     int flagndx   = val >> 3;
     int shiftct   = val & 0x07;
     Byte flagbit  = 0x01 << shiftct;
-    printf("(%s) val=0x%02x, flagndx=%d, shiftct=%d, flagbit=0x%02x\n",
-           __func__, val, flagndx, shiftct, flagbit);
+    if (debug)
+       printf("(%s) val=0x%02x, flagndx=%d, shiftct=%d, flagbit=0x%02x\n",
+              __func__, val, flagndx, shiftct, flagbit);
     result.bytes[flagndx] |= flagbit;
+
+    if (debug) {
+       // printf("(%s) wolf 1\n", __func__);
+       char * bs1 = bs256_to_string(flags, "","");
+       char * bs2 = bs256_to_string(result, "","");
+       // printf("(%s) wolf 2\n", __func__);
+       printf("(%s) bitstring=%s, value %d, returning: %s\n",
+              __func__, bs1, val, bs2);
+       free( bs1);
+       free(bs2);
+       // printf("(%s) wolf 3\n", __func__);
+    }
+
+
     return result;
 }
 
@@ -209,12 +226,22 @@ bool bs256_contains(
     Bit_Set_256 flags,
     Byte val)
 {
+    bool debug = false;
+
     int flagndx   = val >> 3;
     int shiftct   = val  & 0x07;
     Byte flagbit  = 0x01 << shiftct;
-    printf("(%s) val=0x%02x, flagndx=%d, shiftct=%d, flagbit=0x%02x\n",
-           __func__, val, flagndx, shiftct, flagbit);
+    // printf("(%s) val=0x%02x, flagndx=%d, shiftct=%d, flagbit=0x%02x\n",
+    //        __func__, val, flagndx, shiftct, flagbit);
     bool result = flags.bytes[flagndx] & flagbit;
+    if (debug) {
+       printf("(%s) flags:\n   ",__func__);
+       for (int ndx = 0; ndx < 32; ndx++) {
+          printf("%02x", flags.bytes[ndx]);
+       }
+       printf("\n");
+       printf("(%s)  bit %d, returning: %d\n",  __func__, val, result);
+    }
     return result;
 }
 
@@ -317,9 +344,16 @@ bs256_to_string(
       const char * value_prefix,
       const char * sepstr)
 {
-   // DBGMSG("Starting. feature_list=%p, value_prefix=|%s|, sepstr=|%s|",
-   //        feature_list, value_prefix, sepstr);
-   // rpt_hex_dump((Byte*)feature_list, 32, 2);
+   bool debug = false;
+   if (debug) {
+      printf("(%s) value_prefix=|%s|, sepstr=|%s|\n",
+             __func__, value_prefix, sepstr);
+      for (int ndx = 0; ndx < 32; ndx++) {
+         printf("%02x", bitset.bytes[ndx]);
+      }
+      printf("\n");
+      // rpt_hex_dump((Byte*)feature_list, 32, 2);
+   }
 
    if (!value_prefix)
       value_prefix = "";
@@ -329,7 +363,7 @@ bs256_to_string(
 
    int bit_ct = bs256_count(bitset);
    int reqd_size = (bit_ct*vsize)+1;   // +1 for trailing null
-
+   // printf("(%s) w=olf 2\n", __func__);
    char * buf = calloc(1, reqd_size);
    buf[0] = '\0';
    // DBGMSG("feature_ct=%d, vsize=%d, buf size = %d", feature_ct, vsize, vsize*feature_ct);
@@ -338,12 +372,17 @@ bs256_to_string(
       if ( bs256_contains(bitset, ndx) )
          sprintf(buf + strlen(buf), "%s%02x%s", value_prefix, ndx, sepstr);
    }
+   // printf("(%s) w=olf 3\n", __func__);
 
    if (bit_ct > 0)
       buf[ strlen(buf)-strlen(sepstr)] = '\0';
 
+   // printf("(%s) wolf 4\n", __func__);
    // DBGMSG("Returned string length: %d", strlen(buf));
    // DBGMSG("Returning %p - %s", buf, buf);
+   if (debug)
+   printf("(%s) Returning: len=%d, %s\n", __func__, (int) strlen(buf), buf);
+
    return buf;
 }
 
