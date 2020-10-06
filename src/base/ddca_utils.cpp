@@ -4,13 +4,12 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <assert.h>
+#include <glib-2.0/glib.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <glib-2.0/glib.h>
 
 #include <ddcutil_types.h>
-#include <ddcutil_c_api.h>
 
 #include <QtCore/QString>
 
