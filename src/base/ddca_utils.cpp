@@ -20,6 +20,8 @@ extern "C" {
 #include "ddca_utils.h"
 
 
+// Parsed capabilities and feature values
+
 Bit_Set_256
 bs256_from_cfr(DDCA_Cap_Vcp * cfr) {
    Bit_Set_256 result = EMPTY_BIT_SET_256;
@@ -42,10 +44,6 @@ bs256_from_sl_values(DDCA_Feature_Value_Entry * sl_values) {
    return result;
 }
 
-
-
-
-// Parsed Capabilities and Local Feature Value Table
 
 #ifdef UNUSED
 static bool
@@ -92,64 +90,6 @@ feature_value_entry_ct(DDCA_Feature_Value_Entry * sl_values) {
 static inline int
 int_max(int v1, int v2) {
    return (( v1 > v2) ? v1 : v2);
-}
-#endif
-
-
-#ifdef UNUSED
-const char * LOCAL_FEATURE_VALUE_TABLE_MARKER = "LFVT";
-
-static Local_Feature_Value_Table *
-new_local_feature_value_table(int entry_ct) {
-   bool debug = false;
-   int reqd_size = sizeof(Local_Feature_Value_Table) + entry_ct * sizeof(DDCA_Feature_Value_Entry);
-   if (debug) {
-      printf("(%s) entry_ct = %d, reqd_size = %d\n", __func__, entry_ct, reqd_size); fflush(stdout);
-   }
-   Local_Feature_Value_Table * result = (Local_Feature_Value_Table*) calloc(1,reqd_size);
-   memcpy(result->marker, LOCAL_FEATURE_VALUE_TABLE_MARKER, 4);
-   return result;
-}
-
-
-void
-ddcutil_free_local_feature_value_table(Local_Feature_Value_Table * table) {
-   bool debug = false;
-   if (debug) {
-      printf("(%s) Starting. table=%p\n", __func__, table);  fflush(stdout);
-   }
-
-   if (table) {
-      assert(memcmp(table->marker, LOCAL_FEATURE_VALUE_TABLE_MARKER, 4) == 0);
-      DDCA_Feature_Value_Entry * cur = table->values;
-      while (cur) {
-         if (cur->value_name) {
-            free(cur->value_name);
-            cur++;
-         }
-         else {
-            cur = NULL;
-         }
-      }
-      free(table);
-   }
-
-   if (debug) {
-      printf("(%s) Done.\n", __func__);
-   }
-}
-
-void
-ddcutil_dbgrpt_local_feature_value_table(Local_Feature_Value_Table * table) {
-   printf("Local_Feature_Value_Table at %p\n", table);
-   if (table) {
-      assert(memcmp(table->marker, LOCAL_FEATURE_VALUE_TABLE_MARKER, 4) == 0);
-      DDCA_Feature_Value_Entry * cur = table->values;
-      while (cur->value_name) {
-         printf("   0x%02x, %p -> %s\n", cur->value_code, cur->value_name, cur->value_name);
-         cur++;
-      }
-   }
 }
 #endif
 
