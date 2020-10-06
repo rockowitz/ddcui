@@ -16,6 +16,7 @@
 
 #include <ddcutil_c_api.h>
 
+#include "c_util/data_structures.h"
 #include "base/ddcui_parms.h"
 #include "base/core.h"
 #include "base/ddca_utils.h"
@@ -103,20 +104,27 @@ ValueNcWidget::ValueNcWidget(QWidget *parent):
 
 void ValueNcWidget::setFeatureValue(const FeatureValue &fv) {
     bool debug = false;
+    debug = debug || debugWidget;
     TRACEMCF(debug, "TRACECMF. ValueNcWidget. featureCode=0x%02x, capVcp=%p, ddcrc=%d",
                     fv.featureCode(), fv.capVcp(), fv.ddcrc());
-    TRACEMCF(debugWidget, "Starting. feature 0x%02x, new sl=x%02x, Before ValueBaseWidget::setFeatureValue()",
+    TRACEMCF(debug, "Starting. feature 0x%02x, new sl=x%02x, Before ValueBaseWidget::setFeatureValue()",
               fv.featureCode(), fv.val().sl);
 
     ValueBaseWidget::setFeatureValue(fv);
 
     _guiChange = false;
 
+    TRACEMCF(debug, "_sl = 0x%02x", _sl);
+    _observedValues = bs256_add(_observedValues, _sl);
+    if (debug) {
+       char * bs1 = bs256_to_string(_observedValues, ""," ");
+       TRACEM("_observedValues: %s", bs1);
+       free(bs1);
+    }
     GlobalState& globalState = GlobalState::instance();
-    NcValuesSource sourceMode = globalState._otherOptionsState->_ncValuesSource;
-    _curNcValuesSource = sourceMode;
+    _curNcValuesSource        = globalState._otherOptionsState->_ncValuesSource;
     _curUseLatestNcValueNames = globalState._otherOptionsState->_useLatestNcValueNames;
-    loadComboBox();
+    loadComboBox2();
 
     // _extraInfo->setText("default extra text");
     _extraInfo->setText("");
@@ -126,7 +134,7 @@ void ValueNcWidget::setFeatureValue(const FeatureValue &fv) {
     TRACEMCF(debug, "Done");
 }
 
-
+#ifdef OLD
 /**
  *  @param  mode
  *  @return dynamically allocated feature value table, caller must free
@@ -179,8 +187,9 @@ ValueNcWidget::getComboBoxEntries() {
 
    return result;
 }
+#endif
 
-
+#ifdef OLD
 void ValueNcWidget::loadComboBox() {
    bool debugFunc = false;
    debugFunc = debugFunc || debugNcValues;
@@ -227,6 +236,104 @@ void ValueNcWidget::loadComboBox() {
 
    TRACEMF(debugFunc, "Done");
 }
+#endif
+
+// copied from feature_metadata.c
+char *
+ValueNcWidget::sl_value_table_lookup(
+      DDCA_Feature_Value_Entry * value_entries,
+      uint8_t                    value_id)
+{
+   bool debug = false;
+   TRACEMF(debug, "Starting. value_entries=%p, value_id=0x%02x", value_entries, value_id);
+   char * result = NULL;
+   if (value_entries) {
+      DDCA_Feature_Value_Entry *  cur_value = value_entries;
+      while (cur_value->value_name != NULL) {
+         TRACEMF(debug, "value_code=0x%02x, value_name = %s", cur_value->value_code, cur_value->value_name);
+         if (cur_value->value_code == value_id) {
+            result = cur_value->value_name;
+            // DBGMSG("Found");
+            break;
+         }
+         cur_value++;
+      }
+   }
+   TRACEMF(debug, "Returning %p -> %s", result, result);
+   return result;
+}
+
+
+void ValueNcWidget::loadComboBox2() {
+   bool debugFunc = false;
+   debugFunc = debugFunc || debugNcValues;
+
+   NcValuesSource mode = _curNcValuesSource;
+   TRACEMF(debugFunc, "feature 0x%02x, mode=%d=%s, _useLatestNcValueNames=%s",
+                          _featureCode, mode, ncValuesSourceName(mode), SBOOL(_curUseLatestNcValueNames) );
+
+   // In case we're called to reload the combobox values, delete existing values
+   for (int ndx = _cb->count()-1; ndx >= 0; ndx--) {
+      _cb->removeItem(ndx);
+   }
+
+   _validValues = EMPTY_BIT_SET_256;
+   _validValues = bs256_or(_validValues, _observedValues);
+   if (debugFunc) {
+      char * bs1 = bs256_to_string(_validValues, ""," ");
+      TRACEM("initial _validValues: %s", bs1);
+      free(bs1);
+      char * bs2 = bs256_to_string(_observedValues, ""," ");
+      TRACEM("_observedValues: %s", bs2);
+      free(bs2);
+;
+   }
+   if (mode == NcValuesFromCapabilities || mode == NcValuesFromBoth) {
+      _validValues = bs256_or(_validValues, bs256_from_cfr(_capVcp));
+
+   }
+   if (mode == NcValuesFromMccs || mode == NcValuesFromBoth) {
+      DDCA_Feature_Value_Entry * slValues = _finfo->sl_values;
+      _validValues = bs256_or(_validValues, bs256_from_sl_values(slValues));
+   }
+   if (debugFunc) {
+      char * bs1 = bs256_to_string(_validValues, "","");
+      TRACEM("final _validValues: %s", bs1);
+      free(bs1);
+   }
+
+   DDCA_Feature_Value_Entry * valueNames = _finfo->sl_values;
+   if (_curUseLatestNcValueNames)
+      valueNames = _finfo->latest_sl_values;
+   Bit_Set_256_Iterator iter = bs256_iter_new(_validValues);
+   while(true){
+      int iValueCode = bs256_iter_next(iter);
+      if (iValueCode < 0)
+         break;
+      uint8_t valueCode = iValueCode & 0xff;
+
+      TRACEMF(debugFunc, "Adding value 0x%02x to combobox", valueCode);
+      char * valueName = sl_value_table_lookup(valueNames, valueCode);
+      QString s;
+      if (valueName)
+         s = QString::asprintf("x%02x - %s", valueCode, valueName);
+      else
+         s = QString::asprintf("x%02x - Unrecognized value", valueCode);
+      TRACEMF(debugFunc, "inserting 0x%02x into combobox: %s", valueCode, QS2S(s));
+      _cb->addItem(s, QVariant(valueCode));
+   }
+   // - set current value in combo box
+   int cur_ndx = findItem(_sl);
+   assert (cur_ndx >= 0);    // must be in _observedValues
+   TRACEMF(debugFunc, "VCP features 0x%02x, _sl=0x%02x, cur_ndx = %d",
+           _featureCode, _sl, cur_ndx);
+    _cb->setCurrentIndex(cur_ndx);
+    // TRACEMF(debugFunc, "currentIndex after set: %d", _cb->currentIndex());
+
+   TRACEMF(debugFunc, "Done");
+}
+
+
 
 
 void ValueNcWidget::reloadComboBox(NcValuesSource newSource, bool newUseLatestNames) {
@@ -244,7 +351,7 @@ void ValueNcWidget::reloadComboBox(NcValuesSource newSource, bool newUseLatestNa
       _curNcValuesSource = newSource;
       _curUseLatestNcValueNames = newUseLatestNames;
       _guiChange = false;
-      loadComboBox();
+      loadComboBox2();
       _guiChange = true;
    }
 
@@ -258,14 +365,19 @@ void ValueNcWidget::setCurrentShSl(uint16_t newval) {
    _guiChange = false;
 
     ValueBaseWidget::setCurrentShSl(newval);
-
-    // - set current value in combo box
-    int cur_ndx = findItem(_sl);
-    if (cur_ndx >= 0) {
-        _cb->setCurrentIndex(cur_ndx);
+    if (!bs256_contains(_observedValues, _sl)) {
+       bs256_add(_observedValues, _sl);
+       loadComboBox2();   // reloads combo box, then sets current value
     }
     else {
-        TRACEC("Unable to find value 0x%02x", _sl);
+       // - set current value in combo box
+       int cur_ndx = findItem(_sl);
+       if (cur_ndx >= 0) {
+           _cb->setCurrentIndex(cur_ndx);
+       }
+       else {
+           TRACEC("Unable to find value 0x%02x", _sl);
+       }
     }
 
     _guiChange = true;
