@@ -13,7 +13,7 @@
 #include <stdint.h>
 /** \endcond */
 
-#include "coredefs.h"
+// #include "coredefs.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -90,8 +90,8 @@ typedef struct {
 
 extern const Bit_Set_256 EMPTY_BIT_SET_256;
 
-Bit_Set_256    bs256_add(Bit_Set_256 flags, Byte val);
-bool           bs256_contains(Bit_Set_256 flags, Byte val);
+Bit_Set_256    bs256_add(Bit_Set_256 flags, uint8_t val);
+bool           bs256_contains(Bit_Set_256 flags, uint8_t val);
 bool           bs256_eq(Bit_Set_256 set1, Bit_Set_256 set2);
 Bit_Set_256    bs256_or(Bit_Set_256 set1, Bit_Set_256 set2);         // union
 Bit_Set_256    bs256_and(Bit_Set_256 set1, Bit_Set_256 set2);        // intersection
