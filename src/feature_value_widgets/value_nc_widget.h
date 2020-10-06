@@ -1,6 +1,6 @@
 /* value_nc_widget.h - Widget for displaying/editing a simple Non-Continuous VCP feature value */
 
-// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef VALUE_NC_WIDGET_H
@@ -14,7 +14,6 @@
 
 #include "config.h"
 #include "c_util/data_structures.h"
-#include "base/ddca_utils.h"
 #include "base/other_options_state.h"
 #include "feature_value_widgets/value_base_widget.h"
 
@@ -46,11 +45,7 @@ private:
     void     createWidgets();
     void     layoutWidget();
     int      findItem(uint8_t sl_value);
-    // Local_Feature_Value_Table *  getComboBoxEntries();
-    // void     loadComboBox();
-    char * sl_value_table_lookup(
-          DDCA_Feature_Value_Entry * value_entries,
-          uint8_t                    value_id);
+    char *   sl_value_table_lookup(DDCA_Feature_Value_Entry * value_entries, uint8_t value_id);
     void     loadComboBox2();
 
 
@@ -62,11 +57,10 @@ protected:
     QLabel *       _extraInfo;
 
 private:
-    NcValuesSource _curNcValuesSource = OtherOptionsState::DefaultNcValuesSource;
-    bool           _curUseLatestNcValueNames = OtherOptionsState::DefaultUseMaximalNcValueNames;
+    NcValuesSource _ncValuesSource = OtherOptionsState::DefaultNcValuesSource;
+    bool           _useLatestNcValueNames = OtherOptionsState::DefaultUseMaximalNcValueNames;
     Bit_Set_256    _observedValues = EMPTY_BIT_SET_256;
     Bit_Set_256    _validValues = EMPTY_BIT_SET_256;
-    // Local_Feature_Value_Table * _valueNames;
     bool           _guiChange = false;
     const char *   _cls;
 };
