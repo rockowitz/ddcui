@@ -11,6 +11,10 @@
 #include <ddcutil_types.h>
 #include <QtCore/QString>
 
+#include "c_util/data_structures.h"
+
+Bit_Set_256 bs256_from_cfr(DDCA_Cap_Vcp * cfr);
+Bit_Set_256 bs256_from_sl_values(DDCA_Feature_Value_Entry * sl_values);
 
 // NC Feature Values
 

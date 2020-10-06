@@ -14,7 +14,36 @@
 
 #include <QtCore/QString>
 
+extern "C" {
+#include "c_util/data_structures.h"
+}
 #include "ddca_utils.h"
+
+
+Bit_Set_256
+bs256_from_cfr(DDCA_Cap_Vcp * cfr) {
+   Bit_Set_256 result = EMPTY_BIT_SET_256;
+   for (int ndx = 0; ndx < cfr->value_ct; ndx++) {
+      result = bs256_add(result, cfr->values[ndx]);
+    }
+   return result;
+}
+
+Bit_Set_256
+bs256_from_sl_values(DDCA_Feature_Value_Entry * sl_values) {
+   Bit_Set_256 result = EMPTY_BIT_SET_256;
+   if (sl_values) {
+      DDCA_Feature_Value_Entry * cur = sl_values;
+      while(cur->value_name) {
+         result = bs256_add(result, cur->value_code);
+         cur++;
+      }
+   }
+   return result;
+}
+
+
+
 
 // Parsed Capabilities and Local Feature Value Table
 
