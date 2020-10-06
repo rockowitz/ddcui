@@ -15,6 +15,10 @@
 
 #include "coredefs.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // Identifier id to name and description lookup
 //
 
@@ -105,5 +109,8 @@ void           bs256_iter_free(Bit_Set_256_Iterator iter);
 void           bs256_iter_reset(Bit_Set_256_Iterator iter);
 int            bs256_iter_next(Bit_Set_256_Iterator  iter);
 
+#ifdef __cplusplus
+}    // extern "C"
+#endif
 
 #endif /* DATA_STRUCTURES_H_ */
