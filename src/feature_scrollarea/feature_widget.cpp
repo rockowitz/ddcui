@@ -188,9 +188,7 @@ FeatureWidget::FeatureWidget(FeatureValue& fv, QWidget *parent)
    , _cls(metaObject()->className())
 {
     setupFeatureWidget();
-#ifdef PASS_NC_VALUE_PARMS
     setupConnections();
-#endif
     setFeatureValue(fv);
 }
 
