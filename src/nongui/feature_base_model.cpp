@@ -16,6 +16,7 @@
 #include <ddcutil_c_api.h>
 #include <ddcutil_status_codes.h>
 
+#include "c_util/data_structures.h"
 #include "base/core.h"
 #include "base/global_state.h"
 #include "base/monitor.h"
@@ -153,7 +154,7 @@ void   FeatureBaseModel::modelVcpValueSet(
                    DDCA_Non_Table_Vcp_Value *           feature_value,
                    DDCA_Status                          ddcrc)
 {
-    bool debugFunc = false;
+    bool debugFunc = false;    // (feature_code == 0x14);
     debugFunc = debugFunc || debugModel;
     if (debugFunc)
         TRACEMCF(debugFunc,
@@ -163,7 +164,7 @@ void   FeatureBaseModel::modelVcpValueSet(
 
     int ndx = modelVcpValueIndex(feature_code);
     if (ndx < 0) {
-        TRACECF(debugFunc, "Creating new FeatureValue");
+        // TRACECF(debugFunc, "Creating new FeatureValue");
 
         DDCA_Cap_Vcp * cap_vcp = NULL;
         if (_parsed_caps)
@@ -176,7 +177,9 @@ void   FeatureBaseModel::modelVcpValueSet(
                                    cap_vcp,
                                    *feature_value,
                                    ddcrc);
-        _featureValues->append(fv);
+          _featureValues->append(fv);
+          TRACECF(debugFunc, "Created new FeatureValue. id = %d, _observedNcValues=%s",
+                             fv->_id, bs256_to_string(fv->_observedNcValues, "", " "));
 
         // Not needed, only thing that matters is end initial load
         // if (debugSignals)
@@ -185,14 +188,18 @@ void   FeatureBaseModel::modelVcpValueSet(
         // notifyFeatureChangeObservers(feature_code);   // alternative
     }
     else {
-        // TRACE("Modifying existing FeatureValue");
-
         FeatureValue * fv =  _featureValues->at(ndx);
+        TRACECF(debugFunc, "Modifying existing FeatureValue, _id=%d, initial _observedNcValues=%s",
+                           fv->_id, bs256_to_string(fv->observedNcValues(), ""," " ) );
+
         // fv->_value.sh = feature_value->sh;
         // fv->_value.sl = feature_value->sl;
 
         if ( ddcrc == fv->ddcrc() ) {
-              fv->setCurrentValue(feature_value->sh, feature_value->sl);
+           fv->setCurrentValue(feature_value->sh, feature_value->sl);
+           TRACECF(debugFunc, "Updated FeatureValue _observedNcValues=%s",
+                 bs256_to_string(fv->observedNcValues(), ""," " ) );
+
            TRACECF(debugFunc || debugSignals,
                    "Emitting signalFeatureUpdated3(), feature code: 0x%02x, sl: 0x%02x",
                    fv->featureCode(), feature_value->sl);
@@ -204,17 +211,17 @@ void   FeatureBaseModel::modelVcpValueSet(
                     ddca_rc_name(ddcrc), fv->featureCode() );
         }
     }
-
 }
 
 
+// called from VcpThread::setvcp()
 void
 FeatureBaseModel::modelVcpValueUpdate(
         uint8_t   feature_code,
         uint8_t   sh,
         uint8_t   sl)
 {
-    bool debugFunc = false;
+    bool debugFunc = false; // || (feature_code == 0x14);
     debugFunc = debugFunc || debugModel;
 
     TRACECF(debugFunc, "feature_code=0x%02x, sh=0x%02x, sl=0x%02x, _initialLoadActive=%s",
@@ -223,9 +230,13 @@ FeatureBaseModel::modelVcpValueUpdate(
     int ndx = modelVcpValueIndex(feature_code);
     assert (ndx >= 0);
     FeatureValue * fv =  _featureValues->at(ndx);
+    TRACECF(debugFunc, "Found FeatureValue instance,  _observedNcValues=%s",
+                       bs256_to_string(fv->observedNcValues(), ""," " ) );
+
     fv->setCurrentValue(sh,sl);
 
     TRACECF(debugFunc || debugSignals, "Emitting signalFeatureUpdated3()");
+    // -> &FeaturesScrollAreaView::onModelValueChanged
     emit signalFeatureUpdated3(__func__, feature_code, sh, sl);
 
 #ifdef FUTURE
@@ -381,7 +392,8 @@ void FeatureBaseModel::setFeatureChecked(uint8_t featureCode) {
    ddca_feature_list_add(&_featuresChecked, featureCode);
 }
 
-
+// called from MainWindow::on_actionRescan_triggered(),
+// FeaturesScrollAreaView::onUIValueChanged() - reloading for features that affect multiple
 void FeatureBaseModel::reloadFeatures() {
    bool debugFunc = false;
    debugFunc = debugFunc || debugFeatureLists;
