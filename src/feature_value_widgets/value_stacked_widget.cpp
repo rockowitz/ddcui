@@ -134,8 +134,7 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
 
    QWidget::connect(GlobalState::instance()._otherOptionsState,
                                             &OtherOptionsState::ncValuesSourceChanged,
-               this,                        &ValueStackedWidget::setNcValuesSource );
-
+                    this, &ValueStackedWidget::setNcValuesSource );
 
     TRACECF(debug, "Done.");
 }
@@ -355,17 +354,17 @@ bool ValueStackedWidget::hasSlTable() {
 #endif
 
 
-void ValueStackedWidget::setNcValuesSource(NcValuesSource newsrc, bool newUseLatestNcValueNames) {
-   bool debugFunc = false;
+void ValueStackedWidget::setNcValuesSource(NcValuesSource newValuesSource, bool newUseLatestNcValueNames) {
+   bool debugFunc = true;
    debugFunc = debugFunc || debugNcValues;
-   TRACECF(debugFunc, "newsrc=%d, newUseLatestNcValueNames=%s, _pageno_selected=%d, _pageno_nc=%d, _pageno_ncplus=%d",
-                      newsrc, SBOOL(newUseLatestNcValueNames), _pageno_selected, _pageno_nc, _pageno_ncplus);
+   TRACECF(debugFunc, "newValuesSource=%d, newUseLatestNcValueNames=%s, _pageno_selected=%d, _pageno_nc=%d, _pageno_ncplus=%d",
+                      newValuesSource, SBOOL(newUseLatestNcValueNames), _pageno_selected, _pageno_nc, _pageno_ncplus);
 
    if (_pageno_selected == _pageno_nc) {
-      _ncWidget->reloadComboBox(newsrc, newUseLatestNcValueNames);
+      _ncWidget->reloadComboBox(newValuesSource, newUseLatestNcValueNames);
    }
    else if (_pageno_selected == _pageno_ncplus) {
-      _ncplusWidget->reloadComboBox(newsrc, newUseLatestNcValueNames);
+      _ncplusWidget->reloadComboBox(newValuesSource, newUseLatestNcValueNames);
    }
    TRACECF(debugFunc, "Done");
 }
