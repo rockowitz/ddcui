@@ -104,7 +104,7 @@ bool Monitor::supportsDdc() {
    return result;
 }
 
-
+ // called by initFeaturesScrollAreaView
 void Monitor::putVcpRequest(VcpRequest * rqst) {
     // PRINTFCM("-> rqst->type=%d. Adding request to monitor's request queue", rqst->_type);
     _requestQueue->put(rqst);
