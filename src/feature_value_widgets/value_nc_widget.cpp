@@ -85,12 +85,15 @@ void ValueNcWidget::layoutWidget() {
 }
 
 
+int ValueNcWidget::nextId = 0;
+
 ValueNcWidget::ValueNcWidget(QWidget *parent):
         ValueBaseWidget(parent)
 {
     bool debug = false;
     _cls = strdup(metaObject()->className());
-    TRACEMCF(debug, "Starting." );
+    _id = ++nextId;
+    TRACEMCF(debug, "Starting. id=%d", _id );
 
     _layout = new QHBoxLayout();
     createWidgets();
@@ -103,10 +106,10 @@ ValueNcWidget::ValueNcWidget(QWidget *parent):
 
 
 void ValueNcWidget::setFeatureValue(const FeatureValue &fv) {
-    bool debug = false;
+    bool debug = false;  //  (fv.featureCode() == 0x14);
     debug = debug || debugWidget;
-    TRACEMCF(debug, "TRACECMF. ValueNcWidget. featureCode=0x%02x, capVcp=%p, ddcrc=%d",
-                    fv.featureCode(), fv.capVcp(), fv.ddcrc());
+    TRACEMCF(debug, "[TRACEMCF. ValueNcWidget]. _id=%d, fv._id=%d, featureCode=0x%02x, capVcp=%p, ddcrc=%d",
+                    _id, fv._id, fv.featureCode(), fv.capVcp(), fv.ddcrc());
     TRACEMCF(debug, "Starting. feature 0x%02x, new sl=x%02x, Before ValueBaseWidget::setFeatureValue()",
               fv.featureCode(), fv.val().sl);
 
@@ -114,13 +117,21 @@ void ValueNcWidget::setFeatureValue(const FeatureValue &fv) {
 
     _guiChange = false;
 
-    TRACEMCF(debug, "_sl = 0x%02x", _sl);
+    // TRACEMCF(debug, "_sl = 0x%02x", _sl);
+    TRACEMF(debug, "Local _observedNcValues: %s", bs256_to_string(_observedValues, ""," "));
+
+    TRACEMF(debug, "Persistent _observedValues from FeatureValue: %s",
+                   bs256_to_string(fv._observedNcValues, ""," "));
+
+    // *** HACK ***
+    _observedValues = bs256_or(_observedValues, fv._observedNcValues);
+    TRACEMF(debug, "Using union of _observedValues and fv._observedNcValues: %s",
+                   bs256_to_string(fv._observedNcValues, ""," "));
+
     _observedValues = bs256_add(_observedValues, _sl);
-    if (debug) {
-       char * bs1 = bs256_to_string(_observedValues, ""," ");
-       TRACEM("_observedValues: %s", bs1);
-       free(bs1);
-    }
+    // fv.setObservedValues(_observedValues);   // permissions errors
+    TRACEMF(debug, "_observedValues after adding 0x%02x: %s", _sl, bs256_to_string(_observedValues, ""," "));
+
     _ncValuesSource        = _globalState._otherOptionsState->_ncValuesSource;
     _useLatestNcValueNames = _globalState._otherOptionsState->_useLatestNcValueNames;
     loadComboBox2();
@@ -160,7 +171,7 @@ ValueNcWidget::sl_value_table_lookup(
 
 
 void ValueNcWidget::loadComboBox2() {
-   bool debugFunc = false;
+   bool debugFunc = false;  // (_featureCode == 0x14);
    debugFunc = debugFunc || debugNcValues;
 
    NcValuesSource mode = _ncValuesSource;
@@ -173,16 +184,11 @@ void ValueNcWidget::loadComboBox2() {
    }
 
    _validValues = EMPTY_BIT_SET_256;
+
+   TRACEMF(debugFunc, "_observedValues at method start: %s", bs256_to_string(_observedValues, ""," "));
    _validValues = bs256_or(_validValues, _observedValues);
-   if (debugFunc) {
-      char * bs1 = bs256_to_string(_validValues, ""," ");
-      TRACEM("initial _validValues: %s", bs1);
-      free(bs1);
-      char * bs2 = bs256_to_string(_observedValues, ""," ");
-      TRACEM("_observedValues: %s", bs2);
-      free(bs2);
-;
-   }
+   TRACEMF(debugFunc, "_validValues at method start: %s", bs256_to_string(_validValues, ""," "));
+
    if (mode == NcValuesFromCapabilities || mode == NcValuesFromBoth) {
       _validValues = bs256_or(_validValues, bs256_from_cfr(_capVcp));
 
@@ -191,11 +197,7 @@ void ValueNcWidget::loadComboBox2() {
       DDCA_Feature_Value_Entry * slValues = _finfo->sl_values;
       _validValues = bs256_or(_validValues, bs256_from_sl_values(slValues));
    }
-   if (debugFunc) {
-      char * bs1 = bs256_to_string(_validValues, "","");
-      TRACEM("final _validValues: %s", bs1);
-      free(bs1);
-   }
+   TRACEMF(debugFunc, "final _validValues: %s", bs256_to_string(_validValues, ""," "));
 
    DDCA_Feature_Value_Entry * valueNames = _finfo->sl_values;
    if (_useLatestNcValueNames)
@@ -213,12 +215,22 @@ void ValueNcWidget::loadComboBox2() {
          s = QString::asprintf("x%02x - %s", valueCode, valueName);
       else
          s = QString::asprintf("x%02x - Unrecognized value", valueCode);
-      TRACEMF(debugFunc, "inserting 0x%02x into combobox: %s", valueCode, QS2S(s));
+      // TRACEMF(debugFunc, "inserting 0x%02x into combobox: %s", valueCode, QS2S(s));
       _cb->addItem(s, QVariant(valueCode));
    }
    int cur_ndx = findItem(_sl);
-   assert (cur_ndx >= 0);    // must be in _observedValues
+   // assert (cur_ndx >= 0);    // must be in _observedValues
+   if (cur_ndx >= 0) {
    _cb->setCurrentIndex(cur_ndx);
+   }
+   else {
+      // pathological case
+      TRACEM("findItem() failed. _sl=%d", _sl);
+      TRACEM("   _validValues: %s", bs256_to_string(_validValues, ""," "));
+      TRACEM("   _observedValues: %s", bs256_to_string(_observedValues, ""," "));
+      // TODO: POP UP MESSAGE BOX
+      _cb->setCurrentIndex(0);
+   }
 
    TRACEMF(debugFunc, "Done. VCP feature 0x%02x, _sl=0x%02x, current index: %d",
                       _featureCode, _sl, _cb->currentIndex());
@@ -226,7 +238,7 @@ void ValueNcWidget::loadComboBox2() {
 
 
 void ValueNcWidget::reloadComboBox(NcValuesSource newSource, bool newUseLatestNames) {
-   bool debugFunc = false;
+   bool debugFunc = false; // (_featureCode == 0x14);
    debugFunc = debugFunc || debugNcValues;
    TRACEMF(debugFunc, "feature=0x%02x, newSource=%d=%s, _ncValuesSource=%d=%s,",
                       _featureCode,
@@ -249,16 +261,29 @@ void ValueNcWidget::reloadComboBox(NcValuesSource newSource, bool newUseLatestNa
 
 
 void ValueNcWidget::setCurrentShSl(uint16_t newval) {
-   TRACEMF(debugWidget, "Starting. feature 0x%02x, newval=x%04x", _featureCode, newval);
+   bool debugFunc = false;  // (_featureCode == 0x14);
+   debugFunc = debugFunc || debugWidget;
+   TRACEMF(debugFunc, "Starting. ValueNcWidget._id=%d, feature 0x%02x, newval=x%04x",
+                      _id, _featureCode, newval);
 
    _guiChange = false;
 
     ValueBaseWidget::setCurrentShSl(newval);
+
+    TRACEMCF(debugFunc, "_sl = 0x%02x", _sl);
+    TRACEMCF(debugFunc, "Using local _observedNcValues: %s", bs256_to_string(_observedValues, ""," "));
+
     if (!bs256_contains(_observedValues, _sl)) {
-       bs256_add(_observedValues, _sl);
+       TRACECF(debugFunc, "Value 0x%02x not found in existing _observedValues: %s",
+                          _sl,  bs256_to_string(_observedValues, ""," "));
+       _observedValues = bs256_add(_observedValues, _sl);
+       TRACECF(debugFunc, "After value 0x%02x added. _observedValues: %s",
+                          _sl,  bs256_to_string(_observedValues, ""," "));
        loadComboBox2();   // reloads combo box, then sets current value
     }
     else {
+       TRACECF(debugFunc, "Value 0x%02x found in existing _observedValues: %s",
+                          _sl,  bs256_to_string(_observedValues, ""," "));
        // - set current value in combo box
        int cur_ndx = findItem(_sl);
        if (cur_ndx >= 0) {
@@ -270,6 +295,7 @@ void ValueNcWidget::setCurrentShSl(uint16_t newval) {
     }
 
     _guiChange = true;
+    TRACEMF(debugFunc, "Done");
 }
 
 // returns -1 if not found

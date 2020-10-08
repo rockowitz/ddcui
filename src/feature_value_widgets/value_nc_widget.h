@@ -51,7 +51,11 @@ private:
 
 // *** Member Variables ***
 
+public:
+    int            _id;
+
 protected:
+    static int     nextId;
     QComboBox *    _cb;
     QHBoxLayout *  _layout;
     QLabel *       _extraInfo;
@@ -59,7 +63,7 @@ protected:
 private:
     NcValuesSource _ncValuesSource = OtherOptionsState::DefaultNcValuesSource;
     bool           _useLatestNcValueNames = OtherOptionsState::DefaultUseMaximalNcValueNames;
-    Bit_Set_256    _observedValues = EMPTY_BIT_SET_256;
+  Bit_Set_256    _observedValues = EMPTY_BIT_SET_256;
     Bit_Set_256    _validValues = EMPTY_BIT_SET_256;
     bool           _guiChange = false;
     const char *   _cls;
