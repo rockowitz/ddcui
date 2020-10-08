@@ -87,6 +87,7 @@ include_directories(src)
 
 set(SOURCES
     src/c_util/data_structures.c
+    src/c_util/glib_util.c
     src/c_util/string_util.c
 
     src/base/core.cpp 
