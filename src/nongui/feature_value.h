@@ -10,6 +10,8 @@
 
 #include "ddcutil_types.h"
 
+#include "c_util/data_structures.h"
+
 
 class FeatureValue
 {
@@ -27,6 +29,7 @@ public:
             DDCA_Status               getvcpStatus=0  // experiment
             );
 
+
     ~FeatureValue();
 
     uint8_t                  featureCode() const;
@@ -40,11 +43,28 @@ public:
     void                     setCurrentValue(uint8_t sh, uint8_t sl);
     void                     setCurrentValue(uint16_t newval);
     void                     dbgrpt()      const;
+    // void                     setObservedValues(Bit_Set_256 values);  // *** EXPERIMENTAL ***
+    Bit_Set_256              observedNcValues() const;
 
  // DDCA_Monitor_Model_Key   mmid()        const;
 
 private:
-    // const char *             _cls;
+    // disable - fails, QT uses copy constructor
+    // FeatureValue(const FeatureValue& original);
+    // FeatureValue& operator=(const FeatureValue& original);
+
+
+public:
+    Bit_Set_256              _observedNcValues = EMPTY_BIT_SET_256;
+    int                      _id;
+
+
+
+protected:
+    static int               nextId;
+
+private:
+    const char *             _cls = "FeatureValue";
     uint8_t                  _featureCode = 0;
     DDCA_Display_Ref         _dref   = NULL;
     DDCA_Feature_Metadata *  _finfo  = NULL;

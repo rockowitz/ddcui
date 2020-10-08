@@ -1,6 +1,6 @@
 /* feature_value.cpp */
 
-// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 // #include <QMetaType>
@@ -11,8 +11,10 @@
 #include "ddcutil_types.h"
 #include "ddcutil_c_api.h"
 
+#include "base/core.h"
 #include "nongui/feature_value.h"
-#include "../base/core.h"
+
+int FeatureValue::nextId = 0;
 
 
 FeatureValue::FeatureValue()
@@ -20,6 +22,7 @@ FeatureValue::FeatureValue()
    // memset(&_finfo, 0, sizeof(_finfo));  // avoid -Wmissing-field-initializers
    _finfo = nullptr;
    _value.mh = _value.ml = _value.sh = _value.sl = 0;
+   _id = ++nextId;
 }
 
 FeatureValue::FeatureValue(
@@ -35,8 +38,9 @@ FeatureValue::FeatureValue(
     , _capVcp(cap_vcp)
     , _value(val)
     , _getvcpStatus(getvcpStatus)
+ //   , _cls( strdup(metaObject()->className()) )
 {
-//    _cls = metaObject()->className();
+     //  _cls             = strdup(metaObject()->className());
 
 //    _feature_code    = feature_code;
 //    _dref            = dref;
@@ -44,19 +48,22 @@ FeatureValue::FeatureValue(
 //    _cap_vcp         = cap_vcp;
 //    _value           = val;
 
-   bool debugFunc = false;
+   _id = ++nextId;
+
+   bool debugFunc = false; // || (_featureCode == 0x14);
    if (debugFunc) {
-      printf("(FeatureValue::FeatureValue) feature_code=0x%02x, finfo=%p, cap_vcp=%p\n", feature_code, _finfo, cap_vcp);
-      ddca_dbgrpt_feature_metadata(_finfo, 2);
-      fflush(stdout);
+      TRACEC("_id=%d, feature_code=0x%02x, finfo=%p, cap_vcp=%p", _id, _featureCode, _finfo, cap_vcp);
+      // ddca_dbgrpt_feature_metadata(_finfo, 2);
+      // fflush(stdout);
    }
-   if (_finfo)
+   if (_finfo) {  // when would it be NULL ?
        assert(_featureCode  == _finfo->feature_code);
 
-
-    // TRACEC("feature_code=0x%02x, cap_vcp=%p", feature_code, cap_vcp);
-    // if (_featureCode == 0x14)
-
+       // alt: if (_finfo->feature_flags & DDCA_SIMPLE_NC )
+       if (_finfo->sl_values) {
+          _observedNcValues = bs256_add(EMPTY_BIT_SET_256, val.sl);
+       }
+   }
 }
 
 FeatureValue::~FeatureValue() {
@@ -103,16 +110,32 @@ void
 FeatureValue::setCurrentValue(uint8_t sh, uint8_t sl) {
    _value.sh = sh;
    _value.sl = sl;
+
+   if (_finfo->sl_values) {
+      _observedNcValues = bs256_add(_observedNcValues, _value.sl);
+   }
 }
 
 void
 FeatureValue::setCurrentValue(uint16_t newval) {
-   _value.sh = newval >> 8;
-   _value.sl = newval & 0xff;
+   setCurrentValue(newval >> 8, newval & 0xff);
+   ///_value.sh = newval >> 8;
+   //_value.sl = newval & 0xff;
+   //if (_finfo->sl_values) {
+   //   _observedNcValues = bs256_add(_observedNcValues, _value.sl);
+   // }
 }
 
 DDCA_Status FeatureValue::ddcrc() const {
    return _getvcpStatus;
+}
+
+// void FeatureValue::setObservedValues(Bit_Set_256 values) {
+//    _observedValues = values;
+// }
+
+Bit_Set_256 FeatureValue::observedNcValues() const {
+   return _observedNcValues;
 }
 
 
@@ -127,6 +150,7 @@ DDCA_Status FeatureValue::ddcrc() const {
 
 void FeatureValue::dbgrpt() const {
     printf("(FeatureValue::report) FeatureValue:\n");
+    printf("   _id:              %d\n",    _id);
     printf("   _feature_code:    0x%02x\n", _featureCode);
     printf("   dref:             %s\n",    ddca_dref_repr(dref()));
  // printf("   _vspec:           %d.%d\n", _finfo.vspec.major, _finfo.vspec.minor);
@@ -136,6 +160,7 @@ void FeatureValue::dbgrpt() const {
     printf("   _value.sh:        0x%02x\n", _value.sh);
     printf("   _value.sl:        0x%02x\n", _value.sl);
     printf("   _cap_vcp:         %p\n",     _capVcp);
+    printf("   _observedNcValues: %s", bs256_to_string(_observedNcValues, ""," "));
     ddca_dbgrpt_feature_metadata(_finfo, 1);
 
 #ifdef NO
