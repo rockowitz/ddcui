@@ -364,7 +364,7 @@ void VcpThread::capabilities() {
 
 // Process RQGetVcp
 void VcpThread::getvcp(uint8_t featureCode, bool needMetadata) {
-    bool debugFunc = false;
+    bool debugFunc = false;  //  || (featureCode == 0x14);
     debugFunc = debugFunc || debugThread;
     TRACECF(debugFunc, "Starting. featureCode=0x%02x, needMetadata = %s",
                       featureCode, SBOOL(needMetadata));
@@ -414,10 +414,10 @@ void VcpThread::getvcp(uint8_t featureCode, bool needMetadata) {
                       &finfo);
            TRACECF(debugFunc, "ddca_get_feature_metadata_by_dh() for feature 0x%02x returned %d - %s",
                      featureCode, ddcrc2, ddca_rc_name(ddcrc2));
-           if (debugFunc && ddcrc2 == 0) {
-              // ddcui_dbgrpt_ddca_feature_metadata(finfo);
-              ddca_dbgrpt_feature_metadata(finfo, 1);
-           }
+           // if (debugFunc && ddcrc2 == 0) {
+           //     // OLD: ddcui_dbgrpt_ddca_feature_metadata(finfo);
+           //    ddca_dbgrpt_feature_metadata(finfo, 1);
+           // }
            if (ddcrc2 != 0) {
               rpt_ddca_status(featureCode, __func__, "ddca_get_feature_metadata_by_dh",  ddcrc);
               // cout << "ddca_get_feature_metadata() returned " << ddcrc << endl;
@@ -439,7 +439,7 @@ void VcpThread::getvcp(uint8_t featureCode, bool needMetadata) {
 // Process RQSetVcp
 void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint16_t shsl)
 {
-    bool debugFunc = false;
+    bool debugFunc = false; // || (feature_code == 0x14);
     debugFunc = debugFunc || debugThread;
     TRACECF(debugFunc, "Starting. feature_code=0x%02x.  shsl=0x%04x, writeOnly=%s",
                        feature_code, shsl, SBOOL(writeOnly));
