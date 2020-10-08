@@ -9,6 +9,7 @@
 #include <string.h>
 
 #include "coredefs.h"
+#include "glib_util.h"
 #include "data_structures.h"
 
 #define sbool(_b)  ( (_b) ? "true" : "false" )
@@ -206,14 +207,12 @@ Bit_Set_256 bs256_add(
     result.bytes[flagndx] |= flagbit;
 
     if (debug) {
-       // printf("(%s) wolf 1\n", __func__);
        char * bs1 = bs256_to_string(flags, "","");
        char * bs2 = bs256_to_string(result, "","");
-       // printf("(%s) wolf 2\n", __func__);
        printf("(%s) bitstring=%s, value %d, returning: %s\n",
               __func__, bs1, val, bs2);
-       free( bs1);
-       free(bs2);
+       // free( bs1);
+       // free(bs2);
        // printf("(%s) wolf 3\n", __func__);
     }
 
@@ -355,6 +354,12 @@ bs256_to_string(
       // rpt_hex_dump((Byte*)feature_list, 32, 2);
    }
 
+   static GPrivate  key = G_PRIVATE_INIT(g_free);
+   static GPrivate  len_key = G_PRIVATE_INIT(g_free);
+
+   int bufsz = strlen(value_prefix) + 2 + strlen(sepstr);
+
+
    if (!value_prefix)
       value_prefix = "";
    if (!sepstr)
@@ -364,7 +369,10 @@ bs256_to_string(
    int bit_ct = bs256_count(bitset);
    int reqd_size = (bit_ct*vsize)+1;   // +1 for trailing null
    // printf("(%s) w=olf 2\n", __func__);
-   char * buf = calloc(1, reqd_size);
+
+   char * buf = get_thread_dynamic_buffer(&key, &len_key, reqd_size);
+   // char * buf = calloc(1, reqd_size);
+
    buf[0] = '\0';
    // DBGMSG("feature_ct=%d, vsize=%d, buf size = %d", feature_ct, vsize, vsize*feature_ct);
 
