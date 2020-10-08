@@ -40,12 +40,7 @@ public:
     void dbgrpt() const;
     // void simpleFeatureValueChanged(SimpleFeatureValue fv) override;   // SimpleFeatureValueObserver
 
-public:            // member variables
-    uint8_t             _feature_code;
-    QString*            _feature_name;
 
-protected:
-    void resizeEvent(QResizeEvent * event) override;
 
 public slots:
     void onInternalValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl);
@@ -53,11 +48,23 @@ public slots:
 signals:
     void valueChanged(uint8_t featureCode, bool writeOnlyFeature, uint8_t sh, uint8_t sl);
 
+protected:
+    void resizeEvent(QResizeEvent * event) override;
+
+
+// *** Member variables ***
+
+public:            // member variables
+    uint8_t             _feature_code;
+    QString*            _feature_name;
+    // int                 _id;
+
+protected:
+    // static int               nextId;
+
 private:
     void setupFeatureWidget();   // called by constructor
     void setupConnections();     // called by constructor
-
-private:
     const char *        _cls;    // className
 
     // uint8_t          _feature_code;
