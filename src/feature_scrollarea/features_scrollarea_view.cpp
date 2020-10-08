@@ -282,6 +282,7 @@ void FeaturesScrollAreaView::onUIValueChanged(
       // alternatively, handle x14 handled in feature_base_model, is that the right place or this?
       // reload all, all color, or just the features documented in spec 2.2 as affected?
       case 0x14:      // select color preset        - treat as restore factory defaults
+         // alt: wait to see if value changed
          _monitor->_baseModel->reloadFeatures();
          break;
       default:
@@ -298,7 +299,7 @@ void FeaturesScrollAreaView::onModelValueChanged(
       uint8_t     sh,
       uint8_t     sl)
 {
-   bool debugFunc = false;
+   bool debugFunc = false; //  || (featureCode == 0x14);
    debugFunc = debugFunc || debugSignals;
 
    TRACEMCF(debugFunc,
