@@ -23,11 +23,7 @@ class QWidget;
 // class QHash;  // incomplete type, need full #include <QtCore/QHash>
 
 class FeatureBaseModel;
-class FeatureItemModel;
-class FeatureListWidget;
 class FeaturesScrollAreaView;
-class FeaturesScrollAreaView;
-class FeatureTableModel;
 class VcpRequest;
 class VcpRequestQueue;
 
