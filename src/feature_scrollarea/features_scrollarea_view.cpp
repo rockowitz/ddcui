@@ -279,7 +279,7 @@ void FeaturesScrollAreaView::onUIValueChanged(
       case 0x04:      // restore factory defaults
       case 0x06:      // restore geometry defaults  - treat as restore factory defaults
       case 0x08:      // restore color defaults     - treat as restore factory defaults
-      // alternatively, handle x14 handled in feature_base_model, is that the right place or this?
+      // alternatively, handle x14 in feature_base_model, is that the right place or this?
       // reload all, all color, or just the features documented in spec 2.2 as affected?
       case 0x14:      // select color preset        - treat as restore factory defaults
          // alt: wait to see if value changed
