@@ -138,8 +138,10 @@ int FeatureBaseModel::modelVcpValueCount(void) const {
 //      modelVcpValueUpdate() 
 
 /** Sets the current VCP value in the model.  
- *  This function is invoked from the ddcutil api side
- *  the note that actual VCP value. 
+ *  This function is invoked from VcpThread::getvcp()
+ *
+ *  If ddcrc != 0, getvcp failed, and this method
+ *  notes the error for reporting.
  * 
  *  @param  feature_code    VCP feature code
  *  @param  dref
@@ -154,7 +156,7 @@ void   FeatureBaseModel::modelVcpValueSet(
                    DDCA_Non_Table_Vcp_Value *           feature_value,
                    DDCA_Status                          ddcrc)
 {
-    bool debugFunc = false;    // (feature_code == 0x14);
+    bool debugFunc = false || (feature_code == 0x14);
     debugFunc = debugFunc || debugModel;
     if (debugFunc)
         TRACEMCF(debugFunc,
@@ -196,14 +198,16 @@ void   FeatureBaseModel::modelVcpValueSet(
         // fv->_value.sl = feature_value->sl;
 
         if ( ddcrc == fv->ddcrc() ) {
-           fv->setCurrentValue(feature_value->sh, feature_value->sl);
+           fv->setCurrentValue(feature_value->sh, feature_value->sl);  // sets _observedNcValues
            TRACECF(debugFunc, "Updated FeatureValue _observedNcValues=%s",
                  bs256_to_string(fv->observedNcValues(), ""," " ) );
 
            TRACECF(debugFunc || debugSignals,
                    "Emitting signalFeatureUpdated3(), feature code: 0x%02x, sl: 0x%02x",
                    fv->featureCode(), feature_value->sl);
-           emit signalFeatureUpdated3(__func__, fv->featureCode(), feature_value->sh, feature_value->sl);
+           emit signalFeatureUpdated3(__func__,
+                                      fv->featureCode(),
+                                      feature_value->sh, feature_value->sl);
         }
 
         else {
@@ -235,6 +239,8 @@ FeatureBaseModel::modelVcpValueUpdate(
 
     fv->setCurrentValue(sh,sl);
 
+    TRACECF(debugFunc, "Updated FeatureValue: _observedNcValues=%s",
+                       bs256_to_string(fv->observedNcValues(), ""," " ) );
     TRACECF(debugFunc || debugSignals, "Emitting signalFeatureUpdated3()");
     // -> &FeaturesScrollAreaView::onModelValueChanged
     emit signalFeatureUpdated3(__func__, feature_code, sh, sl);
