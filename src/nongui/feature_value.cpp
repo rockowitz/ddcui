@@ -41,22 +41,24 @@ FeatureValue::FeatureValue(
  //   , _cls( strdup(metaObject()->className()) )
 {
      //  _cls             = strdup(metaObject()->className());
-
 //    _feature_code    = feature_code;
 //    _dref            = dref;
 //    _finfo           = finfo;
 //    _cap_vcp         = cap_vcp;
 //    _value           = val;
 
+   _cls = "FeatureValue";
    _id = ++nextId;
 
-   bool debugFunc = false; // || (_featureCode == 0x14);
+   bool debugFunc = false;
+   debugFunc = debugFunc || (_featureCode == 0x14);
    if (debugFunc) {
-      TRACEC("_id=%d, feature_code=0x%02x, finfo=%p, cap_vcp=%p", _id, _featureCode, _finfo, cap_vcp);
+      TRACEC("_id=%d, feature_code=0x%02x, finfo=%p, cap_vcp=%p, sh=0x%02x, sl=0x02x",
+              _id, _featureCode, _finfo, cap_vcp, val.sh, val.sl);
       // ddca_dbgrpt_feature_metadata(_finfo, 2);
       // fflush(stdout);
    }
-   if (_finfo) {  // when would it be NULL ?
+   if (_finfo) {  // when would it be NULL ? if getvcp failed
        assert(_featureCode  == _finfo->feature_code);
 
        // alt: if (_finfo->feature_flags & DDCA_SIMPLE_NC )
@@ -64,7 +66,9 @@ FeatureValue::FeatureValue(
           _observedNcValues = bs256_add(EMPTY_BIT_SET_256, val.sl);
        }
    }
+   TRACECF(debugFunc, "Done. _observedNcValues = %s", bs256_to_string(_observedNcValues, "", " "));
 }
+
 
 FeatureValue::~FeatureValue() {
    ddca_free_display_ref(_dref);    // n. not checking return code
@@ -108,13 +112,17 @@ FeatureValue::val()    const {
 
 void
 FeatureValue::setCurrentValue(uint8_t sh, uint8_t sl) {
+   bool debugFunc = (_featureCode == 0x14);
    _value.sh = sh;
    _value.sl = sl;
 
    if (_finfo->sl_values) {
       _observedNcValues = bs256_add(_observedNcValues, _value.sl);
    }
+
+   TRACECF(debugFunc, "Finished. _observedNcValues = %s", bs256_to_string(_observedNcValues, "", " "));
 }
+
 
 void
 FeatureValue::setCurrentValue(uint16_t newval) {
