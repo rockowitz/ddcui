@@ -123,14 +123,14 @@ void ValueNcWidget::setFeatureValue(const FeatureValue &fv) {
     TRACEMF(debug, "Persistent _observedValues from FeatureValue: %s",
                    bs256_to_string(fv._observedNcValues, ""," "));
 
+    assert( bs256_contains(fv._observedNcValues, _sl) );
     // *** HACK ***
     _observedValues = bs256_or(_observedValues, fv._observedNcValues);
     TRACEMF(debug, "Using union of _observedValues and fv._observedNcValues: %s",
                    bs256_to_string(fv._observedNcValues, ""," "));
 
-    _observedValues = bs256_add(_observedValues, _sl);
-    // fv.setObservedValues(_observedValues);   // permissions errors
-    TRACEMF(debug, "_observedValues after adding 0x%02x: %s", _sl, bs256_to_string(_observedValues, ""," "));
+    // _observedValues = bs256_add(_observedValues, _sl);
+    // TRACEMF(debug, "_observedValues after adding 0x%02x: %s", _sl, bs256_to_string(_observedValues, ""," "));
 
     _ncValuesSource        = _globalState._otherOptionsState->_ncValuesSource;
     _useLatestNcValueNames = _globalState._otherOptionsState->_useLatestNcValueNames;
@@ -272,6 +272,8 @@ void ValueNcWidget::setCurrentShSl(uint16_t newval) {
 
     TRACEMCF(debugFunc, "_sl = 0x%02x", _sl);
     TRACEMCF(debugFunc, "Using local _observedNcValues: %s", bs256_to_string(_observedValues, ""," "));
+
+    assert( bs256_contains(_observedValues, _sl));
 
     if (!bs256_contains(_observedValues, _sl)) {
        TRACECF(debugFunc, "Value 0x%02x not found in existing _observedValues: %s",
