@@ -140,8 +140,8 @@ int FeatureBaseModel::modelVcpValueCount(void) const {
 /** Sets the current VCP value in the model.  
  *  This function is invoked from VcpThread::getvcp()
  *
- *  If ddcrc != 0, getvcp failed, and this method
- *  notes the error for reporting.
+ *  ddcrc != 0 indicates that getvcp failed.
+ *  This method notes the error for reporting.
  * 
  *  @param  feature_code    VCP feature code
  *  @param  dref
@@ -156,11 +156,11 @@ void   FeatureBaseModel::modelVcpValueSet(
                    DDCA_Non_Table_Vcp_Value *           feature_value,
                    DDCA_Status                          ddcrc)
 {
-    bool debugFunc = false || (feature_code == 0x14);
+    bool debugFunc = false;  // || (feature_code == 0x14);
     debugFunc = debugFunc || debugModel;
     if (debugFunc)
         TRACEMCF(debugFunc,
-                 "feature_code=0x%02x, mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x, ddcrc = %s, _initialLoadActive=%s",
+                 "Starting. feature_code=0x%02x, mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x, ddcrc = %s, _initialLoadActive=%s",
                  feature_code, feature_value->mh, feature_value->ml, feature_value->sh, feature_value->sl,
                  ddca_rc_name(ddcrc), SBOOL(_initialLoadActive));
 
@@ -180,7 +180,7 @@ void   FeatureBaseModel::modelVcpValueSet(
                                    *feature_value,
                                    ddcrc);
           _featureValues->append(fv);
-          TRACECF(debugFunc, "Created new FeatureValue. id = %d, _observedNcValues=%s",
+          TRACECF(debugFunc, "Created new FeatureValue. id = %d, observedNcValues=%s",
                              fv->_id, bs256_to_string(fv->_observedNcValues, "", " "));
 
         // Not needed, only thing that matters is end initial load
@@ -225,7 +225,7 @@ FeatureBaseModel::modelVcpValueUpdate(
         uint8_t   sh,
         uint8_t   sl)
 {
-    bool debugFunc = false; // || (feature_code == 0x14);
+    bool debugFunc = false;  //  || (feature_code == 0x14);
     debugFunc = debugFunc || debugModel;
 
     TRACECF(debugFunc, "feature_code=0x%02x, sh=0x%02x, sl=0x%02x, _initialLoadActive=%s",
@@ -237,6 +237,7 @@ FeatureBaseModel::modelVcpValueUpdate(
     TRACECF(debugFunc, "Found FeatureValue instance,  _observedNcValues=%s",
                        bs256_to_string(fv->observedNcValues(), ""," " ) );
 
+    // updates fv to the current value, sets _observedNcValues if appropriate
     fv->setCurrentValue(sh,sl);
 
     TRACECF(debugFunc, "Updated FeatureValue: _observedNcValues=%s",
