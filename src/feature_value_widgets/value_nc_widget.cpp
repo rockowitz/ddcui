@@ -85,14 +85,14 @@ void ValueNcWidget::layoutWidget() {
 }
 
 
-int ValueNcWidget::nextId = 0;
+// int ValueNcWidget::nextId = 0;
 
 ValueNcWidget::ValueNcWidget(QWidget *parent):
         ValueBaseWidget(parent)
 {
     bool debug = false;
     _cls = strdup(metaObject()->className());
-    _id = ++nextId;
+    // _id = ++nextId;
     TRACEMCF(debug, "Starting. id=%d", _id );
 
     _layout = new QHBoxLayout();
@@ -105,13 +105,42 @@ ValueNcWidget::ValueNcWidget(QWidget *parent):
 }
 
 
+ValueNcWidget::~ValueNcWidget() {
+   bool debugFunc = false;
+   debugFunc = debugFunc || (_featureCode == 0x14);
+   TRACEC("Executing. _id=%d, _featureCode=0x%02x", _id, _featureCode);
+}
+
+
+/*
+    It is possible that the monitor returns a value that is not in the capabilities/MCCS list.
+    That value is added to the combobox with the description "Unrecognized  Value".
+    We want to still show that value in the combobox even if another value is
+    subsequently selected.  The solution is complicated by the fact that rescan
+    causes the feature widgets to be recreated. So this widget uses both itself
+    and the associated FeatureValue instance to maintain the list of observed values.
+
+    The "master" list of observed values is maintained in the associated FeatureValue.
+    Method setFeatureValue() saves a local copy in _observedNcValues.
+    This local copy is combined with the capabilities/MCCS list to
+    generate the list of values shown in the combo box.
+    Method setCurrentShSl() does not have access to the master list
+    in the FeatureValue.  It adds the value passed to the local _observedNcValues.
+    Therefore _observedNcValues remains in sync with the master list.
+ */
+
+
 void ValueNcWidget::setFeatureValue(const FeatureValue &fv) {
-    bool debug = false;  //  (fv.featureCode() == 0x14);
+    bool debug = false;  // || (fv.featureCode() == 0x14);
     debug = debug || debugWidget;
-    TRACEMCF(debug, "[TRACEMCF. ValueNcWidget]. _id=%d, fv._id=%d, featureCode=0x%02x, capVcp=%p, ddcrc=%d",
+    TRACEMCF(debug, "[TRACEMCF. ValueNcWidget]. Starting." );
+    TRACEMF(debug,  "[TRACEMF.  ValueNcWidget]. Starting." );  // reports ValueNcPlosWidget, i.e. subclass name
+    TRACECF(debug,  "[TRACECF.  ValueNcWidget]. Starting." );  // reports ValueNcWidget
+
+    TRACEMCF(debug, "Starting. this._id=%d, fv._id=%d, featureCode=0x%02x, capVcp=%p, ddcrc=%d",
                     _id, fv._id, fv.featureCode(), fv.capVcp(), fv.ddcrc());
-    TRACEMCF(debug, "Starting. feature 0x%02x, new sl=x%02x, Before ValueBaseWidget::setFeatureValue()",
-              fv.featureCode(), fv.val().sl);
+    TRACEMCF(debug, "          feature 0x%02x, new sl=x%02x, Before ValueBaseWidget::setFeatureValue()",
+                    fv.featureCode(), fv.val().sl);
 
     ValueBaseWidget::setFeatureValue(fv);
 
@@ -126,7 +155,7 @@ void ValueNcWidget::setFeatureValue(const FeatureValue &fv) {
     assert( bs256_contains(fv._observedNcValues, _sl) );
     // *** HACK ***
     _observedValues = bs256_or(_observedValues, fv._observedNcValues);
-    TRACEMF(debug, "Using union of _observedValues and fv._observedNcValues: %s",
+    TRACEMF(debug, "Using union of this._observedValues and fv._observedNcValues: %s",
                    bs256_to_string(fv._observedNcValues, ""," "));
 
     // _observedValues = bs256_add(_observedValues, _sl);
@@ -261,19 +290,17 @@ void ValueNcWidget::reloadComboBox(NcValuesSource newSource, bool newUseLatestNa
 
 
 void ValueNcWidget::setCurrentShSl(uint16_t newval) {
-   bool debugFunc = false;  // (_featureCode == 0x14);
+   bool debugFunc = false;  //  (_featureCode == 0x14);
    debugFunc = debugFunc || debugWidget;
-   TRACEMF(debugFunc, "Starting. ValueNcWidget._id=%d, feature 0x%02x, newval=x%04x",
+   TRACEMF(debugFunc, "Starting. ValueNcWidget.this._id=%d, feature 0x%02x, newval=x%04x",
                       _id, _featureCode, newval);
 
    _guiChange = false;
 
     ValueBaseWidget::setCurrentShSl(newval);
 
-    TRACEMCF(debugFunc, "_sl = 0x%02x", _sl);
+    // TRACEMCF(debugFunc, "_sl = 0x%02x", _sl);
     TRACEMCF(debugFunc, "Using local _observedNcValues: %s", bs256_to_string(_observedValues, ""," "));
-
-    assert( bs256_contains(_observedValues, _sl));
 
     if (!bs256_contains(_observedValues, _sl)) {
        TRACECF(debugFunc, "Value 0x%02x not found in existing _observedValues: %s",
