@@ -193,7 +193,7 @@ void ValueNcplusWidget::setFeatureValue(const FeatureValue &fv) {
    DDCA_MCCS_Version_Spec vspec = fv.vspec();
    bool debug = false;
    TRACEMCF(debug, "Starting. feature = 0x%02x, vspec = %d.%d", fv.featureCode(), vspec.major, vspec.minor);
-   TRACEMCF(debug, "TRACECMF. ValueStdWidget. featureCode=0x%02x, capVcp=%p, ddcrc=%d, Before ValueNcWidget::setFeatureValue()",
+   TRACEMCF(debug, "          featureCode=0x%02x, capVcp=%p, ddcrc=%d, Before ValueNcWidget::setFeatureValue()",
                  fv.featureCode(), fv.capVcp(), fv.ddcrc());
 
    ValueNcWidget::setFeatureValue(fv);
