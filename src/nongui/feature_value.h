@@ -29,7 +29,6 @@ public:
             DDCA_Status               getvcpStatus=0  // experiment
             );
 
-
     ~FeatureValue();
 
     uint8_t                  featureCode() const;
@@ -57,8 +56,6 @@ private:
 public:
     Bit_Set_256              _observedNcValues = EMPTY_BIT_SET_256;
     int                      _id;
-
-
 
 protected:
     static int               nextId;
