@@ -50,8 +50,12 @@ signals:
 private slots:
     void forContainedWidgetChanged(uint8_t feature_code, uint8_t sh, uint8_t sl);
 
+protected:
+    static int nextId;
+
 private:
     const char *        _cls;
+    int                 _id;
     uint8_t             _featureCode;
     int                 _pageno_selected;
     ValueBaseWidget*    _cur_stacked_widget;

@@ -27,13 +27,16 @@
 
 static bool dimensionReportShown = false;
 
+int ValueStackedWidget::nextId = 0;
+
 ValueStackedWidget::ValueStackedWidget(QWidget *parent)
     : QStackedWidget(parent)
     , _featureCode(0)              // appease Coverity
 {
     bool debug = false;
     _cls = strdup(metaObject()->className());
-    TRACECF(debug, "Starting");
+    _id = ++nextId;
+    TRACECF(debug, "Starting. id=%d", _id);
 
     // this->setObjectName(QString::fromUtf8("value_stacked_widget"));   // ambiguous
     // setGeometry(QRect(209,6, 181, 20));
@@ -49,6 +52,8 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
     _ncplusWidget  = new ValueNcplusWidget();
     _contWidget    = new ValueContWidget();
     _specialWidgetX62 = new ValueSpecialWidgetX62();
+    TRACECF(debug," _ncWidget->_id=%d, _cncWidgetX14->_id=%d, _ncplusWidget._id=%d",
+                  _ncWidget->_id,      _cncWidgetX14->_id,   _ncplusWidget->_id);
 
     // relying on _pageno_xxx order corresponds to addWidget() order
     _pageno_cont    = 0;
@@ -149,10 +154,11 @@ bool vspec_eq(DDCA_MCCS_Version_Spec vspec1, DDCA_MCCS_Version_Spec vspec2) {
 
 void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
     bool debug = false;
+    // debug = debug || (fv.featureCode() == 0x14);
     debug = debug || debugValueWidgetSignals;
-    TRACEMCF(debug, "Starting. feature code: 0x%02x", fv.featureCode());
-    if (debug)
-       fv.dbgrpt();
+    TRACEMCF(debug, "Starting. this._id=%d, feature code: 0x%02x", _id, fv.featureCode());
+    // if (debug)
+    //    fv.dbgrpt();
     // ValueBaseWidget::setFeatureValue(fv);
     _featureCode = fv.featureCode();   // needed since not calling ValueBaseWidget::setFeatureValue()
     DDCA_MCCS_Version_Spec vspec = fv.vspec();   // unused
@@ -183,7 +189,7 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
      }
 
     else if (_featureCode == 0x14) {
-       TRACECF(debug, "_feature_code == 0x14");
+       TRACEMCF(debug, "_feature_code == 0x14");
        _pageno_selected = _pageno_ncplus;
        _cur_stacked_widget = _ncplusWidget;
        setCurrentIndex(_pageno_ncplus);
