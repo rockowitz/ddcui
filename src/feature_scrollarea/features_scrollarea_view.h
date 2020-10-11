@@ -41,8 +41,8 @@ public:
 
     QSize maxRowSize();
 
-signals:
-    void signalVcpRequest(VcpRequest * rqst);  // used to call into monitor
+// signals:
+//     void signalVcpRequest(VcpRequest * rqst);  // used to call into monitor
 
 public slots:
     // void startInitialLoad(void);
@@ -55,8 +55,14 @@ public slots:
     void onModelDdcDetailedError(DdcDetailedError* perec);
     void onModelDdcFeatureError(DdcFeatureError* perec);
 
+// *** Member variables ***
+
+protected:
+    static int nextId;
+
 private:        // member variables
     const char *       _cls;
+    const int          _id;
     Monitor *          _monitor;
     FeatureBaseModel * _baseModel;
     QStackedWidget *   _centralStackedWidget;

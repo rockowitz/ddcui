@@ -33,6 +33,7 @@
 
 static bool showDimensionReport = false;
 
+int FeaturesScrollAreaView::nextId = 0;
 
 FeaturesScrollAreaView::FeaturesScrollAreaView(
         Monitor *          monitor,
@@ -46,30 +47,51 @@ FeaturesScrollAreaView::FeaturesScrollAreaView(
     , _baseModel(model)
     , _centralStackedWidget(centralStackedWidget)
     , _msgboxQueue(msgboxQueue)
+    , _id(++nextId)
     // , _curNcValuesSource(OtherOptionsState::DefaultNcValuesSource)  // , _curNcValuesSource(NcValuesSourceUnset)
     , _controlKeyRequired(false)
 {
-   // TRACE("Executing. _msgboxQueue=%p", _msgboxQueue);
+   bool debug = false;
+//    _id = ++nextId;
+   TRACEMCF(debug, "Executing. this->_id=%d, _msgboxQueue=%p", _id, _msgboxQueue);
 }
 
 
 void FeaturesScrollAreaView::freeContents(void) {
-   // TODO
+   bool debug = false;
+
+   QWidget * scrollWrapWidget = NULL;
+   for (int ndx = 0; ndx < _centralStackedWidget->count(); ndx++) {
+       QWidget* curobj = _centralStackedWidget->widget(ndx);
+       QString name   = curobj->objectName();
+       const char *  clsName = curobj->metaObject()->className();
+       TRACEMCF(debug, "   widget[%d]: %s, type:%s", ndx, name.toLatin1().data(), clsName);
+       if (name.compare("scrollwrap") == 0 ) {
+          TRACEMCF(debug, "scrollwrap found, index=%d", ndx);
+          scrollWrapWidget = curobj;
+          break;
+       }
+   }
+
+   if (scrollWrapWidget) {
+      TRACEMCF(debug, "Removing locally found scrollWrapWidget %p", scrollWrapWidget);
+      _centralStackedWidget->removeWidget(scrollWrapWidget);
+   }
 }
 
 
-// how does this get called? is this an implicit connection by name?
+// triggered by signal FeatureBaseModel::signalEndInitialLoad
 void FeaturesScrollAreaView::onEndInitialLoad(void) {
     bool debugFunc = false;
-    TRACEMCF(debugFunc, "Starting, Monitor=%s", _monitor->_displayInfo->model_name);
+    TRACEMCF(debugFunc, "Starting, this->_id=%d, Monitor=%s", _id, _monitor->_displayInfo->model_name);
 
-    // TODO:
-    // free existing QScrollArea, QScrollAreaContents
+    freeContents();
 
     // scrollWrap contains a FeatureWidgetHeader and a scrollable
     // collection of FeatureWidget rows
 
     QFrame * scrollWrap = new QFrame();
+    scrollWrap->setObjectName("scrollwrap");
     QVBoxLayout * wrapLayout = new QVBoxLayout;
     wrapLayout->setSpacing(0);
     wrapLayout->addWidget(new FeatureWidgetHeader());
@@ -155,7 +177,7 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
     QObject::connect(_baseModel, &FeatureBaseModel::signalFeatureUpdated3,
                      this,       &FeaturesScrollAreaView::onModelValueChanged);
 
-    /* int pageno = */ _centralStackedWidget->addWidget(scrollWrap);   // was scrollArea
+    _centralStackedWidget->addWidget(scrollWrap);   // was scrollArea
 
     // _centralStackedWidget->hide();    // no effect
     _centralStackedWidget->setCurrentWidget(scrollWrap);    // was scrollArea
@@ -202,7 +224,7 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
 #ifdef NO
     TRACEMCF(debugFunc, "Setting height of each FeatureWidget...");
     for (int ndx = 0; ndx < children2.count(); ndx++) {
-       FeatureWidget * child = children2.at(ndx);
+       FeatureWidget * child = children2.at(scrollwrapNdx);
        QSize sz = child->size();
        // TRACEC("Before resize, ndx=%d", ndx);
        QSize hintSz = child->sizeHint();
@@ -261,9 +283,11 @@ void FeaturesScrollAreaView::onUIValueChanged(
             featureCode, sh, sl);
    }
    else {
-      TRACEMCF(debug, "Emitting signalVcpRequest() for VcpSetRequest, featureCode=0x%02x", featureCode);
+      // TRACEMCF(debug, "Emitting signalVcpRequest() for VcpSetRequest, featureCode=0x%02x", featureCode);
+      TRACEMCF(debug, "Calling _monitor->putVcpRequest() for VcpSetRequest, featureCode=0x%02x", featureCode);
       VcpRequest * rqst = new VcpSetRequest(featureCode, sh, sl, writeOnly);
-      emit signalVcpRequest(rqst);  // used to call into monitor
+      // emit signalVcpRequest(rqst);  // used to call into monitor
+      _monitor->putVcpRequest(rqst);
 
       // If feature value change affects other features, reread possibly affected features
       TRACEMCF(debug, "Rereading possibly affected features");
@@ -283,6 +307,7 @@ void FeaturesScrollAreaView::onUIValueChanged(
       // reload all, all color, or just the features documented in spec 2.2 as affected?
       case 0x14:      // select color preset        - treat as restore factory defaults
          // alt: wait to see if value changed
+      case 0xdc:      // display mode
          _monitor->_baseModel->reloadFeatures();
          break;
       default:
