@@ -95,7 +95,7 @@ void reportWidgetChildren(QWidget * w, const char * msg) {
         QObject* curobj = childs.at(ndx);
         QString name   = curobj->objectName();
         const char *  clsName = curobj->metaObject()->className();
-        printf("   Child: %s, type:%s\n", name.toLatin1().data(), clsName);
+        printf("   Child[%d]: %s, type:%s\n", ndx, name.toLatin1().data(), clsName);
     }
     fflush(stdout);
 }
