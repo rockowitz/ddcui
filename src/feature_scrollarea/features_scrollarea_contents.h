@@ -35,7 +35,6 @@ public:
     void resize(int w, int h);
     void resize(QSize sz);
 
-
     int maxRowHeight();
 
 protected:
