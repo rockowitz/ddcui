@@ -133,9 +133,9 @@ ValueNcWidget::~ValueNcWidget() {
 void ValueNcWidget::setFeatureValue(const FeatureValue &fv) {
     bool debug = false;  // || (fv.featureCode() == 0x14);
     debug = debug || debugWidget;
-    TRACEMCF(debug, "[TRACEMCF. ValueNcWidget]. Starting." );
-    TRACEMF(debug,  "[TRACEMF.  ValueNcWidget]. Starting." );  // reports ValueNcPlosWidget, i.e. subclass name
-    TRACECF(debug,  "[TRACECF.  ValueNcWidget]. Starting." );  // reports ValueNcWidget
+    // TRACEMCF(debug, "[TRACEMCF. ValueNcWidget]. Starting." );
+    // TRACEMF(debug,  "[TRACEMF.  ValueNcWidget]. Starting." );  // reports ValueNcPlosWidget, i.e. subclass name
+    // TRACECF(debug,  "[TRACECF.  ValueNcWidget]. Starting." );  // reports ValueNcWidget
 
     TRACEMCF(debug, "Starting. this._id=%d, fv._id=%d, featureCode=0x%02x, capVcp=%p, ddcrc=%d",
                     _id, fv._id, fv.featureCode(), fv.capVcp(), fv.ddcrc());
