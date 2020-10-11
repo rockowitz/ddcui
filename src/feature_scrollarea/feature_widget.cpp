@@ -60,51 +60,12 @@ void FeatureWidget::setupFeatureWidget()
    TRACECF(debug, "Starting");
    // setFrameStyle(QFrame::Box);    // something to make it visible for development
 
-#ifdef OLD
-   QFont font;
-   font.setPointSize(8);
-   QWidget::setFont(font);
-#endif
-
-   // QFont monoValueFont;
-   // monoValueFont.setFamily(QString::fromUtf8("Monospace"));
-
-   // QFont nonMonoValueFont;
-
-#ifdef OLD
-   QSizePolicy fixedSizePolicy(QSizePolicy::Fixed,QSizePolicy::MinimumExpanding);
-   // fixedSizePolicy.setHorizontalStretch(0);    // needed?
-   // fixedSizePolicy.setVerticalStretch(0);
-   // fixedSizePolicy.setHeightForWidth(false);
-   // verify apparent defaults, since I can't find them documented
-   assert(fixedSizePolicy.horizontalStretch() == 0);
-   assert(fixedSizePolicy.verticalStretch() == 0);
-   assert(fixedSizePolicy.hasHeightForWidth() == false);
-
-   QSizePolicy adjustableSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::MinimumExpanding);
-   adjustableSizePolicy.setHorizontalStretch(1);    // needed?
-   adjustableSizePolicy.setVerticalStretch(0);
-   adjustableSizePolicy.setHeightForWidth(false);
-#endif
-
    _featureCodeField = createFeatureWidgetField("featureCode",  30, "x00");
    _featureNameField = createFeatureWidgetField("featureName", 200, "dummy feature name");
    // _featureNameField->setFont(nonMonoValueFont);
    _featureNameField->setFont(FeatureValueTextFont);
    _featureRwField   = createFeatureWidgetField("featureRW",    25, "XX");    // RW/RO/WO
    _featureTypeField = createFeatureWidgetField("featureType",  25, "YY");    // MCCS type
-
-#ifdef ALT
-   _featureValueStackedWidget = new QStackedWidget(this);
-   _featureValueStackedWidget->setObjectName(QString::fromUtf8("_featureValueStackedWidget"));
-   _featureValueStackedWidget->setGeometry(QRect(209, 6, 181, 20));
-
-   _featureValueStandardWidget = new QWidget();
-   _featureValueStandardWidget->setObjectName(QString::fromUtf8("featureValueStandardWidgdet"));
-   _featureValueStackedWidget->addWidget(_featureValueStandardWidget);
-
-   _featureValueStackedWidget->setCurrentIndex(0);
-#endif
 
    TRACECF(debug, "creating ValueStackedWidget, feature code dummy");
    _valueWidget = new ValueStackedWidget();
@@ -115,10 +76,7 @@ void FeatureWidget::setupFeatureWidget()
    _layout->addWidget(_featureNameField);
    _layout->addWidget(_featureRwField);
    _layout->addWidget(_featureTypeField);
-  //  _layout->addWidget(_valueWidget);
-   // _layout->setStretchFactor(_valueWidget, 10);
    _layout->addWidget(_valueWidget, /*stretch*/ 10, Qt::AlignVCenter);
-   // layout->addWidget(_featureValueStackedWidget);
 
    // eliminating addStretch() eliminates gap between Type and Value fields, but allows
    // feature name field to expand
@@ -164,33 +122,32 @@ void FeatureWidget::setupFeatureWidget()
    TRACECF(debug, "Done");
 }
 
+
 void FeatureWidget::setupConnections()
 {
    QObject::connect(_valueWidget, &ValueStackedWidget::stackedFeatureValueChanged,
                     this,         &FeatureWidget::onInternalValueChanged);
-
-   // signals/slots not working, try hardcoding
-   // _valueWidget->addSimpleFeatureValueObserver(this);
 }
 
 
+int FeatureWidget::nextId = 0;
+
 FeatureWidget::FeatureWidget(QWidget *parent)
    : QWidget(parent)
-   , _cls(metaObject()->className())
+   , _cls(strdup(metaObject()->className()))
+   , _id(++nextId)
 {
-    // _id = ++nextID;
     setupFeatureWidget();
     setupConnections();
 }
 
-int FeatureWidget::nextId = 0;
 
 FeatureWidget::FeatureWidget(FeatureValue& fv, QWidget *parent)
    : QWidget(parent)
-   , _cls(metaObject()->className())
+   , _cls(strdup(metaObject()->className()))
+   , _id(++nextId)
 {
     bool debug = false;
-    _id = ++nextId;
     TRACEMCF(debug, "Executing. this._id = %d, FeatureValue::id=%d, featureCode = 0x%02x",
                     _id, fv._id, fv.featureCode());
     setupFeatureWidget();
