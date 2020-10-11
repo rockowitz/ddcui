@@ -36,7 +36,12 @@ protected:           // methods
     QComboBox *      createFormattedComboBox();
     // void          resizeEvent(QResizeEvent * evt) override;
 
-protected:          // member variables
+// *** Member variables ***
+
+public:
+    int                     _id;
+
+protected:
     // initialized since Coverity complains that uninitialized in constructor,
     // will be set by setFeatureValue() before first use
     uint8_t                 _featureCode = 0;
@@ -51,6 +56,8 @@ protected:          // member variables
     DDCA_Status             _ddcrc = 0;
     GlobalState&            _globalState = GlobalState::instance();
     int                     _featureValueWidgetHeight = 20;
+
+    static int              nextId;
 
 private:        // member variables
     const char *            _cls;

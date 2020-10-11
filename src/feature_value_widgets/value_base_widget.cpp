@@ -1,6 +1,6 @@
 /* value_base_widget.cpp */
 
-// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "feature_value_widgets/value_base_widget.h"
@@ -33,13 +33,16 @@ QComboBox * ValueBaseWidget::createFormattedComboBox() {
    return cb;
 }
 
+int ValueBaseWidget::nextId = 0;
 
 ValueBaseWidget::ValueBaseWidget(QWidget *parent)
      : QFrame(parent)             // ValueAbstractWidget(parent)
 {
    bool debug = false;
    _cls = strdup(metaObject()->className());  // private to this class
+   _id = ++nextId;
 
+   TRACEMCF(debug, "Executing. this._id = %d", _id);
    //QMargins margins = contentsMargins();
    //printf("(ValueBaseWidget::ValueBaseWidget) margins: left=%d, top=%d, right=%d, bottom=%d)\n",
    //       margins.m_left, margins.m_top, margins.m_right, margins.m_bottom);
@@ -53,8 +56,8 @@ ValueBaseWidget::ValueBaseWidget(QWidget *parent)
 
 void ValueBaseWidget::setFeatureValue(const FeatureValue &fv) {
    bool debug = false;
-   TRACEMCF(debug, "ValueBaseWidget. featureCode=0x%02x, capVcp=%p, ddcrc=%d",
-                    fv.featureCode(), fv.capVcp(), fv.ddcrc());
+   TRACEMCF(debug, "ValueBaseWidget. this._id=%d, featureCode=0x%02x, capVcp=%p, ddcrc=%d",
+                    _id, fv.featureCode(), fv.capVcp(), fv.ddcrc());
 
     _featureCode    = fv.featureCode();
     _dref           = fv.dref();
