@@ -38,8 +38,7 @@ void initFeaturesScrollAreaView(
                     msgboxQueue);
    curMonitor->_featuresScrollAreaView = featuresView;
 
-   QObject::connect(baseModel,          SIGNAL(signalEndInitialLoad()),
-                    featuresView,       SLOT(  onEndInitialLoad()));
+
 
    // requires no-arg constructor, copy constructor
    qRegisterMetaType<DdcError>("DdcError");
@@ -50,20 +49,18 @@ void initFeaturesScrollAreaView(
    qRegisterMetaType<DdcFeatureError*>("DdcFeatureError*");
    // qRegisterMetaType<DdcVerifyError>("DdcVerifyError");
    // qRegisterMetaType<DdcFeatureError&>();
+
    QObject::connect(baseModel,     &FeatureBaseModel::signalDdcFeatureError,
                     featuresView,  &FeaturesScrollAreaView::onModelDdcFeatureError);
 
    QObject::connect(baseModel,     &FeatureBaseModel::signalDdcDetailedError,
                     featuresView,  &FeaturesScrollAreaView::onModelDdcDetailedError);
 
-   // QObject::connect(baseModel,     SIGNAL(signalDdcFeatureError( DdcFeatureError&)),
-   //                  featuresView,  SLOT(  onModelDdcFeatureError(DdcFeatureError&)));
+   QObject::connect(baseModel,     &FeatureBaseModel::signalEndInitialLoad,
+                    featuresView,  &FeaturesScrollAreaView::onEndInitialLoad);
 
-   // QObject::connect(baseModel,          &FeatureBaseModel::signalEndInitialLoad,
-   //                  featuresView,       &FeaturesScrollAreaView::onEndInitialLoad);
-
-   QObject::connect(featuresView, &FeaturesScrollAreaView::signalVcpRequest,
-                    curMonitor,   &Monitor::putVcpRequest);
+   // QObject::connect(featuresView, &FeaturesScrollAreaView::signalVcpRequest,
+   //                  curMonitor,   &Monitor::putVcpRequest);
 }
 
 
