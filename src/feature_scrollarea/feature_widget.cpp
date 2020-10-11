@@ -174,19 +174,30 @@ void FeatureWidget::setupConnections()
 }
 
 
+// error: ‘nextID’ in ‘class FeatureWidget’ does not name a type
+// is this because subclasses QObject?
+// FeatureWidget::nextID = 0;
+
+
 FeatureWidget::FeatureWidget(QWidget *parent)
    : QWidget(parent)
    , _cls(metaObject()->className())
 {
+    // _id = ++nextID;
     setupFeatureWidget();
     setupConnections();
 }
 
+int FeatureWidget::nextId = 0;
 
 FeatureWidget::FeatureWidget(FeatureValue& fv, QWidget *parent)
    : QWidget(parent)
    , _cls(metaObject()->className())
 {
+    bool debug = false;
+    _id = ++nextId;
+    TRACEMCF(debug, "Executing. this._id = %d, FeatureValue::id=%d, featureCode = 0x%02x",
+                    _id, fv._id, fv.featureCode());
     setupFeatureWidget();
     setupConnections();
     setFeatureValue(fv);

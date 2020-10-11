@@ -40,8 +40,6 @@ public:
     void dbgrpt() const;
     // void simpleFeatureValueChanged(SimpleFeatureValue fv) override;   // SimpleFeatureValueObserver
 
-
-
 public slots:
     void onInternalValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl);
 
@@ -54,18 +52,18 @@ protected:
 
 // *** Member variables ***
 
-public:            // member variables
+public:
     uint8_t             _feature_code;
     QString*            _feature_name;
-    // int                 _id;
 
 protected:
-    // static int               nextId;
+    static int          nextId;
 
 private:
     void setupFeatureWidget();   // called by constructor
     void setupConnections();     // called by constructor
     const char *        _cls;    // className
+    int                 _id;
 
     // uint8_t          _feature_code;
    //  QString*         _feature_name;
