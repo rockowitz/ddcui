@@ -11,6 +11,7 @@
 #include <QtWidgets/QPlainTextEdit>
 #include <QtWidgets/QStackedWidget>
 #include <QtWidgets/QTableView>
+#include <QtWidgets/QMessageBox>
 #include <QtWidgets/QtWidgets>
 
 #include <ddcutil_types.h>
@@ -69,12 +70,13 @@ public:
 
     // *** public initialization methods
     void initSerialMsgbox();
+    void start_msgBoxThread();    // was originally factored out for use as a slot
 
     // *** private initialization methods
 private:
     void initMonitors(Parsed_Cmd * parsed_cmd);
     void loadMonitorFeatures(Monitor * monitor);
-    void start_msgBoxThread();    // was originally factored out for use as a slot
+
 
 
  //
@@ -193,7 +195,9 @@ private:
 public:
     UserInterfaceOptionsDialog * _uid = NULL;
     FeatureSelector *        _feature_selector = NULL;
-    MsgBoxQueue*               _msgboxQueue = nullptr;
+    MsgBoxQueue*               _msgBoxQueue = nullptr;
+
+    QMessageBox*               _serialMsgBox = nullptr;
 
     // private member variables ***
 
@@ -210,7 +214,7 @@ private:
     QVector<Monitor*>          _monitors;
     DDCA_Feature_Subset_Id     _feature_list_id = DDCA_SUBSET_KNOWN;
     QVector<VcpThread*>        _vcp_threads;
-    QMessageBox*               _serialMsgBox = nullptr;
+
     QMessageBox*               _loadingMsgBox;
     // MsgBoxQueue*               _msgboxQueue = nullptr;
     MsgBoxThread *             _msgBoxThread = nullptr;

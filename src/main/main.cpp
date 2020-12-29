@@ -124,24 +124,17 @@ int main(int argc, char *argv[])
      enable_trace_show_time(     parsed_cmd->flags & CMD_FLAG_TIMESTAMP_TRACE);
      enable_trace_show_thread_id(parsed_cmd->flags & CMD_FLAG_THREAD_ID_TRACE);
 
-
     if (!init_ddcutil_library(parsed_cmd))
        return 1;
-
-#ifdef OLD_LOCATION
-    QStringList styles = QStyleFactory::keys();
-    printf("Known styles:\n");
-    for (int ndx = 0;  ndx < styles.size(); ndx++)
-    {
-       printf("  %s\n", styles.at(ndx).toLocal8Bit().constData());
-    }
-#endif
 
     GlobalState & globalState = GlobalState::instance();
     init_core();
 
     MainWindow w(parsed_cmd);
     globalState._mainWindow = &w;
+    w.initSerialMsgbox();
+    w.start_msgBoxThread();    // was originally factored out for use as a slot
+
 
     // without w.show(), initial serial message box does not appear over MainWindow
     w.show();
@@ -151,5 +144,9 @@ int main(int argc, char *argv[])
     // globalState._msgBoxThread->start();
 
     // printf("(%s) Calling Application::exec()\n", __func__);
-    return a.exec();
+    int mainStatus = a.exec();
+    ddca_show_stats(parsed_cmd->stats_types,
+                    false,              // include_per_thread_data
+                    0);                 // depth
+    return mainStatus;
 }

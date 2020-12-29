@@ -47,6 +47,7 @@
 
 #include "main/mainwindow_ui.h"
 #include "main/msgbox_thread.h"
+#include "main/mainwindow.h"
 
 using namespace std;
 
@@ -54,36 +55,54 @@ using namespace std;
 // Constructor, Destructor, Initialization
 //
 
+#ifdef NON_PERSISTENT
+   QMessageBox * serialMbox2 = new QMessageBox(this);
+   serialMbox2->setStandardButtons(QMessageBox::Ok);
+   serialMbox2->setWindowModality(Qt::WindowModal);
+   serialMbox2->setModal(true);
+   serialMbox2->setFont(_ui->mainMenuFont);
+#endif
+
+
+#ifdef NON_PERSISTENT
+   QObject::connect(
+         serialMbox2,   &QMessageBox::finished,
+         _msgBoxThread, &MsgBoxThread::msbgoxClosed );
+#endif
+
 void MainWindow::initSerialMsgbox() {
    // QMessageBox for displaying error messages, one at a time
-#ifdef PERSISTENT_SERIAL_MSG_BOX
+// #ifdef PERSISTENT_SERIAL_MSG_BOX
    _serialMsgBox = new QMessageBox(this);
    _serialMsgBox->setStandardButtons(QMessageBox::Ok);
    _serialMsgBox->setWindowModality(Qt::WindowModal);
    _serialMsgBox->setModal(true);
    _serialMsgBox->setFont(_ui->mainMenuFont);
-#endif
-   // _msgboxQueue = new MsgBoxQueue();
+// #endif
+   _msgBoxQueue = new MsgBoxQueue();
    // TRACE("_msgboxQueue=%p", _msgboxQueue);
-   _msgBoxThread = new MsgBoxThread(_msgboxQueue);
+   _msgBoxThread = new MsgBoxThread(_msgBoxQueue);
 
-#ifdef PERSISTENT_SERIAL_MSG_BOX
+// #ifdef PERSISTENT_SERIAL_MSG_BOX
    QObject::connect(
          _serialMsgBox, &QMessageBox::finished,
          _msgBoxThread, &MsgBoxThread::msbgoxClosed
          );
-#endif
+// #endif
 
-   QObject::connect(
-         _msgBoxThread, &MsgBoxThread::postSerialMsgBox,
-         this, &MainWindow::showSerialMsgBox
-         );
+   QObject::connect(_msgBoxThread, &MsgBoxThread::postSerialMsgBox,
+                    this,          &MainWindow::showSerialMsgBox);
+
+   // SIGNL/SLOT spec fails in same way
+   // QObject::connect(_msgBoxThread, SIGNAL(postSerialMsgBox(QString, QString, QMessageBox::Icon) ),
+   //                  this,          SLOT(  showSerialMsgBox(QString, QString, QMessageBox::Icon) ) );
 
    // Tried deferring until after MainWindow::show() in hopes that dialog box appears over main window
    // msgBoxThread->start();
 
     GlobalState& globalState = GlobalState::instance();
     globalState._msgBoxThread = _msgBoxThread;
+    globalState._msgBoxQueue  = _msgBoxQueue;
 }
 
 
@@ -91,10 +110,10 @@ void MainWindow::start_msgBoxThread() {
    // TRACEMC("Executing");
 
 #ifdef DEFERRED_MSG_QUEUE
-   TRACEMC("Putting %d MsgBoxQueueEntry on _msgboxQueue", _deferredMsgs.count());
+   TRACEMC("Putting %d MsgBoxQueueEntry on _msgBoxQueue", _deferredMsgs.count());
    for (int ndx = 0; ndx < _deferredMsgs.count(); ndx++) {
       MsgBoxQueueEntry * qe = _deferredMsgs.at(ndx);
-    _msgboxQueue->put(qe);
+    _msgBoxQueue->put(qe);
    }
 #endif
 
@@ -163,7 +182,7 @@ void MainWindow::initMonitors(Parsed_Cmd * parsed_cmd) {
 
         initMonitorInfoWidget(curMonitor, _ui->centralWidget);
         initCapabilitiesWidget(curMonitor, _ui->centralWidget);
-        initFeaturesScrollAreaView(curMonitor, baseModel, _ui->centralWidget, _msgboxQueue);
+        initFeaturesScrollAreaView(curMonitor, baseModel, _ui->centralWidget, _msgBoxQueue);
 
         QObject::connect(baseModel,  SIGNAL(signalVcpRequest(VcpRequest*)),
                          curMonitor, SLOT(  putVcpRequest(VcpRequest*)));
@@ -207,7 +226,7 @@ void MainWindow::initMonitors(Parsed_Cmd * parsed_cmd) {
 #ifdef DEFERRED_MSG_QUEUE
           _deferredMsgs.append(qe);     // not needed
 #endif
-          _msgboxQueue->put(qe);
+          _msgBoxQueue->put(qe);
        }
     }
     else {
@@ -296,9 +315,9 @@ MainWindow::MainWindow(Parsed_Cmd * parsed_cmd, QWidget *parent) :
     _serialMsgBox->setFont(_ui->mainMenuFont);
 #endif
 
-    _msgboxQueue = new MsgBoxQueue();
+    _msgBoxQueue = new MsgBoxQueue();
     // TRACE("_msgboxQueue=%p", _msgboxQueue);
-    // MsgBoxThread * msgBoxThread = new MsgBoxThread(_msgboxQueue);
+    // MsgBoxThread * msgBoxThread = new MsgBoxThread(_msgBoxQueue);
 
 #ifdef MOVED
     QObject::connect(
@@ -358,9 +377,11 @@ MainWindow::MainWindow(Parsed_Cmd * parsed_cmd, QWidget *parent) :
      }
 #endif
 
+#ifdef WORKS_WITH_CMAKE
      initSerialMsgbox();     // sets _msgBoxThread
 
      start_msgBoxThread();
+#endif
 
 #ifdef DOESNT_SOLVE_PROBLEM
       // An attempt to address the problem of the Message Box for "early" messages
@@ -406,21 +427,24 @@ void MainWindow::showSerialMsgBox(QString title, QString text, QMessageBox::Icon
    bool debugFunc = false;
    TRACEMCF(debugFunc, "Starting. text=%s", QS2S(text));
 // #ifdef DIALOG_BOX_STILL_ON_SEPARATE_SCREEN
+#ifdef NON_PERSISTENT
    QMessageBox * serialMbox2 = new QMessageBox(this);
    serialMbox2->setStandardButtons(QMessageBox::Ok);
    serialMbox2->setWindowModality(Qt::WindowModal);
    serialMbox2->setModal(true);
    serialMbox2->setFont(_ui->mainMenuFont);
-   serialMbox2->setText(text);
-   serialMbox2->setWindowTitle(title);
-   serialMbox2->setIcon(icon);
+#endif
+   _serialMsgBox->setText(text);
+   _serialMsgBox->setWindowTitle(title);
+   _serialMsgBox->setIcon(icon);
 
+#ifdef NON_PERSISTENT
    QObject::connect(
-         serialMbox2, &QMessageBox::finished,
-         _msgBoxThread, &MsgBoxThread::msbgoxClosed
-         );
+         serialMbox2,   &QMessageBox::finished,
+         _msgBoxThread, &MsgBoxThread::msbgoxClosed );
+#endif
 
-   serialMbox2->exec();
+   _serialMsgBox->exec();
    TRACEMCF(debugFunc, "Done.     After serialMsgBox2->exec() returns.");
 // #endif
 
