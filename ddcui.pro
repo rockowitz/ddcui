@@ -51,8 +51,6 @@ QMAKE_SUBSTITUTES += versionconfig
 INCLUDEPATH += src
 
 SOURCES += \
-    src/main/msgbox_thread.cpp \
-    src/nongui/msgbox_queue.cpp \
      src/c_util/data_structures.c \
      src/c_util/glib_util.c \
      src/c_util/string_util.c
@@ -87,6 +85,7 @@ SOURCES += \
     src/nongui/ddca_simulator.cpp \
     src/nongui/feature_base_model.cpp \
     src/nongui/feature_value.cpp \
+    src/nongui/msgbox_queue.cpp \
     src/nongui/vcprequest.cpp \
     src/nongui/vcpthread.cpp
 
@@ -136,11 +135,11 @@ SOURCES += \
     src/option_dialogs/user_interface_options_dialog.cpp
 
 SOURCES += \
+    src/main/main.cpp \
     src/main/mainwindow.cpp \
     src/main/mainwindow_ui.cpp \
     src/main/monitor.cpp \
-    src/main/main.cpp
-
+    src/main/msgbox_thread.cpp
 
 #   vcplineitem.cpp \
 
@@ -236,8 +235,9 @@ HEADERS += \
 
 HEADERS += \
     src/main/mainwindow.h \
-    src/main/mainwindow_ui.h
-    src/main/msgbox_thread.h \
+    src/main/mainwindow_ui.h \
+    src/main/msgbox_thread.h
+
 
 #     vcplineitem.h \
 
