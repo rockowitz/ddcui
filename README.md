@@ -8,8 +8,6 @@ in the ddcutil documentation.
 
 There are some situations that ddcui does not have a good way to handle:
 
-Some user interface issues should be noted in advance.
-
 It is possible for feature values reported in **ddcui** to become out of sync with actual monitor 
 values.
 - If feature values are changed using the monitor's On Screen Display. 
