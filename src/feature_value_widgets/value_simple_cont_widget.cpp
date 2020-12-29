@@ -94,12 +94,13 @@ void ValueSimpleContWidget::layoutWidget(QHBoxLayout * layout) {
 ValueSimpleContWidget::ValueSimpleContWidget(QWidget *parent)
     : ValueBaseWidget(parent)
     , _cls( strdup(metaObject()->className()) )
-    , _newval(0)
+   // , _newval(0)
 {
     bool debug = false;
     TRACEMCF(debug, "Starting. After ValueBaseWidget() constructor." );
 
     _id = ValueSimpleContWidget::idGenerator++;
+    _newval = 0;
 
     createWidgets();
     additionalWidgets();
