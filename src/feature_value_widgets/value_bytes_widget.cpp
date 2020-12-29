@@ -80,7 +80,7 @@ ValueBytesWidget::createWidgets() {
 
    QFont valueFont = FeatureValueNumberEntryFont;
    //QFont valueFont(monoValueFont);
-   int   valueFrameStyle = QFrame::Plain | QFrame::NoFrame;
+   // int   valueFrameStyle = QFrame::Plain | QFrame::NoFrame;
    QSize valueSize(30,widgetHeight);
 
    _mhValue  = newTitle("x00", titleHeight);
