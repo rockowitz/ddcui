@@ -357,30 +357,25 @@ bs256_to_string(
    static GPrivate  key = G_PRIVATE_INIT(g_free);
    static GPrivate  len_key = G_PRIVATE_INIT(g_free);
 
-   int bufsz = strlen(value_prefix) + 2 + strlen(sepstr);
-
-
    if (!value_prefix)
       value_prefix = "";
    if (!sepstr)
       sepstr = "";
    int vsize = strlen(value_prefix) + 2 + strlen(sepstr);
-
    int bit_ct = bs256_count(bitset);
    int reqd_size = (bit_ct*vsize)+1;   // +1 for trailing null
-   // printf("(%s) w=olf 2\n", __func__);
 
    char * buf = get_thread_dynamic_buffer(&key, &len_key, reqd_size);
    // char * buf = calloc(1, reqd_size);
 
    buf[0] = '\0';
-   // DBGMSG("feature_ct=%d, vsize=%d, buf size = %d", feature_ct, vsize, vsize*feature_ct);
+   // printf("(%s) feature_ct=%d, vsize=%d, buf size = %d",
+   //          __func__, feature_ct, vsize, vsize*feature_ct);
 
    for (int ndx = 0; ndx < 256; ndx++) {
       if ( bs256_contains(bitset, ndx) )
          sprintf(buf + strlen(buf), "%s%02x%s", value_prefix, ndx, sepstr);
    }
-   // printf("(%s) w=olf 3\n", __func__);
 
    if (bit_ct > 0)
       buf[ strlen(buf)-strlen(sepstr)] = '\0';
