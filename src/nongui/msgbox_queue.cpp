@@ -27,9 +27,6 @@ MsgBoxQueueEntry::MsgBoxQueueEntry(
    , _boxText(text)
    , _boxIcon(icon)
 {
-     // _type = type;
-   // printf("(MsgBoxQueueEntry::MsgBoxQueueEntry)\n");  fflush(stdout);
-   // printf("(MsgBoxQueueEntry::MsgBoxQueueEntry) debug = %s\n", sbool(debugClass));  fflush(stdout);
    TRACECF(debugClass, "Constructor. title=%s, text=%s, icon=%d",
                        QS2S(_boxTitle), QS2S(_boxText), _boxIcon);
 }
