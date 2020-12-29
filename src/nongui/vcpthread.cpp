@@ -376,7 +376,7 @@ void VcpThread::getvcp(uint8_t featureCode, bool needMetadata) {
     DDCA_Status ddcrc = perform_open_display(&dh);
     if (ddcrc == 0) {
        QString msg;
-       _baseModel->setStatusMsg(msg.sprintf("Reading feature 0x%02x",featureCode));
+       _baseModel->setStatusMsg(msg.asprintf("Reading feature 0x%02x",featureCode));
 
        bool simulated = _ddcaSimulator->simulateGetNonTableVcpValue(
                            _dinfo->vcp_version,
