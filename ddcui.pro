@@ -51,9 +51,21 @@ QMAKE_SUBSTITUTES += versionconfig
 INCLUDEPATH += src
 
 SOURCES += \
+    src/main/msgbox_thread.cpp \
+    src/nongui/msgbox_queue.cpp \
+     src/c_util/data_structures.c \
+     src/c_util/glib_util.c \
+     src/c_util/string_util.c
+
+SOURCES += \
+    src/cmdline/parsed_cmd.c \
+    src/cmdline/cmd_parser_aux.c \
+    src/cmdline/cmd_parser.c
+
+SOURCES += \
+    src/base/core.cpp \
     src/base/ddca_utils.cpp \
     src/base/ddcui_parms.cpp \
-    src/base/core.cpp \
     src/base/feature_list.c \
     src/base/feature_selector.cpp \
     src/base/global_state.cpp \
@@ -65,24 +77,16 @@ SOURCES+= \
     src/core_widgets/enhanced_slider.cpp \
     src/core_widgets/hex_number_validator.cpp \
     src/core_widgets/hline_widget.cpp \
-    src/core_widgets/number_entry_widget.cpp
+    src/core_widgets/number_entry_widget.cpp \
+    src/core_widgets/spin_slider.cpp
 
     #   src/base/vertical_scroll_area.cpp \
 
 SOURCES += \
-    src/c_util/data_structures.c \
-    src/c_util/string_util.c 
-
-SOURCES += \
-    src/cmdline/parsed_cmd.c \
-    src/cmdline/cmd_parser_aux.c \
-    src/cmdline/cmd_parser.c
-
-SOURCES += \
     src/nongui/ddc_error.cpp \
+    src/nongui/ddca_simulator.cpp \
     src/nongui/feature_base_model.cpp \
     src/nongui/feature_value.cpp \
-    src/nongui/msgbox_queue.cpp \
     src/nongui/vcprequest.cpp \
     src/nongui/vcpthread.cpp
 
@@ -93,8 +97,8 @@ SOURCES += \
 #   src/nongui/feature_change_observer.cpp 
 
 SOURCES += \
-    src/monitor_desc/monitor_desc_ui.cpp \
-    src/monitor_desc/monitor_desc_actions.cpp
+    src/monitor_desc/monitor_desc_actions.cpp \
+    src/monitor_desc/monitor_desc_ui.cpp
 
 SOURCES += \
     src/feature_value_widgets/value_2button_widget.cpp \
@@ -104,16 +108,19 @@ SOURCES += \
     src/feature_value_widgets/value_cont_widget.cpp \
     src/feature_value_widgets/value_nc_widget.cpp \
     src/feature_value_widgets/value_ncplus_widget.cpp \
+    src/feature_value_widgets/value_new_cont_widget.cpp \
     src/feature_value_widgets/value_reset_widget.cpp \
+    src/feature_value_widgets/value_simple_cont_widget.cpp \
+    src/feature_value_widgets/value_special_widget_x62.cpp \
     src/feature_value_widgets/value_stacked_widget.cpp \
-    src/feature_value_widgets/value_std_widget.cpp 
+    src/feature_value_widgets/value_std_widget.cpp
 
 SOURCES += \
-    src/feature_scrollarea/features_scrollarea.cpp \
-    src/feature_scrollarea/features_scrollarea_ui.cpp \
     src/feature_scrollarea/feature_widget.cpp \
     src/feature_scrollarea/feature_widget_header.cpp \
+    src/feature_scrollarea/features_scrollarea.cpp \
     src/feature_scrollarea/features_scrollarea_contents.cpp \
+    src/feature_scrollarea/features_scrollarea_ui.cpp \
     src/feature_scrollarea/features_scrollarea_view.cpp
 
 SOURCES += \
@@ -129,11 +136,11 @@ SOURCES += \
     src/option_dialogs/user_interface_options_dialog.cpp
 
 SOURCES += \
-    src/main/monitor.cpp \
-    src/main/mainwindow_ui.cpp \
     src/main/mainwindow.cpp \
-    src/main/msgbox_thread.cpp \
+    src/main/mainwindow_ui.cpp \
+    src/main/monitor.cpp \
     src/main/main.cpp
+
 
 #   vcplineitem.cpp \
 
@@ -144,9 +151,19 @@ SOURCES += \
 # Each group of header files depends only on the groups above it.
 
 HEADERS += \
-    src/base/ddcui_parms.h \
-    src/base/ddca_utils.h \
+    src/c_util/data_structures.h \
+    src/c_util/glib_util.h \
+    src/c_util/string_util.h
+
+HEADERS += \
+    src/cmdline/parsed_cmd.h \
+    src/cmdline/cmd_parser_aux.h \
+    src/cmdline/cmd_parser.h
+
+HEADERS += \
     src/base/core.h \
+    src/base/ddca_utils.h \
+    src/base/ddcui_parms.h \
     src/base/feature_list.h \
     src/base/feature_selector.h \
     src/base/global_state.h \
@@ -159,21 +176,14 @@ HEADERS += \
     src/core_widgets/enhanced_slider.h \
     src/core_widgets/hex_number_validator.h \
     src/core_widgets/hline_widget.h \
-    src/core_widgets/number_entry_widget.h
+    src/core_widgets/number_entry_widget.h \
+    src/core_widgets/spin_slider.h
 
 #   src/core_widgets/vertical_scroll_area.h
 
 HEADERS += \
-    src/c_util/data_structures.h
-    src/c_util/string_util.h 
-
-HEADERS += \
-    src/cmdline/parsed_cmd.h \
-    src/cmdline/cmd_parser_aux.h \
-    src/cmdline/cmd_parser.h
-
-HEADERS += \
     src/nongui/ddc_error.h \
+    src/nongui/ddca_simulator.h \
     src/nongui/feature_base_model.h \
     src/nongui/feature_value.h \
     src/nongui/msgbox_queue.h \
@@ -186,27 +196,30 @@ HEADERS += \
 #   src/nongui/simple_feature_value.h
 
 HEADERS += \
-    src/monitor_desc/monitor_desc_ui.h \
-    src/monitor_desc/monitor_desc_actions.h
+    src/monitor_desc/monitor_desc_actions.h \
+    src/monitor_desc/monitor_desc_ui.h
 
 HEADERS += \
+    src/feature_value_widgets/value_2button_widget.h \
     src/feature_value_widgets/value_base_widget.h \
     src/feature_value_widgets/value_bytes_widget.h \
-    src/feature_value_widgets/value_std_widget.h \
     src/feature_value_widgets/value_cnc_widget_x14.h \
     src/feature_value_widgets/value_cont_widget.h \
     src/feature_value_widgets/value_nc_widget.h \
     src/feature_value_widgets/value_ncplus_widget.h \
+    src/feature_value_widgets/value_new_cont_widget.h \
     src/feature_value_widgets/value_reset_widget.h \
-    src/feature_value_widgets/value_2button_widget.h \
-    src/feature_value_widgets/value_stacked_widget.h
+    src/feature_value_widgets/value_simple_cont_widget.h \
+    src/feature_value_widgets/value_stacked_widget.h \
+    src/feature_value_widgets/value_std_widget.h \
+    src/feature_value_widgets/value_special_widget_x62.h
 
 HEADERS += \
-    src/feature_scrollarea/features_scrollarea.h \
-    src/feature_scrollarea/features_scrollarea_ui.h \
     src/feature_scrollarea/feature_widget.h \
     src/feature_scrollarea/feature_widget_header.h \
+    src/feature_scrollarea/features_scrollarea.h \
     src/feature_scrollarea/features_scrollarea_contents.h \
+    src/feature_scrollarea/features_scrollarea_ui.h \
     src/feature_scrollarea/features_scrollarea_view.h
 
 HEADERS += \
@@ -216,15 +229,15 @@ HEADERS += \
  #  src/help/help_dialog0.h \
 
 HEADERS += \
+    src/action_dialogs/debug_actions_dialog.h \
     src/option_dialogs/feature_selection_dialog.h \
     src/option_dialogs/other_options_dialog.h \
-    src/option_dialogs/user_interface_options_dialog.h \
-    src/action_dialogs/debug_actions_dialog.h
+    src/option_dialogs/user_interface_options_dialog.h
 
 HEADERS += \
-    src/main/msgbox_thread.h \
     src/main/mainwindow.h \
     src/main/mainwindow_ui.h
+    src/main/msgbox_thread.h \
 
 #     vcplineitem.h \
 
@@ -234,10 +247,10 @@ HEADERS += \
 #   mainwindow.ui \
 
 FORMS += \
+    src/action_dialogs/debug_actions_dialog.ui \
     src/option_dialogs/feature_selection_dialog.ui \
     src/option_dialogs/other_options_dialog.ui \
-    src/option_dialogs/user_interface_options_dialog.ui \
-    src/action_dialogs/debug_actions_dialog.ui
+    src/option_dialogs/user_interface_options_dialog.ui
 
     # src/help/help_dialog0.ui
 
@@ -260,6 +273,41 @@ INSTALLS += mantarget
 doctarget.path = /usr/local/share/doc/ddcui
 doctarget.files = AUTHORS ChangeLog COPYING NEWS.md README.MD
 INSTALLS += doctarget
+
+desktop_target.path = /usr/local/share/applications
+desktop_target.files = ddcui.desktop
+INSTALLS += desktop_target
+
+application_target.path = /usr/local/share/metainfo
+application_target.files = ddcui.appdata.xml
+INSTALLS += application_target
+
+hicolor128_target.files = icons/ddcui-128px.png
+hicolor128_target.path = /usr/local/share/icons/hicolor/128x128/apps ddcui-128px.png
+hicolor128_target.extra = mv ddcui-128px.png ddcui.png
+INSTALLS += hicolor128_target
+
+hicolor64_target.files = icons/ddcui-64px.png
+hicolor64_target.path = /usr/local/share/icons/hicolor/64x64/apps ddcui-64px.png
+hicolor64_target.extra = mv ddcui-64px.png ddcui.png
+INSTALLS += hicolor64_target
+
+hicolor48_target.files = icons/ddcui-48px.png
+hicolor48_target.path = /usr/local/share/icons/hicolor/48x48/apps ddcui-48px.png
+hicolor48_target.extra = mv ddcui-48px.png ddcui.png
+INSTALLS += hicolor48_target
+
+hicolor32_target.files = icons/ddcui-32px.png
+hicolor32_target.path = /usr/local/share/icons/hicolor/32x32/apps ddcui-32px.png
+hicolor32_target.extra = mv ddcui-32px.png ddcui.png
+INSTALLS += hicolor32_target
+
+hicolor16_target.files = icons/ddcui-16px.png
+hicolor16_target.path = /usr/local/share/icons/hicolor/16x16/apps ddcui-16px.png
+hicolor16_target.extra = mv ddcui-16px.png ddcui.png
+INSTALLS += hicolor16_target
+
+
 
 
 # The pkg-config code is hard to test, since so many distribution specific configurations. 
