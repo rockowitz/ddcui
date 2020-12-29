@@ -106,8 +106,8 @@ void ValueSpecialWidgetX62::setCurrentShSl(uint16_t newval) {
     ValueBaseWidget::setCurrentShSl(newval);
 
     newval = newval & 0xff;
-    int oldCbIndex = _cb->currentIndex();
-    int oldSlider  = _spinSlider->getShSl();
+    // int oldCbIndex = _cb->currentIndex();
+    // int oldSlider  = _spinSlider->getShSl();
 
     if (newval == 0) {
      //  if (oldCbIndex != 0) {
@@ -153,9 +153,10 @@ void ValueSpecialWidgetX62::setCurrentShSl(uint16_t newval) {
 
 uint16_t ValueSpecialWidgetX62::getCurrentShSl() {
     // get sl from combobox
-    int ndx = _cb->currentIndex();
-    QVariant qv = _cb->itemData(ndx);
-    uint i = qv.toUInt();
+
+    // int ndx = _cb->currentIndex();
+    // QVariant qv = _cb->itemData(ndx);
+    // uint i = qv.toUInt();
 
     if (_cb->currentIndex() == 0)
        _sl = 0;
