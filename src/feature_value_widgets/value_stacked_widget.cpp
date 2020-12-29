@@ -66,7 +66,7 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
     _pageno_ncplus  = 7;
     _pageno_simple_cont = 8;
     _pageno_old_cont = 9;
-    _pageno_x62;
+    _pageno_x62      = 10;
 
     addWidget(_newContWidget);
     addWidget(_ncWidget);
