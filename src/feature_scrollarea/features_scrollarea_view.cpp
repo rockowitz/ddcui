@@ -43,11 +43,11 @@ FeaturesScrollAreaView::FeaturesScrollAreaView(
         QObject *          parent)
     : QObject(parent)
     , _cls(metaObject()->className())
+    , _id(++nextId)
     , _monitor(monitor)
     , _baseModel(model)
     , _centralStackedWidget(centralStackedWidget)
     , _msgboxQueue(msgboxQueue)
-    , _id(++nextId)
     // , _curNcValuesSource(OtherOptionsState::DefaultNcValuesSource)  // , _curNcValuesSource(NcValuesSourceUnset)
     , _controlKeyRequired(false)
 {
