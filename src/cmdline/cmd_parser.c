@@ -108,7 +108,7 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
    gboolean less_sleep_true_set     = false;
    gboolean less_sleep_false_set    = false;
    gboolean force_latest_nc_value_names_true_set = false;
-   gboolean force_latest_nc_value_names_false_set = false;
+// gboolean force_latest_nc_value_names_false_set = false;
    gchar**  cmd_and_args            = NULL;
    gchar**  trace_classes           = NULL;
    gchar**  trace_filenames         = NULL;
@@ -153,11 +153,10 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
 
       // library tuning
       {"maxtries",'\0', 0, G_OPTION_ARG_STRING,   &maxtrywork,       "Max try adjustment",  "comma separated list" },
-#ifdef UNIMPLEMENTED
-      // unclear how to implement in GUI environment
+
       {"stats",   's',  G_OPTION_FLAG_OPTIONAL_ARG,
-                           G_OPTION_ARG_CALLBACK, stats_arg_func,    "Show retry statistics",    "stats type"},
-#endif
+                           G_OPTION_ARG_CALLBACK, stats_arg_func,    "Show performance statistics",  "stats type"},
+
       {"sleep-multiplier", '\0', 0,
                                  G_OPTION_ARG_STRING,   &sleep_multiplier_work, "Multiplication factor for DDC sleeps", "number"},
       {"less-sleep" ,'\0', 0, G_OPTION_ARG_NONE, &less_sleep_true_set, "Eliminate some sleeps",  NULL},
