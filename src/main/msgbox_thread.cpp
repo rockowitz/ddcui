@@ -44,13 +44,12 @@ void MsgBoxThread::run() {
     // has started
     // DIDN'T SOLVE PROBLEM.
 #endif
-
     // Crude but effective.  Just sleep before starting loop reading messages and
     // displaying SerialMsgBox
     long initial_sleep_millis =  MSGBOX_THREAD_RUN_DELAY_MILLIS;
     TRACECF(debugThread, "Sleeping for %d milliseconds", initial_sleep_millis);
-     QThread::msleep(initial_sleep_millis);
-     TRACECF(debugThread, "Initial sleep complete");
+    QThread::msleep(initial_sleep_millis);
+    TRACECF(debugThread, "Initial sleep complete");
 
     forever {
         TRACECF(debugThread, "Waiting to pop"); fflush(stdout);

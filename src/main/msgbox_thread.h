@@ -32,14 +32,11 @@ signals:
 public slots:
     void msbgoxClosed(int result);
 
-
 private:
      // void showSerialMsgBox(QString title, QString text, QMessageBox::Icon icon);
 
-    MsgBoxQueue*          _requestQueue = NULL;
-    // QWidget*               _parent = NULL;
-    const char *          _cls = "MsgBoxThread";
-    const int             n = 1;
+    MsgBoxQueue *  _requestQueue = NULL;
+    const char *   _cls = "MsgBoxThread";
 };
 
 #endif // MSGBOX_THREAD_H
