@@ -37,8 +37,6 @@ set(CMAKE_AUTORCC ON)
 
 # ADDITIONAL_MAKE_CLEAN_FILES(  ... )
 
-
-
 # Find the QtWidgets library
 # find_package(Qt5Widgets)
 # ensures all Qt componenets have same version: 
@@ -74,11 +72,8 @@ message( STATUS "DDCUTIL_LIBRARIES:     ${DDCUTIL_LIBRARIES}" )
 include_directories(SYSTEM ${Qt5Widgets_INCLUDE_DIRS} ${Qt5Gui_INCLUDE_DIRS} ${Qt5Core_INCLUDE_DIRS} ${Qt5Help_INCLUDE_DIRS} 
                            ${GLIB2_INCLUDE_DIRS} ${DDCUTIL_INCLUDE_DIRS} )
 
-# both work:
-# OPTION(APPLY_CANCEL "Use Accept/Cancel buttons" OFF)
 set(APPLY_CANCEL OFF)
 # set(COVERITY_DUMMIES OFF)
-
 
 configure_file(cconfig.h.in config.h)
 
@@ -106,9 +101,9 @@ set(SOURCES
     src/core_widgets/number_entry_widget.cpp
     src/core_widgets/spin_slider.cpp
 
-    src/cmdline/parsed_cmd.c
-    src/cmdline/cmd_parser_aux.c
     src/cmdline/cmd_parser.c
+    src/cmdline/cmd_parser_aux.c
+    src/cmdline/parsed_cmd.c
 
     src/nongui/ddc_error.cpp 
     src/nongui/ddca_simulator.cpp
@@ -118,8 +113,8 @@ set(SOURCES
     src/nongui/vcprequest.cpp 
     src/nongui/vcpthread.cpp 
 
-    src/monitor_desc/monitor_desc_ui.cpp 
     src/monitor_desc/monitor_desc_actions.cpp
+    src/monitor_desc/monitor_desc_ui.cpp 
 
     src/feature_value_widgets/value_2button_widget.cpp 
     src/feature_value_widgets/value_base_widget.cpp
@@ -135,26 +130,25 @@ set(SOURCES
     src/feature_value_widgets/value_stacked_widget.cpp 
     src/feature_value_widgets/value_std_widget.cpp 
 
-    src/feature_scrollarea/features_scrollarea_ui.cpp 
     src/feature_scrollarea/feature_widget.cpp 
     src/feature_scrollarea/feature_widget_header.cpp 
-    src/feature_scrollarea/features_scrollarea_contents.cpp 
-    src/feature_scrollarea/features_scrollarea_view.cpp
     src/feature_scrollarea/features_scrollarea.cpp 
+    src/feature_scrollarea/features_scrollarea_contents.cpp 
+    src/feature_scrollarea/features_scrollarea_ui.cpp 
+    src/feature_scrollarea/features_scrollarea_view.cpp
 
     src/help/help_dialog.cpp
     ddcui.qrc
 
+    src/action_dialogs/debug_actions_dialog.cpp
     src/option_dialogs/feature_selection_dialog.cpp 
     src/option_dialogs/other_options_dialog.cpp
     src/option_dialogs/user_interface_options_dialog.cpp
 
-    src/action_dialogs/debug_actions_dialog.cpp
-
-    src/main/monitor.cpp 
-    src/main/mainwindow_ui.cpp
-    src/main/mainwindow.cpp 
     src/main/main.cpp
+    src/main/mainwindow.cpp 
+    src/main/mainwindow_ui.cpp
+    src/main/monitor.cpp 
     src/main/msgbox_thread.cpp
 )
 
