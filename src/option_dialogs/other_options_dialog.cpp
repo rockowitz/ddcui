@@ -58,8 +58,8 @@ OtherOptionsDialog::~OtherOptionsDialog()
 
 void OtherOptionsDialog::on_buttonBox_accepted()
 {
-    NcValuesSource oldsrc = _state->_ncValuesSource;
-    bool           oldUseLatestNames = _state->_useLatestNcValueNames;
+    // NcValuesSource oldsrc = _state->_ncValuesSource;
+    // bool           oldUseLatestNames = _state->_useLatestNcValueNames;
 
     NcValuesSource newsrc;
 
@@ -89,6 +89,6 @@ void OtherOptionsDialog::on_buttonBox_clicked(QAbstractButton* button)
    if(button== (QAbstractButton*) ui->buttonBox->button(QDialogButtonBox::Reset) ){
       // TRACE("Reset");
       setUiSource(OtherOptionsState::DefaultNcValuesSource);
-      ui->latestNcValueNamesCheckbox->setChecked(OtherOptionsState::DefaultUseMaximalNcValueNames);
+      setUseLatestNcValueNames(OtherOptionsState::DefaultUseMaximalNcValueNames);
    }
 }
