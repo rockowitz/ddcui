@@ -6,20 +6,25 @@
 #ifndef GLOBAL_STATE_H_
 #define GLOBAL_STATE_H_
 
+// #include <QtWidgets/QtWidgets>   // to define Q_OBJECT
+
 #include "base/other_options_state.h"
-#include "user_interface_options_state.h"
+#include "base/user_interface_options_state.h"
 #include "main/mainwindow.h"    // ugh - referencing out of base, to clean up
 
+
 class GlobalState {
+   // Q_OBJECT
 
 public:
    static GlobalState& instance();
 
-   OtherOptionsState * _otherOptionsState = NULL;
-   UserInterfaceOptionsState * _uiOptionsState= NULL;
+   OtherOptionsState *         _otherOptionsState = NULL;
+   UserInterfaceOptionsState * _uiOptionsState    = NULL;
 
-   MainWindow * _mainWindow = NULL;
+   MainWindow *   _mainWindow   = NULL;
    MsgBoxThread * _msgBoxThread = NULL;
+   MsgBoxQueue *  _msgBoxQueue   = NULL;
 
 private:
    GlobalState();
