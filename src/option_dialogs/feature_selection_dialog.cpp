@@ -324,7 +324,7 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
         if (ddca_feature_list_count(customFlist) == 0) {
            QString qstitle = "Feature Code Error";
            QMessageBox::Icon icon = QMessageBox::Critical;
-           MsgBoxQueue * msgboxQueue = GlobalState::instance()._mainWindow->_msgboxQueue;
+           MsgBoxQueue * msgboxQueue = GlobalState::instance()._mainWindow->_msgBoxQueue;
            if (error_msgs) {
               // fprintf(stderr, "Errors in custom features\n");
               int ndx = 0;
