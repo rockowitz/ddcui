@@ -71,6 +71,8 @@ using namespace std;
 #endif
 
 void MainWindow::initSerialMsgbox() {
+   bool debug = false;
+   TRACEMCF(debug, "Starting");
    // QMessageBox for displaying error messages, one at a time
 // #ifdef PERSISTENT_SERIAL_MSG_BOX
    _serialMsgBox = new QMessageBox(this);
@@ -103,11 +105,13 @@ void MainWindow::initSerialMsgbox() {
     GlobalState& globalState = GlobalState::instance();
     globalState._msgBoxThread = _msgBoxThread;
     globalState._msgBoxQueue  = _msgBoxQueue;
+    TRACEMCF(debug, "Oone");
 }
 
 
 void MainWindow::start_msgBoxThread() {
-   // TRACEMC("Executing");
+   bool debug = false;
+   TRACEMCF(debug, "Starting");
 
 #ifdef DEFERRED_MSG_QUEUE
    TRACEMC("Putting %d MsgBoxQueueEntry on _msgBoxQueue", _deferredMsgs.count());
@@ -118,6 +122,7 @@ void MainWindow::start_msgBoxThread() {
 #endif
 
    _msgBoxThread->start();
+   TRACEMCF(debug, "Done.  _msgBoxThread started");
 }
 
 
@@ -270,7 +275,9 @@ MainWindow::MainWindow(Parsed_Cmd * parsed_cmd, QWidget *parent) :
     // _ui(new Ui::MainWindow)
     // , PageChangeObserver()
 {
+    bool debug = false;
     _cls = metaObject()->className();
+    TRACECF(debug, "Starting");
 
     // _ui->setupUi(this);
 
@@ -400,6 +407,7 @@ MainWindow::MainWindow(Parsed_Cmd * parsed_cmd, QWidget *parent) :
      emit reportApplicationEventLoopStarted();   // will not be delivered until application event loop started
 #endif
 
+     TRACECF(debug, "Done");
 }
 
 
@@ -424,7 +432,7 @@ void MainWindow::setStatusMsg(QString msg) {
 //
 
 void MainWindow::showSerialMsgBox(QString title, QString text, QMessageBox::Icon icon) {
-   bool debugFunc = false;
+   bool debugFunc = true;
    TRACEMCF(debugFunc, "Starting. text=%s", QS2S(text));
 // #ifdef DIALOG_BOX_STILL_ON_SEPARATE_SCREEN
 #ifdef NON_PERSISTENT
