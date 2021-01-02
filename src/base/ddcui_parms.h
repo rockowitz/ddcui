@@ -38,6 +38,7 @@
 #define MAIN_MENU_FONT_WEIGHT   QFont::Normal
 #endif
 
+#define PERSISTENT_SERIAL_MSG_BOX
 
 #define MSGBOX_THREAD_RUN_DELAY_MILLIS 200
 
