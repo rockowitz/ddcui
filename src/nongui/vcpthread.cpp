@@ -414,6 +414,9 @@ void VcpThread::getvcp(uint8_t featureCode, bool needMetadata) {
                       &finfo);
            TRACECF(debugFunc, "ddca_get_feature_metadata_by_dh() for feature 0x%02x returned %d - %s",
                      featureCode, ddcrc2, ddca_rc_name(ddcrc2));
+           // if (featureCode == 0xdf || featureCode == 0xf4 || featureCode == 0xf5)
+           //       ddca_dbgrpt_feature_metadata(finfo, 1);
+
            // if (debugFunc && ddcrc2 == 0) {
            //     // OLD: ddcui_dbgrpt_ddca_feature_metadata(finfo);
            //    ddca_dbgrpt_feature_metadata(finfo, 1);
