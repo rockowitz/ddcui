@@ -39,23 +39,17 @@ FeatureValue::FeatureValue(
     , _getvcpStatus(getvcpStatus)
  //   , _cls( strdup(metaObject()->className()) )
 {
-     //  _cls             = strdup(metaObject()->className());
-//    _feature_code    = feature_code;
-//    _dref            = dref;
-//    _finfo           = finfo;
-//    _cap_vcp         = cap_vcp;
-//    _value           = val;
-
+   //  _cls             = strdup(metaObject()->className());
    _cls = "FeatureValue";
    _id = ++nextId;
 
    bool debugFunc = false;
    // debugFunc = debugFunc || (_featureCode == 0x14);
+   // debugFunc = debugFunc || (_featureCode == 0xf5);
    if (debugFunc) {
       TRACEC("_id=%d, feature_code=0x%02x, finfo=%p, cap_vcp=%p, sh=0x%02x, sl=0x%02x",
               _id, _featureCode, _finfo, cap_vcp, val.sh, val.sl);
-      // ddca_dbgrpt_feature_metadata(_finfo, 2);
-      // fflush(stdout);
+      ddca_dbgrpt_feature_metadata(_finfo, 2);
    }
    if (_finfo) {  // when would it be NULL ? if getvcp failed
        assert(_featureCode  == _finfo->feature_code);
