@@ -1,6 +1,6 @@
 /* mainwindow_ui.h - Extracted from uic generated ui code */
 
-// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef UI_MAINWINDOW2_H
@@ -99,6 +99,10 @@ private:
 
 // public:
     void setupUi(QMainWindow *MainWindow);
+
+
+private:
+    const char * _cls = "UiMainWindow";
 
 };
 

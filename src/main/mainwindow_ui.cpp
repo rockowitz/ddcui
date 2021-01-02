@@ -11,13 +11,15 @@
 
 #include "base/core.h"
 
-
 #include "mainwindow_ui.h"
 
    Ui_MainWindow::Ui_MainWindow(QMainWindow* mainWindow)
       : _mainWindow(mainWindow)
    {
+      bool debug = false;
+      TRACECF(debug, "Starting");
       setupUi(mainWindow);
+      TRACECF(debug, "Done");
    }
 
 
@@ -267,6 +269,9 @@
 
    void Ui_MainWindow::setupUi(QMainWindow *MainWindow)
      {
+         bool debug = false;
+         TRACECF(debug, "Starting");
+
          // std::cout << "(setupUi) Starting" << std::endl;
          if (MainWindow->objectName().isEmpty())
              MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
@@ -308,5 +313,6 @@
          QMetaObject::connectSlotsByName(MainWindow);
 
          // std::cout << "(setupUi) Done" << std::endl;
+         TRACECF(debug, "Done");
      } // setupUi
 
