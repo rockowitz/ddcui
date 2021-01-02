@@ -338,12 +338,11 @@ FeatureBaseModel::setFeatureList(
 {
    bool debugFunc = false;
    debugFunc = debugFunc || debugFeatureLists;
-
    TRACECF(debugFunc, "Starting. %d features: %s",
-                     ddca_feature_list_count(featureList),
-         ddca_feature_list_string(featureList, NULL, (char*) " ") );
-   _featuresToShow = featureList;
+                      ddca_feature_list_count(featureList),
+                      ddca_feature_list_string(featureList, NULL, (char*) " ") );
 
+   _featuresToShow = featureList;
    DDCA_Feature_List unchecked_features =
          ddca_feature_list_and_not(_featuresToShow, _featuresChecked);
 
@@ -354,6 +353,7 @@ FeatureBaseModel::setFeatureList(
 
    //bool showUnsupported = _monitor->_curFeatureSelector._showUnsupportedFeatures;
    // TRACEF(debugFunc, "_monitor->curFeatureSelector._showUnsupportedFeatures = %s", sbool(showUnsupported));
+
    _monitor->_requestQueue->put(new VcpStartInitialLoadRequest);
    for (int ndx = 0; ndx <= 255; ndx++) {
        uint8_t vcp_code = (uint8_t) ndx;

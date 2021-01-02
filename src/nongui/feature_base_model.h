@@ -1,6 +1,6 @@
 /* feature_base_model.h - Records all VCP feature values for a single monitor */
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef FEATURE_BASE_MODEL_H
@@ -44,7 +44,7 @@ public:
              DDCA_Display_Ref            dref,   // unnecessary, can get from monitor
              DDCA_Feature_Metadata *     metadata,
              DDCA_Non_Table_Vcp_Value *  feature_value,
-             DDCA_Status                 ddcrc);    // ano/dor full blown DDC_Error_info?
+             DDCA_Status                 ddcrc);    // and/or full blown DDC_Error_info?
     void modelVcpValueUpdate(
              uint8_t                     feature_code,
              uint8_t                     sh,
