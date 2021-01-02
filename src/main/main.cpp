@@ -13,6 +13,7 @@ extern "C" {
 #include "cmdline/cmd_parser.h"
 }
 
+#include "base/ddcui_parms.h"
 #include "base/global_state.h"
 #include "base/core.h"
 #include "main/msgbox_thread.h"
@@ -97,6 +98,8 @@ static bool init_ddcutil_library(Parsed_Cmd * parsed_cmd) {
 
 int main(int argc, char *argv[])
 {
+    bool debug = false;
+
     // will remove any arguments that it recognizes, e.g. --widgetcount
     QApplication a(argc, argv);
     a.setWindowIcon(QIcon(":/icons/ddcui_multires.ico"));
@@ -130,21 +133,27 @@ int main(int argc, char *argv[])
     GlobalState & globalState = GlobalState::instance();
     init_core();
 
+    if (debug)
+       printf("(%s) Calling MainWindow constructor\n", __func__);
     MainWindow w(parsed_cmd);
+    if (debug)
+       printf("(%s) MainWindow constructor completed\n", __func__);
     globalState._mainWindow = &w;
-    w.initSerialMsgbox();
-    w.start_msgBoxThread();    // was originally factored out for use as a slot
-
 
     // without w.show(), initial serial message box does not appear over MainWindow
     w.show();
 
-    // w.initSerialMsgbox();
+#ifdef PERSISTENT_SERIAL_MSG_BOX
+    w.initSerialMsgbox();
     // how to defer until after main event loop started, i.e. a.exec() called
-    // globalState._msgBoxThread->start();
+    w.start_msgBoxThread();
+#endif
 
-    // printf("(%s) Calling Application::exec()\n", __func__);
+    if (debug)
+       printf("(%s) Calling Application::exec()\n", __func__);
     int mainStatus = a.exec();
+    if (debug)
+       printf("(%s) Calling Application::exec() returned %d\n", __func__, mainStatus);
     ddca_show_stats(parsed_cmd->stats_types,
                     false,              // include_per_thread_data
                     0);                 // depth
