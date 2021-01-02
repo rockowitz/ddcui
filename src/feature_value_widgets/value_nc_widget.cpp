@@ -107,8 +107,8 @@ ValueNcWidget::ValueNcWidget(QWidget *parent):
 
 ValueNcWidget::~ValueNcWidget() {
    bool debugFunc = false;
-   debugFunc = debugFunc || (_featureCode == 0x14);
-   TRACEC("Executing. _id=%d, _featureCode=0x%02x", _id, _featureCode);
+   // debugFunc = debugFunc || (_featureCode == 0x14);
+   TRACECF(debugFunc, "Executing. _id=%d, _featureCode=0x%02x", _id, _featureCode);
 }
 
 
@@ -152,14 +152,16 @@ void ValueNcWidget::setFeatureValue(const FeatureValue &fv) {
     TRACEMF(debug, "Persistent _observedValues from FeatureValue: %s",
                    bs256_to_string(fv._observedNcValues, ""," "));
 
-    assert( bs256_contains(fv._observedNcValues, _sl) );
+    // HACK2
+   //  assert( bs256_contains(fv._observedNcValues, _sl) );
     // *** HACK ***
     _observedValues = bs256_or(_observedValues, fv._observedNcValues);
     TRACEMF(debug, "Using union of this._observedValues and fv._observedNcValues: %s",
                    bs256_to_string(fv._observedNcValues, ""," "));
 
-    // _observedValues = bs256_add(_observedValues, _sl);
-    // TRACEMF(debug, "_observedValues after adding 0x%02x: %s", _sl, bs256_to_string(_observedValues, ""," "));
+    // HACK2
+     _observedValues = bs256_add(_observedValues, _sl);
+     TRACEMF(debug, "_observedValues after adding 0x%02x: %s", _sl, bs256_to_string(_observedValues, ""," "));
 
     _ncValuesSource        = _globalState._otherOptionsState->_ncValuesSource;
     _useLatestNcValueNames = _globalState._otherOptionsState->_useLatestNcValueNames;
