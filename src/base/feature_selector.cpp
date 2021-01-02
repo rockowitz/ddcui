@@ -101,7 +101,7 @@ FeatureSelector::FeatureSelector(Parsed_Cmd * parsedCmd) {
 }
 
 FeatureSelector::FeatureSelector(const FeatureSelector &other) {
-   _featureSubsetId           = other._featureSubsetId;
+   _featureSubsetId         = other._featureSubsetId;
    _includeTableFeatures    = other._includeTableFeatures     ;
    _showUnsupportedFeatures = other._showUnsupportedFeatures ;
    _includeOnlyCapabilities = other._includeOnlyCapabilities ;
