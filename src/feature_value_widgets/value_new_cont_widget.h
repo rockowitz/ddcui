@@ -18,12 +18,12 @@ class ValueNewContWidget : public ValueSimpleContWidget
 
 public:
     ValueNewContWidget(QWidget *parent = nullptr);
-    void     setFeatureValue(const FeatureValue &fv) override;
+    void setFeatureValue(const FeatureValue &fv) override;
 
 private:
     void layoutWidget(QHBoxLayout * layout) ;
 
-    const char *     _cls;
+    const char * _cls;
 };
 
 #endif // VALUE_NEW_CONT_WIDGET_H
