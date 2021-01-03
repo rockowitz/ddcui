@@ -1,4 +1,5 @@
-// other_options_dialog.h
+/** \file other_options_dialog.h
+ */
 
 // Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
