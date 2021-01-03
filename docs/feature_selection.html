@@ -10,41 +10,39 @@
         The feature groups are: 
         <ul>
             <li>
-                <em>MCCS</em> - All features defined in the MCCS specification.
+                <strong>MCCS</strong> - All features defined in the MCCS specification.
                 Includes features in the manufacturer specific range (xe0..xff)
-                Note that feature definitions vary by MCCS version.  <em>ddcui</em> depends 
+                Note that feature definitions vary by MCCS version.  <strong>ddcui</strong> depends 
                on monitors correctly reporting their MCCS version. 
                         </li>
-<li><em>Capabilities</em> - All features defined in the capabilities string.
+<li><strong>Capabilities</strong> - All features defined in the capabilities string.
             <li>
-                <em>Scan</em> - Examine all possible feature codes, except those known to be read-only or of type Table.
+                <strong>Scan</strong> - Examine all possible feature codes, except those known to be read-only or of type Table.
             </li>
             <li>
-                <em>Manufacturer</em> - Examine feature codes in the manufacturer specific range (xe0..xff)
+                <strong>Manufacturer</strong> - Examine feature codes in the manufacturer specific range (xe0..xff)
             </li>
             <li>
-                <em>Color</em> - Color related feature codes.
+                <strong>Color</strong> - Color related feature codes.
             </li>
  
         </ul>
         The features reported can further be refined by the following filters.  Not all filters apply to every group.
         <ul>
             <li>
-                <em>Include all features in capabilities string</em>
+                <strong>Include all features in capabilities string</strong>
                 - Add all features in the capabilities string to those in the group.
             <li>
-                <em>Exclude features not in capabilities string</em> 
+                <strong>Exclude features not in capabilities string</strong> 
                 - Include only features in the group that are also found in the Capabilities string
             </li>
             <li>
-                <em>Show Unsupported Features</em> - Include features in the group that are reported as unsupported.
+                <strong>Show Unsupported Features</strong> - Include features in the group that are reported as unsupported.
             </li>
             <li>
-                <em>Include Table Features</em> - Include features of type Table.  
-                Unimplemented - cannot be checked.
+                <strong>Include Table Features</strong> 
+                - **ddcui** does not support features of type <em>Table</em>. Cannot be checked.
             </li>
         </ul>
-
-
     </body>
 </html>
