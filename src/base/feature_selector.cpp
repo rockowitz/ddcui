@@ -1,4 +1,5 @@
-// feature_selector.cpp
+/** \file feature_selector.cpp
+*/
 
 // Controls which features are shown, as specified in the
 // Options->Feature Selection dialog.
@@ -96,9 +97,11 @@ void FeatureSelector::applyParsedOptions(Parsed_Cmd * parsed_cmd) {
 FeatureSelector::FeatureSelector() {
 }
 
+
 FeatureSelector::FeatureSelector(Parsed_Cmd * parsedCmd) {
    applyParsedOptions(parsedCmd);
 }
+
 
 FeatureSelector::FeatureSelector(const FeatureSelector &other) {
    _featureSubsetId         = other._featureSubsetId;

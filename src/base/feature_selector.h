@@ -21,10 +21,15 @@ class FeatureSelector    // : public QObject
     // Q_OBJECT
 
 public:
-   FeatureSelector();
-   FeatureSelector(Parsed_Cmd * parsedCmd);
+    FeatureSelector();
+    FeatureSelector(Parsed_Cmd * parsedCmd);
 
     FeatureSelector(const FeatureSelector &other);
+    FeatureSelector& operator=(const FeatureSelector& sel2) = default;
+    bool operator==(const FeatureSelector& sel2) const;
+    bool operator!=(const FeatureSelector& sel2) const;
+
+    void dbgrpt();
 
     DDCA_Feature_Subset_Id _featureSubsetId         = DDCA_SUBSET_KNOWN;
     bool                   _showUnsupportedFeatures = false;
@@ -33,18 +38,10 @@ public:
     bool                   _includeAllCapabilities  = false;
     DDCA_Feature_List      _customFeatureList       = DDCA_EMPTY_FEATURE_LIST;
 
-
+private:
     void applyParsedOptions(Parsed_Cmd * parsed_cmd);
 
-    FeatureSelector& operator=(const FeatureSelector& sel2) = default;
-    bool operator==(const FeatureSelector& sel2) const;
-    bool operator!=(const FeatureSelector& sel2) const;
-
-    void dbgrpt();
-
-private:
     const char * _cls = "FeatureSelector";
-   //  void applyParsedOptions(Parsed_Cmd * parsed_cmd);
 };
 
 #endif // FEATURE_SELECTOR_H
