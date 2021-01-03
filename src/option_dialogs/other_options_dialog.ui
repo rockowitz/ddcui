@@ -61,7 +61,7 @@
     <string>List of valid values are taken from the MCCS specification</string>
    </property>
    <property name="text">
-    <string>&amp;Monitor Control Command Set specification</string>
+    <string>&amp;Monitor Control Command Set</string>
    </property>
    <attribute name="buttonGroup">
     <string notr="true">ncValueSourceButtonGroup</string>
@@ -85,7 +85,7 @@
     <string>List of valid values taken from the capabilities string, names of valid values taken from MCCS spec</string>
    </property>
    <property name="text">
-    <string>&amp;Capabilities string</string>
+    <string>&amp;Capabilities String</string>
    </property>
    <attribute name="buttonGroup">
     <string notr="true">ncValueSourceButtonGroup</string>
@@ -101,7 +101,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Source of values for simple non-continuous features:</string>
+    <string>Source of Non-Continuous Feature Values:</string>
    </property>
   </widget>
   <widget class="QRadioButton" name="bothNcValuesButton">
@@ -138,7 +138,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Force latest NC value names</string>
+    <string>Use  latest MCCS values</string>
    </property>
   </widget>
  </widget>
