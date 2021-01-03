@@ -1,4 +1,5 @@
-// other_options_dialog.cpp
+/** \file other_options_dialog.cpp
+ */
 
 // Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
@@ -46,7 +47,7 @@ OtherOptionsDialog::OtherOptionsDialog(OtherOptionsState * state, QWidget *paren
 
     setWindowTitle("NC Feature Values");
     setUiSource(state->_ncValuesSource);
-    setUseLatestNcValueNames(state->_useLatestNcValueNames);
+    setUseLatestNcValueNames(state->_useLatestNcValues);
 }
 
 
@@ -89,6 +90,6 @@ void OtherOptionsDialog::on_buttonBox_clicked(QAbstractButton* button)
    if(button== (QAbstractButton*) ui->buttonBox->button(QDialogButtonBox::Reset) ){
       // TRACE("Reset");
       setUiSource(OtherOptionsState::DefaultNcValuesSource);
-      setUseLatestNcValueNames(OtherOptionsState::DefaultUseMaximalNcValueNames);
+      setUseLatestNcValueNames(OtherOptionsState::DefaultUseMaximalMccsNcValues);
    }
 }
