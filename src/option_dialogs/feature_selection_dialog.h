@@ -1,6 +1,7 @@
-// feature_selection_dialog.h
+/** \file feature_selection_dialog.h
+ */
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright-2020 (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef FEATURESELECTIONDIALOG_H
@@ -40,7 +41,6 @@ private slots:
 
     void on_known_radioButton_clicked(bool checked);
     void on_capabilities_radioButton_clicked(bool checked);
-    void on_onlyCapabilities_checkbox_stateChanged(int arg1);
     void on_mfg_radioButton_clicked(bool checked);
 #ifdef NO_PROFILE_BUTTON
     void on_profile_radioButton_clicked(bool checked);
@@ -50,21 +50,11 @@ private slots:
     void on_custom_radioButton_clicked(bool checked);
 
     void on_allCapabilities_checkbox_stateChanged(int arg1);
+    void on_onlyCapabilities_checkbox_stateChanged(int arg1);
 #ifdef UNUSED
     void on_showUnsupported_checkbox_stateChanged(int arg1);
 #endif
 
-#ifdef UNUSED
-    void on_known_radioButton_clicked(bool checked);
-    void on_known_radioButton_clicked();
-    void on_scan_radioButton_clicked();
-    void on_mfg_RadioButton_clicked();
-    void on_profile_RadioButton_clicked();
-    void on_color_radioButton_clicked();
-    void on_capabilities_checkbox_stateChanged(int arg1);
-    void on_show_unsupported_checkBox_stateChanged(int arg1);
-    void on_include_table_checkBox_stateChanged(int arg1);
-#endif
 
 private:
     // keep in order for constructor initializers
