@@ -76,7 +76,7 @@ void FeatureSelectionDialog::useSelectorData(FeatureSelector * fsel)
         break;
     case DDCA_SUBSET_CUSTOM:
        curButton = _ui->custom_radioButton;
-       _ui->custom_lineEdit->setText( ddca_feature_list_string(fsel->_customFeatureList, "", " ") );
+       _ui->custom_lineEdit->setText( ddca_feature_list_string(fsel->_customFeatureList, "x", " ") );
        _ui->custom_lineEdit->setEnabled(true);
        _ui->allCapabilities_checkbox->setEnabled(false);
        _ui->onlyCapabilities_checkbox->setEnabled(true);
@@ -182,64 +182,55 @@ void FeatureSelectionDialog::on_color_radioButton_clicked()
 }
 #endif
 
+//
+// Radio Buttons
+//
 
 void FeatureSelectionDialog::on_known_radioButton_clicked(bool checked) {
-    // cout << "(on_known_radioButton_clicked) arg1 = " << checked << endl;
    _ui->allCapabilities_checkbox->setEnabled(true);
    _ui->onlyCapabilities_checkbox->setEnabled(true);
    _ui->custom_lineEdit->setEnabled(false);
 }
 
-
-void FeatureSelectionDialog::on_scan_radioButton_clicked(bool checked) {
-    // cout << "(on_scan_radioButton_clicked) arg1 = " << checked << endl;
-   _ui->allCapabilities_checkbox->setEnabled(false);
-   _ui->onlyCapabilities_checkbox->setEnabled(false);
-   _ui->allCapabilities_checkbox->setChecked(false);
-   _ui->onlyCapabilities_checkbox->setChecked(false);
-   _ui->custom_lineEdit->setEnabled(false);
-}
-
-
 void FeatureSelectionDialog::on_capabilities_radioButton_clicked(bool checked) {
-    // cout << "(on_capabilities_radioButton_clicked) arg1 = " << checked << endl;
    _ui->allCapabilities_checkbox->setEnabled(false);
    _ui->onlyCapabilities_checkbox->setEnabled(false);
    _ui->allCapabilities_checkbox->setChecked(false);
    _ui->onlyCapabilities_checkbox->setChecked(false);
    _ui->custom_lineEdit->setEnabled(false);
 }
-
 
 void FeatureSelectionDialog::on_mfg_radioButton_clicked(bool checked) {
-    // cout << "(mfg_radioButton_clicked) arg1 = " << checked << endl;
    _ui->allCapabilities_checkbox->setEnabled(false);
    _ui->onlyCapabilities_checkbox->setEnabled(true);
    _ui->allCapabilities_checkbox->setChecked(false);
    _ui->custom_lineEdit->setEnabled(false);
 }
 
+void FeatureSelectionDialog::on_color_radioButton_clicked(bool checked) {
+   _ui->allCapabilities_checkbox->setEnabled(false);
+   _ui->onlyCapabilities_checkbox->setEnabled(true);
+   _ui->allCapabilities_checkbox->setChecked(false);
+   _ui->custom_lineEdit->setEnabled(false);
+}
 
 #ifdef NO_PROFILE_BUTTON
 void FeatureSelectionDialog::on_profile_radioButton_clicked(bool checked) {
-    // cout << "(on_profile_radioButton_clicked) arg1 = " << checked << endl;
    _ui->allCapabilities_checkbox->setEnabled(false);
    _ui->onlyCapabilities_checkbox->setEnabled(true);
    _ui->allCapabilities_checkbox->setChecked(false);
 }
 #endif
 
-
-void FeatureSelectionDialog::on_color_radioButton_clicked(bool checked) {
-    // cout << "(on_color_radioButton_clicked) arg1 = " << checked << endl;
+void FeatureSelectionDialog::on_scan_radioButton_clicked(bool checked) {
    _ui->allCapabilities_checkbox->setEnabled(false);
-   _ui->onlyCapabilities_checkbox->setEnabled(true);
+   _ui->onlyCapabilities_checkbox->setEnabled(false);
    _ui->allCapabilities_checkbox->setChecked(false);
+   _ui->onlyCapabilities_checkbox->setChecked(false);
    _ui->custom_lineEdit->setEnabled(false);
 }
 
 void FeatureSelectionDialog::on_custom_radioButton_clicked(bool checked) {
-    // cout << "(on_color_radioButton_clicked) arg1 = " << checked << endl;
    _ui->allCapabilities_checkbox->setEnabled(false);
    _ui->allCapabilities_checkbox->setChecked(false);
    _ui->onlyCapabilities_checkbox->setEnabled(true);
@@ -251,6 +242,9 @@ void FeatureSelectionDialog::on_custom_radioButton_clicked(bool checked) {
 }
 
 
+//
+// Checkboxes
+//
 
 void FeatureSelectionDialog::on_onlyCapabilities_checkbox_stateChanged(int arg1)
 {
@@ -259,7 +253,6 @@ void FeatureSelectionDialog::on_onlyCapabilities_checkbox_stateChanged(int arg1)
       _ui->allCapabilities_checkbox->setCheckState(Qt::Unchecked);
    }
 }
-
 
 void FeatureSelectionDialog::on_allCapabilities_checkbox_stateChanged(int arg1)
 {
@@ -285,6 +278,7 @@ void FeatureSelectionDialog::on_showUsupported_checkbox_stateChanged(int arg1)
 {
    cout << "(on_show_unpported_checkBox_stateChanged) arg1 = " << arg1 << endl;
 }
+
 void FeatureSelectionDialog::on_includeTable_checkbox_stateChanged(int arg1)
 {
    cout << "(on_includeTable_checkbox_StateChanged) arg1 = " << arg1 << endl;
@@ -292,6 +286,11 @@ void FeatureSelectionDialog::on_includeTable_checkbox_stateChanged(int arg1)
 #endif
 
 
+//
+// Button Box buttons
+//
+
+// Accept
 void FeatureSelectionDialog::on_buttonBox_accepted()
 {
     bool debugFunc = false;
@@ -300,7 +299,8 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
 
     DDCA_Feature_List customFlist = DDCA_EMPTY_FEATURE_LIST;
     DDCA_Feature_Subset_Id fsid;
-    // which feature selection button is currently checked?
+
+    // Which feature selection button is currently checked?
     if (_ui->color_radioButton->isChecked())
         fsid = DDCA_SUBSET_COLOR;
     else if (_ui->known_radioButton->isChecked())
@@ -351,9 +351,8 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
         TRACECF(debugFunc, "custom feature list: %s", s);
     }   // custom_radioButton
 
-    else
+    else                 // no radio button checked
         assert(false);   // should never occur
-
 
     TRACECF(debugFunc, "Checking for any changes...fsid=%d, _featureSelector->featureSubsetId = %d",
                fsid, _featureSelector->_featureSubsetId);
@@ -419,6 +418,19 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
 }
 
 
+// Reset
+void FeatureSelectionDialog::on_buttonBox_clicked(QAbstractButton* button)
+{
+   if(button== (QAbstractButton*) _ui->buttonBox->button(QDialogButtonBox::Reset) ){
+      // TRACE("Reset");
+      FeatureSelector * defaultSelector = new FeatureSelector;
+      useSelectorData(defaultSelector);
+      delete defaultSelector;
+   }
+}
+
+
+// Help
 void FeatureSelectionDialog::on_buttonBox_helpRequested()
 {
     // TRACE();
@@ -440,14 +452,4 @@ void FeatureSelectionDialog::on_buttonBox_helpRequested()
 }
 
 
-// Reset
-void FeatureSelectionDialog::on_buttonBox_clicked(QAbstractButton* button)
-{
-   if(button== (QAbstractButton*) _ui->buttonBox->button(QDialogButtonBox::Reset) ){
-      // TRACE("Reset");
-      FeatureSelector * defaultSelector = new FeatureSelector;
-      useSelectorData(defaultSelector);
-      delete defaultSelector;
-   }
-}
 
