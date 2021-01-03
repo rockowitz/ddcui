@@ -4,39 +4,39 @@
         <title>Non-Continous Feature Values</title>
     </head>
     <body>
-<strong>Source of non-continuous feature values</strong>
+<strong>Source of Non-Continuous Feature Values</strong>
 <p>
-        This option indicates the source of the values shown in the combo 
-        box for simple non-continuous (NC) features. There are two sources 
-        for the value codes.  Each has advantages and disadvantagles.
-        
-        <br>
-        <list>
-        <li> <em>MCCS</em> - The VESA Monitor Control Command Set specification lists valid values for simple Non-Continuous (NC) features. 
-Values are a hex number from x00 to xff (0 to 255. For each hex number
-the specification defines the meaning of the value. For example, for feature code x14 (Select color preset) value x01 means "sRGB". 
+This option indicates the source of the values shown in the combo box for 
+simple Non-Continuous (NC) features. There are two sources for the value codes. 
+Each has advantages and disadvantages.
+The choices are:
+<ul>
+<li> <strong>Monitor Control Command Set</strong> - The VESA Monitor Control Command Set 
+specification (MCCS) lists valid values for simple Non-Continuous (NC) features, along with their names.
 <p>
-The advantage 
-of this source is completeness.  
-Valid values can vary by MCCS version, and <bold>ddcui</bold> takes this into account. The disadvantage is that the drop down list of values for a feature will likely include
-values that do not apply to the particular monitor.  Also, there may be additional manufacturer specific values.
-<li><em>Capabilites String</em> 
-- The capabilities string returned by the monitor indicates the allowed values for a feature.  Unfortunately, the capabilities string
-is sometimes wrong.  The capabilities string reports only hex numbers for feature codes and allowed values. The interpretation of values 
-is still taken, if possible, from MCCS.
-</list>
+The advantage of this source is completeness.  
+Valid values can vary by MCCS version, and <strong>ddcui</strong> takes this into account.
+The disadvantage is that the list of values for a feature may well include values that do 
+not apply to the particular monitor.  
+Also, the monitor may implement additional manufacturer specific values.
+<li><strong>Capabilites String</strong> 
+- The capabilities string reported by the monitor indicates the allowed values for simple 
+Non-Continuous features.  
+If this option is chosen, the values are those listed in the string. 
+Unfortunately, the capabilities string is sometimes wrong.  
+The capabilities string lists only hex numbers for allowed feature values. The names of values 
+come from MCCS.
+<li><strong>Both MCCS and Capabilities</strong> 
+- The values shown are the union of those in the MCCS specification and those in the capabilities string.
+</ul>
+<br>
+<strong>Use latest MCCS values</strong>
 <p>
-The possible choices are:
-<list>
-            <li>
-                <strong>MCCS</strong>
-                - The values are as specified in the VESA Monitor Control Command Set specification.
-            <li> <strong>Capabilities string</strong>
-                - The values are those listed in the Capabilities string. 
-             <li><strong>Both</strong>
-                 - The values shown are the union of those in the MCCS spec and those in the Capabilities string.  
-        </list
-<p><br>
-In all cases the interpretation of values is, if possible, taken from MCCS.
+    The defined NC values for a feature can vary by MCCS version.  Typically, values are added with each version. 
+    Sometimes the names associated with values change.  Normally, <strong>ddcui</strong> uses NC values and names from 
+    the MCCS version corresponding to the Virtual Control Panel (VCP) version of the monitor. 
+    Sometimes, a monitor implements values that are found in a later version of the spec than indicated by its VCP version. 
+    If this box is checked, the values and names are taken from the most recent MCCS spec for which
+    the feature is defined, typically 2.2.  
     </body>
 </html>
