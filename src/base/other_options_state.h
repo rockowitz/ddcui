@@ -1,6 +1,6 @@
-// other_options_state.h
-//
-// Maintains the current state of the NC Feature Values dialog
+/** \file other_options_state.h
+ *  Maintains the current state of the NC Feature Values dialog
+ */
 
 // Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
@@ -24,19 +24,19 @@ class OtherOptionsState : public QObject {
 
 public:
    static const NcValuesSource DefaultNcValuesSource = NcValuesFromCapabilities;
-   static const bool           DefaultUseMaximalNcValueNames = false;
+   static const bool           DefaultUseMaximalMccsNcValues = false;
 
    OtherOptionsState();
    OtherOptionsState(Parsed_Cmd * parsedCmd);
    OtherOptionsState(const OtherOptionsState &other);
 
-   void changeNcValuesSource(NcValuesSource mode, bool useLatestNcValueNames);
+   void changeNcValuesSource(NcValuesSource mode, bool useLatestNcValues);
 
    NcValuesSource _ncValuesSource = DefaultNcValuesSource;
-   bool           _useLatestNcValueNames = DefaultUseMaximalNcValueNames;
+   bool           _useLatestNcValues = DefaultUseMaximalMccsNcValues;
 
 signals:
-   void ncValuesSourceChanged(NcValuesSource valuesSource, bool latestNcNameValues);
+   void ncValuesSourceChanged(NcValuesSource valuesSource, bool latestNcValues);
 
 };
 

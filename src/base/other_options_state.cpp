@@ -1,7 +1,7 @@
-// other_options_state.cpp
-
-// Controls which features are shown, as specified by in the
-// Options->Feature Selection dialog.
+/** \file other_options_state.cpp
+ *  Maintains the current state of the NC Feature Values dialog, which
+ *  controls which features are shown.
+ */
 
 // Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
@@ -40,16 +40,16 @@ OtherOptionsState::OtherOptionsState(Parsed_Cmd * parsed_cmd) {
 
 OtherOptionsState::OtherOptionsState(const OtherOptionsState &other) : QObject() {
    _ncValuesSource = other._ncValuesSource;
-   _useLatestNcValueNames = other._useLatestNcValueNames;
+   _useLatestNcValues = other._useLatestNcValues;
 }
 
 
-void OtherOptionsState::changeNcValuesSource(NcValuesSource mode, bool useLatestNcValueNames) {
-   bool changed = (mode != _ncValuesSource || useLatestNcValueNames != _useLatestNcValueNames);
+void OtherOptionsState::changeNcValuesSource(NcValuesSource mode, bool useLatestNcValues) {
+   bool changed = (mode != _ncValuesSource || useLatestNcValues != _useLatestNcValues);
    _ncValuesSource = mode;
-   _useLatestNcValueNames = useLatestNcValueNames;
+   _useLatestNcValues = useLatestNcValues;
    if (changed)
-      emit ncValuesSourceChanged(_ncValuesSource, _useLatestNcValueNames);
+      emit ncValuesSourceChanged(_ncValuesSource, _useLatestNcValues);
 
 }
 
