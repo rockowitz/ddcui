@@ -63,7 +63,7 @@ protected:
 
 private:
     NcValuesSource _ncValuesSource = OtherOptionsState::DefaultNcValuesSource;
-    bool           _useLatestNcValueNames = OtherOptionsState::DefaultUseMaximalNcValueNames;
+    bool           _useLatestNcValues = OtherOptionsState::DefaultUseMaximalMccsNcValues;
     Bit_Set_256    _observedValues = EMPTY_BIT_SET_256;
     Bit_Set_256    _validValues = EMPTY_BIT_SET_256;
     bool           _guiChange = false;

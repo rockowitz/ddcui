@@ -164,7 +164,7 @@ void ValueNcWidget::setFeatureValue(const FeatureValue &fv) {
      TRACEMF(debug, "_observedValues after adding 0x%02x: %s", _sl, bs256_to_string(_observedValues, ""," "));
 
     _ncValuesSource        = _globalState._otherOptionsState->_ncValuesSource;
-    _useLatestNcValueNames = _globalState._otherOptionsState->_useLatestNcValueNames;
+    _useLatestNcValues = _globalState._otherOptionsState->_useLatestNcValues;
     loadComboBox2();
 
     _extraInfo->setText("");
@@ -207,32 +207,32 @@ void ValueNcWidget::loadComboBox2() {
 
    NcValuesSource mode = _ncValuesSource;
    TRACEMF(debugFunc, "feature 0x%02x, mode=%d=%s, _useLatestNcValueNames=%s",
-                          _featureCode, mode, ncValuesSourceName(mode), SBOOL(_useLatestNcValueNames) );
+                      _featureCode, mode, ncValuesSourceName(mode), SBOOL(_useLatestNcValues) );
 
    // In case we're called to reload the combobox values, delete existing values
    for (int ndx = _cb->count()-1; ndx >= 0; ndx--) {
       _cb->removeItem(ndx);
    }
 
-   _validValues = EMPTY_BIT_SET_256;
+   // _validValues = EMPTY_BIT_SET_256;
 
    TRACEMF(debugFunc, "_observedValues at method start: %s", bs256_to_string(_observedValues, ""," "));
-   _validValues = bs256_or(_validValues, _observedValues);
+   _validValues = bs256_or(EMPTY_BIT_SET_256, _observedValues);
    TRACEMF(debugFunc, "_validValues at method start: %s", bs256_to_string(_validValues, ""," "));
 
    if (mode == NcValuesFromCapabilities || mode == NcValuesFromBoth) {
       _validValues = bs256_or(_validValues, bs256_from_cfr(_capVcp));
-
    }
+   DDCA_Feature_Value_Entry * slValues =
+         (_useLatestNcValues) ? _finfo->latest_sl_values :  _finfo->sl_values;
    if (mode == NcValuesFromMccs || mode == NcValuesFromBoth) {
-      DDCA_Feature_Value_Entry * slValues = _finfo->sl_values;
       _validValues = bs256_or(_validValues, bs256_from_sl_values(slValues));
    }
    TRACEMF(debugFunc, "final _validValues: %s", bs256_to_string(_validValues, ""," "));
 
-   DDCA_Feature_Value_Entry * valueNames = _finfo->sl_values;
-   if (_useLatestNcValueNames)
-      valueNames = _finfo->latest_sl_values;
+   // DDCA_Feature_Value_Entry * valueNames = _finfo->sl_values;
+   // if (_useLatestNcValueNames)
+   //    valueNames = _finfo->latest_sl_values;
    Bit_Set_256_Iterator iter = bs256_iter_new(_validValues);
    while(true){
       int iValueCode = bs256_iter_next(iter);
@@ -240,7 +240,7 @@ void ValueNcWidget::loadComboBox2() {
          break;
       uint8_t valueCode = iValueCode & 0xff;
 
-      char * valueName = sl_value_table_lookup(valueNames, valueCode);
+      char * valueName = sl_value_table_lookup(slValues, valueCode);
       QString s;
       if (valueName)
          s = QString::asprintf("x%02x - %s", valueCode, valueName);
@@ -277,11 +277,11 @@ void ValueNcWidget::reloadComboBox(NcValuesSource newSource, bool newUseLatestNa
                       _ncValuesSource, ncValuesSourceName(_ncValuesSource) );
    TRACEMF(debugFunc, "              newUseLatestNames=%s, _useLatestNcValueNames=%s",
                       SBOOL(newUseLatestNames),
-                      SBOOL(_useLatestNcValueNames) );
+                      SBOOL(_useLatestNcValues) );
 
-   if (newSource != _ncValuesSource || newUseLatestNames != _useLatestNcValueNames) {
+   if (newSource != _ncValuesSource || newUseLatestNames != _useLatestNcValues) {
       _ncValuesSource = newSource;
-      _useLatestNcValueNames = newUseLatestNames;
+      _useLatestNcValues = newUseLatestNames;
       _guiChange = false;
       loadComboBox2();
       _guiChange = true;
