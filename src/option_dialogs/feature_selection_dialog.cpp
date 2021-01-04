@@ -1,6 +1,6 @@
-// feature_selection_dialog.cpp
+/** \file feature_selection_dialog.cpp  */
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <string.h>     // for memcmp()
@@ -55,6 +55,7 @@ void FeatureSelectionDialog::useSelectorData(FeatureSelector * fsel)
         break;
     case DDCA_SUBSET_PROFILE: // removed from dialog, case left to satisfy that all cases addressed
         // curButton = _ui->profile_radioButton;
+        assert(false);
         break;
     case DDCA_SUBSET_MFG:
         curButton = _ui->mfg_radioButton;
@@ -109,31 +110,26 @@ void FeatureSelectionDialog::useSelectorData() {
 FeatureSelectionDialog::FeatureSelectionDialog(
       QWidget *         parent,
       FeatureSelector * featureSelector
-     )
-   :  QDialog(parent),
-      _cls(strdup(metaObject()->className())),
-      _ui(new Ui::FeatureSelectionDialog),
-      _featureSelector(featureSelector)
+     ) :  QDialog(parent)
+       ,  _cls(strdup(metaObject()->className()))
+       ,  _ui(new Ui::FeatureSelectionDialog)
+       ,  _featureSelector(featureSelector)
 {
     // TRACE("_ui=%p, _featureSelector = %p\n", _ui, _featureSelector);
     _ui->setupUi(this);
 
     QObject::connect(_ui->known_radioButton, &QAbstractButton::clicked,
-                      this, &FeatureSelectionDialog::on_known_radioButton_clicked);
+                     this, &FeatureSelectionDialog::on_known_radioButton_clicked);
     QObject::connect(_ui->capabilities_radioButton, &QAbstractButton::clicked,
-                      this, &FeatureSelectionDialog::on_capabilities_radioButton_clicked);
+                     this, &FeatureSelectionDialog::on_capabilities_radioButton_clicked);
     QObject::connect(_ui->mfg_radioButton, &QAbstractButton::clicked,
-                      this, &FeatureSelectionDialog::on_mfg_radioButton_clicked);
-#ifdef NO_PROFILE_BUTTON
-    QObject::connect(_ui->profile_radioButton, &QAbstractButton::clicked,
-                      this, &FeatureSelectionDialog::on_profile_radioButton_clicked);
-#endif
+                     this, &FeatureSelectionDialog::on_mfg_radioButton_clicked);
     QObject::connect(_ui->color_radioButton, &QAbstractButton::clicked,
-                      this, &FeatureSelectionDialog::on_color_radioButton_clicked);
+                     this, &FeatureSelectionDialog::on_color_radioButton_clicked);
     QObject::connect(_ui->scan_radioButton, &QAbstractButton::clicked,
-                        this, &FeatureSelectionDialog::on_scan_radioButton_clicked);
+                     this, &FeatureSelectionDialog::on_scan_radioButton_clicked);
     QObject::connect(_ui->custom_radioButton, &QAbstractButton::clicked,
-                        this, &FeatureSelectionDialog::on_custom_radioButton_clicked);
+                     this, &FeatureSelectionDialog::on_custom_radioButton_clicked);
 
     useSelectorData(_featureSelector);
 }
@@ -144,43 +140,6 @@ FeatureSelectionDialog::~FeatureSelectionDialog()
     delete _ui;
 }
 
-
-#ifdef UNUSED
-void FeatureSelectionDialog::setFeatureSet(int fsid) {
-
-    cout << "(setFeatureSet) fsid=" << fsid << endl;
-}
-
-void FeatureSelectionDialog::on_known_radioButton_clicked(bool checked)
-{
-   cout << "(FeatureSelectionDialog::on_known_radioButton_clicked) checked=" << checked << endl;
-}
-
-void FeatureSelectionDialog::on_known_radioButton_clicked()
-{
-  setFeatureSet(DDCA_SUBSET_KNOWN);
-}
-
-void FeatureSelectionDialog::on_scan_radioButton_clicked()
-{
-  // setFeatureSet(DDCA_FEATURE_LIST_SCAN);
-}
-
-void FeatureSelectionDialog::on_mfg_RadioButton_clicked()
-{
-  setFeatureSet(DDCA_SUBSET_MFG);
-}
-
-void FeatureSelectionDialog::on_profile_RadioButton_clicked()
-{
-  setFeatureSet(DDCA_SUBSET_PROFILE);
-}
-
-void FeatureSelectionDialog::on_color_radioButton_clicked()
-{
-  setFeatureSet(DDCA_SUBSET_COLOR);
-}
-#endif
 
 //
 // Radio Buttons
@@ -261,29 +220,6 @@ void FeatureSelectionDialog::on_allCapabilities_checkbox_stateChanged(int arg1)
       _ui->onlyCapabilities_checkbox->setCheckState(Qt::Unchecked);
    }
 }
-
-#ifdef UNUSED
-void FeatureSelectionDialog::on_showUnsupported_checkbox_stateChanged(int arg1)
-{
-   cout << "(on_showUnsupported_checkBox_stateChanged) arg1 = " << arg1 << endl;
-   // if (_ui->showUnsupported_checkbox->isChecked() ) {     // or != 0
-   //    _ui->allCapabilities_checkbox->setCheckState(Qt::Unchecked);
-   // }
-}
-#endif
-
-
-#ifdef UNUSED
-void FeatureSelectionDialog::on_showUsupported_checkbox_stateChanged(int arg1)
-{
-   cout << "(on_show_unpported_checkBox_stateChanged) arg1 = " << arg1 << endl;
-}
-
-void FeatureSelectionDialog::on_includeTable_checkbox_stateChanged(int arg1)
-{
-   cout << "(on_includeTable_checkbox_StateChanged) arg1 = " << arg1 << endl;
-}
-#endif
 
 
 //
@@ -450,6 +386,4 @@ void FeatureSelectionDialog::on_buttonBox_helpRequested()
     hd->setWindowTitle("ddcui Help - Feature Selection");
     hd->show();
 }
-
-
 
