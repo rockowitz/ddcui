@@ -1,6 +1,6 @@
-// user_interface_options_dialog.cpp
+/** \file user_interface_options_dialog.cpp */
 
-// Copyright (C) 2018-3019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "user_interface_options_dialog.h"
