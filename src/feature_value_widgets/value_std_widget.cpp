@@ -1,6 +1,6 @@
-/* value_std_widget.cpp */
+/** \file value_std_widget.cpp */
 
-// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <QtCore/QRect>
@@ -99,9 +99,9 @@ ValueStdWidget::ValueStdWidget(QWidget *parent):
 
 
 void ValueStdWidget::setValueField() {
-    char * s_formatted = NULL;
-    if (_ddcrc == 0) {
-      DDCA_Non_Table_Vcp_Value valrec;
+   char * s_formatted = NULL;
+   if (_ddcrc == 0) {
+       DDCA_Non_Table_Vcp_Value valrec;
        valrec.mh = _mh;
        valrec.ml = _ml;
        valrec.sh = _sh;
@@ -127,9 +127,8 @@ void ValueStdWidget::setValueField() {
           // TRACEC("showUnsupported = %s", sbool(showUnsupported));
           if (showUnsupported) {
              // TODO: Use QString !!!
-          s_formatted = (char*) "Unsupported feature";
-
-          _valueField->setText(QString::fromUtf8(s_formatted));
+             s_formatted = (char*) "Unsupported feature";
+             _valueField->setText(QString::fromUtf8(s_formatted));
           }
        }
        else {
