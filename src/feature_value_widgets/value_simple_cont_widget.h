@@ -1,9 +1,9 @@
-/* value_simple_cont_widget.h
- *
- * Display/edit a Continuous VCP feature value with specified minimum and maximum values
- */
+/** \file value_simple_cont_widget.h
+  *
+  * Display/edit a Continuous VCP feature value with specified minimum and maximum values
+  */
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef VALUE_SIMPLE_CONT_WIDGET_H

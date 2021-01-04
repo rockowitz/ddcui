@@ -1,6 +1,6 @@
-/* value_simple_cont_widget.cpp */
+/** \file value_simple_cont_widget.cpp */
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "feature_value_widgets/value_simple_cont_widget.h"
