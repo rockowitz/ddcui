@@ -1,7 +1,10 @@
 /** @file enhanced_slider.cpp
+ *
+ *  Subclass of QSlider that can be set to move the
+ *  slider only when the control key is pressed.
  */
 
-// Copyright (C) 2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2019-2021 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <QtGui/QKeyEvent>
@@ -64,7 +67,6 @@ EnhancedSlider::EnhancedSlider(Qt::Orientation orientation, QWidget * parent)
 // EnhancedSlider::~EnhancedSlider() {
 //    ~QSlider::QSlider();
 // }
-
 
 
 //
@@ -148,6 +150,7 @@ void EnhancedSlider::mouseReleaseEvent(QMouseEvent * ev)
 
    ev->ignore();
 }
+
 
 //
 // Other events
