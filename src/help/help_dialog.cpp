@@ -12,6 +12,7 @@
 
 
 void HelpDialog2::commonInit() {
+   bool navigable = true;
     setAttribute(Qt::WA_DeleteOnClose);
     setAttribute(Qt::WA_GroupLeader);
 
@@ -79,6 +80,11 @@ HelpDialog2::~HelpDialog2() {
 void HelpDialog2::setText(QString& htmlText) {
    _textBrowser->setText(htmlText);
 }
+
+void HelpDialog2::setSource(QString& source) {
+   _textBrowser->setSource(source);
+}
+
 
 // doesn't occur - there's only a Cancel button
 // but referenced in generated UI code

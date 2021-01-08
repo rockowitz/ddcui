@@ -1,6 +1,6 @@
 // help_dialog.h
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef HELP_DIALOG_H_
@@ -30,6 +30,7 @@ public:
     ~HelpDialog2();
 
     void setText(QString& htmlText);
+    void setSource(QString& source);
 
 private slots:
         void on_buttonBox_accepted();
