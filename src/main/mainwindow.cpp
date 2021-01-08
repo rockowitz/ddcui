@@ -1,6 +1,6 @@
 /* mainwindow.cpp */
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "main/mainwindow.h"
@@ -20,6 +20,7 @@
 #include "base/global_state.h"
 #include "base/widget_debug.h"
 #include "help/help_dialog.h"
+#include "help/help_browser.h"
 
 #include "base/ddcui_parms.h"
 #include "base/global_state.h"
@@ -432,7 +433,7 @@ void MainWindow::setStatusMsg(QString msg) {
 //
 
 void MainWindow::showSerialMsgBox(QString title, QString text, QMessageBox::Icon icon) {
-   bool debugFunc = true;
+   bool debugFunc = false;
    TRACEMCF(debugFunc, "Starting. text=%s", QS2S(text));
 // #ifdef DIALOG_BOX_STILL_ON_SEPARATE_SCREEN
 #ifdef NON_PERSISTENT
@@ -786,7 +787,7 @@ void MainWindow::capture_stats(DDCA_Stats_Type stats_type, bool show_thread_data
        hd->setFont(textFont);
        hd->setText(qs);
           // hd->_textBrowser->setSource(fn);
-       hd->setWindowTitle( "Execution Statistics" );
+       hd->setWindowTitle( "Execution Statistics..." );
        hd->exec();     // always modal
        // delete hd;   // causes crash
 }
@@ -956,7 +957,9 @@ void MainWindow::for_actionUserInterfaceOptionsDialog_accept()
 void MainWindow::on_actionContentsHelp_triggered()
 {
     TRACEC("Executing");
-    viewHelp(QString("help_general.html"), QString("ddcui Help - Overview"), this);
+    // viewHelp(QString("help_general.html"), QString("ddcui Help - Overview"), this);
+
+    HelpBrowser::showPage(QString("qrc:/docs/help_general.html"), /*navigable=*/ true);
 }
 
 
