@@ -61,7 +61,7 @@
      <x>40</x>
      <y>60</y>
      <width>511</width>
-     <height>261</height>
+     <height>270</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -111,6 +111,18 @@
      </widget>
     </item>
     <item>
+     <widget class="QRadioButton" name="scan_radioButton">
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>SCAN - All possible feature codes</string>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="QRadioButton" name="mfg_radioButton">
       <property name="font">
        <font>
@@ -131,18 +143,6 @@
       </property>
       <property name="text">
        <string>COLOR - Color related features</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QRadioButton" name="scan_radioButton">
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>SCAN - All possible feature codes</string>
       </property>
      </widget>
     </item>

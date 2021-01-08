@@ -49,11 +49,21 @@ private slots:
     void on_onlyCapabilities_checkbox_stateChanged(int arg1);
  // void on_showUnsupported_checkbox_stateChanged(int arg1);   // not needed
 
+    void for_custom_lineEdit_returnPressed();
+    void on_custom_lineEdit_textEdited(const QString& text);
+    // void on_custom_lineEdit_editingFinished();
+
 private:
     // keep in order for constructor initializers
     char *                      _cls;
     Ui::FeatureSelectionDialog* _ui;
     FeatureSelector*            _featureSelector;
+    QString                     _curCustomFeatureString = QString("");
+    DDCA_Feature_List           _curCustomFlist = DDCA_EMPTY_FEATURE_LIST;
+    bool                        _suppressAccept = false;
+
+    DDCA_Feature_List validateCustomFeatureList(char *);
+
 };
 
 #endif // FEATURESELECTIONDIALOG_H

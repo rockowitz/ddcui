@@ -1,48 +1,51 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
     <head>
-        <title>Feature Selection (T)</title>
+        <title>Feature Selection</title>
     </head>
     <body>
-        This dialog selects the features to be reported.  The features are specified as a group,
-        and further refined by one or more filters on that group. 
+        The <strong>Feture Selection</strong> dialog indicates the features to be shown in the <strong>Features</strong> view.  Features are specified as a group,
+        and further refined by one or more filters on the group. 
         <br><br>
         The feature groups are: 
         <ul>
             <li>
-                <strong>MCCS</strong> - All features defined in the MCCS specification.
+                <strong>MCCS</strong> - All features defined in the MCCS specification for the VCP version reported by the monitor.
                 Includes features in the manufacturer specific range (xe0..xff)
-                Note that feature definitions vary by MCCS version.  <strong>ddcui</strong> depends 
-               on monitors correctly reporting their MCCS version. 
-                        </li>
-<li><strong>Capabilities</strong> - All features defined in the capabilities string.
+            </li>
+            <li><strong>Capabilities</strong> - All features listed in the capabilities string.
             <li>
-                <strong>Scan</strong> - Examine all possible feature codes, except those known to be read-only or of type Table.
+                <strong>Scan</strong> - Examine all possible feature codes, except those known to be read-only or of type <em>Table</em>
             </li>
             <li>
-                <strong>Manufacturer</strong> - Examine feature codes in the manufacturer specific range (xe0..xff)
+                <strong>Manufacturer</strong> - Examine feature codes in the range reserved for use by manufacturers (xe0..xff)
             </li>
             <li>
                 <strong>Color</strong> - Color related feature codes.
             </li>
+            <li><strong>Custom</strong> - A list of 2 byte feature codes, separated by blanks and/or commas. Each feature must contain 2 hexadecimal characters, 
+                optionally preceeded by 'x' or followed by 'h'.  The hex digits, prefix, and suffix are case-insensifive.
+            </li>
  
         </ul>
-        The features reported can further be refined by the following filters.  Not all filters apply to every group.
+        The features selected can further be refined by filters.  Not all filters apply to every group.
         <ul>
             <li>
-                <strong>Include all features in capabilities string</strong>
+                <strong>Include all features in the capabilities string</strong>
                 - Add all features in the capabilities string to those in the group.
             <li>
-                <strong>Exclude features not in capabilities string</strong> 
+                <strong>Exclude features not in the capabilities string</strong> 
                 - Include only features in the group that are also found in the Capabilities string
             </li>
             <li>
                 <strong>Show Unsupported Features</strong> - Include features in the group that are reported as unsupported.
             </li>
+            <!--
             <li>
                 <strong>Include Table type features</strong> 
                 - Cannot be checked.  <strong>ddcui</strong>strong> does not support features of type <em>Table</em>. 
             </li>
+            -->
         </ul>
     </body>
 </html>

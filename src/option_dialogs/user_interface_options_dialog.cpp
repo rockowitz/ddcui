@@ -14,6 +14,7 @@
 #include "../base/core.h"
 #include "base/user_interface_options_state.h"
 #include "help/help_dialog.h"
+#include "help/help_browser.h"
 
 
 void UserInterfaceOptionsDialog::setCkrChanged(bool required)
@@ -79,6 +80,7 @@ void UserInterfaceOptionsDialog::on_actionButtonBox_helpRequested()
     // TRACE();
     QString fn(":/docs/uioptions.html");
     QFile f(fn);
+#ifdef OLD
     f.open(QFile::ReadOnly | QFile::Text);
     QTextStream in(&f);
 
@@ -93,6 +95,9 @@ void UserInterfaceOptionsDialog::on_actionButtonBox_helpRequested()
     hd->setText(htmlText);
     hd->setWindowTitle("ddcui Help - User Interface Options");
     hd->show();
+#else
+    HelpBrowser::showPage("qrc:/docs/uioptions.html", false);
+#endif
 }
 
 
