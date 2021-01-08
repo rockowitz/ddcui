@@ -137,6 +137,7 @@ set(SOURCES
     src/feature_scrollarea/features_scrollarea_view.cpp
 
     src/help/help_dialog.cpp
+	src/help/help_browser.cpp
     ddcui.qrc
 
     src/action_dialogs/debug_actions_dialog.cpp
@@ -171,6 +172,7 @@ link_directories(${DDCUTIL_LIBRARY_DIRS})
 # add_executable(ddcui ${SOURCES} ${UI_GENERATED_HEADERS})
 add_executable(ddcui ${SOURCES})
 
+set (CMAKE_BUILD_TYPE Debug)
 target_compile_options(ddcui PUBLIC "-fPIC"  ${coverity_cflags})
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})

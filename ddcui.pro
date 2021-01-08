@@ -122,10 +122,8 @@ SOURCES += \
     src/feature_scrollarea/features_scrollarea_view.cpp
 
 SOURCES += \
+    src/help/help_browser.cpp \
     src/help/help_dialog.cpp
-
- #  src/help/helpbrowser.cpp \
- #  src/help/help_dialog0.cpp \
 
 SOURCES += \
     src/action_dialogs/debug_actions_dialog.cpp \
@@ -220,10 +218,8 @@ HEADERS += \
     src/feature_scrollarea/features_scrollarea_view.h
 
 HEADERS += \
+    src/help/help_browser.h \
     src/help/help_dialog.h
-
- #  src/help/helpbrowser.h \
- #  src/help/help_dialog0.h \
 
 HEADERS += \
     src/action_dialogs/debug_actions_dialog.h \
