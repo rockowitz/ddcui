@@ -1,0 +1,27 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+    <head>
+        <title>Features View</title>
+    </head>
+
+    <h3>Features View (2)</h3>
+    <body>
+        The <strong>Features</strong> view has the following columns:
+        <ul> 
+           <li>Feature code - A one byte hexadecimal number </li>
+           <li>Feature name - Can vary depending on the version of the Monitor Control Command Specification that the monitor 
+                        implements.</li>
+           <li><strong>RW, RO, WO</strong> - Indicates if the feature can be read and/or written. </li>
+           <li>Type field. - <strong>C</strong> for "continuous" features, and <strong>NC</strong> for "non-continuous".  Continuous features can take any of range of values
+                            up to some maximum value, for example feature x10 brightness typically takes values in the range 0..100 or the range 0.255. Simple Non-continous features are can take one of a limited set of values, for example x60 Input Source.  Complex Non-Continuous features, 
+                            those that have feature-specific definitions, e.g. x9c Display Firmware Level, or xd9 VCP Version.
+                            These features are almost always <strong>RO</strong>.  As the MCCS specification has evolved,
+                            <strong>NC</strong> has become a grab-bag for features that are not clearly caterorizable as Continuous or Non-Continuous.
+                        </li>
+           <li> Feature Value - The form of the feature value field depends on the feature.  Modifyable Continous features have a slider and spin box, either of which can be used to change the value. Modifyable  simple Non-Continuous features typically have a drop down combo box showing the possible values. 
+           Features in the range xE0..xFF are reserved for manufacturer use.  As <strong>ddcui</strong> does not know how to 
+           interpret them, it simply allows for editing the individual bytes of the value.
+           </li>
+       </ul>
+    </body>
+</html>
