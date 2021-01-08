@@ -10,8 +10,7 @@
 
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QRadioButton>
-
-#include <QtDebug>
+// #include <QtDebug>
 
 #include <ddcutil_types.h>
 
@@ -29,13 +28,12 @@
 using namespace std;
 
 
-
 // to move to more generic location
 void postErrorMessages(QString qstitle, QMessageBox::Icon icon, char** error_msgs) {
-   bool debug = true;
+   bool debugFunc = false;
    MsgBoxQueue * msgboxQueue = GlobalState::instance()._mainWindow->_msgBoxQueue;
    if (error_msgs) {
-      if (debug) {
+      if (debugFunc) {
          int ct = 0;
          while(error_msgs[ct]) ct++;
           printf("(postErrorMessages) %d errors in custom features\n", ct);
@@ -45,7 +43,7 @@ void postErrorMessages(QString qstitle, QMessageBox::Icon icon, char** error_msg
          // TRACECF(true,"Invalid custom feature:   %s", error_msgs[ndx]);
          QString qsexpl = QString::asprintf("%s", error_msgs[ndx]);
          MsgBoxQueueEntry * qe = new MsgBoxQueueEntry(qstitle,qsexpl,icon);
-         if (debug)
+         if (debugFunc)
             printf( "(%s) Calling _msgboxQueue.put() for qe: %s\n", __func__, QS2S(qe->repr()) );
          msgboxQueue->put(qe);
          free(error_msgs[ndx]);
@@ -56,7 +54,7 @@ void postErrorMessages(QString qstitle, QMessageBox::Icon icon, char** error_msg
 
 
 DDCA_Feature_List FeatureSelectionDialog::validateCustomFeatureList(char * newval) {
-   bool debugFunc = true;
+   bool debugFunc = false;
    DDCA_Feature_List customFlist = DDCA_EMPTY_FEATURE_LIST;
    TRACECF(debugFunc, "Starting. text: |%s|", newval);
    // qDebug()  << "(validateCustomerFeatureList) newval = |" << newval << "|" <<  endl;
@@ -89,7 +87,7 @@ DDCA_Feature_List FeatureSelectionDialog::validateCustomFeatureList(char * newva
 
 void FeatureSelectionDialog::useSelectorData(FeatureSelector * fsel)
 {
-    bool debugFunc = true;
+    bool debugFunc = false;
     debugFunc = debugFunc || debugFeatureSelection;
     if (debugFunc) {
         TRACEC("Setting dialog box widgets from FeatureSelector:");
@@ -141,8 +139,6 @@ void FeatureSelectionDialog::useSelectorData(FeatureSelector * fsel)
        curButton = _ui->custom_radioButton;
        const char * s =  ddca_feature_list_string(fsel->_customFeatureList, "x", " ");
        _ui->custom_lineEdit->setText( s);
-       _curCustomFeatureString = QString(s);
-       _curCustomFlist = fsel->_customFeatureList;
        _ui->custom_lineEdit->setEnabled(true);
        _ui->allCapabilities_checkbox->setEnabled(false);
        _ui->onlyCapabilities_checkbox->setEnabled(true);
@@ -279,52 +275,6 @@ void FeatureSelectionDialog::on_custom_radioButton_clicked(bool checked) {
 }
 
 
-void FeatureSelectionDialog::for_custom_lineEdit_returnPressed() {
-   bool debugFunc = true;
-   TRACECF(debugFunc, "=== Starting");
-
-   // if the text in the box has changed, validate the value
-   //   if ok, put the validated value in the box
-   // if not, issue error message
-
-   // if the text has not changed, treat return as accept for the dialog
-
-   QString newval = _ui->custom_lineEdit->text();
-   if (newval != _curCustomFeatureString) {
-      TRACECF(debugFunc, "changed text: |%s|", QS2S(newval) );
-      char ** error_msgs = NULL;
-      DDCA_Feature_List customFlist = validateCustomFeatureList( QS2S(newval));
-      if (ddca_feature_list_count(customFlist) != 0) {
-         const char * s = ddca_feature_list_string(customFlist, "x", ",");
-         TRACECF(debugFunc, "Calling setText for validated custom feature list: %s", s);
-         // _ui->custom_lineEdit->blockSignals(true);
-         _ui->custom_lineEdit->setText( QString(s) );
-         // _ui->custom_lineEdit->blockSignals(false);
-         _curCustomFeatureString = QString(s);
-      }
-      else {
-         // validateCustomFeatureList() has put error msgs on serial msg box queue
-         TRACECF(debugFunc, "=== Done. changed feature list invalid");
-      }
-      TRACECF(debugFunc, "=== Done, changed feature list valid");
-      _suppressAccept = true;
-   }
-   else {
-      TRACECF(debugFunc, "== Done.  Feature list unchanged");
-      // let _buttonBox_accepted() process the value
-   }
-}
-
-
-void FeatureSelectionDialog::on_custom_lineEdit_textEdited(const QString& text) {
-   TRACEM("Executing. text=%s", QS2S(text));
-}
-
-// void FeatureSelectionDialog::on_custom_lineEdit_editingFinished() {
-//    TRACEM("Executing");
-// }
-
-
 //
 // Checkboxes
 //
@@ -353,9 +303,9 @@ void FeatureSelectionDialog::on_allCapabilities_checkbox_stateChanged(int arg1)
 // Accept
 void FeatureSelectionDialog::on_buttonBox_accepted()
 {
-    bool debugFunc = true;
+    bool debugFunc = false;
     debugFunc = debugFunc || debugFeatureSelection;
-    TRACECF(debugFunc, "=== Starting.  _suppressAccept=%s", SBOOL(_suppressAccept));
+    TRACECF(debugFunc, "=== Starting.");
 
 
     DDCA_Feature_List customFlist = DDCA_EMPTY_FEATURE_LIST;
@@ -379,40 +329,16 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
 
     // Custom radio button
     else if (_ui->custom_radioButton->isChecked()) {
-#ifdef NO
-       if (_suppressAccept) {
-          _suppressAccept = false;
-          TRACECF(debugFunc, "Done.  accepted() processing suppressed");
-          return;
-       }
-#endif
         fsid = DDCA_SUBSET_CUSTOM;
         QString text = _ui->custom_lineEdit->text().trimmed();
         TRACECF(debugFunc, "custom radioButton: text: |%s|", QS2S(text));
-#ifdef NO
-        if (text.length() == 0) {
-           // put msg on queue
-           return;
-        }
-#endif
-        char * sText = strdup(QS2S(text));
-
-        customFlist = validateCustomFeatureList(sText);
+        customFlist = validateCustomFeatureList(QS2S(text));
         if (ddca_feature_list_count(customFlist) == 0) {
            TRACECF(debugFunc, "Custom feature error, returning");
            return;   // there's a custom feature error, don't exit dialog
         }
-
-        const char * s = ddca_feature_list_string(customFlist, "x", ", ");
-        TRACECF(debugFunc, "custom feature list: %s", s);
-
-#ifdef NO
-        if (!ddca_feature_list_eq(customFlist, _curCustomFlist)) {
-           TRACECF(debugFunc, "Feature list changed, returning");
-           _curCustomFlist = customFlist;
-           return;
-        }
-#endif
+        TRACECF(debugFunc, "custom feature list: %s",
+              ddca_feature_list_string(customFlist, "x", ", ") );
     }   // custom_radioButton
 
     else                 // no radio button checked
