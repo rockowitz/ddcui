@@ -1,6 +1,6 @@
 // mainwindow_ui.cpp
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 // Note:  This file cannot be named ui_mainwindow.cpp.
@@ -84,14 +84,14 @@
        actionFeatureSelectionDialog = new QAction(MainWindow);
        actionFeatureSelectionDialog->setObjectName(QString::fromUtf8("actionFeatureSelectionDialog"));
        actionFeatureSelectionDialog->setText(
-             QApplication::translate("MainWindow", "&Feature Selection",        nullptr, -1));
+             QApplication::translate("MainWindow", "&Feature Selection...",        nullptr, -1));
        actionFeatureSelectionDialog->setFont(mainMenuFont);
 
        // Options menu actions
        actionOtherOptionsDialog = new QAction(MainWindow);
        actionOtherOptionsDialog->setObjectName(QString::fromUtf8("actionOtherOptionsDialog"));
        actionOtherOptionsDialog->setText(
-             QApplication::translate("MainWindow", "&NC Feature Values",            nullptr, -1));
+             QApplication::translate("MainWindow", "&NC Feature Values...",            nullptr, -1));
              // was "&Other Options"
        actionOtherOptionsDialog->setFont(mainMenuFont);
 
@@ -99,14 +99,14 @@
        actionUserInterfaceOptionsDialog = new QAction(MainWindow);
        actionUserInterfaceOptionsDialog->setObjectName(QString::fromUtf8("actionUserInterfaceOptionsDialog"));
        actionUserInterfaceOptionsDialog->setText(
-             QApplication::translate("MainWindow", "&User Interface Options",   nullptr, -1));
+             QApplication::translate("MainWindow", "&User Interface Options...",   nullptr, -1));
        actionUserInterfaceOptionsDialog->setFont(mainMenuFont);
 
        actionDebugActionsDialog = new QAction(MainWindow);
        // n.b. objectName used by connectSlotsByName()
        actionDebugActionsDialog->setObjectName(QString::fromUtf8("actionDebugActionsDialog"));
        actionDebugActionsDialog->setText(
-             QApplication::translate("MainWindow", "&Execution Statistics",   nullptr, -1));
+             QApplication::translate("MainWindow", "&Execution Statistics...",   nullptr, -1));
        actionDebugActionsDialog->setFont(mainMenuFont);
 
        // Actions Menu Actions
@@ -224,7 +224,7 @@
        menuHelp->addAction(actionAbout);
        menuHelp->addAction(actionAboutQt);
 
-       actionContentsHelp->setText(QApplication::translate(  "MainWindow", "Contents", nullptr, -1));
+       actionContentsHelp->setText(QApplication::translate(  "MainWindow", "Contents...", nullptr, -1));
        actionContentsHelp->setFont(mainMenuFont);
        actionAbout->setText(QApplication::translate(  "MainWindow", "&About ddcui", nullptr, -1));
        actionAbout->setFont(mainMenuFont);
