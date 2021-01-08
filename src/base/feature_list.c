@@ -61,13 +61,15 @@ DDCA_Feature_List parse_custom_feature_list(
        for (; pieces[ndx] != NULL; ndx++) {
            // char * token = strtrim_r(pieces[ndx], trimmed_piece, 10);
            char * token = g_strstrip(pieces[ndx]);
-           // printf("(parse_features_list) token= |%s|\n", token);
+           if (debug)
+              printf("(parse_features_list) token= |%s|\n", token);
            Byte feature_code = 0;
            if ( any_one_byte_hex_string_to_byte_in_buf(token, &feature_code) ) {
               ddca_feature_list_add(&feature_list, feature_code);
            }
            else {
-              // fprintf(stderr, "Invalid feature code in --custom_features: %s\n", token);
+              if (debug)
+                 printf("(parsed_feature_list) Invalid feature code in --custom_features: %s\n", token);
               char * s = g_strdup_printf("Invalid feature code: %s", token);
               g_ptr_array_add(errors, s);
               ok = false;
