@@ -64,10 +64,10 @@ MsgBoxQueue::MsgBoxQueue()
 
 void MsgBoxQueue::put(MsgBoxQueueEntry * request) {
     bool debugFunc = debugClass;
-    // debugFunc = true;
+    debugFunc = false;
 
     assert(request);
-    TRACECF(debugFunc, "-> Before lock. request: %s", QS2S(request->repr()));
+    TRACECF(debugFunc, "-> Before lock. request: |%s|", QS2S(request->repr()));
 
     _mutex.lock();
     _queue.enqueue(request);
@@ -82,7 +82,7 @@ void MsgBoxQueue::put(MsgBoxQueueEntry * request) {
 
 MsgBoxQueueEntry * MsgBoxQueue::pop() {
     bool debugFunc = debugClass;
-    // debugFunc = true;
+    debugFunc = false;
     TRACECF(debugFunc, "Starting. Before wait");
     _mutex.lock();
     if (_queue.empty())
@@ -93,15 +93,14 @@ MsgBoxQueueEntry * MsgBoxQueue::pop() {
     // this->dbgrpt_nolock();
 
     _mutex.unlock();
-#ifdef NO
-    if (debugClass) {
-        TRACEC("  rqst = %p", rqst);
-        TRACEC("  title=%s", qs2s(rqst->_boxTitle));
-        TRACEC("  text=%s", qs2s(rqst->_boxText));
+// #ifdef NO
+    if (debugFunc) {
+        TRACEC("Popped rqst = %p");
+        TRACEC("  title=%s", QS2S(rqst->_boxTitle));
+        TRACEC("  text=%s", QS2S(rqst->_boxText));
         TRACEC("  icon=%d", rqst->_boxIcon);
-        fflush(stdout);
      }
-#endif
+// #endif
     TRACECF(debugFunc, "<- Done. Returning request: %s", QS2S(rqst->repr()) );
     return rqst;
 }
