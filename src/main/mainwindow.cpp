@@ -1,4 +1,4 @@
-/* mainwindow.cpp */
+/** \file mainwindow.cpp */
 
 // Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
@@ -956,9 +956,7 @@ void MainWindow::for_actionUserInterfaceOptionsDialog_accept()
 
 void MainWindow::on_actionContentsHelp_triggered()
 {
-    TRACEC("Executing");
-    // viewHelp(QString("help_general.html"), QString("ddcui Help - Overview"), this);
-
+    // TRACEC("Executing");
     HelpBrowser::showPage(QString("qrc:/docs/help_general.html"), /*navigable=*/ true);
 }
 
@@ -980,12 +978,20 @@ void MainWindow::on_actionAbout_triggered()
     // QMessageBox mbox;
     // mbox.setText("About ddcutil");
 
+    QString copyright = "Copyright (C) 2014-2020 Sanford Rockowitz\n";
+    copyright = copyright + "Licensed under the terms of the GNU Public License (GPL) ";
+    copyright = copyright + "Version 2.0 or later.";
+
+
     QString msg = "";
     msg = msg + "ddcui version:    " + ddcui_version   + "\n";
     msg = msg + "   User defined features enabled:      " + ans3 + "\n\n";
     msg = msg + "ddcutil version:  " + ddcutil_version + "\n";
  // msg = msg + "   Built with support for ADL connected monitors: " + ans1 + "\n";
     msg = msg + "   Built with support for USB connected monitors: " + ans2;
+    msg = msg + "\n\n";
+    msg = msg + copyright;
+
     // mbox.setInformativeText(msg);
     // mbox.exec();
     // QMessageBox::information(this, "..", msg);
