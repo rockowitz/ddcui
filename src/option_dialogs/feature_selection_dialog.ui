@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>584</width>
-    <height>397</height>
+    <height>443</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,8 +16,8 @@
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
     <rect>
-     <x>40</x>
-     <y>330</y>
+     <x>30</x>
+     <y>370</y>
      <width>341</width>
      <height>61</height>
     </rect>
@@ -37,7 +37,7 @@
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="QLabel" name="label">
+  <widget class="QLabel" name="feature_groups_label">
    <property name="geometry">
     <rect>
      <x>30</x>
@@ -52,40 +52,22 @@
     </font>
    </property>
    <property name="text">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Feature Selection&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Feature Groups&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </widget>
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>40</x>
-     <y>60</y>
+     <y>50</y>
      <width>511</width>
-     <height>270</height>
+     <height>166</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <property name="spacing">
      <number>3</number>
     </property>
-    <item>
-     <widget class="QRadioButton" name="known_radioButton">
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-        <weight>50</weight>
-        <italic>false</italic>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="toolTip">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This is tooltip text&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
-      <property name="text">
-       <string>&amp;MCCS - Features defined in the Monitor Control Command Set</string>
-      </property>
-     </widget>
-    </item>
     <item>
      <widget class="QRadioButton" name="capabilities_radioButton">
       <property name="enabled">
@@ -107,6 +89,30 @@
       </property>
       <property name="checkable">
        <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QRadioButton" name="known_radioButton">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>23</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>50</weight>
+        <italic>false</italic>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="toolTip">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This is tooltip text&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="text">
+       <string>&amp;MCCS - Features defined in the Monitor Control Command Set</string>
       </property>
      </widget>
     </item>
@@ -165,72 +171,111 @@
       </item>
      </layout>
     </item>
-    <item>
-     <widget class="QCheckBox" name="allCapabilities_checkbox">
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-        <weight>50</weight>
-        <italic>false</italic>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>Include all features in the capabilities string</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QCheckBox" name="onlyCapabilities_checkbox">
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Include only features in the capabilities string</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QCheckBox" name="showUnsupported_checkbox">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-        <strikeout>false</strikeout>
-       </font>
-      </property>
-      <property name="text">
-       <string>Show unsupported features</string>
-      </property>
-      <property name="checkable">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QCheckBox" name="includeTable_checkbox">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-        <strikeout>false</strikeout>
-       </font>
-      </property>
-      <property name="text">
-       <string>Include Table type features</string>
-      </property>
-      <property name="checkable">
-       <bool>false</bool>
-      </property>
-     </widget>
-    </item>
    </layout>
+  </widget>
+  <widget class="QLabel" name="featire_filters_label">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>220</y>
+     <width>171</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>14</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Feature Filters&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="allCapabilities_checkbox">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>260</y>
+     <width>313</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>Include all features in the capabilities string</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="onlyCapabilities_checkbox">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>290</y>
+     <width>313</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>Include only features in the capabilities string</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="showUnsupported_checkbox">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>320</y>
+     <width>313</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+     <strikeout>false</strikeout>
+    </font>
+   </property>
+   <property name="text">
+    <string>Show unsupported features</string>
+   </property>
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="includeTable_checkbox">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>350</y>
+     <width>313</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+     <strikeout>false</strikeout>
+    </font>
+   </property>
+   <property name="text">
+    <string>Include Table type features</string>
+   </property>
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
   </widget>
  </widget>
  <resources/>
