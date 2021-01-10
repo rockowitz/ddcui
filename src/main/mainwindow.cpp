@@ -783,7 +783,7 @@ void MainWindow::capture_stats(DDCA_Stats_Type stats_type, bool show_thread_data
        QString qs(s);
        const QFont& textFont = QFont(       "Monospace",  9, QFont::Normal);
        // viewHelpByTextX(qs, QString("Statistics Report"), textFont,  this);
-       HelpDialog2* hd = new HelpDialog2(this);
+       HelpDialog* hd = new HelpDialog(this);
        hd->setFont(textFont);
        hd->setText(qs);
           // hd->_textBrowser->setSource(fn);

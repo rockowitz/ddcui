@@ -11,7 +11,7 @@
 #include "help_dialog.h"
 
 
-void HelpDialog2::commonInit() {
+void HelpDialog::commonInit() {
    bool navigable = true;
     setAttribute(Qt::WA_DeleteOnClose);
     setAttribute(Qt::WA_GroupLeader);
@@ -33,7 +33,7 @@ void HelpDialog2::commonInit() {
     // QMetaObject::connect_slots_by_name(this);
     QObject::connect(
            _buttons, &QDialogButtonBox::rejected,
-           this,          &HelpDialog2::on_buttonBox_rejected);
+           this,          &HelpDialog::on_buttonBox_rejected);
     // There's only a Cancel button
     // QObject::connect(
     //        _buttons, &QDialogButtonBox::accepted,
@@ -41,7 +41,7 @@ void HelpDialog2::commonInit() {
 }
 
 
-HelpDialog2::HelpDialog2(QWidget* parent)
+HelpDialog::HelpDialog(QWidget* parent)
     : QDialog(parent)
     ,_cls(strdup(metaObject()->className() ))
 {
@@ -49,7 +49,7 @@ HelpDialog2::HelpDialog2(QWidget* parent)
 }
 
 
-HelpDialog2::HelpDialog2(QString title, QString& htmlText, QWidget* parent)
+HelpDialog::HelpDialog(QString title, QString& htmlText, QWidget* parent)
     : QDialog(parent)
     ,_cls(strdup(metaObject()->className()) )
 {
@@ -61,7 +61,7 @@ HelpDialog2::HelpDialog2(QString title, QString& htmlText, QWidget* parent)
 }
 
 #ifdef UNFINISHED
-HelpDialog2::HelpDialog2(char * simpleFn, char * title, QWidget* parent)
+HelpDialog::HelpDialog(char * simpleFn, char * title, QWidget* parent)
    : QDialog(parent)
    ,_cls(strdup(metaObject()->className()) )
 {
@@ -72,27 +72,27 @@ HelpDialog2::HelpDialog2(char * simpleFn, char * title, QWidget* parent)
 
 
 
-HelpDialog2::~HelpDialog2() {
+HelpDialog::~HelpDialog() {
    // TODO Auto-generated destructor stub
 }
 
 
-void HelpDialog2::setText(QString& htmlText) {
+void HelpDialog::setText(QString& htmlText) {
    _textBrowser->setText(htmlText);
 }
 
-void HelpDialog2::setSource(QString& source) {
+void HelpDialog::setSource(QString& source) {
    _textBrowser->setSource(source);
 }
 
 
 // doesn't occur - there's only a Cancel button
 // but referenced in generated UI code
-void HelpDialog2::on_buttonBox_accepted() {
+void HelpDialog::on_buttonBox_accepted() {
    TRACEC("Executing");
 }
 
-void HelpDialog2::on_buttonBox_rejected() {
+void HelpDialog::on_buttonBox_rejected() {
    // TRACEC("Executing");
    this->close();
 }
@@ -100,7 +100,7 @@ void HelpDialog2::on_buttonBox_rejected() {
 
 void viewHelpByText(QString text, QString title, QWidget * parent) {
 
-   HelpDialog2* hd = new HelpDialog2(parent);
+   HelpDialog* hd = new HelpDialog(parent);
    hd->setText(text);
       // hd->_textBrowser->setSource(fn);
    hd->setWindowTitle( title );
@@ -110,7 +110,7 @@ void viewHelpByText(QString text, QString title, QWidget * parent) {
 
 void viewHelpByTextX(QString text, QString title, QFont font,QWidget * parent) {
 
-   HelpDialog2* hd = new HelpDialog2(parent);
+   HelpDialog* hd = new HelpDialog(parent);
    hd->setFont(font);
    hd->setText(text);
       // hd->_textBrowser->setSource(fn);
@@ -132,7 +132,7 @@ void viewHelp(QString simpleFn, QString title, QWidget * parent) {
 
    // qDebug() << htmlText;
 
-   HelpDialog2* hd = new HelpDialog2(parent);
+   HelpDialog* hd = new HelpDialog(parent);
    hd->setText(htmlText);
       // hd->_textBrowser->setSource(fn);
    hd->setWindowTitle( title );

@@ -1,4 +1,4 @@
-// help_dialog.h
+/** \file help_dialog.h */
 
 // Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
@@ -15,19 +15,19 @@ void viewHelp(QString simpleFn, QString title,  QWidget * parent = nullptr);
 void viewHelpByText(QString text, QString title,  QWidget * parent = nullptr);
 void viewHelpByTextX(QString text, QString title, QFont font, QWidget *parent=nullptr);
 
-class HelpDialog2 : public QDialog {
+class HelpDialog : public QDialog {
 
     Q_OBJECT
 
 public:
-    explicit HelpDialog2(QWidget *parent = 0);
-    HelpDialog2( QString title, QString& htmlText, QWidget *parent = 0);
+    explicit HelpDialog(QWidget *parent = 0);
+    HelpDialog( QString title, QString& htmlText, QWidget *parent = 0);
 
 #ifdef UNFINISHED
-    HelpDialog2(char * title, char * simpleFn, QWidget* parent) {
+    HelpDialog(char * title, char * simpleFn, QWidget* parent) {
 #endif
 
-    ~HelpDialog2();
+    ~HelpDialog();
 
     void setText(QString& htmlText);
     void setSource(QString& source);
