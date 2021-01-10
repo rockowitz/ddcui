@@ -16,7 +16,8 @@
 
 void HelpBrowser::showPage(const QString& page, bool navigable) {
    HelpBrowser * browser = new HelpBrowser(page, navigable);
-   browser->resize(500,400);
+   browser->resize(600,400);
+   // browser->setMinimumSize(600,400);
    browser->show();
 }
 
@@ -35,8 +36,8 @@ void HelpBrowser::createWidgets(bool navigable) {
 void HelpBrowser::layoutWidgets(bool navigable) {
    QHBoxLayout* buttonLayout = new QHBoxLayout();
    if (navigable) {
-      buttonLayout->addWidget(_homeButton);
       buttonLayout->addWidget(_backButton);
+      buttonLayout->addWidget(_homeButton);
    }
    buttonLayout->addStretch();
    buttonLayout->addWidget(_closeButton);
@@ -54,12 +55,13 @@ HelpBrowser::HelpBrowser(
       QWidget*       parent)
     : QWidget(parent)
 {
-   TRACEM("Starting. page=%s, navigable=%s", QS2S(page), SBOOL(navigable));
+   // TRACEM("Starting. page=%s, navigable=%s", QS2S(page), SBOOL(navigable));
    createWidgets(navigable);
    layoutWidgets(navigable);
 
    setAttribute(Qt::WA_DeleteOnClose);
    setAttribute(Qt::WA_GroupLeader);
+   // setWindowModality(Qt::ApplicationModal);   // choices: Qt::NonModal, Qt::WindowModal, Qt::ApplicationModal
 
    if (navigable) {
       QObject::connect(_homeButton, &QPushButton::clicked, _textBrowser, &QTextBrowser::home);

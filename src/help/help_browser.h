@@ -17,7 +17,7 @@ class HelpBrowser : public QWidget
    Q_OBJECT
 
 public:
-   HelpBrowser(const QString& page, bool navigable = false, QWidget* parent = 0);
+   HelpBrowser(const QString& page, bool navigable, QWidget* parent = 0);
 
    static void showPage(const QString& page, bool navigable);
 
