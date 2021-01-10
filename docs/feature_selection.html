@@ -4,16 +4,17 @@
         <title>Feature Selection</title>
     </head>
     <body>
-        The <strong>Feture Selection</strong> dialog indicates the features to be shown in the <strong>Features</strong> view.  Features are specified as a group,
-        and further refined by one or more filters on the group. 
-        <br><br>
-        The feature groups are: 
+        <h3>Feature Selection</h3>
+        The <strong>Feture Selection</strong> dialog controls the features shown in the <strong>Features</strong> view.  Features are specified as a group,
+        and further refined by filters on the group. 
+        <h4>Feature Groups</h4> 
         <ul>
             <li>
                 <strong>MCCS</strong> - All features defined in the MCCS specification for the VCP version reported by the monitor.
                 Includes features in the manufacturer specific range (xe0..xff)
             </li>
             <li><strong>Capabilities</strong> - All features listed in the capabilities string.
+            </li>
             <li>
                 <strong>Scan</strong> - Examine all possible feature codes, except those known to be read-only or of type <em>Table</em>
             </li>
@@ -26,8 +27,9 @@
             <li><strong>Custom</strong> - A list of 2 byte feature codes, separated by blanks and/or commas. Each feature must contain 2 hexadecimal characters, 
                 optionally preceeded by 'x' or followed by 'h'.  The hex digits, prefix, and suffix are case-insensifive.
             </li>
- 
         </ul>
+        <h4>Feature Filters</h4>
+        <br>
         The features selected can further be refined by filters.  Not all filters apply to every group.
         <ul>
             <li>
@@ -35,7 +37,7 @@
                 - Add all features in the capabilities string to those in the group.
             <li>
                 <strong>Exclude features not in the capabilities string</strong> 
-                - Include only features in the group that are also found in the Capabilities string
+                - Include only features in the group that are also found in the capabilities string
             </li>
             <li>
                 <strong>Show Unsupported Features</strong> - Include features in the group that are reported as unsupported.
