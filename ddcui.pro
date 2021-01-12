@@ -89,12 +89,6 @@ SOURCES += \
     src/nongui/vcprequest.cpp \
     src/nongui/vcpthread.cpp
 
-#   src/nongui/simple_feature_value_observer.cpp \
-#   src/nongui/simple_feature_value_subject.cpp \
-#   src/nongui/simple_feature_value.cpp
-
-#   src/nongui/feature_change_observer.cpp 
-
 SOURCES += \
     src/monitor_desc/monitor_desc_actions.cpp \
     src/monitor_desc/monitor_desc_ui.cpp
@@ -138,11 +132,6 @@ SOURCES += \
     src/main/monitor.cpp \
     src/main/msgbox_thread.cpp
 
-#   vcplineitem.cpp \
-
-# SOURCES += \
-#     c_feature_widget.cpp
-
 
 # Each group of header files depends only on the groups above it.
 
@@ -175,8 +164,6 @@ HEADERS += \
     src/core_widgets/number_entry_widget.h \
     src/core_widgets/spin_slider.h
 
-#   src/core_widgets/vertical_scroll_area.h
-
 HEADERS += \
     src/nongui/ddc_error.h \
     src/nongui/ddca_simulator.h \
@@ -185,11 +172,6 @@ HEADERS += \
     src/nongui/msgbox_queue.h \
     src/nongui/vcprequest.h \
     src/nongui/vcpthread.h 
-
-#   src/nongui/feature_change_observer.h \
-#   src/nongui/simple_feature_value_observer.h \
-#   src/nongui/simple_feature_value_subject.h \
-#   src/nongui/simple_feature_value.h
 
 HEADERS += \
     src/monitor_desc/monitor_desc_actions.h \
@@ -233,28 +215,15 @@ HEADERS += \
     src/main/msgbox_thread.h
 
 
-#     vcplineitem.h \
-
-# HEADERS += \
-#     c_feature_widget.h
-
-#   mainwindow.ui \
-
 FORMS += \
     src/action_dialogs/debug_actions_dialog.ui \
     src/option_dialogs/feature_selection_dialog.ui \
     src/option_dialogs/other_options_dialog.ui \
     src/option_dialogs/user_interface_options_dialog.ui
 
-    # src/help/help_dialog0.ui
-
-# FORMS += \
-#     c_feature_widget.ui
-
-# FORMS += \
-#     featureitem.ui
 
 RESOURCES = ddcui.qrc
+
 
 TARGET = ddcui
 target.path = /usr/local/bin
