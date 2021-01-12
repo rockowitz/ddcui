@@ -1,16 +1,19 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource>
-    <file>docs/actions_debug.html</file>
-    <file>docs/feature_selection.html</file>
-    <file>docs/help_actions_menu.html</file>
-    <file>docs/help_features_view.html</file>
-    <file>docs/help_general.html</file>
-    <file>docs/help_help_menu.html</file>
-    <file>docs/help_options_menu.html</file>
-    <file>docs/nc_values.html</file>
-    <file>docs/uioptions.html</file>
-    <file>icons/ddcui.ico</file>
-    <file>icons/ddcui.png</file>
-    <file>icons/ddcui_multires.ico</file>
+<file>./docs/help_actions_debug.html</file>
+<file>./docs/help_actions_menu.html</file>
+<file>./docs/help_feature_selection.html</file>
+<file>./docs/help_features_view.html</file>
+<file>./docs/help_general.html</file>
+<file>./docs/help_help_menu.html</file>
+<file>./docs/help_limitations.html</file>
+<file>./docs/help_menu_bar.html</file>
+<file>./docs/help_nc_values.html</file>
+<file>./docs/help_options_menu.html</file>
+<file>./docs/help_toolbar.html</file>
+<file>./docs/help_ui_options.html</file>
+<file>./icons/ddcui.ico</file>
+<file>./icons/ddcui.png</file>
+<file>./icons/ddcui_multires.ico</file>
 </qresource>
 </RCC>

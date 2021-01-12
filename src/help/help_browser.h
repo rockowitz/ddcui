@@ -1,6 +1,6 @@
 // help_browser.h
 
-// Copyright (C) 2021 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2020-2021 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <QtWidgets/QDialog>

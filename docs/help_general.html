@@ -1,46 +1,30 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
     <head>
-        <title>General Help</title>
+        <title>ddcui</title>
     </head>
+<body>
+    <h3>ddcui</h3>
+    <p>
+    <strong>ddcui</strong> communicates with a monitor's Virtual Control Panel using the DDC/CI protocol.
+    It allows for reading and changing monitor settings such as brightness, color, and input source,
+    and for querying read-only values such as power on hours.  It is a graphical user interface for 
+	<strong>ddcutil</strong>
+    <!-- <a href="https://www.ddcutil.com">ddcutil</a>.  -->
 
-    <h3>Menu Bar</h3>
-
-    <h3>View</h3>
-    <body>
-        For each detected display, the <strong>View</strong> menu provides 3 different views of monitor information. 
-        (If DDC communication with the monitor is unsuccessful, only the <strong>Monitor Summary</strong> view can be selected.
-        <br><br>
-        The views are: 
+    <!-- More detailed documentation can be found  <a href="https://www.ddcutil.com/ddci_main">here</a>.  -->
+    <p>
+    Topics: 
+    <ul>
+        <li><a href="qrc:/docs/help_limitations.html">Limitations</a></li>
+        <li><a href="qrc:/docs/help_menu_bar.html">   Menu Bar   </a></li>
+        <li><a href="qrc:/docs/help_toolbar.html">    Toolbar    </a></li>
+        <li>Options dialogs:</li>
         <ul>
-            <li>
-                <strong>Monitor Summary</strong> - Identifying information about the monitor, along with the first 128 bytes of the monitor's EDID block, 
-                in hex form.
-            <li><strong>Capabilities</strong> - Reports the capabilities string returned by the monitor, along with interpretation based on the MCCS specification. 
-            </li>
-            <li>
-            <strong>Features</strong> - 
-            Displays each of the feature codes detected, and allows for editing of feature values where appropriate.  Errors for individual features are reported here.
-            See <a href="qrc:/docs/help_features_view.html">Features View</a>
-            </li>
+            <li><a href="qrc:/docs/help_feature_selectioh.html">Feature Selection Options</a></li>
+            <li><a href="qrc:/docs/help_nc_values.html">Non-Continuous Feature Values</a></li>
+            <li><a href="qrc:/docs/help_ui_options.html">User Interface Options</a></li>
         </ul>
-    </body>
-
-    <h3>Actions</h3>
-    <body>
-        This menu controls various actions.
-                    See <a href="qrc:/docs/help_actions_menu.html">Actions Menu</a>
-    </body>
-
-    <h3>Options</h3>
-    <body>
-        The <strong>Options</strong> menu contains dialog boxes that tailor <strong>ddcui</strong> behavior.
-                    See <a href="qrc:/docs/help_options_menu.html">Options Menu</a>
-    </body>
-
-    <h3>Help</h3>
-    <body>
-        This menu contains the usual help related entries.
-                    See <a href="qrc:/docs/help_help_menu.html">Help Menu</a>
-    </body>
+    </ul>
+</body>
 </html>

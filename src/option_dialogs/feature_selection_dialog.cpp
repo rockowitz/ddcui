@@ -427,7 +427,7 @@ void FeatureSelectionDialog::on_buttonBox_helpRequested()
 {
     // TRACE();
     // QString fn(":/docs/feature_selection.html");
-    QString fn("qrc:/docs/feature_selection.html");
+    // QString fn("qrc:docs/help_feature_selection.html");
     // QFile f(fn);
     // f.open(QFile::ReadOnly | QFile::Text);
     // QTextStream in(&f);
@@ -442,6 +442,12 @@ void FeatureSelectionDialog::on_buttonBox_helpRequested()
     // hd->setSource(fn);
     // hd->setWindowTitle("ddcui Help - Feature Selection");
     // hd->show();
-    HelpBrowser::showPage(fn, false);
+
+    // HelpBrowser::showPage(fn, false);
+
+    HelpDialog* hd = new HelpDialog(this);
+    hd->setSource("qrc:docs/help_feature_selection.html");
+    hd->exec();
+
 }
 

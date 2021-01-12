@@ -1,6 +1,6 @@
 // help_browser.cpp
 
-// Copyright (C) 2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2020-2021 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
  // Adapted from C++ GUI Programming With Qt 4
@@ -28,7 +28,7 @@ void HelpBrowser::createWidgets(bool navigable) {
       _homeButton  = new QPushButton("&Home");
       _backButton  = new QPushButton("&Back");
    }
-   _closeButton = new QPushButton("Close");
+   _closeButton = new QPushButton("&Close");
    _closeButton->setShortcut(tr("Esc"));
 }
 

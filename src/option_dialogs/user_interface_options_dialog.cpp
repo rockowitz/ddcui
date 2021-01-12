@@ -78,9 +78,9 @@ void UserInterfaceOptionsDialog::on_actionButtonBox_accepted()
 void UserInterfaceOptionsDialog::on_actionButtonBox_helpRequested()
 {
     // TRACE();
-    QString fn(":/docs/uioptions.html");
-    QFile f(fn);
 #ifdef OLD
+    QString fn(":/docs/help_ui_options.html");
+    QFile f(fn);
     f.open(QFile::ReadOnly | QFile::Text);
     QTextStream in(&f);
 
@@ -96,7 +96,13 @@ void UserInterfaceOptionsDialog::on_actionButtonBox_helpRequested()
     hd->setWindowTitle("ddcui Help - User Interface Options");
     hd->show();
 #else
-    HelpBrowser::showPage("qrc:/docs/uioptions.html", false);
+    // HelpBrowser::showPage(":docs/help_ui_options.html", false);
+
+    HelpDialog* hd = new HelpDialog(this);
+    hd->setSource("qrc:docs/help_ui_options.html");
+    hd->exec();
+
+
 #endif
 }
 

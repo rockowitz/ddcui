@@ -11,8 +11,13 @@
 #include "help_dialog.h"
 
 
-void HelpDialog::commonInit() {
-   bool navigable = true;
+void HelpDialog::createWidgets() {
+   _textBrowser = new QTextBrowser;
+   _textBrowser->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+   _buttons = new QDialogButtonBox(QDialogButtonBox::Ok);
+}
+
+void HelpDialog::layoutWidgets() {
     setAttribute(Qt::WA_DeleteOnClose);
     setAttribute(Qt::WA_GroupLeader);
 
@@ -20,24 +25,26 @@ void HelpDialog::commonInit() {
     flags &= ~Qt::WindowContextHelpButtonHint;
     setWindowFlags(flags);
 
-    _textBrowser = new QTextBrowser;
-    // _textBrowser->setFontPointSize(20.0);
-    _textBrowser->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     QVBoxLayout* mainLayout = new QVBoxLayout();
     mainLayout->addWidget(_textBrowser);
-    _buttons = new QDialogButtonBox(QDialogButtonBox::Close);
     mainLayout->addWidget(_buttons);
     setLayout(mainLayout);
     setMinimumSize(600,400);
+}
 
+
+void HelpDialog::connectWidgets() {
     // QMetaObject::connect_slots_by_name(this);
-    QObject::connect(
-           _buttons, &QDialogButtonBox::rejected,
-           this,          &HelpDialog::on_buttonBox_rejected);
-    // There's only a Cancel button
-    // QObject::connect(
-    //        _buttons, &QDialogButtonBox::accepted,
-    //        this,          &HelpDialog2::on_buttonBox_accepted);
+    QObject::connect(_buttons, &QDialogButtonBox::rejected, this, &HelpDialog::on_buttonBox_rejected);
+    QObject::connect(_buttons, &QDialogButtonBox::accepted, this, &HelpDialog::on_buttonBox_accepted);
+    QObject::connect(_textBrowser, &QTextBrowser::sourceChanged, this, &HelpDialog::updateWindowTitle);
+}
+
+
+void HelpDialog::commonInit() {
+   createWidgets();
+   layoutWidgets();
+   connectWidgets();
 }
 
 
@@ -81,16 +88,19 @@ void HelpDialog::setText(QString& htmlText) {
    _textBrowser->setText(htmlText);
 }
 
-void HelpDialog::setSource(QString& source) {
-   _textBrowser->setSource(source);
+void HelpDialog::setSource(const char * source) {
+   // TRACEC("Source: %s", source);
+   _textBrowser->setSource(QUrl(source));
 }
 
 
 // doesn't occur - there's only a Cancel button
 // but referenced in generated UI code
 void HelpDialog::on_buttonBox_accepted() {
-   TRACEC("Executing");
+   // TRACEC("Executing");
+   this->close();
 }
+
 
 void HelpDialog::on_buttonBox_rejected() {
    // TRACEC("Executing");
@@ -98,7 +108,11 @@ void HelpDialog::on_buttonBox_rejected() {
 }
 
 
-void viewHelpByText(QString text, QString title, QWidget * parent) {
+//
+// Static methods
+//
+
+void HelpDialog::viewHelpByText(QString text, QString title, QWidget * parent) {
 
    HelpDialog* hd = new HelpDialog(parent);
    hd->setText(text);
@@ -108,7 +122,7 @@ void viewHelpByText(QString text, QString title, QWidget * parent) {
 }
 
 
-void viewHelpByTextX(QString text, QString title, QFont font,QWidget * parent) {
+void HelpDialog::viewHelpByTextX(QString text, QString title, QFont font,QWidget * parent) {
 
    HelpDialog* hd = new HelpDialog(parent);
    hd->setFont(font);
@@ -119,26 +133,34 @@ void viewHelpByTextX(QString text, QString title, QFont font,QWidget * parent) {
 }
 
 
-
-
-
-void viewHelp(QString simpleFn, QString title, QWidget * parent) {
+void HelpDialog::viewResourceHelp(QString simpleFn, QString title, QWidget * parent) {
    // QString fn = QString(simpleFn).prepend(":/docs/");
-   QString fn = QString(":/docs/").append(simpleFn);
+   QUrl fn = QString("qrc:/docs/").append(simpleFn);
+#ifdef OLD
    QFile f(fn);
    f.open(QFile::ReadOnly | QFile::Text);
    QTextStream in(&f);
    QString htmlText = in.readAll();
 
    // qDebug() << htmlText;
-
    HelpDialog* hd = new HelpDialog(parent);
    hd->setText(htmlText);
-      // hd->_textBrowser->setSource(fn);
-   hd->setWindowTitle( title );
+#endif
+
+   HelpDialog* hd = new HelpDialog(parent);
+   hd->_textBrowser->setSource(fn);
+   // hd->setWindowTitle( title );
    hd->exec();
    // delete hd;
 }
+
+
+
+void HelpDialog::updateWindowTitle()
+{
+setWindowTitle(tr("Help: %1").arg(_textBrowser->documentTitle()));
+}
+
 
 
 

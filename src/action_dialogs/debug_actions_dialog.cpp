@@ -91,7 +91,13 @@ void DebugActionsDialog::on_actionButtonBox_helpRequested()
     hd->show();
 #endif
     // viewHelp("actions_debug.html", "ddcui Help - Execution Statistics", this);
-    HelpBrowser::showPage("qrc:/docs/actions_debug.html", false);
+    // HelpBrowser::showPage("qrc:/docs/help_actions_debug.html", false);
+    HelpBrowser * browser = new HelpBrowser("qrc:/docs/help_actions_debug.html", false);
+
+    // browser->setMinimumSize(1000,400);
+    browser->resize(500,400);
+    browser->show();
+
 }
 
 

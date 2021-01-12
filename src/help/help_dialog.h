@@ -8,18 +8,21 @@
 
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QDialogButtonBox>
+#include <QtCore/QUrl>
 
 class QTextBrowser;
 
-void viewHelp(QString simpleFn, QString title,  QWidget * parent = nullptr);
-void viewHelpByText(QString text, QString title,  QWidget * parent = nullptr);
-void viewHelpByTextX(QString text, QString title, QFont font, QWidget *parent=nullptr);
 
 class HelpDialog : public QDialog {
 
     Q_OBJECT
 
 public:
+
+   static void viewResourceHelp(QString simpleFn, QString title,  QWidget * parent = nullptr);
+   static void viewHelpByText(QString text, QString title,  QWidget * parent = nullptr);
+   static void viewHelpByTextX(QString text, QString title, QFont font, QWidget *parent=nullptr);
+
     explicit HelpDialog(QWidget *parent = 0);
     HelpDialog( QString title, QString& htmlText, QWidget *parent = 0);
 
@@ -30,23 +33,23 @@ public:
     ~HelpDialog();
 
     void setText(QString& htmlText);
-    void setSource(QString& source);
+    void setSource(const char * source);
 
 private slots:
-        void on_buttonBox_accepted();
-        void on_buttonBox_rejected();
+    void on_buttonBox_accepted();
+    void on_buttonBox_rejected();
+    void updateWindowTitle();
 
-private:
+private:  // methods
+    void createWidgets();
+    void layoutWidgets();
+    void connectWidgets();
     void commonInit();
 
-    char * _cls;
-
-    QTextBrowser* _textBrowser;
- // QTextEdit *   _textEdit;
-    QDialogButtonBox*   _buttons;
-
-
-
+private:  // member variables
+    char *             _cls;
+    QTextBrowser*      _textBrowser;
+    QDialogButtonBox*  _buttons;
 };
 
 #endif /* HELP_DIALOG_H_ */

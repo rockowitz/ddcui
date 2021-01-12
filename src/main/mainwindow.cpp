@@ -786,10 +786,10 @@ void MainWindow::capture_stats(DDCA_Stats_Type stats_type, bool show_thread_data
        HelpDialog* hd = new HelpDialog(this);
        hd->setFont(textFont);
        hd->setText(qs);
+       hd->resize(650,40);
           // hd->_textBrowser->setSource(fn);
-       hd->setWindowTitle( "Execution Statistics..." );
+       hd->setWindowTitle( "Execution Statistics" );
        hd->exec();     // always modal
-       // delete hd;   // causes crash
 }
 
 

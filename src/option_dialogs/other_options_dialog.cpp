@@ -80,9 +80,13 @@ void OtherOptionsDialog::on_buttonBox_accepted()
 
 void OtherOptionsDialog::on_buttonBox_helpRequested()
 {
-   TRACEC("Starting");
+   // TRACEC("Starting");
    // viewHelp(QString("nc_values.html"), QString("ddcui Help -X Other Options"), this);
-   HelpBrowser::showPage("qrc:/docs/nc_values.html", false);
+   // HelpBrowser::showPage("qrc:docs/help_nc_values.html", false);
+
+   HelpDialog* hd = new HelpDialog(this);
+   hd->setSource("qrc:docs/help_nc_values.html");
+   hd->exec();
 }
 
 

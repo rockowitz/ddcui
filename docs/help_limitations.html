@@ -1,0 +1,64 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+    <head>
+        <title>Limitations</title>
+    </head>
+
+    <h3>Fundamental Limitations</h3>
+    <p>
+      Inadequacies in the DDC/CI design, and its marginal implementation in many monitors, 
+      lead to some problems for which <ddcui>ddcui</ddcui> has no good workaround. 
+
+<ul>
+         <li>Actual monitor settings may not match those reported by <strong>ddcui</strong></li>
+    <ul>
+<li>Some monitors will change their state (e.g. red gain) when the value in the GUI changes.
+However, the value reported by the monitor is unchanged.
+</li>
+<li>Conversely, some monitors report a newly set value, but the observed state of the monitor
+is unchanged.
+</li>
+<li>Monitor settings can be changed by another program, including the command like program <strong>ddcutil</strong>
+</li>
+<li>If feature values are changed using the monitor's On Screen Display. The DDC/CI specification includes a 
+  mechanism for informing a program of changes made using the OSD.  In practice, this facility cannot be relied on. 
+</li>
+<li>The DDC/CI and Monitor Control Command Set specifications are old. Advanced features of recent monitors, 
+  such as Picture-by-Picture were simply not envisioned and have no (at least documented) integration to the Virtual Control Panel.
+</li>
+
+    </ul>
+
+<li>
+  It is possible for feature values reported in **ddcui** to become out of sync with actual monitor 
+values.
+<ul>
+  <li>If feature values are changed using the monitor's On Screen Display. 
+  </li>
+  <li>If feature values are changed by another program, including the command line program **ddcutil**. 
+  </li>
+  <li>Some monitors will change their state (e.g. red gain) when the value in the GUI changes.
+However, the value reported by the monitor is unchanged.
+</li>
+<li>
+Conversely, some monitors report a newly set value, but the observed state of the monitor
+is unchanged.
+</li>
+</ul>
+
+
+<h3>Implementation</h3>
+<p>
+<ul>
+  <li><strong>ddcui</strong> does not detect that a monitor has been connected or disconnected.
+    The program must be restarted.
+  </li>
+  <li>The value of various special feature codes is not interpreted, but instead simply reported as bytes.
+    Interpretations of these feature codes will be added with time.
+  </li>
+</ul>
+
+
+
+    </body>
+</html>
