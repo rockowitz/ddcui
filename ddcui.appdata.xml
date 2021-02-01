@@ -16,8 +16,8 @@ the appstream spec at www.freedesktop.org/software/appstream/docs:
 
 <component type="desktop-application">  
   <id>com.ddcutil.ddcui</id>             
-  <metadata_license>FSFAP</metadata_license>
-  <project_license>GPL-2.0-or-later</project_license>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>CC0-1.0</project_license>
   <name>ddcui</name>
   <summary>Manage monitor settings</summary>
   <description>
