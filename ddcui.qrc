@@ -12,8 +12,10 @@
 <file>./docs/help_options_menu.html</file>
 <file>./docs/help_toolbar.html</file>
 <file>./docs/help_ui_options.html</file>
+<!--
 <file>./icons/ddcui.ico</file>
 <file>./icons/ddcui.png</file>
+-->
 <file>./icons/ddcui_multires.ico</file>
 </qresource>
 </RCC>
