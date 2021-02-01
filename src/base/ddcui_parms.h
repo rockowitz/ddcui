@@ -1,12 +1,12 @@
 // ddcui_parms.h
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef DDCUI_PARMS_H_
 #define DDCUI_PARMS_H_
 
-#define DDCUI_VERSION "0.1.3"
+#define DDCUI_VERSION "0.2.0"
 
 #ifdef TOO_MUCH_INDIRECTION
 #define FEATURE_VALUE_MONO_FONT_SIZE  8
