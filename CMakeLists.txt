@@ -210,12 +210,12 @@ install(FILES ddcui.desktop  DESTINATION share/applications)
 install(FILES ddcui.appdata.xml DESTINATION share/metainfo)
 # fails, ${CMAKE_INSTALL_DATAROOTDIR} is null
 # install(FILES ddcui.desktop  DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/applications)
-install(FILES icons/ddcui-128px.png DESTINATION share/icons/hicolor/128x128/apps RENAME ddcui.png)
-install(FILES icons/ddcui-64px.png  DESTINATION share/icons/hicolor/64x64/apps   RENAME ddcui.png)
-install(FILES icons/ddcui-48px.png  DESTINATION share/icons/hicolor/48x48/apps   RENAME ddcui.png)
-install(FILES icons/ddcui-32px.png  DESTINATION share/icons/hicolor/32x32/apps   RENAME ddcui.png)
-install(FILES icons/ddcui-16px.png  DESTINATION share/icons/hicolor/16x16/apps   RENAME ddcui.png)
-install(FILES icons/ddcui.svg       DESTINATION share/icons/hicolor/scalable/apps)
+install(FILES icons/video-display-128px.png DESTINATION share/icons/hicolor/128x128/apps RENAME ddcui.png)
+install(FILES icons/video-display-64px.png  DESTINATION share/icons/hicolor/64x64/apps   RENAME ddcui.png)
+install(FILES icons/video-display-48px.png  DESTINATION share/icons/hicolor/48x48/apps   RENAME ddcui.png)
+install(FILES icons/video-display-32px.png  DESTINATION share/icons/hicolor/32x32/apps   RENAME ddcui.png)
+install(FILES icons/video-display-16px.png  DESTINATION share/icons/hicolor/16x16/apps   RENAME ddcui.png)
+# install(FILES icons/ddcui.svg       DESTINATION share/icons/hicolor/scalable/apps)
 
 # GNOME classic only looks in pixmaps for icons:
 # install(FILES icons/ddcui-48px.png  DESTINATION share/pixmaps RENAME ddcui.png)
