@@ -155,7 +155,7 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
       {"maxtries",'\0', 0, G_OPTION_ARG_STRING,   &maxtrywork,       "Max try adjustment",  "comma separated list" },
 
       {"stats",   's',  G_OPTION_FLAG_OPTIONAL_ARG,
-                           G_OPTION_ARG_CALLBACK, stats_arg_func,    "Show performance statistics",  "stats type"},
+                           G_OPTION_ARG_CALLBACK, (void*)stats_arg_func,    "Show performance statistics",  "stats type"},
 
       {"sleep-multiplier", '\0', 0,
                                  G_OPTION_ARG_STRING,   &sleep_multiplier_work, "Multiplication factor for DDC sleeps", "number"},
