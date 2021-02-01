@@ -144,21 +144,21 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
    //  monitor selection options
 
    // output control
-      {"ddc",     '\0', 0, G_OPTION_ARG_NONE,     &ddc_flag,         "Report DDC protocol and data errors", NULL},
+      {"ddc",     '\0', 0,    G_OPTION_ARG_NONE,     &ddc_flag,         "Report DDC protocol and data errors", NULL},
 
-      {"udf",     '\0', 0, G_OPTION_ARG_NONE,     &enable_udf_flag,  "Enable user defined feature support", NULL},
+      {"udf",     '\0', 0,    G_OPTION_ARG_NONE,     &enable_udf_flag,  "Enable user defined feature support", NULL},
       {"noudf",   '\0', G_OPTION_FLAG_REVERSE,
-                           G_OPTION_ARG_NONE,     &enable_udf_flag,  "Disable user defined feature support", NULL},
-      {"nousb",  '\0',  0, G_OPTION_ARG_NONE,     &nousb_flag,       "Do not detect USB devices", NULL},
+                              G_OPTION_ARG_NONE,     &enable_udf_flag,  "Disable user defined feature support", NULL},
+      {"nousb",  '\0',  0,    G_OPTION_ARG_NONE,     &nousb_flag,       "Do not detect USB devices", NULL},
 
       // library tuning
-      {"maxtries",'\0', 0, G_OPTION_ARG_STRING,   &maxtrywork,       "Max try adjustment",  "comma separated list" },
+      {"maxtries",'\0', 0,    G_OPTION_ARG_STRING,   &maxtrywork,       "Max try adjustment",  "comma separated list" },
 
       {"stats",   's',  G_OPTION_FLAG_OPTIONAL_ARG,
-                           G_OPTION_ARG_CALLBACK, (void*)stats_arg_func,    "Show performance statistics",  "stats type"},
+                              G_OPTION_ARG_CALLBACK, stats_arg_func,    "Show performance statistics",  "stats type"},
 
       {"sleep-multiplier", '\0', 0,
-                                 G_OPTION_ARG_STRING,   &sleep_multiplier_work, "Multiplication factor for DDC sleeps", "number"},
+                              G_OPTION_ARG_STRING,   &sleep_multiplier_work, "Multiplication factor for DDC sleeps", "number"},
       {"less-sleep" ,'\0', 0, G_OPTION_ARG_NONE, &less_sleep_true_set, "Eliminate some sleeps",  NULL},
       {"sleep-less" ,'\0', 0, G_OPTION_ARG_NONE, &less_sleep_true_set, "Eliminate some sleeps",  NULL},
       {"no-sleep-less", '\0', 0, G_OPTION_ARG_NONE, &less_sleep_false_set, "Do not eliminate some sleeps", NULL},
