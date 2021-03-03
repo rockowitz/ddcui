@@ -3,7 +3,7 @@
  *  String utility functions copied from the ddcutil version of string_util.c
  */
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <assert.h>
@@ -141,6 +141,41 @@ bool str_to_float(const char * sval, float * p_fval)
 }
 
 
+
+/** Converts an ASCII string to upper case.  The original string is converted in place.
+ *
+ * @param  s string to force to upper case
+ * @return converted string
+ */
+char * strupper(char * s) {
+   if (s) {     // check s not a null pointer
+      char * p = s;
+      while(*p) {
+         *p = toupper(*p);
+         p++;
+      }
+   }
+   return s;
+}
+
+
+/** Converts an ASCII string to lower case.  The original string is converted in place.
+ *
+ * @param  s string to force to lower case
+ * @return converted string
+ */
+char * strlower(char * s) {
+   if (s) {     // check s not a null pointer
+      char * p = s;
+      while(*p) {
+         *p = tolower(*p);
+         p++;
+      }
+   }
+   return s;
+}
+
+
 /** Creates an upper case copy of an ASCII string
  *
  * @param  s  string to copy
@@ -153,6 +188,133 @@ char * strdup_uc(const char* s) {
    char * p = us;
    while (*p) {*p=toupper(*p); p++; }
    return us;
+}
+
+
+/** Trims leading and trailing whitespace from a string and
+ * returns the result in a buffer provided by the caller.
+ * If the buffer is insufficiently large, the result string
+ * is truncated.
+ *
+ * The result is always null terminated.
+ *
+ * @param  s      string to trim (not modified)
+ * @param  buffer where to return result
+ * @param  bufsz  buffer size
+ *
+ * @return pointer to truncated string (i.e. buffer)
+ */
+char * strtrim_r(const char * s, char * buffer, int bufsz) {
+   bool debug = false;
+   if (debug)
+      printf("(%s) s=|%s|\n", __func__, s);
+   int slen = strlen(s);
+   int startpos = 0;
+   int lastpos  = slen-1;   // n. -1 for 1 length string
+   while ( startpos < slen && isspace(s[startpos]) )
+      startpos++;
+   if (startpos < slen) {
+      while ( lastpos >= startpos && isspace(s[lastpos]))
+         lastpos--;
+   }
+   int tlen = 1 + lastpos - startpos;
+   if (debug)
+      printf("(%s) startpos=%d, lastpos=%d, tlen=%d\n", __func__, startpos, lastpos, tlen);
+   if (tlen > (bufsz-1))
+      tlen = bufsz-1;
+   memcpy(buffer, s+startpos, tlen);
+   buffer[tlen] = '\0';
+   if (debug)
+      printf("(%s) returning |%s|\n", __func__, buffer);
+   return buffer;
+}
+
+
+
+
+
+/** Returns a pointer to the first non-whitespace character in a string.
+ *
+ *  @param string to trim
+ *  @return pointer to first non-whitespace character,
+ *          to the ending \0 if all characters are whitespace
+ */
+char * ltrim_in_place(char * s) {
+   char * p = s;
+   while (*p && isspace(*p))
+      p++;
+   return p;
+}
+
+
+/** Trims trailing whitespace from a string.
+ *
+ * @param s string to trim
+ * @return s
+ *
+ * @remark
+ * Particularly useful for stripping trailing newlines.
+ */
+char * rtrim_in_place(char * s) {
+   int len = strlen(s);
+   while(len > 0 && isspace(s[len-1])) {
+      len--;
+      s[len] = '\0';
+   }
+   return s;
+}
+
+
+/** Trims leading and trailing whitespace from a string.
+ *  Trailing whitespace characters are replaced by \0.
+ *
+ * @param s string to trim
+ * @return pointer to first non-whitespcace character
+ */
+char * trim_in_place(char * s) {
+   char * p = s;
+   while (*p && isspace(*p))
+      p++;
+   int len = strlen(p);
+   while (len > 0 && isspace(p[len-1]))
+      s[--len] = '\0';
+   return p;
+}
+
+
+/** Trims leading and trailing whitespace from a string and
+ * returns the result in newly allocated memory.
+ * It is the caller's responsibility to free this memory.
+ * The result string is null terminated.
+ *
+ * @param  s      string to trim (not modified)
+ * @return truncated string in newly allocated memory
+ */
+char * strtrim(const char * s) {
+   int bufsz = strlen(s)+1;
+   char * buffer = calloc(1,bufsz);
+   strtrim_r(s, buffer, bufsz);
+   return buffer;
+}
+
+
+/** Extracts a substring from a string
+ *
+ * @param s         string to process
+ * @param startpos  starting position (0 based)
+ * @param ct        number of characters; if ct + startpos is greater than
+ *                  the string length, ct is reduced accordingly
+ * @return extracted substring, in newly allocated memory
+ */
+char * substr(const char * s, int startpos, int ct) {
+   assert(startpos >= 0);
+   assert(ct>=0);
+   if (startpos + ct > strlen(s))
+      ct = strlen(s) - startpos;
+   char * result = calloc(ct+1, sizeof(char));
+   strncpy(result, s+startpos, ct);
+   result[ct] = '\0';
+   return result;
 }
 
 

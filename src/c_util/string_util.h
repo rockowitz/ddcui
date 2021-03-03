@@ -19,12 +19,24 @@
 extern "C" {
 #endif
 
+// A macro alternative to sbool()
+#define SBOOL(val) ( (val) ? "true" : "false" )
 
 bool is_abbrev(const char * value, const char * longname, size_t  minchars);
 
 bool str_to_float(const char * sval, float * p_fval);
 
 bool any_one_byte_hex_string_to_byte_in_buf(const char * s, Byte * result);
+char * strupper(char * s);
+char * strlower(char * s);
+char * strdup_uc(const char* s);
+char * strtrim(const char * s);
+char * strtrim_r(const char * s, char * buffer, int bufsz);
+char * ltrim_in_place(char * s);
+char * rtrim_in_place(char * s);
+char * trim_in_place(char * s);
+char * substr(const char * s, int startpos, int ct);
+
 
 /** pointer to null-terminated array of strings */
 typedef char** Null_Terminated_String_Array;
