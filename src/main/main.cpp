@@ -1,6 +1,6 @@
-/* main.cpp */
+/** \file main.cpp */
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <stdio.h>
@@ -9,12 +9,13 @@
 #include <ddcutil_c_api.h>
 
 extern "C" {
-#include "c_util/ddcutil_config_file.h"
-#include "cmdline/parsed_cmd.h"
-#include "cmdline/cmd_parser.h"
 #include "c_util/config_file.h"
+#include "c_util/ddcutil_config_file.h"
 #include "c_util/string_util.h"
 #include "c_util/xdg_util.h"
+
+#include "cmdline/parsed_cmd.h"
+#include "cmdline/cmd_parser.h"
 }
 
 #include "base/ddcui_parms.h"
