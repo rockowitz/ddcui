@@ -3,7 +3,7 @@
  *  Utility functions for glib.
  */
 
-// Copyright (C) 2014-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2014-2021 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 /** \cond */
@@ -83,7 +83,11 @@ g_hash_table_get_keys_as_array_local (GHashTable *hash_table,
  * @remark This function is needed because glib function g_hash_table_get_keys_as_array()
  *   does not exist in glib versions less than 2.40
  */
-gpointer * g_list_to_g_array(GList * glist, guint * length) {
+gpointer *
+g_list_to_g_array(
+      GList * glist,
+      guint * length)
+{
    int len = 0;
    gpointer * result = NULL;
    guint ndx = 0;
@@ -107,7 +111,11 @@ gpointer * g_list_to_g_array(GList * glist, guint * length) {
  * @param b pointer to second string
  * @return -1, 0, +1 in the usual way
  */
-gint gaux_ptr_scomp(gconstpointer a, gconstpointer b) {
+gint
+gaux_ptr_scomp(
+      gconstpointer a,
+      gconstpointer b)
+{
    char ** ap = (char **) a;
    char ** bp = (char **) b;
    // printf("(%s) ap = %p -> -> %p -> |%s|\n", __func__, ap, *ap, *ap);
@@ -115,54 +123,12 @@ gint gaux_ptr_scomp(gconstpointer a, gconstpointer b) {
    return g_ascii_strcasecmp(*ap,*bp);
 }
 
-#ifdef OLD
-// what happens if ap is null?
-// not particularly useful since have to pass buffer size in
-/** \deprecated Use g_strdup_vprintf() */
-gchar * gaux_vasprintf(size_t reqd_buf_sz, gchar * fmt, va_list ap) {
-   char * result = NULL;
-   // g_printf_string_upper_bound() clobbers ap, makes it unusable
-   // gsize sz = g_printf_string_upper_bound(fmt,ap);
-   result = calloc(1,reqd_buf_sz);
-   int rc = g_vsnprintf(result, reqd_buf_sz, fmt, ap);
-   // printf("(%s) g_vsnprintf() returned %d\n", __func__, rc);
-   // printf("(%s) Returning: |%s|\n", __func__, result);
-   assert(rc < reqd_buf_sz);
-   return result;
-}
 
-/** \deprecated Use g_strdup_printf()
- *  Formats a string similarly to g_sprintf(), but allocates
- *  a sufficiently sized buffer in which the formatted string
- *  is returned.
- *
- *  \param fmt  format string
- *  \param ...  arguments
- *  \return     pointer to newly allocated string
- */
-gchar * gaux_asprintf(gchar * fmt, ...) {
-   char * result = NULL;
-   va_list(args);
-   va_start(args, fmt);
-
-   // g_vasprintf(&result, fmt, args);  // get implicit function declaration error
-   // printf("(%s) fmt=|%s|\n", __func__, fmt);
-   gsize sz = g_printf_string_upper_bound(fmt,args);
-   // printf("(%s) sz = %zu\n", __func__, sz);
-   result = calloc(1,sz);
-   va_start(args, fmt);
-   // int rc =
-                g_vsnprintf(result, sz, fmt, args);
-   // printf("(%s) g_vsnprintf() returned %d\n", __func__, rc);
-
-   va_end(args);
-   // printf("(%s) Returning: |%s|\n", __func__, result);
-   return result;
-}
-#endif
-
-
-GPtrArray * gaux_ptr_array_truncate(GPtrArray * gpa, int limit) {
+GPtrArray *
+gaux_ptr_array_truncate(
+      GPtrArray * gpa,
+      int         limit)
+{
    assert(gpa);
    bool debug = false;
    if (debug)
@@ -264,6 +230,33 @@ gaux_ptr_array_from_null_terminated_array(
    while (*p) {
       gpointer v = (dup_func) ? dup_func(*p) : *p;
       g_ptr_array_add(result, v);
+   }
+   return result;
+}
+
+/** Implements g_ptr_array_find_with_equal_func(), which requires glib 2.54.
+ *
+ */
+gboolean
+gaux_ptr_array_find_with_equal_func(
+      GPtrArray *    haystack,
+      gconstpointer  needle,
+      GEqualFunc     equal_func,
+      guint *        index_)
+{
+   bool result = false;
+   *index_ = -1;
+   if (haystack && (haystack->len == 0) && needle) {
+      for (guint ndx = 0; ndx < haystack->len; ndx++) {
+         if (equal_func)
+            result = equal_func(g_ptr_array_index(haystack,ndx), needle);
+         else
+            result = g_ptr_array_index(haystack,ndx) == needle;
+         if (result) {
+            *index_ = ndx;
+            break;
+         }
+      }
    }
    return result;
 }

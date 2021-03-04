@@ -1,9 +1,11 @@
-/** \file file_util.c
- *  File utility functions copied from corresponding ddcutil source file.
- */
+// file_util_base.c
 
-// Copyright (C) 2014-2021 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
+
+ 
+
+
 
 /** \cond */
 #include <assert.h>
@@ -22,7 +24,7 @@
 // #include "report_util.h"
 #include "string_util.h"
 
-#include "file_util.h"
+#include "file_util_base.h"
 
 
 /** Reads the lines of a text file into a GPtrArray.

@@ -1,11 +1,14 @@
-// file_util.h
+// file_util_base.h
 
-// Copyright (C) 2021 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#ifndef FILE_UTIL_H_
-#define FILE_UTIL_H_
+ 
 
+#ifndef FILE_UTIL_BASE_H_
+#define FILE_UTIL_BASE_H_
+
+#include <stdbool.h>
 #include <glib-2.0/glib.h>
 
 #ifdef __cplusplus
@@ -22,4 +25,6 @@ file_getlines(
 }    // extern "C"
 #endif
 
-#endif /* FILE_UTIL_H_ */
+
+
+#endif /* FILE_UTIL_BASE_H_ */

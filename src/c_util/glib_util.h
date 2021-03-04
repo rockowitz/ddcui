@@ -3,7 +3,7 @@
  *  Utility functions for glib.
  */
 
-// Copyright (C) 2014-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2014-2021 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 
@@ -19,16 +19,15 @@
 extern "C" {
 #endif
 
+gpointer *
+g_list_to_g_array(
+      GList * glist,
+      guint * length);
 
-
-gpointer * g_list_to_g_array(GList * glist, guint * length);
-
-gint gaux_ptr_scomp(gconstpointer a, gconstpointer b);
-
-#ifdef OLD
-gchar * gaux_vasprintf(size_t reqd_buf_size, gchar * fmt, va_list ap);
-gchar * gaux_asprintf(gchar * fmt, ...);
-#endif
+gint
+gaux_ptr_scomp(
+      gconstpointer a,
+      gconstpointer b);
 
 void *
 get_thread_dynamic_buffer(
@@ -41,7 +40,10 @@ get_thread_fixed_buffer(
       GPrivate * buf_key_ptr,
       guint16    required_size);
 
-GPtrArray * gaux_ptr_array_truncate(GPtrArray * gpa, int limit);
+GPtrArray *
+gaux_ptr_array_truncate(
+      GPtrArray * gpa,
+      int         limit);
 
 // Future:
 typedef  gpointer (*GAuxDupFunc)(gpointer src);
@@ -71,11 +73,16 @@ gaux_ptr_array_from_null_terminated_array(
       GAuxDupFunc    dup_func,
       GDestroyNotify element_free_func);
 
+gboolean
+gaux_ptr_array_find_with_equal_func(
+      GPtrArray *    haystack,
+      gconstpointer  needle,
+      GEqualFunc     equal_func,
+      guint *        index_);
 
 #ifdef __cplusplus
 }
 #endif
-
 
 
 
