@@ -9,8 +9,12 @@
 #include <ddcutil_c_api.h>
 
 extern "C" {
+#include "c_util/ddcutil_config_file.h"
 #include "cmdline/parsed_cmd.h"
 #include "cmdline/cmd_parser.h"
+#include "c_util/config_file.h"
+#include "c_util/string_util.h"
+#include "c_util/xdg_util.h"
 }
 
 #include "base/ddcui_parms.h"
@@ -104,7 +108,13 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     a.setWindowIcon(QIcon(":/icons/ddcui_multires.ico"));
 
-    Parsed_Cmd * parsed_cmd = parse_command(argc, argv);
+    char ** new_argv = NULL;
+    char *  combined_config_file_options = NULL;
+    int new_argc = full_arguments("ddcui", argc, argv, &new_argv, &combined_config_file_options);
+    if (new_argc < 0)
+       return 1;
+
+    Parsed_Cmd * parsed_cmd = parse_command(new_argc, new_argv);
     if (!parsed_cmd)
        return 1;
 
