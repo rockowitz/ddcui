@@ -83,10 +83,10 @@ gboolean stats_arg_func(const    gchar* option_name,
  *          NULL if execution should be terminated
  */
 Parsed_Cmd * parse_command(int argc, char * argv[]) {
-   bool debug = false;
+   bool debug = true;
 
    if (debug) {
-      printf("(%s) Starting\n", __func__ );
+      printf("(%s) ddcui version Starting\n", __func__ );
 
       printf("argc=%d\n", argc);
       for (int ndx=0; ndx < argc; ndx++) {
@@ -570,6 +570,6 @@ Parsed_Cmd * parse_command(int argc, char * argv[]) {
    }
 
    if (debug)
-      printf("Returning: %p\n", (void*) parsed_cmd);
+      printf("(%s) ddcui parser returning: %p\n", __func__, (void*) parsed_cmd);
    return parsed_cmd;
 }
