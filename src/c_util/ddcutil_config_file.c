@@ -120,8 +120,10 @@ int read_ddcutil_config_file(
          *tokenized_options_loc = prefix_tokens;
       }
    }
+   free(config_fn);
+
 bye:
-   if (debug) {
+   if (debug)  {
       printf("(%s) Returning untokenized options: |%s|, token_ct = %d\n",
              __func__, *untokenized_option_string_loc, token_ct);
    }
@@ -163,10 +165,9 @@ int merge_command_tokens(
       *new_argv_loc = combined;
       new_argc = ntsa_length(combined);
    }
-   ntsa_free(config_tokens, /* free strings */ false);
 
    if (debug)
-      printf("(%s) Returning %d\n", __func__, new_argc);
+       printf("(%s) Returning %d\n", __func__, new_argc);
    return new_argc;
 }
 
@@ -178,6 +179,7 @@ int merge_command_tokens(
  *  \param  old_argc  argc as passed on the command line
  *  \param  old argv  argv as passed on the command line
  *  \param  new_argv_loc  where to return the address of the combined token list
+ *                        as a Null_Terminated_String_Array
  *  \param  detault_options_loc  where to return string of options obtained from ini file
  *  \return number of tokens in the combined list, -1 if errors
  *          reading the configuration file. n. it is not an error if the
@@ -196,7 +198,8 @@ int full_arguments(
    *new_argv_loc = old_argv;
    int new_argc = old_argc;
 
-   int prefix_token_ct = read_ddcutil_config_file(ddcutil_application, &prefix_tokens, default_options_loc);
+   int prefix_token_ct =
+         read_ddcutil_config_file(ddcutil_application, &prefix_tokens, default_options_loc);
    if (debug)
       printf("(%s) get_config_file() returned %d\n", __func__, prefix_token_ct);
    if (prefix_token_ct < 0) {
@@ -210,6 +213,8 @@ int full_arguments(
             prefix_tokens,
             new_argv_loc);
    }
+   if (prefix_tokens)
+      ntsa_free(prefix_tokens, false);
 
    if (debug)
       printf("(%s) Returning: %d\n", __func__, new_argc);

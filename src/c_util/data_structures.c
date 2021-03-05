@@ -1347,7 +1347,6 @@ Bit_Set_256 bs256_add(
        // printf("(%s) wolf 3\n", __func__);
     }
 
-
     return result;
 }
 
