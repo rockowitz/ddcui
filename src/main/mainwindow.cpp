@@ -127,7 +127,7 @@ void MainWindow::start_msgBoxThread() {
 }
 
 
-void MainWindow::initMonitors(Parsed_Cmd * parsed_cmd) {
+void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
     bool debug = false;
 
     longRunningTaskStart();
@@ -270,7 +270,7 @@ void MainWindow::initMonitors(Parsed_Cmd * parsed_cmd) {
 
 
 
-MainWindow::MainWindow(Parsed_Cmd * parsed_cmd, QWidget *parent) :
+MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
     QMainWindow(parent),
     _ui(new Ui_MainWindow(this))
     // _ui(new Ui::MainWindow)

@@ -51,7 +51,7 @@ bool defaultIncludeAllCapabilities(DDCA_Feature_Subset_Id fsid) {
 }
 
 
-void FeatureSelector::applyParsedOptions(Parsed_Cmd * parsed_cmd) {
+void FeatureSelector::applyParsedOptions(Parsed_Ddcui_Cmd * parsed_cmd) {
    bool debug = false;
 
    if (ddca_feature_list_count(parsed_cmd->custom_feature_list) > 0) {
@@ -98,7 +98,7 @@ FeatureSelector::FeatureSelector() {
 }
 
 
-FeatureSelector::FeatureSelector(Parsed_Cmd * parsedCmd) {
+FeatureSelector::FeatureSelector(Parsed_Ddcui_Cmd * parsedCmd) {
    applyParsedOptions(parsedCmd);
 }
 

@@ -65,7 +65,7 @@ public:
     //
 public:
     // explicit
-    MainWindow(Parsed_Cmd * parsed_cmd, QWidget *parent = 0);
+    MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent = 0);
     ~MainWindow();
 
     // *** public initialization methods
@@ -74,7 +74,7 @@ public:
 
     // *** private initialization methods
 private:
-    void initMonitors(Parsed_Cmd * parsed_cmd);
+    void initMonitors(Parsed_Ddcui_Cmd * parsed_cmd);
     void loadMonitorFeatures(Monitor * monitor);
 
 

@@ -8,6 +8,6 @@
 
 #include "cmdline/parsed_cmd.h"
 
-Parsed_Cmd * parse_ddcui_command(int argc, char * argv[]);
+Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]);
 
 #endif /* CMD_PARSER_H_ */

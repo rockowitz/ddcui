@@ -17,7 +17,7 @@ class UserInterfaceOptionsState : public QObject {
 
 public:
    UserInterfaceOptionsState();
-   UserInterfaceOptionsState(Parsed_Cmd* parsed_cmd);
+   UserInterfaceOptionsState(Parsed_Ddcui_Cmd* parsed_cmd);
    UserInterfaceOptionsState(UserInterfaceOptionsState &other);
 
    static const bool CkrDefault = false;

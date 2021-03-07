@@ -82,7 +82,7 @@ gboolean stats_arg_func(const    gchar* option_name,
  *  \return pointer to a Parsed_Cmd struct if parsing successful
  *          NULL if execution should be terminated
  */
-Parsed_Cmd * parse_ddcui_command(int argc, char * argv[]) {
+Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    bool debug = true;
 
    if (debug) {
@@ -94,7 +94,7 @@ Parsed_Cmd * parse_ddcui_command(int argc, char * argv[]) {
       }
    }
 
-   Parsed_Cmd * parsed_cmd = new_parsed_cmd();
+   Parsed_Ddcui_Cmd * parsed_cmd = new_parsed_ddcui_cmd();
 
    gboolean ddc_flag                = false;
    gboolean enable_udf_flag         = false;
@@ -561,11 +561,11 @@ Parsed_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    g_option_context_free(context);
 
    if (debug || debug_parse) {
-      dbgrpt_parsed_cmd(parsed_cmd);
+      dbgrpt_parsed_ddcui_cmd(parsed_cmd);
    }
 
    if (!ok || parse_only) {
-      free_parsed_cmd(parsed_cmd);
+      free_parsed_ddcui_cmd(parsed_cmd);
       parsed_cmd = NULL;
    }
 

@@ -20,7 +20,7 @@
  {
  }
 
- UserInterfaceOptionsState::UserInterfaceOptionsState(Parsed_Cmd* parsed_cmd)
+ UserInterfaceOptionsState::UserInterfaceOptionsState(Parsed_Ddcui_Cmd* parsed_cmd)
      : _cls(metaObject()->className())
  {
     _controlKeyRequired = parsed_cmd->flags & CMD_FLAG_UI_REQUIRE_CONTROL_KEY;

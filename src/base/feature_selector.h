@@ -23,7 +23,7 @@ class FeatureSelector    // : public QObject
 
 public:
     FeatureSelector();
-    FeatureSelector(Parsed_Cmd * parsedCmd);
+    FeatureSelector(Parsed_Ddcui_Cmd * parsedCmd);
 
     FeatureSelector(const FeatureSelector &other);
     FeatureSelector& operator=(const FeatureSelector& sel2) = default;
@@ -40,7 +40,7 @@ public:
     DDCA_Feature_List      _customFeatureList       = DDCA_EMPTY_FEATURE_LIST;
 
 private:
-    void applyParsedOptions(Parsed_Cmd * parsed_cmd);
+    void applyParsedOptions(Parsed_Ddcui_Cmd * parsed_cmd);
 
     const char * _cls = "FeatureSelector";
 };

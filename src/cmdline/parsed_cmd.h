@@ -99,7 +99,7 @@ typedef struct {
    char *                  model;
    int                     busno;
    DDCA_Feature_List       custom_feature_list;
-} Parsed_Cmd;
+} Parsed_Ddcui_Cmd;
 
 
 // VNT Table Lookup
@@ -116,8 +116,8 @@ Parsed_Feature_Set       find_feature_set_table_value( char * value);
 
 // Lifecycle and debug
 
-Parsed_Cmd *  new_parsed_cmd();
-void          free_parsed_cmd(Parsed_Cmd * parsed_cmd);
-void          dbgrpt_parsed_cmd(Parsed_Cmd * parsed_cmd);   // debugging function
+Parsed_Ddcui_Cmd *  new_parsed_ddcui_cmd();
+void                free_parsed_ddcui_cmd(Parsed_Ddcui_Cmd * parsed_cmd);
+void                dbgrpt_parsed_ddcui_cmd(Parsed_Ddcui_Cmd * parsed_cmd);   // debugging function
 
 #endif /* PARSED_CMD_H_ */

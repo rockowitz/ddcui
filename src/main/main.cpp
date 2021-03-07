@@ -27,7 +27,7 @@ extern "C" {
 // #include <ui_main.h>
 #include "main/mainwindow.h"
 
-static bool init_ddcutil_library(Parsed_Cmd * parsed_cmd) {
+static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
    // printf("(%s) Starting\n", __func__);
 
    bool ok = true;
@@ -131,7 +131,7 @@ int main(int argc, char *argv[])
     if (new_argc < 0)
        return 1;
 
-    Parsed_Cmd * parsed_cmd = parse_ddcui_command(new_argc, new_argv);
+    Parsed_Ddcui_Cmd * parsed_cmd = parse_ddcui_command(new_argc, new_argv);
     if (!parsed_cmd)
        return 1;
 

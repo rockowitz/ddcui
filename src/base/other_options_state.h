@@ -27,7 +27,7 @@ public:
    static const bool           DefaultUseMaximalMccsNcValues = false;
 
    OtherOptionsState();
-   OtherOptionsState(Parsed_Cmd * parsedCmd);
+   OtherOptionsState(Parsed_Ddcui_Cmd * parsedCmd);
    OtherOptionsState(const OtherOptionsState &other);
 
    void changeNcValuesSource(NcValuesSource mode, bool useLatestNcValues);

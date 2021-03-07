@@ -32,7 +32,7 @@ NcValuesSource parsedNcValuesSource_to_NcValuesSource(Parsed_NC_Values_Source va
 
 OtherOptionsState::OtherOptionsState() {}
 
-OtherOptionsState::OtherOptionsState(Parsed_Cmd * parsed_cmd) {
+OtherOptionsState::OtherOptionsState(Parsed_Ddcui_Cmd * parsed_cmd) {
    if (parsed_cmd->nc_values_source != NC_VALUES_SOURCE_UNSET)
       _ncValuesSource = parsedNcValuesSource_to_NcValuesSource(parsed_cmd->nc_values_source);
 }
