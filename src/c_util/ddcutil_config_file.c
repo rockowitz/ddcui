@@ -9,6 +9,7 @@
 // Copyright (C) 2021 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+#include <assert.h>
 #include <errno.h>
 #include <stdbool.h>
 #include <stddef.h>
@@ -59,7 +60,11 @@ int tokenize_init_line(char * string, char ***tokens_loc) {
  *
  *  \param  ddcutil_application  "ddcutil", "libddcutil", "ddcui"
  *  \param  tokenized_options_loc   where to return the address of the null terminated token list
- *  \param  untokenized_string_loc  where to return untokenized string of options obtained from init file
+ *  \param  untokenized_option_loc  where to return untokenized string of options obtained from
+ *                                  the configuration file
+ *  \param  errmsgs                 collects error messages if non-NULL
+ *  \param  config_filename_loc     where to return fully qualified name of configuration file
+ *  \param  verbose                 issue error messages if true
  *  \return 0, < 0 if errors
  *          It is not an error if the configuration file does not exist.
  *          In that case 0 is returned..
@@ -72,7 +77,7 @@ int read_ddcutil_config_file(
       char **        config_fn_loc,
       bool           verbose)
 {
-   bool debug = true;
+   bool debug = false;
 
    int result = 0;
    int token_ct = 0;
@@ -92,6 +97,9 @@ int read_ddcutil_config_file(
    }
 
    GHashTable * config_hash = NULL;
+   if (debug)
+      printf("(%s) Before load_configuration_file(), config_fn = %s\n",
+             __func__, config_fn);
    int load_rc = load_configuration_file(config_fn, &config_hash, errmsgs, false);
    if (debug)
       fprintf(stderr, "load_configuration file() returned %d\n", load_rc);
@@ -133,19 +141,29 @@ int read_ddcutil_config_file(
          *tokenized_options_loc = prefix_tokens;
       }
    }
-   free(config_fn);
 
 bye:
    if (debug)  {
-      printf("(%s) Returning untokenized options: |%s|, token_ct = %d\n",
-             __func__, *untokenized_option_string_loc, token_ct);
+      printf("(%s) Returning untokenized options: |%s|, token_ct = %d, *config_fn_loc=%s\n",
+             __func__, *untokenized_option_string_loc, token_ct, *config_fn_loc);
+      printf("(%s) prefix_tokens:\n", __func__);
       ntsa_show(prefix_tokens);
+      printf("(%s) Returning: %d\n", __func__, result);
    }
    return result;
 
 }
 
-
+/** Merges the tokenized command string passed to the program with tokens
+ *  obtained from the configuration file.
+ *
+ *  \param   old_argc   original argument count
+ *  \param   old_argv   original argument list
+ *  \param   config_token_ct  number of tokens to insert
+ *  \param   config_tokens    list of tokens
+ *  \param   new_argv_loc     where to return address of merged argument list
+ *  \return
+ */
 int merge_command_tokens(
       int      old_argc,
       char **  old_argv,
@@ -153,7 +171,7 @@ int merge_command_tokens(
       char **  config_tokens,
       char *** new_argv_loc)
 {
-   bool debug = true;
+   bool debug = false;
 
    // default, assume no config file parms
    *new_argv_loc = old_argv;
@@ -165,7 +183,7 @@ int merge_command_tokens(
          printf("(%s) config_token_ct = %d, argc=%d, new_ct=%d\n",
                __func__, config_token_ct, old_argc, new_ct);
       char ** combined = calloc(new_ct, sizeof(char *));
-      combined[0] = old_argv[0];
+      combined[0] = old_argv[0];   // command
       int new_ndx = 1;
       for (int prefix_ndx = 0; prefix_ndx < config_token_ct; prefix_ndx++, new_ndx++) {
          combined[new_ndx] = config_tokens[prefix_ndx];
@@ -175,20 +193,24 @@ int merge_command_tokens(
       }
       combined[new_ndx] = NULL;
       if (debug)
-         printf("(%s) Final new_ndx = %d", __func__, new_ndx);
+         printf("(%s) Final new_ndx = %d\n", __func__, new_ndx);
       *new_argv_loc = combined;
-      new_argc = ntsa_length(combined);
+      new_argc = new_ct - 1;
+      assert(new_argc == ntsa_length(combined));
    }
 
-   if (debug)
+   if (debug) {
        printf("(%s) Returning %d, *new_argv_loc=%p\n", __func__, new_argc, *new_argv_loc);
+       printf("(%s) tokens:\n", __func__);
+       ntsa_show(*new_argv_loc);
+   }
+
    return new_argc;
 }
 
-
-
-/** Combines the options from the ddcutil configuration file with the command line arguments,
- *  returning a new list of tokens.
+/** Reads and tokenizes the appropriate options entries in the config file,
+ *  then combines the tokenized options from the ddcutil configuration file
+ *  with the command line arguments, returning a new list of tokens.
  *
  *  \param  old_argc  argc as passed on the command line
  *  \param  old argv  argv as passed on the command line
@@ -199,7 +221,7 @@ int merge_command_tokens(
  *          reading the configuration file. n. it is not an error if the
  *          configuration file does not exist.  In that case 0 is returned.
  */
-int read_and_parse_config_file(
+int read_parse_and_merge_config_file(
       const char * ddcutil_application,     // "ddcutil", "ddcui"
       int          old_argc,
       char **      old_argv,
@@ -208,7 +230,7 @@ int read_and_parse_config_file(
       char**       configure_fn_loc,
       GPtrArray *  errmsgs)
 {
-   bool debug = true;
+   bool debug = false;
    char **cmd_prefix_tokens = NULL;
 
    *new_argv_loc = old_argv;
@@ -241,9 +263,12 @@ int read_and_parse_config_file(
    if (cmd_prefix_tokens)
       ntsa_free(cmd_prefix_tokens, false);
 
-   if (debug)
-      printf("(%s) Returning: %d, new_argv_loc=%p\n", __func__, new_argc, new_argv_loc);
+   if (debug) {
+       printf("(%s) Returning %d, *new_argv_loc=%p\n", __func__, new_argc, *new_argv_loc);
+       printf("(%s) tokens:\n", __func__);
+       ntsa_show(*new_argv_loc);
+   }
+
    return new_argc;
 }
-
 
