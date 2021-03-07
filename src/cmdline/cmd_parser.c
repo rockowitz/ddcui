@@ -82,7 +82,7 @@ gboolean stats_arg_func(const    gchar* option_name,
  *  \return pointer to a Parsed_Cmd struct if parsing successful
  *          NULL if execution should be terminated
  */
-Parsed_Cmd * parse_command(int argc, char * argv[]) {
+Parsed_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    bool debug = true;
 
    if (debug) {

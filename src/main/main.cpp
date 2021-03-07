@@ -3,6 +3,7 @@
 // Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+#include <glib-2.0/glib.h>
 #include <stdio.h>
 #include <QtWidgets/QApplication>
 
@@ -109,13 +110,28 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     a.setWindowIcon(QIcon(":/icons/ddcui_multires.ico"));
 
+    GPtrArray * errmsgs = g_ptr_array_new_with_free_func(free);
     char ** new_argv = NULL;
     char *  combined_config_file_options = NULL;
-    int new_argc = full_arguments("ddcui", argc, argv, &new_argv, &combined_config_file_options);
+    char *  config_fn;
+    int new_argc = read_and_parse_config_file(
+                       "ddcui",
+                       argc,
+                       argv,
+                       &new_argv,
+                       &combined_config_file_options,
+                       &config_fn,
+                       errmsgs);
+    if (errmsgs->len > 0) {
+       printf("Errors reading configuration file %s\n", config_fn);
+       for (int ndx = 0; ndx < errmsgs->len; ndx++)
+          printf("%s\n", (char*) g_ptr_array_index(errmsgs, ndx));
+    }
+    g_ptr_array_free(errmsgs, true);
     if (new_argc < 0)
        return 1;
 
-    Parsed_Cmd * parsed_cmd = parse_command(new_argc, new_argv);
+    Parsed_Cmd * parsed_cmd = parse_ddcui_command(new_argc, new_argv);
     if (!parsed_cmd)
        return 1;
 
