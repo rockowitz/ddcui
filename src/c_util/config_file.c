@@ -116,16 +116,23 @@ char * get_config_value(GHashTable * ini_file_hash, const char * segment, const 
    return result;
 }
 
-/** Loads an INI style configuration file.
+/** Loads an INI style configuration file into a newly allocated
+ *  hash table.  Keys of the table have the form <segment name>/<key>.
  *
  * \param  config_file_name  file name
  * \param  hash_table_loc    where to return newly allocated hash table
- * \param  errmsgs           per-line error messages
+ * \param  errmsgs           stores per-line error messages if non-null
  * \param  verbose           if true, write error messages to terminal
+ * \retval  0                success
  * \retval -ENOENT           configuration file not found
- * \retval < 0               errors reading file
+ * \retval -EBADMSG          errors parsing configuration file
+ * \retval < 0               errors reading configuration file
  *
  * If errors occur interpreting the file, **errmsgs** will be non-empty
+ *
+ * \remark
+ * There's really no errno value for errors parsing the file, which is
+ * a form of bad data.  EBADMSG has been hijacked for this purpose.
  */
 
 int load_configuration_file(
@@ -136,6 +143,7 @@ int load_configuration_file(
 {
    bool debug = false;
    assert(config_file_name);
+
    int result = 0;
    char * cur_segment = NULL;
    GHashTable * ini_file_hash = NULL;
@@ -148,7 +156,8 @@ int load_configuration_file(
          char * msg = g_strdup_printf("Error reading configuration file %s: %s",
                config_file_name,
                strerror(-getlines_rc) );
-         g_ptr_array_add(errmsgs, msg);
+         if (errmsgs)
+            g_ptr_array_add(errmsgs, msg);
          if (verbose) {
             fprintf(stderr, "%s/n", msg);
          }
@@ -193,7 +202,8 @@ int load_configuration_file(
                                           ndx+1, trimmed);
                   if (verbose)
                      printf("%s\n", msg);
-                  g_ptr_array_add(errmsgs, msg);
+                  if (errmsgs)
+                     g_ptr_array_add(errmsgs, msg);
                }
                free(key);
                free(value);
@@ -206,15 +216,18 @@ int load_configuration_file(
                                               ndx+1, trimmed);
             if (verbose)
                printf("%s\n", msg);
-            g_ptr_array_add(errmsgs, msg);
+            if (errmsgs)
+               g_ptr_array_add(errmsgs, msg);
       } // for loop
       g_ptr_array_free(config_lines, true);
       if (cur_segment)
          free(cur_segment);
+      if (errmsgs->len > 0)
+         result = -EBADMSG;
    } // process the lines
 
    if (debug) {
-      if (errmsgs->len > 0) {
+      if (errmsgs && errmsgs->len > 0) {
          for (int ndx = 0; ndx < errmsgs->len; ndx++)
             printf("   %s\n", (char *) g_ptr_array_index(errmsgs, ndx));
       }
