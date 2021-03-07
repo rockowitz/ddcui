@@ -114,7 +114,7 @@ int main(int argc, char *argv[])
     char ** new_argv = NULL;
     char *  combined_config_file_options = NULL;
     char *  config_fn;
-    int new_argc = read_and_parse_config_file(
+    int new_argc = read_parse_and_merge_config_file(
                        "ddcui",
                        argc,
                        argv,
