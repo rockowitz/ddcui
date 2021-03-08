@@ -124,7 +124,7 @@ int main(int argc, char *argv[])
                        errmsgs);
     if (errmsgs->len > 0) {
        printf("Errors reading configuration file %s\n", config_fn);
-       for (int ndx = 0; ndx < errmsgs->len; ndx++)
+       for (guint ndx = 0; ndx < errmsgs->len; ndx++)
           printf("%s\n", (char*) g_ptr_array_index(errmsgs, ndx));
     }
     g_ptr_array_free(errmsgs, true);
