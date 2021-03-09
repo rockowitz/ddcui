@@ -24,6 +24,9 @@ public:
 private slots:
    void updateWindowTitle();
 
+protected:
+   void keyPressEvent(QKeyEvent * ev) override;
+
 private:   //methods
    void createWidgets(bool navigable);
    void layoutWidgets(bool navigable);
@@ -34,6 +37,7 @@ private:
    QPushButton *  _homeButton;
    QPushButton *  _backButton;
    QPushButton *  _closeButton;
+   QDialogButtonBox * _buttonBox;
 
 };
 
