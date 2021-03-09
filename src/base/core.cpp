@@ -180,7 +180,7 @@ bool printftcmf(
          char * buffer = g_strdup_vprintf(format, args);
          va_end(args);
 
-         char * funcbuf = NULL;
+         char * funcbuf = nullptr;
          if (metaclass_classname && cls) {
             if (strcmp(metaclass_classname, cls) == 0) {
                funcbuf = g_strdup_printf("%s::%s", metaclass_classname, funcname);

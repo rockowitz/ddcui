@@ -62,22 +62,22 @@ bool printftcmf(
 
 #define TRACEC( _FMT, ...) \
 do { \
-   printftcmf(true, NULL, _cls, __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+   printftcmf(true, nullptr, _cls, __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
 } while(0)
 
 #define TRACECF(_FLAG, _FMT, ...) \
 do { \
-   printftcmf(_FLAG, NULL, _cls, __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+   printftcmf(_FLAG, nullptr, _cls, __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
 } while(0)
 
 #define TRACEM( _FMT, ...) \
 do { \
-   printftcmf(true, metaObject()->className(), NULL,  __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+   printftcmf(true, metaObject()->className(), nullptr,  __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
 } while(0)
 
 #define TRACEMF(_FLAG, _FMT, ...) \
 do { \
-   printftcmf(_FLAG, metaObject()->className(), NULL,  __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+   printftcmf(_FLAG, metaObject()->className(), nullptr,  __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
 } while(0)
 
 #define TRACEMC( _FMT, ...) \
