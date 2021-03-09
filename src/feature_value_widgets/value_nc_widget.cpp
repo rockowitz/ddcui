@@ -241,25 +241,32 @@ void ValueNcWidget::loadComboBox2() {
       uint8_t valueCode = iValueCode & 0xff;
 
       char * valueName = sl_value_table_lookup(slValues, valueCode);
-      QString s;
-      if (valueName)
-         s = QString::asprintf("x%02x - %s", valueCode, valueName);
-      else
-         s = QString::asprintf("x%02x - Unrecognized value", valueCode);
+      QString s = (valueName)
+            ? QString::asprintf("x%02x - %s", valueCode, valueName)
+            : QString::asprintf("x%02x - Unrecognized value", valueCode);
       // TRACEMF(debugFunc, "inserting 0x%02x into combobox: %s", valueCode, QS2S(s));
       _cb->addItem(s, QVariant(valueCode));
    }
    int cur_ndx = findItem(_sl);
    // assert (cur_ndx >= 0);    // must be in _observedValues
    if (cur_ndx >= 0) {
-   _cb->setCurrentIndex(cur_ndx);
+      _cb->setCurrentIndex(cur_ndx);
    }
    else {
       // pathological case
       TRACEM("findItem() failed. _sl=%d", _sl);
       TRACEM("   _validValues: %s", bs256_to_string(_validValues, ""," "));
       TRACEM("   _observedValues: %s", bs256_to_string(_observedValues, ""," "));
-      // TODO: POP UP MESSAGE BOX
+
+      QString qstitle = QString("Internal Error");
+      QString qsexpl  = QString::asprintf(
+          "Value x%02x not found in combo box, _validValues: %s, _observedValues: %s",
+          _sl,
+          bs256_to_string(_validValues, "", " "),
+          bs256_to_string(_observedValues, "", " ") );
+      QMessageBox::Icon icon = QMessageBox::Critical;
+      MsgBoxQueueEntry * qe = new MsgBoxQueueEntry(qstitle, qsexpl, icon);
+      GlobalState::instance()._msgBoxQueue->put(qe);
       _cb->setCurrentIndex(0);
    }
 
