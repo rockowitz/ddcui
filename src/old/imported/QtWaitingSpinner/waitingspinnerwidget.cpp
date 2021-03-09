@@ -21,7 +21,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 // Own includes
-#include "waitingspinnerwidget.h"
+#include "../../old/imported/QtWaitingSpinner/waitingspinnerwidget.h"
 
 #include <cmath>
 #include <algorithm>
