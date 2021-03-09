@@ -16,6 +16,7 @@
 #include <QtWidgets/QStackedWidget>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QToolBar>
+#include <QtGui/QKeyEvent>
 
 #include "../base/core.h"
 #include "../base/widget_debug.h"
@@ -74,6 +75,11 @@ private:
     QAction     *actionContentsHelp;
     QAction     *actionAbout= NULL;
     QAction     *actionAboutQt= NULL;
+
+#ifdef NOTHING_TO_OVERRIDE
+protected:
+    void keyPressEvent(QKeyEvent * evt) override;
+#endif
 
 public:
     // Tool Bar

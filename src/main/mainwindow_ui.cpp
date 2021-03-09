@@ -13,6 +13,15 @@
 
 #include "mainwindow_ui.h"
 
+static
+void dbgrptQKeyEvent(QKeyEvent * event) {
+   printf("  key:  %d\n", event->key());
+   printf("  modifiers: 0x%x\n", (unsigned int) event->modifiers());
+   printf("  nativeModifiers: 0x%08x\n", event->nativeModifiers());
+   printf("  nativeScanCode:  0x%08x\n", event->nativeScanCode());
+}
+
+
 Ui_MainWindow::Ui_MainWindow(QMainWindow* mainWindow)
    : _mainWindow(mainWindow)
 {
@@ -111,14 +120,17 @@ void Ui_MainWindow::setupMenus(QMainWindow *MainWindow)
     menuBar->setFont(mainMenuFont);
     // menuBar->setGeometry(QRect(0, 0, 800, 30));
 
+    // character shortcuts in menubar don't work, are passed to the
+    // display combo box
+
     menuView = new QMenu(menuBar);
     menuView->setObjectName(QString::fromUtf8("menuView"));
-    menuView->setTitle(    QApplication::translate("MainWindow", "&View", nullptr, -1));
+    menuView->setTitle(    QApplication::translate("MainWindow", "View", nullptr, -1));
     menuView->setFont(mainMenuFont);  // sets the font for menu entries
 
     // menuDisplays = new QMenu(menuBar);
     // menuDisplays->setObjectName(QString::fromUtf8("menuDisplays"));
-    // menuDisplays->setTitle(QApplication::translate("MainWindow", "Disp&lays", 0));
+    // menuDisplays->setTitle(QApplication::translate("MainWindow", "Displays", 0));
 
     menuActions = new QMenu(menuBar);
     menuActions->setObjectName(QString::fromUtf8("menuActions"));
@@ -127,7 +139,7 @@ void Ui_MainWindow::setupMenus(QMainWindow *MainWindow)
 
     menuOptions = new QMenu(menuBar);
     menuOptions->setObjectName(QString::fromUtf8("menuOptions"));
-    menuOptions->setTitle( QApplication::translate("MainWindow", "Optio&ns", nullptr, -1));
+    menuOptions->setTitle( QApplication::translate("MainWindow", "Options", nullptr, -1));
     menuOptions->setFont(mainMenuFont);
     menuOptions->addAction(actionFeatureSelectionDialog);
     menuOptions->addAction(actionOtherOptionsDialog);
@@ -171,9 +183,9 @@ void Ui_MainWindow::setupMenus(QMainWindow *MainWindow)
     menuHelp->addAction(actionAbout);
     menuHelp->addAction(actionAboutQt);
 
-    actionContentsHelp->setText(QApplication::translate(  "MainWindow", "Contents...", nullptr, -1));
+    actionContentsHelp->setText(QApplication::translate(  "MainWindow", "&Contents...", nullptr, -1));
     actionContentsHelp->setFont(mainMenuFont);
-    actionAbout->setText(QApplication::translate(  "MainWindow", "&About ddcui", nullptr, -1));
+    actionAbout->setText(QApplication::translate(  "MainWindow", "About &ddcui", nullptr, -1));
     actionAbout->setFont(mainMenuFont);
     actionAboutQt->setText(QApplication::translate("MainWindow", "About &Qt", nullptr, -1));
     actionAboutQt->setFont(mainMenuFont);
@@ -256,4 +268,19 @@ void Ui_MainWindow::setupUi(QMainWindow *MainWindow)
    // std::cout << "(setupUi) Done" << std::endl;
    TRACECF(debug, "Done");
 } // setupUi
+
+#ifdef FAILS
+void Ui_MainWindow::keyPressEvent(QKeyEvent * evt) {
+   void dbgrptQKeyEvent(evt)
+   switch (evt->key())
+   {
+   case Qt::Key_H:
+      menuHelp->menuAction();  // no event
+      // menuHelp->trigger();     // doesn't compile
+      break;
+   }
+   evt->accept();
+}
+#endif
+
 
