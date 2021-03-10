@@ -72,18 +72,15 @@ public:
     void initSerialMsgbox();
     void start_msgBoxThread();    // was originally factored out for use as a slot
 
-    // *** private initialization methods
 private:
     void initMonitors(Parsed_Ddcui_Cmd * parsed_cmd);
     void loadMonitorFeatures(Monitor * monitor);
-
 
 
  //
  // *** Signals
  //
 
-    // *** public signals
 public:
     signals:
     void featureSelectionChanged();
@@ -95,13 +92,10 @@ public:
     void resetStats();
     void reportApplicationEventLoopStarted();
 
-    // *** private signals
 
  //
  // *** Slots ***
  //
-
-    // *** public slots ***
 
 public slots:
     void longRunningTaskStart();
@@ -113,8 +107,6 @@ public slots:
     void showCentralWidgetPage(int pageno);
     void showCentralWidgetByWidget(QWidget * pageWidget);
 
-
-    // *** private slots
 
 private slots:
     // View Menu
@@ -133,29 +125,21 @@ private slots:
     // Options Menu
     void on_actionFeatureSelectionDialog_triggered();
     void for_actionFeatureSelectionDialog_accepted();
+    void on_actionOtherOptionsDialog_triggered();
+    void on_actionUserInterfaceOptionsDialog_triggered();
+    void for_actionUserInterfaceOptionsDialog_accept();
+
 #ifdef UNUSED
     void actionFeatureSelectionDialog_destroyed(QObject * obj);
     void on_actionFeatureSelection_triggered();
     void featureSelectionAccepted(DDCA_Feature_Subset_Id feature_list);
-#endif
-
-    void on_actionOtherOptionsDialog_triggered();
-#ifdef OLD
-    void for_actionOtherOptionsDialog_ncValuesSourceChanged(
-            NcValuesSource valuesSource, bool useLatestNcValueNames);
-#endif
-#ifdef UNUSED
     void on_actionOtherOptionsDialog_accepted();
 #endif
 
-    void on_actionUserInterfaceOptionsDialog_triggered();
-    void for_actionUserInterfaceOptionsDialog_accept();
-
-
     // Help Menu
+    void on_actionContentsHelp_triggered();
     void on_actionAbout_triggered();
     void on_actionAbout_Qt_triggered();
-    void on_actionContentsHelp_triggered();
 
     // Tool Bar
     void displaySelectorCombobox_currentIndexChanged(int index);
@@ -165,11 +149,9 @@ private slots:
  // *** General methods ***
  //
 
-    // public general methods ***
 public:
     void reportDdcApiError(QString funcname, int rc) const;
 
-    // private general methods ***
 private:
     // used only by slotfor_reportStats_triggered()
       void capture_stats(DDCA_Stats_Type stats_type, bool show_thread_data);
@@ -190,16 +172,11 @@ private:
 // *** Member Variables ***
 //
 
-    // public member variables ***
-
 public:
     UserInterfaceOptionsDialog * _uid = NULL;
-    FeatureSelector *        _feature_selector = NULL;
-    MsgBoxQueue*               _msgBoxQueue = nullptr;
-
-    QMessageBox*               _serialMsgBox = nullptr;
-
-    // private member variables ***
+    FeatureSelector *            _feature_selector = NULL;
+    MsgBoxQueue*                 _msgBoxQueue = nullptr;
+    QMessageBox*                 _serialMsgBox = nullptr;
 
 private:
     const char *               _cls;
@@ -216,7 +193,6 @@ private:
     QVector<VcpThread*>        _vcp_threads;
 
     QMessageBox*               _loadingMsgBox;
-    // MsgBoxQueue*               _msgboxQueue = nullptr;
     MsgBoxThread *             _msgBoxThread = nullptr;
 
     // Accumulates messages that will be shown in the SerialMsgBox once
