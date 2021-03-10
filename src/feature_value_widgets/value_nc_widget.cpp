@@ -1,6 +1,6 @@
 /* value_nc_widget.cpp */
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "feature_value_widgets/value_nc_widget.h"
@@ -85,14 +85,12 @@ void ValueNcWidget::layoutWidget() {
 }
 
 
-// int ValueNcWidget::nextId = 0;
 
 ValueNcWidget::ValueNcWidget(QWidget *parent):
         ValueBaseWidget(parent)
 {
     bool debug = false;
     _cls = strdup(metaObject()->className());
-    // _id = ++nextId;
     TRACEMCF(debug, "Starting. id=%d", _id );
 
     _layout = new QHBoxLayout();
@@ -163,7 +161,7 @@ void ValueNcWidget::setFeatureValue(const FeatureValue &fv) {
      _observedValues = bs256_add(_observedValues, _sl);
      TRACEMF(debug, "_observedValues after adding 0x%02x: %s", _sl, bs256_to_string(_observedValues, ""," "));
 
-    _ncValuesSource        = _globalState._otherOptionsState->_ncValuesSource;
+    _ncValuesSource    = _globalState._otherOptionsState->_ncValuesSource;
     _useLatestNcValues = _globalState._otherOptionsState->_useLatestNcValues;
     loadComboBox2();
 
@@ -213,8 +211,6 @@ void ValueNcWidget::loadComboBox2() {
    for (int ndx = _cb->count()-1; ndx >= 0; ndx--) {
       _cb->removeItem(ndx);
    }
-
-   // _validValues = EMPTY_BIT_SET_256;
 
    TRACEMF(debugFunc, "_observedValues at method start: %s", bs256_to_string(_observedValues, ""," "));
    _validValues = bs256_or(EMPTY_BIT_SET_256, _observedValues);
@@ -267,6 +263,7 @@ void ValueNcWidget::loadComboBox2() {
       QMessageBox::Icon icon = QMessageBox::Critical;
       MsgBoxQueueEntry * qe = new MsgBoxQueueEntry(qstitle, qsexpl, icon);
       GlobalState::instance()._msgBoxQueue->put(qe);
+
       _cb->setCurrentIndex(0);
    }
 
