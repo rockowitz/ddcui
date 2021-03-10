@@ -60,9 +60,10 @@ public:
         FeaturesView
     };
 
-    //
-    // Constructor, Destructor, Initialization methods
-    //
+//
+// Constructor, Destructor, Initialization methods
+//
+
 public:
     // explicit
     MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent = 0);
@@ -77,9 +78,9 @@ private:
     void loadMonitorFeatures(Monitor * monitor);
 
 
- //
- // *** Signals
- //
+//
+// *** Signals
+//
 
 public:
     signals:
@@ -93,9 +94,9 @@ public:
     void reportApplicationEventLoopStarted();
 
 
- //
- // *** Slots ***
- //
+//
+// *** Slots ***
+//
 
 public slots:
     void longRunningTaskStart();
@@ -106,7 +107,6 @@ public slots:
     // or should these two be private?
     void showCentralWidgetPage(int pageno);
     void showCentralWidgetByWidget(QWidget * pageWidget);
-
 
 private slots:
     // View Menu
@@ -145,9 +145,9 @@ private slots:
     void displaySelectorCombobox_currentIndexChanged(int index);
     // void displaySelectorCombobox_activated(int index);
 
- //
- // *** General methods ***
- //
+//
+// *** General methods ***
+//
 
 public:
     void reportDdcApiError(QString funcname, int rc) const;
@@ -156,8 +156,7 @@ private:
     // used only by slotfor_reportStats_triggered()
       void capture_stats(DDCA_Stats_Type stats_type, bool show_thread_data);
 
-
-    // *** Unused Methods, public and private, all types
+// *** Unused Methods, public and private, all types
  #ifdef UNUSED
       void on_vcpTableView_clicked(const QModelIndex &index);
       void on_vcpTableView_doubleClicked(const QModelIndex &index);
@@ -201,7 +200,6 @@ private:
 
     FeatureSelectionDialog*    _fsd = nullptr;
     OtherOptionsDialog*        _ood = nullptr;       // for future use
-
 };
 
 #endif // MAINWINDOW_H
