@@ -173,8 +173,8 @@ private:
 //
 
 public:
-    UserInterfaceOptionsDialog * _uid = NULL;
-    FeatureSelector *            _feature_selector = NULL;
+    UserInterfaceOptionsDialog * _uid = nullptr;
+    FeatureSelector *            _feature_selector = nullptr;
     MsgBoxQueue*                 _msgBoxQueue = nullptr;
     QMessageBox*                 _serialMsgBox = nullptr;
 
@@ -186,8 +186,8 @@ private:
     int                        _curDisplayIndex = -1;
     View                       _curView = NoView;
     QComboBox *                _toolbarDisplayCB;
-    OtherOptionsState *        _otherOptionsState = NULL;
-    UserInterfaceOptionsState* _uiOptionsState = NULL;
+    OtherOptionsState *        _otherOptionsState = nullptr;
+    UserInterfaceOptionsState* _uiOptionsState = nullptr;
     QVector<Monitor*>          _monitors;
     DDCA_Feature_Subset_Id     _feature_list_id = DDCA_SUBSET_KNOWN;
     QVector<VcpThread*>        _vcp_threads;
@@ -199,8 +199,8 @@ private:
     // initialization is sufficiently complete.  Not needed.
     // QList<MsgBoxQueueEntry*>   _deferredMsgs;
 
-    FeatureSelectionDialog*    _fsd = NULL;
-    OtherOptionsDialog*        _ood = NULL;       // for future use
+    FeatureSelectionDialog*    _fsd = nullptr;
+    OtherOptionsDialog*        _ood = nullptr;       // for future use
 
 };
 
