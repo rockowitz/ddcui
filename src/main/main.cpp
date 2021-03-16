@@ -10,8 +10,8 @@
 #include <ddcutil_c_api.h>
 
 extern "C" {
-#include "c_util/config_file.h"
 #include "c_util/ddcutil_config_file.h"
+#include "c_util/simple_ini_file.h"
 #include "c_util/string_util.h"
 #include "c_util/xdg_util.h"
 
@@ -118,7 +118,7 @@ int main(int argc, char *argv[])
     char *  config_fn;
     if (debug)
        printf("(%s) Calling read_parse_and_merge_config_file()\n", __func__);
-    int new_argc = read_parse_and_merge_config_file(
+    int new_argc = apply_config_file(
                        "ddcui",
                        argc,
                        argv,
