@@ -51,13 +51,13 @@ QMAKE_SUBSTITUTES += versionconfig
 INCLUDEPATH += src
 
 SOURCES += \
-     src/c_util/config_file.c \
+     src/c_util/data_structures.c \
      src/c_util/ddcutil_config_file.c \
      src/c_util/file_util_base.c \
-     src/c_util/xdg_util.c \
-     src/c_util/data_structures.c \
      src/c_util/glib_util.c \
-     src/c_util/string_util.c
+     src/c_util/simple_ini_file.c \
+     src/c_util/string_util.c \
+     src/c_util/xdg_util.c
 
 SOURCES += \
     src/cmdline/parsed_cmd.c \
@@ -141,13 +141,13 @@ SOURCES += \
 
 HEADERS += \
     src/c_util/coredefs.h \
-    src/c_util/config_file.h \
+    src/c_util/data_structures.h \
     src/c_util/ddcutil_config_file.h \
     src/c_util/file_util_base.h \
-    src/c_util/xdg_util.h \
-    src/c_util/data_structures.h \
     src/c_util/glib_util.h \
-    src/c_util/string_util.h
+    src/c_util/simple_ini_file.h \
+    src/c_util/string_util.h \
+    src/c_util/xdg_util.h
 
 HEADERS += \
     src/cmdline/parsed_cmd.h \
