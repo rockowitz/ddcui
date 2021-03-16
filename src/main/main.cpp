@@ -104,8 +104,10 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
 
 int main(int argc, char *argv[])
 {
-    bool debug = false;
+    bool debug = true;
 
+    if (debug)
+       printf("(%s) Starting\n", __func__);
     // will remove any arguments that it recognizes, e.g. --widgetcount
     QApplication a(argc, argv);
     a.setWindowIcon(QIcon(":/icons/ddcui_multires.ico"));
@@ -114,6 +116,8 @@ int main(int argc, char *argv[])
     char ** new_argv = NULL;
     char *  combined_config_file_options = NULL;
     char *  config_fn;
+    if (debug)
+       printf("(%s) Calling read_parse_and_merge_config_file()\n", __func__);
     int new_argc = read_parse_and_merge_config_file(
                        "ddcui",
                        argc,
@@ -122,6 +126,8 @@ int main(int argc, char *argv[])
                        &combined_config_file_options,
                        &config_fn,
                        errmsgs);
+    if (debug)
+       printf("(%s) read_parse_and_merge_config_file() returned %d\n", __func__, new_argc);
     if (errmsgs->len > 0) {
        printf("Errors reading configuration file %s\n", config_fn);
        for (guint ndx = 0; ndx < errmsgs->len; ndx++)

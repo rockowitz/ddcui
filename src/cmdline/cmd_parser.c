@@ -83,7 +83,7 @@ gboolean stats_arg_func(const    gchar* option_name,
  *          NULL if execution should be terminated
  */
 Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
-   bool debug = false;
+   bool debug = true;
 
    if (debug) {
       printf("(%s) ddcui version Starting\n", __func__ );
