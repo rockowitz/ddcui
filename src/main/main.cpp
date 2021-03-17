@@ -104,7 +104,7 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
 
 int main(int argc, char *argv[])
 {
-    bool debug = true;
+    bool debug = false;
 
     if (debug)
        printf("(%s) Starting\n", __func__);
@@ -117,7 +117,7 @@ int main(int argc, char *argv[])
     char *  combined_config_file_options = NULL;
     char *  config_fn;
     if (debug)
-       printf("(%s) Calling read_parse_and_merge_config_file()\n", __func__);
+       printf("(%s) Calling apply_config_file()\n", __func__);
     int new_argc = apply_config_file(
                        "ddcui",
                        argc,
@@ -127,7 +127,7 @@ int main(int argc, char *argv[])
                        &config_fn,
                        errmsgs);
     if (debug)
-       printf("(%s) read_parse_and_merge_config_file() returned %d\n", __func__, new_argc);
+       printf("(%s) apply_config_file() returned %d\n", __func__, new_argc);
     if (errmsgs->len > 0) {
        printf("Errors reading configuration file %s\n", config_fn);
        for (guint ndx = 0; ndx < errmsgs->len; ndx++)
