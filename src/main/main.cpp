@@ -128,12 +128,22 @@ int main(int argc, char *argv[])
                        &combined_config_file_options,
                        &config_fn,
                        errmsgs);
-    if (debug)
+    if (debug) {
        printf("(%s) apply_config_file() returned %d\n", __func__, new_argc);
+       printf("(%s) combined_config_file_options=%s, config_fn=%s\n", __func__,
+              combined_config_file_options, config_fn);
+       printf("(%s) new_argc=%d, new_argv:\n", __func__, new_argc);
+       ntsa_show(new_argv);
+    }
+
+    if (combined_config_file_options && strlen(combined_config_file_options) > 0)
+       printf("Applying ddcui      options from %s: %s\n", config_fn,
+             combined_config_file_options);
+
     if (errmsgs->len > 0) {
-       printf("Errors reading configuration file %s\n", config_fn);
+       printf("Errors reading ddcui configuration file %s:\n", config_fn);
        for (guint ndx = 0; ndx < errmsgs->len; ndx++)
-          printf("%s\n", (char*) g_ptr_array_index(errmsgs, ndx));
+          printf("   %s\n", (char*) g_ptr_array_index(errmsgs, ndx));
     }
     g_ptr_array_free(errmsgs, true);
     if (apply_config_rc < 0)
