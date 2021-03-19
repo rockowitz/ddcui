@@ -114,14 +114,16 @@ int main(int argc, char *argv[])
 
     GPtrArray * errmsgs = g_ptr_array_new_with_free_func(free);
     char ** new_argv = NULL;
+    int new_argc = 0;
     char *  combined_config_file_options = NULL;
     char *  config_fn;
     if (debug)
        printf("(%s) Calling apply_config_file()\n", __func__);
-    int new_argc = apply_config_file(
+    int apply_config_rc = apply_config_file(
                        "ddcui",
                        argc,
                        argv,
+                       &new_argc,
                        &new_argv,
                        &combined_config_file_options,
                        &config_fn,
@@ -134,7 +136,7 @@ int main(int argc, char *argv[])
           printf("%s\n", (char*) g_ptr_array_index(errmsgs, ndx));
     }
     g_ptr_array_free(errmsgs, true);
-    if (new_argc < 0)
+    if (apply_config_rc < 0)
        return 1;
 
     Parsed_Ddcui_Cmd * parsed_cmd = parse_ddcui_command(new_argc, new_argv);
