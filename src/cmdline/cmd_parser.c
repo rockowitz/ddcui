@@ -272,7 +272,7 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
 
    bool ok = g_option_context_parse(context, &argc, &argv, &error);
    if (!ok) {
-      fprintf(stderr, "Option parsing failed: %s\n", error->message);
+      fprintf(stderr, "ddcui option parsing failed: %s\n", error->message);
    }
 
 
