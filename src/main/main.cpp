@@ -137,8 +137,8 @@ int main(int argc, char *argv[])
     }
 
     if (combined_config_file_options && strlen(combined_config_file_options) > 0)
-       printf("Applying ddcui      options from %s: %s\n", config_fn,
-             combined_config_file_options);
+       printf("Applying ddcui      options from %s: %s\n",
+                    config_fn, combined_config_file_options);
 
     if (errmsgs->len > 0) {
        printf("Errors reading ddcui configuration file %s:\n", config_fn);
@@ -157,9 +157,7 @@ int main(int argc, char *argv[])
        QStringList styles = QStyleFactory::keys();
        printf("Known styles:\n");
        for (int ndx = 0;  ndx < styles.size(); ndx++)
-       {
           printf("  %s\n", styles.at(ndx).toLocal8Bit().constData());
-       }
        return 0;
     }
 
@@ -198,7 +196,7 @@ int main(int argc, char *argv[])
        printf("(%s) Calling Application::exec()\n", __func__);
     int mainStatus = a.exec();
     if (debug)
-       printf("(%s) Calling Application::exec() returned %d\n", __func__, mainStatus);
+       printf("(%s) Application::exec() returned %d\n", __func__, mainStatus);
     ddca_show_stats(parsed_cmd->stats_types,
                     false,              // include_per_thread_data
                     0);                 // depth
