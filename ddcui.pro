@@ -140,7 +140,7 @@ SOURCES += \
 # Each group of header files depends only on the groups above it.
 
 HEADERS += \
-    src/c_util/coredefs.h \
+    src/c_util/coredefs_base.h \
     src/c_util/data_structures.h \
     src/c_util/ddcutil_config_file.h \
     src/c_util/file_util_base.h \
