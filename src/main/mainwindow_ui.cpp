@@ -13,6 +13,7 @@
 
 #include "mainwindow_ui.h"
 
+#ifdef DEBUG
 static
 void dbgrptQKeyEvent(QKeyEvent * event) {
    printf("  key:  %d\n", event->key());
@@ -20,6 +21,7 @@ void dbgrptQKeyEvent(QKeyEvent * event) {
    printf("  nativeModifiers: 0x%08x\n", event->nativeModifiers());
    printf("  nativeScanCode:  0x%08x\n", event->nativeScanCode());
 }
+#endif
 
 
 Ui_MainWindow::Ui_MainWindow(QMainWindow* mainWindow)
