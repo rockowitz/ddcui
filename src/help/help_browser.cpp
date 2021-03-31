@@ -14,10 +14,8 @@
 #include "base/core.h"
 #include "help/help_browser.h"
 
-//
-// Event debugging
-//
 
+#ifdef DEBUG
 static
 void dbgrptQKeyEvent(QKeyEvent * event) {
    printf("  key:  %d\n", event->key());
@@ -25,7 +23,7 @@ void dbgrptQKeyEvent(QKeyEvent * event) {
    printf("  nativeModifiers: 0x%08x\n", event->nativeModifiers());
    printf("  nativeScanCode:  0x%08x\n", event->nativeScanCode());
 }
-
+#endif
 
 
 void HelpBrowser::showPage(const QString& page, bool navigable) {
@@ -125,7 +123,7 @@ HelpBrowser::HelpBrowser(
 
 void HelpBrowser::updateWindowTitle()
 {
-   setWindowTitle(tr("Help: %1").arg(_textBrowser->documentTitle()));
+   this->setWindowTitle(tr("Help: %1").arg(_textBrowser->documentTitle()));
 }
 
 
