@@ -13,6 +13,8 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stddef.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "file_util_base.h"
 #include "string_util.h"
@@ -155,7 +157,7 @@ int ini_file_load(
    char * cur_segment = NULL;
    GHashTable * ini_file_hash = NULL;
 
-   GPtrArray * config_lines = g_ptr_array_new_with_free_func(free);
+   GPtrArray * config_lines = g_ptr_array_new_with_free_func(g_free);
    int getlines_rc = file_getlines(ini_file_name, config_lines, verbose);
    if (getlines_rc < 0) {
       result = getlines_rc;

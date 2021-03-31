@@ -32,27 +32,6 @@ static inline const char * sbool(int val) {  return (val)  ? "true" : "false"; }
 // A macro alternative to sbool()
 #define SBOOL(val) ( (val) ? "true" : "false" )
 
-
-#ifdef DEPRECATED
-// use glib function g_strlcpy() instead
-#define SAFE_STRNCPY(dest, src, buflen) \
-   do { \
-      strncpy(dest, src, (buflen) ); \
-      if (buflen > 0) \
-         dest[buflen-1] = '\0'; \
-   } while(0)
-#endif
-
-#ifdef DEPRECATED
-// use glib function g_snprintf()
-#define SAFE_SNPRINTF(buf, bufsz, fmt, ...) \
-   do { \
-      snprintf(buf, bufsz, fmt, __VA_ARGS__ ); \
-      if (bufsz > 0) \
-         buf[bufsz-1] = '\0'; \
-   } while(0)
-#endif
-
 //
 // String functions (other than hex)
 //
@@ -73,8 +52,8 @@ char * strtrim_r(const char * s, char * buffer, int bufsz);
 char * ltrim_in_place(char * s);
 char * rtrim_in_place(char * s);
 char * trim_in_place(char * s);
-char * substr(const char * s, uint startpos, uint ct);
-char * lsub(const char * s, int ct);
+char * substr(const char * s, size_t startpos, size_t ct);
+char * lsub(const char * s, size_t ct);
 char * str_replace_char(char * s, char old_char, char new_char);
 char * strcat_new(char * s1, char * s2);
 bool   sbuf_append(char * buf, int bufsz, char * sepstr, char * nextval);

@@ -12,13 +12,13 @@
 
 #include <assert.h>
 #include <ctype.h>
-#include <glib-2.0/glib.h>
 #include <errno.h>
-#include <stdio.h>
+#include <glib-2.0/glib.h>
+#include <stdarg.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdarg.h>
 /** \endcond */
 
 #include "glib_util.h"
@@ -305,9 +305,6 @@ char * trim_in_place(char * s) {
 }
 
 
-
-
-
 /** Trims leading and trailing whitespace from a string and
  * returns the result in newly allocated memory.
  * It is the caller's responsibility to free this memory.
@@ -332,7 +329,7 @@ char * strtrim(const char * s) {
  *                  the string length, ct is reduced accordingly
  * @return extracted substring, in newly allocated memory
  */
-char * substr(const char * s, uint startpos, uint ct) {
+char * substr(const char * s, size_t startpos, size_t ct) {
    if (startpos + ct > strlen(s))
       ct = strlen(s) - startpos;
    char * result = calloc(ct+1, sizeof(char));
@@ -341,6 +338,7 @@ char * substr(const char * s, uint startpos, uint ct) {
    return result;
 }
 
+
 /** Returns the initial portion of a string
  *
  * @param s         string to process
@@ -348,7 +346,7 @@ char * substr(const char * s, uint startpos, uint ct) {
  *                  the string length, ct is reduced accordingly
  * @return extracted substring, in newly allocated memory
  */
-char * lsub(const char * s, int ct) {
+char * lsub(const char * s, size_t ct) {
    return substr(s, 0, ct);
 }
 
