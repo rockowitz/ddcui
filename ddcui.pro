@@ -82,8 +82,6 @@ SOURCES+= \
     src/core_widgets/number_entry_widget.cpp \
     src/core_widgets/spin_slider.cpp
 
-    #   src/base/vertical_scroll_area.cpp \
-
 SOURCES += \
     src/nongui/ddc_error.cpp \
     src/nongui/ddca_simulator.cpp \
