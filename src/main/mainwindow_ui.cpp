@@ -81,7 +81,7 @@ void Ui_MainWindow::initActions(QMainWindow * MainWindow)
     actionUserInterfaceOptionsDialog = new QAction(MainWindow);
     actionUserInterfaceOptionsDialog->setObjectName(QString::fromUtf8("actionUserInterfaceOptionsDialog"));
     actionUserInterfaceOptionsDialog->setText(
-          QApplication::translate("MainWindow", "&User Interface Options...",   nullptr, -1));
+          QApplication::translate("MainWindow", "&User Interface...",   nullptr, -1));
     actionUserInterfaceOptionsDialog->setFont(mainMenuFont);
 
     actionDebugActionsDialog = new QAction(MainWindow);
