@@ -46,7 +46,7 @@ OtherOptionsDialog::OtherOptionsDialog(OtherOptionsState * state, QWidget *paren
     // _state = state;
     ui->setupUi(this);
 
-    setWindowTitle("NC Feature Values");
+    setWindowTitle("ddcui - NC Feature Values");
     setUiSource(state->_ncValuesSource);
     setUseLatestNcValueNames(state->_useLatestNcValues);
 }

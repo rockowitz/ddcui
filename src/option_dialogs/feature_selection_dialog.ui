@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Feature Selection</string>
+   <string>ddcui - Feature Selection</string>
   </property>
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
