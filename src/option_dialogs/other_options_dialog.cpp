@@ -45,6 +45,8 @@ OtherOptionsDialog::OtherOptionsDialog(OtherOptionsState * state, QWidget *paren
 {
     // _state = state;
     ui->setupUi(this);
+    // this->setContextMenuPolicy(Qt::PreventContextMenu);
+    setWindowFlag(Qt::WindowContextHelpButtonHint, false);
 
     setWindowTitle("ddcui - NC Feature Values");
     setUiSource(state->_ncValuesSource);

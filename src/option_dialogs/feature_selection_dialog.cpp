@@ -181,6 +181,21 @@ FeatureSelectionDialog::FeatureSelectionDialog(
 {
     // TRACE("_ui=%p, _featureSelector = %p\n", _ui, _featureSelector);
     _ui->setupUi(this);
+    setWindowFlag(Qt::WindowContextHelpButtonHint, false);
+#ifdef NO
+    this->setContextMenuPolicy(Qt::PreventContextMenu);
+
+    Qt::WindowFlags flags = windowFlags();
+    flags &= ~Qt::WindowContextHelpButtonHint;
+    flags &= ~Qt::WindowMaximizeButtonHint;
+    flags &= ~Qt::WindowMinMaxButtonsHint;
+    flags |= Qt::CustomizeWindowHint;
+    // = Qt::Dialog |
+    //       Qt::CustomizeWindowHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+    //       Qt::WindowCloseButtonHint;
+
+    setWindowFlags(flags);
+#endif
 
     QObject::connect(_ui->known_radioButton, &QAbstractButton::clicked,
                      this, &FeatureSelectionDialog::on_known_radioButton_clicked);

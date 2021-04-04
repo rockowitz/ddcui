@@ -24,6 +24,10 @@ DebugActionsDialog::DebugActionsDialog(QWidget *parent)
     TRACECF(debug, "Constructor starting");
     _ui->setupUi(this);
     setWindowTitle("ddcui - Debugging Actions");
+    //  setWindowFlag(Qt::CustomizeWindowHint, true);      // not needed
+    setWindowFlag(Qt::WindowContextHelpButtonHint, false);
+    // setWindowFlag(Qt::WindowMinimizeButtonHint, false);   // no effect
+    // setWindowFlag(Qt::WindowMinMaxButtonsHint, false);    // no effect
     QPushButton* okButton = _ui->actionButtonBox->button(QDialogButtonBox::Ok);
     okButton->setText("Close");
 

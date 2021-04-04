@@ -23,7 +23,7 @@ class FeatureSelectionDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit FeatureSelectionDialog(QWidget *parent, FeatureSelector* featureSelector);
+    explicit FeatureSelectionDialog(QWidget *parent,FeatureSelector* featureSelector);
     ~FeatureSelectionDialog();
 
     void useSelectorData(FeatureSelector * fsel);

@@ -14,6 +14,7 @@
 void HelpDialog::createWidgets() {
    _textBrowser = new QTextBrowser;
    _textBrowser->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+   _textBrowser->setContextMenuPolicy(Qt::PreventContextMenu);
    _buttons = new QDialogButtonBox(QDialogButtonBox::Ok);
 }
 

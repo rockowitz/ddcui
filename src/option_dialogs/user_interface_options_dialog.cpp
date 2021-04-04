@@ -35,6 +35,8 @@ UserInterfaceOptionsDialog::UserInterfaceOptionsDialog(
     TRACECF(debug, "Constructor starting");
     // _state = state;
     _ui->setupUi(this);
+    setWindowFlag(Qt::WindowContextHelpButtonHint, false);
+    // setWindowFlag(Qt::WindowMaximizeButtonHint, false);  // no effect
 
     setWindowTitle("ddcui - User Interface Options");
     // setUSource(state->ncValuesSource);
