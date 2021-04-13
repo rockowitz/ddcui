@@ -27,6 +27,155 @@ extern "C" {
 // #include <ui_main.h>
 #include "main/mainwindow.h"
 
+
+/* See: https://www.qt.io/blog/2016/01/26/high-dpi-support-in-qt-5-6
+ */
+
+
+
+void debugScreenEnvironment() {
+   QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+   QStringList varnames = {
+              "QT_AUTO_SCREEN_SCALE_FACTOR",
+              "QT_SCALE_FACTOR",
+              "QT_SCREEN_SCALE_FACTORS",
+              "QT_ENABLE_HIGHDPI_SCALING",
+              "QT_DEVICE_PIXEL_RATIO"                    // introduced 5.4, deprecated 5.6
+   };
+   for (int ndx = 0; ndx < varnames.size(); ndx++) {
+      QString curvar= varnames.at(ndx);
+      QString curval = env.value(curvar, "not set");
+      printf("%s = %s\n", QS2S(curvar), QS2S(curval));
+   }
+}
+
+const int TitleColumnSize = 25;
+
+void rpt_qstring(QString name, QString val) {
+   printf("    %-*s: %s\n", TitleColumnSize, QS2S(name), QS2S(val));
+}
+
+void rpt_qsizef(QString name, QSizeF val) {
+   qreal h = val.height();
+   qreal w = val.width();
+   printf("    %-*s: w = %f, h=%f\n", TitleColumnSize, QS2S(name), w, h);
+}
+
+void rpt_qreal(QString name, qreal val) {
+   printf("    %-*s: %f\n", TitleColumnSize, QS2S(name), val);
+}
+
+void rpt_int(QString name, int val) {
+   printf("    %-*s: %d\n", TitleColumnSize, QS2S(name), val);
+}
+
+void rpt_rect(QString name, QRect val) {
+   int h = val.height();
+   int w = val.width();
+   int l = val.left();
+   int r = val.right();
+   printf("    %-*s: w = %d, h=%d, l=%d, r=%d\n", TitleColumnSize, QS2S(name), w, h, l, r);
+}
+
+void rpt_size(QString name, QSize val) {
+   int h = val.height();
+   int w = val.width();
+   printf("    %-*s: w = %d, h=%d\n", TitleColumnSize, QS2S(name), w, h);
+}
+
+
+
+void debugScreen(QScreen * screen) {
+   QString s = screen->name();     // on X11, XRandr screen names
+   rpt_qstring("name", s);
+
+#if QT_VERSION >= QT_VERSION_CHECK(5,9,0)
+   s = screen->manufacturer(); // 5.9
+   rpt_qstring("manufacturer", s);
+   s = screen->model();  // 5.9
+   rpt_qstring("model", s);
+   s = screen->serialNumber();   // 5.9
+   rpt_qstring("serialNumber", s);
+#endif
+
+   QSizeF sizef = screen->physicalSize();
+   rpt_qsizef("physicalSize", sizef);
+
+   QRect rect = screen->geometry();
+   rect = screen->availableGeometry();
+   rpt_rect("geometry", rect);
+   rect = screen->availableVirtualGeometry();
+   rpt_rect("availableVirtualGeometry", rect);
+   rect = screen->virtualGeometry();
+   rpt_rect("virtualGeometry", rect);
+
+   QSize size = screen->size();
+   size = screen->availableSize();
+   size = screen->availableVirtualSize();
+   size = screen->virtualSize();
+
+
+   qreal r = screen->devicePixelRatio();
+   rpt_qreal("devicePixelRatio", r);
+
+/* From https://github.com/owncloud/client/issues/5000:
+    You can't rely on screen DPI there are a huge bunch of samsung monitors that
+    get mm and inches swapped so the auto DPI is huge. I do the Plasma High DPI
+    and we don't use this because the feedback we got is that it simply doesn't
+    work. Also it messes with Plasma which manually sets the scale factor based
+    on the user's settings.
+
+    There is an alternate method to acheive the same result for you.
+    qApp->setAttribute(Qt::AA_EnableHighDpiScaling, true);
+
+    This will act the same as:
+        qputenv("QT_AUTO_SCREEN_SCALE_FACTOR", "1");
+    if and only if no other env vars are set.
+*/
+   r = screen->logicalDotsPerInch();   // average of logicalDotsPerInchX, logicalDotsPerInchY
+   rpt_qreal("logicalDotsPerInch", r);
+   r = screen->logicalDotsPerInchX();
+   rpt_qreal("logicalDotsPerInchX", r);
+   r = screen->logicalDotsPerInchY();
+   rpt_qreal("logicalDotsPerInchY", r);
+
+   r = screen->physicalDotsPerInch();   //average of X, Y
+   rpt_qreal("physicalDotsPerInch", r);
+   r = screen->physicalDotsPerInchX();
+   rpt_qreal("physicalDotsPerInchX", r);
+   r = screen->physicalDotsPerInchY();
+   rpt_qreal("physicalDotsPerInchY", r);
+
+   int i = screen->depth();   // color depth
+   rpt_int("depth", i);
+}
+
+
+
+
+void debugApplication(QApplication& coreapp) {
+   bool b = coreapp.testAttribute(Qt::AA_Use96Dpi);
+   printf("AA_Use96Dpi:    %s\n", SBOOL(b));
+   b = coreapp.testAttribute(Qt::AA_EnableHighDpiScaling);
+   printf("AA_EnableHighDPIscaling:    %s\n", SBOOL(b));
+   b = coreapp.testAttribute(Qt::AA_DisableHighDpiScaling);
+   printf("AA_DisableHighDPIscaling:    %s\n", SBOOL(b));
+
+   QScreen * primaryScreen = coreapp.primaryScreen();
+   // n. will want to use slot primaryScreenChanged(QScreen * screen);
+   QString name = primaryScreen->name();
+   printf("primaryScreen: %s\n", QS2S(name));
+
+   const auto screens = coreapp.screens();
+
+   for (int ndx = 0; ndx < screens.count(); ndx++) {
+      printf("Screen %d:\n", ndx);
+      debugScreen(screens[ndx]);
+   }
+}
+
+
+
 static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
    // printf("(%s) Starting\n", __func__);
 
@@ -108,6 +257,7 @@ int main(int argc, char *argv[])
 
     if (debug)
        printf("(%s) Starting\n", __func__);
+
     // will remove any arguments that it recognizes, e.g. --widgetcount
     QApplication a(argc, argv);
     a.setWindowIcon(QIcon(":/icons/ddcui_multires.ico"));
@@ -172,6 +322,11 @@ int main(int argc, char *argv[])
 
     if (!init_ddcutil_library(parsed_cmd))
        return 1;
+
+    if (parsed_cmd->flags & CMD_FLAG_HIDPI) {
+       debugScreenEnvironment();
+       debugApplication(a);
+    }
 
     GlobalState & globalState = GlobalState::instance();
     init_core();
