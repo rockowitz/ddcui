@@ -6,12 +6,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QPlainTextEdit>
-#include <QtWidgets/QStackedWidget>
-#include <QtWidgets/QTableView>
-#include <QtWidgets/QMessageBox>
 #include <QtWidgets/QtWidgets>
 
 #include <ddcutil_types.h>
