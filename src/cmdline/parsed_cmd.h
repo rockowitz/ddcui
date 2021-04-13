@@ -1,6 +1,6 @@
 /** \file parsed_cmd.h - parsed ddcui command line */
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef PARSED_CMD_H_
@@ -76,6 +76,8 @@ typedef enum {
    CMD_FLAG_F4                   = 0x08000000,
    CMD_FLAG_F5                   = 0x10000000,
    CMD_FLAG_F6                   = 0x20000000,
+
+   CMD_FLAG_HIDPI                = 0x40000000,
 
 } Parsed_Cmd_Flags;
 

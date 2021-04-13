@@ -2,7 +2,7 @@
  * ddcui command line parser
  */
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <config.h>
@@ -14,6 +14,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <QtCore/qglobal.h>
+#include <QtCore/qconfig.h>
+
+#include <ddcutil_macros.h>
 #include <ddcutil_types.h>
 #include <ddcutil_c_api.h>
 
@@ -109,6 +113,7 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    gboolean less_sleep_false_set    = false;
    gboolean force_latest_nc_value_names_true_set = false;
 // gboolean force_latest_nc_value_names_false_set = false;
+   gboolean hidpi_flag              = false;   //currently used only for testing
    gchar**  cmd_and_args            = NULL;
    gchar**  trace_classes           = NULL;
    gchar**  trace_filenames         = NULL;
@@ -174,6 +179,8 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
       {"thread-id",'\0',   0, G_OPTION_ARG_NONE,   &thread_id_trace_flag, "Prepend trace msgs with thread id",     NULL},
       {"tid",      '\0',   0, G_OPTION_ARG_NONE,   &thread_id_trace_flag, "Prepend trace msgs with thread id",     NULL},
 
+   // Options dialog
+      {"hidpi",    '\0',   0, G_OPTION_ARG_NONE,  &hidpi_flag,            "Test hidpi code", NULL},
 #ifdef DISABLE_VIEW_OPTION
       {"view",     '\0',   0, G_OPTION_ARG_STRING,   &view_work,            "Initial view",             "Summary|Capabilities|Features"},
 #endif
@@ -223,8 +230,6 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
       {"f4",      '\0', 0,  G_OPTION_ARG_NONE,     &f4_flag,         "Special flag 4",    NULL},
       {"f5",      '\0', 0,  G_OPTION_ARG_NONE,     &f5_flag,         "Special flag 5",    NULL},
       {"f6",      '\0', 0,  G_OPTION_ARG_NONE,     &f6_flag,         "Special flag 6",    NULL},
-
-
 
 // Debug parser
       {"debug-parse", '\0', 0, G_OPTION_ARG_NONE,    &debug_parse,           "Show parse result",        NULL},
@@ -303,6 +308,8 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    SET_CMDFLAG(CMD_FLAG_F4,                f4_flag);
    SET_CMDFLAG(CMD_FLAG_F5,                f5_flag);
    SET_CMDFLAG(CMD_FLAG_F6,                f6_flag);
+
+   SET_CMDFLAG(CMD_FLAG_HIDPI,             hidpi_flag);
 
 #undef SET_CMDFLAG
 
@@ -546,14 +553,15 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
       }
 
    if (version_flag) {
-      printf("ddcui %s\n", DDCUI_VERSION);
-      puts("");
-      // if no command specified, include license in version information and terminate
-      puts("Copyright (C) 2018-2020 Sanford Rockowitz");
+      printf("ddcui %s\n\n", DDCUI_VERSION);
+      printf("Built using libddcutil version %d.%d.%d, Qt version %s\n",
+             DDCUTIL_VMAJOR, DDCUTIL_VMINOR, DDCUTIL_VMICRO, QT_VERSION_STR);
+      printf("Executing using libddcutil %s, Qt %s\n\n",
+             ddca_ddcutil_version_string(), qVersion());
+      puts("Copyright (C) 2018-2021 Sanford Rockowitz");
       puts("License GPLv2: GNU GPL version 2 or later <http://gnu.org/licenses/gpl.html>");
       puts("This is free software: you are free to change and redistribute it.");
       puts("There is NO WARRANTY, to the extent permitted by law.");
-
       exit(0);
    }
 
