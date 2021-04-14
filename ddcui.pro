@@ -55,6 +55,7 @@ SOURCES += \
      src/c_util/ddcutil_config_file.c \
      src/c_util/file_util_base.c \
      src/c_util/glib_util.c \
+     src/c_util/report_util.c \
      src/c_util/simple_ini_file.c \
      src/c_util/string_util.c \
      src/c_util/xdg_util.c
@@ -143,6 +144,7 @@ HEADERS += \
     src/c_util/ddcutil_config_file.h \
     src/c_util/file_util_base.h \
     src/c_util/glib_util.h \
+    src/c_util/report_util.h \
     src/c_util/simple_ini_file.h \
     src/c_util/string_util.h \
     src/c_util/xdg_util.h
