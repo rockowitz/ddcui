@@ -32,7 +32,7 @@ extern "C" {
  */
 
 
-void dbgrptHidpiEnvironmentVars() {
+void dbgrpt_hidpi_environment_vars() {
    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
    QStringList varnames = {
               "QT_AUTO_SCREEN_SCALE_FACTOR",
@@ -149,7 +149,7 @@ void dbgrptQScreen(QScreen * screen) {
 }
 
 
-void dbgrptHidpiQApplication(QApplication& coreapp) {
+void dbgrpt_hidpiQApplication(QApplication& coreapp) {
    bool b = coreapp.testAttribute(Qt::AA_Use96Dpi);
    printf("AA_Use96Dpi:    %s\n", SBOOL(b));
    b = coreapp.testAttribute(Qt::AA_EnableHighDpiScaling);
@@ -253,13 +253,13 @@ int main(int argc, char *argv[])
     if (debug)
        printf("(%s) Starting\n", __func__);
 
-    dbgrptHidpiEnvironmentVars();
+    dbgrpt_hidpi_environment_vars();
 
     // will remove any arguments that it recognizes, e.g. --widgetcount
     QApplication a(argc, argv);
     a.setWindowIcon(QIcon(":/icons/ddcui_multires.ico"));
 
-    dbgrptHidpiQApplication(a);
+    dbgrpt_hidpiQApplication(a);
 
     GPtrArray * errmsgs = g_ptr_array_new_with_free_func(free);
     char ** new_argv = NULL;
