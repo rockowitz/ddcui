@@ -32,8 +32,7 @@ extern "C" {
  */
 
 
-
-void debugScreenEnvironment() {
+void dbgrptHidpiEnvironmentVars() {
    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
    QStringList varnames = {
               "QT_AUTO_SCREEN_SCALE_FACTOR",
@@ -49,27 +48,28 @@ void debugScreenEnvironment() {
    }
 }
 
+
 const int TitleColumnSize = 25;
 
-void rpt_qstring(QString name, QString val) {
+void qrpt_Qstring(QString name, QString val) {
    printf("    %-*s: %s\n", TitleColumnSize, QS2S(name), QS2S(val));
 }
 
-void rpt_qsizef(QString name, QSizeF val) {
+void qrpt_QSizef(QString name, QSizeF val) {
    qreal h = val.height();
    qreal w = val.width();
    printf("    %-*s: w = %f, h=%f\n", TitleColumnSize, QS2S(name), w, h);
 }
 
-void rpt_qreal(QString name, qreal val) {
+void qrpt_qreal(QString name, qreal val) {
    printf("    %-*s: %f\n", TitleColumnSize, QS2S(name), val);
 }
 
-void rpt_int(QString name, int val) {
+void qrpt_int(QString name, int val) {
    printf("    %-*s: %d\n", TitleColumnSize, QS2S(name), val);
 }
 
-void rpt_rect(QString name, QRect val) {
+void qrpt_QRect(QString name, QRect val) {
    int h = val.height();
    int w = val.width();
    int l = val.left();
@@ -77,37 +77,35 @@ void rpt_rect(QString name, QRect val) {
    printf("    %-*s: w = %d, h=%d, l=%d, r=%d\n", TitleColumnSize, QS2S(name), w, h, l, r);
 }
 
-void rpt_size(QString name, QSize val) {
+void qrpt_QSize(QString name, QSize val) {
    int h = val.height();
    int w = val.width();
    printf("    %-*s: w = %d, h=%d\n", TitleColumnSize, QS2S(name), w, h);
 }
 
-
-
-void debugScreen(QScreen * screen) {
+void dbgrptQScreen(QScreen * screen) {
    QString s = screen->name();     // on X11, XRandr screen names
-   rpt_qstring("name", s);
+   qrpt_Qstring("name", s);
 
 #if QT_VERSION >= QT_VERSION_CHECK(5,9,0)
    s = screen->manufacturer(); // 5.9
-   rpt_qstring("manufacturer", s);
+   qrpt_Qstring("manufacturer", s);
    s = screen->model();  // 5.9
-   rpt_qstring("model", s);
+   qrpt_Qstring("model", s);
    s = screen->serialNumber();   // 5.9
-   rpt_qstring("serialNumber", s);
+   qrpt_Qstring("serialNumber", s);
 #endif
 
    QSizeF sizef = screen->physicalSize();
-   rpt_qsizef("physicalSize", sizef);
+   qrpt_QSizef("physicalSize", sizef);
 
    QRect rect = screen->geometry();
    rect = screen->availableGeometry();
-   rpt_rect("geometry", rect);
+   qrpt_QRect("geometry", rect);
    rect = screen->availableVirtualGeometry();
-   rpt_rect("availableVirtualGeometry", rect);
+   qrpt_QRect("availableVirtualGeometry", rect);
    rect = screen->virtualGeometry();
-   rpt_rect("virtualGeometry", rect);
+   qrpt_QRect("virtualGeometry", rect);
 
    QSize size = screen->size();
    size = screen->availableSize();
@@ -116,7 +114,7 @@ void debugScreen(QScreen * screen) {
 
 
    qreal r = screen->devicePixelRatio();
-   rpt_qreal("devicePixelRatio", r);
+   qrpt_qreal("devicePixelRatio", r);
 
 /* From https://github.com/owncloud/client/issues/5000:
     You can't rely on screen DPI there are a huge bunch of samsung monitors that
@@ -133,27 +131,25 @@ void debugScreen(QScreen * screen) {
     if and only if no other env vars are set.
 */
    r = screen->logicalDotsPerInch();   // average of logicalDotsPerInchX, logicalDotsPerInchY
-   rpt_qreal("logicalDotsPerInch", r);
+   qrpt_qreal("logicalDotsPerInch", r);
    r = screen->logicalDotsPerInchX();
-   rpt_qreal("logicalDotsPerInchX", r);
+   qrpt_qreal("logicalDotsPerInchX", r);
    r = screen->logicalDotsPerInchY();
-   rpt_qreal("logicalDotsPerInchY", r);
+   qrpt_qreal("logicalDotsPerInchY", r);
 
    r = screen->physicalDotsPerInch();   //average of X, Y
-   rpt_qreal("physicalDotsPerInch", r);
+   qrpt_qreal("physicalDotsPerInch", r);
    r = screen->physicalDotsPerInchX();
-   rpt_qreal("physicalDotsPerInchX", r);
+   qrpt_qreal("physicalDotsPerInchX", r);
    r = screen->physicalDotsPerInchY();
-   rpt_qreal("physicalDotsPerInchY", r);
+   qrpt_qreal("physicalDotsPerInchY", r);
 
    int i = screen->depth();   // color depth
-   rpt_int("depth", i);
+   qrpt_int("depth", i);
 }
 
 
-
-
-void debugApplication(QApplication& coreapp) {
+void dbgrptHidpiQApplication(QApplication& coreapp) {
    bool b = coreapp.testAttribute(Qt::AA_Use96Dpi);
    printf("AA_Use96Dpi:    %s\n", SBOOL(b));
    b = coreapp.testAttribute(Qt::AA_EnableHighDpiScaling);
@@ -170,10 +166,9 @@ void debugApplication(QApplication& coreapp) {
 
    for (int ndx = 0; ndx < screens.count(); ndx++) {
       printf("Screen %d:\n", ndx);
-      debugScreen(screens[ndx]);
+      dbgrptQScreen(screens[ndx]);
    }
 }
-
 
 
 static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
@@ -258,9 +253,13 @@ int main(int argc, char *argv[])
     if (debug)
        printf("(%s) Starting\n", __func__);
 
+    dbgrptHidpiEnvironmentVars();
+
     // will remove any arguments that it recognizes, e.g. --widgetcount
     QApplication a(argc, argv);
     a.setWindowIcon(QIcon(":/icons/ddcui_multires.ico"));
+
+    dbgrptHidpiQApplication(a);
 
     GPtrArray * errmsgs = g_ptr_array_new_with_free_func(free);
     char ** new_argv = NULL;
@@ -322,11 +321,6 @@ int main(int argc, char *argv[])
 
     if (!init_ddcutil_library(parsed_cmd))
        return 1;
-
-    if (parsed_cmd->flags & CMD_FLAG_HIDPI) {
-       debugScreenEnvironment();
-       debugApplication(a);
-    }
 
     GlobalState & globalState = GlobalState::instance();
     init_core();
