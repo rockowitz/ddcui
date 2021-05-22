@@ -162,11 +162,13 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
       {"stats",   's',  G_OPTION_FLAG_OPTIONAL_ARG,
                               G_OPTION_ARG_CALLBACK, stats_arg_func,    "Show performance statistics",  "stats type"},
 
+#ifdef DISABLED
       {"sleep-multiplier", '\0', 0,
                               G_OPTION_ARG_STRING,   &sleep_multiplier_work, "Multiplication factor for DDC sleeps", "number"},
       {"less-sleep" ,'\0', 0, G_OPTION_ARG_NONE, &less_sleep_true_set, "Eliminate some sleeps",  NULL},
       {"sleep-less" ,'\0', 0, G_OPTION_ARG_NONE, &less_sleep_true_set, "Eliminate some sleeps",  NULL},
       {"no-sleep-less", '\0', 0, G_OPTION_ARG_NONE, &less_sleep_false_set, "Do not eliminate some sleeps", NULL},
+#endif
 
   // debugging
       {"excp",     '\0',   0, G_OPTION_ARG_NONE,     &report_freed_excp_flag,  "Report freed exceptions", NULL},
