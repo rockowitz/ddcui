@@ -99,8 +99,8 @@ int read_ddcutil_config_file(
    if (debug)
       fprintf(stderr, "ini_file_load() returned %d\n", load_rc);
    if (verbose) {
-      fprintf(stderr, "(A) Error(s) processing configuration file: %s\n", config_fn);
       if (errmsgs && errmsgs->len > 0) {
+         fprintf(stderr, "Error(s) processing configuration file: %s\n", config_fn);
          for (guint ndx = 0; ndx < errmsgs->len; ndx++) {
             fprintf(stderr, "   %s\n", (char*) g_ptr_array_index(errmsgs, ndx));
          }
@@ -114,9 +114,8 @@ int read_ddcutil_config_file(
       char * global_options  = ini_file_get_value(ini_file, "global",  "options");
       char * ddcutil_options = ini_file_get_value(ini_file, ddcutil_application, "options");
 
-      char * s =
-                g_strdup_printf("%s %s", (global_options)  ? global_options  : "",
-                                         (ddcutil_options) ? ddcutil_options : "");
+      char * s = g_strdup_printf("%s %s", (global_options)  ? global_options  : "",
+                                          (ddcutil_options) ? ddcutil_options : "");
       char * combined_options = strtrim(s);
       free(s);
 
@@ -132,7 +131,8 @@ int read_ddcutil_config_file(
 bye:
    ASSERT_IFF(result==0, *untokenized_option_string_loc);
    if (debug)  {
-      printf("(%s) Done. untokenized options: |%s|, *config_fn_loc=%s, returning: %d\n",
+      // check for null to avoid -Wstringop-overflow
+      printf("(%s) Done.     untokenized options: |%s|, *config_fn_loc=%s, returning: %d\n",
              __func__,
              (*untokenized_option_string_loc) ? *untokenized_option_string_loc : "(null)",
              (*config_fn_loc)                 ? *config_fn_loc :                 "(null)",
@@ -271,7 +271,7 @@ int apply_config_file(
    }
 
    if (debug) {
-       printf("(%s) Done. *new_argc_loc=%d, *new_argv_loc=%p, returning %d\n",
+       printf("(%s) Done.     *new_argc_loc=%d, *new_argv_loc=%p, returning %d\n",
                     __func__, *new_argc_loc, *new_argv_loc, result);
        printf("(%s) tokens:\n", __func__);
        ntsa_show(*new_argv_loc);
