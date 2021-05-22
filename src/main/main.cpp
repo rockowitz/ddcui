@@ -249,17 +249,16 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
 int main(int argc, char *argv[])
 {
     bool debug = false;
-
     if (debug)
        printf("(%s) Starting\n", __func__);
 
-    dbgrpt_hidpi_environment_vars();
+    // dbgrpt_hidpi_environment_vars();
 
     // will remove any arguments that it recognizes, e.g. --widgetcount
     QApplication a(argc, argv);
     a.setWindowIcon(QIcon(":/icons/ddcui_multires.ico"));
 
-    dbgrpt_hidpiQApplication(a);
+    // dbgrpt_hidpiQApplication(a);
 
     GPtrArray * errmsgs = g_ptr_array_new_with_free_func(free);
     char ** new_argv = NULL;
