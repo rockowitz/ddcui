@@ -111,8 +111,8 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    gboolean show_active_style_flag  = false;
    gboolean less_sleep_true_set     = false;
    gboolean less_sleep_false_set    = false;
-   gboolean force_latest_nc_value_names_true_set = false;
-// gboolean force_latest_nc_value_names_false_set = false;
+   gboolean use_latest_nc_values_true_set = false;
+// gboolean use_latest_nc_values_false_set = false;
    gboolean hidpi_flag              = false;   //currently used only for testing
    gchar**  cmd_and_args            = NULL;
    gchar**  trace_classes           = NULL;
@@ -194,8 +194,8 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
       {"feature-set",
                    '\0',   0, G_OPTION_ARG_STRING,   &feature_set_work,  "Feature set selection",
                                                                                    "MMCS|Capabilities|Manufacturer|Color|Scan"},
-     {"force-latest-nc-value-names",
-                   '\0',   0, G_OPTION_ARG_NONE,     &force_latest_nc_value_names_true_set, "Use NC value names from greatest VCP", NULL},
+     {"use-latest-nc-values",
+                   '\0',   0, G_OPTION_ARG_NONE,     &use_latest_nc_values_true_set, "Use NC values from the latest MCCS version", NULL},
 
      {"custom-feature-set",
                   '\0',   0, G_OPTION_ARG_STRING,   &custom_feature_set_work, "User feature set definition",
@@ -302,7 +302,7 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
 
    SET_CMDFLAG(CMD_FLAG_UI_REQUIRE_CONTROL_KEY, control_key_required);
    SET_CMDFLAG(CMD_FLAG_SHOW_UNSUPPORTED,       show_unsupported_features);
-   SET_CMDFLAG(CMD_FLAG_LATEST_NC_VALUE_NAMES,  force_latest_nc_value_names_true_set);   // n. not handling case where default is true
+   SET_CMDFLAG(CMD_FLAG_LATEST_NC_VALUE_NAMES,  use_latest_nc_values_true_set);   // n. not handling case where default is true
 
    SET_CMDFLAG(CMD_FLAG_F1,                f1_flag);
    SET_CMDFLAG(CMD_FLAG_F2,                f2_flag);
