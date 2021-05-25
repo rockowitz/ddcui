@@ -211,9 +211,7 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
       //       ( (parsed_cmd->flags & CMD_FLAG_THREAD_ID_TRACE) ?  DDCA_TRCOPT_THREAD_ID : 0)
       //      );
 
-
-
-   ddca_set_trace_groups(parsed_cmd->traced_groups);
+   ddca_add_trace_groups(parsed_cmd->traced_groups);
 
    // Must be called before any API call that triggers display identification
    // DDCA_Status rc =  // unused, comment out for now, need to properly set
