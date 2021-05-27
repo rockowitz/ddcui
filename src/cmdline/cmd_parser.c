@@ -148,28 +148,41 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    gboolean f5_flag        = false;
    gboolean f6_flag        = false;
 
-   GOptionEntry option_entries[] = {
+
+   // signature GOptionParseFunc()
+   gboolean pre_parse_hook(
+         GOptionContext * context,
+         GOptionGroup * group,
+         gpointer data,
+         GError** error)
+   {
+      // printf("(%s) data = %d\n", __func__, GPOINTER_TO_INT(data));
+   }
+
+   gboolean post_parse_hook(
+         GOptionContext * context,
+         GOptionGroup * group,
+         gpointer data,
+         GError** error)
+   {
+     //  printf("(%s) data = %d\n", __func__, GPOINTER_TO_INT(data));
+   }
+
+
+   GOptionEntry public_option_entries[] = {
    //  long_name short flags option-type          gpointer           description                    arg description
    //  monitor selection options
 
    // output control
-      {"ddc",     '\0', 0,    G_OPTION_ARG_NONE,     &ddc_flag,         "Report DDC protocol and data errors", NULL},
+
 #ifdef DISABLED_LIBDDCUTIL_ONLY
       {"udf",     '\0', 0,    G_OPTION_ARG_NONE,     &enable_udf_flag,  "Enable user defined feature support", NULL},
       {"noudf",   '\0', G_OPTION_FLAG_REVERSE,
                               G_OPTION_ARG_NONE,     &enable_udf_flag,  "Disable user defined feature support", NULL},
       {"nousb",  '\0',  0,    G_OPTION_ARG_NONE,     &nousb_flag,       "Do not detect USB devices", NULL},
-#endif
 
       // library tuning
-#ifdef DISABLED_LIBDDCUTIL_ONLY
       {"maxtries",'\0', 0,    G_OPTION_ARG_STRING,   &maxtrywork,       "Max try adjustment",  "comma separated list" },
-#endif
-
-      {"stats",   's',  G_OPTION_FLAG_OPTIONAL_ARG,
-                              G_OPTION_ARG_CALLBACK, stats_arg_func,    "Show performance statistics",  "stats type"},
-
-#ifdef DISABLED_LIBDDCUTIL_ONLY
       {"sleep-multiplier", '\0', 0,
                               G_OPTION_ARG_STRING,   &sleep_multiplier_work, "Multiplication factor for DDC sleeps", "number"},
       {"less-sleep" ,'\0', 0, G_OPTION_ARG_NONE, &less_sleep_true_set, "Eliminate some sleeps",  NULL},
@@ -177,19 +190,9 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
       {"no-sleep-less", '\0', 0, G_OPTION_ARG_NONE, &less_sleep_false_set, "Do not eliminate some sleeps", NULL},
 #endif
 
-  // debugging
-      {"excp",     '\0',   0, G_OPTION_ARG_NONE,     &report_freed_excp_flag,  "Report freed exceptions", NULL},
-      {"trace",    '\0',   0, G_OPTION_ARG_STRING_ARRAY, &trace_classes, "Trace classes",         "trace class name" },
-  //  {"trace",    '\0',   0, G_OPTION_ARG_STRING,   &tracework,        "Trace classes",          "comma separated list" },
-      {"trcfunc",  '\0',   0, G_OPTION_ARG_STRING_ARRAY, &trace_functions, "Trace functions",     "function name" },
-      {"trcfile",  '\0',   0, G_OPTION_ARG_STRING_ARRAY, &trace_filenames,    "Trace files",     "file name" },
-      {"timestamp",'\0',   0, G_OPTION_ARG_NONE,   &timestamp_trace_flag, "Prepend trace msgs with elapsed time",  NULL},
-      {"ts",       '\0',   0, G_OPTION_ARG_NONE,   &timestamp_trace_flag, "Prepend trace msgs with elapsed time",  NULL},
-      {"thread-id",'\0',   0, G_OPTION_ARG_NONE,   &thread_id_trace_flag, "Prepend trace msgs with thread id",     NULL},
-      {"tid",      '\0',   0, G_OPTION_ARG_NONE,   &thread_id_trace_flag, "Prepend trace msgs with thread id",     NULL},
 
    // Options dialog
-      {"hidpi",    '\0',   0, G_OPTION_ARG_NONE,  &hidpi_flag,            "Test hidpi code", NULL},
+
 #ifdef DISABLE_VIEW_OPTION
       {"view",     '\0',   0, G_OPTION_ARG_STRING,   &view_work,            "Initial view",             "Summary|Capabilities|Features"},
 #endif
@@ -226,6 +229,24 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
       {"styles",   '\0',   0, G_OPTION_ARG_NONE,     &show_styles_flag,     "List known styles",        NULL},
       {"show-style", '\0', 0, G_OPTION_ARG_NONE,     &show_active_style_flag, "Show active style",      NULL},
       {"version",  'V',    0, G_OPTION_ARG_NONE,     &version_flag,         "Show version information", NULL},
+      { NULL }
+   };
+
+   GOptionEntry development_options[] = {
+      {"stats",   's',  G_OPTION_FLAG_OPTIONAL_ARG,
+                              G_OPTION_ARG_CALLBACK, stats_arg_func,    "Show performance statistics",  "stats type"},
+      {"hidpi",    '\0',   0, G_OPTION_ARG_NONE,  &hidpi_flag,            "Test hidpi code", NULL},
+      {"ddc",     '\0', 0,    G_OPTION_ARG_NONE,     &ddc_flag,         "Report DDC protocol and data errors", NULL},
+      // debugging
+      {"excp",     '\0',   0, G_OPTION_ARG_NONE,     &report_freed_excp_flag,  "Report freed exceptions", NULL},
+      {"trace",    '\0',   0, G_OPTION_ARG_STRING_ARRAY, &trace_classes, "Trace classes",         "trace class name" },
+  //  {"trace",    '\0',   0, G_OPTION_ARG_STRING,   &tracework,        "Trace classes",          "comma separated list" },
+      {"trcfunc",  '\0',   0, G_OPTION_ARG_STRING_ARRAY, &trace_functions, "Trace functions",     "function name" },
+      {"trcfile",  '\0',   0, G_OPTION_ARG_STRING_ARRAY, &trace_filenames,    "Trace files",     "file name" },
+      {"timestamp",'\0',   0, G_OPTION_ARG_NONE,   &timestamp_trace_flag, "Prepend trace msgs with elapsed time",  NULL},
+      {"ts",       '\0',   0, G_OPTION_ARG_NONE,   &timestamp_trace_flag, "Prepend trace msgs with elapsed time",  NULL},
+      {"thread-id",'\0',   0, G_OPTION_ARG_NONE,   &thread_id_trace_flag, "Prepend trace msgs with thread id",     NULL},
+      {"tid",      '\0',   0, G_OPTION_ARG_NONE,   &thread_id_trace_flag, "Prepend trace msgs with thread id",     NULL},
 
 // Undocumented library flag options
       {"f1",      '\0', 0,  G_OPTION_ARG_NONE,     &f1_flag,         "Special flag 1",    NULL},
@@ -238,16 +259,30 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
 // Debug parser
       {"debug-parse", '\0', 0, G_OPTION_ARG_NONE,    &debug_parse,           "Show parse result",        NULL},
       {"parse-only",  '\0', 0, G_OPTION_ARG_NONE,    &parse_only,            "Exit after parsing",       NULL},
-      // collect to verify that does not exist
+      { NULL }
+   };
+
+   GOptionEntry final_options[] = {
+     // collect to verify that does not exist
       {G_OPTION_REMAINING,
-                 '\0', 0,  G_OPTION_ARG_STRING_ARRAY, &cmd_and_args, NULL,   NULL},
+                      '\0', 0,  G_OPTION_ARG_STRING_ARRAY, &cmd_and_args, NULL,   NULL},
+
+      // if there were arguments:
+      // {G_OPTION_REMAINING,
+      //            '\0', 0,  G_OPTION_ARG_STRING_ARRAY, &cmd_and_args, "ARGUMENTS description",   "command [arguments...]"},
 
       { NULL }
    };
 
+   GOptionGroup * development_option_group =
+   g_option_group_new("development", "Development related options", "Not for general use", GINT_TO_POINTER(3), NULL);
+   g_option_group_add_entries(development_option_group, development_options);
+   g_option_group_set_parse_hooks(development_option_group, pre_parse_hook, post_parse_hook);
+
    GError* error = NULL;
    GOptionContext* context = g_option_context_new("- graphical interface to ddcutil");
-   g_option_context_add_main_entries(context, option_entries, NULL);
+   g_option_context_add_main_entries(context, public_option_entries, NULL);
+   g_option_context_add_group(context, development_option_group);
 
    g_option_context_set_help_enabled(context, true);
    // bool ok = false;
