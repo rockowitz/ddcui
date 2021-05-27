@@ -247,8 +247,14 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
 int main(int argc, char *argv[])
 {
     bool debug = false;
-    if (debug)
+    if (debug) {
        printf("(%s) Starting\n", __func__);
+       printf("(%s) prgname = %s, application_name = %s\n",
+             __func__, g_get_prgname(), g_get_application_name() );
+    }
+    // must be called before parsed_ddcui_command(), o.w. --help reports libddcutil as name
+    // n. also sets application_name
+    g_set_prgname("ddcui");
 
     // dbgrpt_hidpi_environment_vars();
 
