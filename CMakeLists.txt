@@ -211,7 +211,7 @@ target_link_libraries(ddcui Qt5::Widgets ${GLIB2_LIBRARIES} ${DDCUTIL_LIBRARIES}
 install(TARGETS ddcui DESTINATION bin)
 install(FILES man/ddcui.1 DESTINATION share/man/man1)
 # removed COPYING
-install(FILES AUTHORS ChangeLog NEWS.md README.md DESTINATION share/doc/ddcui)
+install(FILES AUTHORS CHANGELOG.md NEWS.md README.md DESTINATION share/doc/ddcui)
 install(FILES ddcui.desktop  DESTINATION share/applications)
 install(FILES ddcui.appdata.xml DESTINATION share/metainfo)
 # fails, ${CMAKE_INSTALL_DATAROOTDIR} is null
