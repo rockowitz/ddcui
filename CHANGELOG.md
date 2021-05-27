@@ -35,5 +35,6 @@ extensively reworked.  For details, see [ddcutil Release Notes](https://www.ddcu
 
 ### Removed
 - qmake is no longer supported, use cmake
-- Command line options that can be specified instead in configuration file ddcutilrc: 
-- --sleep-multiplier, --sleep-less, --less-sleep, --no-less-sleep
+- Command line options affecting only libddcutil that can be specified instead
+  in configuration file ddcutilrc: --udf, --no-udf, --nousb, --maxtries, 
+  --sleep-multiplier, --sleep-less, --less-sleep, --no-less-sleep
