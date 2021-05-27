@@ -89,6 +89,10 @@ Display  unsupported features in the feature set.  Normally unsupported features
 .BI "--nc-values-source " "MCCS|CAPABILITIES|BOTH"
 Source of values shown in the drop down menu for simple Non-Continuous features.
 
+.TQ
+.B "--use-latest-nc-values"
+Always use values from latest MCCS version
+
 .SS Option for initial display selection:
 .PP
 .TQ
@@ -120,20 +124,8 @@ Options that are passed to the \fBddcutil\fP shared library.
 These correspond to \fBddcutil\fP command line options of the same name. 
 
 .TQ
-.BI "--sleep-multiplier " "floating point number"
-Multiplication factor applied to the length of DDC mandated waits.
-
-.TQ
-.BI "--maxtries " "\(dqmax-read-tries, max-write-read-tries, max-multi-part-tries\(dq"
-Adjust the number of retries
-
-.TQ
 .B "--ddc"
 Report DDC protocol and data errors to the terminal.
-
-.TQ
-.B "--udf | --noudf"
-Enable User Defined Features.  Default is \fB--noudf\fP
 
 .TQ
 .BI "--trace " "trace-group-name"
