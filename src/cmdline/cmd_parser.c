@@ -225,6 +225,11 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
       {"model",    '\0',   0, G_OPTION_ARG_STRING, &parsed_cmd->model,                "Model of default display",              NULL},
 //    {"bus",      '\0',   0, G_OPTION_ARG_INT,    &parsed_cmd->busno,    "I2C bus number",                        "integer"},
 
+// Tuning
+      {"stats",   's',  G_OPTION_FLAG_OPTIONAL_ARG,
+                              G_OPTION_ARG_CALLBACK, stats_arg_func,    "Show performance statistics",  "TRIES|ERRORS|CALLS|ALL"},
+      {"ddc",     '\0', 0,    G_OPTION_ARG_NONE,     &ddc_flag,         "Report DDC protocol and data errors", NULL},
+
 // Pre-GUI queries
       {"styles",   '\0',   0, G_OPTION_ARG_NONE,     &show_styles_flag,     "List known styles",        NULL},
       {"show-style", '\0', 0, G_OPTION_ARG_NONE,     &show_active_style_flag, "Show active style",      NULL},
@@ -233,20 +238,23 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    };
 
    GOptionEntry development_options[] = {
-      {"stats",   's',  G_OPTION_FLAG_OPTIONAL_ARG,
-                              G_OPTION_ARG_CALLBACK, stats_arg_func,    "Show performance statistics",  "stats type"},
-      {"hidpi",    '\0',   0, G_OPTION_ARG_NONE,  &hidpi_flag,            "Test hidpi code", NULL},
-      {"ddc",     '\0', 0,    G_OPTION_ARG_NONE,     &ddc_flag,         "Report DDC protocol and data errors", NULL},
-      // debugging
+// debugging
       {"excp",     '\0',   0, G_OPTION_ARG_NONE,     &report_freed_excp_flag,  "Report freed exceptions", NULL},
-      {"trace",    '\0',   0, G_OPTION_ARG_STRING_ARRAY, &trace_classes, "Trace classes",         "trace class name" },
-  //  {"trace",    '\0',   0, G_OPTION_ARG_STRING,   &tracework,        "Trace classes",          "comma separated list" },
-      {"trcfunc",  '\0',   0, G_OPTION_ARG_STRING_ARRAY, &trace_functions, "Trace functions",     "function name" },
-      {"trcfile",  '\0',   0, G_OPTION_ARG_STRING_ARRAY, &trace_filenames,    "Trace files",     "file name" },
+      {"trace",    '\0',   0, G_OPTION_ARG_STRING_ARRAY, &trace_classes, "Trace a group",         "trace group name" },
+  //  {"trace",    '\0',   0, G_OPTION_ARG_STRING,   &tracework,        "Trace a group",          "comma separated list" },
+      {"trcfunc",  '\0',   0, G_OPTION_ARG_STRING_ARRAY, &trace_functions, "Trace a function",     "function name" },
+      {"trcfile",  '\0',   0, G_OPTION_ARG_STRING_ARRAY, &trace_filenames,    "Trace a file",     "file name" },
       {"timestamp",'\0',   0, G_OPTION_ARG_NONE,   &timestamp_trace_flag, "Prepend trace msgs with elapsed time",  NULL},
       {"ts",       '\0',   0, G_OPTION_ARG_NONE,   &timestamp_trace_flag, "Prepend trace msgs with elapsed time",  NULL},
       {"thread-id",'\0',   0, G_OPTION_ARG_NONE,   &thread_id_trace_flag, "Prepend trace msgs with thread id",     NULL},
       {"tid",      '\0',   0, G_OPTION_ARG_NONE,   &thread_id_trace_flag, "Prepend trace msgs with thread id",     NULL},
+
+// Debug parser
+      {"debug-parse", '\0', 0, G_OPTION_ARG_NONE,    &debug_parse,           "Show parse result",        NULL},
+      {"parse-only",  '\0', 0, G_OPTION_ARG_NONE,    &parse_only,            "Exit after parsing",       NULL},
+
+// Other
+      {"hidpi",    '\0',   0, G_OPTION_ARG_NONE,  &hidpi_flag,            "Test hidpi code", NULL},
 
 // Undocumented library flag options
       {"f1",      '\0', 0,  G_OPTION_ARG_NONE,     &f1_flag,         "Special flag 1",    NULL},
@@ -256,9 +264,6 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
       {"f5",      '\0', 0,  G_OPTION_ARG_NONE,     &f5_flag,         "Special flag 5",    NULL},
       {"f6",      '\0', 0,  G_OPTION_ARG_NONE,     &f6_flag,         "Special flag 6",    NULL},
 
-// Debug parser
-      {"debug-parse", '\0', 0, G_OPTION_ARG_NONE,    &debug_parse,           "Show parse result",        NULL},
-      {"parse-only",  '\0', 0, G_OPTION_ARG_NONE,    &parse_only,            "Exit after parsing",       NULL},
       { NULL }
    };
 
@@ -298,16 +303,14 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
          NULL
          );
 
-
    // on --help, comes at end after option detail
-   g_option_context_set_description(context, help_description);
+   // g_option_context_set_description(context, help_description);
    free(help_description);
 
    bool ok = g_option_context_parse(context, &argc, &argv, &error);
    if (!ok) {
       fprintf(stderr, "ddcui option parsing failed: %s\n", error->message);
    }
-
 
 #define SET_CMDFLAG(_bit, _flag) \
    do { \
@@ -340,7 +343,6 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    SET_CMDFLAG(CMD_FLAG_HIDPI,             hidpi_flag);
 
 #undef SET_CMDFLAG
-
 
    if (all_capabilities_true_set || all_capabilities_false_set) {
       if (all_capabilities_true_set)
