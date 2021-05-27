@@ -1,5 +1,6 @@
 temp*
 old/
+*old
 new/
 *~
 *.autosave
