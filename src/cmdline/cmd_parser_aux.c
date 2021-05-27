@@ -57,7 +57,7 @@ char * tracing_comma_separated_option_help =
 
 char * tracing_multiple_call_option_help =
        "Trace by trace class:\n"
-       "  The argument to --trace is a trace class.  Specify the --trace option multiple\n"
+       "  The argument to --trace is a trace class.  Use the --trace option multiple\n"
        "  times to activate multiple trace classes, e.g. \"--trace i2c --trace ddc\"\n"
        "  Valid trace classes are:  BASE, I2C, ADL, DDC, DDCIO, VCP, TOP, ENV, API, UDF, ALL.\n"
        "  Trace class names are not case sensitive.\n"
@@ -67,27 +67,27 @@ char * tracing_multiple_call_option_help =
 
 char * trcfunc_multiple_call_option_help =
        "Trace by function name:\n"
-       "  The argument to --trcfunc is a function name.  Specify the --trcfunc option multiple\n"
+       "  The argument to --trcfunc is a function name.  Use the --trcfunc option multiple\n"
        "  times to trace multiple functions, e.g. \"--trcfunc func1 --trcfunc func2\"\n"
       ;
 
 char * trcfile_multiple_call_option_help =
        "Trace by file name:\n"
-       "  The argument to --trcfile is a simple file name.  Specify the --trcfile option multiple\n"
+       "  The argument to --trcfile is a simple file name.  Use the --trcfile option multiple\n"
        "  times to trace multiple functions, e.g. \"--trcfile ddc_edid.c --trcfile ddc_output.c\"\n"
       ;
 
 
 char * stats_multiple_call_option_help =
        "Stats:\n"
-       "  The argument to --stats is a statistics class.  Specify the --stats option multiple\n"
+       "  The argument to --stats is a statistics class.  Use the --stats option multiple\n"
        "  times to activate multiple statistics classes, e.g. \"--stats calls --stats errors\"\n"
        "  Valid statistics classes are:  TRY, TRIES, ERRS, ERRORS, CALLS, ALL.\n"
        "  Statistics class names are not case sensitive and can abbreviated to 3 characters.\n"
        "  If no argument is specified, or ALL is specified, then all statistics classes are\n"
        "  output.\n"
       ;
-
+#ifdef LIBDDDCUTIL_DDCUTILRC
 char * maxtries_option_help =
       "Retries:\n"
       "  The argument to --maxtries is a comma separated list of 3 values:\n"
@@ -97,3 +97,4 @@ char * maxtries_option_help =
       "  A value of \"\" or \".\" leaves the default value unchanged\n"
       "  e.g. --retries \",.,15\" changes only the maximum multi-part-read exchange count"
       ;
+#endif

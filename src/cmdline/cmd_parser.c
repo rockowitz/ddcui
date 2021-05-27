@@ -96,7 +96,11 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
       for (int ndx=0; ndx < argc; ndx++) {
          printf("argv[%d] = |%s|\n", ndx, argv[ndx]);
       }
+
+      printf("(%s) prgname = %s, application_name = %s\n",
+             __func__, g_get_prgname(), g_get_application_name() );
    }
+   // g_set_application_name("ddcui1");
 
    Parsed_Ddcui_Cmd * parsed_cmd = new_parsed_ddcui_cmd();
 
@@ -150,19 +154,22 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
 
    // output control
       {"ddc",     '\0', 0,    G_OPTION_ARG_NONE,     &ddc_flag,         "Report DDC protocol and data errors", NULL},
-
+#ifdef DISABLED_LIBDDCUTIL_ONLY
       {"udf",     '\0', 0,    G_OPTION_ARG_NONE,     &enable_udf_flag,  "Enable user defined feature support", NULL},
       {"noudf",   '\0', G_OPTION_FLAG_REVERSE,
                               G_OPTION_ARG_NONE,     &enable_udf_flag,  "Disable user defined feature support", NULL},
       {"nousb",  '\0',  0,    G_OPTION_ARG_NONE,     &nousb_flag,       "Do not detect USB devices", NULL},
+#endif
 
       // library tuning
+#ifdef DISABLED_LIBDDCUTIL_ONLY
       {"maxtries",'\0', 0,    G_OPTION_ARG_STRING,   &maxtrywork,       "Max try adjustment",  "comma separated list" },
+#endif
 
       {"stats",   's',  G_OPTION_FLAG_OPTIONAL_ARG,
                               G_OPTION_ARG_CALLBACK, stats_arg_func,    "Show performance statistics",  "stats type"},
 
-#ifdef DISABLED
+#ifdef DISABLED_LIBDDCUTIL_ONLY
       {"sleep-multiplier", '\0', 0,
                               G_OPTION_ARG_STRING,   &sleep_multiplier_work, "Multiplication factor for DDC sleeps", "number"},
       {"less-sleep" ,'\0', 0, G_OPTION_ARG_NONE, &less_sleep_true_set, "Eliminate some sleeps",  NULL},
@@ -188,16 +195,16 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
 #endif
       {"require-control-key",
                    '\0',   0, G_OPTION_ARG_NONE,     &control_key_required, "Control key must be pressed to move slider", NULL},
-     {"nc-values-source",
+      {"nc-values-source",
                    '\0',   0, G_OPTION_ARG_STRING,   &nc_values_source_work,  "Initial NC values source",   "MMCS|Capabilities|Both"},
 
       {"feature-set",
                    '\0',   0, G_OPTION_ARG_STRING,   &feature_set_work,  "Feature set selection",
                                                                                    "MMCS|Capabilities|Manufacturer|Color|Scan"},
-     {"use-latest-nc-values",
+      {"use-latest-nc-values",
                    '\0',   0, G_OPTION_ARG_NONE,     &use_latest_nc_values_true_set, "Use NC values from the latest MCCS version", NULL},
 
-     {"custom-feature-set",
+      {"custom-feature-set",
                   '\0',   0, G_OPTION_ARG_STRING,   &custom_feature_set_work, "User feature set definition",
                                                                     "comma separated list of feature codes"},
       {"show-unsupported",
@@ -211,11 +218,6 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
 //      {"not-all-capabilities",
 //                     '\0', 0, G_OPTION_ARG_NONE,      &all_capabilities_false_set, "Negate include all values in capabilities", NULL},
 
-#ifdef REF
-                               _ui->showUnsupported_checkbox->setChecked( fsel->_showUnsupportedFeatures);
-                               _ui->onlyCapabilities_checkbox->setChecked(fsel->_includeOnlyCapabilities);
-                               _ui->allCapabilities_checkbox->setChecked( fsel->_includeAllCapabilities);
-#endif
 // Display selection
       {"model",    '\0',   0, G_OPTION_ARG_STRING, &parsed_cmd->model,                "Model of default display",              NULL},
 //    {"bus",      '\0',   0, G_OPTION_ARG_INT,    &parsed_cmd->busno,    "I2C bus number",                        "integer"},
@@ -250,25 +252,14 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    g_option_context_set_help_enabled(context, true);
    // bool ok = false;
 
-#ifdef OLD
-   const char * pieces3[] = {
-                             tracing_multiple_call_option_help,
-                             "\n",
-                             trcfunc_multiple_call_option_help,
-                             "\n",
-                             trcfile_multiple_call_option_help,
-                             "\n",
-                             stats_multiple_call_option_help,
-                             "\n",
-                             maxtries_option_help};
-   char * help_description = strjoin(pieces3, 10, NULL);
-#endif
    char * help_description = g_strjoin("\n",
          tracing_multiple_call_option_help,
          trcfunc_multiple_call_option_help,
          trcfile_multiple_call_option_help,
          stats_multiple_call_option_help,
+#ifdef DISABLED_LIBDDCUTIL_ONLY
          maxtries_option_help,
+#endif
          NULL
          );
 
@@ -417,12 +408,12 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
       }
    }
 
+#ifdef LIBDDCUTIL_DISABLED
    parsed_cmd->enable_sleep_suppression = TRIVAL_UNSET;
    if (less_sleep_true_set)
       parsed_cmd->enable_sleep_suppression = TRIVAL_TRUE;
    else if (less_sleep_false_set)
       parsed_cmd->enable_sleep_suppression = TRIVAL_FALSE;
-
 
 
    if (sleep_multiplier_work) {
@@ -442,6 +433,7 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
          parsed_cmd->sleep_multiplier = multiplier;
       }
    }
+#endif
 
    // #ifdef MULTIPLE_TRACE
       if (trace_classes) {
@@ -492,7 +484,6 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
          }
       }
 #endif
-
 
       if (nc_values_source_work) {
          // printf("nc_values_source_work = %p -> |%s|\n", nc_values_source_work, nc_values_source_work);
@@ -559,7 +550,7 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
       printf("Built using libddcutil version %d.%d.%d, Qt version %s\n",
              DDCUTIL_VMAJOR, DDCUTIL_VMINOR, DDCUTIL_VMICRO, QT_VERSION_STR);
       printf("Executing using libddcutil %s, Qt %s\n\n",
-             ddca_ddcutil_version_string(), qVersion());
+             ddca_ddcutil_extended_version_string(), qVersion());
       puts("Copyright (C) 2018-2021 Sanford Rockowitz");
       puts("License GPLv2: GNU GPL version 2 or later <http://gnu.org/licenses/gpl.html>");
       puts("This is free software: you are free to change and redistribute it.");
