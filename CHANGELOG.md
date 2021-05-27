@@ -34,7 +34,6 @@ extensively reworked.  For details, see [ddcutil Release Notes](https://www.ddcu
 - User interface cleanup
 
 ### Removed
- - Command line options that can be specified instead in configuration file ddcutilrc: 
-   - --sleep-multiplier, --sleep-less, --less-sleep, --no-less-sleep
-
-
+- qmake is no longer supported, use cmake
+- Command line options that can be specified instead in configuration file ddcutilrc: 
+- --sleep-multiplier, --sleep-less, --less-sleep, --no-less-sleep
