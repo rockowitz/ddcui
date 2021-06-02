@@ -1,6 +1,6 @@
 /* monitor.h */
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef MONITOR_H
@@ -48,15 +48,15 @@ public:
     FeatureBaseModel *   _baseModel;
     VcpRequestQueue*     _requestQueue;
 
-    QWidget *           _page_moninfo;
-    int                 _pageno_moninfo;
-    QPlainTextEdit *    _moninfoPlainText;
+    QWidget *            _page_moninfo;
+    int                  _pageno_moninfo;
+    QPlainTextEdit *     _moninfoPlainText;
 
-    QWidget *           _page_capabilities;
-    int                 _pageno_capabilities;
-    QPlainTextEdit *    _capabilitiesPlainText;
+    QWidget *            _page_capabilities;
+    int                  _pageno_capabilities;
+    QPlainTextEdit *     _capabilitiesPlainText;
 
-    FeatureSelector     _curFeatureSelector;
+    FeatureSelector      _curFeatureSelector;
 
     // FEATURES_VIEW_SCROLLAREAVIEW
     // When using FeaturesScrollAreaView, do not allocate a permanent
@@ -65,12 +65,11 @@ public:
     FeaturesScrollAreaView * _featuresScrollAreaView = NULL;
 
 public slots:
-        void putVcpRequest(VcpRequest * rqst);
+    void putVcpRequest(VcpRequest * rqst);
 
 private:
     const char *  _cls;    // className
     QHash<DDCA_Feature_Subset_Id, DDCA_Feature_List> _features;
-
 };
 
 #endif // MONITOR_H
