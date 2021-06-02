@@ -177,8 +177,8 @@ void Ui_MainWindow::setupMenus(QMainWindow *MainWindow)
     actionRedetect->setEnabled(true);
     actionRedetect->setFont(mainMenuFont);
 
-    menuActions->addAction(actionRescan);
     menuActions->addAction(actionRedetect);
+    menuActions->addAction(actionRescan);
     menuActions->addAction(actionDebugActionsDialog);
 
     menuHelp->addAction(actionContentsHelp);
