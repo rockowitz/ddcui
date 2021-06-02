@@ -1,6 +1,10 @@
-/* feature_base_model.cpp - UI independent portion of the data model */
+/* feature_base_model.cpp
+ *
+ * This was the UI independent portion of the data model when trying to use
+ * QListView and QTableView.
+ */
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "nongui/feature_base_model.h"
@@ -31,6 +35,8 @@ static bool debugModel = false;
 
 FeatureBaseModel::FeatureBaseModel(Monitor * monitor)
 {
+   bool debug = true;
+
     _cls                    = strdup(metaObject()->className());
     _monitor                = monitor;
     _featureValues          = new QVector<FeatureValue*>();
@@ -39,6 +45,7 @@ FeatureBaseModel::FeatureBaseModel(Monitor * monitor)
 #endif
     ddca_feature_list_clear(&_featuresChecked);
 
+    // Features that need to be reread if feature x14 is changed
     // There ought to be a cleaner way
     _featuresTouchedByX14 = DDCA_EMPTY_FEATURE_LIST;
     ddca_feature_list_add(&_featuresTouchedByX14, 0x16);
@@ -49,6 +56,11 @@ FeatureBaseModel::FeatureBaseModel(Monitor * monitor)
     ddca_feature_list_add(&_featuresTouchedByX14, 0x70);
     ddca_feature_list_add(&_featuresTouchedByX14, 0x0b);
     ddca_feature_list_add(&_featuresTouchedByX14, 0x0c);
+
+    TRACECF(debug, "Constructor complete. _monitor -> dispno=%d, model=%s, dref=%p",
+                   _monitor->_displayInfo->dispno,
+                   _monitor->_displayInfo->model_name,
+                   _monitor->_displayInfo->dref);
 }
 
 
@@ -402,7 +414,7 @@ void FeatureBaseModel::setFeatureChecked(uint8_t featureCode) {
 // called from MainWindow::on_actionRescan_triggered(),
 // FeaturesScrollAreaView::onUIValueChanged() - reloading for features that affect multiple
 void FeatureBaseModel::reloadFeatures() {
-   bool debugFunc = false;
+   bool debugFunc = true;
    debugFunc = debugFunc || debugFeatureLists;
 
    TRACECF(debugFunc, "Starting.");
@@ -449,15 +461,17 @@ void FeatureBaseModel::dbgrpt() {
 
 
 void  FeatureBaseModel::modelStartInitialLoad(void) {
+   bool debug = true;
    _initialLoadActive = true;
-    // TRACE("=> Emitting signalStartInitialLoad");
+    TRACECF(debug, "=> Emitting signalStartInitialLoad");
     emit signalStartInitialLoad();
 }
 
 
 void  FeatureBaseModel::modelEndInitialLoad(void) {
+   bool debug = true;
    _initialLoadActive = false;
-    // TRACE("=> Emitting signalEndInitialLoad");
+    TRACECF(debug, "=> Emitting signalEndInitialLoad");
     signalEndInitialLoad();
 }
 
