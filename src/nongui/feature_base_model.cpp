@@ -35,7 +35,7 @@ static bool debugModel = false;
 
 FeatureBaseModel::FeatureBaseModel(Monitor * monitor)
 {
-   bool debug = true;
+   bool debug = false;
 
     _cls                    = strdup(metaObject()->className());
     _monitor                = monitor;
