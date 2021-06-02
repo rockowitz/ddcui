@@ -56,7 +56,7 @@ void Monitor::dbgrpt() {
 DDCA_Feature_List
 Monitor::getFeatureList(DDCA_Feature_Subset_Id feature_list_id) {
     bool debugFunc = debugFeatureLists;
-    debugFunc = true;
+    debugFunc = false;
     TRACECF(debugFunc,
           "feature_list_id=%d-%s",feature_list_id, ddca_feature_list_id_name(feature_list_id));
 
