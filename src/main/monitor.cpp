@@ -20,28 +20,35 @@
 Monitor::Monitor(DDCA_Display_Info * display_info, int monitorNumber)
     : _monitorNumber(monitorNumber)
     , _displayInfo(display_info)
-
-    ,  _baseModel(NULL)
- //   ,  _cls(metaObject()->className()) // -Wreorder
-    ,  _requestQueue(NULL)
+    , _baseModel(NULL)
+ // , _cls(metaObject()->className()) // -Wreorder
+    , _requestQueue(NULL)
 {
+   bool debug = false;
    _cls = metaObject()->className();
    _page_moninfo     = _page_capabilities     = NULL;
    _pageno_moninfo   = _pageno_capabilities   = 0;
    _moninfoPlainText = _capabilitiesPlainText = NULL;
 
-   // PRINTFCM("End of constructor");
-   // ddca_report_display_info(_displayInfo, 3);
+   TRACECF(debug, "End of constructor. _monitorNumber=%d", _monitorNumber);
+   ddca_report_display_info(_displayInfo, 3);
 }
 
 
 Monitor::~Monitor() {
+   bool debug = true;
+   TRACECF(debug, "Monitor destructor starting. monitor=%p, number=%d", this, this->_monitorNumber);
+   // free _displayInfo         // will be freed by ddca_free_display_info_list()
+   // ddca_free_display_info(); // entire list will be freed by ddca_display_info_list()
+   delete _baseModel;
+   //   delete _requestQueue;  // causes hang
+   TRACECF(debug, "Done");
 }
 
 
 void Monitor::dbgrpt() {
    printf("_monitorNumber:      %d\n",    _monitorNumber);
-   printf("_displayInfo->dref:  %s\n",     ddca_dref_repr(_displayInfo->dref));
+   printf("_displayInfo->dref:  %p -> %s\n",     _displayInfo->dref, ddca_dref_repr(_displayInfo->dref));
    fflush(stdout);
 }
 
@@ -49,7 +56,7 @@ void Monitor::dbgrpt() {
 DDCA_Feature_List
 Monitor::getFeatureList(DDCA_Feature_Subset_Id feature_list_id) {
     bool debugFunc = debugFeatureLists;
-    // debugFunc = true;
+    debugFunc = true;
     TRACECF(debugFunc,
           "feature_list_id=%d-%s",feature_list_id, ddca_feature_list_id_name(feature_list_id));
 
@@ -90,7 +97,7 @@ Monitor::getFeatureList(DDCA_Feature_Subset_Id feature_list_id) {
 
 bool Monitor::capabilities_check_complete() {
    // considered complete if invalid display
-   bool result = (_displayInfo->dispno != -1);   // dispno -1 if API found display invalid
+   bool result = (_displayInfo->dispno > 0);   // dispno -1 if API found display invalid
    if (result)
       result = (_baseModel->_caps_check_complete);
    return result;
@@ -106,6 +113,7 @@ bool Monitor::supportsDdc() {
 
  // called by initFeaturesScrollAreaView
 void Monitor::putVcpRequest(VcpRequest * rqst) {
-    // PRINTFCM("-> rqst->type=%d. Adding request to monitor's request queue", rqst->_type);
+    bool debug = false;
+    TRACECF(debug, "-> rqst->type=%d. Adding request to monitor's request queue", rqst->_type);
     _requestQueue->put(rqst);
 }
