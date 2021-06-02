@@ -1,6 +1,6 @@
 /* vcprequest.h - VcpRequestQueue and the VcpRequest classes that populate the queue */
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef VCPREQUEST_H
@@ -25,6 +25,7 @@ enum VcpRequestType {
    RQDumpStats,
    RQResetStats
 #endif
+   RQHalt,
 };
 
 /* VcpRequest classes */
@@ -69,6 +70,11 @@ public:
     ~LoadDfrRequest();
 };
 
+class HaltRequest: public VcpRequest {
+public:
+    HaltRequest();
+    ~HaltRequest();
+};
 
 class VcpGetRequest: public VcpRequest {
 public:
@@ -113,10 +119,11 @@ class VcpRequestQueue
 
 public:
     VcpRequestQueue();
-
+    ~VcpRequestQueue();
 
     VcpRequest* pop();
 //  VcpRequest* popCondensed();   // future
+    void halt();
     void dbgrpt();
 
 

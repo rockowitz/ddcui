@@ -42,7 +42,10 @@ LoadDfrRequest::LoadDfrRequest()
 {
 }
 
-
+HaltRequest::HaltRequest()
+    : VcpRequest::VcpRequest(VcpRequestType::RQHalt)
+{
+}
 
 VcpGetRequest::VcpGetRequest(DDCA_Vcp_Feature_Code featureCode, bool needMetadata )
     : VcpRequest::VcpRequest(VcpRequestType::RQGetVcp)
@@ -84,6 +87,13 @@ VcpRequestQueue::VcpRequestQueue()
     _queue = QQueue<VcpRequest*>();
 }
 
+VcpRequestQueue::~VcpRequestQueue()
+{
+   bool debug = true;
+   if (debug)
+      printf("(%s) Executing VcpRequestQueue descructor\n", __func__);
+}
+
 void VcpRequestQueue::put(VcpRequest * request) {
     // printf("VcpRequestQueue::put) -> request type: %d\n" , request->_type);
 
@@ -107,6 +117,19 @@ VcpRequest * VcpRequestQueue::pop() {
     // printf("VcpRequesQueue::pop) <- Done. request type: %d\n", rqst->_type);
     return rqst;
 }
+
+void VcpRequestQueue::halt() {
+   _mutex.lock();
+   // purge the queue
+   while (!_queue.empty()) {
+      VcpRequest * rqst = _queue.dequeue();
+      delete rqst;
+   }
+   HaltRequest * rqst = new HaltRequest();
+   _queue.enqueue(rqst);
+   _mutex.unlock();
+}
+
 
 void VcpRequestQueue::dbgrpt() {
    _mutex.lock();
