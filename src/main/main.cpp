@@ -256,13 +256,9 @@ int main(int argc, char *argv[])
     // n. also sets application_name
     g_set_prgname("ddcui");
 
-    // dbgrpt_hidpi_environment_vars();
-
     // will remove any arguments that it recognizes, e.g. --widgetcount
-    QApplication a(argc, argv);
-    a.setWindowIcon(QIcon(":/icons/ddcui_multires.ico"));
-
-    // dbgrpt_hidpiQApplication(a);
+    QApplication application(argc, argv);
+    application.setWindowIcon(QIcon(":/icons/ddcui_multires.ico"));
 
     GPtrArray * errmsgs = g_ptr_array_new_with_free_func(free);
     char ** new_argv = NULL;
@@ -325,6 +321,11 @@ int main(int argc, char *argv[])
     if (!init_ddcutil_library(parsed_cmd))
        return 1;
 
+    if (parsed_cmd->flags & CMD_FLAG_F1) {
+       dbgrpt_hidpi_environment_vars();
+       dbgrpt_hidpiQApplication(application);
+    }
+
     GlobalState & globalState = GlobalState::instance();
     init_core();
 
@@ -346,7 +347,7 @@ int main(int argc, char *argv[])
 
     if (debug)
        printf("(%s) Calling Application::exec()\n", __func__);
-    int mainStatus = a.exec();
+    int mainStatus = application.exec();
     if (debug)
        printf("(%s) Application::exec() returned %d\n", __func__, mainStatus);
     ddca_show_stats(parsed_cmd->stats_types,
