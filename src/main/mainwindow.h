@@ -68,6 +68,10 @@ public:
     void start_msgBoxThread();    // was originally factored out for use as a slot
 
 private:
+    void connectBaseModel(Monitor * monitor);
+    void disconnectBaseModel(Monitor * monitor);
+    void deleteMonitor(Monitor * monitor);
+    void freeMonitors();
     void initMonitors(Parsed_Ddcui_Cmd * parsed_cmd);
     void loadMonitorFeatures(Monitor * monitor);
 
