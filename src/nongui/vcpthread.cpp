@@ -579,9 +579,14 @@ void VcpThread::run() {
         case VcpRequestType::RQLoadDfr:
             loadDynamicFeatureRecords();
             break;
+        case VcpRequestType::RQHalt:
+           // delete rqst;
+           quit();
+           break;
         default:
             cout << "Unexpected request type: " << rqst->_type << endl;
         }
+        delete rqst;
     }
 }
 
