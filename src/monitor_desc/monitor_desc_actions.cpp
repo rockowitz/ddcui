@@ -1,6 +1,6 @@
 // monitor_desc_actions.cpp
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <stdlib.h>
@@ -18,12 +18,21 @@ char *
 capture_display_info_report(
       DDCA_Display_Info * dinfo)
 {
+    bool debug = false;
+    if (debug) {
+       printf("(%s) Starting. dinfo=%p\n", __func__, dinfo);
+       fflush(stdout);
+    }
     ddca_start_capture(DDCA_CAPTURE_NOOPTS);
     DDCA_Output_Level saved_ol = ddca_get_output_level();
     ddca_set_output_level(DDCA_OL_VERBOSE);
     ddca_report_display_info(dinfo, 0);
     ddca_set_output_level(saved_ol);
     char * s = ddca_end_capture();
+    if (debug) {
+       printf("(%s) Done.\n", __func__);
+       fflush(stdout);
+    }
     return s;
 }
 
