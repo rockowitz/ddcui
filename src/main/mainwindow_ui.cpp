@@ -174,11 +174,11 @@ void Ui_MainWindow::setupMenus(QMainWindow *MainWindow)
     actionRescan->setEnabled(false);
 
     actionRedetect->setText(  QApplication::translate("MainWindow", "&Redetect monitors", nullptr, -1));
-    actionRedetect->setEnabled(false);
+    actionRedetect->setEnabled(true);
     actionRedetect->setFont(mainMenuFont);
 
     menuActions->addAction(actionRescan);
-    // menuActions->addAction(actionRedetect);   // FUTURE
+    menuActions->addAction(actionRedetect);
     menuActions->addAction(actionDebugActionsDialog);
 
     menuHelp->addAction(actionContentsHelp);
