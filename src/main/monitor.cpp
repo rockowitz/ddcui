@@ -31,7 +31,8 @@ Monitor::Monitor(DDCA_Display_Info * display_info, int monitorNumber)
    _moninfoPlainText = _capabilitiesPlainText = NULL;
 
    TRACECF(debug, "End of constructor. _monitorNumber=%d", _monitorNumber);
-   ddca_report_display_info(_displayInfo, 3);
+   if (debug)
+      ddca_report_display_info(_displayInfo, 3);
 }
 
 
