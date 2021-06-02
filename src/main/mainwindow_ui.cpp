@@ -169,11 +169,11 @@ void Ui_MainWindow::setupMenus(QMainWindow *MainWindow)
     actionMonitorSummary->setText(    QApplication::translate("MainWindow", "&Monitor Summary",       nullptr, -1));
     actionCapabilities->setText(      QApplication::translate("MainWindow", "&Capabilities",          nullptr, -1));
     actionFeaturesScrollArea->setText(QApplication::translate("MainWindow", "&Features",              nullptr, -1));
-    actionRescan->setText(            QApplication::translate("MainWindow", "&Rescan feature values", nullptr, -1));
+    actionRescan->setText(            QApplication::translate("MainWindow", "Rescan Feature &Values", nullptr, -1));
     actionRescan->setFont(mainMenuFont);
     actionRescan->setEnabled(false);
 
-    actionRedetect->setText(  QApplication::translate("MainWindow", "&Redetect monitors", nullptr, -1));
+    actionRedetect->setText(  QApplication::translate("MainWindow", "Re&detect Monitors", nullptr, -1));
     actionRedetect->setEnabled(true);
     actionRedetect->setFont(mainMenuFont);
 
@@ -187,9 +187,9 @@ void Ui_MainWindow::setupMenus(QMainWindow *MainWindow)
 
     actionContentsHelp->setText(QApplication::translate(  "MainWindow", "&Contents...", nullptr, -1));
     actionContentsHelp->setFont(mainMenuFont);
-    actionAbout->setText(QApplication::translate(  "MainWindow", "About &ddcui", nullptr, -1));
+    actionAbout->setText(QApplication::translate(  "MainWindow", "About ddcui", nullptr, -1));
     actionAbout->setFont(mainMenuFont);
-    actionAboutQt->setText(QApplication::translate("MainWindow", "About &Qt", nullptr, -1));
+    actionAboutQt->setText(QApplication::translate("MainWindow", "About Qt", nullptr, -1));
     actionAboutQt->setFont(mainMenuFont);
 
     // Tool Bar
