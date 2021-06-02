@@ -461,7 +461,7 @@ void FeatureBaseModel::dbgrpt() {
 
 
 void  FeatureBaseModel::modelStartInitialLoad(void) {
-   bool debug = true;
+   bool debug = false;
    _initialLoadActive = true;
     TRACECF(debug, "=> Emitting signalStartInitialLoad");
     emit signalStartInitialLoad();
@@ -469,7 +469,7 @@ void  FeatureBaseModel::modelStartInitialLoad(void) {
 
 
 void  FeatureBaseModel::modelEndInitialLoad(void) {
-   bool debug = true;
+   bool debug = false;
    _initialLoadActive = false;
     TRACECF(debug, "=> Emitting signalEndInitialLoad");
     signalEndInitialLoad();
