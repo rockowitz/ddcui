@@ -127,15 +127,86 @@ void MainWindow::start_msgBoxThread() {
 }
 
 
+void MainWindow::connectBaseModel(Monitor * curMonitor) {
+   FeatureBaseModel * baseModel = curMonitor->_baseModel;
+
+   QObject::connect(baseModel,  SIGNAL(signalVcpRequest(VcpRequest*)),
+                    curMonitor, SLOT(  putVcpRequest(VcpRequest*)));
+   QObject::connect(baseModel,  &FeatureBaseModel::signalStartInitialLoad,
+                    this,       &MainWindow::longRunningTaskStart);
+   QObject::connect(baseModel,  &FeatureBaseModel::signalEndInitialLoad,
+                    this,       &MainWindow::longRunningTaskEnd);
+   QObject::connect(baseModel,  &FeatureBaseModel::signalStatusMsg,
+                    this,       &MainWindow::setStatusMsg);
+}
+
+
+void MainWindow::disconnectBaseModel(Monitor * curMonitor) {
+   FeatureBaseModel * baseModel = curMonitor->_baseModel;
+
+   QObject::disconnect(baseModel,  &FeatureBaseModel::signalStatusMsg,
+                       this,       &MainWindow::setStatusMsg);
+   QObject::disconnect(baseModel,  SIGNAL(signalVcpRequest(VcpRequest*)),
+                       curMonitor, SLOT(  putVcpRequest(VcpRequest*)));
+   QObject::disconnect(baseModel,  &FeatureBaseModel::signalStartInitialLoad,
+                       this,       &MainWindow::longRunningTaskStart);
+   QObject::disconnect(baseModel,  &FeatureBaseModel::signalEndInitialLoad,
+                       this,       &MainWindow::longRunningTaskEnd);
+}
+
+
+void MainWindow::deleteMonitor(Monitor * curMonitor) {
+   bool debug = true;
+   TRACECF(debug, "Starting curMonitor=%p. _monitorNumber=%d", curMonitor, curMonitor->_monitorNumber);
+   disconnectBaseModel(curMonitor);
+   curMonitor->_requestQueue->put(new HaltRequest());
+   // TODO: wait for halt
+   TRACECF(debug, "Done");
+}
+
+
+void MainWindow::freeMonitors() {
+   bool debug = true;
+   TRACECF(debug, "Starting");
+
+   int ct0 = _monitors.size();
+   TRACECF(debug,"_monitors.size() = %d", ct0);
+   for (int ndx = _monitors.size()-1; ndx >= 0; ndx--) {
+      Monitor * curMonitor = _monitors.at(ndx);
+      TRACECF(debug, "ndx=%d, curMonitor=%p", ndx, curMonitor);
+      deleteMonitor(curMonitor);
+
+      _monitors.removeAt(ndx);
+      delete curMonitor;
+   }
+
+   QObject::disconnect(_toolbarDisplayCB, SIGNAL(currentIndexChanged(int)),
+                       this,              SLOT(  displaySelectorCombobox_currentIndexChanged(int)));
+
+
+
+  int ct = _toolbarDisplayCB->count();
+  TRACECF(debug,"_toolbarDisplayCB->size() = %d", ct);
+  for (int ndx = ct-1; ndx >= 0; ndx--) {
+    _toolbarDisplayCB->removeItem(ndx);
+  }
+
+   TRACECF(debug, "Done");
+}
+
+
 void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
-    bool debug = false;
+    bool debug = true;
+    TRACECF(debug, "Starting.  parsed_cmd=%p", parsed_cmd);
 
     longRunningTaskStart();
     _ui->statusBar->showMessage(QString("Loading display information..."));
 
+    TRACECF(debug, "Calling ddca_get_display_info_list2()");
     DDCA_Status ddcrc = ddca_get_display_info_list2(
                             true,         // include invalid displays
                             &_dlist);
+    TRACECF(debug, "ddca_get_display_info_list2() returned %d", ddcrc);
     assert(ddcrc == 0);
 
     int initialDisplayIndex = -1;
@@ -185,31 +256,27 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
         curMonitor->_requestQueue = new VcpRequestQueue();
         FeatureBaseModel * baseModel = new FeatureBaseModel(curMonitor);
         baseModel->setObjectName(QString::asprintf("baseModel-%d",ndx));
+        curMonitor->_baseModel = baseModel;
 
         initMonitorInfoWidget(curMonitor, _ui->centralWidget);
         initCapabilitiesWidget(curMonitor, _ui->centralWidget);
         initFeaturesScrollAreaView(curMonitor, baseModel, _ui->centralWidget, _msgBoxQueue);
 
-        QObject::connect(baseModel,  SIGNAL(signalVcpRequest(VcpRequest*)),
-                         curMonitor, SLOT(  putVcpRequest(VcpRequest*)));
-        QObject::connect(baseModel, &FeatureBaseModel::signalStartInitialLoad,
-                         this,      &MainWindow::longRunningTaskStart);
-        QObject::connect(baseModel, &FeatureBaseModel::signalEndInitialLoad,
-                         this,      &MainWindow::longRunningTaskEnd);
+        connectBaseModel(curMonitor);
 
-        curMonitor->_baseModel = baseModel;
+
 
         VcpThread * curThread = new VcpThread(NULL,
                                               curMonitor->_displayInfo,
                                               curMonitor->_requestQueue,
                                               baseModel);
-        QObject::connect(baseModel,   &FeatureBaseModel::signalStatusMsg,
-                         this,        &MainWindow::setStatusMsg);
-
         curThread->start();
         _vcp_threads.append(curThread);
 
         // asynchronously get capabilities for current monitor
+
+        // ddca_report_display_info(&_dlist->info[ndx], 3);
+
         if (_dlist->info[ndx].dispno > 0) {     // don't try if monitor known to not support DDC
             curMonitor->_requestQueue->put(new LoadDfrRequest());
             curMonitor->_requestQueue->put(new VcpCapRequest());
@@ -345,10 +412,10 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
 #ifdef MOVED
      globalState._msgBoxThread = msgBoxThread;
 #endif
+     globalState._parsed_cmd = parsed_cmd;  // in case of reinitialization
 
     // reportWidgetChildren(ui->centralWidget, "Children of centralWidget, before initMonitors():");
     initMonitors(parsed_cmd);
-    // GlobalState& globalState = GlobalState::instance();
 
     // Initialize Options menu
     _feature_selector   = new FeatureSelector(parsed_cmd);
@@ -667,7 +734,9 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
 
 
 void MainWindow::loadMonitorFeatures(Monitor * monitor) {
-    // TRACE("monitor=%p", monitor);
+   bool debug = false;
+   debug |= debugFeatureLists;
+    TRACECF(debug, "monitor=%p", monitor);
     // monitor->dbgrpt();
     QString msg = QString("Reading monitor features...");
     _ui->statusBar->showMessage(msg);
@@ -681,7 +750,7 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
     }
     else {
        featuresToShow = monitor->getFeatureList(_feature_selector->_featureSubsetId);
-       TRACECF(debugFeatureLists,
+       TRACECF(debug,
            "features_to_show: (%d) %s", ddca_feature_list_count(featuresToShow),
                                         ddca_feature_list_string(featuresToShow, NULL, (char*)" "));
 
@@ -690,7 +759,7 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
           // n. simply manipulates data structures, does not perform monitor io
           DDCA_Feature_List caps_features =
                 ddca_feature_list_from_capabilities(monitor->_baseModel->_parsed_caps);
-          TRACECF(debugFeatureLists,
+          TRACECF(debug,
               "Capabilities features: (%d) %s",
               ddca_feature_list_count(caps_features),
               ddca_feature_list_string(caps_features, NULL, (char*)" "));
@@ -702,7 +771,7 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
        }
     }
 
-    TRACECF(debugFeatureLists,
+    TRACECF(debug,
         "Final featuresToShow: (%d) %s",
         ddca_feature_list_count(featuresToShow),
         ddca_feature_list_string(featuresToShow, NULL, (char*)" "));
@@ -731,7 +800,29 @@ void MainWindow::on_actionRescan_triggered() {
 
 
 void MainWindow::on_actionRedetect_triggered() {
-   TRACEC("Unimplemented");
+   bool debug = true;
+   TRACECF(debug, "Executing");
+
+   this->freeMonitors();
+   ddca_free_display_info_list(_dlist);
+   _dlist = NULL;
+
+   TRACECF(debug, "Before ddca_redetect_displays");
+   DDCA_Status ddcrc = ddca_redetect_displays();
+   assert(ddcrc == 0);     // always returns 0
+
+   TRACECF(debug, "Before initMonitors()");
+   this->initMonitors(GlobalState::instance()._parsed_cmd);
+   TRACECF(debug, "After initMonitors()");
+   // hack
+   // _toolbarDisplayCB->removeItem(0);
+
+   // TODO reinit UI to first monitor, summary view
+   // if no monitors, set _curDisplayIndex = -1?
+   _curDisplayIndex = 0;
+   emit signalMonitorSummaryView();
+
+   TRACECF(debug,"Done");
 }
 
 
