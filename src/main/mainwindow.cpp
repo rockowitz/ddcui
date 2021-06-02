@@ -196,7 +196,7 @@ void MainWindow::freeMonitors() {
 
 
 void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
-    bool debug = true;
+    bool debug = false;
     TRACECF(debug, "Starting.  parsed_cmd=%p", parsed_cmd);
 
     longRunningTaskStart();
