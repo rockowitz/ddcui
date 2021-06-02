@@ -414,10 +414,10 @@ void FeatureBaseModel::setFeatureChecked(uint8_t featureCode) {
 // called from MainWindow::on_actionRescan_triggered(),
 // FeaturesScrollAreaView::onUIValueChanged() - reloading for features that affect multiple
 void FeatureBaseModel::reloadFeatures() {
-   bool debugFunc = true;
-   debugFunc = debugFunc || debugFeatureLists;
+   bool debug = false;
+   debug = debug || debugFeatureLists;
 
-   TRACECF(debugFunc, "Starting.");
+   TRACECF(debug, "Starting.");
 
    _monitor->_requestQueue->put(new VcpStartInitialLoadRequest);
    int ct = modelVcpValueCount();
@@ -436,7 +436,7 @@ void FeatureBaseModel::reloadFeatures() {
    }
    _monitor->_requestQueue->put(new VcpEndInitialLoadRequest);
 
-   TRACECF(debugFunc, "Done");
+   TRACECF(debug, "Done");
 }
 
 
