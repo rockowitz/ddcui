@@ -250,7 +250,6 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
         // Create Monitor instance, initialize data structures
         Monitor * curMonitor = new Monitor(&_dlist->info[ndx], monitorNumber);
         _monitors.append(curMonitor);
-        // TRACEC("After curMonitor = new Monitor()");
         // ddca_report_display_info(&_dlist->info[ndx], 3);
 
         curMonitor->_requestQueue = new VcpRequestQueue();
@@ -264,8 +263,6 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
 
         connectBaseModel(curMonitor);
 
-
-
         VcpThread * curThread = new VcpThread(NULL,
                                               curMonitor->_displayInfo,
                                               curMonitor->_requestQueue,
@@ -274,7 +271,6 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
         _vcp_threads.append(curThread);
 
         // asynchronously get capabilities for current monitor
-
         // ddca_report_display_info(&_dlist->info[ndx], 3);
 
         if (_dlist->info[ndx].dispno > 0) {     // don't try if monitor known to not support DDC
@@ -305,7 +301,7 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
     else {
        initialDisplayIndex = 0;
     }
-    // TRACECF(true, "initialDisplayIndex (2) = %d", initialDisplayIndex);
+    // TRACECF(debug, "initialDisplayIndex (2) = %d", initialDisplayIndex);
 
     _toolbarDisplayCB->setCurrentIndex(initialDisplayIndex);
 
