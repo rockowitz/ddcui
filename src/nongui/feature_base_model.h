@@ -1,6 +1,6 @@
 /* feature_base_model.h - Records all VCP feature values for a single monitor */
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef FEATURE_BASE_MODEL_H
@@ -73,9 +73,7 @@ public:
 
     // *** Public Member Variables ***
     const char *        _cls;    // classNameS
-
     Monitor *           _monitor;
-
     bool                _caps_check_complete = false;
     DDCA_Status         _caps_status = -999;    // a value that's undefined
     char *              _caps_string = NULL;
@@ -107,23 +105,20 @@ private:
 
     QVector<FeatureValue*> * _featureValues;
     DDCA_Feature_Metadata *  _featureMetadata[256] = {NULL};
-    // DDCA_Status              _featureStatusCode[256];    // side table for now, include in FeatureValue?  UNUSED
+ // DDCA_Status              _featureStatusCode[256];    // side table for now, include in FeatureValue?  UNUSED
+    DDCA_Feature_List        _featuresToShow;
+    DDCA_Feature_List        _featuresChecked;
+// ifdef FUTURE
+    DDCA_Feature_List        _featuresTouchedByX14 = DDCA_EMPTY_FEATURE_LIST;
+// #endif
+    bool                     _initialLoadActive = false;
+
 #ifdef UNUSED
     DDCA_MCCS_Version_Spec   _vspec;
 #endif
-
 #ifdef FEATURE_CHANGE_OBSERVER
     QVector<FeatureChangeObserver*> * _featureChangeObservers;
 #endif
-
-private:
-    DDCA_Feature_List   _featuresToShow;
-    DDCA_Feature_List   _featuresChecked;
-// ifdef FUTURE
-    DDCA_Feature_List   _featuresTouchedByX14 = DDCA_EMPTY_FEATURE_LIST;
-// #endif
-    bool                _initialLoadActive = false;
-
 };
 
 #endif // FEATURE_BASE_MODEL_H
