@@ -1,6 +1,6 @@
 // global_state.h
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef GLOBAL_STATE_H_
@@ -11,6 +11,7 @@
 #include "base/other_options_state.h"
 #include "base/user_interface_options_state.h"
 #include "main/mainwindow.h"    // ugh - referencing out of base, to clean up
+#include "cmdline/parsed_cmd.h"
 
 
 class GlobalState {
@@ -19,6 +20,7 @@ class GlobalState {
 public:
    static GlobalState& instance();
 
+   Parsed_Ddcui_Cmd *          _parsed_cmd = nullptr;
    OtherOptionsState *         _otherOptionsState = NULL;
    UserInterfaceOptionsState * _uiOptionsState    = NULL;
 
