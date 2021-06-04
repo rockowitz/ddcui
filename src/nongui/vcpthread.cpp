@@ -475,7 +475,7 @@ void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint16_t shsl)
           ddcrc = ddca_set_non_table_vcp_value(dh, feature_code, sh, sl);
        }
        if (ddcrc != 0) {
-          TRACECF(debugFunc, "ddca_set_non_table_vcp_value() returned %d - %s", ddcrc, ddca_rc_name(ddcrc));
+          TRACECF(debugFunc, "ddca_set_non_table_vcp_value() returned %d = %s", ddcrc, ddca_rc_name(ddcrc));
           rpt_ddca_status(feature_code, __func__, "ddca_set_non_table_vcp_value", ddcrc);
           goto bye;
        }
