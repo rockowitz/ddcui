@@ -4,7 +4,7 @@
  *  dialog box. This avoids a flurry of simultaneous dialog boxes.
  */
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <iostream>
@@ -12,27 +12,26 @@
 
 #include <QtCore/QString>
 #include <QtCore/QThread>
+#include <QtCore/QSemaphore>
 
 #include "base/core.h"
 #include "main/msgbox_thread.h"
 
 static bool debugThread = false;
 
-// dangerous, would clobber if multiple instances of this class,
-// but can't get it to compile as a member variable;
-static QSemaphore msgboxSemaphore(1);
-
-
-MsgBoxThread::MsgBoxThread(
-        MsgBoxQueue*    requestQueue)
+MsgBoxThread::MsgBoxThread(MsgBoxQueue*    requestQueue)
     : QThread()
     , _requestQueue(requestQueue)
-{}
+{
+   bool debug = false;
+   TRACECF(debugThread, "Executing");
+   _semaphore = new QSemaphore(1);
+}
 
 
 void MsgBoxThread::msbgoxClosed(int result) {
    TRACECF(debugThread, "Releasing semaphore");
-   msgboxSemaphore.release();
+   _semaphore->release();
 }
 
 
@@ -57,8 +56,8 @@ void MsgBoxThread::run() {
         TRACECF(debugThread, "Popped: _boxTitle: %s, _boxText: %s",
                                 QS2S(rqst->_boxTitle), QS2S(rqst->_boxText));
 
-        msgboxSemaphore.acquire();
-        TRACECF(debugThread, "Acquired msgboxSemaphore");
+        _semaphore->acquire();
+        TRACECF(debugThread, "Acquired semaphore");
         emit postSerialMsgBox(rqst->_boxTitle, rqst->_boxText, rqst->_boxIcon);
         // requires MainWindow; clearer since MainWindow::showSerialMsgBox is what gets called
         // but would require knowing MainWindow

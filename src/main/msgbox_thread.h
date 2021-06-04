@@ -35,8 +35,9 @@ public slots:
 private:
      // void showSerialMsgBox(QString title, QString text, QMessageBox::Icon icon);
 
-    MsgBoxQueue *  _requestQueue = NULL;
     const char *   _cls = "MsgBoxThread";
+    MsgBoxQueue *  _requestQueue = nullptr;
+    QSemaphore *   _semaphore = nullptr;
 };
 
 #endif // MSGBOX_THREAD_H
