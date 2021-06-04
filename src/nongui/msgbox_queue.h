@@ -11,6 +11,7 @@
 #include <QtCore/QMutex>
 #include <QtCore/QQueue>
 #include <QtCore/QWaitCondition>
+#include <QtCore/QSemaphore>
 #include <QtWidgets/QMessageBox>
 
 
@@ -53,6 +54,9 @@ private:
     QMutex                    _mutex;
     QQueue<MsgBoxQueueEntry*> _queue;
     QWaitCondition            _queueNonempty;
+
+    QSemaphore * _freeBytes;
+    QSemaphore * _usedBytes;
 };
 
 #endif // MSGBOX_QUEUE_H

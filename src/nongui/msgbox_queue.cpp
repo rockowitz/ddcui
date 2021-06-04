@@ -1,6 +1,6 @@
 /* msgbox_queue.cpp - MsgBoxQueue and the MsgBoxQueueEntry class that populates it */
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <QtCore/QDebug>
@@ -57,50 +57,60 @@ QString MsgBoxQueueEntry::repr() {
 
 MsgBoxQueue::MsgBoxQueue()
 {
-    _queue = QQueue<MsgBoxQueueEntry*>();
+   bool debugFunc = debugClass;
+   debugFunc = false;
+   _queue = QQueue<MsgBoxQueueEntry*>();
+#ifdef USE_MUTEX
     // _mutex = QMutex(QMutex::Recursive);
+#else
+    _freeBytes = new QSemaphore(9999);
+    _usedBytes = new QSemaphore();
+    TRACECF(debugFunc, "this=%p, queue=%p, _usedBytes=%p, _freeBytes=%p", this, _queue, _usedBytes, _freeBytes);
+#endif
 }
 
 
 void MsgBoxQueue::put(MsgBoxQueueEntry * request) {
     bool debugFunc = debugClass;
-    debugFunc = false;
-
+    //debugFunc = false;
+    // TRACECF(debugFunc, "-> Starting. request: |%s|", QS2S(request->repr()));
     assert(request);
-    TRACECF(debugFunc, "-> Before lock. request: |%s|", QS2S(request->repr()));
 
+#ifdef USE_MUTEX
     _mutex.lock();
     _queue.enqueue(request);
     _queueNonempty.wakeOne();
-
-    // dbgrpt_nolock();
-
     _mutex.unlock();
-    TRACECF(debugClass, "Done");
+#else
+    _freeBytes->acquire();
+    _queue.enqueue(request);
+    _usedBytes->release();
+#endif
+    // dbgrpt_nolock();
+    // TRACECF(debugFunc, "Done");
 }
 
 
 MsgBoxQueueEntry * MsgBoxQueue::pop() {
     bool debugFunc = debugClass;
     debugFunc = false;
-    TRACECF(debugFunc, "Starting. Before wait");
+    TRACECF(debugFunc, "Starting");
+#ifdef USE_MUTEX
     _mutex.lock();
+    TRACECF(debugFunc, "After lock, before wait");
     if (_queue.empty())
         _queueNonempty.wait(&_mutex);
-
     MsgBoxQueueEntry * rqst = _queue.dequeue();
-
     // this->dbgrpt_nolock();
-
     _mutex.unlock();
-// #ifdef NO
-    if (debugFunc) {
-        TRACEC("Popped rqst = %p");
-        TRACEC("  title=%s", QS2S(rqst->_boxTitle));
-        TRACEC("  text=%s", QS2S(rqst->_boxText));
-        TRACEC("  icon=%d", rqst->_boxIcon);
-     }
-// #endif
+#else
+    _usedBytes->acquire();
+    MsgBoxQueueEntry * rqst = _queue.dequeue();
+    _freeBytes->release();
+
+    // TRACECF(debugFunc, "-> After releasing  _freeBytes. available=%d, request: |%s|",
+    //       _freeBytes->available(), QS2S(rqst->repr()));
+#endif
     TRACECF(debugFunc, "<- Done. Returning request: %s", QS2S(rqst->repr()) );
     return rqst;
 }
@@ -108,10 +118,10 @@ MsgBoxQueueEntry * MsgBoxQueue::pop() {
 
 void MsgBoxQueue::dbgrpt_nolock() {
    int ct = _queue.size();
-   TRACECF(debugClass, "Queue contains %d entries", ct);
+   TRACEC("Queue contains %d entries", ct);
    for (int ndx = 0; ndx < ct; ndx++) {
       MsgBoxQueueEntry * rqst = _queue.at(ndx);
-      TRACECF(debugClass, "   %s", QS2S(rqst->repr()) );
+      TRACEC("   %s", QS2S(rqst->repr()) );
    }
 }
 
