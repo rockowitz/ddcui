@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.2.0] 2021-06-01
+## [0.2.0] 2021-06-15 
 
 This log summarizes user visible changes in **ddcui**. 
 
@@ -26,12 +26,16 @@ extensively reworked.  For details, see [ddcutil Release Notes](https://www.ddcu
     command line option ***--force-latest-nc_value-names***.
   - Handle the case where a monitor reports a NC value that is not in 
     the MCCS or capabilities list.
+ - Menubar option Actions->Redetect Monitors tells libddcutil to redetect displays. 
+   The caller should replace its data structures to reflect the new list of monitors.
 
 ### Changed
 - Use "video-display" icon from Oxygen theme
 - Rename the "Other Options" dialog to "NC Feature Values"
 - Revise and extend help screen content
 - User interface cleanup
+- Command line option ***--help*** does not report deveelopment related options.
+  Use ***--help-developmen*** or ***--help-all***.
 
 ### Removed
 - qmake is no longer supported, use cmake
