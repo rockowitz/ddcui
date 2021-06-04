@@ -173,6 +173,7 @@ public:
     UserInterfaceOptionsDialog * _uid = nullptr;
     FeatureSelector *            _feature_selector = nullptr;
     MsgBoxQueue*                 _msgBoxQueue = nullptr;
+    MsgBoxThread *               _msgBoxThread = nullptr;
     QMessageBox*                 _serialMsgBox = nullptr;
 
 private:
@@ -190,7 +191,6 @@ private:
     QVector<VcpThread*>        _vcp_threads;
 
     QMessageBox*               _loadingMsgBox;
-    MsgBoxThread *             _msgBoxThread = nullptr;
 
     // Accumulates messages that will be shown in the SerialMsgBox once
     // initialization is sufficiently complete.  Not needed.
