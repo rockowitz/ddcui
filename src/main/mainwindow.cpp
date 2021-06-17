@@ -168,6 +168,9 @@ void MainWindow::freeMonitors() {
 }
 
 
+void MainWindow::initOneMonitor(DDCA_Display_Info * info, int curIndex) {
+}
+
 void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
     bool debug = false;
     TRACECF(debug, "Starting.  parsed_cmd=%p", parsed_cmd);
@@ -187,6 +190,7 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
 
     for (int ndx = 0; ndx < _dlist->ct; ndx++) {
         TRACECF(debug, "Processing display %d", ndx);
+        initOneMonitor(&_dlist->info[ndx], ndx);
 
         // Add entry for monitor in display selector combo box
         QString mfg_id     = _dlist->info[ndx].mfg_id;
@@ -208,6 +212,7 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
         int monitorNumber = ndx+1;
         _toolbarDisplayCB->addItem(s, QVariant(monitorNumber));
 
+#ifdef MOVED
         // Check if the model name of this monitor matches one specified
         // on the command line.
         TRACECF(debug, "ndx=%d, parsed_cmd->model = |%s|, _dlist->info[ndx].model_name = |%s|",
@@ -219,6 +224,7 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
               TRACECF(debug, "model found, ndx=%d", ndx);
            }
         }
+#endif
 
         // Create Monitor instance, initialize data structures
         Monitor * curMonitor = new Monitor(&_dlist->info[ndx], monitorNumber);
@@ -250,6 +256,22 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
             curMonitor->_requestQueue->put(new LoadDfrRequest());
             curMonitor->_requestQueue->put(new VcpCapRequest());
         }
+    }
+
+    if (parsed_cmd->model) {
+       QString userModelParm(parsed_cmd->model);
+       for (int ndx = 0; ndx < _toolbarDisplayCB->count(); ndx++) {
+          QString curName(_toolbarDisplayCB->itemText(ndx));
+          // Check if the model name of this monitor matches one specified
+          // on the command line.
+          TRACECF(debug, "ndx=%d, parsed_cmd->model = |%s|, curname = |%s|",
+                  ndx, parsed_cmd->model, QS2S(curName));
+          if (userModelParm == curName) {
+             initialDisplayIndex = ndx;
+             TRACECF(debug, "model found, ndx=%d", ndx);
+             break;
+          }
+       }
     }
 
 #ifdef DEFERRED_MSG_QUEUE
@@ -321,19 +343,6 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
     GlobalState& globalState = GlobalState::instance();
     globalState._parsed_cmd = parsed_cmd;  // in case of reinitialization
 
-    // _ui->setupUi(this);
-    // setWindowIcon(QIcon(":/icons/cinema_display_blue.png"));
-
-#ifdef ALT
-    _loadingMsgBox = new QMessageBox(
-                            QMessageBox::NoIcon,
-                            QString("Title"),
-                            QString("Loading2..."),
-                            Qt::NoButton,             // buttons
-                            this,                 // parent
-                            Qt::FramelessWindowHint | Qt::Dialog);on_actionButtonBox_accepted
-#endif
-
     // Register metatypes for primitive types here.
     // Metatypes for classes are registered with the class definition.
     qRegisterMetaType<uint8_t>("uint8_t");
@@ -342,7 +351,7 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
     qRegisterMetaType<NcValuesSource>("NcValuesSource");
     qRegisterMetaType<QMessageBox::Icon>("QMessageBox::Icon");
 
-    // Combobox for display selection
+    // ComboBox for display selection
     QLabel* toolbarDisplayLabel = new QLabel("&Display:  ");
     toolbarDisplayLabel->setFont(_ui->mainMenuFont);
     _toolbarDisplayCB = new QComboBox();
@@ -367,7 +376,7 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
     _otherOptionsState  = new OtherOptionsState(parsed_cmd);
     _uiOptionsState     = new UserInterfaceOptionsState(parsed_cmd);
     globalState._otherOptionsState = _otherOptionsState;
-    globalState._uiOptionsState = _uiOptionsState;
+    globalState._uiOptionsState    = _uiOptionsState;
 
     QObject::connect(
         this,     &MainWindow::featureSelectionChanged,
