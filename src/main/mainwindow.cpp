@@ -156,13 +156,11 @@ void MainWindow::freeMonitors() {
    QObject::disconnect(_toolbarDisplayCB, SIGNAL(currentIndexChanged(int)),
                        this,              SLOT(  displaySelectorCombobox_currentIndexChanged(int)));
 
-
-
-  int ct = _toolbarDisplayCB->count();
-  TRACECF(debug,"_toolbarDisplayCB->size() = %d", ct);
-  for (int ndx = ct-1; ndx >= 0; ndx--) {
-    _toolbarDisplayCB->removeItem(ndx);
-  }
+   int ct = _toolbarDisplayCB->count();
+   TRACECF(debug,"_toolbarDisplayCB->size() = %d", ct);
+   for (int ndx = ct-1; ndx >= 0; ndx--) {
+     _toolbarDisplayCB->removeItem(ndx);
+   }
 
    TRACECF(debug, "Done");
 }
@@ -189,7 +187,6 @@ void MainWindow::initOneMonitor(DDCA_Display_Info * info, int curIndex) {
 
    int monitorNumber = curIndex+1;
    _toolbarDisplayCB->addItem(s, QVariant(monitorNumber));
-
 
    // Create Monitor instance, initialize data structures
    Monitor * curMonitor = new Monitor(info, monitorNumber);
@@ -238,15 +235,12 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
     TRACECF(debug, "ddca_get_display_info_list2() returned %d", ddcrc);
     assert(ddcrc == 0);
 
-    int initialDisplayIndex = -1;
-    // QString qmodel(parsed_cmd->model);
-
     for (int ndx = 0; ndx < _dlist->ct; ndx++) {
         TRACECF(debug, "Processing display %d", ndx);
         initOneMonitor(&_dlist->info[ndx], ndx);
-
     }
 
+    int initialDisplayIndex = -1;
     if (parsed_cmd->model) {
        QString userModelParm(parsed_cmd->model);
        for (int ndx = 0; ndx < _toolbarDisplayCB->count(); ndx++) {
