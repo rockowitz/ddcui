@@ -169,7 +169,60 @@ void MainWindow::freeMonitors() {
 
 
 void MainWindow::initOneMonitor(DDCA_Display_Info * info, int curIndex) {
+
+   // Add entry for monitor in display selector combo box
+   QString mfg_id     = info->mfg_id;
+   QString model_name = info->model_name;
+   QString sn         = info->sn;
+#ifdef ALT
+   QString mfg_id     = _dlist->info[ndx].mmid.mfg_id;
+   QString model_name = _dlist->info[ndx].mmid.model_name;
+#endif
+
+   QString s = model_name;
+   if (s.isEmpty() ) {
+      if ( sn.isEmpty() )
+         s = QString("Laptop");
+      else
+         s = QString("Unknown");    // don't expect this
+   }
+
+   int monitorNumber = curIndex+1;
+   _toolbarDisplayCB->addItem(s, QVariant(monitorNumber));
+
+
+   // Create Monitor instance, initialize data structures
+   Monitor * curMonitor = new Monitor(info, monitorNumber);
+   _monitors.append(curMonitor);
+   // ddca_report_display_info(&_dlist->info[ndx], 3);
+
+   curMonitor->_requestQueue = new VcpRequestQueue();
+   FeatureBaseModel * baseModel = new FeatureBaseModel(curMonitor);
+   baseModel->setObjectName(QString::asprintf("baseModel-%d",curIndex));
+   curMonitor->_baseModel = baseModel;
+
+   initMonitorInfoWidget(curMonitor, _ui->centralWidget);
+   initCapabilitiesWidget(curMonitor, _ui->centralWidget);
+   initFeaturesScrollAreaView(curMonitor, baseModel, _ui->centralWidget, _msgBoxQueue);
+
+   connectBaseModel(curMonitor);
+
+   VcpThread * curThread = new VcpThread(NULL,
+                                         curMonitor->_displayInfo,
+                                         curMonitor->_requestQueue,
+                                         baseModel);
+   curThread->start();
+   _vcp_threads.append(curThread);
+
+   // asynchronously get capabilities for current monitor
+   // ddca_report_display_info(&_dlist->info[ndx], 3);
+
+   if (info->dispno > 0) {     // don't try if monitor known to not support DDC
+       curMonitor->_requestQueue->put(new LoadDfrRequest());
+       curMonitor->_requestQueue->put(new VcpCapRequest());
+   }
 }
+
 
 void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
     bool debug = false;
@@ -192,70 +245,6 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
         TRACECF(debug, "Processing display %d", ndx);
         initOneMonitor(&_dlist->info[ndx], ndx);
 
-        // Add entry for monitor in display selector combo box
-        QString mfg_id     = _dlist->info[ndx].mfg_id;
-        QString model_name = _dlist->info[ndx].model_name;
-        QString sn         = _dlist->info[ndx].sn;
-#ifdef ALT
-        QString mfg_id     = _dlist->info[ndx].mmid.mfg_id;
-        QString model_name = _dlist->info[ndx].mmid.model_name;
-#endif
-
-        QString s = model_name;
-        if (s.isEmpty() ) {
-           if ( sn.isEmpty() )
-              s = QString("Laptop");
-           else
-              s = QString("Unknown");    // don't expect this
-        }
-
-        int monitorNumber = ndx+1;
-        _toolbarDisplayCB->addItem(s, QVariant(monitorNumber));
-
-#ifdef MOVED
-        // Check if the model name of this monitor matches one specified
-        // on the command line.
-        TRACECF(debug, "ndx=%d, parsed_cmd->model = |%s|, _dlist->info[ndx].model_name = |%s|",
-                ndx, parsed_cmd->model, _dlist->info[ndx].model_name);
-        if (parsed_cmd->model) {
-           QString userModelParm(parsed_cmd->model);
-           if (QString(userModelParm) == model_name) {
-              initialDisplayIndex = ndx;
-              TRACECF(debug, "model found, ndx=%d", ndx);
-           }
-        }
-#endif
-
-        // Create Monitor instance, initialize data structures
-        Monitor * curMonitor = new Monitor(&_dlist->info[ndx], monitorNumber);
-        _monitors.append(curMonitor);
-        // ddca_report_display_info(&_dlist->info[ndx], 3);
-
-        curMonitor->_requestQueue = new VcpRequestQueue();
-        FeatureBaseModel * baseModel = new FeatureBaseModel(curMonitor);
-        baseModel->setObjectName(QString::asprintf("baseModel-%d",ndx));
-        curMonitor->_baseModel = baseModel;
-
-        initMonitorInfoWidget(curMonitor, _ui->centralWidget);
-        initCapabilitiesWidget(curMonitor, _ui->centralWidget);
-        initFeaturesScrollAreaView(curMonitor, baseModel, _ui->centralWidget, _msgBoxQueue);
-
-        connectBaseModel(curMonitor);
-
-        VcpThread * curThread = new VcpThread(NULL,
-                                              curMonitor->_displayInfo,
-                                              curMonitor->_requestQueue,
-                                              baseModel);
-        curThread->start();
-        _vcp_threads.append(curThread);
-
-        // asynchronously get capabilities for current monitor
-        // ddca_report_display_info(&_dlist->info[ndx], 3);
-
-        if (_dlist->info[ndx].dispno > 0) {     // don't try if monitor known to not support DDC
-            curMonitor->_requestQueue->put(new LoadDfrRequest());
-            curMonitor->_requestQueue->put(new VcpCapRequest());
-        }
     }
 
     if (parsed_cmd->model) {
