@@ -73,6 +73,7 @@ private:
     void deleteMonitor(Monitor * monitor);
     void freeMonitors();
     void initOneMonitor(DDCA_Display_Info * info, int curIndex);
+    void setInitialDisplayIndex(Parsed_Ddcui_Cmd * parsed_cmd);
     void initMonitors(Parsed_Ddcui_Cmd * parsed_cmd);
     void loadMonitorFeatures(Monitor * monitor);
 

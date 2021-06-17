@@ -220,6 +220,48 @@ void MainWindow::initOneMonitor(DDCA_Display_Info * info, int curIndex) {
    }
 }
 
+void MainWindow::setInitialDisplayIndex(Parsed_Ddcui_Cmd * parsed_cmd) {
+   bool debug = false;
+   int initialDisplayIndex = -1;
+   if (parsed_cmd->model) {
+      QString userModelParm(parsed_cmd->model);
+      for (int ndx = 0; ndx < _toolbarDisplayCB->count(); ndx++) {
+         QString curName(_toolbarDisplayCB->itemText(ndx));
+         // Check if the model name of this monitor matches one specified
+         // on the command line.
+         TRACECF(debug, "ndx=%d, parsed_cmd->model = |%s|, curname = |%s|",
+                 ndx, parsed_cmd->model, QS2S(curName));
+         if (userModelParm == curName) {
+            initialDisplayIndex = ndx;
+            TRACECF(debug, "model found, ndx=%d", ndx);
+            break;
+         }
+      }
+
+      TRACECF(debug, "after check model name, initialDisplayIndex = %d", initialDisplayIndex);
+      if (initialDisplayIndex < 0) {
+         // queue status dialog
+         initialDisplayIndex = 0;
+
+         QString qsTitle = QString("ddcutil Error");
+         QString qsDetail = QString("Invalid Model: %1").arg(parsed_cmd->model);
+         QMessageBox::Icon icon = QMessageBox::Warning;
+         MsgBoxQueueEntry * qe = new MsgBoxQueueEntry(qsTitle, qsDetail, icon);
+#ifdef DEFERRED_MSG_QUEUE
+         _deferredMsgs.append(qe);     // not needed
+#endif
+         TRACECF(debug, "Pre put, _msgBoxQueue=%p", _msgBoxQueue);
+         _msgBoxQueue->put(qe);
+      }
+   }
+   else {
+      initialDisplayIndex = 0;
+   }
+   TRACECF(debug, "initialDisplayIndex (2) = %d", initialDisplayIndex);
+
+   _toolbarDisplayCB->setCurrentIndex(initialDisplayIndex);
+}
+
 
 void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
     bool debug = false;
@@ -240,49 +282,10 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
         initOneMonitor(&_dlist->info[ndx], ndx);
     }
 
-    int initialDisplayIndex = -1;
-    if (parsed_cmd->model) {
-       QString userModelParm(parsed_cmd->model);
-       for (int ndx = 0; ndx < _toolbarDisplayCB->count(); ndx++) {
-          QString curName(_toolbarDisplayCB->itemText(ndx));
-          // Check if the model name of this monitor matches one specified
-          // on the command line.
-          TRACECF(debug, "ndx=%d, parsed_cmd->model = |%s|, curname = |%s|",
-                  ndx, parsed_cmd->model, QS2S(curName));
-          if (userModelParm == curName) {
-             initialDisplayIndex = ndx;
-             TRACECF(debug, "model found, ndx=%d", ndx);
-             break;
-          }
-       }
-    }
-
 #ifdef DEFERRED_MSG_QUEUE
-    _deferredMsgs = QList<MsgBoxQueueEntry*>();  // not needed,
+   _deferredMsgs = QList<MsgBoxQueueEntry*>();  // not needed,
 #endif
-    TRACECF(debug, "initialDisplayIndex = %d", initialDisplayIndex);
-    if (parsed_cmd->model) {
-       if (initialDisplayIndex < 0) {
-          // queue status dialog
-          initialDisplayIndex = 0;
-
-          QString qsTitle = QString("ddcutil Error");
-          QString qsDetail = QString("Invalid Model: %1").arg(parsed_cmd->model);
-          QMessageBox::Icon icon = QMessageBox::Warning;
-          MsgBoxQueueEntry * qe = new MsgBoxQueueEntry(qsTitle, qsDetail, icon);
-#ifdef DEFERRED_MSG_QUEUE
-          _deferredMsgs.append(qe);     // not needed
-#endif
-          TRACECF(debug, "Pre put, _msgBoxQueue=%p", _msgBoxQueue);
-          _msgBoxQueue->put(qe);
-       }
-    }
-    else {
-       initialDisplayIndex = 0;
-    }
-    TRACECF(debug, "initialDisplayIndex (2) = %d", initialDisplayIndex);
-
-    _toolbarDisplayCB->setCurrentIndex(initialDisplayIndex);
+    setInitialDisplayIndex(parsed_cmd);
 
     connect(_toolbarDisplayCB, SIGNAL(currentIndexChanged(int)),
             this,              SLOT(  displaySelectorCombobox_currentIndexChanged(int)));
