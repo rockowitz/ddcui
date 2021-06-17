@@ -215,12 +215,16 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
 
    // Must be called before any API call that triggers display identification
    // DDCA_Status rc =  // unused, comment out for now, need to properly set
-   ddca_enable_usb_display_detection(parsed_cmd->flags & CMD_FLAG_NOUSB);
+//    ddca_enable_usb_display_detection(parsed_cmd->flags & CMD_FLAG_NOUSB);
 
-   ddca_enable_udf(              parsed_cmd->flags & CMD_FLAG_ENABLE_UDF);
-   ddca_enable_report_ddc_errors(parsed_cmd->flags & CMD_FLAG_DDCDATA);
-   ddca_enable_error_info(       parsed_cmd->flags & CMD_FLAG_REPORT_FREED_EXCP);
+// ddca_enable_udf(              parsed_cmd->flags & CMD_FLAG_ENABLE_UDF);
 
+   if (parsed_cmd->flags & CMD_FLAG_DDCDATA)
+      ddca_enable_report_ddc_errors(true);
+   if (parsed_cmd->flags & CMD_FLAG_REPORT_FREED_EXCP)
+      ddca_enable_error_info(true);
+
+#ifdef USE_CONFIG_FILE
    if (parsed_cmd->max_tries[0] > 0) {
       ddca_set_max_tries(        DDCA_WRITE_ONLY_TRIES, parsed_cmd->max_tries[0]);
    }
@@ -238,6 +242,7 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
       bool val = (parsed_cmd->enable_sleep_suppression == TRIVAL_TRUE) ? true : false;
       ddca_enable_sleep_suppression(val);
    }
+#endif
 
    // printf("(%s) Done\n", __func__);
    return ok;

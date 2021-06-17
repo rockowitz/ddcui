@@ -45,7 +45,7 @@ Parsed_Ddcui_Cmd *  new_parsed_ddcui_cmd() {
    memcpy(parsed_cmd->marker, PARSED_CMD_MARKER, 4);
    // n. all flags are false, byte values 0, integers 0, pointers NULL because of calloc
    // parsed_cmd->flags |= CMD_FLAG_ENABLE_UDF;
-   parsed_cmd->sleep_multiplier = 1.0;
+   // parsed_cmd->sleep_multiplier = 1.0;
    parsed_cmd->busno = -1;
    return parsed_cmd;
 }
@@ -147,18 +147,18 @@ void dbgrpt_parsed_ddcui_cmd(Parsed_Ddcui_Cmd * parsed_cmd) {
       else
          printf("   traced_files:              none\n" );
 
-      char buf[20];
-      snprintf(buf,20, "%d,%d,%d", parsed_cmd->max_tries[0], parsed_cmd->max_tries[1], parsed_cmd->max_tries[2] );
-      printf("   max_retries:               %s\n",   buf);
+      // char buf[20];
+      // snprintf(buf,20, "%d,%d,%d", parsed_cmd->max_tries[0], parsed_cmd->max_tries[1], parsed_cmd->max_tries[2] );
+      // printf("   max_retries:               %s\n",   buf);
       printf("   report_freed_exceptions:   %s\n",   SBOOL(parsed_cmd->flags & CMD_FLAG_REPORT_FREED_EXCP) );
-      printf("   enable udf:                %s\n",   SBOOL(parsed_cmd->flags & CMD_FLAG_ENABLE_UDF) );
-      printf("   nousb                      %s\n",   SBOOL(parsed_cmd->flags & CMD_FLAG_NOUSB) );
+//    printf("   enable udf:                %s\n",   SBOOL(parsed_cmd->flags & CMD_FLAG_ENABLE_UDF) );
+//    printf("   nousb                      %s\n",   SBOOL(parsed_cmd->flags & CMD_FLAG_NOUSB) );
       printf("   display ddc errors:        %s\n",   SBOOL(parsed_cmd->flags & CMD_FLAG_DDCDATA) );
       printf("   timestamp prefix:          %s\n",   SBOOL(parsed_cmd->flags & CMD_FLAG_TIMESTAMP_TRACE) );
       printf("   thread_id prefix:          %s\n",   SBOOL(parsed_cmd->flags & CMD_FLAG_THREAD_ID_TRACE) );
       printf("   show styles:               %s\n",   SBOOL(parsed_cmd->flags & CMD_FLAG_SHOW_STYLES) );
       printf("   show active style:         %s\n",   SBOOL(parsed_cmd->flags & CMD_FLAG_SHOW_ACTIVE_STYLE) );
-      printf("   sleep multiplier:         %9.1f\n", parsed_cmd->sleep_multiplier);
+//      printf("   sleep multiplier:         %9.1f\n", parsed_cmd->sleep_multiplier);
 
       printf("   require control key:       %s\n",   SBOOL(parsed_cmd->flags & CMD_FLAG_UI_REQUIRE_CONTROL_KEY) );
       printf("   initial view:              %s\n",   get_view_table_symbol(parsed_cmd->view) );
@@ -170,7 +170,7 @@ void dbgrpt_parsed_ddcui_cmd(Parsed_Ddcui_Cmd * parsed_cmd) {
       printf("   include_only capabilities features: %s\n", trival_repr(parsed_cmd->include_only_capabilities_features));
       printf("   initial model:             %s\n",   parsed_cmd->model);
       printf("   initial bus number:        %d\n",   parsed_cmd->busno);
-      printf("   enable sleep suppression:  %s\n",   trival_repr(parsed_cmd->enable_sleep_suppression) );
+//      printf("   enable sleep suppression:  %s\n",   trival_repr(parsed_cmd->enable_sleep_suppression) );
       printf("   hidpi:                     %s\n",   SBOOL(parsed_cmd->flags & CMD_FLAG_HIDPI));
    }
 }

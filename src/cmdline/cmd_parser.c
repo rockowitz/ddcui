@@ -105,8 +105,8 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    Parsed_Ddcui_Cmd * parsed_cmd = new_parsed_ddcui_cmd();
 
    gboolean ddc_flag                = false;
-   gboolean enable_udf_flag         = false;
-   gboolean nousb_flag              = false;
+// gboolean enable_udf_flag         = true;
+// gboolean nousb_flag              = false;
    gboolean report_freed_excp_flag  = false;
    gboolean timestamp_trace_flag    = false;
    gboolean thread_id_trace_flag    = false;
@@ -324,8 +324,9 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    SET_CMDFLAG(CMD_FLAG_THREAD_ID_TRACE,   thread_id_trace_flag);
    SET_CMDFLAG(CMD_FLAG_REPORT_FREED_EXCP, report_freed_excp_flag);
 
-   SET_CMDFLAG(CMD_FLAG_ENABLE_UDF,        enable_udf_flag);
-   SET_CMDFLAG(CMD_FLAG_NOUSB,             nousb_flag);
+// SET_CMDFLAG(CMD_FLAG_ENABLE_UDF,        enable_udf_flag);
+// SET_CMDFLAG(CMD_FLAG_NOUSB,             nousb_flag);
+
    SET_CMDFLAG(CMD_FLAG_SHOW_STYLES,       show_styles_flag);
    SET_CMDFLAG(CMD_FLAG_SHOW_ACTIVE_STYLE, show_active_style_flag);
 
@@ -362,7 +363,7 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    else
       parsed_cmd->include_only_capabilities_features = TRIVAL_UNSET;
 
-
+#ifdef USE_CONFIG_FILE
 // #ifdef REPLACE_NTSA
    if (maxtrywork) {
        bool saved_debug = debug;
@@ -423,6 +424,7 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
        debug = saved_debug;
     }
 // #endif
+#endif
 
    if (custom_feature_set_work) {
       char ** error_msgs;         // Null_Terminated_String_Array error_msgs;
@@ -445,7 +447,7 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
       }
    }
 
-#ifdef LIBDDCUTIL_DISABLED
+#ifdef USE_CONFIG_FILE
    parsed_cmd->enable_sleep_suppression = TRIVAL_UNSET;
    if (less_sleep_true_set)
       parsed_cmd->enable_sleep_suppression = TRIVAL_TRUE;
