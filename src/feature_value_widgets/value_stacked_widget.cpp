@@ -188,7 +188,7 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
        TRACEMCF(debug, "_feature_code == 0x14");
        _pageno_selected = _pageno_ncplus;
        _cur_stacked_widget = _ncplusWidget;
-       setCurrentIndex(_pageno_ncplus);
+       setCurrentWidget(_cur_stacked_widget);
     }
 
     else if (  _featureCode == 0x62    // Audio volume
@@ -230,7 +230,7 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
              2);
        _pageno_selected = _pageno_2button;
        _cur_stacked_widget = _2ButtonWidget;
-       setCurrentIndex(_pageno_selected);
+       setCurrentWidget(_cur_stacked_widget);
     }
 
     else if ( _featureCode == 0xca) {
@@ -367,10 +367,12 @@ void ValueStackedWidget::setNcValuesSource(NcValuesSource newValuesSource, bool 
    TRACECF(debug, "newValuesSource=%d, newUseLatestNcValueNames=%s, _pageno_selected=%d, _pageno_nc=%d, _pageno_ncplus=%d",
                       newValuesSource, SBOOL(newUseLatestNcValueNames), _pageno_selected, _pageno_nc, _pageno_ncplus);
 
-   if (_pageno_selected == _pageno_nc) {
+   // if (_pageno_selected == _pageno_nc) {
+   if (_cur_stacked_widget == _ncWidget) {
       _ncWidget->reloadComboBox(newValuesSource, newUseLatestNcValueNames);
    }
-   else if (_pageno_selected == _pageno_ncplus) {
+   // else if (_pageno_selected == _pageno_ncplus) {
+   else if (_cur_stacked_widget == _ncplusWidget) {
       _ncplusWidget->reloadComboBox(newValuesSource, newUseLatestNcValueNames);
    }
 
