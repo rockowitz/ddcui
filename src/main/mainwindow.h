@@ -16,11 +16,13 @@
 #include "cmdline/parsed_cmd.h"
 #include "nongui/msgbox_queue.h"
 
+#include "base/monitor.h"
+// class Monitor;
+
 class DebugActionsDialog;
 class FeatureBaseModel;
 class FeatureSelectionDialog;
 class FeatureSelector;
-class Monitor;
 class MsgBoxQueue;
 class MsgBoxThread;
 class OtherOptionsDialog;

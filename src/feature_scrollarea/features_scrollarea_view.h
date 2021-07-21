@@ -6,7 +6,7 @@
  * There is one instance of this class for each detected monitor.
  */
 
-// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef FEATURES_SCROLLAREA_VIEW_H
@@ -19,8 +19,10 @@
 
 #include "feature_scrollarea/feature_widget.h"
 
-class QStackedWidget;
+#include "base/monitor.h"
 class Monitor;
+
+class QStackedWidget;
 class FeaturesScrollAreaContents;
 class MsgBoxQueue;
 

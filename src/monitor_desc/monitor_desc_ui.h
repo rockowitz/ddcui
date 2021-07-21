@@ -1,13 +1,15 @@
 // monitor_desc_ui.h
 
-// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later/endcopyright>
 
 #ifndef MONITOR_DESC_UI_H_
 #define MONITOR_DESC_UI_H_
 
+#include "base/monitor.h"
+// class Monitor;
+
 class QWidget;
-class Monitor;
 class QStackedWidget;
 
 QWidget * initMonitorInfoWidget(

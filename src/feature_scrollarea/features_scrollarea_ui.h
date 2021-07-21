@@ -1,6 +1,6 @@
 /* features_scrollarea_ui.h */
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef FEATURES_SCROLLAREA_UI_H_
@@ -9,7 +9,9 @@
 // class FeaturesScrollAreaUI {
 // };
 
-class Monitor;
+#include "base/monitor.h"
+// class Monitor;
+
 class FeatureBaseModel;
 class QStackedWidget;
 class MsgBoxQueue;
