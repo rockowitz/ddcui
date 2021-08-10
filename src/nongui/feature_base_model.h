@@ -20,8 +20,7 @@
 
 // typedef void (*NotifyFeatureChanged)(uint8_t feature_code);
 
-// class Monitor;
-#include "base/monitor.h"
+class Monitor;
 
 /** Records all VCP values for a single monitor.
  *
