@@ -1,3 +1,0 @@
-monitor.h symbolic link is hack so that AUTOMOC cmake property finds monitor.h when checking if moc
-is to executed for monitor.cpp
-
