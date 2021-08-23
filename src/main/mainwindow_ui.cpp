@@ -163,13 +163,15 @@ void Ui_MainWindow::setupMenus(QMainWindow *MainWindow)
 
     menuView->addAction(actionMonitorSummary);
     menuView->addAction(actionCapabilities);
-
     menuView->addAction(actionFeaturesScrollArea);
 
     actionMonitorSummary->setText(    QApplication::translate("MainWindow", "&Monitor Summary",       nullptr, -1));
     actionCapabilities->setText(      QApplication::translate("MainWindow", "&Capabilities",          nullptr, -1));
     actionFeaturesScrollArea->setText(QApplication::translate("MainWindow", "&Features",              nullptr, -1));
     actionRescan->setText(            QApplication::translate("MainWindow", "Rescan Feature &Values", nullptr, -1));
+    actionMonitorSummary->setEnabled(false);
+    actionCapabilities->setEnabled(false);
+    actionFeaturesScrollArea->setEnabled(false);
     actionRescan->setFont(mainMenuFont);
     actionRescan->setEnabled(false);
 
