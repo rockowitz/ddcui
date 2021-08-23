@@ -77,6 +77,7 @@ set(APPLY_CANCEL OFF)
 
 configure_file(cconfig.h.in config.h)
 
+# add_compile_definitions(QT_NO_DEBUG)
 
 include_directories(src)
 
