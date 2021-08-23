@@ -37,7 +37,7 @@ Monitor::Monitor(DDCA_Display_Info * display_info, int monitorNumber)
 
 
 Monitor::~Monitor() {
-   bool debug = true;
+   bool debug = false;
    TRACECF(debug, "Monitor destructor starting. monitor=%p, number=%d", this, this->_monitorNumber);
    // free _displayInfo         // will be freed by ddca_free_display_info_list()
    // ddca_free_display_info(); // entire list will be freed by ddca_display_info_list()
