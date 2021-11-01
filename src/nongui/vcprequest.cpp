@@ -89,7 +89,7 @@ VcpRequestQueue::VcpRequestQueue()
 
 VcpRequestQueue::~VcpRequestQueue()
 {
-   bool debug = true;
+   bool debug = false;
    if (debug)
       printf("(%s) Executing VcpRequestQueue descructor\n", __func__);
 }
