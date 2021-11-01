@@ -775,14 +775,10 @@ void MainWindow::on_actionRedetect_triggered() {
    TRACECF(debug, "Before initMonitors()");
    this->initMonitors(GlobalState::instance()._parsed_cmd);
    TRACECF(debug, "After initMonitors()");
-   // hack
-   // _toolbarDisplayCB->removeItem(0);
 
    // reinit UI to first monitor, summary view
    // if no monitors, set _curDisplayIndex = -1
    _curDisplayIndex = (_dlist->ct > 0) ? 0 : -1;
-   // if (_dlist->ct < 0)
-   //    _ui->centralWidget->hide();
 
    emit signalMonitorSummaryView();
 
