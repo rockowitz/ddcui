@@ -1,11 +1,11 @@
 # Changelog
 
-## [0.2.0] 2021-06-15 
+## [0.2.0] 2021-10-15 
 
 This log summarizes user visible changes in **ddcui**. 
 
-Though the list of changes is short, in fact the code base has been 
-extensively reworked.  For details, see [ddcutil Release Notes](https://www.ddcutil.com/release_notes).
+Though the list of changes is short, in fact the code base has been extensively reworked.  
+For details, see [ddcui Release Notes](https://www.ddcutil.com/ddcui_release_notes).
 
 ### Added
 - Support VCP features, e.g. x62 (Audio Balance), that have both a continuous 
