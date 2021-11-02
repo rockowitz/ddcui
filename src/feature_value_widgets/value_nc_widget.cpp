@@ -130,6 +130,7 @@ ValueNcWidget::~ValueNcWidget() {
 
 void ValueNcWidget::setFeatureValue(const FeatureValue &fv) {
     bool debug = false;  // || (fv.featureCode() == 0x14);
+    // debug = debug || (fv.featureCode() == 0xca);
     debug = debug || debugWidget;
     // TRACEMCF(debug, "[TRACEMCF. ValueNcWidget]. Starting." );
     // TRACEMF(debug,  "[TRACEMF.  ValueNcWidget]. Starting." );  // reports ValueNcPlosWidget, i.e. subclass name
@@ -201,6 +202,7 @@ ValueNcWidget::sl_value_table_lookup(
 
 void ValueNcWidget::loadComboBox2() {
    bool debugFunc = false;  // (_featureCode == 0x14);
+   // debug = debug || (_featureCode == 0xca);
    debugFunc = debugFunc || debugNcValues;
 
    NcValuesSource mode = _ncValuesSource;
@@ -217,7 +219,8 @@ void ValueNcWidget::loadComboBox2() {
    TRACEMF(debugFunc, "_validValues at method start: %s", bs256_to_string(_validValues, ""," "));
 
    if (mode == NcValuesFromCapabilities || mode == NcValuesFromBoth) {
-      _validValues = bs256_or(_validValues, bs256_from_cfr(_capVcp));
+      if (_capVcp)
+         _validValues = bs256_or(_validValues, bs256_from_cfr(_capVcp));
    }
    DDCA_Feature_Value_Entry * slValues =
          (_useLatestNcValues) ? _finfo->latest_sl_values :  _finfo->sl_values;
