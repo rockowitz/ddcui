@@ -35,7 +35,7 @@ static bool showResizeEvents = false;
 
 #ifdef UNUSED
 void ValueNcplusWidget::layoutWidget() {
-   bool debug = true;
+   bool debug = false;
    TRACEF(debug, "Starting. feature = 0x%02x", _featureCode);
    QFont font;
      font.setPointSize(8);
@@ -125,7 +125,7 @@ ValueNcplusWidget::ValueNcplusWidget(QWidget *parent):
    bool debug = false;
     _cls = strdup(metaObject()->className());
     // layoutWidget();
-    TRACEMCF(debug, "Done, _cls=", _cls);
+    TRACEMCF(debug, "Done, _cls=%s", _cls);
 }
 
 
@@ -165,7 +165,7 @@ void ValueNcplusWidget::setAuxFieldsXca() {     // OSD
          s ="Power button disabled, events enabled (sh=x01)";
          break;
       case 0x02:
-         s = "Power button enabled, events enabled (xh=x02)";
+         s = "Power button enabled, events enabled (sh=x02)";
          break;
       case 0x03:
          s = "Power button disabled, events disabled (sh=x03)";
