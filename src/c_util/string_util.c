@@ -552,12 +552,21 @@ strsplit_maxlength(
  *  g_strfreev(string_array) equivalent to ntsa_free(string_array, true)
  */
 void ntsa_free(Null_Terminated_String_Array string_array, bool free_strings) {
+   bool debug = false;
+   if (debug)
+      printf("(%s) Freeing NTSA %p, free_strings=%s\n", __func__, string_array, sbool(free_strings) );
    if (string_array) {
       if (free_strings) {
-      int ndx = 0;
-      while (string_array[ndx] != NULL)
-         free(string_array[ndx++]);
+         int ndx = 0;
+         while (string_array[ndx] != NULL) {
+            if (debug)
+               printf("(%s) Freeing string %d, %p->%s\n",
+                      __func__, ndx, string_array[ndx], string_array[ndx]);
+            free(string_array[ndx++]);
+         }
       }
+      if (debug)
+         printf("(%s) Freeing string_array=%p\n", __func__, string_array);
       free(string_array);
    }
 }
@@ -614,6 +623,35 @@ Null_Terminated_String_Array ntsa_join(
       from++;
    }
    from = a2;
+   while (*from) {
+      if (dup)
+         *to = strdup(*from);
+      else
+         *to = *from;
+      to++;
+      from++;
+   }
+   return result;
+}
+
+
+
+/** Creates copy of a #Null_Terminated_String_Array.
+ *
+ *  The pointers in the new array point to newly allocated copies of the
+ *  original array.
+ *
+ *  @param a1  instance to copy
+ *  @param dup if true, copy the strings as well as pointer array
+ *  @return newly allocated #Null_Terminated_String_Array
+ */
+Null_Terminated_String_Array ntsa_copy(Null_Terminated_String_Array a1, bool dup)
+{
+   assert(a1);
+   int ct = ntsa_length(a1);
+   Null_Terminated_String_Array result = calloc((ct+1), sizeof(char *));
+   char ** to = result;
+   char ** from = a1;
    while (*from) {
       if (dup)
          *to = strdup(*from);
