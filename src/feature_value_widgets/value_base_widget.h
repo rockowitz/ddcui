@@ -1,6 +1,6 @@
 /* value_base_widget.h - Common features of all Value_..._Widgets */
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef VALUE_BASE_WIDGET_H
@@ -22,6 +22,8 @@ class ValueBaseWidget : public QFrame    // was ValueAbstractWidget
 
 public:              //methods
     explicit ValueBaseWidget(QWidget *parent = nullptr);
+
+    virtual ~ValueBaseWidget();
 
     virtual void     setFeatureValue(const FeatureValue &fv);
     virtual void     setCurrentShSl(uint16_t newval);

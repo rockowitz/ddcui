@@ -11,6 +11,8 @@
 #include "base/global_state.h"
 #include "base/feature_selector.h"
 
+#include "ddcutil_c_api.h"
+
 // bool showValueWidgetResizeEvents = false;
 
 // utility method that provides consistent formatting for comboboxes
@@ -51,6 +53,17 @@ ValueBaseWidget::ValueBaseWidget(QWidget *parent)
    setFrameStyle(QFrame::Sunken | QFrame::Panel);
 
    TRACEMCF(debug, "Done");
+}
+
+ValueBaseWidget::~ValueBaseWidget() {
+   bool debug = false;
+   TRACEMCF(debug, "Executing. this._id = %d", _id);
+   ddca_free_feature_metadata(_finfo);
+   // _capVcp ??
+   // _dref do not need to free
+   // free(_cls);
+   // delete _cls;  // fails - const
+   TRACEMCF(debug, "Done.");
 }
 
 
