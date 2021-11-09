@@ -78,7 +78,6 @@ gboolean stats_arg_func(const    gchar* option_name,
 }
 
 
-
 /** Primary parsing function
  *
  *  \param  argc      number of command line arguments
@@ -307,10 +306,16 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    // g_option_context_set_description(context, help_description);
    free(help_description);
 
-   bool ok = g_option_context_parse(context, &argc, &argv, &error);
+   char ** mangleable_argv = argv;
+   bool ok = g_option_context_parse_strv(context, &mangleable_argv, &error);
    if (!ok) {
       fprintf(stderr, "ddcui option parsing failed: %s\n", error->message);
    }
+   if (debug)
+      printf("(%s) Freeing mangleable_argv=%p:", __func__, mangleable_argv);
+   if (debug)
+      ntsa_show(mangleable_argv);
+   ntsa_free(mangleable_argv, true);
 
 #define SET_CMDFLAG(_bit, _flag) \
    do { \
