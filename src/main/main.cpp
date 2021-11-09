@@ -10,6 +10,7 @@
 #include <ddcutil_c_api.h>
 
 extern "C" {
+#include "c_util/debug_util.h"
 #include "c_util/ddcutil_config_file.h"
 #include "c_util/simple_ini_file.h"
 #include "c_util/string_util.h"
@@ -172,7 +173,9 @@ void dbgrpt_hidpiQApplication(QApplication& coreapp) {
 
 
 static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
-   // printf("(%s) Starting\n", __func__);
+   bool debug = false;
+   if (debug)
+      printf("(%s) Starting. parsed_cmd=%p\n", __func__, parsed_cmd);
 
    bool ok = true;
 
@@ -244,7 +247,8 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
    }
 #endif
 
-   // printf("(%s) Done\n", __func__);
+   if (debug)
+      printf("(%s) Done.  Returning %s\n", __func__, SBOOL(ok));
    return ok;
 }
 
@@ -292,6 +296,7 @@ int main(int argc, char *argv[])
     if (combined_config_file_options && strlen(combined_config_file_options) > 0)
        printf("Applying ddcui      options from %s: %s\n",
                     config_fn, combined_config_file_options);
+    free(combined_config_file_options);
 
     if (errmsgs->len > 0) {
        printf("Errors reading ddcui configuration file %s:\n", config_fn);
@@ -299,6 +304,7 @@ int main(int argc, char *argv[])
           printf("   %s\n", (char*) g_ptr_array_index(errmsgs, ndx));
     }
     g_ptr_array_free(errmsgs, true);
+    free(config_fn);
     if (apply_config_rc < 0)
        return 1;
 
