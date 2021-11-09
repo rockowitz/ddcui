@@ -167,6 +167,8 @@ void MainWindow::freeMonitors() {
 
 
 void MainWindow::initOneMonitor(DDCA_Display_Info * info, int curIndex) {
+   bool debug = false;
+   TRACECF(debug, "Starting. info=%p, curIndex=%d", info, curIndex);
 
    // Add entry for monitor in display selector combo box
    QString mfg_id     = info->mfg_id;
@@ -212,13 +214,17 @@ void MainWindow::initOneMonitor(DDCA_Display_Info * info, int curIndex) {
    _vcp_threads.append(curThread);
 
    // asynchronously get capabilities for current monitor
-   // ddca_report_display_info(&_dlist->info[ndx], 3);
+   if (debug)
+      ddca_report_display_info(info, 3);
 
    if (info->dispno > 0) {     // don't try if monitor known to not support DDC
        curMonitor->_requestQueue->put(new LoadDfrRequest());
        curMonitor->_requestQueue->put(new VcpCapRequest());
    }
+
+   TRACECF(debug, "Done.");
 }
+
 
 void MainWindow::setInitialDisplayIndex(Parsed_Ddcui_Cmd * parsed_cmd) {
    bool debug = false;
