@@ -47,15 +47,15 @@ FeatureValue::FeatureValue(
    // debugFunc = debugFunc || (_featureCode == 0x14);
    // debugFunc = debugFunc || (_featureCode == 0xf5);
    if (debugFunc) {
-      TRACEC("_id=%d, feature_code=0x%02x, finfo=%p, cap_vcp=%p, sh=0x%02x, sl=0x%02x",
-              _id, _featureCode, _finfo, cap_vcp, val.sh, val.sl);
+      TRACEC("_id=%d, feature_code=0x%02x, finfo=%p, cap_vcp=%p, sh=0x%02x, sl=0x%02x, getvcpStatus=%s",
+              _id, _featureCode, _finfo, cap_vcp, val.sh, val.sl, ddca_rc_name(getvcpStatus));
       ddca_dbgrpt_feature_metadata(_finfo, 2);
    }
    if (_finfo) {  // when would it be NULL ? if getvcp failed
        assert(_featureCode  == _finfo->feature_code);
 
        // alt: if (_finfo->feature_flags & DDCA_SIMPLE_NC )
-       if (_finfo->sl_values) {
+       if (_finfo->sl_values && (getvcpStatus == 0) ) {
           _observedNcValues = bs256_add(EMPTY_BIT_SET_256, val.sl);
        }
    }
