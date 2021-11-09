@@ -326,7 +326,7 @@ void VcpThread::capabilities() {
                // adjustRetries();
                retryable = true;
                retry_count++;
-            }   // end, ddca_get_capabilities() failure, retry possible
+            }   // end, ddca_get_capabilities_string() failure, retry possible
             else {  // failure, can't retry
                if (retry_count > 0)
                   TRACECF(debugRetry || true, "Capabilities check failed after %d retries, retries exhausted", retry_count);
@@ -336,12 +336,13 @@ void VcpThread::capabilities() {
          else if (retry_count > 0) {
             TRACECF(debugRetry || true, "Capabilities check succeeded after %d retries", retry_count);
          }
-      } // end of while() loop calling ddca_get_capabilies()
+      } // end of while() loop calling ddca_get_capabilities_string()
 
-      if (ddcrc == 0) {   // ddca_get_capabilities() succeeded, try to parse
+      if (ddcrc == 0) {   // ddca_get_capabilities_string() succeeded, try to parse
          ddcrc = ddca_parse_capabilities_string(caps, &parsed_caps);
          if (ddcrc != 0)
             rpt_ddca_status(0, __func__, "ddca_parse_capabilities_string", ddcrc);
+         free(caps);
       }
       // rpt_ddca_status(0, __func__, "dummy function", -99);   // *** TEMP ***
       // if ddcrc != 0, caps may be NULL, parsed_caps definitely NULL
