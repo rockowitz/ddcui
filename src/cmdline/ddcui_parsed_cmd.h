@@ -3,8 +3,8 @@
 // Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#ifndef PARSED_CMD_H_
-#define PARSED_CMD_H_
+#ifndef DDCUI_PARSED_CMD_H_
+#define DDCUI_PARSED_CMD_H_
 
 #include <ddcutil_types.h>
 
@@ -123,4 +123,4 @@ Parsed_Ddcui_Cmd *  new_parsed_ddcui_cmd();
 void                free_parsed_ddcui_cmd(Parsed_Ddcui_Cmd * parsed_cmd);
 void                dbgrpt_parsed_ddcui_cmd(Parsed_Ddcui_Cmd * parsed_cmd);   // debugging function
 
-#endif /* PARSED_CMD_H_ */
+#endif /* DDCUI_PARSED_CMD_H_ */

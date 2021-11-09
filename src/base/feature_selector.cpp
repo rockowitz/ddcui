@@ -13,7 +13,8 @@
 
 #include "base/core.h"
 #include "base/feature_selector.h"
-#include "cmdline/parsed_cmd.h"
+
+#include "cmdline/ddcui_parsed_cmd.h"
 
 
 // For feature selection dialog

@@ -10,10 +10,10 @@
 
 #include <ddcutil_types.h>
 
+#include "cmdline/ddcui_parsed_cmd.h"
 #include "base/core.h"
 #include "base/user_interface_options_state.h"
 #include "base/other_options_state.h"
-#include "cmdline/parsed_cmd.h"
 #include "nongui/msgbox_queue.h"
 
 class DebugActionsDialog;

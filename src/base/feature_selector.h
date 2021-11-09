@@ -14,7 +14,7 @@
 
 #include "ddcutil_types.h"
 
-#include "cmdline/parsed_cmd.h"
+#include "cmdline/ddcui_parsed_cmd.h"
 
 
 class FeatureSelector    // : public QObject

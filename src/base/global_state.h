@@ -8,10 +8,10 @@
 
 // #include <QtWidgets/QtWidgets>   // to define Q_OBJECT
 
+#include "cmdline/ddcui_parsed_cmd.h"
 #include "base/other_options_state.h"
 #include "base/user_interface_options_state.h"
 #include "main/mainwindow.h"    // ugh - referencing out of base, to clean up
-#include "cmdline/parsed_cmd.h"
 
 
 class GlobalState {

@@ -1,6 +1,6 @@
 /** \file parsed_cmd.c - parsed ddcui command line */
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 
@@ -16,7 +16,7 @@
 #include "ddcutil_c_api.h"
 
 #include "c_util/data_structures.h"
-#include "cmdline/parsed_cmd.h"
+#include "ddcui_parsed_cmd.h"
 
 
 // all uses of this local function are safe,

@@ -24,10 +24,10 @@
 #include "c_util/string_util.h"
 #include "base/ddcui_parms.h"
 #include "base/feature_list.h"
+#include "ddcui_cmd_parser.h"
 
-#include "cmdline/cmd_parser_aux.h"
-#include "cmdline/parsed_cmd.h"
-#include "cmdline/cmd_parser.h"
+#include "ddcui_cmd_parser_aux.h"
+#include "ddcui_parsed_cmd.h"
 
 
 // Variables used by callback function

@@ -16,8 +16,8 @@ extern "C" {
 #include "c_util/string_util.h"
 #include "c_util/xdg_util.h"
 
-#include "cmdline/parsed_cmd.h"
-#include "cmdline/cmd_parser.h"
+#include "cmdline/ddcui_parsed_cmd.h"
+#include "cmdline/ddcui_cmd_parser.h"
 }
 
 #include "base/ddcui_parms.h"

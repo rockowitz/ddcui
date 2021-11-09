@@ -2,14 +2,15 @@
 //
 // Maintains the current state of the User Interface Options dialog
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 // NB was originally named ui_options_state.h etc, but the ui prefix is
 // special, causes the user interface compiler to look for a dialog named ui_options_state_dialog
 
 #include "user_interface_options_state.h"
-#include "cmdline/parsed_cmd.h"
+
+#include "cmdline/ddcui_parsed_cmd.h"
 #include "core_widgets/enhanced_slider.h"
 
 #include "core.h"

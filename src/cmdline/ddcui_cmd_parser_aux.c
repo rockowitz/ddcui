@@ -3,7 +3,7 @@
  *  Functions and strings that are independent of the parser package used.
  */
 
-// Copyright (C) 2014-2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2014-2021 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 // #include <config.h>
@@ -20,7 +20,7 @@
 
 // #include "base/parms.h"
 
-#include "cmdline/cmd_parser_aux.h"
+#include "ddcui_cmd_parser_aux.h"
 
 bool all_digits(char * val, int ct) {
    // bool debug = false;
