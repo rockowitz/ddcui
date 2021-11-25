@@ -78,6 +78,30 @@ gboolean stats_arg_func(const    gchar* option_name,
 }
 
 
+// signature GOptionParseFunc()
+gboolean pre_parse_hook(
+      GOptionContext * context,
+      GOptionGroup * group,
+      gpointer data,
+      GError** error)
+{
+   // printf("(%s) data = %d\n", __func__, GPOINTER_TO_INT(data));
+   return true;
+}
+
+gboolean post_parse_hook(
+      GOptionContext * context,
+      GOptionGroup * group,
+      gpointer data,
+      GError** error)
+{
+  //  printf("(%s) data = %d\n", __func__, GPOINTER_TO_INT(data));
+   return true;
+}
+
+
+
+
 /** Primary parsing function
  *
  *  \param  argc      number of command line arguments
@@ -148,24 +172,6 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    gboolean f6_flag        = false;
 
 
-   // signature GOptionParseFunc()
-   gboolean pre_parse_hook(
-         GOptionContext * context,
-         GOptionGroup * group,
-         gpointer data,
-         GError** error)
-   {
-      // printf("(%s) data = %d\n", __func__, GPOINTER_TO_INT(data));
-   }
-
-   gboolean post_parse_hook(
-         GOptionContext * context,
-         GOptionGroup * group,
-         gpointer data,
-         GError** error)
-   {
-     //  printf("(%s) data = %d\n", __func__, GPOINTER_TO_INT(data));
-   }
 
 
    GOptionEntry public_option_entries[] = {
