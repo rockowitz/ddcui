@@ -5,6 +5,7 @@
 
 #include "feature_value_widgets/value_simple_cont_widget.h"
 
+#include <assert.h>
 #include <string.h>
 
 #include <QtCore/QEvent>
