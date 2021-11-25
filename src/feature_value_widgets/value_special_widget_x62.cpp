@@ -3,6 +3,8 @@
 // Copyright (C) 2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+#include <assert.h>
+
 #include "base/ddcui_parms.h"
 #include "core_widgets/enhanced_slider.h"
 #include "value_simple_cont_widget.h"
