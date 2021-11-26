@@ -51,7 +51,7 @@ message( STATUS "Qt5Help_INCLUDE_DIRS:       ${Qt5Help_INCLUDE_DIRS}" )
 find_package (PkgConfig REQUIRED)
 pkg_check_modules(GLIB2 REQUIRED glib-2.0)
 
-pkg_check_modules(DDCUTIL REQUIRED ddcutil>=0.9.9)
+pkg_check_modules(DDCUTIL REQUIRED ddcutil>=1.2.0)
 message("Set by pkg-config:" )
 message( STATUS "GLIB2_INCLUDE_DIRS:    ${GLIB2_INCLUDE_DIRS}" )
 message( STATUS "GLIB2_LIBRARIES:       ${GLIB2_LIBRARIES}" )
