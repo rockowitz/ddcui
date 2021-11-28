@@ -3,6 +3,7 @@ if(NOT EXISTS "@CMAKE_BINARY_DIR@/install_manifest.txt")
 endif(NOT EXISTS "@CMAKE_BINARY_DIR@/install_manifest.txt")
 
 file(READ "@CMAKE_BINARY_DIR@/install_manifest.txt" files)
+message(STATUS "root access may be required to remove old files")
 string(REGEX REPLACE "\n" ";" files "${files}")
 foreach(file ${files})
   message(STATUS "Uninstalling $ENV{DESTDIR}${file}")
