@@ -32,7 +32,7 @@
 
 // Variables used by callback function
 static DDCA_Stats_Type  stats_work = DDCA_STATS_NONE;
-static char *           maxtrywork = NULL;
+// static char *           maxtrywork = NULL;
 
 // Callback function for processing --stats
 gboolean stats_arg_func(const    gchar* option_name,
@@ -136,8 +136,8 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    gboolean version_flag            = false;
    gboolean show_styles_flag        = false;
    gboolean show_active_style_flag  = false;
-   gboolean less_sleep_true_set     = false;
-   gboolean less_sleep_false_set    = false;
+   // gboolean less_sleep_true_set     = false;
+   // gboolean less_sleep_false_set    = false;
    gboolean use_latest_nc_values_true_set = false;
 // gboolean use_latest_nc_values_false_set = false;
    gboolean hidpi_flag              = false;   //currently used only for testing
@@ -145,7 +145,7 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    gchar**  trace_classes           = NULL;
    gchar**  trace_filenames         = NULL;
    gchar**  trace_functions         = NULL;
-   char *   sleep_multiplier_work   = NULL;
+   // char *   sleep_multiplier_work   = NULL;
 
 #ifdef DISABLE_VIEW_OPTION
    gchar*   view_work               = NULL;
@@ -272,6 +272,7 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
       { NULL }
    };
 
+#ifdef UNUSED
    GOptionEntry final_options[] = {
      // collect to verify that does not exist
       {G_OPTION_REMAINING,
@@ -283,6 +284,7 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
 
       { NULL }
    };
+#endif
 
    GOptionGroup * development_option_group =
    g_option_group_new("development", "Development related options", "Not for general use", GINT_TO_POINTER(3), NULL);
