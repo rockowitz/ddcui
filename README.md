@@ -3,6 +3,8 @@
 
 **ddcui** is a graphical user interface for **ddcutil**, implemented using Qt. 
 
+![ddcui_features](/screenshots/ddcui_features.png)
+
 For a guide to building **ddcui** from source, see [Building ddcui](http://www.ddcutil.com/building_ddcui)
 in the ddcutil documentation.
 
