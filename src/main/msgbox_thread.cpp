@@ -23,7 +23,7 @@ MsgBoxThread::MsgBoxThread(MsgBoxQueue*    requestQueue)
     : QThread()
     , _requestQueue(requestQueue)
 {
-   bool debug = false;
+   // bool debug = false;
    TRACECF(debugThread, "Executing");
    _semaphore = new QSemaphore(1);
 }
