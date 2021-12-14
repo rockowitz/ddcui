@@ -4,23 +4,21 @@ project(ddcui)
 
 # set (coverity_cflags --type_traits_helpers)
 # set (coverity_cflags --no_predefined_feature_test_macros)
+# set (COVERITY_DUMMIES OFF)
 
 message(STATUS "Significant environment variables:")
-message(STATUS "  INCLUDE:           $ENV{INCLUDE}")
-message(STATUS "  LD_LIBRARY_PATH:   $ENV{LD_LIBARARY_PATH}")
-message(STATUS "  PKG_CONFIG_PATH:   $ENV{PKG_CONFIG_PATH} ")
-message(STATUS "  CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
-message(STATUS "  CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
-message(STATUS "  DESTDIR:           $ENV{DESTDIR}" )
+message(STATUS "  INCLUDE:              $ENV{INCLUDE}")
+message(STATUS "  LD_LIBRARY_PATH:      $ENV{LD_LIBARARY_PATH}")
+message(STATUS "  PKG_CONFIG_PATH:      $ENV{PKG_CONFIG_PATH} ")
+message(STATUS "  DESTDIR:              $ENV{DESTDIR}" )
+message(STATUS "cmake paths:")
+message(STATUS "  CMAKE_MODULE_PATH:    ${CMAKE_MODULE_PATH}")
+message(STATUS "  CMAKE_PREFIX_PATH:    ${CMAKE_PREFIX_PATH}")
 message(STATUS "  CMAKE_INSTALL_PREFIX: ${CMAKE_INSTALL_PREFIX}" )
-# message("  NONESUCH:"        $ENV{NONESUCH})
 message(STATUS "")
-
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-set(QT5_LIBRARIES Qt5::Widgets )
 
 # was: set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/build/build_cmake)
 set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/build_cmake)
@@ -37,16 +35,15 @@ set(CMAKE_AUTORCC ON)
 
 # ADDITIONAL_MAKE_CLEAN_FILES(  ... )
 
-# Find the QtWidgets library
-# find_package(Qt5Widgets)
-# ensures all Qt componenets have same version: 
-find_package(Qt5 COMPONENTS Core Widgets Gui Help REQUIRED)
-message( STATUS "Qt5Widgets_INCLUDE_DIRS:    ${Qt5Widgets_INCLUDE_DIRS}" )
-message( STATUS "Qt5Core_INCLUDE_DIRS:       ${Qt5Core_INCLUDE_DIRS}" )
-message( STATUS "Qt5Gui_INCLUDE_DIRS:        ${Qt5Gui_INCLUDE_DIRS}" )
-message( STATUS "Qt5Help_INCLUDE_DIRS:       ${Qt5Help_INCLUDE_DIRS}" )
 
-# find_package(glib-2.0)
+set(QT5_LIBRARIES Qt5::Widgets )
+# Ensures all Qt componenets have same version: 
+find_package(Qt5 COMPONENTS Core Widgets Gui Help REQUIRED)
+message( STATUS "Qt directories:")
+message( STATUS "  Qt5Widgets_INCLUDE_DIRS:    ${Qt5Widgets_INCLUDE_DIRS}" )
+message( STATUS "  Qt5Core_INCLUDE_DIRS:       ${Qt5Core_INCLUDE_DIRS}" )
+message( STATUS "  Qt5Gui_INCLUDE_DIRS:        ${Qt5Gui_INCLUDE_DIRS}" )
+message( STATUS "  Qt5Help_INCLUDE_DIRS:       ${Qt5Help_INCLUDE_DIRS}" )
 
 find_program(CCACHE_FOUND ccache)
 if(CCACHE_FOUND)
@@ -55,14 +52,13 @@ endif(CCACHE_FOUND)
 
 find_package (PkgConfig REQUIRED)
 pkg_check_modules(GLIB2 REQUIRED glib-2.0)
-
 pkg_check_modules(DDCUTIL REQUIRED ddcutil>=1.2.0)
 message("Set by pkg-config:" )
-message( STATUS "GLIB2_INCLUDE_DIRS:    ${GLIB2_INCLUDE_DIRS}" )
-message( STATUS "GLIB2_LIBRARIES:       ${GLIB2_LIBRARIES}" )
-message( STATUS "DDCUTIL_INCLUDE_DIRS:  ${DDCUTIL_INCLUDE_DIRS}" )
-message( STATUS "DDCUTIL_LIBRARY_DIRS:  ${DDCUTIL_LIBRARY_DIRS}" )
-message( STATUS "DDCUTIL_LIBRARIES:     ${DDCUTIL_LIBRARIES}" )
+message( STATUS "  GLIB2_INCLUDE_DIRS:    ${GLIB2_INCLUDE_DIRS}"   )
+message( STATUS "  GLIB2_LIBRARIES:       ${GLIB2_LIBRARIES}"      )
+message( STATUS "  DDCUTIL_INCLUDE_DIRS:  ${DDCUTIL_INCLUDE_DIRS}" )
+message( STATUS "  DDCUTIL_LIBRARY_DIRS:  ${DDCUTIL_LIBRARY_DIRS}" )
+message( STATUS "  DDCUTIL_LIBRARIES:     ${DDCUTIL_LIBRARIES}"    )
 
 # hack for testing
 # set(DDCUTIL_LIBRARY_DIRS /usr/lib/x86_64-linux-gnu/)
@@ -73,12 +69,11 @@ message( STATUS "DDCUTIL_LIBRARIES:     ${DDCUTIL_LIBRARIES}" )
 #     PATHS /usr/lib /usr/lib/x86_64-linux-gnu)
 # message( STATUS "DDCUTIL_LIBRARY:  ${DDCUTIL_LIBRARY}" )
 
-
-include_directories(SYSTEM ${Qt5Widgets_INCLUDE_DIRS} ${Qt5Gui_INCLUDE_DIRS} ${Qt5Core_INCLUDE_DIRS} ${Qt5Help_INCLUDE_DIRS} 
+include_directories(SYSTEM ${Qt5Widgets_INCLUDE_DIRS} ${Qt5Gui_INCLUDE_DIRS} 
+                           ${Qt5Core_INCLUDE_DIRS} ${Qt5Help_INCLUDE_DIRS} 
                            ${GLIB2_INCLUDE_DIRS} ${DDCUTIL_INCLUDE_DIRS} )
 
-set(APPLY_CANCEL OFF)
-# set(COVERITY_DUMMIES OFF)
+
 
 configure_file(cconfig.h.in config.h)
 
@@ -91,7 +86,7 @@ set(SOURCES
     src/c_util/ddcutil_config_file.c
     src/c_util/file_util_base.c
     src/c_util/glib_util.c
-	src/c_util/debug_util.c
+    src/c_util/debug_util.c
     src/c_util/report_util.c
     src/c_util/simple_ini_file.c
     src/c_util/string_util.c
@@ -150,7 +145,7 @@ set(SOURCES
     src/feature_scrollarea/features_scrollarea_view.cpp
 
     src/help/help_dialog.cpp
-	src/help/help_browser.cpp
+    src/help/help_browser.cpp
     ddcui.qrc
 
     src/action_dialogs/debug_actions_dialog.cpp
@@ -187,35 +182,25 @@ add_executable(ddcui ${SOURCES})
 
 set (CMAKE_BUILD_TYPE Debug)
 target_compile_options(ddcui PUBLIC "-fPIC"  ${coverity_cflags})
-add_compile_options(-Og -H V=1) 
+# add_compile_options(-Og -H V=1) 
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
-
-get_property(dirs TARGET ddcui PROPERTY INCLUDE_DIRECTORIES)
-# foreach(dir ${dirs})
-#   message(STATUS "dir='${dir}'")
-# endforeach()
-
 message( STATUS "CMAKE_CURRENT_BINARY_DIR:     ${CMAKE_CURRENT_BINARY_DIR}" )
-# INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}/ddcui_autogen)
-# INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}/ddcui_autogen/include)
 
 get_property(dirs TARGET ddcui PROPERTY INCLUDE_DIRECTORIES)
-
 message( STATUS "INCLUDE_DIRECTORIES:     ${dirs}" )
 foreach(d ${dirs})
-  message(STATUS "${d}")
+  message(STATUS "  ${d}")
 endforeach()
+
 message( STATUS "CMAKE_AUTOUIC:           ${CMAKE_AUTOUIC}")
 message( STATUS "AUTOGEN_BUILD_DIR:       ${AUTOGEN_BUILD_DIR}")
 
-
-
-# set_property(TARGET ddcui PROPERTY AUTOUIC)
-
 # Use the Widgets module from Qt 5.
 target_link_libraries(ddcui Qt5::Widgets ${GLIB2_LIBRARIES} ${DDCUTIL_LIBRARIES})
-# target_link_libraries(ddcui Qt5::Widgets ${GLIB2_LIBRARIES} ${DDCUTIL_LIBRARIES} ${DDCUTIL_LIBRARY})
+
+
+### make install 
 
 install(TARGETS ddcui DESTINATION bin)
 install(FILES man/ddcui.1 DESTINATION share/man/man1)
@@ -235,15 +220,13 @@ install(FILES icons/video-display-16px.png  DESTINATION share/icons/hicolor/16x1
 # GNOME classic only looks in pixmaps for icons:
 # install(FILES icons/ddcui-48px.png  DESTINATION share/pixmaps RENAME ddcui.png)
 
-
-
 # Example: 
 #   copy_desktop_file_without_cruft("${CMAKE_CURRENT_SOURCE_DIR}/src/Gui/org.kde.trojita.desktop"# "${CMAKE_CURRENT_BINARY_DIR}/org.kde.trojita-DesktopGui.desktop")
-#    install(TARGETS trojita RUNTIME DESTINATION bin)
-#    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/org.kde.trojita-DesktopGui.desktop DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/applications/" RENAME org.kde.trojita.desktop)
+#   install(TARGETS trojita RUNTIME DESTINATION bin)
+#   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/org.kde.trojita-DesktopGui.desktop DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/applications/" RENAME org.kde.trojita.desktop)
 
 
-
+### make uninstall
 
 # per https://gitlab.kitware.com/cmake/community/wikis/FAQ#can-i-do-make-uninstall-with-cmake
 # uninstall target
