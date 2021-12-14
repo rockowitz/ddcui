@@ -48,6 +48,11 @@ message( STATUS "Qt5Help_INCLUDE_DIRS:       ${Qt5Help_INCLUDE_DIRS}" )
 
 # find_package(glib-2.0)
 
+find_program(CCACHE_FOUND ccache)
+if(CCACHE_FOUND)
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
+endif(CCACHE_FOUND)
+
 find_package (PkgConfig REQUIRED)
 pkg_check_modules(GLIB2 REQUIRED glib-2.0)
 
@@ -182,6 +187,7 @@ add_executable(ddcui ${SOURCES})
 
 set (CMAKE_BUILD_TYPE Debug)
 target_compile_options(ddcui PUBLIC "-fPIC"  ${coverity_cflags})
+add_compile_options(-Og -H V=1) 
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
