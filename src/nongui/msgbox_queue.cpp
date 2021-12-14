@@ -71,8 +71,7 @@ MsgBoxQueue::MsgBoxQueue()
 
 
 void MsgBoxQueue::put(MsgBoxQueueEntry * request) {
-    bool debugFunc = debugClass;
-    //debugFunc = false;
+    // bool debugFunc = false || debugClass;
     // TRACECF(debugFunc, "-> Starting. request: |%s|", QS2S(request->repr()));
     assert(request);
 
