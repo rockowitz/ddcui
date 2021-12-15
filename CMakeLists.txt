@@ -1,5 +1,19 @@
 cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 
+# TODO: properly parameterize
+# was: set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/build/build_cmake)
+set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/build_cmake)
+message(STATUS "Building in directory ${CMAKE_BINARY_DIR} (CMAKE_BINARY_DIR)" )
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
+
+# add_compile_definitions(QT_NO_DEBUG)
+
+find_program(CCACHE_FOUND ccache)
+if(CCACHE_FOUND)
+    message( STATUS "Using ccache to improve build performance" )
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
+endif(CCACHE_FOUND)
+
 project(ddcui)
 
 # set (coverity_cflags --type_traits_helpers)
@@ -7,58 +21,48 @@ project(ddcui)
 # set (COVERITY_DUMMIES OFF)
 
 message(STATUS "Significant environment variables:")
-message(STATUS "  INCLUDE:              $ENV{INCLUDE}")
-message(STATUS "  LD_LIBRARY_PATH:      $ENV{LD_LIBARARY_PATH}")
-message(STATUS "  PKG_CONFIG_PATH:      $ENV{PKG_CONFIG_PATH} ")
-message(STATUS "  DESTDIR:              $ENV{DESTDIR}" )
+message(STATUS "  INCLUDE:                  $ENV{INCLUDE}")
+message(STATUS "  LD_LIBRARY_PATH:          $ENV{LD_LIBARARY_PATH}")
+message(STATUS "  PKG_CONFIG_PATH:          $ENV{PKG_CONFIG_PATH} ")
+message(STATUS "  DESTDIR:                  $ENV{DESTDIR}" )
 message(STATUS "cmake paths:")
-message(STATUS "  CMAKE_MODULE_PATH:    ${CMAKE_MODULE_PATH}")
-message(STATUS "  CMAKE_PREFIX_PATH:    ${CMAKE_PREFIX_PATH}")
-message(STATUS "  CMAKE_INSTALL_PREFIX: ${CMAKE_INSTALL_PREFIX}" )
-message(STATUS "")
+message(STATUS "  CMAKE_MODULE_PATH:        ${CMAKE_MODULE_PATH}")
+message(STATUS "  CMAKE_PREFIX_PATH:        ${CMAKE_PREFIX_PATH}")
+message(STATUS "  CMAKE_INSTALL_PREFIX:     ${CMAKE_INSTALL_PREFIX}" )
+message(STATUS "  CMAKE_BINARY_DIR:         ${CMAKE_BINARY_DIR}" )
+message(STATUS "  CMAKE_CURRENT_BINARY_DIR: ${CMAKE_CURRENT_BINARY_DIR}" )
+message(STATUS "  EXCECUTABLE_OUTPUT_PATH:  ${EXECUTABLE_OUTPUT_PATH}" )
+# message(STATUS "")
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# was: set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/build/build_cmake)
-set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/build_cmake)
-
-set(EXECUTABLE_OUTPUT_PATH, ${CMAKE_BINARY_DIR})
-# set(LIBRARY_OUTPUT_PATH,    ${CMAKE_BINARY_DIR})
-
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
 # Instruct CMake to run moc automatically when needed.
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
-# ADDITIONAL_MAKE_CLEAN_FILES(  ... )
-
-
 set(QT5_LIBRARIES Qt5::Widgets )
 # Ensures all Qt componenets have same version: 
 find_package(Qt5 COMPONENTS Core Widgets Gui Help REQUIRED)
 message( STATUS "Qt directories:")
-message( STATUS "  Qt5Widgets_INCLUDE_DIRS:    ${Qt5Widgets_INCLUDE_DIRS}" )
-message( STATUS "  Qt5Core_INCLUDE_DIRS:       ${Qt5Core_INCLUDE_DIRS}" )
-message( STATUS "  Qt5Gui_INCLUDE_DIRS:        ${Qt5Gui_INCLUDE_DIRS}" )
-message( STATUS "  Qt5Help_INCLUDE_DIRS:       ${Qt5Help_INCLUDE_DIRS}" )
-
-find_program(CCACHE_FOUND ccache)
-if(CCACHE_FOUND)
-    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
-endif(CCACHE_FOUND)
+message( STATUS "  Qt5Widgets_INCLUDE_DIRS:  ${Qt5Widgets_INCLUDE_DIRS}" )
+message( STATUS "  Qt5Core_INCLUDE_DIRS:     ${Qt5Core_INCLUDE_DIRS}" )
+message( STATUS "  Qt5Gui_INCLUDE_DIRS:      ${Qt5Gui_INCLUDE_DIRS}" )
+message( STATUS "  Qt5Help_INCLUDE_DIRS:     ${Qt5Help_INCLUDE_DIRS}" )
 
 find_package (PkgConfig REQUIRED)
 pkg_check_modules(GLIB2 REQUIRED glib-2.0)
 pkg_check_modules(DDCUTIL REQUIRED ddcutil>=1.2.0)
 message("Set by pkg-config:" )
-message( STATUS "  GLIB2_INCLUDE_DIRS:    ${GLIB2_INCLUDE_DIRS}"   )
-message( STATUS "  GLIB2_LIBRARIES:       ${GLIB2_LIBRARIES}"      )
-message( STATUS "  DDCUTIL_INCLUDE_DIRS:  ${DDCUTIL_INCLUDE_DIRS}" )
-message( STATUS "  DDCUTIL_LIBRARY_DIRS:  ${DDCUTIL_LIBRARY_DIRS}" )
-message( STATUS "  DDCUTIL_LIBRARIES:     ${DDCUTIL_LIBRARIES}"    )
+message( STATUS "  GLIB2_INCLUDE_DIRS:       ${GLIB2_INCLUDE_DIRS}"   )
+message( STATUS "  GLIB2_LIBRARIES:          ${GLIB2_LIBRARIES}"      )
+message( STATUS "  DDCUTIL_INCLUDE_DIRS:     ${DDCUTIL_INCLUDE_DIRS}" )
+message( STATUS "  DDCUTIL_LIBRARY_DIRS:     ${DDCUTIL_LIBRARY_DIRS}" )
+message( STATUS "  DDCUTIL_LIBRARIES:        ${DDCUTIL_LIBRARIES}"    )
 
 # hack for testing
 # set(DDCUTIL_LIBRARY_DIRS /usr/lib/x86_64-linux-gnu/)
@@ -69,15 +73,12 @@ message( STATUS "  DDCUTIL_LIBRARIES:     ${DDCUTIL_LIBRARIES}"    )
 #     PATHS /usr/lib /usr/lib/x86_64-linux-gnu)
 # message( STATUS "DDCUTIL_LIBRARY:  ${DDCUTIL_LIBRARY}" )
 
-include_directories(SYSTEM ${Qt5Widgets_INCLUDE_DIRS} ${Qt5Gui_INCLUDE_DIRS} 
-                           ${Qt5Core_INCLUDE_DIRS} ${Qt5Help_INCLUDE_DIRS} 
+# ${Qt5Gui_INCLUDE_DIRS}    ${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} 
+include_directories(SYSTEM 
+                         ${Qt5Help_INCLUDE_DIRS} 
                            ${GLIB2_INCLUDE_DIRS} ${DDCUTIL_INCLUDE_DIRS} )
 
-
-
 configure_file(cconfig.h.in config.h)
-
-# add_compile_definitions(QT_NO_DEBUG)
 
 include_directories(src)
 
@@ -160,7 +161,6 @@ set(SOURCES
     src/main/msgbox_thread.cpp
 )
 
-
 # file(GLOB dummy_SOURCES src/dummies/*.cpp)
 # if (COVERITY_DUMMIES) 
 #    set (SOURCES ${SOURCES} ${dummy_SOURCES} )
@@ -185,10 +185,10 @@ target_compile_options(ddcui PUBLIC "-fPIC"  ${coverity_cflags})
 # add_compile_options(-Og -H V=1) 
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
-message( STATUS "CMAKE_CURRENT_BINARY_DIR:     ${CMAKE_CURRENT_BINARY_DIR}" )
 
 get_property(dirs TARGET ddcui PROPERTY INCLUDE_DIRECTORIES)
 message( STATUS "INCLUDE_DIRECTORIES:     ${dirs}" )
+message( STATUS "Expanded:" )
 foreach(d ${dirs})
   message(STATUS "  ${d}")
 endforeach()
@@ -198,6 +198,11 @@ message( STATUS "AUTOGEN_BUILD_DIR:       ${AUTOGEN_BUILD_DIR}")
 
 # Use the Widgets module from Qt 5.
 target_link_libraries(ddcui Qt5::Widgets ${GLIB2_LIBRARIES} ${DDCUTIL_LIBRARIES})
+
+
+### make clean
+
+# ADDITIONAL_MAKE_CLEAN_FILES(  ... )
 
 
 ### make install 
