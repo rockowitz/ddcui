@@ -73,10 +73,10 @@ message( STATUS "  DDCUTIL_LIBRARIES:        ${DDCUTIL_LIBRARIES}"    )
 #     PATHS /usr/lib /usr/lib/x86_64-linux-gnu)
 # message( STATUS "DDCUTIL_LIBRARY:  ${DDCUTIL_LIBRARY}" )
 
-# ${Qt5Gui_INCLUDE_DIRS}    ${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} 
-include_directories(SYSTEM 
-                         ${Qt5Help_INCLUDE_DIRS} 
-                           ${GLIB2_INCLUDE_DIRS} ${DDCUTIL_INCLUDE_DIRS} )
+# redundant: ${Qt5Gui_INCLUDE_DIRS}    ${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} 
+include_directories(SYSTEM ${Qt5Help_INCLUDE_DIRS} 
+                           ${GLIB2_INCLUDE_DIRS} 
+                           ${DDCUTIL_INCLUDE_DIRS} )
 
 configure_file(cconfig.h.in config.h)
 
@@ -209,12 +209,11 @@ target_link_libraries(ddcui Qt5::Widgets ${GLIB2_LIBRARIES} ${DDCUTIL_LIBRARIES}
 
 install(TARGETS ddcui DESTINATION bin)
 install(FILES man/ddcui.1 DESTINATION share/man/man1)
-# removed COPYING
 install(FILES AUTHORS CHANGELOG.md NEWS.md README.md DESTINATION share/doc/ddcui)
+# fails, ${CMAKE_INSTALL_DATAROOTDIR} is null:
+# install(FILES ddcui.desktop  DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/applications)
 install(FILES ddcui.desktop  DESTINATION share/applications)
 install(FILES ddcui.appdata.xml DESTINATION share/metainfo)
-# fails, ${CMAKE_INSTALL_DATAROOTDIR} is null
-# install(FILES ddcui.desktop  DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/applications)
 install(FILES icons/video-display-128px.png DESTINATION share/icons/hicolor/128x128/apps RENAME ddcui.png)
 install(FILES icons/video-display-64px.png  DESTINATION share/icons/hicolor/64x64/apps   RENAME ddcui.png)
 install(FILES icons/video-display-48px.png  DESTINATION share/icons/hicolor/48x48/apps   RENAME ddcui.png)
