@@ -1,8 +1,20 @@
-cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.12...3.12)
 
-# TODO: properly parameterize
-# was: set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/build/build_cmake)
-set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/build_cmake)
+project(ddcui LANGUAGES C CXX)
+
+set(ddcui_qt_version         5.5)
+set(ddcui_glib_version       2.39)
+set(ddcui_libddcutil_version 1.2.0)
+
+message(STATUS "Required Minimum Versions:")
+message(STATUS "  ddcui_qt_version:          ${ddcui_qt_version}" )
+message(STATUS "  ddcui_qlib_version:        ${ddcui_glib_version}" )
+message(STATUS "  ddcui_libddcutil_version:  ${ddcui_libddcutil_version}" )
+
+message(STATUS "Project variables:")
+message(STATUS "  PROJECT_SOURCE_DIR ${PROJECT_SOURCE_DIR}" )
+message(STATUS "  PROJECT_BINARY_DIR ${PROJECT_BINARY_DIR}" )
+
 message(STATUS "Building in directory ${CMAKE_BINARY_DIR} (CMAKE_BINARY_DIR)" )
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 
@@ -13,8 +25,6 @@ if(CCACHE_FOUND)
     message( STATUS "Using ccache to improve build performance" )
     set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
 endif(CCACHE_FOUND)
-
-project(ddcui)
 
 # set (coverity_cflags --type_traits_helpers)
 # set (coverity_cflags --no_predefined_feature_test_macros)
@@ -37,7 +47,7 @@ message(STATUS "  EXCECUTABLE_OUTPUT_PATH:  ${EXECUTABLE_OUTPUT_PATH}" )
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Find includes in corresponding build directories
+# Find includes in corresponding build directories, needed for config.h
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # Instruct CMake to run moc automatically when needed.
@@ -47,16 +57,17 @@ set(CMAKE_AUTORCC ON)
 
 set(QT5_LIBRARIES Qt5::Widgets )
 # Ensures all Qt componenets have same version: 
-find_package(Qt5 COMPONENTS Core Widgets Gui Help REQUIRED)
+find_package(Qt5 ${ddcui_qt_version} COMPONENTS Core Widgets Gui Help REQUIRED)
 message( STATUS "Qt directories:")
 message( STATUS "  Qt5Widgets_INCLUDE_DIRS:  ${Qt5Widgets_INCLUDE_DIRS}" )
-message( STATUS "  Qt5Core_INCLUDE_DIRS:     ${Qt5Core_INCLUDE_DIRS}" )
-message( STATUS "  Qt5Gui_INCLUDE_DIRS:      ${Qt5Gui_INCLUDE_DIRS}" )
-message( STATUS "  Qt5Help_INCLUDE_DIRS:     ${Qt5Help_INCLUDE_DIRS}" )
+message( STATUS "  Qt5Core_INCLUDE_DIRS:     ${Qt5Core_INCLUDE_DIRS}"    )
+message( STATUS "  Qt5Gui_INCLUDE_DIRS:      ${Qt5Gui_INCLUDE_DIRS}"     )
+message( STATUS "  Qt5Help_INCLUDE_DIRS:     ${Qt5Help_INCLUDE_DIRS}"    )
 
-find_package (PkgConfig REQUIRED)
-pkg_check_modules(GLIB2 REQUIRED glib-2.0)
-pkg_check_modules(DDCUTIL REQUIRED ddcutil>=1.2.0)
+find_package (PkgConfig REQUIRED )
+pkg_check_modules(GLIB2 REQUIRED glib-2.0>=${ddcui_glib_version})
+pkg_check_modules(DDCUTIL REQUIRED ddcutil>=${ddcui_libddcutil_version}})
+# set(DDCUTIL_LIBRARY_DIRS /usr/lib/x86_64-linux-gnu/)   # hack for testing
 message("Set by pkg-config:" )
 message( STATUS "  GLIB2_INCLUDE_DIRS:       ${GLIB2_INCLUDE_DIRS}"   )
 message( STATUS "  GLIB2_LIBRARIES:          ${GLIB2_LIBRARIES}"      )
@@ -64,23 +75,7 @@ message( STATUS "  DDCUTIL_INCLUDE_DIRS:     ${DDCUTIL_INCLUDE_DIRS}" )
 message( STATUS "  DDCUTIL_LIBRARY_DIRS:     ${DDCUTIL_LIBRARY_DIRS}" )
 message( STATUS "  DDCUTIL_LIBRARIES:        ${DDCUTIL_LIBRARIES}"    )
 
-# hack for testing
-# set(DDCUTIL_LIBRARY_DIRS /usr/lib/x86_64-linux-gnu/)
-# message( STATUS "DDCUTIL_LIBRARY_DIRS:  ${DDCUTIL_LIBRARY_DIRS}" )
-
-# find_library(DDCUTIL_LIBRARY 
-#     NAMES libddcutil ddcutil libddcutil.so libddcutil.so.0
-#     PATHS /usr/lib /usr/lib/x86_64-linux-gnu)
-# message( STATUS "DDCUTIL_LIBRARY:  ${DDCUTIL_LIBRARY}" )
-
-# redundant: ${Qt5Gui_INCLUDE_DIRS}    ${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} 
-include_directories(SYSTEM ${Qt5Help_INCLUDE_DIRS} 
-                           ${GLIB2_INCLUDE_DIRS} 
-                           ${DDCUTIL_INCLUDE_DIRS} )
-
 configure_file(cconfig.h.in config.h)
-
-include_directories(src)
 
 set(SOURCES
     src/c_util/data_structures.c
@@ -184,7 +179,14 @@ set (CMAKE_BUILD_TYPE Debug)
 target_compile_options(ddcui PUBLIC "-fPIC"  ${coverity_cflags})
 # add_compile_options(-Og -H V=1) 
 
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+# redundant: ${Qt5Gui_INCLUDE_DIRS} ${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS}. 
+#            ${Qt5Help_INCLUDE_DIRS} is a superset of them all 
+target_include_directories(ddcui SYSTEM PRIVATE 
+                                 ${Qt5Help_INCLUDE_DIRS}
+                                 ${GLIB2_INCLUDE_DIRS} 
+                                 ${DDCUTIL_INCLUDE_DIRS})
+
+target_include_directories(ddcui PRIVATE src)
 
 get_property(dirs TARGET ddcui PROPERTY INCLUDE_DIRECTORIES)
 message( STATUS "INCLUDE_DIRECTORIES:     ${dirs}" )
@@ -205,24 +207,29 @@ target_link_libraries(ddcui Qt5::Widgets ${GLIB2_LIBRARIES} ${DDCUTIL_LIBRARIES}
 # ADDITIONAL_MAKE_CLEAN_FILES(  ... )
 
 
-### make install 
+### make install
 
-install(TARGETS ddcui DESTINATION bin)
-install(FILES man/ddcui.1 DESTINATION share/man/man1)
-install(FILES AUTHORS CHANGELOG.md NEWS.md README.md DESTINATION share/doc/ddcui)
-# fails, ${CMAKE_INSTALL_DATAROOTDIR} is null:
-# install(FILES ddcui.desktop  DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/applications)
-install(FILES ddcui.desktop  DESTINATION share/applications)
-install(FILES ddcui.appdata.xml DESTINATION share/metainfo)
-install(FILES icons/video-display-128px.png DESTINATION share/icons/hicolor/128x128/apps RENAME ddcui.png)
-install(FILES icons/video-display-64px.png  DESTINATION share/icons/hicolor/64x64/apps   RENAME ddcui.png)
-install(FILES icons/video-display-48px.png  DESTINATION share/icons/hicolor/48x48/apps   RENAME ddcui.png)
-install(FILES icons/video-display-32px.png  DESTINATION share/icons/hicolor/32x32/apps   RENAME ddcui.png)
-install(FILES icons/video-display-16px.png  DESTINATION share/icons/hicolor/16x16/apps   RENAME ddcui.png)
-# install(FILES icons/ddcui.svg       DESTINATION share/icons/hicolor/scalable/apps)
+# define GNU standard installation directories
+include(GNUInstallDirs)
+message( STATUS "GNU installation directories:")
+message( STATUS "  CMAKE_INSTALL_BINDIR:        ${CMAKE_INSTALL_BINDIR}" )
+message( STATUS "  CMAKE_INSTALL_DATATROOTDIR:  ${CMAKE_INSTALL_DATAROOTDIR}" )
+
+install(TARGETS ddcui                       DESTINATION ${CMAKE_INSTALL_BINDIR} )
+install(FILES man/ddcui.1                   DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/man/man1)
+install(FILES AUTHORS CHANGELOG.md NEWS.md README.md 
+                                            DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/doc/ddcui)
+install(FILES ddcui.desktop                 DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/applications)
+install(FILES ddcui.appdata.xml             DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/metainfo)
+install(FILES icons/video-display-128px.png DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/128x128/apps RENAME ddcui.png)
+install(FILES icons/video-display-64px.png  DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/64x64/apps   RENAME ddcui.png)
+install(FILES icons/video-display-48px.png  DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/48x48/apps   RENAME ddcui.png)
+install(FILES icons/video-display-32px.png  DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/32x32/apps   RENAME ddcui.png)
+install(FILES icons/video-display-16px.png  DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/16x16/apps   RENAME ddcui.png)
+# install(FILES icons/ddcui.svg       DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/scalable/apps)
 
 # GNOME classic only looks in pixmaps for icons:
-# install(FILES icons/ddcui-48px.png  DESTINATION share/pixmaps RENAME ddcui.png)
+# install(FILES icons/ddcui-48px.png  DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pixmaps RENAME ddcui.png)
 
 # Example: 
 #   copy_desktop_file_without_cruft("${CMAKE_CURRENT_SOURCE_DIR}/src/Gui/org.kde.trojita.desktop"# "${CMAKE_CURRENT_BINARY_DIR}/org.kde.trojita-DesktopGui.desktop")
