@@ -1,15 +1,57 @@
-cmake_minimum_required(VERSION 3.12...3.12)
+cmake_minimum_required(VERSION 3.11...3.11)
 
-project(ddcui LANGUAGES C CXX)
+message(STATUS "--------------------- Starting")
 
 set(ddcui_qt_version         5.5)
 set(ddcui_glib_version       2.39)
 set(ddcui_libddcutil_version 1.2.0)
+set(cmake_build_type_default "RelWithDebInfo")
 
 message(STATUS "Required Minimum Versions:")
 message(STATUS "  ddcui_qt_version:          ${ddcui_qt_version}" )
 message(STATUS "  ddcui_qlib_version:        ${ddcui_glib_version}" )
-message(STATUS "  ddcui_libddcutil_version:  ${ddcui_libddcutil_version}" )
+message(STATUS "  ddcui_libddcutil_version:  ${ddcui_libddcutil_version}" ) 
+
+set(valid_build_types Release RelWithDebInfo Debug MinSizeRel)
+string(TOUPPER "${valid_build_types}" uc_valid_build_types)
+string(REPLACE ";" ", " pretty_valid_build_types "${valid_build_types}")
+STRING(TOUPPER "${CMAKE_BUILD_TYPE}" UC_CMAKE_BUILD_TYPE )
+
+# https://cmake.org/pipermail/cmake/2008-September/023808.html
+# If the user specifies -DCMAKE_BUILD_TYPE on the command line, take their
+# definition and dump it in the cache along with proper documentation, 
+# otherwise set CMAKE_BUILD_TYPE to the default prior to calling project()
+
+IF(DEFINED CMAKE_BUILD_TYPE)
+   list(FIND uc_valid_build_types ${UC_CMAKE_BUILD_TYPE} index) 
+   if (index EQUAL -1)
+      message(FATAL_ERROR "CMAKE_BUILD_TYPE must be one of ${pretty_valid_build_types}" )
+   endif()
+   # message(STATUS "Setting CMakeCache.txt value for CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
+   SET(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE STRING 
+                   "Choose the type of build, options are: ${pretty_valid_build_types}." FORCE)
+ else()
+    set(CMAKE_BUILD_TYPE ${cmake_build_type_default})
+ endif()
+ 
+# Set the possible values of build type for cmake-gui
+# set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Release" "Debug" "RelWithDebInfo" "MinSizeRel")
+
+# see also: https://stackoverflow.com/questions/48754619/what-are-cmake-build-type-debug-release-relwithdebinfo-and-minsizerel
+#           https://blog.feabhas.com/2021/07/cmake-part-2-release-and-debug-builds/
+
+project(ddcui LANGUAGES C CXX)
+
+message(STATUS "After project()")
+message(VERBOSE "Build type is: ${CMAKE_BUILD_TYPE} (CMAKE_BUILD_TYPE)")
+# message(STATUS "   CMAKE_CXX_FLAGS:                ${CMAKE_CXX_FLAGS}" )
+# message(STATUS "   CMAKE_C_FLAGS:                  ${CMAKE_C_FLAGS}" )
+# message(STATUS "   CMAKE_CXX_FLAGS_DEBUG:          ${CMAKE_CXX_FLAGS_DEBUG}" )
+# message(STATUS "   CMAKE_C_FLAGS_DEBUG:            ${CMAKE_C_FLAGS_DEBUG}" )
+# message(STATUS "   CMAKE_CXX_FLAGS_RELWITHDEBINFO: ${CMAKE_CXX_FLAGS_RELWITHDEBINFO}" )
+# message(STATUS "   CMAKE_C_FLAGS_RELWITHDEBINFO:   ${CMAKE_C_FLAGS_RELWITHDEBINFO}" )
+# message(STATUS "   CMAKE_CXX_FLAGS_RELEASE:        ${CMAKE_CXX_FLAGS_RELEASE}" )
+# message(STATUS "   CMAKE_C_FLAGS_RELEASE:          ${CMAKE_C_FLAGS_RELEASE}" )
 
 message(STATUS "Project variables:")
 message(STATUS "  PROJECT_SOURCE_DIR ${PROJECT_SOURCE_DIR}" )
@@ -19,11 +61,12 @@ message(STATUS "Building in directory ${CMAKE_BINARY_DIR} (CMAKE_BINARY_DIR)" )
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 
 # add_compile_definitions(QT_NO_DEBUG)
+# add_compile_definitions(V=1)
 
 find_program(CCACHE_FOUND ccache)
 if(CCACHE_FOUND)
-    message( STATUS "Using ccache to improve build performance" )
-    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
+     message( STATUS "Using ccache to improve build performance" )
+     set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
 endif(CCACHE_FOUND)
 
 # set (coverity_cflags --type_traits_helpers)
