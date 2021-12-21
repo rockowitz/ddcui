@@ -1,29 +1,35 @@
-cmake_minimum_required(VERSION 3.11...3.11)
-
-message(STATUS "--------------------- Starting")
+cmake_minimum_required(VERSION 3.15)
+# message(VERBOSE) requires cmake 3.15
 
 set(ddcui_qt_version         5.5)
-set(ddcui_glib_version       2.39)
+set(ddcui_glib_version       2.40)   # g_option_context_parse_strv() new in 2.40
 set(ddcui_libddcutil_version 1.2.0)
 set(cmake_build_type_default "RelWithDebInfo")
 
-message(STATUS "Required Minimum Versions:")
-message(STATUS "  ddcui_qt_version:          ${ddcui_qt_version}" )
-message(STATUS "  ddcui_qlib_version:        ${ddcui_glib_version}" )
-message(STATUS "  ddcui_libddcutil_version:  ${ddcui_libddcutil_version}" ) 
+message(VERBOSE "Required Minimum Versions:")
+message(VERBOSE "  ddcui_qt_version:          ${ddcui_qt_version}" )
+message(VERBOSE "  ddcui_qlib_version:        ${ddcui_glib_version}" )
+message(VERBOSE "  ddcui_libddcutil_version:  ${ddcui_libddcutil_version}" ) 
+
+option(USE_CCACHE "Use ccache" ON)
+# message(STATUS "USE_CCACHE: ${USE_CCACHE}" )
 
 set(valid_build_types Release RelWithDebInfo Debug MinSizeRel)
 string(TOUPPER "${valid_build_types}" uc_valid_build_types)
 string(REPLACE ";" ", " pretty_valid_build_types "${valid_build_types}")
 STRING(TOUPPER "${CMAKE_BUILD_TYPE}" UC_CMAKE_BUILD_TYPE )
+message(STATUS "Initial CMAKE_BUILD_TYPE:  ${CMAKE_BUILD_TYPE}")
 
 # https://cmake.org/pipermail/cmake/2008-September/023808.html
 # If the user specifies -DCMAKE_BUILD_TYPE on the command line, take their
 # definition and dump it in the cache along with proper documentation, 
 # otherwise set CMAKE_BUILD_TYPE to the default prior to calling project()
-
-IF(DEFINED CMAKE_BUILD_TYPE)
-   list(FIND uc_valid_build_types ${UC_CMAKE_BUILD_TYPE} index) 
+set(i0 0)
+if (DEFINED CMAKE_BUILD_TYPE)
+  string(LENGTH "${CMAKE_BUILD_TYPE}" i0)
+endif(DEFINED CMAKE_BUILD_TYPE)
+IF( (DEFINED CMAKE_BUILD_TYPE) AND (i0 GREATER 0) ) 
+   list(FIND uc_valid_build_types "${UC_CMAKE_BUILD_TYPE}" index) 
    if (index EQUAL -1)
       message(FATAL_ERROR "CMAKE_BUILD_TYPE must be one of ${pretty_valid_build_types}" )
    endif()
@@ -42,8 +48,7 @@ IF(DEFINED CMAKE_BUILD_TYPE)
 
 project(ddcui LANGUAGES C CXX)
 
-message(STATUS "After project()")
-message(VERBOSE "Build type is: ${CMAKE_BUILD_TYPE} (CMAKE_BUILD_TYPE)")
+message(STATUS "Build type is: ${CMAKE_BUILD_TYPE} (CMAKE_BUILD_TYPE)")
 # message(STATUS "   CMAKE_CXX_FLAGS:                ${CMAKE_CXX_FLAGS}" )
 # message(STATUS "   CMAKE_C_FLAGS:                  ${CMAKE_C_FLAGS}" )
 # message(STATUS "   CMAKE_CXX_FLAGS_DEBUG:          ${CMAKE_CXX_FLAGS_DEBUG}" )
@@ -53,38 +58,40 @@ message(VERBOSE "Build type is: ${CMAKE_BUILD_TYPE} (CMAKE_BUILD_TYPE)")
 # message(STATUS "   CMAKE_CXX_FLAGS_RELEASE:        ${CMAKE_CXX_FLAGS_RELEASE}" )
 # message(STATUS "   CMAKE_C_FLAGS_RELEASE:          ${CMAKE_C_FLAGS_RELEASE}" )
 
-message(STATUS "Project variables:")
-message(STATUS "  PROJECT_SOURCE_DIR ${PROJECT_SOURCE_DIR}" )
-message(STATUS "  PROJECT_BINARY_DIR ${PROJECT_BINARY_DIR}" )
+# message(VERBOSE "Project variables:")
+# message(VERBOSE "  PROJECT_SOURCE_DIR ${PROJECT_SOURCE_DIR}" )
+# message(VERBOSE "  PROJECT_BINARY_DIR ${PROJECT_BINARY_DIR}" )
 
-message(STATUS "Building in directory ${CMAKE_BINARY_DIR} (CMAKE_BINARY_DIR)" )
+message(STATUS "Source directory: ${CMAKE_SOURCE_DIR} (CMAKE_SOURCE_DIR)" )
+message(STATUS "Build directory:  ${CMAKE_BINARY_DIR} (CMAKE_BINARY_DIR)" )
+
+if (  ${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR} ) 
+   message(FATAL_ERROR " Attempting to build in source directory. Use -B option to set the build directory.")
+endif()
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 
 # add_compile_definitions(QT_NO_DEBUG)
-# add_compile_definitions(V=1)
 
 find_program(CCACHE_FOUND ccache)
-if(CCACHE_FOUND)
+if(CCACHE_FOUND AND USE_CCACHE)
      message( STATUS "Using ccache to improve build performance" )
      set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
-endif(CCACHE_FOUND)
+endif()
 
 # set (coverity_cflags --type_traits_helpers)
 # set (coverity_cflags --no_predefined_feature_test_macros)
 # set (COVERITY_DUMMIES OFF)
 
-message(STATUS "Significant environment variables:")
-message(STATUS "  INCLUDE:                  $ENV{INCLUDE}")
-message(STATUS "  LD_LIBRARY_PATH:          $ENV{LD_LIBARARY_PATH}")
-message(STATUS "  PKG_CONFIG_PATH:          $ENV{PKG_CONFIG_PATH} ")
-message(STATUS "  DESTDIR:                  $ENV{DESTDIR}" )
-message(STATUS "cmake paths:")
-message(STATUS "  CMAKE_MODULE_PATH:        ${CMAKE_MODULE_PATH}")
-message(STATUS "  CMAKE_PREFIX_PATH:        ${CMAKE_PREFIX_PATH}")
-message(STATUS "  CMAKE_INSTALL_PREFIX:     ${CMAKE_INSTALL_PREFIX}" )
-message(STATUS "  CMAKE_BINARY_DIR:         ${CMAKE_BINARY_DIR}" )
-message(STATUS "  CMAKE_CURRENT_BINARY_DIR: ${CMAKE_CURRENT_BINARY_DIR}" )
-message(STATUS "  EXCECUTABLE_OUTPUT_PATH:  ${EXECUTABLE_OUTPUT_PATH}" )
+message(VERBOSE "Significant environment variables:")
+message(VERBOSE "  INCLUDE:                  $ENV{INCLUDE}")
+message(VERBOSE "  LD_LIBRARY_PATH:          $ENV{LD_LIBARARY_PATH}")
+message(VERBOSE "  PKG_CONFIG_PATH:          $ENV{PKG_CONFIG_PATH} ")
+message(VERBOSE "cmake paths:")
+message(VERBOSE "  CMAKE_MODULE_PATH:        ${CMAKE_MODULE_PATH}")
+message(VERBOSE "  CMAKE_PREFIX_PATH:        ${CMAKE_PREFIX_PATH}")
+message(VERBOSE "  CMAKE_BINARY_DIR:         ${CMAKE_BINARY_DIR}" )
+message(VERBOSE "  CMAKE_CURRENT_BINARY_DIR: ${CMAKE_CURRENT_BINARY_DIR}" )
+message(VERBOSE "  EXCECUTABLE_OUTPUT_PATH:  ${EXECUTABLE_OUTPUT_PATH}" )
 # message(STATUS "")
 
 set(CMAKE_CXX_STANDARD 11)
@@ -97,26 +104,31 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
+message( VERBOSE "Qt settings:")
+message( VERBOSE "  CMAKE_AUTOUIC:           ${CMAKE_AUTOUIC}")
+message( VERBOSE "  CMAKE_AUTOMOC:           ${CMAKE_AUTOMOC}")
+message( VERBOSE "  CMAKE_AUTORCC:           ${CMAKE_AUTORCC}")
+# message( VERBOSE "AUTOGEN_BUILD_DIR:       ${AUTOGEN_BUILD_DIR}") overrides default location
 
 set(QT5_LIBRARIES Qt5::Widgets )
 # Ensures all Qt componenets have same version: 
 find_package(Qt5 ${ddcui_qt_version} COMPONENTS Core Widgets Gui Help REQUIRED)
-message( STATUS "Qt directories:")
-message( STATUS "  Qt5Widgets_INCLUDE_DIRS:  ${Qt5Widgets_INCLUDE_DIRS}" )
-message( STATUS "  Qt5Core_INCLUDE_DIRS:     ${Qt5Core_INCLUDE_DIRS}"    )
-message( STATUS "  Qt5Gui_INCLUDE_DIRS:      ${Qt5Gui_INCLUDE_DIRS}"     )
-message( STATUS "  Qt5Help_INCLUDE_DIRS:     ${Qt5Help_INCLUDE_DIRS}"    )
+message( VERBOSE "Qt directories:")
+message( VERBOSE "  Qt5Widgets_INCLUDE_DIRS:  ${Qt5Widgets_INCLUDE_DIRS}" )
+message( VERBOSE "  Qt5Core_INCLUDE_DIRS:     ${Qt5Core_INCLUDE_DIRS}"    )
+message( VERBOSE "  Qt5Gui_INCLUDE_DIRS:      ${Qt5Gui_INCLUDE_DIRS}"     )
+message( VERBOSE "  Qt5Help_INCLUDE_DIRS:     ${Qt5Help_INCLUDE_DIRS}"    )
 
 find_package (PkgConfig REQUIRED )
 pkg_check_modules(GLIB2 REQUIRED glib-2.0>=${ddcui_glib_version})
 pkg_check_modules(DDCUTIL REQUIRED ddcutil>=${ddcui_libddcutil_version}})
 # set(DDCUTIL_LIBRARY_DIRS /usr/lib/x86_64-linux-gnu/)   # hack for testing
-message("Set by pkg-config:" )
-message( STATUS "  GLIB2_INCLUDE_DIRS:       ${GLIB2_INCLUDE_DIRS}"   )
-message( STATUS "  GLIB2_LIBRARIES:          ${GLIB2_LIBRARIES}"      )
-message( STATUS "  DDCUTIL_INCLUDE_DIRS:     ${DDCUTIL_INCLUDE_DIRS}" )
-message( STATUS "  DDCUTIL_LIBRARY_DIRS:     ${DDCUTIL_LIBRARY_DIRS}" )
-message( STATUS "  DDCUTIL_LIBRARIES:        ${DDCUTIL_LIBRARIES}"    )
+message( VERBOSE "Set by pkg-config:" )
+message( VERBOSE "  GLIB2_INCLUDE_DIRS:       ${GLIB2_INCLUDE_DIRS}"   )
+message( VERBOSE "  GLIB2_LIBRARIES:          ${GLIB2_LIBRARIES}"      )
+message( VERBOSE "  DDCUTIL_INCLUDE_DIRS:     ${DDCUTIL_INCLUDE_DIRS}" )
+message( VERBOSE "  DDCUTIL_LIBRARY_DIRS:     ${DDCUTIL_LIBRARY_DIRS}" )
+message( VERBOSE "  DDCUTIL_LIBRARIES:        ${DDCUTIL_LIBRARIES}"    )
 
 configure_file(cconfig.h.in config.h)
 
@@ -218,9 +230,8 @@ link_directories(${DDCUTIL_LIBRARY_DIRS})
 # add_executable(ddcui ${SOURCES} ${UI_GENERATED_HEADERS})
 add_executable(ddcui ${SOURCES})
 
-set (CMAKE_BUILD_TYPE Debug)
 target_compile_options(ddcui PUBLIC "-fPIC"  ${coverity_cflags})
-# add_compile_options(-Og -H V=1) 
+# add_compile_options(-Og -H V=1)
 
 # redundant: ${Qt5Gui_INCLUDE_DIRS} ${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS}. 
 #            ${Qt5Help_INCLUDE_DIRS} is a superset of them all 
@@ -232,14 +243,11 @@ target_include_directories(ddcui SYSTEM PRIVATE
 target_include_directories(ddcui PRIVATE src)
 
 get_property(dirs TARGET ddcui PROPERTY INCLUDE_DIRECTORIES)
-message( STATUS "INCLUDE_DIRECTORIES:     ${dirs}" )
-message( STATUS "Expanded:" )
+message( VERBOSE "INCLUDE_DIRECTORIES:     ${dirs}" )
+message( VERBOSE "Expanded:" )
 foreach(d ${dirs})
-  message(STATUS "  ${d}")
+  message(VERBOSE "  ${d}")
 endforeach()
-
-message( STATUS "CMAKE_AUTOUIC:           ${CMAKE_AUTOUIC}")
-message( STATUS "AUTOGEN_BUILD_DIR:       ${AUTOGEN_BUILD_DIR}")
 
 # Use the Widgets module from Qt 5.
 target_link_libraries(ddcui Qt5::Widgets ${GLIB2_LIBRARIES} ${DDCUTIL_LIBRARIES})
@@ -254,9 +262,10 @@ target_link_libraries(ddcui Qt5::Widgets ${GLIB2_LIBRARIES} ${DDCUTIL_LIBRARIES}
 
 # define GNU standard installation directories
 include(GNUInstallDirs)
-message( STATUS "GNU installation directories:")
-message( STATUS "  CMAKE_INSTALL_BINDIR:        ${CMAKE_INSTALL_BINDIR}" )
-message( STATUS "  CMAKE_INSTALL_DATATROOTDIR:  ${CMAKE_INSTALL_DATAROOTDIR}" )
+message( VERBOSE "GNU installation directories:")
+message( VERBOSE "  CMAKE_INSTALL_BINDIR:        ${CMAKE_INSTALL_BINDIR}" )
+message( VERBOSE "  CMAKE_INSTALL_PREFIX:        ${CMAKE_INSTALL_PREFIX}" )
+message( VERBOSE "  CMAKE_INSTALL_DATATROOTDIR:  ${CMAKE_INSTALL_DATAROOTDIR}" )
 
 install(TARGETS ddcui                       DESTINATION ${CMAKE_INSTALL_BINDIR} )
 install(FILES man/ddcui.1                   DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/man/man1)
@@ -270,14 +279,8 @@ install(FILES icons/video-display-48px.png  DESTINATION ${CMAKE_INSTALL_DATAROOT
 install(FILES icons/video-display-32px.png  DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/32x32/apps   RENAME ddcui.png)
 install(FILES icons/video-display-16px.png  DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/16x16/apps   RENAME ddcui.png)
 # install(FILES icons/ddcui.svg       DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/scalable/apps)
-
 # GNOME classic only looks in pixmaps for icons:
 # install(FILES icons/ddcui-48px.png  DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pixmaps RENAME ddcui.png)
-
-# Example: 
-#   copy_desktop_file_without_cruft("${CMAKE_CURRENT_SOURCE_DIR}/src/Gui/org.kde.trojita.desktop"# "${CMAKE_CURRENT_BINARY_DIR}/org.kde.trojita-DesktopGui.desktop")
-#   install(TARGETS trojita RUNTIME DESTINATION bin)
-#   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/org.kde.trojita-DesktopGui.desktop DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/applications/" RENAME org.kde.trojita.desktop)
 
 
 ### make uninstall
