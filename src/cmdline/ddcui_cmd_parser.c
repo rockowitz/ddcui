@@ -100,8 +100,6 @@ gboolean post_parse_hook(
 }
 
 
-
-
 /** Primary parsing function
  *
  *  \param  argc      number of command line arguments
@@ -111,6 +109,10 @@ gboolean post_parse_hook(
  */
 Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    bool debug = false;
+
+   char * s = getenv("DDCUTIL_DEBUG_PARSE");
+   if (s && strlen(s) > 0)
+      debug = true;
 
    if (debug) {
       printf("(%s) Starting\n", __func__ );
@@ -170,9 +172,6 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    gboolean f4_flag        = false;
    gboolean f5_flag        = false;
    gboolean f6_flag        = false;
-
-
-
 
    GOptionEntry public_option_entries[] = {
    //  long_name short flags option-type          gpointer           description                    arg description
@@ -315,14 +314,24 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    free(help_description);
 
    char ** mangleable_argv = argv;
+   if (debug) {
+      printf("(%s) Before g_option_context_parse_strv(), mangleable_argv:\n", __func__);
+      ntsa_show(mangleable_argv);
+   }
    bool ok = g_option_context_parse_strv(context, &mangleable_argv, &error);
    if (!ok) {
-      fprintf(stderr, "ddcui option parsing failed: %s\n", error->message);
+      if (error) {
+         fprintf(stderr, "ddcui option parsing failed: %s\n", error->message);
+         free(error);
+      }
+      else {
+         fprintf(stderr, "ddcui option parsing failed.\n");
+      }
    }
-   if (debug)
-      printf("(%s) Freeing mangleable_argv=%p:", __func__, mangleable_argv);
-   if (debug)
+   if (debug) {
+      printf("(%s) Freeing mangleable_argv=%p:\n", __func__, mangleable_argv);
       ntsa_show(mangleable_argv);
+   }
    ntsa_free(mangleable_argv, true);
 
 #define SET_CMDFLAG(_bit, _flag) \
