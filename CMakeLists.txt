@@ -12,7 +12,7 @@ message(VERBOSE "  ddcui_qlib_version:        ${ddcui_glib_version}" )
 message(VERBOSE "  ddcui_libddcutil_version:  ${ddcui_libddcutil_version}" ) 
 
 option(USE_CCACHE "Use ccache" ON)
-# message(STATUS "USE_CCACHE: ${USE_CCACHE}" )
+message(STATUS "USE_CCACHE: ${USE_CCACHE}" )
 
 set(valid_build_types Release RelWithDebInfo Debug MinSizeRel)
 string(TOUPPER "${valid_build_types}" uc_valid_build_types)
