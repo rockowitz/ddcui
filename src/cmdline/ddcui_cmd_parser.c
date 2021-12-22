@@ -322,7 +322,7 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    if (!ok) {
       if (error) {
          fprintf(stderr, "ddcui option parsing failed: %s\n", error->message);
-         free(error);
+         // n. do not free(error), invalid pointer
       }
       else {
          fprintf(stderr, "ddcui option parsing failed.\n");
