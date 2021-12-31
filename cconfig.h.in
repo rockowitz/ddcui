@@ -3,14 +3,9 @@
 
 // config.h template file, CMake version 
 
-#cmakedefine APPLY_CANCEL
- 
-// not working #cmakedefine ALT_FEATURES  @ALT_FEATURES_DEFINED@
+#define DDCUI_VSTRING "${PROJECT_VERSION}"
+#define DDCUI_VMAJOR  ${PROJECT_VERSION_MAJOR}
+#define DDCUI_VMINOR  ${PROJECT_VERSION_MINOR}
+#define DDCUI_VMICRO  ${PROJECT_VERSION_PATCH}
 
-// #ifdef APPLY_CANCEL
-// #warning "APPLY_CANCEL IS defined"
-// #else
-// #warning "APPLY_CANCEL is NOT defined"
-// #endif
-
-#endif
+#endif  
