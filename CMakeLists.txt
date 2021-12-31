@@ -14,39 +14,11 @@ message(VERBOSE "  ddcui_libddcutil_version:  ${ddcui_libddcutil_version}" )
 option(USE_CCACHE "Use ccache" ON)
 message(STATUS "USE_CCACHE: ${USE_CCACHE}" )
 
-set(valid_build_types Release RelWithDebInfo Debug MinSizeRel)
-string(TOUPPER "${valid_build_types}" uc_valid_build_types)
-string(REPLACE ";" ", " pretty_valid_build_types "${valid_build_types}")
-STRING(TOUPPER "${CMAKE_BUILD_TYPE}" UC_CMAKE_BUILD_TYPE )
-message(STATUS "Initial CMAKE_BUILD_TYPE:  ${CMAKE_BUILD_TYPE}")
+string(APPEND CMAKE_MODULE_PATH  ${CMAKE_SOURCE_DIR}) 
+include(Validate_CMAKE_BUILD_TYPE)
 
-# https://cmake.org/pipermail/cmake/2008-September/023808.html
-# If the user specifies -DCMAKE_BUILD_TYPE on the command line, take their
-# definition and dump it in the cache along with proper documentation, 
-# otherwise set CMAKE_BUILD_TYPE to the default prior to calling project()
-set(i0 0)
-if (DEFINED CMAKE_BUILD_TYPE)
-  string(LENGTH "${CMAKE_BUILD_TYPE}" i0)
-endif(DEFINED CMAKE_BUILD_TYPE)
-IF( (DEFINED CMAKE_BUILD_TYPE) AND (i0 GREATER 0) ) 
-   list(FIND uc_valid_build_types "${UC_CMAKE_BUILD_TYPE}" index) 
-   if (index EQUAL -1)
-      message(FATAL_ERROR "CMAKE_BUILD_TYPE must be one of ${pretty_valid_build_types}" )
-   endif()
-   # message(STATUS "Setting CMakeCache.txt value for CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
-   SET(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE STRING 
-                   "Choose the type of build, options are: ${pretty_valid_build_types}." FORCE)
- else()
-    set(CMAKE_BUILD_TYPE ${cmake_build_type_default})
- endif()
- 
-# Set the possible values of build type for cmake-gui
-# set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Release" "Debug" "RelWithDebInfo" "MinSizeRel")
 
-# see also: https://stackoverflow.com/questions/48754619/what-are-cmake-build-type-debug-release-relwithdebinfo-and-minsizerel
-#           https://blog.feabhas.com/2021/07/cmake-part-2-release-and-debug-builds/
-
-project(ddcui LANGUAGES C CXX)
+project(ddcui VERSION 0.2.1 LANGUAGES C CXX)
 
 message(STATUS "Build type is: ${CMAKE_BUILD_TYPE} (CMAKE_BUILD_TYPE)")
 # message(STATUS "   CMAKE_CXX_FLAGS:                ${CMAKE_CXX_FLAGS}" )
