@@ -53,6 +53,13 @@ void Monitor::dbgrpt() {
    fflush(stdout);
 }
 
+QString Monitor::dref_repr() {
+   if (!_displayInfo->dref)
+      return QString("No dref");
+   else
+      return   QString( ddca_dref_repr(_displayInfo->dref) );
+}
+
 
 DDCA_Feature_List
 Monitor::getFeatureList(DDCA_Feature_Subset_Id feature_list_id) {
@@ -96,21 +103,33 @@ Monitor::getFeatureList(DDCA_Feature_Subset_Id feature_list_id) {
 
 // consider replacing 2 booleans with an enum with 3 states
 
-bool Monitor::capabilities_check_complete() {
+bool Monitor::capabilitiesCheckComplete() {
+   bool debug = true;
    // considered complete if invalid display
    bool result = (_displayInfo->dispno > 0);   // dispno -1 if API found display invalid
    if (result)
       result = (_baseModel->_caps_check_complete);
+   TRACECF(result, "dref=%s, returning %s", QS2S(dref_repr()), SBOOL(result));
    return result;
 }
 
 
-bool Monitor::supportsDdc() {
-   bool result = (_displayInfo->dispno != -1);   // dispno -1 if API found display invalid
+bool Monitor::capabilitiesCheckSuccessful() {
+   bool debug = true;
+   bool result = (_displayInfo->dispno >  0);   // dispno -1 if API found display invalid, -2 if phantom
    if (result)
       result = (_baseModel->_caps_status == 0 && _baseModel->_parsed_caps);  // got capabilities?
+   TRACECF(debug, "dref=%s, returning %s", QS2S(dref_repr()), SBOOL(result));
    return result;
 }
+
+bool Monitor::isValidDisplay() {
+   bool debug = true;
+   bool result = (_displayInfo->dispno >  0);   // dispno -1 if API found display invalid, -2 if phantom
+   TRACECF(debug, "dref=%s, returning %s", QS2S(dref_repr()), SBOOL(result));
+   return result;
+}
+
 
  // called by initFeaturesScrollAreaView
 void Monitor::putVcpRequest(VcpRequest * rqst) {

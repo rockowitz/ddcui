@@ -39,9 +39,11 @@ public:
     ~Monitor();
 
     DDCA_Feature_List getFeatureList(DDCA_Feature_Subset_Id);
-    bool capabilities_check_complete();
-    bool supportsDdc();
+    bool capabilitiesCheckComplete();
+    bool capabilitiesCheckSuccessful();
+    bool isValidDisplay();
     void dbgrpt();
+    QString dref_repr();
 
     const int            _monitorNumber = -1;    // 1 based
     DDCA_Display_Info *  _displayInfo;
