@@ -6,8 +6,6 @@
 #ifndef DDCUI_PARMS_H_
 #define DDCUI_PARMS_H_
 
-#define DDCUI_VERSION "0.2.1"
-
 #ifdef TOO_MUCH_INDIRECTION
 #define FEATURE_VALUE_MONO_FONT_SIZE  8
 #define FEATURE_VALUE_MONO_FONT_FAMILY  "Monospace"
