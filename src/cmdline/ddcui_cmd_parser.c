@@ -95,7 +95,7 @@ gboolean post_parse_hook(
       gpointer data,
       GError** error)
 {
-  //  printf("(%s) data = %d\n", __func__, GPOINTER_TO_INT(data));
+   // printf("(%s) data = %d\n", __func__, GPOINTER_TO_INT(data));
    return true;
 }
 
@@ -364,7 +364,6 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    SET_CMDFLAG(CMD_FLAG_F6,                f6_flag);
 
    SET_CMDFLAG(CMD_FLAG_HIDPI,             hidpi_flag);
-
 #undef SET_CMDFLAG
 
    if (all_capabilities_true_set || all_capabilities_false_set) {
@@ -607,7 +606,7 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
       }
 
    if (version_flag) {
-      printf("ddcui %s\n\n", DDCUI_VERSION);
+      printf("ddcui %s\n\n", DDCUI_VSTRING);
       printf("Built using libddcutil version %d.%d.%d, Qt version %s\n",
              DDCUTIL_VMAJOR, DDCUTIL_VMINOR, DDCUTIL_VMICRO, QT_VERSION_STR);
       printf("Executing using libddcutil %s, Qt %s\n\n",
