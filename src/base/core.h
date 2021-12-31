@@ -17,7 +17,7 @@
 
 #include "ddcui_parms.h"
 
-const QString ddcui_version = DDCUI_VERSION;
+const QString ddcui_version = DDCUI_VSTRING;
 
 // Qt
 
