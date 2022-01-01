@@ -594,7 +594,7 @@ void MainWindow::on_actionMonitorSummary_triggered()
        _curView = View::MonitorView;
        _ui->actionRescan->setEnabled(false);
        _ui->actionMonitorSummary->setChecked(true);
-       bool b = monitor->isValidDisplay();
+       bool b = monitor->supportsDdc();
        _ui->actionCapabilities->setEnabled(b);
        _ui->actionFeaturesScrollArea->setEnabled(b);
        // _ui->centralWidget->setCurrentIndex(pageno);
@@ -625,9 +625,9 @@ void MainWindow::on_actionCapabilities_triggered()
 
        TRACECF(debug, "dref=%s, valid display %s",
              QS2S(monitor->dref_repr()),
-             SBOOL(monitor->isValidDisplay()) );
+             SBOOL(monitor->supportsDdc()) );
 
-       if (!monitor->isValidDisplay()) {
+       if (!monitor->supportsDdc()) {
           QMessageBox::warning(this,
                                "ddcutil",
                                "Display does not support DDC (1)",
@@ -703,7 +703,7 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
            monitor->_curFeatureSelector.dbgrpt();
        }
 
-       if (!monitor->isValidDisplay()) {
+       if (!monitor->supportsDdc()) {
           QMessageBox::warning(this,
                                "ddcui",
                                "Display does not support DDC (3)",
