@@ -220,6 +220,14 @@ void MainWindow::initOneMonitor(DDCA_Display_Info * info, int curIndex) {
    if (info->dispno > 0) {     // don't try if monitor known to not support DDC
        curMonitor->_requestQueue->put(new LoadDfrRequest());
        curMonitor->_requestQueue->put(new VcpCapRequest());
+
+       // TODO: disable Capabilities and Features Views
+       _ui->actionCapabilities->setEnabled(true);
+       _ui->actionFeaturesScrollArea->setEnabled(true);
+   }
+   else {
+      _ui->actionCapabilities->setEnabled(false);
+      _ui->actionFeaturesScrollArea->setEnabled(false);
    }
 
    TRACECF(debug, "Done.");
@@ -288,10 +296,12 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
         TRACECF(debug, "Processing display %d", ndx);
         initOneMonitor(&_dlist->info[ndx], ndx);
     }
+
+    _ui->actionMonitorSummary->setEnabled(false);
+    _ui->actionCapabilities->setEnabled(false);
+    _ui->actionFeaturesScrollArea->setEnabled(false);
     if (_dlist->ct > 0) {
        _ui->actionMonitorSummary->setEnabled(true);
-       _ui->actionCapabilities->setEnabled(true);
-       _ui->actionFeaturesScrollArea->setEnabled(true);
     }
 
 #ifdef DEFERRED_MSG_QUEUE
@@ -383,6 +393,7 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
      // Start with Monitor Summary of first monitor instead if no view selected
      if (_monitors.size() > 0)
 // #ifdef WORKS
+        TRACECF(debug, "_monitors_size=%d. emitting signalMonitorSummaryView");
         emit signalMonitorSummaryView();
 // #endif
 
@@ -521,6 +532,11 @@ void MainWindow::longRunningTaskEnd() {
 
 void MainWindow::displaySelectorCombobox_currentIndexChanged(int index) {
    // printf("(%s::%s) index=%d\n", _cls, __func__, index); fflush(stdout);
+   bool debug = true;
+   TRACECF(debug, "index=%d", index);
+
+   // From index, get the Monitor object
+   // if not support DDC, always emit signalMonitorSummaryView
    switch(_curView) {
    case MonitorView:
       emit signalMonitorSummaryView();
@@ -552,12 +568,17 @@ void MainWindow::displaySelectorCombobox_activated(int index) {
 
 void MainWindow::on_actionMonitorSummary_triggered()
 {
-    bool debug = false;
+    bool debug = true;
     // std::cout << "(MainWindow::on_actionMonitorSummary_triggered()" << endl;
 
     int monitorNdx = _toolbarDisplayCB->currentIndex();
+    DDCA_Display_Info * info =  &_dlist->info[monitorNdx];
+    DDCA_Display_Ref dref = info->dref;
+
+    TRACECF(debug, "monitorNdx (%d), dref=%s", monitorNdx, ddca_dref_repr(dref));
     if (monitorNdx < 0) {
-       TRACECF(debug, "monitorNdx (%d) < 0", monitorNdx);
+
+
        // _ui->centralWidget->hide();
     }
     else {
@@ -573,10 +594,15 @@ void MainWindow::on_actionMonitorSummary_triggered()
        _curView = View::MonitorView;
        _ui->actionRescan->setEnabled(false);
        _ui->actionMonitorSummary->setChecked(true);
+       bool b = monitor->isValidDisplay();
+       _ui->actionCapabilities->setEnabled(b);
+       _ui->actionFeaturesScrollArea->setEnabled(b);
        // _ui->centralWidget->setCurrentIndex(pageno);
        _ui->centralWidget->setCurrentWidget(monitor->_page_moninfo);
        _ui->centralWidget->show();
     }
+    TRACECF(debug, "_ui->actionCapabilities->isEnabled()=%s",
+                   SBOOL(_ui->actionCapabilities->isEnabled() ));
 }
 
 
@@ -584,7 +610,7 @@ void MainWindow::on_actionMonitorSummary_triggered()
 
 void MainWindow::on_actionCapabilities_triggered()
 {
-    bool debug = false;
+    bool debug = true;
     int monitorNdx = _toolbarDisplayCB->currentIndex();
     TRACECF(debug, "monitorNdx=%d", monitorNdx);
     if (monitorNdx < 0) {
@@ -597,7 +623,20 @@ void MainWindow::on_actionCapabilities_triggered()
 
        Monitor * monitor = _monitors.at(monitorNdx);
 
-       if (!monitor->capabilities_check_complete()) {
+       TRACECF(debug, "dref=%s, valid display %s",
+             QS2S(monitor->dref_repr()),
+             SBOOL(monitor->isValidDisplay()) );
+
+       if (!monitor->isValidDisplay()) {
+          QMessageBox::warning(this,
+                               "ddcutil",
+                               "Display does not support DDC (1)",
+                               QMessageBox::Ok);
+          // emit signalMonitorSummaryView();   // doesn't work
+          on_actionMonitorSummary_triggered();
+       }
+
+       else if (!monitor->capabilitiesCheckComplete()) {
           QMessageBox::warning(this,
                                "ddcutil",
                                "Capabilities check still in progress",
@@ -605,10 +644,10 @@ void MainWindow::on_actionCapabilities_triggered()
           // emit signalMonitorSummaryView();   // doesn't work
           on_actionMonitorSummary_triggered();
        }
-       else if (!monitor->supportsDdc()) {
+       else if (!monitor->capabilitiesCheckSuccessful()) {
           QMessageBox::warning(this,
                                "ddcutil",
-                               "Display does not support DDC",
+                               "Display does not support DDC (2)",
                                QMessageBox::Ok);
           // emit signalMonitorSummaryView();   // doesn't work
           on_actionMonitorSummary_triggered();
@@ -647,7 +686,7 @@ void MainWindow::on_actionCapabilities_triggered()
 void MainWindow::on_actionFeaturesScrollArea_triggered()
 {
    bool debug = debugFeatureSelection;
-   debug = false;
+   debug = true;
     if (debug) {
         TRACEC("Desired view: %d, feature list:", View::FeaturesView);
         this->_feature_selector->dbgrpt();
@@ -664,33 +703,43 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
            monitor->_curFeatureSelector.dbgrpt();
        }
 
-       if (!monitor->capabilities_check_complete()) {
+       if (!monitor->isValidDisplay()) {
+          QMessageBox::warning(this,
+                               "ddcui",
+                               "Display does not support DDC (3)",
+                               QMessageBox::Ok);
+          // emit signalMonitorSummaryView();   // doesn't work
+          on_actionMonitorSummary_triggered();
+       }
+
+       else if (!monitor->capabilitiesCheckComplete()) {
           QMessageBox::warning(this, "ddcui", "Capabilities check incomplete", QMessageBox::Ok);
           on_actionMonitorSummary_triggered();
-          return;
        }
 
-       if (!monitor->supportsDdc()) {
-          QMessageBox::warning(this, "ddcui", "Display does not support DDC", QMessageBox::Ok);
+       else if (!monitor->capabilitiesCheckSuccessful()) {
+          QMessageBox::warning(this, "ddcui", "Display does not support DDC (4)", QMessageBox::Ok);
           on_actionMonitorSummary_triggered();
-          return;
        }
 
-       // TODO Combine View, features view
-       if (_curView                     != View::FeaturesView  ||
-           _curDisplayIndex             != monitorNdx          ||
-           monitor->_curFeatureSelector != *_feature_selector )
-       {
-          loadMonitorFeatures(monitor);
-          _curDisplayIndex = monitorNdx;
-          _curView = View::FeaturesView;
-          _ui->actionRescan->setEnabled(true);
-          _ui->actionFeaturesScrollArea->setChecked(true);
-
-          monitor->_curFeatureSelector   = *_feature_selector;
-       }
        else {
-          TRACECF(debug, "Unchanged view and feature set, no need to load");
+
+          // TODO Combine View, features view
+          if (_curView                     != View::FeaturesView  ||
+              _curDisplayIndex             != monitorNdx          ||
+              monitor->_curFeatureSelector != *_feature_selector )
+          {
+             loadMonitorFeatures(monitor);
+             _curDisplayIndex = monitorNdx;
+             _curView = View::FeaturesView;
+             _ui->actionRescan->setEnabled(true);
+             _ui->actionFeaturesScrollArea->setChecked(true);
+
+             monitor->_curFeatureSelector   = *_feature_selector;
+          }
+          else {
+             TRACECF(debug, "Unchanged view and feature set, no need to load");
+          }
        }
     }
 }
@@ -764,7 +813,7 @@ void MainWindow::on_actionRescan_triggered() {
 
 
 void MainWindow::on_actionRedetect_triggered() {
-   bool debug = false;
+   bool debug = true;
    TRACECF(debug, "Executing");
 
    this->freeMonitors();
@@ -786,6 +835,8 @@ void MainWindow::on_actionRedetect_triggered() {
    // if no monitors, set _curDisplayIndex = -1
    _curDisplayIndex = (_dlist->ct > 0) ? 0 : -1;
 
+   // HANDLE CASE OF NO DDC MONITORS?
+   TRACECF(debug, "Emitting signalMonitorSummaryView");
    emit signalMonitorSummaryView();
 
    TRACECF(debug,"Done");
