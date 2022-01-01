@@ -53,6 +53,12 @@ void Monitor::dbgrpt() {
    fflush(stdout);
 }
 
+
+DDCA_Display_Ref Monitor::getDref() {
+   return _displayInfo->dref;
+}
+
+
 QString Monitor::dref_repr() {
    if (!_displayInfo->dref)
       return QString("No dref");
@@ -123,7 +129,8 @@ bool Monitor::capabilitiesCheckSuccessful() {
    return result;
 }
 
-bool Monitor::isValidDisplay() {
+
+bool Monitor::supportsDdc() {
    bool debug = true;
    bool result = (_displayInfo->dispno >  0);   // dispno -1 if API found display invalid, -2 if phantom
    TRACECF(debug, "dref=%s, returning %s", QS2S(dref_repr()), SBOOL(result));

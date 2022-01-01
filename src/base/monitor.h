@@ -38,12 +38,14 @@ public:
     Monitor(DDCA_Display_Info * display_info, int monitorNumber);
     ~Monitor();
 
-    DDCA_Feature_List getFeatureList(DDCA_Feature_Subset_Id);
+    bool supportsDdc();
+
     bool capabilitiesCheckComplete();
     bool capabilitiesCheckSuccessful();
-    bool isValidDisplay();
-    void dbgrpt();
+    DDCA_Feature_List getFeatureList(DDCA_Feature_Subset_Id);
+    DDCA_Display_Ref getDref();
     QString dref_repr();
+    void dbgrpt();
 
     const int            _monitorNumber = -1;    // 1 based
     DDCA_Display_Info *  _displayInfo;
