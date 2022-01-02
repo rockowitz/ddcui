@@ -99,6 +99,7 @@ typedef struct {
    Optional_True_False     include_all_capabilities_features;
    Optional_True_False     include_only_capabilities_features;
    Optional_True_False     enable_sleep_suppression;
+   Optional_True_False     enable_force_slave_address;
    char *                  model;
    int                     busno;
    DDCA_Feature_List       custom_feature_list;
