@@ -1,6 +1,6 @@
 /** \file value_std_widget.cpp */
 
-// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <QtCore/QRect>
@@ -98,6 +98,12 @@ ValueStdWidget::ValueStdWidget(QWidget *parent):
 }
 
 
+ValueStdWidget::~ValueStdWidget() {
+   free((void*) _cls);
+   delete _valueField;
+}
+
+
 void ValueStdWidget::setValueField() {
    char * s_formatted = NULL;
    if (_ddcrc == 0) {
@@ -114,9 +120,10 @@ void ValueStdWidget::setValueField() {
              &s_formatted);
        // TRACE("ddca_format_non_table_vcp_value_by_dref() returned %d, s_formatted=%s", rc, s_formatted);
        if (rc != 0)
-           s_formatted = (char*) "invalid formatted value";   // cast to avoid compiler warning
+           s_formatted = strdup((char*) "invalid formatted value");   // cast to avoid compiler warning
 
        _valueField->setText(QString::fromUtf8(s_formatted));
+       free(s_formatted);
     }
     else {
        // need to make check at higher level where ValueStackedWidget is added to layout

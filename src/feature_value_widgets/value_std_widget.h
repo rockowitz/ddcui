@@ -1,6 +1,6 @@
 /* value_std_widget.h - Widget for displaying a formatted VCP feature value */
 
-// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef VALUE_STD_WIDGET_H
@@ -18,6 +18,7 @@ class ValueStdWidget : public ValueBaseWidget
 
 public:
     ValueStdWidget(QWidget *parent = nullptr);
+    ~ValueStdWidget();
 
     void setFeatureValue(const FeatureValue  &fv) override;
     void setCurrentShSl(uint16_t newval) override;
