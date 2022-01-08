@@ -1,12 +1,12 @@
-/* feature_widget.h - Custom widget for displaying/editing a VCP feature */
+/** feature_widget.h Custom widget for displaying/editing a VCP feature */
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef FEATURE_WIDGET_H
 #define FEATURE_WIDGET_H
 
-#include "../base/core.h"
+#include "base/core.h"
 #include "nongui/feature_value.h"
 
 #include "feature_value_widgets/value_stacked_widget.h"
@@ -26,6 +26,7 @@ class FeatureWidget :
 public:
     explicit FeatureWidget(QWidget *parent = nullptr);
     FeatureWidget(FeatureValue& fv, QWidget *parent=nullptr);
+    ~FeatureWidget();
 
     // QSize sizeHint() const override;
 
