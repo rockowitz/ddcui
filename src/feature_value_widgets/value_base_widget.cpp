@@ -1,6 +1,6 @@
 /* value_base_widget.cpp */
 
-// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "feature_value_widgets/value_base_widget.h"
@@ -61,7 +61,7 @@ ValueBaseWidget::~ValueBaseWidget() {
    ddca_free_feature_metadata(_finfo);
    // _capVcp ??
    // _dref do not need to free
-   // free(_cls);
+   free((void*)_cls);
    // delete _cls;  // fails - const
    TRACEMCF(debug, "Done.");
 }
