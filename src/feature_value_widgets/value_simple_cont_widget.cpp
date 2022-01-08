@@ -1,6 +1,6 @@
-/** \file value_simple_cont_widget.cpp */
+/* value_simple_cont_widget.cpp */
 
-// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "feature_value_widgets/value_simple_cont_widget.h"
@@ -112,6 +112,13 @@ ValueSimpleContWidget::ValueSimpleContWidget(QWidget *parent)
              this,        SLOT(onFeatureValueChanged(uint8_t, uint8_t, uint8_t)));
 
     TRACEMCF(debug, "Done." );
+}
+
+
+ValueSimpleContWidget::~ValueSimpleContWidget() {
+   bool debug = false;
+   TRACEMCF(debug, "Executing. this._id = %d", _id);
+   free((void*) _cls);
 }
 
 
