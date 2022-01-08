@@ -1,6 +1,6 @@
 // slider_spinner.cpp
 
-// Copyright (C) 2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2020-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <QtWidgets/QHBoxLayout>
@@ -78,6 +78,7 @@ SpinSlider::SpinSlider(QWidget * parent)
    connect(_spinBox, SIGNAL(valueChanged(int)),
            _slider,  SLOT(  setValue(int)));
 
+
     _spinBoxTimer = new QTimer();
     _spinBoxTimer->setSingleShot(true);
     _spinBoxTimer->setInterval(1000);
@@ -86,6 +87,10 @@ SpinSlider::SpinSlider(QWidget * parent)
             this,            SLOT(onSpinBoxTimedOut()));
 }
 
+
+SpinSlider::~SpinSlider() {
+   delete _spinBoxTimer;
+}
 
 void SpinSlider::setFeatureCode(uint8_t featureCode) {
    _featureCode = featureCode;

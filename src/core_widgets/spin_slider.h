@@ -1,6 +1,6 @@
 // slider_spinner.h
 
-// Copyright (C) 2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2020-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef SLIDER_SPINNER_H_
@@ -21,6 +21,7 @@ class SpinSlider : public QWidget {
 public:
    // allocation and initialization
    SpinSlider(QWidget * parent = nullptr);
+   ~SpinSlider();
    void     setRange(int minval, int maxval);
    void     setFeatureCode(uint8_t featureCode);
 
