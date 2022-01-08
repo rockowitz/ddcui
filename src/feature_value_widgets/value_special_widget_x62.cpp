@@ -1,6 +1,6 @@
 // value_special_widget_x62.cpp
 
-// Copyright (C) 2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2020-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <assert.h>
@@ -64,6 +64,12 @@ ValueSpecialWidgetX62::ValueSpecialWidgetX62(QWidget *parent)
                      this, SLOT(combobox_activated(int)) );
 
     TRACECF(debug, "Done. ValueSpecialWidgetX62");
+}
+
+ValueSpecialWidgetX62::~ValueSpecialWidgetX62() {
+   bool debug = false;
+   TRACEMCF(debug, "Executing. this._id = %d", _id);
+   free((void*) _cls);
 }
 
 

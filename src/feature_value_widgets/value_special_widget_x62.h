@@ -1,6 +1,6 @@
 // value_special_widget_x62.h
 
-// Copyright (C) 2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2020-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef VALUE_SPECIAL_WIDGET_X62_H_
@@ -24,6 +24,7 @@ class ValueSpecialWidgetX62 : public ValueSimpleContWidget
 
 public:            // methods
     ValueSpecialWidgetX62(QWidget *parent = nullptr);
+    ~ValueSpecialWidgetX62();
 
     void     setFeatureValue(const FeatureValue &fv) override;
     void     setCurrentShSl(uint16_t newval)         override;
