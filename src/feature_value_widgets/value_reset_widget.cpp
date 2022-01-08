@@ -1,6 +1,6 @@
 /* value_reset_widget.cpp */
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "feature_value_widgets/value_reset_widget.h"
@@ -94,6 +94,11 @@ ValueResetWidget::ValueResetWidget(QWidget *parent):
 
     QObject::connect(_resetButton,  SIGNAL(released()),
                      this,          SLOT(  on_resetButton_pressed()) );
+}
+
+
+ValueResetWidget::~ValueResetWidget() {
+   free((void*) _cls);
 }
 
 
