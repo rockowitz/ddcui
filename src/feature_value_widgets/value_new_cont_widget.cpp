@@ -1,6 +1,6 @@
 /** \file value_new_cont_widget.cpp */
 
-// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "base/ddcui_parms.h"
@@ -64,6 +64,12 @@ ValueNewContWidget::ValueNewContWidget(QWidget *parent)
     _cls = strdup(metaObject()->className());
     TRACEMCF(debug, "TRACECMF.  Starting. After ValueSimpleContWidget constructor");
     TRACEMCF(debug, "TRACECMF. Done");
+}
+
+ValueNewContWidget::~ValueNewContWidget() {
+   bool debug = false;
+   TRACEMCF(debug, "Executing. this._id = %d", _id);
+   free((void*) _cls);
 }
 
 

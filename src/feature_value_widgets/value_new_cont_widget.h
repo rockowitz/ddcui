@@ -1,6 +1,6 @@
 /** \file value_new_cont_widget.h - Widget for displaying/editing a Continuous VCP feature value */
 
-// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef VALUE_NEW_CONT_WIDGET_H
@@ -18,6 +18,7 @@ class ValueNewContWidget : public ValueSimpleContWidget
 
 public:
     ValueNewContWidget(QWidget *parent = nullptr);
+    ~ValueNewContWidget();
     void setFeatureValue(const FeatureValue &fv) override;
 
 private:
