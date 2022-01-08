@@ -1,6 +1,6 @@
 /* value_2button_widget.cpp - Widget containing 2 named buttons */
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "feature_value_widgets/value_2button_widget.h"
@@ -83,6 +83,13 @@ Value2ButtonWidget::Value2ButtonWidget(
 
    QObject::connect(_button1, SIGNAL(released()),  this, SLOT(  on_button1_pressed()) );
    QObject::connect(_button2, SIGNAL(released()),  this, SLOT(  on_button2_pressed()) );
+}
+
+
+Value2ButtonWidget::~Value2ButtonWidget() {
+   bool debug = false;
+   TRACEMCF(debug, "Executing. this._id = %d", _id);
+   free((void*) _cls);
 }
 
 
