@@ -1,6 +1,6 @@
 /* value_nc_widget.cpp */
 
-// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "feature_value_widgets/value_nc_widget.h"
@@ -85,7 +85,6 @@ void ValueNcWidget::layoutWidget() {
 }
 
 
-
 ValueNcWidget::ValueNcWidget(QWidget *parent):
         ValueBaseWidget(parent)
 {
@@ -107,6 +106,7 @@ ValueNcWidget::~ValueNcWidget() {
    bool debugFunc = false;
    // debugFunc = debugFunc || (_featureCode == 0x14);
    TRACECF(debugFunc, "Executing. _id=%d, _featureCode=0x%02x", _id, _featureCode);
+   free((void*) _cls);
 }
 
 
@@ -246,6 +246,7 @@ void ValueNcWidget::loadComboBox2() {
       // TRACEMF(debugFunc, "inserting 0x%02x into combobox: %s", valueCode, QS2S(s));
       _cb->addItem(s, QVariant(valueCode));
    }
+   bs256_iter_free(iter);
    int cur_ndx = findItem(_sl);
    // assert (cur_ndx >= 0);    // must be in _observedValues
    if (cur_ndx >= 0) {
