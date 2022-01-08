@@ -1,6 +1,9 @@
-// value_ncplus_widget.cpp
+/* value_ncplus_widget.cpp
+ *
+ * For NC features with additional information in a byte other than SL
+ */
 
-// Copyright (C) 2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2020-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "feature_value_widgets/value_ncplus_widget.h"
@@ -126,6 +129,10 @@ ValueNcplusWidget::ValueNcplusWidget(QWidget *parent):
     _cls = strdup(metaObject()->className());
     // layoutWidget();
     TRACEMCF(debug, "Done, _cls=%s", _cls);
+}
+
+ValueNcplusWidget::~ValueNcplusWidget() {
+   free((void*) _cls);
 }
 
 

@@ -1,8 +1,9 @@
-/** @file value_ncplus_widget.cpp
- * For NC features with additional information in a byte other thatn SL
+/* value_ncplus_widget.cpp
+ *
+ * For NC features with additional information in a byte other than SL
  */
 
-// Copyright (C) 2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2021-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef VALUE_NCPLUS_WIDGET_H_
@@ -29,6 +30,7 @@ class ValueNcplusWidget : public ValueNcWidget
 
 public:
     ValueNcplusWidget(QWidget *parent = nullptr);
+    ~ValueNcplusWidget();
 
     void     setFeatureValue(const FeatureValue &fv) override;
     void     setCurrentShSl(uint16_t newval)         override;
