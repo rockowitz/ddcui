@@ -1,6 +1,6 @@
 // user_interface_options_dialog.h
 
-// Copyright (C) 2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2019-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef USER_INTERFACE_OPTIONS_DIALOG_H
