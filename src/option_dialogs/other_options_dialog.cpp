@@ -1,7 +1,6 @@
-/** \file other_options_dialog.cpp
- */
+/* other_options_dialog.cpp */
 
-// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <assert.h>
@@ -40,7 +39,7 @@ void OtherOptionsDialog::setUseLatestNcValueNames(bool newval) {
 OtherOptionsDialog::OtherOptionsDialog(OtherOptionsState * state, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::OtherOptionsDialog),
-    _cls( metaObject()->className() ),
+    _cls( strdup(metaObject()->className()) ),
     _state(state)
 {
     // _state = state;
@@ -57,6 +56,7 @@ OtherOptionsDialog::OtherOptionsDialog(OtherOptionsState * state, QWidget *paren
 OtherOptionsDialog::~OtherOptionsDialog()
 {
     delete ui;
+    free((void*) _cls);
 }
 
 
