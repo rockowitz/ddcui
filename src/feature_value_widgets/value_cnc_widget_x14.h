@@ -1,6 +1,9 @@
-// value_cnc_widget_x14.h
+/* value_cnc_widget_x14.h
+ *
+ *  Special handling for complex non-continuous feature x14 - Color Preset
+ */
 
-// Copyright (C) 2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2019-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef VALUE_CNC_WIDGET_X14_H_
@@ -25,6 +28,7 @@ class ValueCncWidgetX14 : public ValueNcWidget
 
 public:
     ValueCncWidgetX14(QWidget *parent = nullptr);
+    ~ValueCncWidgetX14();
 
     void     setFeatureValue(const FeatureValue &fv) override;
     // void     setCurrentValue(uint16_t newval) override;

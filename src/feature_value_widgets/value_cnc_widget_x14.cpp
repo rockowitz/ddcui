@@ -1,10 +1,12 @@
-// value_cnc_widget_x14.cpp
+/* value_cnc_widget_x14.cpp
+ *
+ *  Special handling for complex non-continuous feature x14 - Color Preset
+ */
 
-// Copyright (C) 2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2019-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "feature_value_widgets/value_cnc_widget_x14.h"
-#include "feature_value_widgets/value_nc_widget.h"
 
 #include <assert.h>
 #include <stdio.h>
@@ -25,6 +27,8 @@
 #include "base/widget_debug.h"
 
 #include "nongui/feature_base_model.h"
+
+#include "feature_value_widgets/value_nc_widget.h"
 
 
 ValueCncWidgetX14::ValueCncWidgetX14(QWidget *parent):
@@ -103,9 +107,7 @@ ValueCncWidgetX14::ValueCncWidgetX14(QWidget *parent):
     _mhlabel = new QLabel("Tolerance:");
     _mhdesc  = new QLabel();
 
-
     delete _layout;
-
     _layout = new QHBoxLayout();
     _layout->addSpacing(5);
     _layout->addWidget(_cb);
@@ -130,6 +132,13 @@ ValueCncWidgetX14::ValueCncWidgetX14(QWidget *parent):
  #endif
      _layout->setContentsMargins(0,0,0,0);
      setLayout(_layout);
+}
+
+
+ValueCncWidgetX14::~ValueCncWidgetX14() {
+   free((void*) _cls);
+   delete _mhlabel;
+   delete _mhdesc;
 }
 
 
