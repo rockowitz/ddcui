@@ -1,6 +1,6 @@
 /* monitor.cpp */
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "base/monitor.h"
@@ -110,18 +110,18 @@ Monitor::getFeatureList(DDCA_Feature_Subset_Id feature_list_id) {
 // consider replacing 2 booleans with an enum with 3 states
 
 bool Monitor::capabilitiesCheckComplete() {
-   bool debug = true;
+   bool debug = false;
    // considered complete if invalid display
    bool result = (_displayInfo->dispno > 0);   // dispno -1 if API found display invalid
    if (result)
       result = (_baseModel->_caps_check_complete);
-   TRACECF(result, "dref=%s, returning %s", QS2S(dref_repr()), SBOOL(result));
+   TRACECF(debug, "dref=%s, returning %s", QS2S(dref_repr()), SBOOL(result));
    return result;
 }
 
 
 bool Monitor::capabilitiesCheckSuccessful() {
-   bool debug = true;
+   bool debug = false;
    bool result = (_displayInfo->dispno >  0);   // dispno -1 if API found display invalid, -2 if phantom
    if (result)
       result = (_baseModel->_caps_status == 0 && _baseModel->_parsed_caps);  // got capabilities?
@@ -131,7 +131,7 @@ bool Monitor::capabilitiesCheckSuccessful() {
 
 
 bool Monitor::supportsDdc() {
-   bool debug = true;
+   bool debug = false;
    bool result = (_displayInfo->dispno >  0);   // dispno -1 if API found display invalid, -2 if phantom
    TRACECF(debug, "dref=%s, returning %s", QS2S(dref_repr()), SBOOL(result));
    return result;
