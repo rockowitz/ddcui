@@ -1,6 +1,6 @@
 // value_bytes_widget.cpp
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "value_bytes_widget.h"
@@ -17,6 +17,8 @@
 #include "base/ddcui_parms.h"
 #include "base/core.h"
 #include "base/widget_debug.h"
+
+#include "feature_value_widgets/value_base_widget.h"
 
 int ValueBytesWidget::idGenerator = 1;
 static bool showDimensionReports = false;
@@ -212,6 +214,11 @@ ValueBytesWidget::ValueBytesWidget(QWidget *parent)
 }
 
 
+ValueBytesWidget::~ValueBytesWidget() {
+   free((void*) _cls);
+}
+
+
 void ValueBytesWidget::when_combobox_activated(int ndx) {
    uint8_t new_sh = ndx >> 8;
    uint8_t new_sl = ndx & 0xff;
@@ -226,7 +233,7 @@ void ValueBytesWidget::when_combobox_activated(int ndx) {
 
 void ValueBytesWidget::setFeatureValue(const FeatureValue &fv) {
     bool debug = debugValueWidgetSignals;
-    // debug = true;
+    // debug = false;
     TRACEMCF(debug,
               "Starting. feature code: 0x%02x, mh: 0x%02x, ml: 0x%02x, sh: 0x%02x sl: 0x%02x",
               fv.featureCode(),

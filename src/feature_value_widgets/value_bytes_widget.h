@@ -1,11 +1,13 @@
-// value_bytes_widget.h
+/* value_bytes_widget.h
+ *
+ * For undefined features.
+ */
 
-// Copyright (C) 2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef VALUE_BYTES_WIDGET_H_
 #define VALUE_BYTES_WIDGET_H_
-
 
 #include "config.h"
 
@@ -27,6 +29,7 @@ class ValueBytesWidget : public ValueBaseWidget
 
 public:
     ValueBytesWidget(QWidget *parent = nullptr);
+    ~ValueBytesWidget();
 
     void     setFeatureValue(const FeatureValue &fv) override;
     void     setCurrentShSl(uint16_t newval)         override;
