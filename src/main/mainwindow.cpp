@@ -1,6 +1,6 @@
 /** \file mainwindow.cpp */
 
-// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "main/mainwindow.h"
@@ -435,6 +435,10 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete _ui;
+
+    delete _feature_selector;
+    delete _otherOptionsState;
+    delete _uiOptionsState;
 }
 
 
@@ -532,7 +536,7 @@ void MainWindow::longRunningTaskEnd() {
 
 void MainWindow::displaySelectorCombobox_currentIndexChanged(int index) {
    // printf("(%s::%s) index=%d\n", _cls, __func__, index); fflush(stdout);
-   bool debug = true;
+   bool debug = false;
    TRACECF(debug, "index=%d", index);
 
    // From index, get the Monitor object
@@ -568,7 +572,7 @@ void MainWindow::displaySelectorCombobox_activated(int index) {
 
 void MainWindow::on_actionMonitorSummary_triggered()
 {
-    bool debug = true;
+    bool debug = false;
     // std::cout << "(MainWindow::on_actionMonitorSummary_triggered()" << endl;
 
     int monitorNdx = _toolbarDisplayCB->currentIndex();
@@ -577,8 +581,6 @@ void MainWindow::on_actionMonitorSummary_triggered()
 
     TRACECF(debug, "monitorNdx (%d), dref=%s", monitorNdx, ddca_dref_repr(dref));
     if (monitorNdx < 0) {
-
-
        // _ui->centralWidget->hide();
     }
     else {
@@ -610,7 +612,7 @@ void MainWindow::on_actionMonitorSummary_triggered()
 
 void MainWindow::on_actionCapabilities_triggered()
 {
-    bool debug = true;
+    bool debug = false;
     int monitorNdx = _toolbarDisplayCB->currentIndex();
     TRACECF(debug, "monitorNdx=%d", monitorNdx);
     if (monitorNdx < 0) {
@@ -686,7 +688,7 @@ void MainWindow::on_actionCapabilities_triggered()
 void MainWindow::on_actionFeaturesScrollArea_triggered()
 {
    bool debug = debugFeatureSelection;
-   debug = true;
+   debug = false;
     if (debug) {
         TRACEC("Desired view: %d, feature list:", View::FeaturesView);
         this->_feature_selector->dbgrpt();
@@ -813,7 +815,7 @@ void MainWindow::on_actionRescan_triggered() {
 
 
 void MainWindow::on_actionRedetect_triggered() {
-   bool debug = true;
+   bool debug = false;
    TRACECF(debug, "Executing");
 
    this->freeMonitors();
@@ -887,8 +889,8 @@ void MainWindow::capture_stats(DDCA_Stats_Type stats_type, bool show_thread_data
        ddca_show_stats(stats_type, show_thread_data, 0);
        // ddca_set_output_level(saved_ol);
        char * s = ddca_end_capture();  // API's buffer, do not free
-
        QString qs(s);
+       free(s);
        const QFont& textFont = QFont(       "Monospace",  9, QFont::Normal);
        // viewHelpByTextX(qs, QString("Statistics Report"), textFont,  this);
        HelpDialog* hd = new HelpDialog(this);
