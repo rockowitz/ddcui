@@ -1,6 +1,6 @@
 // value_stacked_widget.h
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef VALUE_STACKED_WIDGET_H
@@ -29,6 +29,7 @@ class ValueStackedWidget :  public QStackedWidget
 
 public:
     explicit ValueStackedWidget(QWidget *parent = nullptr);
+    ~ValueStackedWidget();
 
     void     setFeatureValue(const FeatureValue &fv);
     void     setCurrentValue(uint16_t newval);

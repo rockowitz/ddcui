@@ -1,6 +1,6 @@
 /* value_stacked_widget.cpp */
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "feature_value_widgets/value_stacked_widget.h"
@@ -135,6 +135,11 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
                     this, &ValueStackedWidget::setNcValuesSource );
 
     TRACECF(debug, "Done.");
+}
+
+
+ValueStackedWidget::~ValueStackedWidget() {
+   free((void*) _cls);
 }
 
 
