@@ -336,7 +336,7 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
     // , PageChangeObserver()
 {
     bool debug = false;
-    _cls = metaObject()->className();
+    _cls = strdup(metaObject()->className());
     TRACECF(debug, "Starting");
     GlobalState& globalState = GlobalState::instance();
     globalState._parsed_cmd = parsed_cmd;  // in case of reinitialization
@@ -424,12 +424,17 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    bool debug = true;
+    TRACECF(debug, "Starting");
     delete _ui;
 
     delete _feature_selector;
     delete _otherOptionsState;
     delete _uiOptionsState;
+    freeMonitors();
     free(_drefs);
+    TRACECF(debug, "Done");
+    free((void*) _cls);
 }
 
 
