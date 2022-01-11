@@ -58,11 +58,8 @@ Monitor::Monitor(DDCA_Display_Info * display_info, int monitorNumber)
 
 Monitor::~Monitor() {
    bool debug = true;
-   TRACECF(debug, "Starting. monitor=%p, number=%d, _displayInfo->dispno=%d",
-         this, this->_monitorNumber, _displayInfo->dispno);
-   TRACECF(debug, "Starting curMonitor=%p. _monitorNumber=%d, _baseModel=%p, _displayInfo->dispno=%d",
-                  this, this->_monitorNumber, this->_baseModel,
-                  this->_displayInfo->dispno);
+   TRACECF(debug, "Starting. monitor=%p, _monitor_number=%d, _displayInfo->dispno=%d, _baseModel=%p",
+         this, _monitorNumber, _displayInfo->dispno, _baseModel);
 
    if (supportsDdc()) {
       _requestQueue->put(new HaltRequest());
@@ -74,18 +71,11 @@ Monitor::~Monitor() {
       }
       TRACECF(debug, "_vcpThread finished");
 
-      QObject::disconnect(_baseModel,  SIGNAL(signalVcpRequest(VcpRequest*)),
+      QObject::disconnect(_baseModel, SIGNAL(signalVcpRequest(VcpRequest*)),
                           this,       SLOT(  putVcpRequest(VcpRequest*)));
-      TRACECF(debug, "after disconnectBaseModel()");
-      TRACECF(debug, "_baseModel=%p", _baseModel);
-
-      TRACECF(debug, "wolf 33");
-
-      delete _requestQueue;  // causes hang
+      delete _requestQueue;
       delete _vcpThread;
-      TRACECF(debug, "wolf 34");
       delete _baseModel;
-
    }
    ddca_free_display_info(_displayInfo);
    TRACECF(debug, "Done");
