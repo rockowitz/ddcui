@@ -18,32 +18,78 @@
 
 
 Monitor::Monitor(DDCA_Display_Info * display_info, int monitorNumber)
-    : _monitorNumber(monitorNumber)
+    : _cls( strdup(metaObject()->className()) )
+    , _monitorNumber(monitorNumber)
     , _displayInfo(display_info)
     , _baseModel(NULL)
- // , _cls(metaObject()->className()) // -Wreorder
     , _requestQueue(NULL)
 {
-   bool debug = false;
-   _cls = metaObject()->className();
+   bool debug = true;
+   TRACECF(debug, "Starting. monitorNumber=%d, dispno=%d, dref=%s",
+                  monitorNumber, display_info->dispno, ddca_dref_repr(display_info->dref));
    _page_moninfo     = _page_capabilities     = NULL;
    _pageno_moninfo   = _pageno_capabilities   = 0;
    _moninfoPlainText = _capabilitiesPlainText = NULL;
+   _vcpThread = NULL;
 
-   TRACECF(debug, "End of constructor. _monitorNumber=%d", _monitorNumber);
-   if (debug)
-      ddca_report_display_info(_displayInfo, 3);
+   // ddca_report_display_info(_displayInfo, 3);
+   if (supportsDdc()) {
+      _requestQueue = new VcpRequestQueue();
+      _baseModel = new FeatureBaseModel(this);
+      // baseModel->setObjectName(QString::asprintf("baseModel-%s",ddca_dref_repr(_displayInfo->dref));
+
+      _vcpThread = new VcpThread(NULL, _displayInfo,  _requestQueue, _baseModel);
+
+      QObject::connect(_vcpThread, &VcpThread::finished,
+                       this,       &Monitor::vcpThreadFinished);
+
+      _vcpThread->start();
+      // _vcp_threads.append(curThread);
+
+      QObject::connect(_baseModel,  SIGNAL(signalVcpRequest(VcpRequest*)),
+                       this, SLOT(  putVcpRequest(VcpRequest*)));
+   }
+
+   TRACECF(debug, "Done. _monitorNumber=%d, dref: %s", _monitorNumber, ddca_dref_repr(_displayInfo->dref));
+   // if (debug)
+   //   ddca_report_display_info(_displayInfo, 3);
 }
 
 
 Monitor::~Monitor() {
-   bool debug = false;
-   TRACECF(debug, "Monitor destructor starting. monitor=%p, number=%d", this, this->_monitorNumber);
-   // free _displayInfo         // will be freed by ddca_free_display_info_list()
-   // ddca_free_display_info(); // entire list will be freed by ddca_display_info_list()
-   delete _baseModel;
-   //   delete _requestQueue;  // causes hang
+   bool debug = true;
+   TRACECF(debug, "Starting. monitor=%p, number=%d, _displayInfo->dispno=%d",
+         this, this->_monitorNumber, _displayInfo->dispno);
+   TRACECF(debug, "Starting curMonitor=%p. _monitorNumber=%d, _baseModel=%p, _displayInfo->dispno=%d",
+                  this, this->_monitorNumber, this->_baseModel,
+                  this->_displayInfo->dispno);
+
+   if (supportsDdc()) {
+      _requestQueue->put(new HaltRequest());
+
+      // wait for halt
+      while (!_vcpThread->isFinished()) {
+         TRACECF(debug, "Waiting for _vcpThread to finish");
+         QThread::msleep(100);
+      }
+      TRACECF(debug, "_vcpThread finished");
+
+      QObject::disconnect(_baseModel,  SIGNAL(signalVcpRequest(VcpRequest*)),
+                          this,       SLOT(  putVcpRequest(VcpRequest*)));
+      TRACECF(debug, "after disconnectBaseModel()");
+      TRACECF(debug, "_baseModel=%p", _baseModel);
+
+      TRACECF(debug, "wolf 33");
+
+      delete _requestQueue;  // causes hang
+      delete _vcpThread;
+      TRACECF(debug, "wolf 34");
+      delete _baseModel;
+
+   }
+   ddca_free_display_info(_displayInfo);
    TRACECF(debug, "Done");
+   free((void*) _cls);
 }
 
 
@@ -112,7 +158,7 @@ Monitor::getFeatureList(DDCA_Feature_Subset_Id feature_list_id) {
 bool Monitor::capabilitiesCheckComplete() {
    bool debug = false;
    // considered complete if invalid display
-   bool result = (_displayInfo->dispno > 0);   // dispno -1 if API found display invalid
+   bool result = (supportsDdc());
    if (result)
       result = (_baseModel->_caps_check_complete);
    TRACECF(debug, "dref=%s, returning %s", QS2S(dref_repr()), SBOOL(result));
@@ -144,3 +190,12 @@ void Monitor::putVcpRequest(VcpRequest * rqst) {
     TRACECF(debug, "-> rqst->type=%d. Adding request to monitor's request queue", rqst->_type);
     _requestQueue->put(rqst);
 }
+
+
+void Monitor::vcpThreadFinished() {
+   bool debug = true;
+   TRACECF(debug, "vcp thread finished");
+}
+
+
+

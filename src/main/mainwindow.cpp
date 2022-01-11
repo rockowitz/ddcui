@@ -103,8 +103,7 @@ void MainWindow::start_msgBoxThread() {
 void MainWindow::connectBaseModel(Monitor * curMonitor) {
    FeatureBaseModel * baseModel = curMonitor->_baseModel;
 
-   QObject::connect(baseModel,  SIGNAL(signalVcpRequest(VcpRequest*)),
-                    curMonitor, SLOT(  putVcpRequest(VcpRequest*)));
+
    QObject::connect(baseModel,  &FeatureBaseModel::signalStartInitialLoad,
                     this,       &MainWindow::longRunningTaskStart);
    QObject::connect(baseModel,  &FeatureBaseModel::signalEndInitialLoad,
@@ -119,8 +118,7 @@ void MainWindow::disconnectBaseModel(Monitor * curMonitor) {
 
    QObject::disconnect(baseModel,  &FeatureBaseModel::signalStatusMsg,
                        this,       &MainWindow::setStatusMsg);
-   QObject::disconnect(baseModel,  SIGNAL(signalVcpRequest(VcpRequest*)),
-                       curMonitor, SLOT(  putVcpRequest(VcpRequest*)));
+
    QObject::disconnect(baseModel,  &FeatureBaseModel::signalStartInitialLoad,
                        this,       &MainWindow::longRunningTaskStart);
    QObject::disconnect(baseModel,  &FeatureBaseModel::signalEndInitialLoad,
@@ -128,29 +126,20 @@ void MainWindow::disconnectBaseModel(Monitor * curMonitor) {
 }
 
 
-void MainWindow::deleteMonitor(Monitor * curMonitor) {
-   bool debug = false;
-   TRACECF(debug, "Starting curMonitor=%p. _monitorNumber=%d", curMonitor, curMonitor->_monitorNumber);
-   disconnectBaseModel(curMonitor);
-   curMonitor->_requestQueue->put(new HaltRequest());
-   // TODO: wait for halt
-   TRACECF(debug, "Done");
-}
 
 
 void MainWindow::freeMonitors() {
-   bool debug = false;
+   bool debug = true;
    TRACECF(debug, "Starting");
 
    int ct0 = _monitors.size();
    TRACECF(debug,"_monitors.size() = %d", ct0);
    for (int ndx = _monitors.size()-1; ndx >= 0; ndx--) {
       Monitor * curMonitor = _monitors.at(ndx);
-      TRACECF(debug, "ndx=%d, curMonitor=%p", ndx, curMonitor);
-      deleteMonitor(curMonitor);
-
+      TRACECF(debug, "deleting monitor ndx=%d, curMonitor=%p, dispno=%d", ndx, curMonitor, curMonitor->_displayInfo->dispno);
       _monitors.removeAt(ndx);
       delete curMonitor;
+      TRACECF(debug, "deleted monitor ndx=%d", ndx);
    }
 
    QObject::disconnect(_toolbarDisplayCB, SIGNAL(currentIndexChanged(int)),
@@ -167,7 +156,7 @@ void MainWindow::freeMonitors() {
 
 
 void MainWindow::initOneMonitor(DDCA_Display_Info * info, int curIndex) {
-   bool debug = false;
+   bool debug = true;
    TRACECF(debug, "Starting. info=%p, curIndex=%d", info, curIndex);
 
    // Add entry for monitor in display selector combo box
@@ -192,44 +181,30 @@ void MainWindow::initOneMonitor(DDCA_Display_Info * info, int curIndex) {
 
    // Create Monitor instance, initialize data structures
    Monitor * curMonitor = new Monitor(info, monitorNumber);
+
    _monitors.append(curMonitor);
-   // ddca_report_display_info(&_dlist->info[ndx], 3);
-
-   curMonitor->_requestQueue = new VcpRequestQueue();
-   FeatureBaseModel * baseModel = new FeatureBaseModel(curMonitor);
-   baseModel->setObjectName(QString::asprintf("baseModel-%d",curIndex));
-   curMonitor->_baseModel = baseModel;
-
    initMonitorInfoWidget(curMonitor, _ui->centralWidget);
    initCapabilitiesWidget(curMonitor, _ui->centralWidget);
-   initFeaturesScrollAreaView(curMonitor, baseModel, _ui->centralWidget, _msgBoxQueue);
 
-   connectBaseModel(curMonitor);
+   if (curMonitor->supportsDdc()) {
+      initFeaturesScrollAreaView(curMonitor, curMonitor->_baseModel, _ui->centralWidget, _msgBoxQueue);
 
-   VcpThread * curThread = new VcpThread(NULL,
-                                         curMonitor->_displayInfo,
-                                         curMonitor->_requestQueue,
-                                         baseModel);
-   curThread->start();
-   _vcp_threads.append(curThread);
+      connectBaseModel(curMonitor);
+      // asynchronously get capabilities for current monitor
+      // if (debug)
+      //    ddca_report_display_info(info, 3);
 
-   // asynchronously get capabilities for current monitor
-   if (debug)
-      ddca_report_display_info(info, 3);
+      curMonitor->_requestQueue->put(new LoadDfrRequest());
+      curMonitor->_requestQueue->put(new VcpCapRequest());
 
-   if (info->dispno > 0) {     // don't try if monitor known to not support DDC
-       curMonitor->_requestQueue->put(new LoadDfrRequest());
-       curMonitor->_requestQueue->put(new VcpCapRequest());
-
-       // TODO: disable Capabilities and Features Views
-       _ui->actionCapabilities->setEnabled(true);
-       _ui->actionFeaturesScrollArea->setEnabled(true);
+      // TODO: disable Capabilities and Features Views
+      _ui->actionCapabilities->setEnabled(true);
+      _ui->actionFeaturesScrollArea->setEnabled(true);
    }
    else {
       _ui->actionCapabilities->setEnabled(false);
       _ui->actionFeaturesScrollArea->setEnabled(false);
    }
-
    TRACECF(debug, "Done.");
 }
 
@@ -284,6 +259,7 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
     longRunningTaskStart();
     _ui->statusBar->showMessage(QString("Loading display information..."));
 
+#ifdef OLD
     TRACECF(debug, "Calling ddca_get_display_info_list2()");
     DDCA_Status ddcrc = ddca_get_display_info_list2(
                             true,         // include invalid displays
@@ -291,16 +267,30 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
     TRACECF(debug, "ddca_get_display_info_list2() returned %d", ddcrc);
     assert(ddcrc == 0);
     TRACECF(debug, "_dlist->ct = %d", _dlist->ct);
+#endif
 
-    for (int ndx = 0; ndx < _dlist->ct; ndx++) {
+    TRACECF(debug, "Calling ddca_get_display_refs()");
+    DDCA_Status ddcrc = ddca_get_display_refs(
+                            true,         // include invalid displays
+                            &_drefs);
+    TRACECF(debug, "ddca_get_display_refs() returned %d", ddcrc);
+    assert(ddcrc == 0);
+    for (_drefs_ct=0; _drefs[_drefs_ct]; _drefs_ct++) {}
+    TRACECF(debug, "_drefs_ct = %d", _drefs_ct);
+
+    for (int ndx = 0; ndx < _drefs_ct; ndx++) {
         TRACECF(debug, "Processing display %d", ndx);
-        initOneMonitor(&_dlist->info[ndx], ndx);
+        DDCA_Display_Info * dinfo;
+        DDCA_Status ddcrc = ddca_get_display_info(_drefs[ndx], &dinfo);
+        assert(ddcrc == 0);
+
+        initOneMonitor(dinfo, ndx);
     }
 
     _ui->actionMonitorSummary->setEnabled(false);
     _ui->actionCapabilities->setEnabled(false);
     _ui->actionFeaturesScrollArea->setEnabled(false);
-    if (_dlist->ct > 0) {
+    if (_drefs_ct > 0) {
        _ui->actionMonitorSummary->setEnabled(true);
     }
 
@@ -330,7 +320,7 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
             this,      &MainWindow::on_actionFeaturesScrollArea_triggered);
 
     // Set message in status bar
-    QString msg = QString("Detected ") + QString::number(_dlist->ct) + QString(" displays.");
+    QString msg = QString("Detected ") + QString::number(_drefs_ct) + QString(" displays.");
     _ui->statusBar->showMessage(msg);
     longRunningTaskEnd();
 
@@ -439,6 +429,7 @@ MainWindow::~MainWindow()
     delete _feature_selector;
     delete _otherOptionsState;
     delete _uiOptionsState;
+    free(_drefs);
 }
 
 
@@ -572,22 +563,24 @@ void MainWindow::displaySelectorCombobox_activated(int index) {
 
 void MainWindow::on_actionMonitorSummary_triggered()
 {
-    bool debug = false;
+    bool debug = true;
     // std::cout << "(MainWindow::on_actionMonitorSummary_triggered()" << endl;
 
     int monitorNdx = _toolbarDisplayCB->currentIndex();
-    DDCA_Display_Info * info =  &_dlist->info[monitorNdx];
-    DDCA_Display_Ref dref = info->dref;
+    Monitor * monitor = _monitors[monitorNdx];
+    DDCA_Display_Info * dinfo =  monitor->_displayInfo;    // &_dlist->info[monitorNdx];
+    DDCA_Display_Ref dref = dinfo->dref;
 
     TRACECF(debug, "monitorNdx (%d), dref=%s", monitorNdx, ddca_dref_repr(dref));
     if (monitorNdx < 0) {
        // _ui->centralWidget->hide();
     }
     else {
-       DDCA_Display_Info * dinfo = &_dlist->info[monitorNdx];
+       // DDCA_Display_Info * dinfo = &_dlist->info[monitorNdx];
        char * s = MonitorDescActions::capture_display_info_report(dinfo);
 
        Monitor * monitor = _monitors[monitorNdx];
+       TRACECF(debug, "monitor=%p", monitor);
        QPlainTextEdit * moninfoPlainText = monitor->_moninfoPlainText;
        // int pageno = monitor->_pageno_moninfo;
        moninfoPlainText->setPlainText(s);
@@ -619,11 +612,12 @@ void MainWindow::on_actionCapabilities_triggered()
        TRACECF(debug, "monitorNdx = %d is < 0, ignoring", monitorNdx);
     }
     else {
-       DDCA_Display_Info * dinfo = &_dlist->info[monitorNdx];
+       Monitor * monitor = _monitors.at(monitorNdx);
+       DDCA_Display_Info * dinfo = monitor->_displayInfo; // &_dlist->info[monitorNdx];
        DDCA_Display_Ref dref = dinfo->dref;
        char * caps_report = NULL;
 
-       Monitor * monitor = _monitors.at(monitorNdx);
+
 
        TRACECF(debug, "dref=%s, valid display %s",
              QS2S(monitor->dref_repr()),
@@ -819,8 +813,9 @@ void MainWindow::on_actionRedetect_triggered() {
    TRACECF(debug, "Executing");
 
    this->freeMonitors();
-   ddca_free_display_info_list(_dlist);
-   _dlist = NULL;
+   free(_drefs);
+   // ddca_free_display_info_list(_dlist);
+   // _dlist = NULL;
 
    TRACECF(debug, "Before ddca_redetect_displays");
    DDCA_Status ddcrc = ddca_redetect_displays();
@@ -835,7 +830,8 @@ void MainWindow::on_actionRedetect_triggered() {
 
    // reinit UI to first monitor, summary view
    // if no monitors, set _curDisplayIndex = -1
-   _curDisplayIndex = (_dlist->ct > 0) ? 0 : -1;
+   // _curDisplayIndex = (_dlist->ct > 0) ? 0 : -1;
+   _curDisplayIndex = (_drefs_ct > 0) ? 0 : -1;
 
    // HANDLE CASE OF NO DDC MONITORS?
    TRACECF(debug, "Emitting signalMonitorSummaryView");
