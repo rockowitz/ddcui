@@ -1,6 +1,6 @@
 /* vcpthread.cpp */
 
-// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <errno.h>
@@ -32,12 +32,25 @@ VcpThread::VcpThread(
     , _requestQueue(requestQueue)
     , _baseModel(baseModel)
 {
-    _dref         = dinfo->dref;   // transitional
+    bool debug = true;
+    debug |= debugThread;
+    TRACECF(debug, "Starting");
 
+    _dref         = dinfo->dref;   // transitional
     _ddcaSimulator = new DdcaSimulator();
 
     // ddca_report_display_info(dinfo, 4);
     // ddca_dbgrpt_display_ref(_dref, 4);
+    TRACECF(debug, "Done.  _dref=%s", ddca_dref_repr(_dref));
+}
+
+
+VcpThread::~VcpThread() {
+   bool debug = true;
+   debug |= debugThread;
+   TRACECF(debug, "Starting. _dref=%s", ddca_dref_repr(_dref));
+   delete _ddcaSimulator;
+   TRACECF(debug, "Done");
 }
 
 
@@ -342,7 +355,7 @@ void VcpThread::capabilities() {
          ddcrc = ddca_parse_capabilities_string(caps, &parsed_caps);
          if (ddcrc != 0)
             rpt_ddca_status(0, __func__, "ddca_parse_capabilities_string", ddcrc);
-         free(caps);
+         // free(caps);
       }
       // rpt_ddca_status(0, __func__, "dummy function", -99);   // *** TEMP ***
       // if ddcrc != 0, caps may be NULL, parsed_caps definitely NULL
@@ -581,9 +594,10 @@ void VcpThread::run() {
             loadDynamicFeatureRecords();
             break;
         case VcpRequestType::RQHalt:
-           // delete rqst;
-           quit();
-           break;
+            TRACECF(true, "RQHalt");
+            delete rqst;
+            return;
+            break;
         default:
             cout << "Unexpected request type: " << rqst->_type << endl;
         }
