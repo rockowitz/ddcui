@@ -37,7 +37,7 @@ FeatureBaseModel::FeatureBaseModel(Monitor * monitor)
       : _cls(strdup(metaObject()->className()))
       , _monitor(monitor)
 {
-    bool debug = true;
+    bool debug = false;
     TRACECF(debug, "Starting. dref=%s", ddca_dref_repr(_monitor->_displayInfo->dref));
 
     setObjectName(QString::asprintf("baseModel-%s",ddca_dref_repr(_monitor->_displayInfo->dref)));
@@ -71,8 +71,8 @@ FeatureBaseModel::~FeatureBaseModel() {
    TRACECF(debug, "Executing. _monitor=%p, monitor number %d, dref: %s",
                   _monitor, _monitor->_displayInfo->dispno, _monitor->_displayInfo->dref);
    delete _featureValues;
-   TRACECF(debug, "Starting. _caps+string=%p->%s", _caps_string, _caps_string);
-   free(_caps_string);   // ??
+   TRACECF(debug, "          _caps+string=%p->%s", _caps_string, _caps_string);
+   free(_caps_string);   // raw capabilities
    ddca_free_parsed_capabilities(_parsed_caps);
    TRACECF(debug, "Done.");
    free((void*) _cls);
