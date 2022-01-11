@@ -24,7 +24,7 @@ Monitor::Monitor(DDCA_Display_Info * display_info, int monitorNumber)
     , _baseModel(NULL)
     , _requestQueue(NULL)
 {
-   bool debug = true;
+   bool debug = false;
    TRACECF(debug, "Starting. monitorNumber=%d, dispno=%d, dref=%s",
                   monitorNumber, display_info->dispno, ddca_dref_repr(display_info->dref));
    _page_moninfo     = _page_capabilities     = NULL;
@@ -40,6 +40,7 @@ Monitor::Monitor(DDCA_Display_Info * display_info, int monitorNumber)
 
       _vcpThread = new VcpThread(NULL, _displayInfo,  _requestQueue, _baseModel);
 
+      // never triggered ??
       QObject::connect(_vcpThread, &VcpThread::finished,
                        this,       &Monitor::vcpThreadFinished);
 
@@ -50,14 +51,14 @@ Monitor::Monitor(DDCA_Display_Info * display_info, int monitorNumber)
                        this, SLOT(  putVcpRequest(VcpRequest*)));
    }
 
-   TRACECF(debug, "Done. _monitorNumber=%d, dref: %s", _monitorNumber, ddca_dref_repr(_displayInfo->dref));
+   TRACECF(debug, "Done.     _monitorNumber=%d, dref: %s", _monitorNumber, ddca_dref_repr(_displayInfo->dref));
    // if (debug)
    //   ddca_report_display_info(_displayInfo, 3);
 }
 
 
 Monitor::~Monitor() {
-   bool debug = true;
+   bool debug = false;
    TRACECF(debug, "Starting. monitor=%p, _monitor_number=%d, _displayInfo->dispno=%d, _baseModel=%p",
          this, _monitorNumber, _displayInfo->dispno, _baseModel);
 
@@ -182,6 +183,7 @@ void Monitor::putVcpRequest(VcpRequest * rqst) {
 }
 
 
+// never called!
 void Monitor::vcpThreadFinished() {
    bool debug = true;
    TRACECF(debug, "vcp thread finished");
