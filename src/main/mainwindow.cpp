@@ -129,7 +129,7 @@ void MainWindow::disconnectBaseModel(Monitor * curMonitor) {
 
 
 void MainWindow::freeMonitors() {
-   bool debug = true;
+   bool debug = false;
    TRACECF(debug, "Starting");
 
    int ct0 = _monitors.size();
@@ -156,7 +156,7 @@ void MainWindow::freeMonitors() {
 
 
 void MainWindow::initOneMonitor(DDCA_Display_Info * info, int curIndex) {
-   bool debug = true;
+   bool debug = false;
    TRACECF(debug, "Starting. info=%p, curIndex=%d", info, curIndex);
 
    // Add entry for monitor in display selector combo box
@@ -424,7 +424,7 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    bool debug = true;
+    bool debug = false;
     TRACECF(debug, "Starting");
     delete _ui;
 
@@ -568,7 +568,7 @@ void MainWindow::displaySelectorCombobox_activated(int index) {
 
 void MainWindow::on_actionMonitorSummary_triggered()
 {
-    bool debug = true;
+    bool debug = false;
     // std::cout << "(MainWindow::on_actionMonitorSummary_triggered()" << endl;
 
     int monitorNdx = _toolbarDisplayCB->currentIndex();
