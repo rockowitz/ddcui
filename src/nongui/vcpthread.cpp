@@ -32,7 +32,7 @@ VcpThread::VcpThread(
     , _requestQueue(requestQueue)
     , _baseModel(baseModel)
 {
-    bool debug = true;
+    bool debug = false;
     debug |= debugThread;
     TRACECF(debug, "Starting");
 
@@ -41,16 +41,16 @@ VcpThread::VcpThread(
 
     // ddca_report_display_info(dinfo, 4);
     // ddca_dbgrpt_display_ref(_dref, 4);
-    TRACECF(debug, "Done.  _dref=%s", ddca_dref_repr(_dref));
+    TRACECF(debug, "Done.     _dref=%s", ddca_dref_repr(_dref));
 }
 
 
 VcpThread::~VcpThread() {
-   bool debug = true;
+   bool debug = false;
    debug |= debugThread;
    TRACECF(debug, "Starting. _dref=%s", ddca_dref_repr(_dref));
    delete _ddcaSimulator;
-   TRACECF(debug, "Done");
+   TRACECF(debug, "Done.");
 }
 
 
@@ -560,6 +560,8 @@ void VcpThread::endInitialLoad(void) {
 
 
 void VcpThread::run() {
+    bool debug = false;
+
     forever {
         VcpRequest * rqst = this->_requestQueue->pop();
         switch(rqst->_type) {
@@ -594,7 +596,7 @@ void VcpThread::run() {
             loadDynamicFeatureRecords();
             break;
         case VcpRequestType::RQHalt:
-            TRACECF(true, "RQHalt");
+            TRACECF(debug, "RQHalt");
             delete rqst;
             return;
             break;
