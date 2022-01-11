@@ -1,6 +1,6 @@
 /* feature_base_model.h - Records all VCP feature values for a single monitor */
 
-// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef FEATURE_BASE_MODEL_H
@@ -104,7 +104,7 @@ private:
     int modelVcpValueIndex(uint8_t feature_code);
 
     QVector<FeatureValue*> * _featureValues;
-    DDCA_Feature_Metadata *  _featureMetadata[256] = {NULL};
+ // DDCA_Feature_Metadata *  _featureMetadata[256] = {NULL}; //unused
  // DDCA_Status              _featureStatusCode[256];    // side table for now, include in FeatureValue?  UNUSED
     DDCA_Feature_List        _featuresToShow;
     DDCA_Feature_List        _featuresChecked;
