@@ -67,7 +67,7 @@ FeatureBaseModel::FeatureBaseModel(Monitor * monitor)
 
 
 FeatureBaseModel::~FeatureBaseModel() {
-   bool debug = true;
+   bool debug = false;
    TRACECF(debug, "Executing. _monitor=%p, monitor number %d, dref: %s",
                   _monitor, _monitor->_displayInfo->dispno, _monitor->_displayInfo->dref);
    delete _featureValues;
