@@ -1,10 +1,10 @@
-/** \file vcpthread.h
+/** vcpthread.h
  *
  * Thread for performing ddca_ API calls, which can perform I2C IO and so can be
  * slow.  There is one instance of this class, i.e. one thread, for each monitor.
  */
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef VCPTHREAD_H
@@ -31,6 +31,8 @@ public:
         DDCA_Display_Info  *dinfo,
         VcpRequestQueue    *requestQueue,
         FeatureBaseModel   *baseModel);
+
+    ~VcpThread();
 
     void run() override;
 
@@ -61,16 +63,15 @@ private:  // member functions
     void rpt_verify_error(
           uint8_t      featureCode,
           const char * function,
-          uint16_t      expectedValue,
-          uint16_t      observedValue);
+          uint16_t     expectedValue,
+          uint16_t     observedValue);
     void rpt_verify_error(
           uint8_t      featureCode,
-                const char * function,
-                uint8_t      expectedSh,
-                uint8_t      expectedSl,
-                uint8_t      observedSh,
-                uint8_t      observedSl
-                );
+          const char * function,
+          uint8_t      expectedSh,
+          uint8_t      expectedSl,
+          uint8_t      observedSh,
+          uint8_t      observedSl);
 
 #ifdef FUTURE
     void rpt_ddca_error(
