@@ -1,6 +1,6 @@
 /* monitor.h */
 
-// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef MONITOR_H
@@ -14,6 +14,7 @@
 #include "config.h"
 #include "base/feature_selector.h"
 
+
 class QListView;
 class QListWidget;
 class QPlainTextEdit;
@@ -26,6 +27,7 @@ class FeatureBaseModel;
 class FeaturesScrollAreaView;
 class VcpRequest;
 class VcpRequestQueue;
+class VcpThread;
 
 
 // Represents a single display
@@ -61,6 +63,7 @@ public:
     QPlainTextEdit *     _capabilitiesPlainText;
 
     FeatureSelector      _curFeatureSelector;
+    VcpThread *          _vcpThread;
 
     // FEATURES_VIEW_SCROLLAREAVIEW
     // When using FeaturesScrollAreaView, do not allocate a permanent
@@ -70,6 +73,7 @@ public:
 
 public slots:
     void putVcpRequest(VcpRequest * rqst);
+    void vcpThreadFinished();
 
 private:
     const char *  _cls;    // className
