@@ -1,6 +1,6 @@
 /* vcprequest.cpp - VcpRequestQueue and the classes that populate it */
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 // #include <string.h>
@@ -91,7 +91,7 @@ VcpRequestQueue::~VcpRequestQueue()
 {
    bool debug = false;
    if (debug)
-      printf("(%s) Executing VcpRequestQueue descructor\n", __func__);
+      printf("(%s) Executing VcpRequestQueue destructor\n", __func__);
 }
 
 void VcpRequestQueue::put(VcpRequest * request) {
