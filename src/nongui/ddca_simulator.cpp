@@ -1,6 +1,6 @@
 // ddca_simulator.cpp
 
-// Copyright (C) 2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2020-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "ddcutil_status_codes.h"
@@ -64,6 +64,10 @@ int findSimTableEntry(uint8_t feature_code, DDCA_MCCS_Version_Spec vspec) {
 
 DdcaSimulator::DdcaSimulator() {
    _cls = strdup(metaObject()->className());
+}
+
+DdcaSimulator::~DdcaSimulator() {
+   free((void*)_cls);
 }
 
 

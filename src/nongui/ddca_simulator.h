@@ -1,6 +1,6 @@
 // ddca_simulator.h - Basic API call simulator for libddcutil
 
-// Copyright (C) 2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2020-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef DDCA_SIMULATOR_H_
@@ -15,6 +15,7 @@ class DdcaSimulator: public QObject {
 
 public:
    DdcaSimulator();
+   ~DdcaSimulator();
 
    bool simulateGetNonTableVcpValue(
          DDCA_MCCS_Version_Spec      vspec,
