@@ -1,6 +1,6 @@
 /* mainwindow.h */
 
-// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef MAINWINDOW_H
@@ -70,7 +70,6 @@ public:
 private:
     void connectBaseModel(Monitor * monitor);
     void disconnectBaseModel(Monitor * monitor);
-    void deleteMonitor(Monitor * monitor);
     void freeMonitors();
     void initOneMonitor(DDCA_Display_Info * info, int curIndex);
     void setInitialDisplayIndex(Parsed_Ddcui_Cmd * parsed_cmd);
@@ -182,7 +181,9 @@ private:
     const char *               _cls;
     // Ui::MainWindow*         _ui;
     Ui_MainWindow *            _ui;
-    DDCA_Display_Info_List *   _dlist ;
+    // DDCA_Display_Info_List *   _dlist ;
+    DDCA_Display_Ref *        _drefs;
+    int                        _drefs_ct = 0;
     int                        _curDisplayIndex = -1;
     View                       _curView = NoView;
     QComboBox *                _toolbarDisplayCB;
