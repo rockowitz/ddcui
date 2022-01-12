@@ -77,8 +77,12 @@ int bva_length(Byte_Value_Array bva) {
  */
 void bva_append(Byte_Value_Array bva, Byte item) {
    GByteArray* ga = (GByteArray*) bva;
+#ifdef NDEBUG
+   g_byte_array_append(ga, &item, 1);
+#else
    GByteArray * ga2 = g_byte_array_append(ga, &item, 1);
    assert(ga2 == ga);
+#endif
 }
 
 
@@ -517,8 +521,10 @@ int bbf_to_bytes(Byte_Bit_Flags bbflags, Byte * buffer, int buflen) {
    BYTE_BIT_UNOPAQUE(flags, bbflags);
    BYTE_BIT_VALIDATE(flags);
 
+#ifndef NDEBUG
    int bit_set_ct = bbf_count_set(flags);
    assert(buflen >= bit_set_ct);
+#endif
 
    unsigned int bufpos = 0;
    unsigned int flagno = 0;
@@ -861,18 +867,19 @@ void buffer_free(Buffer * buffer, const char * trace_msg) {
    // ASSERT_WITH_BACKTRACE(buffer);
    // ASSERT_WITH_BACKTRACE(memcmp(buffer->marker, BUFFER_MARKER, 4) == 0);
 
-      if (buffer->bytes) {
-        if (trace_buffer_malloc_free)
-            printf("(%s) Freeing buffer->bytes = %p, &buffer->bytes=%p\n",
-                   __func__, buffer->bytes, (void*)&(buffer->bytes));
-        free(buffer->bytes);
-      }
-      if (trace_buffer_malloc_free)
-         printf("(%s) Freeing buffer = %p, %s\n", __func__, (void*)buffer, trace_msg);
-      buffer->marker[3] = 'x';
-      free(buffer);
-      if (trace_buffer_malloc_free)
-         printf("(%s) Done\n", __func__);
+   if (buffer->bytes) {
+     if (trace_buffer_malloc_free)
+         printf("(%s) Freeing buffer->bytes = %p, &buffer->bytes=%p\n",
+                __func__, buffer->bytes, (void*)&(buffer->bytes));
+     free(buffer->bytes);
+   }
+   if (trace_buffer_malloc_free)
+      printf("(%s) Freeing buffer = %p, %s\n", __func__, (void*)buffer, trace_msg);
+   buffer->marker[3] = 'x';
+   free(buffer);
+
+   if (trace_buffer_malloc_free)
+      printf("(%s) Done\n", __func__);
 }
 
 
