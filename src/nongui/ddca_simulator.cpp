@@ -30,7 +30,9 @@ SimTableEntry simTable[] = {
       {0x8f, "Audio treble", DDCA_VSPEC_V21, DDCRC_OK, 0,100,0,30},
       {0x8f, "Audio treble", DDCA_VSPEC_V22, DDCRC_OK, 0,0,0,50},
       {0x91, "Audio bass",   DDCA_VSPEC_V21, DDCRC_DETERMINED_UNSUPPORTED, 0,0,0,0},
-      {0x91, "Audio bass",   DDCA_VSPEC_V22, DDCRC_DETERMINED_UNSUPPORTED, 0,0,0,0}
+      {0x91, "Audio bass",   DDCA_VSPEC_V22, DDCRC_DETERMINED_UNSUPPORTED, 0,0,0,0},
+//    {0x10, "Brightness",   DDCA_VSPEC_V21, DDCRC_DDC_DATA, 0,0,0,0}
+      {0x1a, "Blue Gain",   DDCA_VSPEC_V21, DDCRC_DDC_DATA, 0,0,0,0}
 };
 int simTableCt = sizeof(simTable)/sizeof(SimTableEntry);
 
