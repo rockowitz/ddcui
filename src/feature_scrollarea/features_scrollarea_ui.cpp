@@ -1,6 +1,6 @@
 /* features_scrollarea_ui.cpp */
 
-// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <QtWidgets/QApplication>
@@ -39,7 +39,7 @@ void initFeaturesScrollAreaView(
    curMonitor->_featuresScrollAreaView = featuresView;
 
 
-
+#ifdef OLD
    // requires no-arg constructor, copy constructor
    qRegisterMetaType<DdcError>("DdcError");
    qRegisterMetaType<DdcError*>("DdcError*");
@@ -49,12 +49,15 @@ void initFeaturesScrollAreaView(
    qRegisterMetaType<DdcFeatureError*>("DdcFeatureError*");
    // qRegisterMetaType<DdcVerifyError>("DdcVerifyError");
    // qRegisterMetaType<DdcFeatureError&>();
+#endif
 
+#ifdef OLD
    QObject::connect(baseModel,     &FeatureBaseModel::signalDdcFeatureError,
                     featuresView,  &FeaturesScrollAreaView::onModelDdcFeatureError);
 
    QObject::connect(baseModel,     &FeatureBaseModel::signalDdcDetailedError,
                     featuresView,  &FeaturesScrollAreaView::onModelDdcDetailedError);
+#endif
 
    QObject::connect(baseModel,     &FeatureBaseModel::signalEndInitialLoad,
                     featuresView,  &FeaturesScrollAreaView::onEndInitialLoad);
