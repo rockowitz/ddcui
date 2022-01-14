@@ -1,12 +1,13 @@
 // ddc_error.cpp
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "ddcutil_c_api.h"
 #include "ddcutil_status_codes.h"
 
 #include "ddc_error.h"
+
 
 // *** DdcFeatureError ***
 
@@ -175,8 +176,115 @@ QString DdcFeatureError::repr() {
 
 QString DdcFeatureError::expl() {
    // printf("(DdcFeatureError::expl) Executing\n"); fflush(stdout);
+
    return repr();
 }
+
+#ifdef FUTURE
+// *** DdcGeneralError ***
+
+DdcGeneralError::DdcGeneralError(
+      uint8_t      featureCode,
+      const char * function,
+      DDCA_Status  errno,
+      const char * detail)
+: DdcDetailedError(function, errno, detail)
+{
+   _featureCode = featureCode;
+}
+
+DdcGeneralError::DdcGeneralError()
+   : DdcDetailedError()
+   , _featureCode(0)
+{}
+
+DdcGeneralError::DdcGeneralError(
+      const DdcGeneralError& erec)
+     : DdcDetailedError()
+{
+    _ddcFunction = erec._ddcFunction;
+    _ddcErrno    = erec._ddcErrno;
+    _featureCode = erec._featureCode;
+    _detail      = erec._detail;
+}
+
+QString DdcGeneralError::repr() {
+   // printf("(DdcGeneralError::repr) Executing\n"); fflush(stdout);
+   const char * s = ddca_rc_name(_ddcErrno);
+   QString msg = QString("[feature=0x%1, function=%2, ddcrc=%3 - %4, detail:%5]")
+                    .arg(_featureCode, 2, 16, QChar('0'))
+                    .arg(_ddcFunction)
+                    .arg(_ddcErrno)
+                    .arg(s)
+                    ,arg(_detail);
+   return msg;
+}
+
+
+QString DdcGeneralError::expl() {
+
+   QString msg("");
+   switch (_opType) {
+   case OpFeatureRead:
+      if (_detail == QString("")) {
+         msg = QString("Error reading feature=0x%1. API function %2 returned %3 (%4)")
+                          .arg(_featureCode, 2, 16, QChar('0'))
+                          .arg(_ddcFunction)
+                          .arg(_ddcErrno)
+                          .arg(s);
+      }
+      else {
+      msg = QString("Error reading feature=0x%1. API function %2 returned %3 (%4): %5")
+                       .arg(_featureCode, 2, 16, QChar('0'))
+                       .arg(_ddcFunction)
+                       .arg(_ddcErrno)
+                       .arg(s)
+                       ,arg(_detail);
+      }
+      break;
+   case OpFeatureWrite:
+      if (_detail == QString("")) {
+         msg = QString("Error writing feature=0x%1. API function %2 returned %3 (%4)")
+                          .arg(_featureCode, 2, 16, QChar('0'))
+                          .arg(_ddcFunction)
+                          .arg(_ddcErrno)
+                          .arg(s);
+      }
+      else {
+      msg = QString("Error writing feature=0x%1. API function %2 returned %3 (%4): %5")
+                       .arg(_featureCode, 2, 16, QChar('0'))
+                       .arg(_ddcFunction)
+                       .arg(_ddcErrno)
+                       .arg(s)
+                       ,arg(_detail);
+      }
+      break;
+   case OpMetadata:
+      msg = QString("Error fetching metadata for feature=0x%1. API function %2 returned %3 (%4)")
+                       .arg(_featureCode, 2, 16, QChar('0'))
+                       .arg(_ddcFunction)
+                       .arg(_ddcErrno)
+                       .arg(s);
+      break;
+   case OpCapabilities:
+      break;
+   case OpOpen:
+      break;
+   case OpOther:
+      break;
+   }
+
+
+
+   = QString("[feature=0x%1, function=%2, ddcrc=%3 - %4, detail:%5]")
+                    .arg(_featureCode, 2, 16, QChar('0'))
+                    .arg(_ddcFunction)
+                    .arg(_ddcErrno)
+                    .arg(s)
+                    ,arg(_detail);
+   return msg;
+}
+#endif
 
 
 

@@ -1,6 +1,6 @@
 // ddc_error.h
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef DDC_ERROR_H_
@@ -11,12 +11,23 @@
 #include <QtCore/QString>
 #include <QtCore/QObject>
 
-
-
 class DdcError: public QObject {
     Q_OBJECT
 
 public:
+
+#ifdef FUTURE
+    enum OpType {
+       OpFeatureRead,
+       OpFeatureWrite,
+       OpMetadata,
+       OpCapabilities,
+       OpOpen,
+       OpOther
+    };
+    Q_ENUM(OpType);
+#endif
+
    DdcError();
 
    DdcError(
@@ -87,7 +98,29 @@ public:
    virtual QString expl();
 };
 
+#ifdef FUTURE
+class DdcGeneralError : public DdcDetailedError {
+   Q_OBJECT
 
+public:
+   DdcGeneralError(
+         OpType       opType,
+         uint8_t      featureCode,
+         const char * function,
+         DDCA_Status  errno,
+         const char * detail);
+
+   DdcGeneralError(const DdcGeneralError& erec);
+   DdcGeneralError(void);
+   virtual ~DdcGeneralError();
+
+   virtual QString repr();
+   virtual QString expl();
+
+   uint8_t   _featureCode;
+   OpType    _opType;
+};
+#endif
 
 class DdcVerifyError : public DdcFeatureError {
    Q_OBJECT
