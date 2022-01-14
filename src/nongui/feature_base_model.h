@@ -10,7 +10,6 @@
 
 #include "ddcutil_types.h"
 
-#include "nongui/ddc_error.h"
 #include "nongui/feature_value.h"
 #include "nongui/vcprequest.h"
 #ifdef FEATURE_CHANGE_OBSERVER
@@ -87,17 +86,7 @@ signals:
     void signalFeatureUpdated3(const char * caller, uint8_t feature_code, uint8_t sh, uint8_t sl);
     void signalVcpRequest(VcpRequest * rqst);  // used to call into monitor
     void signalModelError(uint8_t featureCode, QString msg);
-#ifdef OLD
-    void signalDdcDetailedError(DdcDetailedError * perec);
-    void signalDdcFeatureError(DdcFeatureError* perec);
-#endif
     void signalStatusMsg(QString msg);
-
-#ifdef OLD
-public slots:
-    void onDdcDetailedError(DdcDetailedError * perec);
-    void onDdcFeatureError(DdcFeatureError* perec);
-#endif
 
 protected:
 #ifdef FEATURE_CHANGE_OBSERVER

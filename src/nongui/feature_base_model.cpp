@@ -311,32 +311,6 @@ FeatureBaseModel::setCapabilities(
    _parsed_caps = parsed_capabilities;
 }
 
-#ifdef OLD
-void
-FeatureBaseModel::onDdcDetailedError(
-      DdcDetailedError* perec)
-{
-   bool debugFunc = false;
-   debugFunc = debugFunc || debugModel;
-
-   TRACECF(debugFunc, "perec=%p -> %s", perec, perec->srepr() );
-   TRACECF(debugFunc, "Emitting signalDdcDetailedError()");
-   emit  signalDdcDetailedError(perec);
-}
-
-
-void
-FeatureBaseModel::onDdcFeatureError(
-      DdcFeatureError* perec)
-{
-   bool debugFunc = false;
-   debugFunc = debugFunc || debugModel;
-   TRACECF(debugFunc, "perec=%p -> %s", perec, QS2S(perec->repr()) );
-   TRACECF(debugFunc, "Emitting signalDdcFeatureError()");
-   emit  signalDdcFeatureError(perec);
-}
-#endif
-
 
 #ifdef UNUSED
 void
