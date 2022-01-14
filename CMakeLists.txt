@@ -136,7 +136,6 @@ set(SOURCES
     src/cmdline/ddcui_cmd_parser_aux.c
     src/cmdline/ddcui_parsed_cmd.c
 
-    src/nongui/ddc_error.cpp 
     src/nongui/ddca_simulator.cpp
     src/nongui/feature_base_model.cpp 
     src/nongui/feature_value.cpp 
