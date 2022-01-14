@@ -15,6 +15,7 @@
 
 #include "base/core.h"
 #include "base/ddca_utils.h"
+#include "base/global_state.h"
 #include "nongui/ddc_error.h"
 #include "nongui/vcpthread.h"
 
@@ -83,6 +84,149 @@ void VcpThread::rpt_ddca_error(
 
 
 
+void VcpThread::rpt_feature_error(
+      enum FeatureOp   op,
+      uint8_t          featureCode,
+      const char *     ddcaFuncName,
+      DDCA_Status      ddcrc)
+{
+   bool debug = true;
+   TRACEMCF(debug, "Starting.op=%d, featureCode=0x%02x, ddcrc=%d",
+                   op, featureCode, ddcrc);
+
+   char * opName = (char *) "reading";
+   if (op == FeatureWrite)
+      opName = (char *) "writing";
+   if (op == FeatureMetadata)
+      opName = (char *) "fetching metadata for";
+   QString
+   qsexpl = QString::asprintf(
+                     "Error %s for feature x%02x, display %d - %s\n\n"
+                     "API function %s returned %s (%d)",
+                     opName, featureCode, _dinfo->dispno, _dinfo->model_name,
+                     ddcaFuncName, ddca_rc_name(ddcrc), ddcrc);
+   // QString qstitle = QString("ddcutil API Error");
+   // QMessageBox::Icon icon = QMessageBox::Warning;
+   MsgBoxQueueEntry * qe = new MsgBoxQueueEntry(
+                                  QString("ddcutil API Error"),
+                                  qsexpl,
+                                  QMessageBox::Warning);
+   TRACEMCF(debug, "Calling _msgboxQueue.put() for qe: %s", QS2S(qe->repr()));
+   GlobalState::instance()._msgBoxQueue->put(qe);
+   TRACEMCF(debug, "Done");
+}
+
+
+void VcpThread::rpt_nonfeature_error(
+      const char *     action,
+      const char *     ddcaFuncName,
+      DDCA_Status      ddcrc,
+      DDCA_Error_Detail * erec)
+{
+   bool debug = true;
+   TRACECF(debug, "Starting.action=%s, ddcaFuncName=%s, ddcrc=%d",
+                   action, ddcaFuncName, ddcrc);
+
+   QString qsexpl = QString("");
+   if (erec) {
+      QString smooshed = ddcutil_format_error_detail(erec, QString(""), 3);
+      qsexpl = QString("Error %1 for display %2 - %3.\n\n"
+                       "API function %4 returned %5(%6): %7 (C)")
+                       .arg(action)
+                       .arg(_dinfo->dispno)
+                       .arg(_dinfo->model_name)
+                       .arg(ddcaFuncName)
+                       .arg(ddca_rc_name(ddcrc))
+                       .arg(smooshed);
+
+   }
+   else {
+      qsexpl = QString::asprintf(
+                        "Error %s for display %d - %s.\n\n"
+                        "API function %s returned %s (%d) (D)",
+                        action, _dinfo->dispno, _dinfo->model_name,
+                        ddcaFuncName, ddca_rc_name(ddcrc), ddcrc);
+      }
+   // QString qstitle = QString("ddcutil API Error");
+   // QMessageBox::Icon icon = QMessageBox::Warning;
+   MsgBoxQueueEntry * qe = new MsgBoxQueueEntry(
+                                  QString("ddcutil API Error"),
+                                  qsexpl,
+                                  QMessageBox::Warning);
+   TRACECF(debug, "Calling _msgboxQueue.put() for qe: %s", QS2S(qe->repr()));
+   GlobalState::instance()._msgBoxQueue->put(qe);
+   TRACECF(debug, "Done");
+}
+
+
+void VcpThread::rpt_nonfeature_error(
+      const char *     action,
+      const char *     ddcaFuncName,
+      DDCA_Status      ddcrc)
+{
+   rpt_nonfeature_error(action, ddcaFuncName, ddcrc, nullptr);
+}
+
+
+#ifdef FUTURE
+void VcpThread::rpt_ddca_status_new(
+      DdcError * erec)
+{
+
+      uint8_t      feature_code = erec->
+      const char * caller_name,
+      const char * ddca_func_name,
+      DDCA_Status  ddcrc)
+{
+    bool debug = false;
+    TRACECF(debug, "In %s(), %s() for feature 0x%02x returned %d - %s",
+                   caller_name, ddca_func_name, feature_code, ddcrc, ddca_rc_name(ddcrc));
+
+    DdcFeatureError* perec = new DdcFeatureError(feature_code, ddca_func_name, ddcrc);
+    TRACECF(debug, "Built DdcFeatureError.  srepr: %s, sexpl: %s", QS2S(perec->repr()), QS2S(perec->expl()));
+
+     //  _baseModel->onDdcFeatureError(perec);
+
+    TRACECF(debug, "perec=%p -> %s", perec, QS2S(perec->repr()) );
+    // emit  signalDdcFeatureError(perec);
+   TRACEMCF(debug, "perec=%p, perec->%s", perec, QS2S(perec->repr()) );
+
+   const char * s = ddca_rc_name(_ddcErrno);
+
+   QString qsexpl = QString::asprintf(
+
+
+   QString msg = QString("[feature=0x%1, function=%2, ddcrc=%3 - %4]")
+                    .arg(featureCode, 2, 16, QChar('0'))
+                    .arg(_ddcFunction)
+                    .arg(_ddcErrno)
+                    .arg(s);
+
+       QString qstitle = QString("ddcutil API Error");
+       QString qsexpl  = perec->expl();
+       QMessageBox::Icon icon = QMessageBox::Warning;
+
+       if ( QString::compare(perec->_ddcFunction, QString("ddca_get_capabilities_string")) == 0) {
+           // TRACE("ddca_get_capabilities_string() branch");
+           qsexpl = QString::asprintf(
+                             "Error reading capabilities string for display %d - %s",
+                             _dinfo->dispno, _dinfo->model_name
+                          );
+           qstitle = "DDC Error";
+       }
+
+
+       MsgBoxQueueEntry * qe = new MsgBoxQueueEntry(
+                                      qstitle,
+                                      qsexpl,
+                                      icon);
+    TRACEMCF(debug, "Calling _msgboxQueue.put() for qe: %s", QS2S(qe->repr()));
+    GlobalState::instance()._msgBoxQueue->put(qe);
+    TRACEMCF(debug, "Done");
+}
+#endif
+
+#ifdef OLD
 void VcpThread::rpt_ddca_status(
       uint8_t      feature_code,
       const char * caller_name,
@@ -104,8 +248,9 @@ void VcpThread::rpt_ddca_status(
     // postDdcFeatureError(erec);
     _baseModel->onDdcFeatureError(perec);
 }
+#endif
 
-
+#ifdef OLD
 void VcpThread::rpt_error_detail(
       DDCA_Error_Detail * erec,
       const char * caller_name,
@@ -129,6 +274,7 @@ void VcpThread::rpt_error_detail(
    // just call function, no need to signal:
    _baseModel->onDdcDetailedError(detailedError);
 }
+#endif
 
 #ifdef IN_PROGRESS
 void VcpThread::rpt_getvcp_error(
@@ -183,16 +329,11 @@ void VcpThread::rpt_verify_error(
       uint16_t     expectedValue,
       uint16_t     observedValue)
 {
-   bool debug = false;
+   bool debug = true;
    debug = debug || debugThread;
    TRACECF(debug, "featureCode=0x%02x, expectedValue=0x%04x, observedValue=0x%04x", featureCode, expectedValue, observedValue);
-   // DdcVerifyError erec(featureCode, function, expectedValue, observedValue);
-   DdcVerifyError* perec = new DdcVerifyError(featureCode, function, expectedValue, observedValue);
-   // cout << erec.srepr() << endl;
-   // cout << erec.sexpl() << endl;
+   // DdcVerifyError* perec = new DdcVerifyError(featureCode, function, expectedValue, observedValue);
 
-   // uint8_t  deltaSh = 0;   // unused
-   // uint8_t  deltaSl = 0;
    if (  max8(abs8(expectedValue >> 8,  observedValue >> 8),
               abs8(expectedValue & 0xff, observedValue & 0xff)
              ) <= 1)
@@ -200,8 +341,23 @@ void VcpThread::rpt_verify_error(
       TRACECF(debug, "difference <= 1, suppressing error");
    }
    else {
-      TRACECF(debug, "Calling baseModel->onDdcFeatureError()");
+      QString qsexpl = QString("Verification failed after value change for feature 0x%1.\n\n"
+                            "Expected value: %2 (0x%3), Reported value: %4 (0x%05) (A)")
+                                  .arg(featureCode, 2, 16, QLatin1Char('0'))
+                                  .arg(expectedValue)
+                                  .arg(expectedValue, 4, 16, QLatin1Char('0'))
+                                  .arg(observedValue)
+                                  .arg(observedValue, 4, 16, QChar('0'));
+      MsgBoxQueueEntry * qe = new MsgBoxQueueEntry(QString("Verification Error"),
+                                                   qsexpl,
+                                                   QMessageBox::Warning);
+      TRACECF(debug, "Calling _msgboxQueue.put() for qe: %s", QS2S(qe->repr()));
+      GlobalState::instance()._msgBoxQueue->put(qe);
+      TRACECF(debug, "Done");
+#ifdef OLD
+      TRACECF(debug, "Calling _baseModel->onDdcFeatureError()");
       _baseModel->onDdcFeatureError(perec);
+#endif
    }
 }
 
@@ -209,14 +365,15 @@ void VcpThread::rpt_verify_error(
 DDCA_Status VcpThread::perform_open_display(DDCA_Display_Handle * dh_loc) {
    bool debugFunc = false;
    debugFunc = debugFunc || debugThread;
-
    TRACECF(debugFunc, "Starting. dref=%s", ddca_dref_repr(this->_dref));
 
-   // DDCA_Display_Handle dh;
-
    DDCA_Status ddcrc = ddca_open_display2(this->_dref, false, dh_loc);
+   // if (ddcrc == 0) ddcrc = -EBUSY;
    if (ddcrc != 0) {
+#ifdef OLD
        rpt_ddca_status(0, __func__, "ddca_open_display2", ddcrc);
+#endif
+       rpt_nonfeature_error("performing open", "ddca_open_display2", ddcrc);
    }
 
    if (ddcrc == 0  && !_threadDescriptionPublished) {
@@ -238,7 +395,10 @@ DDCA_Status VcpThread::perform_close_display(DDCA_Display_Handle dh) {
    TRACECF(debugFunc, "ddca_close_display() returned %d, dref=%s", ddcrc, ddca_dref_repr(this->_dref));
    if (ddcrc != 0) {
       // n. returns DDCRC_INVALID_STATE if already closed
+#ifdef OLD
       rpt_ddca_status(0, __func__, "ddca_close_display", ddcrc);
+#endif
+      rpt_nonfeature_error("performing close", "ddca_close_display", ddcrc);
    }
    return ddcrc;
 }
@@ -264,7 +424,8 @@ void VcpThread::loadDynamicFeatureRecords()
             DDCA_Error_Detail * erec = ddca_get_error_detail();
             ddca_report_error_detail(erec, 4);
 
-            rpt_error_detail(erec, "loadDynamicFeatureRecords", "ddca_dfr_check_by_dh");
+            // rpt_error_detail(erec, "loadDynamicFeatureRecords", "ddca_dfr_check_by_dh");
+            rpt_nonfeature_error("loading dynamic feature records", "ddca_dfr_check_by_dh", ddcrc, erec);
             ddca_free_error_detail(erec);
          }
       }
@@ -318,6 +479,7 @@ void VcpThread::capabilities() {
       while (retryable) {
          retryable = false;
          ddcrc = ddca_get_capabilities_string(dh, &caps);
+         // ddcrc = DDCRC_ALL_TRIES_ZERO;
          if (ddcrc != 0) {
             TRACECF(debugRetry, "Error getting capabilities string for %s, ddcrc=%s",
                                 ddca_dref_repr(this->_dref), ddca_rc_name(ddcrc));
@@ -343,7 +505,10 @@ void VcpThread::capabilities() {
             else {  // failure, can't retry
                if (retry_count > 0)
                   TRACECF(debugRetry || true, "Capabilities check failed after %d retries, retries exhausted", retry_count);
+#ifdef OLD
                rpt_ddca_status(0, __func__, "ddca_get_capabilities_string", ddcrc);
+#endif
+               rpt_nonfeature_error("getting capabilities string", "ddca_get_capabilitis_string", ddcrc);
             }  // end, failure, can't retry
          }  // ddca_get_capabilities() failed
          else if (retry_count > 0) {
@@ -353,8 +518,12 @@ void VcpThread::capabilities() {
 
       if (ddcrc == 0) {   // ddca_get_capabilities_string() succeeded, try to parse
          ddcrc = ddca_parse_capabilities_string(caps, &parsed_caps);
-         if (ddcrc != 0)
+         if (ddcrc != 0) {
+#ifdef OLD
             rpt_ddca_status(0, __func__, "ddca_parse_capabilities_string", ddcrc);
+#endif
+            rpt_nonfeature_error("parsing capabilities string", "ddca_parse_capabilitis_string", ddcrc);
+         }
          // free(caps);
       }
       // rpt_ddca_status(0, __func__, "dummy function", -99);   // *** TEMP ***
@@ -436,7 +605,10 @@ void VcpThread::getvcp(uint8_t featureCode, bool needMetadata) {
            //    ddca_dbgrpt_feature_metadata(finfo, 1);
            // }
            if (ddcrc2 != 0) {
+#ifdef OLD
               rpt_ddca_status(featureCode, __func__, "ddca_get_feature_metadata_by_dh",  ddcrc);
+#endif
+              rpt_feature_error(FeatureMetadata, featureCode, "ddca_get_capabilitis_string", ddcrc);
               // cout << "ddca_get_feature_metadata() returned " << ddcrc << endl;
            }
 
@@ -490,7 +662,11 @@ void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint16_t shsl)
        }
        if (ddcrc != 0) {
           TRACECF(debugFunc, "ddca_set_non_table_vcp_value() returned %d = %s", ddcrc, ddca_rc_name(ddcrc));
+#ifdef OLD
           rpt_ddca_status(feature_code, __func__, "ddca_set_non_table_vcp_value", ddcrc);
+#endif
+          rpt_feature_error(FeatureWrite, feature_code, "ddca_set_non_table_vcp_value", ddcrc);
+
           goto bye;
        }
        if (!writeOnly) {
@@ -507,7 +683,11 @@ void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint16_t shsl)
                ddcrc = ddca_get_non_table_vcp_value(dh, feature_code, &valrec);
            }
            if (ddcrc != 0) {
+#ifdef OLD
                 rpt_ddca_status(feature_code, __func__, "ddca_get_nontable_vcp_value", ddcrc);
+#endif
+                rpt_feature_error(FeatureRead, feature_code, "ddca_get_nontable_vcp_value", ddcrc);
+
            }
            else {
               TRACECF(debugFunc, "ddca_get_nontable_vcp_value() after ddca_set_non_table_vcp_value():");
@@ -529,7 +709,11 @@ bye:
        TRACECF(debugFunc, "ddca_close_display() returned %d", ddcrc);
        if (ddcrc != 0) {
            TRACECF(debugFunc, "ddca_close_display() returned %d", ddcrc);
+#ifdef OLD
            rpt_ddca_status(0, __func__, "ddca_close_display", ddcrc);
+#endif
+           rpt_nonfeature_error("performing close", "ddca_close_display", ddcrc);
+
        }
     }   // open succeeded
     TRACECF(debugFunc, "Done");

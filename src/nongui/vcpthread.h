@@ -38,6 +38,13 @@ public:
 
     // Perhaps an init function not in the constructor that opens the display?
 
+    enum FeatureOp {
+       FeatureRead,
+       FeatureWrite,
+       FeatureMetadata
+    };
+
+
 signals:
     void postDdcFeatureError(DdcFeatureError& erec);
 
@@ -56,10 +63,33 @@ private:  // member functions
           const char * caller_name,
           const char * ddca_func_name,
           int ddcrc);
+#ifdef FUTURE
+    void rpt_ddca_status_new(
+          uint8_t feature_code,
+          const char * caller_name,
+          const char * ddca_func_name,
+          int ddcrc);
+#endif
+    void rpt_feature_error(
+          enum FeatureOp   op,
+          uint8_t          featureCode,
+          const char *     ddcaFuncName,
+          DDCA_Status      ddcrc);
+    void rpt_nonfeature_error(
+          const char *     action,
+          const char *     ddcaFuncName,
+          DDCA_Status      ddcrc);
+    void rpt_nonfeature_error(
+          const char *     action,
+          const char *     ddcaFuncName,
+          DDCA_Status      ddcrc,
+          DDCA_Error_Detail * erec);
+#ifdef OLD
     void rpt_error_detail(
           DDCA_Error_Detail * erec,
           const char * caller_name,
           const char * ddcra_func_name);
+#endif
     void rpt_verify_error(
           uint8_t      featureCode,
           const char * function,
