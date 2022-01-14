@@ -311,7 +311,7 @@ FeatureBaseModel::setCapabilities(
    _parsed_caps = parsed_capabilities;
 }
 
-
+#ifdef OLD
 void
 FeatureBaseModel::onDdcDetailedError(
       DdcDetailedError* perec)
@@ -335,6 +335,7 @@ FeatureBaseModel::onDdcFeatureError(
    TRACECF(debugFunc, "Emitting signalDdcFeatureError()");
    emit  signalDdcFeatureError(perec);
 }
+#endif
 
 
 #ifdef UNUSED
