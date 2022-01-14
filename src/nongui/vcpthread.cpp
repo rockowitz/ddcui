@@ -36,7 +36,7 @@ VcpThread::VcpThread(
     debug |= debugThread;
     TRACECF(debug, "Starting");
 
-    _dref         = dinfo->dref;   // transitional
+    _dref         = dinfo->dref;
     _ddcaSimulator = new DdcaSimulator();
 
     // ddca_report_display_info(dinfo, 4);
@@ -54,6 +54,10 @@ VcpThread::~VcpThread() {
 }
 
 
+//
+// *** Error Reporting
+//
+
 void VcpThread::rpt_feature_error(
       enum FeatureOp   op,
       uint8_t          featureCode,
@@ -63,17 +67,16 @@ void VcpThread::rpt_feature_error(
    bool debug = false;
    TRACEMCF(debug, "Starting.op=%d, featureCode=0x%02x, ddcrc=%d",
                    op, featureCode, ddcrc);
-
-   char * opName = (char *) "reading";
+   char * opText = (char *) "reading";
    if (op == FeatureWrite)
-      opName = (char *) "writing";
+      opText = (char *) "writing";
    if (op == FeatureMetadata)
-      opName = (char *) "fetching metadata for";
+      opText = (char *) "fetching metadata for";
    QString
    qsexpl = QString::asprintf(
                      "Error %s for feature x%02x, display %d - %s\n\n"
                      "API function %s returned %s (%d)",
-                     opName, featureCode, _dinfo->dispno, _dinfo->model_name,
+                     opText, featureCode, _dinfo->dispno, _dinfo->model_name,
                      ddcaFuncName, ddca_rc_name(ddcrc), ddcrc);
    MsgBoxQueueEntry * qe = new MsgBoxQueueEntry(QString("ddcutil API Error"),
                                                 qsexpl,
@@ -93,7 +96,6 @@ void VcpThread::rpt_nonfeature_error(
    bool debug = false;
    TRACECF(debug, "Starting.action=%s, ddcaFuncName=%s, ddcrc=%d",
                    action, ddcaFuncName, ddcrc);
-
    QString qsexpl = QString("");
    if (erec) {
       QString smooshed = ddcutil_format_error_detail(erec, QString(""), 3);
@@ -200,6 +202,10 @@ void VcpThread::rpt_verify_error(
 }
 
 
+//
+// *** Open and Close ***
+//
+
 DDCA_Status VcpThread::perform_open_display(DDCA_Display_Handle * dh_loc)
 {
    bool debugFunc = false;
@@ -237,6 +243,11 @@ DDCA_Status VcpThread::perform_close_display(DDCA_Display_Handle dh)
 }
 
 
+//
+// *** Request Handlers ***
+//
+
+// Process RQLoadDfr
 void VcpThread::loadDynamicFeatureRecords()
 {
    bool debugFunc = debugThread;
@@ -554,6 +565,10 @@ void VcpThread::endInitialLoad(void)
     _baseModel->setStatusMsg(QString("Loading complete"));
 }
 
+
+//
+// *** Main Loop ***
+//
 
 void VcpThread::run()
 {
