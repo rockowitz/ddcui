@@ -1,4 +1,4 @@
-/** \file features_scrollarea_view.h
+/* features_scrollarea_view.h
  *
  * Manages the scroll area that provides a view onto the current feature settings
  * of a monitor.
@@ -6,7 +6,7 @@
  * There is one instance of this class for each detected monitor.
  */
 
-// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef FEATURES_SCROLLAREA_VIEW_H
@@ -52,8 +52,10 @@ public slots:
 #ifdef PASS_NC_PARMS
     void onNcValuesSourceChanged(NcValuesSource newsrc, bool useLatestNcValueNames);
 #endif
+#ifdef OLD
     void onModelDdcDetailedError(DdcDetailedError* perec);
     void onModelDdcFeatureError(DdcFeatureError* perec);
+#endif
 
 // *** Member variables ***
 

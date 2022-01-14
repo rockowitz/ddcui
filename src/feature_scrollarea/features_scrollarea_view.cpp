@@ -383,6 +383,7 @@ void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc, bool
 #endif
 
 
+#ifdef OLD
 void FeaturesScrollAreaView::onModelDdcDetailedError(DdcDetailedError* perec) {
     bool debugFunc = false;
     debugFunc = debugFunc || debugSignals;
@@ -429,4 +430,5 @@ void FeaturesScrollAreaView::onModelDdcFeatureError(DdcFeatureError* perec) {
     _msgboxQueue->put(qe);
     TRACEMCF(debugFunc, "Done");
 }
+#endif
 
