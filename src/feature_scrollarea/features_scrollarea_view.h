@@ -14,7 +14,6 @@
 
 #include <QtCore/QObject>
 
-#include "nongui/ddc_error.h"
 #include "nongui/feature_base_model.h"
 
 #include "feature_scrollarea/feature_widget.h"

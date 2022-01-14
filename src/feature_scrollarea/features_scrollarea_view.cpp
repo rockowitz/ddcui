@@ -22,7 +22,6 @@
 #include "base/other_options_state.h"
 #include "base/widget_debug.h"
 
-#include "nongui/ddc_error.h"
 #include "nongui/msgbox_queue.h"
 
 #include "feature_scrollarea/feature_widget.h"
