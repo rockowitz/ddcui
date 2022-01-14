@@ -57,12 +57,14 @@ private:  // member functions
     void capabilities();
     void loadDynamicFeatureRecords();
     void startInitialLoad(void);
-    void endInitialLoad(void); 
+    void endInitialLoad(void);
+#ifdef OLD
     void rpt_ddca_status(
           uint8_t feature_code,
           const char * caller_name,
           const char * ddca_func_name,
           int ddcrc);
+#endif
 #ifdef FUTURE
     void rpt_ddca_status_new(
           uint8_t feature_code,
