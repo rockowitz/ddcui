@@ -2,7 +2,7 @@
  * ddcui command line parser
  */
 
-// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <config.h>
@@ -211,8 +211,8 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
       {"feature-set",
                    '\0',   0, G_OPTION_ARG_STRING,   &feature_set_work,  "Feature set selection",
                                                                                    "MMCS|Capabilities|Manufacturer|Color|Scan"},
-      {"use-latest-nc-values",
-                   '\0',   0, G_OPTION_ARG_NONE,     &use_latest_nc_values_true_set, "Use NC values from the latest MCCS version", NULL},
+      // {"use-latest-nc-values",
+      //              '\0',   0, G_OPTION_ARG_NONE,     &use_latest_nc_values_true_set, "Use NC values from the latest MCCS version", NULL},
 
       {"custom-feature-set",
                   '\0',   0, G_OPTION_ARG_STRING,   &custom_feature_set_work, "User feature set definition",
