@@ -93,7 +93,7 @@ message( VERBOSE "  Qt5Help_INCLUDE_DIRS:     ${Qt5Help_INCLUDE_DIRS}"    )
 
 find_package (PkgConfig REQUIRED )
 pkg_check_modules(GLIB2 REQUIRED glib-2.0>=${ddcui_glib_version})
-pkg_check_modules(DDCUTIL REQUIRED ddcutil>=${ddcui_libddcutil_version}})
+pkg_check_modules(DDCUTIL REQUIRED ddcutil>=${ddcui_libddcutil_version})
 # set(DDCUTIL_LIBRARY_DIRS /usr/lib/x86_64-linux-gnu/)   # hack for testing
 message( VERBOSE "Set by pkg-config:" )
 message( VERBOSE "  GLIB2_INCLUDE_DIRS:       ${GLIB2_INCLUDE_DIRS}"   )
