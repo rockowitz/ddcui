@@ -1,6 +1,6 @@
 // help_dialog.cpp
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <QtWidgets/QTextBrowser>
@@ -81,7 +81,9 @@ HelpDialog::HelpDialog(char * simpleFn, char * title, QWidget* parent)
 
 
 HelpDialog::~HelpDialog() {
-   // TODO Auto-generated destructor stub
+   free(_cls);
+   delete _buttons;
+   delete _textBrowser;
 }
 
 
