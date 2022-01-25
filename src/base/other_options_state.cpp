@@ -40,14 +40,14 @@ OtherOptionsState::OtherOptionsState(Parsed_Ddcui_Cmd * parsed_cmd) {
 
 OtherOptionsState::OtherOptionsState(const OtherOptionsState &other) : QObject() {
    _ncValuesSource = other._ncValuesSource;
-   _useLatestNcValues = other._useLatestNcValues;
+   // _useLatestNcValues = other._useLatestNcValues;
 }
 
 
 void OtherOptionsState::changeNcValuesSource(NcValuesSource mode, bool useLatestNcValues) {
    bool changed = (mode != _ncValuesSource || useLatestNcValues != _useLatestNcValues);
    _ncValuesSource = mode;
-   _useLatestNcValues = useLatestNcValues;
+   // _useLatestNcValues = useLatestNcValues;
    if (changed)
       emit ncValuesSourceChanged(_ncValuesSource, _useLatestNcValues);
 

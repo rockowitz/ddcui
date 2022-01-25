@@ -35,7 +35,7 @@ private slots:
 private:
     void setUiSource(NcValuesSource source);
 
-    void setUseLatestNcValueNames(bool newval);
+    // void setUseLatestNcValueNames(bool newval);
 
     Ui::OtherOptionsDialog *ui;
     const char * _cls;

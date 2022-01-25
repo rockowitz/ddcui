@@ -31,9 +31,9 @@ void OtherOptionsDialog::setUiSource(NcValuesSource source)
    }
 }
 
-void OtherOptionsDialog::setUseLatestNcValueNames(bool newval) {
-   ui->latestNcValueNamesCheckbox->setChecked(newval);
-}
+// void OtherOptionsDialog::setUseLatestNcValueNames(bool newval) {
+//    ui->latestNcValueNamesCheckbox->setChecked(newval);
+// }
 
 
 OtherOptionsDialog::OtherOptionsDialog(OtherOptionsState * state, QWidget *parent) :
@@ -49,7 +49,7 @@ OtherOptionsDialog::OtherOptionsDialog(OtherOptionsState * state, QWidget *paren
 
     setWindowTitle("ddcui - NC Feature Values");
     setUiSource(state->_ncValuesSource);
-    setUseLatestNcValueNames(state->_useLatestNcValues);
+    // setUseLatestNcValueNames(state->_useLatestNcValues);
 }
 
 
@@ -76,7 +76,7 @@ void OtherOptionsDialog::on_buttonBox_accepted()
        newsrc = NcValuesFromMccs;
     }
 
-    _state->changeNcValuesSource(newsrc, ui->latestNcValueNamesCheckbox->isChecked());
+    // _state->changeNcValuesSource(newsrc, ui->latestNcValueNamesCheckbox->isChecked());
 }
 
 
@@ -98,6 +98,6 @@ void OtherOptionsDialog::on_buttonBox_clicked(QAbstractButton* button)
    if(button== (QAbstractButton*) ui->buttonBox->button(QDialogButtonBox::Reset) ){
       // TRACE("Reset");
       setUiSource(OtherOptionsState::DefaultNcValuesSource);
-      setUseLatestNcValueNames(OtherOptionsState::DefaultUseMaximalMccsNcValues);
+      // setUseLatestNcValueNames(OtherOptionsState::DefaultUseMaximalMccsNcValues);
    }
 }

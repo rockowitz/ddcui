@@ -163,7 +163,8 @@ void ValueNcWidget::setFeatureValue(const FeatureValue &fv) {
      TRACEMF(debug, "_observedValues after adding 0x%02x: %s", _sl, bs256_to_string(_observedValues, ""," "));
 
     _ncValuesSource    = _globalState._otherOptionsState->_ncValuesSource;
-    _useLatestNcValues = _globalState._otherOptionsState->_useLatestNcValues;
+    // _useLatestNcValues = _globalState._otherOptionsState->_useLatestNcValues;
+    _useLatestNcValues = false;
     loadComboBox2();
 
     _extraInfo->setText("");
@@ -222,8 +223,9 @@ void ValueNcWidget::loadComboBox2() {
       if (_capVcp)
          _validValues = bs256_or(_validValues, bs256_from_cfr(_capVcp));
    }
-   DDCA_Feature_Value_Entry * slValues =
-         (_useLatestNcValues) ? _finfo->latest_sl_values :  _finfo->sl_values;
+   // DDCA_Feature_Value_Entry * slValues =
+   //       (_useLatestNcValues) ? _finfo->latest_sl_values :  _finfo->sl_values;
+   DDCA_Feature_Value_Entry * slValues = _finfo->sl_values;
    if (mode == NcValuesFromMccs || mode == NcValuesFromBoth) {
       _validValues = bs256_or(_validValues, bs256_from_sl_values(slValues));
    }
@@ -287,9 +289,10 @@ void ValueNcWidget::reloadComboBox(NcValuesSource newSource, bool newUseLatestNa
                       SBOOL(newUseLatestNames),
                       SBOOL(_useLatestNcValues) );
 
-   if (newSource != _ncValuesSource || newUseLatestNames != _useLatestNcValues) {
+   // if (newSource != _ncValuesSource || newUseLatestNames != _useLatestNcValues) {
+   if (newSource != _ncValuesSource) {
       _ncValuesSource = newSource;
-      _useLatestNcValues = newUseLatestNames;
+      // _useLatestNcValues = newUseLatestNames;
       _guiChange = false;
       loadComboBox2();
       _guiChange = true;
