@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.2.1] 2022-01-25
+
+### Removed
+
+- "Use Latest Feature Values" setting in NC Feature Values and command line
+  option --use-latest-nc-values command line option.
+  This feature had been hard to explain and convoluted to implement.
+  User Defined Features enable the user to specify required NC values, 
+  making the feature unnecessary.
+
+
 ## [0.2.0] 2021-10-15 
 
 This log summarizes user visible changes in **ddcui**. 
@@ -43,8 +54,4 @@ For details, see [ddcui Release Notes](https://www.ddcutil.com/ddcui_release_not
   in configuration file ddcutilrc: --udf, --no-udf, --nousb, --maxtries, 
   --sleep-multiplier, --sleep-less, --less-sleep, --no-less-sleep, 
   --dynamic-sleep-adjustment
-- "Use Latest Feature Values" setting in NC Feature Values and command line
-  option --use-latest-nc-values command line option.
-  This feature had been hard to explain and convoluted to implement.
-  User Defined Fetures enable the user to specify required NC values, 
-  making the feature unnecessary.
+
