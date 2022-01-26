@@ -293,6 +293,12 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
     if (_drefs_ct > 0) {
        _ui->actionMonitorSummary->setEnabled(true);
     }
+    else {
+       MsgBoxQueueEntry * qe =
+             new MsgBoxQueueEntry("ddcui", QString("Detected 0 monitors"), QMessageBox::Warning);
+       TRACECF(debug, "Pre put, _msgBoxQueue=%p", _msgBoxQueue);
+       _msgBoxQueue->put(qe);
+    }
 
 #ifdef DEFERRED_MSG_QUEUE
    _deferredMsgs = QList<MsgBoxQueueEntry*>();  // not needed,
