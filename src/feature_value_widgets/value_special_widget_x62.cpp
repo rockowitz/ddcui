@@ -105,7 +105,7 @@ void ValueSpecialWidgetX62::loadComboBox() {
 
 
 void ValueSpecialWidgetX62::setCurrentShSl(uint16_t newval) {
-   bool debugFunc = true;
+   bool debugFunc = false;
    debugFunc = debugFunc || debugWidget;
    TRACEMF(debugFunc, "Starting. feature 0x%02x, newval=x%04x", _featureCode, newval);
 
