@@ -253,7 +253,7 @@ void MainWindow::setInitialDisplayIndex(Parsed_Ddcui_Cmd * parsed_cmd) {
 
 
 void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
-    bool debug = true;
+    bool debug = false;
     TRACECF(debug, "Starting.  parsed_cmd=%p", parsed_cmd);
 
     longRunningTaskStart();
@@ -270,9 +270,7 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
 #endif
 
     TRACECF(debug, "Calling ddca_get_display_refs()");
-    DDCA_Status ddcrc = ddca_get_display_refs(
-                            true,         // include invalid displays
-                            &_drefs);
+    DDCA_Status ddcrc = ddca_get_display_refs(/*include invalid displays=*/true, &_drefs);
     TRACECF(debug, "ddca_get_display_refs() returned %d", ddcrc);
     assert(ddcrc == 0);
     for (_drefs_ct=0; _drefs[_drefs_ct]; _drefs_ct++) {}
@@ -283,7 +281,6 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
         DDCA_Display_Info * dinfo;
         DDCA_Status ddcrc = ddca_get_display_info(_drefs[ndx], &dinfo);
         assert(ddcrc == 0);
-
         initOneMonitor(dinfo, ndx);
     }
 
@@ -295,7 +292,7 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
     }
     else {
        MsgBoxQueueEntry * qe =
-             new MsgBoxQueueEntry("ddcui", QString("No monitors detected."), QMessageBox::Warning);
+             new MsgBoxQueueEntry("ddcui", QString("No displays detected"), QMessageBox::Warning);
        TRACECF(debug, "Pre put, _msgBoxQueue=%p", _msgBoxQueue);
        _msgBoxQueue->put(qe);
     }
@@ -332,7 +329,6 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
 
     TRACECF(debug, "Done");
 }
-
 
 
 MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
@@ -574,7 +570,7 @@ void MainWindow::displaySelectorCombobox_activated(int index) {
 
 void MainWindow::on_actionMonitorSummary_triggered()
 {
-    bool debug = true;
+    bool debug = false;
     // std::cout << "(MainWindow::on_actionMonitorSummary_triggered()" << endl;
 
     int monitorNdx = _toolbarDisplayCB->currentIndex();

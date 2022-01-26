@@ -175,7 +175,7 @@ void Ui_MainWindow::setupMenus(QMainWindow *MainWindow)
     actionRescan->setFont(mainMenuFont);
     actionRescan->setEnabled(false);
 
-    actionRedetect->setText(  QApplication::translate("MainWindow", "Re&detect Monitors", nullptr, -1));
+    actionRedetect->setText(  QApplication::translate("MainWindow", "Re&detect Displays", nullptr, -1));
     actionRedetect->setEnabled(true);
     actionRedetect->setFont(mainMenuFont);
 
@@ -259,7 +259,7 @@ void Ui_MainWindow::setupUi(QMainWindow *MainWindow)
 
    setupMenus(MainWindow);
 
-   MainWindow->setWindowTitle(QApplication::translate("MainWindow", "ddcui - Control Monitor Settings", nullptr, -1));
+   MainWindow->setWindowTitle(QApplication::translate("MainWindow", "ddcui - Control Display Settings", nullptr, -1));
 #ifdef UNUSED
       retranslateFeatureSelectionDialog();
 #endif
