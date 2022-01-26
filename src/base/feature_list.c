@@ -1,7 +1,7 @@
 /** \file feature_list.cpp
  */
 
-// Copyright (C) 2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2020-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <assert.h>
@@ -20,6 +20,17 @@
 #include "base/feature_list.h"
 
 
+/** Parse a string containing a list of feature codes
+ *
+ *  \param unparsed_string
+ *  \error_msgs_loc  if non-null, return null terminated string array of error messages here,
+ *                   caller is responsible for freeing
+ *  \return feature code set, DDCA_EMPTY_FEATURE_LIST if errors
+ *
+ *  \remark
+ *  if error_msgs_loc is non-null, on return *error_msgs_loc is non-null iff there
+ *  are error messages, i.e. a 0 length array is not returned
+ */
 DDCA_Feature_List parse_custom_feature_list(
       char * unparsed_string,
       Null_Terminated_String_Array * error_msgs_loc)
