@@ -59,11 +59,8 @@ ValueBaseWidget::~ValueBaseWidget() {
    bool debug = false;
    TRACEMCF(debug, "Executing. this._id = %d", _id);
    ddca_free_feature_metadata(_finfo);
-   // _capVcp ??
-   // _dref do not need to free
-   free((void*)_cls);
-   // delete _cls;  // fails - const
    TRACEMCF(debug, "Done.");
+   free((void*)_cls);
 }
 
 
