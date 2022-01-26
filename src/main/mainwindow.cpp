@@ -295,7 +295,7 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
     }
     else {
        MsgBoxQueueEntry * qe =
-             new MsgBoxQueueEntry("ddcui", QString("Detected 0 monitors"), QMessageBox::Warning);
+             new MsgBoxQueueEntry("ddcui", QString("No monitors detected."), QMessageBox::Warning);
        TRACECF(debug, "Pre put, _msgBoxQueue=%p", _msgBoxQueue);
        _msgBoxQueue->put(qe);
     }
