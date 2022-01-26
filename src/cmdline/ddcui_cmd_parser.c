@@ -1,4 +1,4 @@
-/* \file cmd_parser.c
+/* \file ddcui_cmd_parser.c
  * ddcui command line parser
  */
 
@@ -329,7 +329,7 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    if (!ok) {
       if (error) {
          fprintf(stderr, "ddcui option parsing failed: %s\n", error->message);
-         // n. do not free(error), invalid pointer
+         g_error_free(error);
       }
       else {
          fprintf(stderr, "ddcui option parsing failed.\n");
