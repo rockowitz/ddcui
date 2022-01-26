@@ -1,6 +1,6 @@
 /* msgbox_queue.cpp - MsgBoxQueue and the MsgBoxQueueEntry class that populates it */
 
-// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <QtCore/QDebug>
@@ -87,6 +87,26 @@ void MsgBoxQueue::put(MsgBoxQueueEntry * request) {
 #endif
     // dbgrpt_nolock();
     // TRACECF(debugFunc, "Done");
+}
+
+
+void MsgBoxQueue::putMessages(QString qstitle, QMessageBox::Icon icon, char** msgs) {
+   bool debugFunc = false || debugClass;
+   TRACECF(debugFunc, "Starting");
+   if (msgs) {
+      if (debugFunc) {
+         int ct = 0;
+         while(msgs[ct]) ct++;
+         TRACEC("%d error messages", ct);
+      }
+      for (int ndx = 0; msgs[ndx]; ndx++) {
+         QString qsexpl = QString::asprintf("%s", msgs[ndx]);
+         MsgBoxQueueEntry * qe = new MsgBoxQueueEntry(qstitle,qsexpl,icon);
+         TRACECF(debugFunc, "Calling _msgboxQueue.put() for qe: %s", __func__, QS2S(qe->repr()) );
+         put(qe);
+      }
+   }
+   TRACECF(debugFunc, "Done");
 }
 
 
