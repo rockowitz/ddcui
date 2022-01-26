@@ -253,7 +253,7 @@ void MainWindow::setInitialDisplayIndex(Parsed_Ddcui_Cmd * parsed_cmd) {
 
 
 void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
-    bool debug = false;
+    bool debug = true;
     TRACECF(debug, "Starting.  parsed_cmd=%p", parsed_cmd);
 
     longRunningTaskStart();
@@ -568,10 +568,11 @@ void MainWindow::displaySelectorCombobox_activated(int index) {
 
 void MainWindow::on_actionMonitorSummary_triggered()
 {
-    bool debug = false;
+    bool debug = true;
     // std::cout << "(MainWindow::on_actionMonitorSummary_triggered()" << endl;
 
     int monitorNdx = _toolbarDisplayCB->currentIndex();
+    TRACEMF(debug, "monitorNdx=%d", monitorNdx);
     Monitor * monitor = _monitors[monitorNdx];
     DDCA_Display_Info * dinfo =  monitor->_displayInfo;    // &_dlist->info[monitorNdx];
     DDCA_Display_Ref dref = dinfo->dref;
