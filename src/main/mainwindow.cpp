@@ -573,19 +573,18 @@ void MainWindow::on_actionMonitorSummary_triggered()
 
     int monitorNdx = _toolbarDisplayCB->currentIndex();
     TRACEMF(debug, "monitorNdx=%d", monitorNdx);
-    Monitor * monitor = _monitors[monitorNdx];
-    DDCA_Display_Info * dinfo =  monitor->_displayInfo;    // &_dlist->info[monitorNdx];
-    DDCA_Display_Ref dref = dinfo->dref;
 
-    TRACECF(debug, "monitorNdx (%d), dref=%s", monitorNdx, ddca_dref_repr(dref));
     if (monitorNdx < 0) {
        // _ui->centralWidget->hide();
     }
     else {
-       // DDCA_Display_Info * dinfo = &_dlist->info[monitorNdx];
+       Monitor * monitor = _monitors[monitorNdx];
+       DDCA_Display_Info * dinfo =  monitor->_displayInfo;    // &_dlist->info[monitorNdx];
+       DDCA_Display_Ref dref = dinfo->dref;
+       TRACECF(debug, "monitorNdx (%d), dref=%s", monitorNdx, ddca_dref_repr(dref));
+
        char * s = MonitorDescActions::capture_display_info_report(dinfo);
 
-       Monitor * monitor = _monitors[monitorNdx];
        TRACECF(debug, "monitor=%p", monitor);
        QPlainTextEdit * moninfoPlainText = monitor->_moninfoPlainText;
        // int pageno = monitor->_pageno_moninfo;
