@@ -373,21 +373,22 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    SET_CMDFLAG(CMD_FLAG_HIDPI,             hidpi_flag);
 #undef SET_CMDFLAG
 
-   if (all_capabilities_true_set || all_capabilities_false_set) {
-      if (all_capabilities_true_set)
-         parsed_cmd->include_all_capabilities_features = TRIVAL_TRUE;
-      else
-         parsed_cmd->include_all_capabilities_features = TRIVAL_FALSE;
-   }
+   if (all_capabilities_true_set)
+      parsed_cmd->include_all_capabilities_features = TRIVAL_TRUE;
+#ifdef TRIVAL
+   else if (all_capabilities_false_set)
+      parsed_cmd->include_all_capabilities_features = TRIVAL_FALSE;
+#endif
    else
       parsed_cmd->include_all_capabilities_features = TRIVAL_UNSET;
 
-   if (only_capabilities_true_set || only_capabilities_false_set) {
-      if (only_capabilities_true_set)
-         parsed_cmd->include_only_capabilities_features = TRIVAL_TRUE;
-      else
-         parsed_cmd->include_only_capabilities_features = TRIVAL_FALSE;
-   }
+
+   if (only_capabilities_true_set)
+      parsed_cmd->include_only_capabilities_features = TRIVAL_TRUE;
+#ifdef TRIVAL
+   else if (only_capabilities_false_set)
+      parsed_cmd->include_only_capabilities_features = TRIVAL_FALSE;
+#endif
    else
       parsed_cmd->include_only_capabilities_features = TRIVAL_UNSET;
 
@@ -471,12 +472,10 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
          ok = false;
          if (error_msgs) {
             fprintf(stderr, "Errors in --custom-feature-set:\n");
-            int ndx = 0;
-            while (error_msgs[ndx]) {
+            for (int ndx = 0; error_msgs[ndx]; ndx++) {
                fprintf(stderr, "   %s\n", error_msgs[ndx]);
-               free(error_msgs[ndx]);
-               ndx++;
             }
+            ntsa_free(error_msgs, true);
          }
          else {
             fprintf(stderr, "Empty --custom-feature-set\n");
@@ -484,7 +483,7 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
       }
    }
 
-#ifdef USE_CONFIG_FILE
+#ifdef USE_CONFIG_FILE_INSTEAD
    parsed_cmd->enable_sleep_suppression = TRIVAL_UNSET;
    if (less_sleep_true_set)
       parsed_cmd->enable_sleep_suppression = TRIVAL_TRUE;
