@@ -21,7 +21,7 @@ option(USE_CCACHE "Use ccache" ON)
 message(STATUS "USE_CCACHE: ${USE_CCACHE}" )
 
 string(APPEND CMAKE_MODULE_PATH  ${CMAKE_SOURCE_DIR}) 
-include(Validate_CMAKE_BUILD_TYPE)
+include(validate_CMAKE_BUILD_TYPE)
 
 
 project(ddcui VERSION 0.2.1 LANGUAGES C CXX)
