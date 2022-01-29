@@ -138,16 +138,16 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    gboolean version_flag            = false;
    gboolean show_styles_flag        = false;
    gboolean show_active_style_flag  = false;
-   // gboolean less_sleep_true_set     = false;
-   // gboolean less_sleep_false_set    = false;
-   gboolean use_latest_nc_values_true_set = false;
+// gboolean less_sleep_true_set     = false;
+// gboolean less_sleep_false_set    = false;
+// gboolean use_latest_nc_values_true_set = false;
 // gboolean use_latest_nc_values_false_set = false;
    gboolean hidpi_flag              = false;   //currently used only for testing
    gchar**  cmd_and_args            = NULL;
    gchar**  trace_classes           = NULL;
    gchar**  trace_filenames         = NULL;
    gchar**  trace_functions         = NULL;
-   // char *   sleep_multiplier_work   = NULL;
+// char *   sleep_multiplier_work   = NULL;
 
 #ifdef DISABLE_VIEW_OPTION
    gchar*   view_work               = NULL;
@@ -252,9 +252,9 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
 // debugging
       {"excp",     '\0',   0, G_OPTION_ARG_NONE,     &report_freed_excp_flag,  "Report freed exceptions", NULL},
       {"trace",    '\0',   0, G_OPTION_ARG_STRING_ARRAY, &trace_classes, "Trace a group",         "trace group name" },
-  //  {"trace",    '\0',   0, G_OPTION_ARG_STRING,   &tracework,        "Trace a group",          "comma separated list" },
+  //  {"trace",    '\0',   0, G_OPTION_ARG_STRING,   &tracework,         "Trace a group",          "comma separated list" },
       {"trcfunc",  '\0',   0, G_OPTION_ARG_STRING_ARRAY, &trace_functions, "Trace a function",     "function name" },
-      {"trcfile",  '\0',   0, G_OPTION_ARG_STRING_ARRAY, &trace_filenames,    "Trace a file",     "file name" },
+      {"trcfile",  '\0',   0, G_OPTION_ARG_STRING_ARRAY, &trace_filenames, "Trace a file",         "file name" },
       {"timestamp",'\0',   0, G_OPTION_ARG_NONE,   &timestamp_trace_flag, "Prepend trace msgs with elapsed time",  NULL},
       {"ts",       '\0',   0, G_OPTION_ARG_NONE,   &timestamp_trace_flag, "Prepend trace msgs with elapsed time",  NULL},
       {"thread-id",'\0',   0, G_OPTION_ARG_NONE,   &thread_id_trace_flag, "Prepend trace msgs with thread id",     NULL},
@@ -361,7 +361,7 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
 
    SET_CMDFLAG(CMD_FLAG_UI_REQUIRE_CONTROL_KEY, control_key_required);
    SET_CMDFLAG(CMD_FLAG_SHOW_UNSUPPORTED,       show_unsupported_features);
-   SET_CMDFLAG(CMD_FLAG_LATEST_NC_VALUE_NAMES,  use_latest_nc_values_true_set);   // n. not handling case where default is true
+// SET_CMDFLAG(CMD_FLAG_LATEST_NC_VALUE_NAMES,  use_latest_nc_values_true_set);   // n. not handling case where default is true
 
    SET_CMDFLAG(CMD_FLAG_F1,                f1_flag);
    SET_CMDFLAG(CMD_FLAG_F2,                f2_flag);
@@ -398,7 +398,6 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
       parsed_cmd->enable_force_slave_address = TRIVAL_FALSE;
    else
       parsed_cmd->enable_force_slave_address = TRIVAL_UNSET;
-
 
 
 #ifdef USE_CONFIG_FILE
