@@ -32,7 +32,7 @@
   - Better support for cmake variable CMAKE_BUILD_TYPE. The default value is 
     RelWithDebInfo. Validation of the supplied value  has been factored out into 
 	file validate_CMAKE_BUILD_TYPE.cmake.
-  - Requires glib version 2.39 for consistency with ddcutil.
+  - Requires glib version at least 2.40 for function g_option_context_strv().
 
 ### Fixed 
 - Segfaults
