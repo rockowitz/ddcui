@@ -254,9 +254,9 @@ message( ${VERBOSE} "  CMAKE_INSTALL_DOCDIR:        ${CMAKE_INSTALL_DOCDIR}" )
 
 
 install(TARGETS ddcui                       DESTINATION ${CMAKE_INSTALL_BINDIR} )
-install(FILES man/ddcui.1                   DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/man/man1)
+install(FILES man/ddcui.1                   DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 install(FILES AUTHORS CHANGELOG.md NEWS.md README.md 
-                                            DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/doc/ddcui)
+                                            DESTINATION ${CMAKE_INSTALL_DOCDIR})
 install(FILES ddcui.desktop                 DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/applications)
 install(FILES ddcui.appdata.xml             DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/metainfo)
 install(FILES icons/video-display-128px.png DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/128x128/apps RENAME ddcui.png)
