@@ -1,6 +1,6 @@
 // ddcui_parms.h
 
-// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef DDCUI_PARMS_H_
@@ -47,15 +47,5 @@ extern const bool debugFeatureSelection   ;
 extern const bool debugNcValues           ;
 extern const bool debugLayout             ;
 extern const bool debugFeatureDimensions  ;
-
-
-// controls whether every widget has Accept/Cancel buttons
-
-// #define APPLY_CANCEL
-// #define ALT_MOCK_FEATURES
-
-#ifdef APPLY_CANCEL
-const bool useApplyCancel    = true;
-#endif
 
 #endif /* DDCUI_PARMS_H_ */
