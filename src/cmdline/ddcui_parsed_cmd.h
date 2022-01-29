@@ -1,6 +1,6 @@
 /** \file parsed_cmd.h - parsed ddcui command line */
 
-// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef DDCUI_PARSED_CMD_H_
@@ -65,7 +65,7 @@ typedef enum {
 
    CMD_FLAG_SHOW_UNSUPPORTED       = 0x000100,
    CMD_FLAG_SHOW_ACTIVE_STYLE      = 0x000200,
-   CMD_FLAG_LATEST_NC_VALUE_NAMES  = 0x000400,
+// CMD_FLAG_LATEST_NC_VALUE_NAMES  = 0x000400,
 
    CMD_FLAG_TIMEOUT_I2C_IO         = 0x001000,
 //   CMD_FLAG_DEFER_SLEEPS           = 0x004000,
