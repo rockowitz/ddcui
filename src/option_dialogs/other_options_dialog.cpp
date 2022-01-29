@@ -65,6 +65,7 @@ void OtherOptionsDialog::on_buttonBox_accepted()
     // NcValuesSource oldsrc = _state->_ncValuesSource;
     // bool           oldUseLatestNames = _state->_useLatestNcValueNames;
 
+#ifdef UNUSED
     NcValuesSource newsrc;
 
     if (ui->capabilitiesNcValuesButton->isChecked() )
@@ -75,6 +76,7 @@ void OtherOptionsDialog::on_buttonBox_accepted()
        assert(  ui->mccsNcValuesButton->isChecked() );
        newsrc = NcValuesFromMccs;
     }
+#endif
 
     // _state->changeNcValuesSource(newsrc, ui->latestNcValueNamesCheckbox->isChecked());
 }
