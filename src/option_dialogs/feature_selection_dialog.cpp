@@ -297,7 +297,7 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
 
 
     DDCA_Feature_List customFlist = DDCA_EMPTY_FEATURE_LIST;
-    DDCA_Feature_Subset_Id fsid;
+    DDCA_Feature_Subset_Id fsid = DDCA_SUBSET_UNSET;   // assignment to avoid warning re uninitialized var
 
     // Which feature selection button is currently checked?
     if (_ui->color_radioButton->isChecked())
@@ -332,6 +332,7 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
     else                 // no radio button checked
         assert(false);   // should never occur
     // end, custom radio button
+    assert(fsid != DDCA_SUBSET_UNSET);
 
     TRACECF(debugFunc, "Checking for any changes...fsid=%d, _featureSelector->featureSubsetId = %d",
                fsid, _featureSelector->_featureSubsetId);
