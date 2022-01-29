@@ -185,8 +185,7 @@ void ValueSpecialWidgetX62::combobox_activated(int index) {
    bool debug = false;
    debug = debug || debugWidget;
    TRACEMCF(debug, "feature 0x%02x, index=%d", _featureCode, index);
-   int ndx = _cb->currentIndex();
-   assert(ndx == index);
+   assert(_cb->currentIndex == index);
 
    // QVariant qv = _cb->itemData(ndx);
    // uint i = qv.toUInt();
