@@ -18,11 +18,11 @@
 
 
 Monitor::Monitor(DDCA_Display_Info * display_info, int monitorNumber)
-    : _cls( strdup(metaObject()->className()) )
-    , _monitorNumber(monitorNumber)
+    : _monitorNumber(monitorNumber)
     , _displayInfo(display_info)
     , _baseModel(NULL)
     , _requestQueue(NULL)
+    , _cls( strdup(metaObject()->className()) )
 {
    bool debug = false;
    TRACECF(debug, "Starting. monitorNumber=%d, dispno=%d, dref=%s",
