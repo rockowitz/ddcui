@@ -159,9 +159,9 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    gboolean show_unsupported_features = false;
 
    gboolean only_capabilities_true_set  = false;
-   gboolean only_capabilities_false_set = false;
+// gboolean only_capabilities_false_set = false;
    gboolean all_capabilities_true_set   = false;
-   gboolean all_capabilities_false_set  = false;
+// gboolean all_capabilities_false_set  = false;
 
    gboolean force_slave_address_true_set = false;
    gboolean force_slave_address_false_set = false;
