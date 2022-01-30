@@ -43,8 +43,8 @@ message(STATUS "Build type is: ${CMAKE_BUILD_TYPE} (CMAKE_BUILD_TYPE)")
 message(STATUS "Source directory: ${CMAKE_SOURCE_DIR} (CMAKE_SOURCE_DIR)" )
 message(STATUS "Build directory:  ${CMAKE_BINARY_DIR} (CMAKE_BINARY_DIR)" )
 
-if (  ${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR} ) 
-   message(FATAL_ERROR " Attempting to build in source directory. Use -B option to set the build directory.")
+if ( ${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR} ) 
+   message(WARNING " Attempting to build in source directory. Use -B option to set the build directory.")
 endif()
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 
