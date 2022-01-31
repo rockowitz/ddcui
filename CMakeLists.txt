@@ -262,6 +262,8 @@ if(EXISTS "/etc/os-release")
    message(STATUS "Distribution: ${distro_name}")
    if( ${distro_name} STREQUAL "opensuse")
       set(suse_special_case TRUE)
+   elseif(${distro_name} STREQUAL "opensuse-leap")
+      set(suse_special_case TRUE)
    endif()  
 else() 
    message(STATUS "File /etc/os-release NOT found")
@@ -281,8 +283,7 @@ message(STATUS "After possible fixup CMAKE_INSTALL_DOCDIR: ${CMAKE_INSTALL_DOCDI
 
 install(TARGETS ddcui                       DESTINATION ${CMAKE_INSTALL_BINDIR} )
 install(FILES man/ddcui.1                   DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
-# if ( ${LSB_RELEASE_ID_SHORT} STREQUAL "opensuse")
-if ( ${distro_name} STREQUAL "opensuse")
+if ( ${suse_special_case} )
 message(STATUS "Installing to opensuse location")
    install(FILES AUTHORS CHANGELOG.md NEWS.md README.md 
                                             DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/doc/packages/ddcui)
