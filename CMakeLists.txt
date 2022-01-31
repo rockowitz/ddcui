@@ -260,7 +260,7 @@ if(EXISTS "/etc/os-release")
    string(STRIP ${id_line} s1)
    string(SUBSTRING ${s1} 3 -1 distro_name)
    # set(distro_name "opensuse-leap")
-   message(STATUS "Distribution: ${distro_name}")
+   message(STATUS "Distribution1: ${distro_name}")
    if( (distro_name STREQUAL "opensuse") OR (distro_name STREQUAL "opensuse-leap") )
       message(STATUS "distro_name matches opensuse") 
       set(suse_special_case TRUE)
@@ -285,6 +285,7 @@ message(STATUS "After possible fixup CMAKE_INSTALL_DOCDIR: ${CMAKE_INSTALL_DOCDI
 
 
 install(TARGETS ddcui                       DESTINATION ${CMAKE_INSTALL_BINDIR} )
+
 install(FILES man/ddcui.1                   DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 if ( ${suse_special_case} )
 message(STATUS "Installing to opensuse location")
