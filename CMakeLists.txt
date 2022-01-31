@@ -261,10 +261,11 @@ if(EXISTS "/etc/os-release")
    string(STRIP ${id_line} s1)
    #   set(s1 "ID=opensuse-leap")
    string(SUBSTRING ${s1} 3 -1 distro_name0)
+   message(STATUS "distro_name0: |${distro_name0}|")
    string(SUBSTRING ${distro_name0} 0 8 distro_name)
 
-   message(STATUS "distro_name0: |${distro_name0}|")
-      message(STATUS "Distribution5: distro_name = |${distro_name}|")
+   
+      message(STATUS "Distribution6: distro_name = |${distro_name}|")
    #  if( (distro_name STREQUAL "opensuse") OR (distro_name STREQUAL "opensuse-leap") OR (distro_name STREQUAL "fedora" ) )
    if( distro_name STREQUAL "opensuse" )
       message(STATUS "distro_name matches opensuse") 
