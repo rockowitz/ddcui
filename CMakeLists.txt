@@ -259,9 +259,12 @@ if(EXISTS "/etc/os-release")
    message(STATUS "File /etc/os-release found")
    file(STRINGS "/etc/os-release" id_line REGEX "^ID=(.*)$") 
    string(STRIP ${id_line} id_line)
-   set(id_line "ID=\"opensuse-leap\"")
+   
+   # Testcases:
+   # set(id_line "ID=\"opensuse-leap\"")
    # set(id_line "ID=opensuse-leap")
    # message(STATUS "id_line: |${id_line}|")
+   
    string(SUBSTRING ${id_line} 3 -1 distro_name0)
    # message(STATUS "distro_name0: |${distro_name0}|")
    string(SUBSTRING ${distro_name0} 0 1 ch)
