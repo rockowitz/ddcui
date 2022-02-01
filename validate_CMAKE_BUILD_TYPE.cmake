@@ -7,9 +7,12 @@ string(TOUPPER "${valid_build_types}" uc_valid_build_types)
 string(REPLACE ";" ", " pretty_valid_build_types "${valid_build_types}")
 STRING(TOUPPER "${CMAKE_BUILD_TYPE}" UC_CMAKE_BUILD_TYPE )
 
-# For some reason, cmake gets called tih -DCMAKE_BUILD_TYPE=None by dh_autoconfigure
-# This is a hack to handle that.
-if ( "${CMAKE_BUILD_TYPE}" STREQUAL "None")
+# message(STATUS "valid_build_types:    |${valid_build_types}|")
+# message(STATUS "uc_valid_build_types: |${uc_valid_build_types}|")
+
+# For some reason, cmake gets called with -DCMAKE_BUILD_TYPE=None by dh_autoconfigure
+# This hack handles that.
+if ( "${UC_CMAKE_BUILD_TYPE}" STREQUAL "NONE" )
    message(STATUS "Treating CMAKE_BUILD_TYPE == None as CMAKE_BUILD_TYPE == ''")
    set(CMAKE_BUILD_TYPE "")
 endif()
@@ -21,13 +24,15 @@ endif()
 set(i0 0)
 if (DEFINED CMAKE_BUILD_TYPE)
   string(LENGTH "${CMAKE_BUILD_TYPE}" i0)
-endif(DEFINED CMAKE_BUILD_TYPE)
- 
-IF( (DEFINED CMAKE_BUILD_TYPE) AND (i0 GREATER 0) ) 
+endif()
+
+IF( i0 GREATER 0 ) 
    list(FIND uc_valid_build_types "${UC_CMAKE_BUILD_TYPE}" index) 
    if (index EQUAL -1)
       message(FATAL_ERROR "CMAKE_BUILD_TYPE must be one of ${pretty_valid_build_types}" )
    endif()
+   # message(STATUS "index=${index}")
+   list(GET valid_build_types ${index} CMAKE_BUILD_TYPE)
    # message(STATUS "Setting CMakeCache.txt value for CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
    SET(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE STRING 
                    "Choose the type of build, options are: ${pretty_valid_build_types}." FORCE)
