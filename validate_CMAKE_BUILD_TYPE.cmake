@@ -1,11 +1,18 @@
 # Validates CMAKE_BUILD_TYPE
 
-message(VERBOSE "Initial CMAKE_BUILD_TYPE:  ${CMAKE_BUILD_TYPE}")
+message(STATUS "Initial CMAKE_BUILD_TYPE:  ${CMAKE_BUILD_TYPE}")
 
 set(valid_build_types Release RelWithDebInfo Debug MinSizeRel)
 string(TOUPPER "${valid_build_types}" uc_valid_build_types)
 string(REPLACE ";" ", " pretty_valid_build_types "${valid_build_types}")
 STRING(TOUPPER "${CMAKE_BUILD_TYPE}" UC_CMAKE_BUILD_TYPE )
+
+# For some reason, cmake gets called tih -DCMAKE_BUILD_TYPE=None by dh_autoconfigure
+# This is a hack to handle that.
+if ( "${CMAKE_BUILD_TYPE}" STREQUAL "None")
+   message(STATUS "Treating CMAKE_BUILD_TYPE == None as CMAKE_BUILD_TYPE == ''")
+   set(CMAKE_BUILD_TYPE "")
+endif()
 
 # https://cmake.org/pipermail/cmake/2008-September/023808.html
 # If the user specifies -DCMAKE_BUILD_TYPE on the command line, take their
@@ -15,6 +22,7 @@ set(i0 0)
 if (DEFINED CMAKE_BUILD_TYPE)
   string(LENGTH "${CMAKE_BUILD_TYPE}" i0)
 endif(DEFINED CMAKE_BUILD_TYPE)
+ 
 IF( (DEFINED CMAKE_BUILD_TYPE) AND (i0 GREATER 0) ) 
    list(FIND uc_valid_build_types "${UC_CMAKE_BUILD_TYPE}" index) 
    if (index EQUAL -1)
@@ -33,4 +41,4 @@ IF( (DEFINED CMAKE_BUILD_TYPE) AND (i0 GREATER 0) )
 # see also: https://stackoverflow.com/questions/48754619/what-are-cmake-build-type-debug-release-relwithdebinfo-and-minsizerel
 #           https://blog.feabhas.com/2021/07/cmake-part-2-release-and-debug-builds/
 
-message(VERBOSE "Final CMAKE_BUILD_TYPE:  ${CMAKE_BUILD_TYPE}")
+message(STATUS "Final CMAKE_BUILD_TYPE:  ${CMAKE_BUILD_TYPE}")
