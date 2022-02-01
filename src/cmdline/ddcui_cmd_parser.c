@@ -336,7 +336,7 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
       }
    }
    if (debug) {
-      printf("(%s) Freeing mangleable_argv=%p:\n", __func__, mangleable_argv);
+      printf("(%s) Freeing mangleable_argv=%p:\n", __func__, (void*)mangleable_argv);
       ntsa_show(mangleable_argv);
    }
    ntsa_free(mangleable_argv, true);
