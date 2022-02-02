@@ -254,6 +254,17 @@ message( ${VERBOSE} "  CMAKE_INSTALL_INFODIR:       ${CMAKE_INSTALL_INFODIR}" )
 message( ${VERBOSE} "  CMAKE_INSTALL_MANDIR:        ${CMAKE_INSTALL_MANDIR}" )
 message( ${VERBOSE} "  CMAKE_INSTALL_DOCDIR:        ${CMAKE_INSTALL_DOCDIR}" )
 
+# Special handling for openSuse and SLE. 
+# Normally, documentation files are stored in directory /usr/share/doc/ddcui. 
+# The value of CMAKE_INSTALL_DOCDIR is "share/doc/ddcui".  However, on SuSE
+# systems, doc files are instead stored in directory /usr/share/doc/packages/ddcui.
+# However, CMAKE_INSTALL_DOCDIR is still set to "share/doc/ddcui". 
+# The following code tries to determine if we're running on a system where
+# the value of CMAKE_INSTALL_DOCDIR needs to be changed to "share/doc/packages/ddcui". 
+# For SuSe (and Fedora) file /etc/os-release is automatically installed
+# from the default packages.  However, for SLE it is not, so the os-release check
+# is not possible. Instead, a heuristic test is performed.
+
 set(suse_special_case FALSE)
 if(EXISTS "/etc/os-release")
    message(STATUS "File /etc/os-release found")
@@ -266,15 +277,12 @@ if(EXISTS "/etc/os-release")
    # message(STATUS "id_line: |${id_line}|")
    
    string(SUBSTRING ${id_line} 3 -1 distro_name0)
-   # message(STATUS "distro_name0: |${distro_name0}|")
    string(SUBSTRING ${distro_name0} 0 1 ch)
    if (ch STREQUAL "\"") 
       string(LENGTH ${distro_name0} len)
       math(EXPR l2 "${len}-2")
-      # message(STATUS "len = ${len}  l2=${l2}")
       string(SUBSTRING ${distro_name0} 1 ${l2} distro_name0)
    endif()
-   # message(STATUS "distro_name0: |${distro_name0}|")
    string(SUBSTRING ${distro_name0} 0 8 distro_name)
    message(STATUS "Distribution: distro_name = |${distro_name}|")
    if( distro_name STREQUAL "opensuse" )
@@ -300,17 +308,18 @@ message(STATUS "After possible fixup CMAKE_INSTALL_DOCDIR: ${CMAKE_INSTALL_DOCDI
 
 
 install(TARGETS ddcui                       DESTINATION ${CMAKE_INSTALL_BINDIR} )
-
 install(FILES man/ddcui.1                   DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+
 # message(STATUS "suse_special_case = ${suse_special_case}")
 # if ( suse_special_case )
 #    message(STATUS "Installing to opensuse location")
 #    install(FILES AUTHORS CHANGELOG.md NEWS.md README.md 
 #                                             DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/doc/packages/ddcui)
 # else()
-   install(FILES AUTHORS CHANGELOG.md NEWS.md README.md 
-                                            DESTINATION ${CMAKE_INSTALL_DOCDIR})
+install(FILES AUTHORS CHANGELOG.md NEWS.md README.md 
+                                              DESTINATION ${CMAKE_INSTALL_DOCDIR})
 # endif()
+
 install(FILES ddcui.desktop                 DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/applications)
 install(FILES ddcui.appdata.xml             DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/metainfo)
 install(FILES icons/video-display-128px.png DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/128x128/apps RENAME ddcui.png)
