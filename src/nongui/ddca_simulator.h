@@ -11,7 +11,7 @@
 #include "ddcutil_types.h"
 
 class DdcaSimulator: public QObject {
-   Q_OBJECT;
+   Q_OBJECT
 
 public:
    DdcaSimulator();
