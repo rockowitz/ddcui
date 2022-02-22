@@ -32,7 +32,7 @@ public:            // methods
 
 private:           // methods
     void createInitialWidgets();
-    void layoutWidget(QHBoxLayout * layout);
+    void layoutWidget(QHBoxLayout * layout) override;
     void loadComboBox();
 
 private slots:     // methods
