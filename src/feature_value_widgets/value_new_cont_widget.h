@@ -22,7 +22,7 @@ public:
     void setFeatureValue(const FeatureValue &fv) override;
 
 private:
-    void layoutWidget(QHBoxLayout * layout) ;
+    void layoutWidget(QHBoxLayout * layout) override;
 
     const char * _cls;
 };
