@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.2] 2022-02-22
+
+### Fixed
+- Erroneous assert() statment that could cause compilation failure or segfault in ValueSpecialWidgetX62.cpp.
+
 ## [0.2.1] 2022-01-28
 
 ### Added
