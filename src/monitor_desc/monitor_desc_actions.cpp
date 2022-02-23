@@ -20,7 +20,7 @@ capture_display_info_report(
 {
     bool debug = false;
     if (debug) {
-       printf("(%s) Starting. dinfo=%p\n", __func__, dinfo);
+       printf("(%s) Starting. dinfo=%p\n", __func__, (void*)dinfo);
        fflush(stdout);
     }
     ddca_start_capture(DDCA_CAPTURE_NOOPTS);
