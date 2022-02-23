@@ -210,7 +210,9 @@ link_directories(${DDCUTIL_LIBRARY_DIRS})
 # add_executable(ddcui ${SOURCES} ${UI_GENERATED_HEADERS})
 add_executable(ddcui ${SOURCES})
 
-target_compile_options(ddcui PUBLIC "-fPIC"  ${coverity_cflags})
+# -Wno-format-pedantic -Wno-sign-compare -std=c++20 -Wno-format -pedantic -Wextra -Wall
+# set(more_options -Wno-gnu-zero-variadic-macro-arguments -Wno-unused-parameter -Wno-non-pod-varargs  )
+target_compile_options(ddcui PUBLIC "-fPIC" ${coverity_cflags})
 # add_compile_options(-Og -H V=1)
 
 # redundant: ${Qt5Gui_INCLUDE_DIRS} ${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS}. 
