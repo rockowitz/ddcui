@@ -1,6 +1,6 @@
 /* feature_value.cpp */
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2023 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 // #include <QMetaType>
@@ -164,7 +164,7 @@ void FeatureValue::dbgrpt() const {
     printf("   _value.ml:        0x%02x\n", _value.ml);
     printf("   _value.sh:        0x%02x\n", _value.sh);
     printf("   _value.sl:        0x%02x\n", _value.sl);
-    printf("   _cap_vcp:         %p\n",     _capVcp);
+    printf("   _cap_vcp:         %p\n",     (void*) _capVcp);
     printf("   _observedNcValues: %s", bs256_to_string(_observedNcValues, ""," "));
     ddca_dbgrpt_feature_metadata(_finfo, 1);
 
