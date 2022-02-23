@@ -65,7 +65,8 @@ MsgBoxQueue::MsgBoxQueue()
 #else
     _freeBytes = new QSemaphore(9999);
     _usedBytes = new QSemaphore();
-    TRACECF(debugFunc, "this=%p, queue=%p, _usedBytes=%p, _freeBytes=%p", this, _queue, _usedBytes, _freeBytes);
+    // -Wnon-pod-varrags says will abort at runtime:
+    // TRACECF(debugFunc, "this=%p, queue=%p, _usedBytes=%p, _freeBytes=%p", this, _queue, _usedBytes, _freeBytes);
 #endif
 }
 
