@@ -1,6 +1,6 @@
 /** \file main.cpp */
 
-// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2023 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <glib-2.0/glib.h>
@@ -25,7 +25,6 @@ extern "C" {
 #include "base/core.h"
 #include "main/msgbox_thread.h"
 
-// #include <ui_main.h>
 #include "main/mainwindow.h"
 
 
@@ -175,7 +174,7 @@ void dbgrpt_hidpiQApplication(QApplication& coreapp) {
 static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
    bool debug = false;
    if (debug)
-      printf("(%s) Starting. parsed_cmd=%p\n", __func__, parsed_cmd);
+      printf("(%s) Starting. parsed_cmd=%p\n", __func__, (void*)parsed_cmd);
 
    bool ok = true;
 
