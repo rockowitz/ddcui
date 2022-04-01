@@ -501,6 +501,13 @@ void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint16_t shsl)
        if (!writeOnly) {
            DDCA_Non_Table_Vcp_Value  valrec;
 
+           // Special handling for feature x60, can trigger Null Response if sleep-multiplier is too low.
+           if (feature_code == 0x60) {
+              int msec = 100;
+              TRACECF(debugFunc, "Special %d millisecond sleep before verifying feature x60", msec);
+              QThread::msleep(msec);
+           }
+
            bool simulated = _ddcaSimulator->simulateGetNonTableVcpValue(
                                    _dinfo->vcp_version,
                                    dh,
@@ -519,7 +526,16 @@ void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint16_t shsl)
               TRACECF(debugFunc, "  opcode: 0x%02x, requested: sh=0x%02x, sl=0x%02x, observed: mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x",
                          feature_code, sh, sl, valrec.mh, valrec.ml, valrec.sh, valrec.sl);
 
-              if ((sl != valrec.sl || sh != valrec.sh)) {
+              FeatureValue* fv = _baseModel->modelVcpValueFind(feature_code);
+              DDCA_Feature_Metadata * finfo = fv->finfo();
+              bool ok = true;
+              if (finfo->feature_flags & (DDCA_SIMPLE_NC | DDCA_NC_CONT)) {
+                 ok = (sl == valrec.sl);
+              }
+              else {
+                 ok = (sl == valrec.sl && sh == valrec.sh);
+              }
+              if (!ok) {
                  // TRACE("Calling rpt_verify_error()");
                  rpt_verify_error(feature_code, "ddca_set_non_table_vcp_value", sh, sl, valrec.sh, valrec.sl);
               }    // ddca_set_non_table_vcp_value() succeeded
