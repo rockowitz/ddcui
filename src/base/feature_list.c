@@ -28,8 +28,8 @@
  *  \return feature code set, DDCA_EMPTY_FEATURE_LIST if errors
  *
  *  \remark
- *  if error_msgs_loc is non-null, on return *error_msgs_loc is non-null iff there
- *  are error messages, i.e. a 0 length array is not returned
+ *  If error_msgs_loc is non-null on entry, on return it is non-null iff there
+ *  are error messages, i.e. a 0 length array is never returned
  */
 DDCA_Feature_List parse_custom_feature_list(
       char * unparsed_string,
@@ -55,7 +55,7 @@ DDCA_Feature_List parse_custom_feature_list(
     GPtrArray * errors = g_ptr_array_new();
 
     Null_Terminated_String_Array pieces = strsplit(unparsed_string, " ");
-    // gchar ** pieces = g_strsplit(features_work, " ", -1); // doesn't handle multipler blanks
+    // gchar ** pieces = g_strsplit(features_work, " ", -1); // doesn't handle multiple blanks
     int ntsal = ntsa_length(pieces);
     if (debug)
        printf("(parse_custom_feature_list) ntsal=%d\n", ntsal );
