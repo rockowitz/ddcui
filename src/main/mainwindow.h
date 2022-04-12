@@ -76,7 +76,6 @@ private:
     void initMonitors(Parsed_Ddcui_Cmd * parsed_cmd);
     void loadMonitorFeatures(Monitor * monitor);
 
-
 //
 // *** Signals
 //
@@ -144,6 +143,8 @@ private slots:
     void displaySelectorCombobox_currentIndexChanged(int index);
     // void displaySelectorCombobox_activated(int index);
 
+    // void closeShortcut();
+
 //
 // *** General methods ***
 //
@@ -201,6 +202,8 @@ private:
 
     FeatureSelectionDialog*    _fsd = nullptr;
     OtherOptionsDialog*        _ood = nullptr;       // for future use
+
+    // QShortcut * _quit_shortcut = nullptr;
 };
 
 #endif // MAINWINDOW_H

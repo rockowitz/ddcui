@@ -13,6 +13,7 @@
 #include <QtGui/QFont>
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QWidget>
+#include <QtWidgets/QShortcut>     // 5.9
 
 #include <ddcutil_c_api.h>
 
@@ -331,6 +332,15 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
 }
 
 
+#ifdef UNUSED
+void MainWindow::closeShortcut() {
+   bool debug = true;
+   TRACECF(debug, "Executing");
+   qDebug() << "CTL_Q";
+   close();
+}
+#endif
+
 MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
     QMainWindow(parent),
     _ui(new Ui_MainWindow(this))
@@ -366,6 +376,12 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
     _msgBoxThread = new MsgBoxThread(_msgBoxQueue);
     globalState._msgBoxThread = _msgBoxThread;
     globalState._msgBoxQueue  = _msgBoxQueue;
+
+     QShortcut * quit_shortcut = new QShortcut(QKeySequence(Qt::Key_Q | Qt::CTRL), this, SLOT(close()));
+     quit_shortcut->setContext(Qt::ApplicationShortcut);
+   // connect(_quit_shortcut,   &QShortcut::activated,
+   //         this,            &MainWindow::closeShortcut);
+
 
     TRACECF(debug, "Before initMonitors()");
     // reportWidgetChildren(ui->centralWidget, "Children of centralWidget, before initMonitors():");
