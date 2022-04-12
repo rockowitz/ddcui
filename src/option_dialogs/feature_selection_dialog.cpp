@@ -191,6 +191,11 @@ FeatureSelectionDialog::FeatureSelectionDialog(
     // QObject::connect(_ui->custom_lineEdit, &QLineEdit::textEdited,
     //                  this, &FeatureSelectionDialog::on_custom_lineEdit_textEdited );
 
+    // closes only this dialog box, not the application
+    // QShortcut * quit_shortcut =
+    //       new QShortcut(QKeySequence(Qt::Key_Q | Qt::CTRL),
+    //             parent,
+    //             SLOT(close()));
 
     useSelectorData(_featureSelector);
 }
