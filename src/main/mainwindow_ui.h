@@ -1,6 +1,6 @@
 /* mainwindow_ui.h - Extracted from uic generated ui code */
 
-// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef UI_MAINWINDOW2_H
@@ -18,8 +18,8 @@
 #include <QtWidgets/QToolBar>
 #include <QtGui/QKeyEvent>
 
-#include "../base/core.h"
-#include "../base/widget_debug.h"
+#include "base/core.h"
+#include "base/widget_debug.h"
 
 
 // QT_BEGIN_NAMESPACE
