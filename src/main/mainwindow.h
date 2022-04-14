@@ -143,7 +143,8 @@ private slots:
     void displaySelectorCombobox_currentIndexChanged(int index);
     // void displaySelectorCombobox_activated(int index);
 
-    // void closeShortcut();
+    // Shortcuts
+    void quitShortcut();
 
 //
 // *** General methods ***
@@ -203,7 +204,7 @@ private:
     FeatureSelectionDialog*    _fsd = nullptr;
     OtherOptionsDialog*        _ood = nullptr;       // for future use
 
-    // QShortcut * _quit_shortcut = nullptr;
+    QShortcut * _quit_shortcut = nullptr;
 };
 
 #endif // MAINWINDOW_H

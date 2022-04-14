@@ -1,10 +1,11 @@
 /** \file main.cpp */
 
-// Copyright (C) 2018-2023 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <glib-2.0/glib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <QtWidgets/QApplication>
 
 #include <ddcutil_c_api.h>
@@ -350,6 +351,7 @@ int main(int argc, char *argv[])
     if (debug)
        printf("(%s) MainWindow constructor completed\n", __func__);
     globalState._mainWindow = &w;
+    globalState._application = &application;
 
     // without w.show(), initial serial message box does not appear over MainWindow
     w.show();
@@ -368,5 +370,6 @@ int main(int argc, char *argv[])
     ddca_show_stats(parsed_cmd->stats_types,
                     false,              // include_per_thread_data
                     0);                 // depth
-    return mainStatus;
+    // return mainStatus;
+    exit(mainStatus);
 }

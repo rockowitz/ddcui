@@ -332,14 +332,14 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
 }
 
 
-#ifdef UNUSED
-void MainWindow::closeShortcut() {
-   bool debug = true;
+void MainWindow::quitShortcut() {
+   bool debug = false;
    TRACECF(debug, "Executing");
-   qDebug() << "CTL_Q";
-   close();
+   //close();
+   TRACECF(debug, "Before _application->exit()");
+   GlobalState::instance()._application->exit(0);
 }
-#endif
+
 
 MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
     QMainWindow(parent),
@@ -377,10 +377,11 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
     globalState._msgBoxThread = _msgBoxThread;
     globalState._msgBoxQueue  = _msgBoxQueue;
 
-     QShortcut * quit_shortcut = new QShortcut(QKeySequence(Qt::Key_Q | Qt::CTRL), this, SLOT(close()));
-     quit_shortcut->setContext(Qt::ApplicationShortcut);
-   // connect(_quit_shortcut,   &QShortcut::activated,
-   //         this,            &MainWindow::closeShortcut);
+     // QShortcut * quit_shortcut = new QShortcut(QKeySequence(Qt::Key_Q | Qt::CTRL), this, SLOT(close()));
+     _quit_shortcut = new QShortcut(QKeySequence(Qt::Key_Q | Qt::CTRL), this);
+     _quit_shortcut->setContext(Qt::ApplicationShortcut);
+     connect(_quit_shortcut,   &QShortcut::activated,
+             this,            &MainWindow::quitShortcut);
 
 
     TRACECF(debug, "Before initMonitors()");
