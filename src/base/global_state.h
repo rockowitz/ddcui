@@ -24,9 +24,10 @@ public:
    OtherOptionsState *         _otherOptionsState = NULL;
    UserInterfaceOptionsState * _uiOptionsState    = NULL;
 
-   MainWindow *   _mainWindow   = NULL;
-   MsgBoxThread * _msgBoxThread = NULL;
-   MsgBoxQueue *  _msgBoxQueue   = NULL;
+   QApplication * _application  = nullptr;
+   MainWindow *   _mainWindow   = nullptr;
+   MsgBoxThread * _msgBoxThread = nullptr;
+   MsgBoxQueue *  _msgBoxQueue  = nullptr;
 
 private:
    GlobalState();
