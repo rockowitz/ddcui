@@ -62,7 +62,7 @@ void UserInterfaceOptionsDialog::setDialogBoxControlKeyRequired(bool onoff) {
 
 void UserInterfaceOptionsDialog::on_actionButtonBox_accepted()
 {
-    bool debugFunc = true;
+    bool debugFunc = false;
     bool newCtrlKeyRequired  = _ui->ckrCheckBox->isChecked();
     TRACECF(debugFunc, "Executing. Value read from ckr checkbox; %s", SBOOL(newCtrlKeyRequired));
 
