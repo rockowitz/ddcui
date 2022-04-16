@@ -1,4 +1,4 @@
-// value_stacked_widget.h
+/** @file value_stacked_widget.h */
 
 // Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
@@ -38,8 +38,12 @@ public:
     bool     hasSlTable();
 #endif
 
+
 public slots:
     void     setNcValuesSource(NcValuesSource newsrc, bool newUseLatestNames);
+#ifdef UNUSED
+    void     setInstanceControlKeyRequired(bool onoff);
+#endif
 
     // QSize sizeHint() const override;
     // void paintEvent(QPaintEvent *event) override;

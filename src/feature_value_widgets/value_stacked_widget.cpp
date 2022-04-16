@@ -1,4 +1,4 @@
-/* value_stacked_widget.cpp */
+/** @file value_stacked_widget.cpp */
 
 // Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
@@ -9,7 +9,6 @@
 #include <string.h>
 #include <stdio.h>
 
-// #include <QtGui/QPaintEvent>
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QStackedWidget>
 #include <QtWidgets/QVBoxLayout>
@@ -92,34 +91,34 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
 
     // ValueStackedWidget * curWidget = this;  // still treated as ValueBaseWidget* in SIGNAL/SLOT versions
 
-    QWidget::connect(_newContWidget,  &ValueNewContWidget::featureValueChanged,
-                     this,         &ValueStackedWidget::forContainedWidgetChanged);
+    QWidget::connect(_newContWidget,    &ValueNewContWidget::featureValueChanged,
+                     this,              &ValueStackedWidget::forContainedWidgetChanged);
 
-    QWidget::connect(_simpleContWidget,  &ValueSimpleContWidget::featureValueChanged,
-                     this,         &ValueStackedWidget::forContainedWidgetChanged);
+    QWidget::connect(_simpleContWidget, &ValueSimpleContWidget::featureValueChanged,
+                     this,              &ValueStackedWidget::forContainedWidgetChanged);
 
-    QWidget::connect(_specialWidgetX62,  &ValueSpecialWidgetX62::featureValueChanged,
-                      this,         &ValueStackedWidget::forContainedWidgetChanged);
+    QWidget::connect(_specialWidgetX62, &ValueSpecialWidgetX62::featureValueChanged,
+                      this,             &ValueStackedWidget::forContainedWidgetChanged);
     // needed?
-    QWidget::connect(_specialWidgetX62,  &ValueSimpleContWidget::featureValueChanged,
-                      this,         &ValueStackedWidget::forContainedWidgetChanged);
+    QWidget::connect(_specialWidgetX62, &ValueSimpleContWidget::featureValueChanged,
+                      this,             &ValueStackedWidget::forContainedWidgetChanged);
 
-    QWidget::connect(_ncWidget,    &ValueNcWidget::featureValueChanged,
-                     this,         &ValueStackedWidget::forContainedWidgetChanged);
+    QWidget::connect(_ncWidget,         &ValueNcWidget::featureValueChanged,
+                     this,              &ValueStackedWidget::forContainedWidgetChanged);
 
-    QWidget::connect(_ncplusWidget, &ValueNcplusWidget::featureValueChanged,
-                     this,         &ValueStackedWidget::forContainedWidgetChanged);
+    QWidget::connect(_ncplusWidget,     &ValueNcplusWidget::featureValueChanged,
+                     this,              &ValueStackedWidget::forContainedWidgetChanged);
 
     // why disabled?
-    // QWidget::connect(_cncWidgetX14, &ValueNcWidget::featureValueChanged,
-    //                  this,          &ValueStackedWidget::forContainedWidgetChanged);
+    // QWidget::connect(_cncWidgetX14,  &ValueNcWidget::featureValueChanged,
+    //                  this,           &ValueStackedWidget::forContainedWidgetChanged);
 
-    QWidget::connect(_bytesWidget,  &ValueBaseWidget::featureValueChanged,
-                     this,          &ValueStackedWidget::forContainedWidgetChanged);
+    QWidget::connect(_bytesWidget,      &ValueBaseWidget::featureValueChanged,
+                     this,              &ValueStackedWidget::forContainedWidgetChanged);
 
 
-    QWidget::connect(_resetWidget, &ValueResetWidget::featureValueChanged,
-                     this,         &ValueStackedWidget::forContainedWidgetChanged);
+    QWidget::connect(_resetWidget,     &ValueResetWidget::featureValueChanged,
+                     this,             &ValueStackedWidget::forContainedWidgetChanged);
 
 #ifdef WORKS
     QWidget::connect(_ncWidget, SIGNAL(featureValueChanged(     uint8_t, uint8_t, uint8_t)),
@@ -130,9 +129,15 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
                       curWidget,  SLOT(forContainedWidgetChanged(uint8_t, uint8_t, uint8_t)));
 #endif
 
-   QWidget::connect(GlobalState::instance()._otherOptionsState,
-                                            &OtherOptionsState::ncValuesSourceChanged,
-                    this, &ValueStackedWidget::setNcValuesSource );
+   QWidget::connect(
+      GlobalState::instance()._otherOptionsState, &OtherOptionsState::ncValuesSourceChanged,
+      this,                                       &ValueStackedWidget::setNcValuesSource );
+
+#ifdef UNUSED
+   QWidget::connect(
+      GlobalState::instance()._uiOptionsState,    &UserInterfaceOptionsState::controlKeyRequired_changed,
+      this,                                       &ValueStackedWidget::setInstanceControlKeyRequired );
+#endif
 
     TRACECF(debug, "Done.");
 }
@@ -333,6 +338,17 @@ uint16_t ValueStackedWidget::getCurrentValue() {
     return _cur_stacked_widget->getCurrentValue();
 }
 #endif
+
+
+#ifdef UNUSED
+void ValueStackedWidget::setInstanceControlKeyRequired(bool onoff) {
+   bool debug = true;
+   debug = debug | debugValueWidgetSignals;
+   TRACECF(debug, "onoff=%s", SBOOL(onoff));
+   _cur_stacked_widget->setInstanceControlKeyRequired(onoff);
+}
+#endif
+
 
 
 // QSize ValueStackedWidget::sizeHint() const {
