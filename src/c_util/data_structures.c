@@ -15,7 +15,7 @@
 #include <sys/param.h>     // for MIN, MAX
 /** \endcond */
 
-// #include "debug_util.h"
+#include "report_util.h"
 #include "string_util.h"
 
 #include "data_structures.h"
@@ -337,8 +337,11 @@ Byte_Bit_Flags bbf_create() {
  * @param bbflags instance handle
  */
 void bbf_free(Byte_Bit_Flags bbflags) {
-   // _ByteBitFlags* flags = (_ByteBitFlags*) bbflags;
-   BYTE_BIT_UNOPAQUE(flags, bbflags);
+   // Bit_Set_256 bs = bs256_from_bbf(bbflags);   // for the debug msgs
+   // bbf_from_bs256(bs);                         // for the debug msgs
+
+   _ByteBitFlags* flags = (_ByteBitFlags*) bbflags;
+   // BYTE_BIT_UNOPAQUE(flags, bbflags);
    if (flags) {
       assert( memcmp(flags->marker, "BBFG",4) == 0);
       free(flags);
@@ -354,12 +357,18 @@ void bbf_free(Byte_Bit_Flags bbflags) {
 void bbf_set(Byte_Bit_Flags bbflags, Byte val) {
    BYTE_BIT_UNOPAQUE(flags, bbflags);
    BYTE_BIT_VALIDATE(flags);
+
+#ifdef OLD
    int flagndx   = val >> 3;
    int shiftct   = val & 0x07;
    Byte flagbit  = 0x01 << shiftct;
    // printf("(%s) val=0x%02x, flagndx=%d, shiftct=%d, flagbit=0x%02x\n",
    //        __func__, val, flagndx, shiftct, flagbit);
    flags->byte[flagndx] |= flagbit;
+#endif
+
+   Bit_Set_256 newval =  bs256_add(bs256_from_bbf(bbflags), val);
+   memcpy( flags->byte, newval.bytes, 32);
 }
 
 
@@ -370,6 +379,7 @@ void bbf_set(Byte_Bit_Flags bbflags, Byte val) {
  * @return        true/false
  */
 bool bbf_is_set(Byte_Bit_Flags bbflags, Byte val) {
+// #ifdef OLD
    BYTE_BIT_UNOPAQUE(flags, bbflags);
    BYTE_BIT_VALIDATE(flags);
    int flagndx   = val >> 3;
@@ -381,7 +391,15 @@ bool bbf_is_set(Byte_Bit_Flags bbflags, Byte val) {
    // printf("(%s) bbflags=0x%s, val=0x%02x, returning: %d\n",
    //        __func__, hexstring( (unsigned char *)flags->byte,32), val, result);
    // printf("(%s) val = 0x%02x, returning %s\n",  __func__, val, sbool(result));
-   return result;
+// #endif
+   bool result2 = bs256_contains(bs256_from_bbf(bbflags), val);
+   assert(result == result2);
+   // printf("(%s) Returning %s\n", __func__, sbool(result));
+   return result2;
+}
+
+bool bbf_eq(Byte_Bit_Flags flags1, Byte_Bit_Flags flags2) {
+   return bs256_eq(bs256_from_bbf(flags1), bs256_from_bbf(flags2));
 }
 
 
@@ -402,9 +420,22 @@ Byte_Bit_Flags bbf_subtract(Byte_Bit_Flags bbflags1, Byte_Bit_Flags bbflags2) {
    for (int ndx = 0; ndx < BYTE_BIT_BYTE_CT; ndx++) {
       result->byte[ndx] = flags1->byte[ndx] & ~flags2->byte[ndx];
    }
-   return result;
+   // return result;
+   Byte_Bit_Flags result2 = bbf_from_bs256( bs256_and_not(bs256_from_bbf(bbflags1), bs256_from_bbf(bbflags2)) );
+#ifdef OLD
+   char * s = bbf_to_string(result);
+   printf("(%s) result  = %s\n", __func__, s);
+   free(s);
+   s = bbf_to_string(result2);
+   printf("(%s) result2 = %s\n", __func__, s);
+   free(s);
+#endif
+   printf("(%s) result  = %s\n", __func__, bbf_to_string(result));
+   printf("(%s) result2  = %s\n", __func__, bbf_to_string(result2));
+   assert(bbf_eq(result,result2));
+   printf("(%s) Done.\n", __func__);
+   return result2;
 }
-
 
 
 /** Returns a 64 character long hex string representing the data structure.
@@ -445,74 +476,67 @@ char * bbf_repr(Byte_Bit_Flags bbflags, char * buffer, int buflen) {
  * @return number of bits set (0..256)
  */
 int bbf_count_set(Byte_Bit_Flags bbflags) {
+#ifdef OLD
    BYTE_BIT_UNOPAQUE(flags, bbflags);
    BYTE_BIT_VALIDATE(flags);
-   int result = 0;
+   int result0 = 0;
    int flagndx;
    int bitndx;
    for (flagndx=0; flagndx < BYTE_BIT_BYTE_CT; flagndx++) {
       for (bitndx = 0; bitndx < 8; bitndx++) {
          unsigned char flagbit = (0x80 >> bitndx);
          if (flags->byte[flagndx] & flagbit)
-            result += 1;
+            result0 += 1;
       }
    }
-   // printf("(%s) returning: %d\n", __func__, result);
+
+   int result2 = bs256_count(bs256_from_bbf(bbflags));
+   assert(result0 == result2);
+   printf("(%s) returning: %d\n", __func__, result0);
+#endif
+   int result = bs256_count(bs256_from_bbf(bbflags));
    return result;
 }
 
 
 /** Returns a string of space separated 2 character hex values
- * representing the bits set in the Byte_Bit_Flag,
- * e.g. "03 7F" if bits 0x03 and 0x7F are set
+ *  representing the bits set in the Byte_Bit_Flag,
+ *  e.g. "03 7F" if bits 0x03 and 0x7F are set
  *
- * @param  bbflags  instance handle
- * @param  buffer   pointer to buffer in which to return character string,
- *                  if NULL malloc a new buffer
- * @param  buflen   buffer length
- *
- * @return pointer to character string
- *
- * If a new buffer is allocated, it is the responsibility of the caller to
- * free the string returned.
- *
- * For complete safety in case every bit is set, buflen should be >= 768.
- * (2 chars for every bit (512), 255 separator characters, 1 terminating null)
- * If buflen in insufficiently large to contain the result, an assertion fails.
+ *  @param  bbflags  instance handle
+ *  @return pointer to newly allocated character string, caller must free
  */
-char * bbf_to_string(Byte_Bit_Flags bbflags, char * buffer, int buflen) {
-   // printf("(%s) Starting\n", __func__);
+char * bbf_to_string(Byte_Bit_Flags bbflags) {
+
    BYTE_BIT_UNOPAQUE(flags, bbflags);
    BYTE_BIT_VALIDATE(flags);
    int bit_set_ct = bbf_count_set(flags);
    int reqd_size = bit_set_ct * 2     +     // char rep of bytes
                    (bit_set_ct-1) * 1 +     // separating spaces
                    1;                       // trailing null
-   if (buffer)
-      assert(buflen >= reqd_size);
-   else
-      buffer = malloc(reqd_size);
+   char * buffer = malloc(reqd_size);
    char * pos = buffer;
    *pos = '\0';
    unsigned int flagno = 0;
-   // printf("(%s) bbflags->byte=0x%s\n", __func__, hexstring(flags->byte,32));
    for (flagno = 0; flagno < 256; flagno++) {
       Byte flg = (Byte) flagno;
-      // printf("(%s) flagno=%d, flg=0x%02x\n", __func__, flagno, flg);
       if (bbf_is_set(flags, flg)) {
-         // printf("(%s) Flag is set: %d, 0x%02x\n", __func__, flagno, flg);
          if (pos > buffer) {
             *pos  = ' ';
             pos++;
          }
-         // printf("(%s) flg=%02x\n", __func__, flg);
          sprintf(pos, "%02x", flg);
          pos += 2;
-         // printf("(%s) pos=%p\n", __func__, pos);
       }
    }
-   // printf("(%s) Done.  Returning: %s\n", __func__, buffer);
-   return buffer;
+
+   char * buffer2 = bs256_to_string( bs256_from_bbf(bbflags), "", " ");
+   printf("(%s) buffer  = |%s|\n", __func__, buffer);
+   printf("(%s) buffer2 = |%s|\n", __func__, buffer2);
+   assert( streq(buffer, buffer2) );
+   free(buffer);
+
+   return buffer2;
 }
 
 
@@ -551,6 +575,7 @@ int bbf_to_bytes(Byte_Bit_Flags bbflags, Byte * buffer, int buflen) {
  * @return pointer to newly allocated **Buffer**
  */
 Buffer * bbf_to_buffer(Byte_Bit_Flags bbflags) {
+   bs256_from_bbf(bbflags);   // for the debug msgs
    BYTE_BIT_UNOPAQUE(flags, bbflags);
    BYTE_BIT_VALIDATE(flags);
    int bit_set_ct = bbf_count_set(flags);
@@ -620,7 +645,7 @@ void bbf_iter_reset(Byte_Bit_Flags_Iterator bbf_iter) {
 /** Returns the number of the next bit that is set.
  *
  * \param bbf_iter handle to iterator
- * \return number of next bit that is set
+ * \return number of next bit that is set, -1 if none
  */
 int bbf_iter_next(Byte_Bit_Flags_Iterator bbf_iter) {
    _Byte_Bit_Flags_Iterator * iter = (_Byte_Bit_Flags_Iterator *) bbf_iter;
@@ -1109,7 +1134,7 @@ void buffer_dump(Buffer * buffer) {
 // Identifier id to name and description lookup
 //
 
-/** Returns the name of an entry in a Value_Nmme_Title table.
+/** Returns the name of an entry in a Value_Name_Title table.
  *
  * @param table  pointer to table
  * @param val    value to lookup
@@ -1132,7 +1157,7 @@ char * vnt_name(Value_Name_Title* table, uint32_t val) {
 }
 
 
-/** Returns the title (description field) of an entry in a Value_Nmme_Title table.
+/** Returns the title (description field) of an entry in a Value_Name_Title table.
  *
  * @param table  pointer to table
  * @param val    value to lookup
@@ -1415,6 +1440,25 @@ bool bs256_contains(
 }
 
 
+/** Returns the bit number of the first bit set.
+ *  \param  bitset #Bit_Set_256 to check
+ *  \return number of first bit that is set (0 based),
+ *          -1 if no bits set
+ */
+int bs256_first_bit_set(
+      Bit_Set_256 bitset)
+{
+   int result = -1;
+   for (int ndx = 0; ndx < 256; ndx++) {
+      if (bs256_contains(bitset, ndx)) {
+         result = ndx;
+         break;
+      }
+   }
+   return result;
+}
+
+
 bool bs256_eq(
     Bit_Set_256 set1,
     Bit_Set_256 set2)
@@ -1684,4 +1728,143 @@ bs256_iter_next(
    // printf("(%s) Returning: %d\n", __func__, result);
    return result;
 }
+
+
+// TODO:
+// Extracted from feature_list.cpp in ddcui. parsed_custom_feature_list()
+// should be rewritten to call this function.
+
+/** Parse a string containing a list of hex values.
+ *
+ *  \param unparsed_string
+ *  \error_msgs_loc  if non-null, return null terminated string array of error messages here,
+ *                   caller is responsible for freeing
+ *  \return #Bit_Set_256, will be EMPTY_BIT_SET_256 if errors
+ *
+ *  \remark
+ *  If error_msgs_loc is non-null on entry, on return it is non-null iff there
+ *  are error messages, i.e. a 0 length array is never returned
+ */
+Bit_Set_256 bs256_from_string(
+      char *                         unparsed_string,
+      Null_Terminated_String_Array * error_msgs_loc)
+{
+    assert(unparsed_string);
+    assert(error_msgs_loc);
+    bool debug = true;
+    if (debug)
+       printf("(bs256_from_string) unparsed_string = |%s|\n", unparsed_string );
+
+    Bit_Set_256 result = EMPTY_BIT_SET_256;
+    *error_msgs_loc = NULL;
+    GPtrArray * errors = g_ptr_array_new();
+
+    // convert all commas to blanks
+    char * x = unparsed_string;
+    while (*x) {
+       if (*x == ',')
+          *x = ' ';
+       x++;
+    }
+
+    // gchar ** pieces = g_strsplit(features_work, " ", -1); // doesn't handle multiple blanks
+    Null_Terminated_String_Array pieces = strsplit(unparsed_string, " ");
+    int ntsal = ntsa_length(pieces);
+    if (debug)
+       printf("(bs256_from_string) ntsal=%d\n", ntsal );
+    if (ntsal == 0) {
+       if (debug)
+          printf("(bs256_from_string) Empty string\n");
+    }
+    else {
+       bool ok = true;
+       int ndx = 0;
+       for (; pieces[ndx] != NULL; ndx++) {
+           // char * token = strtrim_r(pieces[ndx], trimmed_piece, 10);
+           char * token = g_strstrip(pieces[ndx]);
+           if (debug)
+              printf("(parse_features_list) token= |%s|\n", token);
+           Byte hex_value = 0;
+           if ( any_one_byte_hex_string_to_byte_in_buf(token, &hex_value) ) {
+              result = bs256_add(result, hex_value);
+           }
+           else {
+              if (debug)
+                 printf("(bs256_from_string) Invalid hex value: %s\n", token);
+              char * s = g_strdup_printf("Invalid hex value: %s", token);
+              g_ptr_array_add(errors, s);
+              ok = false;
+           }
+       }
+       assert(ndx == ntsal);
+       ntsa_free(pieces, /* free_strings */ true);
+
+       ASSERT_IFF(ok, errors->len == 0);
+
+       if (ok) {
+          g_ptr_array_free(errors,true);
+          *error_msgs_loc = NULL;
+       }
+       else {
+          result = EMPTY_BIT_SET_256;
+          *error_msgs_loc = g_ptr_array_to_ntsa(errors, false);
+          g_ptr_array_free(errors, false);
+       }
+     }
+
+    if (debug) {
+       const char * s = bs256_to_string(result, /*prefix*/ "x", /*sepstr*/ ",");
+       printf("Returning bit set: %s\n", s);
+       if (*error_msgs_loc) {
+          printf("(bs256_from_string) Returning error messages:\n");
+          ntsa_show(*error_msgs_loc);
+       }
+    }
+    return result;
+}
+
+
+Bit_Set_256
+bs256_from_bbf(Byte_Bit_Flags bbf) {
+   bool debug = false;
+   _ByteBitFlags* flags = (_ByteBitFlags*) bbf;
+   if (debug) {
+#ifdef OLD
+      char * s = bbf_to_string(bbf);
+      printf("(%s) bbf->   %s\n", __func__, s);
+      free(s);
+#endif
+      printf("(%s) bbf->   %s\n", __func__, bbf_to_string(bbf));
+   }
+   BYTE_BIT_VALIDATE(flags);
+   Bit_Set_256 result;
+   memcpy(result.bytes, flags->byte, 32);
+   if (debug) {
+      printf("(%s) Ret:    %s\n", __func__,
+            bs256_to_string(result, "", " ") );
+   }
+   return result;
+}
+
+
+Byte_Bit_Flags
+bbf_from_bs256(Bit_Set_256 bitset) {
+   bool debug = false;
+   if (debug) {
+      printf("(%s) bitset: %s\n", __func__,
+            bs256_to_string(bitset, "", " ") );
+   }
+   _ByteBitFlags * bbf = bbf_create_internal();
+   memcpy(bbf->byte, bitset.bytes, 32);
+   if (debug) {
+#ifdef OLD
+       char * s = bbf_to_string(bbf);
+       printf("(%s) bbf->   %s\n", __func__, s);
+       free(s);
+#endif
+       printf("(%s) bbf->   %s\n", __func__, bbf_to_string(bbf));
+   }
+   return bbf;
+}
+
 

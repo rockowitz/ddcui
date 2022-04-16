@@ -8,20 +8,18 @@
 #ifndef DATA_STRUCTURES_H
 #define DATA_STRUCTURES_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /** \cond */
 #include <glib-2.0/glib.h>
 #include <stdbool.h>
 #include <stdint.h>
 /** \endcond */
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-// #ifndef Byte
-// #define Byte unsigned char
-// #endif
 #include "coredefs_base.h"   // for Byte
+#include "string_util.h"
 
 
 typedef bool *IFilter(int i);
@@ -54,11 +52,12 @@ Byte_Bit_Flags bbf_create();
 void           bbf_free(Byte_Bit_Flags flags);
 void           bbf_set(Byte_Bit_Flags flags, Byte val);
 bool           bbf_is_set(Byte_Bit_Flags flags, Byte val);
+bool           bbf_eq(Byte_Bit_Flags flags1, Byte_Bit_Flags flags2);
 Byte_Bit_Flags bbf_subtract(Byte_Bit_Flags bbflags1, Byte_Bit_Flags bbflags2);
 char *         bbf_repr(Byte_Bit_Flags flags, char * buffer, int buflen);
 int            bbf_count_set(Byte_Bit_Flags flags);  // number of bits set
 int            bbf_to_bytes(Byte_Bit_Flags  flags, Byte * buffer, int buflen);
-char *         bbf_to_string(Byte_Bit_Flags flags, char * buffer, int buflen);
+char *         bbf_to_string(Byte_Bit_Flags flags);
 bool           bbf_store_bytehex_list(Byte_Bit_Flags flags, char * start, int len);
 
 /** Opaque iterator for #Byte_Bit_Flags */
@@ -222,13 +221,14 @@ extern const Bit_Set_256 EMPTY_BIT_SET_256;
 
 Bit_Set_256    bs256_add(Bit_Set_256 flags, uint8_t val);
 bool           bs256_contains(Bit_Set_256 flags, uint8_t val);
+int            bs256_first_bit_set(Bit_Set_256 bitset);
 bool           bs256_eq(Bit_Set_256 set1, Bit_Set_256 set2);
 Bit_Set_256    bs256_or(Bit_Set_256 set1, Bit_Set_256 set2);         // union
 Bit_Set_256    bs256_and(Bit_Set_256 set1, Bit_Set_256 set2);        // intersection
 Bit_Set_256    bs256_and_not(Bit_Set_256 set1, Bit_Set_256 set2);    // subtract
 int            bs256_count(Bit_Set_256 set);
 char *         bs256_to_string(Bit_Set_256 set, const char * value_prefix, const char * septr);
-
+Bit_Set_256    bs256_from_string(char * unparsed_string, Null_Terminated_String_Array * error_msgs_loc);
 
 /** Opaque iterator for Bit_Set_256 */
 typedef void * Bit_Set_256_Iterator;
@@ -239,10 +239,11 @@ void           bs256_iter_free(Bit_Set_256_Iterator iter);
 void           bs256_iter_reset(Bit_Set_256_Iterator iter);
 int            bs256_iter_next(Bit_Set_256_Iterator  iter);
 
+Bit_Set_256    bs256_from_bbf(Byte_Bit_Flags bbf);
+Byte_Bit_Flags bbf_from_bs256(Bit_Set_256 bitset);
+
 #ifdef __cplusplus
 }    // extern "C"
 #endif
-
-
 
 #endif /* DATA_STRUCTURES_H */
