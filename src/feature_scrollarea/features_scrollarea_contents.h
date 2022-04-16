@@ -37,6 +37,10 @@ public:
 
     int maxRowHeight();
 
+#ifdef UNUSED
+    void setInstanceControlKeyRequired(bool onoff);
+#endif
+
 protected:
     void resizeEvent(QResizeEvent * event) override;
 
@@ -61,9 +65,6 @@ private:         // member variables
 #ifdef PAGE_CHANGE_OBSERVER
    QVector<PageChangeObserver*> * _pageChangeObservers;
 #endif
-
-   // quick and dirty for now, eventually replace by hash
-   // FeatureWidget * _widgets[256] = {0};
 };
 
 #endif /* FEATURES_SCROLLAREA_CONTENTS_H_ */

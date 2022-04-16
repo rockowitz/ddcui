@@ -74,6 +74,12 @@ void FeaturesScrollAreaContents::setContainingScrollArea(QScrollArea * scrollAre
    // scrollArea->setWidgetResizable(true);
 }
 
+
+#ifdef UNUSED
+void FeaturesScrollAreaContents::setInstanceControlKeyRequired(bool onoff) {
+}
+#endif
+
 #ifdef UNUSED
 void FeaturesScrollAreaContents::featureAdded(FeatureValue fv)
 {
