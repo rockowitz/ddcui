@@ -28,7 +28,7 @@ public:
 
 signals:
      void ckrChanged(bool onoff);
-     void  userInterfaceDialog_accepted(UserInterfaceOptionsState * state);
+     void userInterfaceDialog_accepted(UserInterfaceOptionsState * state);
 
 public:
     Ui::UserInterfaceOptionsDialog *  _ui;   // why is this pointing to another instance of the same class?
