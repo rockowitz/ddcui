@@ -53,7 +53,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Require control key to move sliders</string>
+    <string>Require control key to change values</string>
    </property>
   </widget>
  </widget>
