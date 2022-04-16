@@ -1,8 +1,7 @@
-// user_interface_options_state.h
-//
-// Maintains the current state of the User Interface Options dialog
-
-// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
+/** @file user_interface_options_state.h
+ *  Maintains the current state of the User Interface Options dialog
+ */
+// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef USER_INTERFACE_OPTIONS_STATE_H_
