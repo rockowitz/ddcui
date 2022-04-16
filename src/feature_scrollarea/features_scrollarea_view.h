@@ -56,6 +56,10 @@ public slots:
     void onModelDdcFeatureError(DdcFeatureError* perec);
 #endif
 
+#ifdef UNUSED
+    void setInstanceControlKeyRequired(bool onoff);
+#endif
+
 // *** Member variables ***
 
 protected:

@@ -56,6 +56,24 @@ FeaturesScrollAreaView::FeaturesScrollAreaView(
 }
 
 
+#ifdef UNUSED
+void FeaturesScrollAreaView::setInstanceControlKeyRequired(bool onoff) {
+   bool debugFunc = true;
+   QRegularExpression re("^FeatureWidget-");
+   // QList<FeatureWidget> * children = _scrollAreaContents->children();
+   // n. find same FeatureValue children using _centralWidget->findChildren(..)
+   QList<FeatureWidget*>  children2 = _scrollAreaContents->findChildren<FeatureWidget*>(re);
+   TRACEMCF(debugFunc, "Found %d children of scrollAreaContents using regular expression", children2.count());
+   for (int ndx = 0; ndx < children2.count(); ndx++) {
+      // printf("  ndx=%d\n", ndx);
+      FeatureWidget * child = children2.at(ndx);
+      child->setInstanceControlKeyRequired(onoff);
+   }
+}
+#endif
+
+
+
 void FeaturesScrollAreaView::freeContents(void) {
    bool debug = false;
 
@@ -81,7 +99,7 @@ void FeaturesScrollAreaView::freeContents(void) {
 
 // triggered by signal FeatureBaseModel::signalEndInitialLoad
 void FeaturesScrollAreaView::onEndInitialLoad(void) {
-    bool debugFunc = false;
+    bool debugFunc = true;
     TRACEMCF(debugFunc, "Starting, this->_id=%d, Monitor=%s", _id, _monitor->_displayInfo->model_name);
 
     freeContents();
@@ -257,10 +275,12 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
     TRACEMCF(debugFunc, "Done.  feature count: %d", ct);
 }
 
+
 QSize FeaturesScrollAreaView::maxRowSize() {
    QSize result(0,0);
    return result;
 }
+
 
 void FeaturesScrollAreaView::onUIValueChanged(
       uint8_t featureCode,
