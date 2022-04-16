@@ -1,4 +1,4 @@
-/** \file parsed_cmd.h - parsed ddcui command line */
+/** @file ddcui_parsed_cmd.h - parsed ddcui command line */
 
 // Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
