@@ -1,4 +1,4 @@
-/* feature_widget.cpp  Custom widget for displaying/editing a VCP feature */
+/*** @file feature_widget.cpp  Custom widget for displaying/editing a VCP feature */
 
 // Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
@@ -146,7 +146,7 @@ FeatureWidget::FeatureWidget(FeatureValue& fv, QWidget *parent)
    , _cls(strdup(metaObject()->className()))
    , _id(++nextId)
 {
-    bool debug = false;
+    bool debug = true;
     TRACEMCF(debug, "Executing. this._id = %d, FeatureValue::id=%d, featureCode = 0x%02x",
                     _id, fv._id, fv.featureCode());
     setupFeatureWidget();
@@ -163,7 +163,7 @@ FeatureWidget::~FeatureWidget() {
 // Used only to set feature value immediately after constructor called
 void FeatureWidget::setFeatureValue(FeatureValue &fv)
 {
-   bool debug = false;
+   bool debug = true;
    TRACECF(debug, "feature code = 0x%02x, ddcrc=%s",
              fv.featureCode(), ddca_rc_name(fv.ddcrc()));
 
@@ -204,6 +204,13 @@ void FeatureWidget::setFeatureValue(FeatureValue &fv)
     TRACECF(debug, "After calling valueWidget->setFeatureValue()");
     _layout->addWidget(_valueWidget);
 }
+
+
+#ifdef UNUSED
+void FeatureWidget::setInstanceControlKeyRequired(bool onoff) {
+   _valueWidget->setInstanceControlKeyRequired(onoff);
+}
+#endif
 
 
 void FeatureWidget::setCurrentValue(uint16_t newval)

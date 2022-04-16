@@ -1,4 +1,4 @@
-/** feature_widget.h Custom widget for displaying/editing a VCP feature */
+/** @ feature_widget.h Custom widget for displaying/editing a VCP feature */
 
 // Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
@@ -43,6 +43,10 @@ public:
 
 public slots:
     void onInternalValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl);
+
+#ifdef UNUSED
+    void setInstanceControlKeyRequired(bool onoff);
+#endif
 
 signals:
     void valueChanged(uint8_t featureCode, bool writeOnlyFeature, uint8_t sh, uint8_t sl);
