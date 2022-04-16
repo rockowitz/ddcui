@@ -2,7 +2,7 @@
 
 // Functions for debugging Qt layouts
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <glib-2.0/glib.h>
@@ -13,17 +13,17 @@
 #include <QtCore/QRect>
 #include <QtCore/QSize>
 #include <QtCore/QString>
+#include <QtGui/QKeyEvent>
 #include <QtGui/QRegion>
+#include <QtGui/QScreen>
+#include <QtGui/QWindow>
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QDesktopWidget>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLayout>
-#include <QtWidgets/QWidget>
 #include <QtWidgets/QSizePolicy>
-
-#include <QtWidgets/QApplication>
-#include <QtGui/QScreen>
-#include <QtWidgets/QDesktopWidget>
-#include <QtGui/QWindow>
+#include <QtWidgets/QWidget>
 
 #include "core.h"
 #include "widget_debug.h"
@@ -58,7 +58,7 @@ void reportBasicWidgetDimensions(
             cls, sizePolicyName(hp), sizePolicyName(vp) );
 
     printf("   size (%d,%d) sizeHint(%d,%d) minimumSize(%d,%d) minimumSizeHint(%d,%d) maximumSize(%d,%d) \n",  // maximumSize(%d,%d)\n",
-        w->width(),          w->height(),
+        w->width(),           w->height(),
         sizeHint.width(),     sizeHint.height(),
         minSize.width(),      minSize.height(),
         minSizeHint.width(),  minSizeHint.height(),
@@ -466,5 +466,13 @@ void whereAmI(QWidget * w, const char * msg) {
              geometry.left(), geometry.top(), geometry.right(), geometry.bottom() );
 #endif
    }
+}
+
+
+void dbgrptQKeyEvent(QKeyEvent * event) {
+   printf("  key:  %d\n", event->key());
+   printf("  modifiers: 0x%x\n", (unsigned int) event->modifiers());
+   printf("  nativeModifiers: 0x%08x\n", event->nativeModifiers());
+   printf("  nativeScanCode:  0x%08x\n", event->nativeScanCode());
 }
 

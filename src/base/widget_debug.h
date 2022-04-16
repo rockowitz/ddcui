@@ -10,6 +10,7 @@ class QWidget;
 class QFrame;
 class QLabel;
 class QString;
+class QKeyEvent;
 
 const char * sizePolicyName(
       QSizePolicy::Policy policy);
@@ -52,7 +53,7 @@ do { \
 void whereIsApplication();
 void whereAmI(QWidget * w, const char * msg);
 
-
+void dbgrptQKeyEvent(QKeyEvent * event);
 
 
 #endif /* WIDGET_DEBUG_H_ */
