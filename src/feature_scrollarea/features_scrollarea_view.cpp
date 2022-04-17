@@ -99,7 +99,7 @@ void FeaturesScrollAreaView::freeContents(void) {
 
 // triggered by signal FeatureBaseModel::signalEndInitialLoad
 void FeaturesScrollAreaView::onEndInitialLoad(void) {
-    bool debugFunc = true;
+    bool debugFunc = false;
     TRACEMCF(debugFunc, "Starting, this->_id=%d, Monitor=%s", _id, _monitor->_displayInfo->model_name);
 
     freeContents();
