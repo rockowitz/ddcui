@@ -28,18 +28,17 @@ bool EnhancedComboBox::classControlKeyRequired = false;
 
 
 void EnhancedComboBox::setClassControlKeyRequired(bool onoff) {
-   bool debug = true;
-   printf("(EnhancedComboBox::setGlobalControlKeyRequired) onoff=%s\n", SBOOL(onoff));
+   bool debug  = false;
+   if (debug)
+      printf("(EnhancedComboBox::setClassControlKeyRequired) onoff=%s\n", SBOOL(onoff));
    EnhancedComboBox::classControlKeyRequired = onoff;
 }
 
-// #ifdef UNUSED
 void EnhancedComboBox::setInstanceControlKeyRequired(bool onoff) {
-   bool debug = true;
-   printf("(EnhancedComboBox::setInstanceControlKeyRequired) onoff=%s\n", SBOOL(onoff));
+   bool debug  = false;
+   TRACEMCF(debug, "onoff=%s\n", SBOOL(onoff));
    _instanceControlKeyRequired = onoff;
 }
-// #endif
 
 void EnhancedComboBox::layoutWidget() {
     static bool basicDimsShown = false;
@@ -56,7 +55,7 @@ EnhancedComboBox::EnhancedComboBox(QWidget * parent)
         : QComboBox(parent)
         , _ctrl_key_is_pressed2(false)
 {
-   bool debug = true;
+   bool debug  = false;
    _cls = metaObject()->className();
    _id = ++idGenerator;
    TRACECF(debug, "_id=%d", _id);
