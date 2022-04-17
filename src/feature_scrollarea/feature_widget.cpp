@@ -146,7 +146,7 @@ FeatureWidget::FeatureWidget(FeatureValue& fv, QWidget *parent)
    , _cls(strdup(metaObject()->className()))
    , _id(++nextId)
 {
-    bool debug = true;
+    bool debug = false;
     TRACEMCF(debug, "Executing. this._id = %d, FeatureValue::id=%d, featureCode = 0x%02x",
                     _id, fv._id, fv.featureCode());
     setupFeatureWidget();
@@ -163,7 +163,7 @@ FeatureWidget::~FeatureWidget() {
 // Used only to set feature value immediately after constructor called
 void FeatureWidget::setFeatureValue(FeatureValue &fv)
 {
-   bool debug = true;
+   bool debug = false;
    TRACECF(debug, "feature code = 0x%02x, ddcrc=%s",
              fv.featureCode(), ddca_rc_name(fv.ddcrc()));
 
