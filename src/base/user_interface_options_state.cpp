@@ -1,8 +1,8 @@
-// user_interfacee_options_state.cpp
-//
-// Maintains the current state of the User Interface Options dialog
+/** @file user_interface_options_state.cpp
+ * Maintains the current state of the User Interface Options dialog
+ */
 
-// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 // NB was originally named ui_options_state.h etc, but the ui prefix is
@@ -10,10 +10,8 @@
 
 #include "user_interface_options_state.h"
 
+#include "base/core.h"
 #include "cmdline/ddcui_parsed_cmd.h"
-#include "core_widgets/enhanced_slider.h"
-
-#include "core.h"
 
 
  UserInterfaceOptionsState::UserInterfaceOptionsState()
@@ -21,12 +19,13 @@
  {
  }
 
+
  UserInterfaceOptionsState::UserInterfaceOptionsState(Parsed_Ddcui_Cmd* parsed_cmd)
      : _cls(metaObject()->className())
  {
     _controlKeyRequired = parsed_cmd->flags & CMD_FLAG_UI_REQUIRE_CONTROL_KEY;
-    EnhancedSlider::setControlKeyRequired(_controlKeyRequired);
  }
+
 
  UserInterfaceOptionsState::UserInterfaceOptionsState(UserInterfaceOptionsState &other)
      : QObject()
@@ -43,9 +42,8 @@
     TRACECF(debug, "old = %s, new = %s", SBOOL(_controlKeyRequired), SBOOL(onoff));
 
     if (newControlKeyRequired != old) {
-       EnhancedSlider::setControlKeyRequired(newControlKeyRequired);
-        _controlKeyRequired = newControlKeyRequired;
-        // TRACECF(debug, "emitting ckrChanged(%s)", SBOOL(_controlKeyRequired));
-        // emit controlKeyRequired_changed(_controlKeyRequired);
+       _controlKeyRequired = newControlKeyRequired;
+       TRACECF(debug, "emitting controlKeyRequired_changed(%s)", SBOOL(_controlKeyRequired));
+       emit controlKeyRequired_changed(_controlKeyRequired);
     }
 }
