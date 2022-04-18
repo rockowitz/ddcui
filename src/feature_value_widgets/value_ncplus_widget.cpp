@@ -125,10 +125,11 @@ void ValueNcplusWidget::layoutWidget() {
 ValueNcplusWidget::ValueNcplusWidget(QWidget *parent):
         ValueNcWidget(parent)
 {
-   bool debug = false;
+   bool debug  = false;
     _cls = strdup(metaObject()->className());
+
     // layoutWidget();
-    TRACEMCF(debug, "Done, _cls=%s", _cls);
+    TRACEMCF(debug, "Executing. id=%d", _id );
 }
 
 ValueNcplusWidget::~ValueNcplusWidget() {
@@ -199,7 +200,7 @@ void ValueNcplusWidget::setAuxFields() {
 void ValueNcplusWidget::setFeatureValue(const FeatureValue &fv) {
    DDCA_MCCS_Version_Spec vspec = fv.vspec();
    bool debug = false;
-   TRACEMCF(debug, "Starting. feature = 0x%02x, vspec = %d.%d", fv.featureCode(), vspec.major, vspec.minor);
+   TRACEMCF(debug, "Executing. feature = 0x%02x, vspec = %d.%d", fv.featureCode(), vspec.major, vspec.minor);
    TRACEMCF(debug, "          featureCode=0x%02x, capVcp=%p, ddcrc=%d, Before ValueNcWidget::setFeatureValue()",
                  fv.featureCode(), fv.capVcp(), fv.ddcrc());
 
