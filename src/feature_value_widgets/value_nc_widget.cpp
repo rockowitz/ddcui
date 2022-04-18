@@ -24,6 +24,8 @@
 #include "base/other_options_state.h"
 #include "base/widget_debug.h"
 
+#include "core_widgets/enhanced_combobox.h"
+
 #include "nongui/feature_base_model.h"
 
 static bool debugWidget = false;
@@ -33,6 +35,8 @@ static bool showResizeEvents = false;
 
 
 void ValueNcWidget::createWidgets() {
+   bool debug = false;
+   TRACECF(debug, "Starting. _id=%d", _id);
    _cb = createFormattedComboBox();   // in ValueBaseWidget
 
    _extraInfo =  new QLabel("_extraInfo");
@@ -44,6 +48,8 @@ void ValueNcWidget::createWidgets() {
    QSizePolicy extraInfoSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
    extraInfoSizePolicy.setHorizontalStretch(1);
    _extraInfo->setSizePolicy( extraInfoSizePolicy);
+
+   TRACECF(debug, "Done. _id=%d", _id);
 }
 
 
@@ -88,7 +94,7 @@ void ValueNcWidget::layoutWidget() {
 ValueNcWidget::ValueNcWidget(QWidget *parent):
         ValueBaseWidget(parent)
 {
-    bool debug = false;
+    bool debug  = false;
     _cls = strdup(metaObject()->className());
     TRACEMCF(debug, "Starting. id=%d", _id );
 

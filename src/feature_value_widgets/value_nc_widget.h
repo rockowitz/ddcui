@@ -1,6 +1,8 @@
-/* value_nc_widget.h - Widget for displaying/editing a simple Non-Continuous VCP feature value */
+/** @file value_nc_widget.h
+ *  Widget to display/edit a simple Non-Continuous VCP feature value
+ */
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef VALUE_NC_WIDGET_H
@@ -15,6 +17,7 @@
 #include "config.h"
 #include "c_util/data_structures.h"
 #include "base/other_options_state.h"
+#include "core_widgets/enhanced_combobox.h"
 #include "feature_value_widgets/value_base_widget.h"
 
 
@@ -52,12 +55,9 @@ private:
 
 // *** Member Variables ***
 
-// public:
-//     int            _id;
-
 protected:
-//     static int     nextId;
-    QComboBox *    _cb;
+    // QComboBox *    _cb;
+    EnhancedComboBox * _cb;
     QHBoxLayout *  _layout;
     QLabel *       _extraInfo;
 
