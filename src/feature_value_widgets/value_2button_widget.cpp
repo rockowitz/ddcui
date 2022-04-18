@@ -1,4 +1,6 @@
-/* value_2button_widget.cpp - Widget containing 2 named buttons */
+/** @file value_2button_widget.cpp
+ *  Widget containing 2 named buttons
+ */
 
 // Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
@@ -107,14 +109,24 @@ void Value2ButtonWidget::setButtonDetail(
 
 
 void Value2ButtonWidget::on_button1_pressed() {
-   TRACECF(debugValueWidgetSignals, "Button 1 pressed. Emitting featureValueChanged");
-   emit featureValueChanged(_featureCode, 0, _val1);
+   bool debug = false;
+   if (_base_ctrl_key_is_pressed || !classControlKeyRequired) {
+      TRACEMCF(debug || debugValueWidgetSignals, "Button pressed. Emitting featureValueChanged()");
+      emit featureValueChanged(_featureCode, 0, _val1);
+   }
+   else
+      TRACEMCF(debug|| debugValueWidgetSignals, "Button pressed.  NOT emitting featureValueChanged()");
 }
 
 
 void Value2ButtonWidget::on_button2_pressed() {
-   TRACECF(debugValueWidgetSignals, "Button 2 pressed. Emitting featureValueChanged");
-   emit featureValueChanged(_featureCode, 0, _val2);
+   bool debug = false;
+   if (_base_ctrl_key_is_pressed || !classControlKeyRequired) {
+      TRACEMCF(debug || debugValueWidgetSignals, "Button pressed. Emitting featureValueChanged()");
+      emit featureValueChanged(_featureCode, 0, _val2);
+   }
+   else
+      TRACEMCF(debug|| debugValueWidgetSignals, "Button pressed.  NOT emitting featureValueChanged()");
 }
 
 
