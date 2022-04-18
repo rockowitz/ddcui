@@ -1,4 +1,6 @@
-/* value_reset_widget.h - Widget containing Reset button */
+/** @file value_reset_widget.h
+ *  Widget containing a Reset button
+ */
 
 // Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
@@ -16,18 +18,22 @@ class ValueResetWidget : public ValueBaseWidget
 {
     Q_OBJECT
 
+// Constructors and Methods
+
 public:
     ValueResetWidget(QWidget *parent = nullptr);
     ~ValueResetWidget();
 
 protected:
-    void resizeEvent(QResizeEvent * evt) override;
+    void resizeEvent(QResizeEvent * evt) override;  // for debugging
 
 private slots:
     void on_resetButton_pressed();
 
 private:
     void layoutWidget();
+
+// Variables
 
 private:
     const char *  _cls;

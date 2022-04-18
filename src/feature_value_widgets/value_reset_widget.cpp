@@ -1,4 +1,7 @@
-/* value_reset_widget.cpp */
+/** @file value_reset_widget.cpp
+ *  Widget containing a Reset button
+ */
+
 
 // Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
@@ -78,7 +81,6 @@ void ValueResetWidget::layoutWidget() {
        fflush(stdout);
        basicDimsShown = true;
     }
-
 }
 
 
@@ -90,10 +92,10 @@ ValueResetWidget::ValueResetWidget(QWidget *parent):
    layoutWidget();
 
    // QObject::connect(_resetButton,  &QAbstractButton::released),
-    //                  this,          &ValueResetWidget::on_resetButton_pressed );
+   //                  this,          &ValueResetWidget::on_resetButton_pressed );
 
-    QObject::connect(_resetButton,  SIGNAL(released()),
-                     this,          SLOT(  on_resetButton_pressed()) );
+   QObject::connect(_resetButton,  SIGNAL(released()),
+                    this,          SLOT(  on_resetButton_pressed()) );
 }
 
 
@@ -103,8 +105,22 @@ ValueResetWidget::~ValueResetWidget() {
 
 
 void ValueResetWidget::on_resetButton_pressed() {
-   // TRACEF(debugValueWidgetSignals, "Button pressed. Emitting featureValueChanged()");
-   emit featureValueChanged(_featureCode, 0, 1);
+   bool debug = false;
+   TRACEMCF(debug, "Starting, _base_ctrl_key_is_pressed = %s, _instanceControlKeyRequired=%s, classControlKeyRequired=%s, "
+                   "ValueBaseWidget::classControllKeyRequired = %s, ValueResetWidget::classControlKeyRequired=%s, enabled=%s",
+            SBOOL(_base_ctrl_key_is_pressed),
+            SBOOL(_instanceControlKeyRequired),
+            SBOOL(classControlKeyRequired),
+            SBOOL(ValueBaseWidget::classControlKeyRequired),
+            SBOOL(ValueResetWidget::classControlKeyRequired),
+            SBOOL(ValueBaseWidget::isEnabled() ) );
+
+   if (_base_ctrl_key_is_pressed || !classControlKeyRequired) {
+      TRACEMCF(debug || debugValueWidgetSignals, "Button pressed. Emitting featureValueChanged()");
+      emit featureValueChanged(_featureCode, 0, 1);
+   }
+   else
+      TRACEMCF(debug|| debugValueWidgetSignals, "Button pressed.  NOT emitting featureValueChanged()");
 }
 
 
@@ -122,7 +138,6 @@ void ValueResetWidget::resizeEvent(QResizeEvent * evt)
    }
 
 #ifdef ALT
-
    int oldWidth = oldSz.width();
    int oldHeight = oldSz.height();
    int newWidth = newSz.width();
@@ -139,4 +154,3 @@ void ValueResetWidget::resizeEvent(QResizeEvent * evt)
 
    evt->ignore();
 }
-
