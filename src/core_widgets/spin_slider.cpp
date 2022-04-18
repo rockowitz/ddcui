@@ -1,4 +1,6 @@
-// slider_spinner.cpp
+/** @file slider_spinner.cpp
+ *  Combines a slider with a spinbox
+ */
 
 // Copyright (C) 2020-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
@@ -6,9 +8,10 @@
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QWidget>
 
-// static bool debugLayout;
- 
 #include "base/core.h"
+#include "base/global_state.h"
+#include "base/widget_debug.h"
+
 #include "core_widgets/spin_slider.h"
 
 
@@ -29,6 +32,7 @@ void SpinSlider::createWidgets() {
        _slider->setStyleSheet("background-color:pink;");
 
     _spinBox = new QSpinBox();
+    // _spinBox = new EnhancedSpinBox();
     _spinBox->setSingleStep(1);
    // _spinBox->setFixedSize(100,18);   // extra large for 2 byte values, possible horizontal up/down buttons
     _spinBox->setMinimumSize(100,18);   // becomes 52,32  - how?
@@ -64,8 +68,12 @@ SpinSlider::SpinSlider(QWidget * parent)
         : QWidget(parent)
         , _cls(metaObject()->className())
 {
+   bool debug = false;
    createWidgets();
    layoutWidget();
+
+   if (debug)
+      REPORT_BASIC_WIDGET_DIMENSIONS(_spinBox);
 
    connect(_slider,  SIGNAL(sliderReleased()),
            this,     SLOT(  onSliderReleased()));
@@ -85,6 +93,13 @@ SpinSlider::SpinSlider(QWidget * parent)
 
     connect(_spinBoxTimer,   SIGNAL(timeout()),
             this,            SLOT(onSpinBoxTimedOut()));
+
+    setInstanceControlKeyRequired(
+          GlobalState::instance()._uiOptionsState->_controlKeyRequired);
+
+    QWidget::connect(
+       GlobalState::instance()._uiOptionsState, &UserInterfaceOptionsState::controlKeyRequired_changed,
+       this,                                    &SpinSlider::setInstanceControlKeyRequired );
 }
 
 
@@ -105,9 +120,31 @@ void SpinSlider::setRange(int minval, int maxval) {
 }
 
 
-void  SpinSlider::setEnabled(bool enabled) {
-   _slider->setEnabled(enabled);
+void  SpinSlider::enable(bool enabled) {
+   // _slider->setEnabled(enabled);
    _spinBox->setEnabled(enabled);
+}
+
+
+// static
+bool SpinSlider::classControlKeyRequired;
+
+
+void SpinSlider::setClassControlKeyRequired(bool onoff) {
+   bool debug  = false;
+   // TRACEMF("onoff=%s", SBOOL(onoff));
+   if (debug)
+      printf("(SpinSlider::setControlKeyRequired), onoff=%s\n", SBOOL(onoff));
+
+   SpinSlider::classControlKeyRequired = onoff;
+}
+
+
+void  SpinSlider::setInstanceControlKeyRequired(bool onoff) {
+   bool debug  = false;
+   TRACEMCF(debug, "onoff=%s", SBOOL(onoff));
+   _instanceControlKeyRequired = onoff;
+   _spinBox->setEnabled(!_instanceControlKeyRequired);
 }
 
 
