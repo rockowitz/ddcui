@@ -14,36 +14,59 @@
 #include "base/global_state.h"
 #include "nongui/feature_value.h"
 
+#include "core_widgets/enhanced_combobox.h"
+
 extern bool showValueWidgetResizeEvents;
 
 class ValueBaseWidget : public QFrame    // was ValueAbstractWidget
 {
     Q_OBJECT
 
-public:              //methods
-    explicit ValueBaseWidget(QWidget *parent = nullptr);
+// *** Constructors and Methods
 
-    virtual ~ValueBaseWidget();
+public:
+    static void         setClassControlKeyRequired(bool onoff);
 
-    virtual void     setFeatureValue(const FeatureValue &fv);
-    virtual void     setCurrentShSl(uint16_t newval);
-    virtual uint16_t getCurrentShSl();
+    explicit            ValueBaseWidget(QWidget *parent = nullptr);
+    virtual             ~ValueBaseWidget();
 
-    // QSize         sizeHint() const override;   //   needed?
+    virtual void        setFeatureValue(const FeatureValue &fv);
+    virtual void        setCurrentShSl(uint16_t newval);
+    virtual uint16_t    getCurrentShSl();
+
+    // QSize            sizeHint() const override;   //   needed?
 
 signals:
-    void             featureValueChanged(uint8_t feature_code, uint8_t sh, uint8_t sl);
+    void                featureValueChanged(uint8_t feature_code,
+                                            uint8_t sh, uint8_t sl);
 
-protected:           // methods
-    QComboBox *      createFormattedComboBox();
-    // void          resizeEvent(QResizeEvent * evt) override;
+public slots:
+    virtual void        setInstanceControlKeyRequired(bool onoff);
 
-// *** Member variables ***
+protected:
+    EnhancedComboBox *  createFormattedComboBox();
+    // QComboBox *      createFormattedComboBox();
+
+    void mouseMoveEvent(   QMouseEvent * ev) override;
+    void mousePressEvent(  QMouseEvent * ev) override;
+    void mouseReleaseEvent(QMouseEvent * ev) override;
+    void wheelEvent(       QWheelEvent * ev) override;
+    void keyPressEvent(      QKeyEvent * ev) override;
+    void keyReleaseEvent(    QKeyEvent * ev) override;
+    // void resizeEvent(  QResizeEvent * ev) override;
+
+// *** Variables ***
 
 public:
     int                     _id;
 
 protected:
+    static int              nextId;
+    static bool             classControlKeyRequired;
+    bool                    _instanceControlKeyRequired = false;
+    bool                    _base_ctrl_key_is_pressed = false;
+    bool                    _widgetEnabled = true;
+
     // initialized since Coverity complains that uninitialized in constructor,
     // will be set by setFeatureValue() before first use
     uint8_t                 _featureCode = 0;
@@ -59,9 +82,7 @@ protected:
     GlobalState&            _globalState = GlobalState::instance();
     int                     _featureValueWidgetHeight = 20;
 
-    static int              nextId;
-
-private:        // member variables
+private:
     const char *            _cls;
 };
 

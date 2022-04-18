@@ -10,14 +10,45 @@
 #include "base/core.h"
 #include "base/global_state.h"
 #include "base/feature_selector.h"
+#include "base/widget_debug.h"
+
+#include "core_widgets/enhanced_combobox.h"
 
 #include "ddcutil_c_api.h"
 
+// class variable
+bool ValueBaseWidget::classControlKeyRequired;
 // bool showValueWidgetResizeEvents = false;
 
+
+void ValueBaseWidget::setClassControlKeyRequired(bool onoff) {
+   bool debug = false;
+   // TRACEMF(debug, "onoff=%s", SBOOL(onoff));
+   if (debug)
+      printf("(ValueBaseWidget::setControlKeyRequired), onoff=%s\n", SBOOL(onoff));
+
+   ValueBaseWidget::classControlKeyRequired = onoff;
+}
+
+
+// slot
+void ValueBaseWidget::setInstanceControlKeyRequired(bool onoff) {
+   bool debug = false;
+   TRACEMCF(debug, "onoff=%s", SBOOL(onoff));
+   _instanceControlKeyRequired = onoff;
+   // setEnabled(!_instanceControlKeyRequired);
+}
+
+
 // utility method that provides consistent formatting for comboboxes
-QComboBox * ValueBaseWidget::createFormattedComboBox() {
-   QComboBox * cb = new QComboBox();
+EnhancedComboBox *
+// QComboBox *
+ValueBaseWidget::createFormattedComboBox() {
+   bool debug = false;
+   TRACECF(debug, "Starting. _id=%d", _id);
+   EnhancedComboBox * cb = new EnhancedComboBox();
+   // QComboBox * cb = new QComboBox();
+   TRACECF(debug, "Allocated");
 
    QSizePolicy cbSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
    cbSizePolicy.setControlType(QSizePolicy::ComboBox);
@@ -32,10 +63,13 @@ QComboBox * ValueBaseWidget::createFormattedComboBox() {
    cb->setStyleSheet("background-color:white;color:black;padding-left:2px;");
    cb->setContentsMargins(0,0,0,0);
 
+   TRACECF(debug, "Done, _id=%d", _id);
    return cb;
 }
 
+
 int ValueBaseWidget::nextId = 0;
+
 
 ValueBaseWidget::ValueBaseWidget(QWidget *parent)
      : QFrame(parent)             // ValueAbstractWidget(parent)
@@ -44,7 +78,7 @@ ValueBaseWidget::ValueBaseWidget(QWidget *parent)
    _cls = strdup(metaObject()->className());  // private to this class
    _id = ++nextId;
 
-   TRACEMCF(debug, "Executing. this._id = %d", _id);
+   TRACECF(debug, "Executing. this._id = %d, _featureCode=%d", _id, _featureCode);
    //QMargins margins = contentsMargins();
    //printf("(ValueBaseWidget::ValueBaseWidget) margins: left=%d, top=%d, right=%d, bottom=%d)\n",
    //       margins.m_left, margins.m_top, margins.m_right, margins.m_bottom);
@@ -52,15 +86,25 @@ ValueBaseWidget::ValueBaseWidget(QWidget *parent)
    // try setting frame style at this level,
    setFrameStyle(QFrame::Sunken | QFrame::Panel);
 
-   TRACEMCF(debug, "Done");
+   setInstanceControlKeyRequired(
+         GlobalState::instance()._uiOptionsState->_controlKeyRequired);
+
+   QWidget::connect(
+      GlobalState::instance()._uiOptionsState, &UserInterfaceOptionsState::controlKeyRequired_changed,
+      this,                                    &ValueBaseWidget::setInstanceControlKeyRequired );
+
+   TRACECF(debug, "Done");
 }
+
 
 ValueBaseWidget::~ValueBaseWidget() {
    bool debug = false;
    TRACEMCF(debug, "Executing. this._id = %d", _id);
+
    ddca_free_feature_metadata(_finfo);
-   TRACEMCF(debug, "Done.");
    free((void*)_cls);
+
+   TRACEMCF(debug, "Done.");
 }
 
 
@@ -135,4 +179,125 @@ void ValueBaseWidget::resizeEvent(QResizeEvent * evt)
    evt->ignore();
 }
 #endif
+
+
+//
+// Event debugging
+//
+
+
+//
+// Event handlers
+//
+
+// Events related to control key
+//
+
+void ValueBaseWidget::keyPressEvent(QKeyEvent *   ev)
+{
+   bool debug = true;
+   TRACECF(debug,"Executing. controlKeyRequired=%s, _instanceControlKeyRequired=%s",
+                 SBOOL(classControlKeyRequired), SBOOL(_instanceControlKeyRequired));
+   if (debug)
+      dbgrptQKeyEvent(ev);
+
+   if (ev->key() == Qt::Key_Control)    // 68
+      _base_ctrl_key_is_pressed = true;
+   QFrame::keyPressEvent(ev);
+
+   ev->ignore();
+}
+
+
+void ValueBaseWidget::keyReleaseEvent(QKeyEvent *   ev)
+{
+   bool debug = true;
+   TRACECF(debug,"Executing. controlKeyRequired=%s, _instanceControlKeyRequired=%s",
+                 SBOOL(classControlKeyRequired), SBOOL(_instanceControlKeyRequired));
+   if (debug)
+      dbgrptQKeyEvent(ev);
+
+   if (ev->key() == Qt::Key_Control)    // 68
+      _base_ctrl_key_is_pressed = false;
+   QFrame::keyPressEvent(ev);
+   ev->ignore();
+}
+
+
+void ValueBaseWidget::mouseMoveEvent(QMouseEvent * ev) {
+   bool debug = true;
+   TRACEMCF(debug, "Executing, _base_ctrl_key_is_pressed = %s, "
+                   "ValueBaseWidget::classControllKeyRequired = %s, enabled=%s",
+                   SBOOL(_base_ctrl_key_is_pressed),
+                   SBOOL(ValueBaseWidget::classControlKeyRequired),
+                   SBOOL(ValueBaseWidget::isEnabled() ) );
+   if (_base_ctrl_key_is_pressed || !ValueBaseWidget::classControlKeyRequired) {
+      TRACEMCF(debug, "Passing event to Qframe");
+      QFrame::mouseMoveEvent(ev);
+        ev->accept();
+   }
+   // From QtEvent::accepted documentation:
+   // By default, isAccepted() is set to true, but don't rely on this as subclasses
+   // may choose to clear it in their constructors
+   // So in this and other methods explicitly invoke ev->ignore() to propagate the event
+   else
+      ev->ignore();
+}
+
+
+void ValueBaseWidget::mousePressEvent(QMouseEvent *   ev)
+{
+   bool debug = true;
+   TRACEMCF(debug, "Executing, _ctrl_key_is_pressed = %s, "
+                   "ValueBaseWidget::classControlKeyRequired = %s",
+                   SBOOL(_base_ctrl_key_is_pressed),
+                   SBOOL(ValueBaseWidget::classControlKeyRequired));
+   if (_base_ctrl_key_is_pressed|| !ValueBaseWidget::classControlKeyRequired)
+      QFrame::mousePressEvent(ev);
+
+   ev->ignore();
+}
+
+
+void ValueBaseWidget::mouseReleaseEvent(QMouseEvent * ev)
+{
+   bool debug = true;
+   TRACEMCF(debug, "Executing, _ctrl_key_is_pressed = %s, "
+                   "ValueBaseWidget::classControlKeyRequired = %s",
+                   SBOOL(_base_ctrl_key_is_pressed),
+                   SBOOL(ValueBaseWidget::classControlKeyRequired));
+   if (_base_ctrl_key_is_pressed|| !ValueBaseWidget::classControlKeyRequired)
+      QFrame::mouseReleaseEvent(ev);
+
+   ev->ignore();
+}
+
+
+//
+// Other events
+//
+
+void ValueBaseWidget::wheelEvent(QWheelEvent * ev) {
+   bool debug = true;
+   TRACEMCF(debug, "Executing, _ctrl_key_is_pressed = %s, "
+                   "ValueBaseWidget::classControlKeyRequired=%s, _instanceControlKeyRequired=%s. "
+                   "enabled=%s, accepted=%s",
+                   SBOOL(_base_ctrl_key_is_pressed),
+                   SBOOL(ValueBaseWidget::classControlKeyRequired),
+                   SBOOL(_instanceControlKeyRequired),
+                   SBOOL(ValueBaseWidget::isEnabled()),
+                   SBOOL(ev->isAccepted()) );
+
+   if (_base_ctrl_key_is_pressed || !ValueBaseWidget::classControlKeyRequired) {
+      // TRACEMC("Passing event to QFrame");
+      // QFrame::wheelEvent(ev);    // not in EnhancedComboBox
+        ev->ignore();  // propagate the event
+   }
+   // From QtEvent::accepted documentation:
+   // By default, isAccepted() is set to true, but don't rely on this as subclasses
+   // may choose to clear it in their constructors
+   // So in this and other methods explicitly invoke ev->ignore() to propagate the event
+   else
+      ev->accept();  // soak up the event,
+}
 
