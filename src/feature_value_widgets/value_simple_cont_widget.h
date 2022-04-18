@@ -44,6 +44,7 @@ protected:   // methods
 
 private slots:
     void onFeatureValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl);
+    void setInstanceControlKeyRequired(bool onoff) override;
 
 private:     // methods
     void debugSimpleContLayout();
@@ -56,10 +57,10 @@ protected:   // member variables
     // bool       _guiChange = false;
     QLabel*       _maxTitle;
     QLabel*       _maxValue;
-    int           _id;
+    // int           _id;
 
 private:     // member variables
-    static int    idGenerator;
+    // static int    idGenerator;
     const char *  _cls;
 };
 

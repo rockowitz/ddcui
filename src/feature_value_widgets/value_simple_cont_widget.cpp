@@ -28,7 +28,7 @@
 #include "core_widgets/enhanced_slider.h"
 
 
-int ValueSimpleContWidget::idGenerator = 1;
+// int ValueSimpleContWidget::idGenerator = 1;
 
 static bool showDimensionReports = false;
 static bool showBasicDims  = false || debugFeatureDimensions;
@@ -100,7 +100,7 @@ ValueSimpleContWidget::ValueSimpleContWidget(QWidget *parent)
     bool debug = false;
     TRACEMCF(debug, "Starting. After ValueBaseWidget() constructor." );
 
-    _id = ValueSimpleContWidget::idGenerator++;
+    // _id = ValueSimpleContWidget::idGenerator++;
     _newval = 0;
 
     createWidgets();
@@ -206,13 +206,13 @@ void ValueSimpleContWidget::onFeatureValueChanged(uint8_t featureCode, uint8_t s
 }
 
 
-#ifdef OLD
-void ValueSimpleContWidget::setControlKeyRequired(bool onoff) {
-   // TRACE("onoff=%s", sbool(onoff) );
-   ValueBaseWidget::setControlKeyRequired(onoff);
-   _spinSlider->setControlKeyRequired(onoff);
+void ValueSimpleContWidget::setInstanceControlKeyRequired(bool onoff) {
+   bool debug = false;
+   TRACEMCF(debug, "onoff=%s", SBOOL(onoff));
+   ValueBaseWidget::setInstanceControlKeyRequired(onoff);
+   _spinSlider->setInstanceControlKeyRequired(onoff);
 }
-#endif
+
 
 #ifdef UNUSED
 void ValueSimpleContWidget::onSpinBoxEditingFinished() {
