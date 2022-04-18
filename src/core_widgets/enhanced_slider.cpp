@@ -15,6 +15,7 @@
 
 #include "base/core.h"
 #include "base/widget_debug.h"
+#include "base/global_state.h"
 
 #include "enhanced_slider.h"
 
@@ -23,14 +24,26 @@ static bool showResizeEvents = false;
 static bool showBasicDims = false;
 
 int  EnhancedSlider::idGenerator = 1;
-bool EnhancedSlider::controlKeyRequired;
+bool EnhancedSlider::classControlKeyRequired;
 
 
-void EnhancedSlider::setControlKeyRequired(bool onoff) {
-   // TRACE("onoff=%s", sbool(onoff));
-   // printf(" (setStaticControlKeyRequired)\n");
-   EnhancedSlider::controlKeyRequired = onoff;
+void EnhancedSlider::setClassControlKeyRequired(bool onoff) {
+   bool debug = true;
+   if (debug)
+      printf("(EnhancedSlider::setClassontrolKeyRequired) onoff=%s\n", SBOOL(onoff));
+
+   EnhancedSlider::classControlKeyRequired = onoff;
 }
+
+
+#ifdef UNUSED_INSTANCE_CONTROL_KEY_REQUIRED
+void EnhancedSlider::setInstanceControlKeyRequired(bool onoff) {
+   bool debug = false;
+   TRACEMCF(debug, "onoff=%s", SBOOL(onoff));
+
+   _instanceControlKeyRequired = onoff;
+}
+#endif
 
 
 void EnhancedSlider::layoutWidget() {
@@ -51,6 +64,15 @@ EnhancedSlider::EnhancedSlider(QWidget * parent)
    _cls = metaObject()->className();
 
    layoutWidget();
+
+#ifdef UNUSED_INSTANCE_CONTROL_KEY_REQUIRED
+   setInstanceControlKeyRequired(
+         GlobalState::instance()._uiOptionsState->_controlKeyRequired);
+
+   QWidget::connect(
+      GlobalState::instance()._uiOptionsState, &UserInterfaceOptionsState::controlKeyRequired_changed,
+      this,                                    &EnhancedSlider::setInstanceControlKeyRequired );
+#endif
 }
 
 
@@ -62,23 +84,20 @@ EnhancedSlider::EnhancedSlider(Qt::Orientation orientation, QWidget * parent)
    _id = EnhancedSlider::idGenerator++;
 
    layoutWidget();
+
+#ifdef UNUSED
+   setInstanceControlKeyRequired(
+         GlobalState::instance()._uiOptionsState->_controlKeyRequired);
+
+   QWidget::connect(
+      GlobalState::instance()._uiOptionsState, &UserInterfaceOptionsState::controlKeyRequired_changed,
+      this,                                    &EnhancedSlider::setInstanceControlKeyRequired );
+#endif
 }
 
 // EnhancedSlider::~EnhancedSlider() {
 //    ~QSlider::QSlider();
 // }
-
-
-//
-// Event debugging
-//
-
-void dbgrptQKeyEvent(QKeyEvent * event) {
-   printf("  key:  %d\n", event->key());
-   printf("  modifiers: 0x%x\n", (unsigned int) event->modifiers());
-   printf("  nativeModifiers: 0x%08x\n", event->nativeModifiers());
-   printf("  nativeScanCode:  0x%08x\n", event->nativeScanCode());
-}
 
 
 //
@@ -88,10 +107,14 @@ void dbgrptQKeyEvent(QKeyEvent * event) {
 // Events related to control key
 //
 
-void EnhancedSlider::keyPressEvent(QKeyEvent *   ev)
-{
-   // PRINTFCM("Starting");
-   // dbgrptQKeyEvent(ev);
+void EnhancedSlider::keyPressEvent(QKeyEvent *   ev) {
+   bool debug = false;
+
+   TRACEMCF(debug, "Executing. controlKeyRequired=%s, _instanceControlKeyRequired=%s",
+            SBOOL(classControlKeyRequired), SBOOL(_instanceControlKeyRequired));
+   if (debug)
+      dbgrptQKeyEvent(ev);
+
    if (ev->key() == Qt::Key_Control)    // 68
       _ctrl_key_is_pressed = true;
    QSlider::keyPressEvent(ev);
@@ -102,8 +125,12 @@ void EnhancedSlider::keyPressEvent(QKeyEvent *   ev)
 
 void EnhancedSlider::keyReleaseEvent(QKeyEvent *   ev)
 {
-   // PRINTFCM("Starting");
-   // dbgrptQKeyEvent(ev);
+   bool debug = false;
+   TRACEMCF(debug, "Executing. controlKeyRequired=%s, _instanceControlKeyRequired=%s",
+            SBOOL(classControlKeyRequired), SBOOL(_instanceControlKeyRequired));
+   if (debug)
+      dbgrptQKeyEvent(ev);
+
    if (ev->key() == Qt::Key_Control)    // 68
       _ctrl_key_is_pressed = false;
    QSlider::keyPressEvent(ev);
@@ -112,12 +139,17 @@ void EnhancedSlider::keyReleaseEvent(QKeyEvent *   ev)
 
 
 void EnhancedSlider::mouseMoveEvent(QMouseEvent * ev) {
-   // TRACEMC("Starting, _ctrl_key_is_pressed = %s, EnhancedSlider::controlKeyRequired = %s, enabled=%s",
-   //          SBOOL(_ctrl_key_is_pressed), SBOOL(EnhancedSlider::controlKeyRequired), SBOOL(QSlider::isEnabled() ) );
-   if (_ctrl_key_is_pressed || !EnhancedSlider::controlKeyRequired) {
+   bool debug = false;
+   TRACEMCF(debug, "Executing, _ctrl_key_is_pressed = %s, "
+                   "EnhancedSlider::classControlKeyRequired = %s, _instanceControlKeyRequired=%s,"
+                   " enabled=%s",
+            SBOOL(_ctrl_key_is_pressed),
+            SBOOL(EnhancedSlider::classControlKeyRequired), SBOOL(_instanceControlKeyRequired),
+            SBOOL(QSlider::isEnabled() ) );
+   if (_ctrl_key_is_pressed || !EnhancedSlider::classControlKeyRequired) {
       // TRACEMC("Passing event to QSlider");
       QSlider::mouseMoveEvent(ev);
-      ev->accept();
+      ev->accept();  // o.w. moves entire window
    }
    // From QtEvent::accepted documentation:
    // By default, isAccepted() is set to true, but don't rely on this as subclasses
@@ -130,10 +162,14 @@ void EnhancedSlider::mouseMoveEvent(QMouseEvent * ev) {
 
 void EnhancedSlider::mousePressEvent(QMouseEvent *   ev)
 {
-   // TRACEMC("Starting, _ctrl_key_is_pressed = %s, EnhancedSlider::controlKeyRequired = %s",
-   //          SBOOL(_ctrl_key_is_pressed), SBOOL(EnhancedSlider::controlKeyRequired));
-   // FUTURE: use _classControlKeyRequired
-   if (_ctrl_key_is_pressed|| !EnhancedSlider::controlKeyRequired)
+   bool debug = false;
+   TRACEMCF(debug, "Executing, _ctrl_key_is_pressed = %s, "
+                   "EnhancedSlider::controlKeyRequired = %s, _instanceControlKeyRequired=%s, "
+                   "enabled=%s",
+            SBOOL(_ctrl_key_is_pressed),
+            SBOOL(EnhancedSlider::classControlKeyRequired), SBOOL(_instanceControlKeyRequired),
+            SBOOL(QSlider::isEnabled() ) );
+   if (_ctrl_key_is_pressed|| !EnhancedSlider::classControlKeyRequired)
       QSlider::mousePressEvent(ev);
 
    ev->ignore();
@@ -142,10 +178,15 @@ void EnhancedSlider::mousePressEvent(QMouseEvent *   ev)
 
 void EnhancedSlider::mouseReleaseEvent(QMouseEvent * ev)
 {
-   // PRINTFCM("Starting, _ctrl_key_is_pressed = %s, EnhancedSlider::controlKeyRequired = %s",
-   //          SBOOL(_ctrl_key_is_pressed), SBOOL(EnhancedSlider::controlKeyRequired));
+   bool debug = false;
+   TRACEMCF(debug, "Executing, _ctrl_key_is_pressed = %s, "
+                   "EnhancedSlider::controlKeyRequired = %s, _instanceControlKeyRequired=%s, "
+                   "enabled=%s",
+            SBOOL(_ctrl_key_is_pressed),
+            SBOOL(EnhancedSlider::classControlKeyRequired), SBOOL(_instanceControlKeyRequired),
+            SBOOL(QSlider::isEnabled() ) );
    // FUTURE: use _classControlKeyRequired
-   if (_ctrl_key_is_pressed|| !EnhancedSlider::controlKeyRequired)
+   if (_ctrl_key_is_pressed|| !EnhancedSlider::classControlKeyRequired)
       QSlider::mouseReleaseEvent(ev);
 
    ev->ignore();
@@ -157,9 +198,14 @@ void EnhancedSlider::mouseReleaseEvent(QMouseEvent * ev)
 //
 
 void EnhancedSlider::wheelEvent(QWheelEvent * ev) {
-   // TRACEMC("Starting, _ctrl_key_is_pressed = %s, EnhancedSlider::controlKeyRequired = %s, enabled=%s, accepted=%s",
-   //          SBOOL(_ctrl_key_is_pressed), SBOOL(EnhancedSlider::controlKeyRequired), SBOOL(QSlider::isEnabled()),
-   //          SBOOL(ev->isAccepted()) );
+   bool debug = false;
+    TRACEMCF(debug, "Starting, _ctrl_key_is_pressed = %s, "
+                    "EnhancedSlider::controlKeyRequired = %s, _instanceControlKeyRequired=%s, "
+                    "enabled=%s, accepted=%s",
+             SBOOL(_ctrl_key_is_pressed),
+             SBOOL(EnhancedSlider::classControlKeyRequired), SBOOL(_instanceControlKeyRequired),
+             SBOOL(QSlider::isEnabled()),
+             SBOOL(ev->isAccepted()) );
 
    ev->ignore();
 }

@@ -21,12 +21,17 @@ class EnhancedSlider  : public QSlider
    Q_OBJECT
 
 public:
-   static void setControlKeyRequired(bool onoff);
+   static void setClassControlKeyRequired(bool onoff);
 
    EnhancedSlider(Qt::Orientation orientation, QWidget * parent = nullptr);
    explicit EnhancedSlider(QWidget *parent = nullptr);
 
    // ~EnhancedSlider();
+
+#ifdef UNUSED
+public slots:
+   void setInstanceControlKeyRequired(bool onoff);
+#endif
 
 protected:
    void mouseMoveEvent(   QMouseEvent * ev) override;
@@ -40,14 +45,18 @@ protected:
 private:
    void layoutWidget();
 
+// member variables
 
 private:
    static int     idGenerator;
-   static bool    controlKeyRequired;
+   static bool    classControlKeyRequired;
 
    int            _id;
    const char *   _cls;
    bool           _ctrl_key_is_pressed;
+
+   // unused, but removing requires changing multiple trace messages
+   bool           _instanceControlKeyRequired;
 };
 
 #endif /* ENHANCED_SLIDER_H_ */
