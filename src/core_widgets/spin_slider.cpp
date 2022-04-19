@@ -94,19 +94,6 @@ SpinSlider::SpinSlider(QWidget * parent)
 
     connect(_spinBoxTimer,   SIGNAL(timeout()),
             this,            SLOT(onSpinBoxTimedOut()));
-
-    setInstanceControlKeyRequired(
-          GlobalState::instance()._uiOptionsState->_controlKeyRequired);
-
-    QWidget::connect(
-       GlobalState::instance()._uiOptionsState, &UserInterfaceOptionsState::controlKeyRequired_changed,
-       this,                                    &SpinSlider::setInstanceControlKeyRequired );
-
-    // setInstanceControlKeyPressed(false);   // to do, initialize based on current mainWindow value
-    // QWidget::connect(
-    //    GlobalState::instance()._mainWindow, &MainWindow::signalControlKeyPressed,
-    //    this,                                &SpinSlider::setInstanceControlKeyPressed );
-
 }
 
 
@@ -125,46 +112,6 @@ void SpinSlider::setRange(int minval, int maxval) {
     _slider->setRange(minval, maxval);
     _spinBox->setRange(minval, maxval);
 }
-
-
-void  SpinSlider::enable(bool enabled) {
-   // _slider->setEnabled(enabled);
-   _spinBox->setEnabled(enabled);
-}
-
-
-// static
-bool SpinSlider::classControlKeyRequired;
-
-
-void SpinSlider::setClassControlKeyRequired(bool onoff) {
-   bool debug  = false;
-   // TRACEMF("onoff=%s", SBOOL(onoff));
-   if (debug)
-      printf("(SpinSlider::setControlKeyRequired), onoff=%s\n", SBOOL(onoff));
-
-   SpinSlider::classControlKeyRequired = onoff;
-}
-
-
-void  SpinSlider::setInstanceControlKeyRequired(bool onoff) {
-   bool debug  = false;
-   TRACEMCF(debug, "onoff=%s", SBOOL(onoff));
-   _instanceControlKeyRequired = onoff;
-   _spinBox->setEnabled(!_instanceControlKeyRequired || _instanceControlKeyPressed);
-   _slider->setEnabled(!_instanceControlKeyRequired || _instanceControlKeyPressed);
-}
-
-
-void SpinSlider::setInstanceControlKeyPressed(bool onoff) {
-   bool debug = true;
-   TRACEMCF(debug, "onoff=%s", SBOOL(onoff));
-   _instanceControlKeyPressed = onoff;
-   _spinBox->setEnabled(!_instanceControlKeyRequired || _instanceControlKeyPressed);
-   _slider->setEnabled(!_instanceControlKeyRequired || _instanceControlKeyPressed);
-}
-
-
 
 
 // Called by the containing class to update the widget
@@ -260,12 +207,3 @@ void SpinSlider::onSpinBoxTimedOut() {
                   _featureCode, _latestSpinBoxValue, new_sh, new_sl);
    emit featureValueChanged(_featureCode, new_sh, new_sl);
 }
-
-#ifdef OLD
-// TODO: Set at class level, not for individual instances
-void SpinSlider::setControlKeyRequired(bool onoff) {
-   // TRACE("onoff=%s", sbool(onoff));
-   _slider->oldSetControlKeyRequired(onoff);
-}
-#endif
-

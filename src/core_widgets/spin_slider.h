@@ -5,8 +5,8 @@
 // Copyright (C) 2020-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#ifndef SLIDER_SPINNER_H_
-#define SLIDER_SPINNER_H_
+#ifndef SPIN_SLIDER_H_
+#define SPIN_SLIDER_H_
 
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QSlider>
@@ -14,9 +14,6 @@
 #include <QtWidgets/QLayout>
 
 #include "nongui/feature_value.h"
-
-// #include "core_widgets/enhanced_slider.h"
-// #include "core_widgets/enhanced_spinbox.h"     // has bug in widget display
 
 class SpinSlider : public QWidget {
    Q_OBJECT
@@ -37,12 +34,7 @@ public:
    uint16_t getShSl();
    void     enable(bool enabled);
 
-public slots:
-   void     setInstanceControlKeyRequired(bool onoff);
-   void     setInstanceControlKeyPressed(bool onoff);
-
 signals:
-    // compiler warning: signals may not be declared virtual
     void    featureValueChanged(uint8_t feature_code, uint8_t sh, uint8_t sl);
 
 private slots:
@@ -56,15 +48,11 @@ private:
    QLayout* layoutWidget();
 
 // *** Variables ***
-public:
-   static bool classControlKeyRequired;
 
 private:
    const char *     _cls;
-   // EnhancedSlider * _slider;
    QSlider *        _slider;
    QSpinBox *       _spinBox;
-   // EnhancedSpinBox * _spinBox;
    QTimer *         _spinBoxTimer;
    uint8_t          _featureCode;
    bool             _isFeatureCodeSet = true;  // for assert()
@@ -74,4 +62,4 @@ private:
    bool             _instanceControlKeyPressed = false;
 };
 
-#endif /* SLIDER_SPINNER_H_ */
+#endif /* SPIN_SLIDER_H_ */
