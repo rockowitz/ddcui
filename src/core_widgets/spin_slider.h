@@ -15,7 +15,7 @@
 
 #include "nongui/feature_value.h"
 
-#include "core_widgets/enhanced_slider.h"
+// #include "core_widgets/enhanced_slider.h"
 // #include "core_widgets/enhanced_spinbox.h"     // has bug in widget display
 
 class SpinSlider : public QWidget {
@@ -39,6 +39,7 @@ public:
 
 public slots:
    void     setInstanceControlKeyRequired(bool onoff);
+   void     setInstanceControlKeyPressed(bool onoff);
 
 signals:
     // compiler warning: signals may not be declared virtual
@@ -60,7 +61,8 @@ public:
 
 private:
    const char *     _cls;
-   EnhancedSlider * _slider;
+   // EnhancedSlider * _slider;
+   QSlider *        _slider;
    QSpinBox *       _spinBox;
    // EnhancedSpinBox * _spinBox;
    QTimer *         _spinBoxTimer;
@@ -69,6 +71,7 @@ private:
    uint16_t         _latestSpinBoxValue;
    // enum          _valueChangeInitiator { ChangedByModel, ChangedByGUI };
    bool             _instanceControlKeyRequired = false;
+   bool             _instanceControlKeyPressed = false;
 };
 
 #endif /* SLIDER_SPINNER_H_ */

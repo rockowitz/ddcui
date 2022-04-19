@@ -16,7 +16,8 @@
 
 
 void SpinSlider::createWidgets() {
-   _slider = new EnhancedSlider(Qt::Horizontal);
+   // _slider = new EnhancedSlider(Qt::Horizontal);
+   _slider = new QSlider(Qt::Horizontal);
     _slider->setFocusPolicy(Qt::StrongFocus);
     _slider->setTickPosition(QSlider::TicksBelow);   // alt TicksBothSides
     _slider->setSingleStep(1);
@@ -100,6 +101,12 @@ SpinSlider::SpinSlider(QWidget * parent)
     QWidget::connect(
        GlobalState::instance()._uiOptionsState, &UserInterfaceOptionsState::controlKeyRequired_changed,
        this,                                    &SpinSlider::setInstanceControlKeyRequired );
+
+    // setInstanceControlKeyPressed(false);   // to do, initialize based on current mainWindow value
+    // QWidget::connect(
+    //    GlobalState::instance()._mainWindow, &MainWindow::signalControlKeyPressed,
+    //    this,                                &SpinSlider::setInstanceControlKeyPressed );
+
 }
 
 
@@ -144,8 +151,20 @@ void  SpinSlider::setInstanceControlKeyRequired(bool onoff) {
    bool debug  = false;
    TRACEMCF(debug, "onoff=%s", SBOOL(onoff));
    _instanceControlKeyRequired = onoff;
-   _spinBox->setEnabled(!_instanceControlKeyRequired);
+   _spinBox->setEnabled(!_instanceControlKeyRequired || _instanceControlKeyPressed);
+   _slider->setEnabled(!_instanceControlKeyRequired || _instanceControlKeyPressed);
 }
+
+
+void SpinSlider::setInstanceControlKeyPressed(bool onoff) {
+   bool debug = true;
+   TRACEMCF(debug, "onoff=%s", SBOOL(onoff));
+   _instanceControlKeyPressed = onoff;
+   _spinBox->setEnabled(!_instanceControlKeyRequired || _instanceControlKeyPressed);
+   _slider->setEnabled(!_instanceControlKeyRequired || _instanceControlKeyPressed);
+}
+
+
 
 
 // Called by the containing class to update the widget
