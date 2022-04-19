@@ -15,8 +15,8 @@
 
 #include <QtCore/QRect>
 #include <QtGui/QPaintEvent>
+#include <QtGui/QPalette>
 #include <QtGui/QRegion>
-#include <QtWidgets/QComboBox>
 #include <QtWidgets/QLayout>
 #include <QtWidgets/QPushButton>
 
@@ -30,6 +30,7 @@ static bool showDimensionReport = false;
 static bool showBasicDims = false || debugFeatureDimensions;
 static bool showResizeEvents = false;
 
+
 void ValueResetWidget::layoutWidget() {
    QFont nonMonoFont;
    nonMonoFont.setPointSize(8);
@@ -38,12 +39,10 @@ void ValueResetWidget::layoutWidget() {
    _resetButton->setMaximumSize(60,20);
 
    QSizePolicy* sizePolicy = new QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-   // _cb->setHorizontalStretch(0);
    _resetButton->setSizePolicy(*sizePolicy);
    _resetButton->setFont(FeatureValueButtonFont);
-   // _cb->setFrameStyle(QFrame::Sunken | QFrame::Panel);   // not a method
-   // _resetButton->setStyleSheet("background-color:white;");
-   _resetButton->setStyleSheet("background-color:white;color:black;");
+   //   _resetButton->setStyleSheet("background-color:white;color:black;");
+   _savedBackgroundColor = _resetButton->backgroundRole();
 
    QHBoxLayout * layout = new QHBoxLayout();
    layout->addSpacing(5);
@@ -104,18 +103,32 @@ ValueResetWidget::~ValueResetWidget() {
 }
 
 
+void ValueResetWidget::setEnabled(bool onoff) {
+   bool debug = false;
+   TRACEMCF(debug, "Starting. onoff=%s", SBOOL(onoff));
+   ValueBaseWidget::setEnabled(onoff);
+   if (onoff) {
+      _resetButton->setBackgroundRole(_savedBackgroundColor);
+   }
+   else {
+      _resetButton->setBackgroundRole(QPalette::Dark);
+   }
+   TRACEMCF(debug, "Done.");
+}
+
+
 void ValueResetWidget::on_resetButton_pressed() {
    bool debug = false;
    TRACEMCF(debug, "Starting, _base_ctrl_key_is_pressed = %s, _instanceControlKeyRequired=%s, classControlKeyRequired=%s, "
                    "ValueBaseWidget::classControllKeyRequired = %s, ValueResetWidget::classControlKeyRequired=%s, enabled=%s",
-            SBOOL(_base_ctrl_key_is_pressed),
+            SBOOL(_instanceControlKeyIsPressed),
             SBOOL(_instanceControlKeyRequired),
             SBOOL(classControlKeyRequired),
             SBOOL(ValueBaseWidget::classControlKeyRequired),
             SBOOL(ValueResetWidget::classControlKeyRequired),
             SBOOL(ValueBaseWidget::isEnabled() ) );
 
-   if (_base_ctrl_key_is_pressed || !classControlKeyRequired) {
+   if (_instanceControlKeyIsPressed || !classControlKeyRequired) {
       TRACEMCF(debug || debugValueWidgetSignals, "Button pressed. Emitting featureValueChanged()");
       emit featureValueChanged(_featureCode, 0, 1);
    }

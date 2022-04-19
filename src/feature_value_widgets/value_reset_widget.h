@@ -8,11 +8,12 @@
 #ifndef VALUE_RESET_WIDGET_H
 #define VALUE_RESET_WIDGET_H
 
-#include <QtWidgets/QPushButton>
+#include <QtWidgets/QWidget>
 
 #include "value_base_widget.h"
 
 class QPushButton;
+class QPalette;
 
 class ValueResetWidget : public ValueBaseWidget
 {
@@ -23,6 +24,9 @@ class ValueResetWidget : public ValueBaseWidget
 public:
     ValueResetWidget(QWidget *parent = nullptr);
     ~ValueResetWidget();
+
+public slots:
+    void setEnabled(bool onoff) override;
 
 protected:
     void resizeEvent(QResizeEvent * evt) override;  // for debugging
@@ -36,8 +40,9 @@ private:
 // Variables
 
 private:
-    const char *  _cls;
-    QPushButton * _resetButton;
+    const char *        _cls;
+    QPushButton *       _resetButton;
+    QPalette::ColorRole _savedBackgroundColor;
 };
 
 #endif // VALUE_RESET_WIDGET_H
