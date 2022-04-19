@@ -1,34 +1,20 @@
-/* value_simple_cont_widget.cpp */
+/** @file value_simple_cont_widget.cpp */
 
 // Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#include "feature_value_widgets/value_simple_cont_widget.h"
-
 #include <assert.h>
-#include <string.h>
-
-#include <QtCore/QEvent>
-
-#include <QtGui/QFocusEvent>
-#include <QtGui/QKeyEvent>
 
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QSpinBox>
 #include <QtWidgets/QWidget>
 
 #include "base/ddcui_parms.h"
 #include "base/core.h"
 #include "base/widget_debug.h"
 
-#include "c_util/string_util.h"
+#include "feature_value_widgets/value_simple_cont_widget.h"
 
-#include "core_widgets/enhanced_slider.h"
-
-
-// int ValueSimpleContWidget::idGenerator = 1;
 
 static bool showDimensionReports = false;
 static bool showBasicDims  = false || debugFeatureDimensions;
@@ -36,9 +22,9 @@ static bool showResizeEvents = false;
 
 void ValueSimpleContWidget::additionalWidgets() {
    bool debug = false;
-   TRACEMCF(debug, " ValueNewContWidget. Starting." );
-   // max value fields
+   TRACEMCF(debug, "Starting." );
 
+   // max value fields
    _maxTitle = new QLabel("Max:");
    _maxTitle->setFixedSize(40,18);
    _maxTitle->setFont(FeatureValueTextFont);
@@ -54,29 +40,24 @@ void ValueSimpleContWidget::additionalWidgets() {
    _maxValue->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
    if (debugLayout)
       _maxValue->setStyleSheet("background-color:orange;");
-   TRACEMCF(debug, " ValueNewContWidget. Done." );
+
+   TRACEMCF(debug, "Done." );
 }
 
 
 void ValueSimpleContWidget::createWidgets() {
     bool debug = false;
-    TRACEMCF(debug, "Starting.  ValueSimpleContWidget::createWidgets()");
-#ifdef UNUSED
-    QSizePolicy fixedSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
-    fixedSizePolicy.setHorizontalStretch(0);    // needed?
-    fixedSizePolicy.setVerticalStretch(0);
-    fixedSizePolicy.setHeightForWidth(false);
-#endif
+    TRACEMCF(debug, "Starting.");
 
     _spinSlider = new SpinSlider();
 
-    TRACEMCF(debug, "Done.  ValueSimpleContWidget::createWidgets()");
+    TRACEMCF(debug, "Done.");
 }
 
 
 void ValueSimpleContWidget::layoutWidget(QHBoxLayout * layout) {
     bool debug = false;
-    TRACEMCF(debug, "Starting ValueSimpleContWidget." );
+    TRACEMCF(debug, "Starting." );
 
     layout->addSpacing(5);
     layout->addWidget(_spinSlider);
@@ -87,8 +68,7 @@ void ValueSimpleContWidget::layoutWidget(QHBoxLayout * layout) {
     setLayout(layout);
 
     debugSimpleContLayout();
-
-    TRACEMCF(debug, "Done. ValueSimpleContWidget" );
+    TRACEMCF(debug, "Done." );
 }
 
 
@@ -100,14 +80,11 @@ ValueSimpleContWidget::ValueSimpleContWidget(QWidget *parent)
     bool debug = false;
     TRACEMCF(debug, "Starting. After ValueBaseWidget() constructor." );
 
-    // _id = ValueSimpleContWidget::idGenerator++;
     _newval = 0;
-
     createWidgets();
     additionalWidgets();
     QHBoxLayout * layout = new QHBoxLayout();
     layoutWidget(layout);
-
     connect( _spinSlider, SIGNAL(featureValueChanged(uint8_t, uint8_t, uint8_t)),
              this,        SLOT(onFeatureValueChanged(uint8_t, uint8_t, uint8_t)));
 
@@ -139,7 +116,7 @@ void ValueSimpleContWidget::setFeatureValue(const FeatureValue &fv) {
     bool debug = false;
     debug = debug || debugValueWidgetSignals;
     // _guiChange = false;
-    TRACEMCF(debug, "ValueSimpleContWidget. Starting. feature code: 0x%02x, before ValueBaseWidget::setFeatureValue()", fv.featureCode());
+    TRACEMCF(debug, "Starting. feature code: 0x%02x, before ValueBaseWidget::setFeatureValue()", fv.featureCode());
     ValueBaseWidget::setFeatureValue(fv);
 
     if (_maxval < 0) {     // setRange has not been called
@@ -161,25 +138,20 @@ void ValueSimpleContWidget::setFeatureValue(const FeatureValue &fv) {
     _spinSlider->setRange(_minval, _maxval);
     _spinSlider->setShSl(curval);
 
-    // _guiChange = true;
-    TRACEMCF(debug, "Done. ValueSimpleContWidget::setFeatureValue()");
+    TRACEMCF(debug, "Done.");
 }
 
 
 void ValueSimpleContWidget::setCurrentShSl(uint16_t newval) {
     bool debug = false;
     debug = debug || debugValueWidgetSignals;
-    TRACEMCF(debug, "newval = 0x%04x", newval);
+    TRACEMCF(debug, "Starting. newval = 0x%04x", newval);
+
     ValueBaseWidget::setCurrentShSl(newval);
-    // _guiChange = false;
-
     int curval = _sh << 8 | _sl;
-    TRACEMCF(debug, "feature=0x%02x, curval=%d", _featureCode , curval);
-
     _spinSlider->setShSl(curval);
 
-    // _guiChange = true;
-    TRACEMCF(debug, "Done");
+    TRACEMCF(debug, "Done. feature=0x%02x, curval=%d", _featureCode , curval);
 }
 
 
@@ -195,22 +167,10 @@ uint16_t ValueSimpleContWidget::getCurrentShSl() {
 
 void ValueSimpleContWidget::onFeatureValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl) {
    bool debug = false;
-   // TRACEMCF(debug, "featureCode=0x%02x, sh=0x%02x, sl=0x%02x, _guiChange=%d=%s, _featureCode=0x%02x",
-   //                featureCode, sh, sl, _guiChange, SBOOL(_guiChange), _featureCode);
    TRACEMCF(debug, "featureCode=0x%02x, sh=0x%02x, sl=0x%02x,_featureCode=0x%02x",
                   featureCode, sh, sl, _featureCode);
-   // if (_guiChange) {
-      TRACEMCF(debug, "Emitting featureValueChanged(0x%02x, 0x%02x, 0x%02x)", _featureCode, sh, sl);
-      emit featureValueChanged(_featureCode, sh, sl);
-   // }
-}
-
-
-void ValueSimpleContWidget::setInstanceControlKeyRequired(bool onoff) {
-   bool debug = false;
-   TRACEMCF(debug, "onoff=%s", SBOOL(onoff));
-   ValueBaseWidget::setInstanceControlKeyRequired(onoff);
-   _spinSlider->setInstanceControlKeyRequired(onoff);
+   TRACEMCF(debug, "Emitting featureValueChanged(0x%02x, 0x%02x, 0x%02x)", _featureCode, sh, sl);
+   emit featureValueChanged(_featureCode, sh, sl);
 }
 
 
@@ -324,19 +284,6 @@ void ValueSimpleContWidget::debugSimpleContLayout()
            printf("   Child: %s, type:%s\n", name.toLatin1().data(), clsName);
        }
        fflush(stdout);
-
-#ifdef OLD
-       printf("Children of _curSpinBox:\n");
-       childs = _curSpinBox->children();
-       for (int ndx = 0; ndx < childs.size(); ndx++) {
-           QObject* curobj = childs.at(ndx);
-           QString name   = curobj->objectName();
-           const char *  clsName = curobj->metaObject()->className();
-           printf("   Child: %s, type:%s\n", name.toLatin1().data(), clsName);
-       }
-       fflush(stdout);
-#endif
-
        basicDimsShown = true;
     }
 }

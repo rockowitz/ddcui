@@ -1,4 +1,4 @@
-/** value_simple_cont_widget.h
+/** @file value_simple_cont_widget.h
   *
   * Display/edit a Continuous VCP feature value with specified minimum and maximum values
   */
@@ -16,11 +16,6 @@
 #include "core_widgets/spin_slider.h"
 #include "feature_value_widgets/value_base_widget.h"
 
-class QSlider;
-class QSpinBox;
-class QLabel;
-class QPushButton;
-class EnhancedSlider;
 class SpinSlider;
 
 class ValueSimpleContWidget : public ValueBaseWidget
@@ -44,7 +39,6 @@ protected:   // methods
 
 private slots:
     void onFeatureValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl);
-    void setInstanceControlKeyRequired(bool onoff) override;
 
 private:     // methods
     void debugSimpleContLayout();
@@ -54,13 +48,10 @@ protected:   // member variables
     int           _maxval = -1;
     SpinSlider *  _spinSlider;
     uint16_t      _newval;
-    // bool       _guiChange = false;
     QLabel*       _maxTitle;
     QLabel*       _maxValue;
-    // int           _id;
 
 private:     // member variables
-    // static int    idGenerator;
     const char *  _cls;
 };
 
