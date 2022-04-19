@@ -14,6 +14,7 @@
 
 #include <QtCore/QRect>
 #include <QtGui/QPaintEvent>
+#include <QtGui/QPalette>
 #include <QtGui/QRegion>
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QLayout>
@@ -35,19 +36,22 @@ void Value2ButtonWidget::layoutWidget()
    nonMonoFont.setPointSize(9);
 
    _button1 = new QPushButton();
+   _enableableChild[_enableableChildCt++] = _button1;
    _button1->setMaximumSize(60,buttonHeight);
 
    _button2 = new QPushButton();
+   _enableableChild[_enableableChildCt++] = _button2;
    _button2->setMaximumSize(60,buttonHeight);
 
     QSizePolicy* sizePolicy = new QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     _button1->setSizePolicy(*sizePolicy);
     _button1->setFont(FeatureValueButtonFont);
     // _cb->setFrameStyle(QFrame::Sunken | QFrame::Panel);   // not a method
-    _button1->setStyleSheet("background-color:white;");
+    // _button1->setStyleSheet("background-color:white;");
     _button2->setSizePolicy(*sizePolicy);
     _button2->setFont(FeatureValueButtonFont);
-    _button2->setStyleSheet("background-color:white;color:black;");
+    // _button2->setStyleSheet("background-color:white;color:black;");
+    _savedBackgroundColor = _button1->backgroundRole();
 
     QHBoxLayout * layout = new QHBoxLayout();
     layout->addSpacing(5);
@@ -108,25 +112,41 @@ void Value2ButtonWidget::setButtonDetail(
 }
 
 
-void Value2ButtonWidget::on_button1_pressed() {
+void Value2ButtonWidget::setEnabled(bool onoff) {
    bool debug = false;
-   if (_base_ctrl_key_is_pressed || !classControlKeyRequired) {
+   TRACEMCF(debug, "Starting. onoff=%s", SBOOL(onoff));
+   ValueBaseWidget::setEnabled(onoff);
+   if (onoff) {
+      _button1->setBackgroundRole(_savedBackgroundColor);
+      _button2->setBackgroundRole(_savedBackgroundColor);
+   }
+   else {
+      _button1->setBackgroundRole(QPalette::Dark);
+      _button2->setBackgroundRole(QPalette::Dark);
+   }
+   TRACEMCF(debug, "Done.");
+}
+
+
+void Value2ButtonWidget::on_button1_pressed() {
+   bool debug = true;
+//   if (_base_ctrl_key_is_pressed || !classControlKeyRequired) {
       TRACEMCF(debug || debugValueWidgetSignals, "Button pressed. Emitting featureValueChanged()");
       emit featureValueChanged(_featureCode, 0, _val1);
-   }
-   else
-      TRACEMCF(debug|| debugValueWidgetSignals, "Button pressed.  NOT emitting featureValueChanged()");
+//   }
+//   else
+//      TRACEMCF(debug|| debugValueWidgetSignals, "Button pressed.  NOT emitting featureValueChanged()");
 }
 
 
 void Value2ButtonWidget::on_button2_pressed() {
-   bool debug = false;
-   if (_base_ctrl_key_is_pressed || !classControlKeyRequired) {
+   bool debug = true;
+//   if (_base_ctrl_key_is_pressed || !classControlKeyRequired) {
       TRACEMCF(debug || debugValueWidgetSignals, "Button pressed. Emitting featureValueChanged()");
       emit featureValueChanged(_featureCode, 0, _val2);
-   }
-   else
-      TRACEMCF(debug|| debugValueWidgetSignals, "Button pressed.  NOT emitting featureValueChanged()");
+//   }
+//   else
+//      TRACEMCF(debug|| debugValueWidgetSignals, "Button pressed.  NOT emitting featureValueChanged()");
 }
 
 

@@ -8,11 +8,12 @@
 #ifndef VALUE_2BUTTON_WIDGET_H
 #define VALUE_2BUTTON_WIDGET_H
 
-#include <QtWidgets/QPushButton>
+#include <QtWidgets/QWidget>
 
 #include "value_base_widget.h"
 
 class QPushButton;
+class QPalette;
 
 class Value2ButtonWidget : public ValueBaseWidget
 {
@@ -30,6 +31,9 @@ public:
           QString  name2,
           uint8_t  val2);
 
+public slots:
+    void setEnabled(bool onoff) override;
+
 private slots:
     void on_button1_pressed();
     void on_button2_pressed();
@@ -38,11 +42,12 @@ private:     // methods
     void layoutWidget();
 
 private:     // member variables
-    const char *   _cls;
-    QPushButton *  _button1;
-    QPushButton *  _button2;
-    uint8_t        _val1;
-    uint8_t        _val2;
+    const char *        _cls;
+    QPushButton *       _button1;
+    QPushButton *       _button2;
+    uint8_t             _val1;
+    uint8_t             _val2;
+    QPalette::ColorRole _savedBackgroundColor;
 };
 
 #endif // VALUE_2BUTTON_WIDGET_H
