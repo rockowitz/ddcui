@@ -1,4 +1,4 @@
-// value_special_widget_x62.cpp
+/** @file value_special_widget_x62.cpp */
 
 // Copyright (C) 2020-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
@@ -6,7 +6,7 @@
 #include <assert.h>
 
 #include "base/ddcui_parms.h"
-#include "core_widgets/enhanced_slider.h"
+// #include "core_widgets/enhanced_slider.h"
 #include "value_simple_cont_widget.h"
 #include "value_special_widget_x62.h"
 
