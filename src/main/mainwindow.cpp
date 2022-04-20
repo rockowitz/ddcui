@@ -107,7 +107,6 @@ void MainWindow::start_msgBoxThread() {
 void MainWindow::connectBaseModel(Monitor * curMonitor) {
    FeatureBaseModel * baseModel = curMonitor->_baseModel;
 
-
    QObject::connect(baseModel,  &FeatureBaseModel::signalStartInitialLoad,
                     this,       &MainWindow::longRunningTaskStart);
    QObject::connect(baseModel,  &FeatureBaseModel::signalEndInitialLoad,
@@ -122,7 +121,6 @@ void MainWindow::disconnectBaseModel(Monitor * curMonitor) {
 
    QObject::disconnect(baseModel,  &FeatureBaseModel::signalStatusMsg,
                        this,       &MainWindow::setStatusMsg);
-
    QObject::disconnect(baseModel,  &FeatureBaseModel::signalStartInitialLoad,
                        this,       &MainWindow::longRunningTaskStart);
    QObject::disconnect(baseModel,  &FeatureBaseModel::signalEndInitialLoad,
@@ -562,6 +560,12 @@ void MainWindow::longRunningTaskEnd() {
    TRACECF(debug, "Executing");
    // _spinner->stop();
    // _loadingMsgBox->hide();
+#ifdef SEGFAULT
+   assert(GlobalState::instance());
+   assert(GlobalState::instance()._uiOptionsState);
+   if (GlobalState::instance()._uiOptionsState->_controlKeyRequired)
+      setStatusMsg(QString("CONTROL key required to change values"));
+#endif
    QGuiApplication::restoreOverrideCursor();
 }
 
