@@ -23,6 +23,9 @@ public:
     void setFeatureValue(const FeatureValue  &fv) override;
     void setCurrentShSl(uint16_t newval) override;
 
+public slots:
+    void setEnabled(bool onoff) override;
+
 protected:
     void resizeEvent(QResizeEvent * evt) override;
 

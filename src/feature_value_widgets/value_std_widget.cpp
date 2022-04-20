@@ -168,6 +168,12 @@ void ValueStdWidget::setCurrentShSl(uint16_t newval) {
 }
 
 
+void ValueStdWidget::setEnabled(bool onoff) {
+   bool debug = false;
+   TRACEMCF(debug, "Executing. _id=%d", _id);
+}
+
+
 #ifdef DEBUG_PAINT
 void ValueStdWidget::paintEvent(QPaintEvent *event) {
                 // printf("(%s::%s) Starting\n", _cls, __func__);  fflush(stdout);
