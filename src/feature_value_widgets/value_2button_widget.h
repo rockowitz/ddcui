@@ -47,7 +47,6 @@ private:     // member variables
     QPushButton *       _button2;
     uint8_t             _val1;
     uint8_t             _val2;
-    QPalette::ColorRole _savedBackgroundColor;
 };
 
 #endif // VALUE_2BUTTON_WIDGET_H

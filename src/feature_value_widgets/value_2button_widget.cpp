@@ -36,11 +36,9 @@ void Value2ButtonWidget::layoutWidget()
    nonMonoFont.setPointSize(9);
 
    _button1 = new QPushButton();
-   _enableableChild[_enableableChildCt++] = _button1;
    _button1->setMaximumSize(60,buttonHeight);
 
    _button2 = new QPushButton();
-   _enableableChild[_enableableChildCt++] = _button2;
    _button2->setMaximumSize(60,buttonHeight);
 
     QSizePolicy* sizePolicy = new QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -83,12 +81,15 @@ Value2ButtonWidget::Value2ButtonWidget(
     , _val1(0)      // set in setButtonDetail()
     , _val2(0)
 {
+   bool debug = false;
    _cls = strdup(metaObject()->className());
-   // TRACE("Starting." );
+   TRACEMCF(debug, "Starting. _id=%d, _featureCode=0x%02x", _id, _featureCode );
    layoutWidget();
 
    QObject::connect(_button1, SIGNAL(released()),  this, SLOT(  on_button1_pressed()) );
    QObject::connect(_button2, SIGNAL(released()),  this, SLOT(  on_button2_pressed()) );
+
+   TRACEMCF(debug, "Done");
 }
 
 
@@ -116,6 +117,8 @@ void Value2ButtonWidget::setEnabled(bool onoff) {
    bool debug = false;
    TRACEMCF(debug, "Starting. onoff=%s", SBOOL(onoff));
    ValueBaseWidget::setEnabled(onoff);
+#ifdef OUT
+   ValueBaseWidget::setEnabled(onoff);
    if (onoff) {
       _button1->setBackgroundRole(_savedBackgroundColor);
       _button2->setBackgroundRole(_savedBackgroundColor);
@@ -124,12 +127,13 @@ void Value2ButtonWidget::setEnabled(bool onoff) {
       _button1->setBackgroundRole(QPalette::Dark);
       _button2->setBackgroundRole(QPalette::Dark);
    }
+#endif
    TRACEMCF(debug, "Done.");
 }
 
 
 void Value2ButtonWidget::on_button1_pressed() {
-   bool debug = true;
+   bool debug = false;
 //   if (_base_ctrl_key_is_pressed || !classControlKeyRequired) {
       TRACEMCF(debug || debugValueWidgetSignals, "Button pressed. Emitting featureValueChanged()");
       emit featureValueChanged(_featureCode, 0, _val1);
@@ -140,7 +144,7 @@ void Value2ButtonWidget::on_button1_pressed() {
 
 
 void Value2ButtonWidget::on_button2_pressed() {
-   bool debug = true;
+   bool debug = false;
 //   if (_base_ctrl_key_is_pressed || !classControlKeyRequired) {
       TRACEMCF(debug || debugValueWidgetSignals, "Button pressed. Emitting featureValueChanged()");
       emit featureValueChanged(_featureCode, 0, _val2);
