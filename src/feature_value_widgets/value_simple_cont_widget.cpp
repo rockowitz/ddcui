@@ -99,6 +99,22 @@ ValueSimpleContWidget::~ValueSimpleContWidget() {
 }
 
 
+void   ValueSimpleContWidget::setEnabled(bool onoff) {
+   bool debug = true;
+   TRACEMCF(debug, "_id=%d, _featureCode=0x%02x, onoff=%s", _id, _featureCode, SBOOL(onoff));
+   ValueBaseWidget::setEnabled(onoff);
+#ifdef OUT
+   if (onoff) {
+      _cb->setBackgroundRole(_savedBackgroundColor);
+   }
+   else {
+      _cb->setBackgroundRole(QPalette::Dark);
+   }
+#endif
+   TRACEMCF(debug, "Done.");
+}
+
+
 void ValueSimpleContWidget::setRange(int minval, int maxval) {
    bool debug = false;
    TRACEMCF(debug, "minval=%d, maxval=%d", minval, maxval);

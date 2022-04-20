@@ -39,6 +39,7 @@ protected:   // methods
 
 private slots:
     void onFeatureValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl);
+    void setEnabled(bool onoff) override;
 
 private:     // methods
     void debugSimpleContLayout();
