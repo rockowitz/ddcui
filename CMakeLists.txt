@@ -135,8 +135,6 @@ set(SOURCES
     src/base/user_interface_options_state.cpp
     src/base/widget_debug.cpp 
 
-    src/core_widgets/enhanced_combobox.cpp
-    src/core_widgets/enhanced_slider.cpp
     src/core_widgets/hex_number_validator.cpp
     src/core_widgets/hline_widget.cpp 
     src/core_widgets/number_entry_widget.cpp
