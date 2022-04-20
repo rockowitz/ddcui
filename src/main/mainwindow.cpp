@@ -383,10 +383,6 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
      _quit_shortcut->setContext(Qt::ApplicationShortcut);
      connect(_quit_shortcut,   &QShortcut::activated,
              this,            &MainWindow::quitShortcut);
-     // QShortcut * _quit_shortcut2 = new QShortcut(QKeySequence(Qt::Key_C | Qt::CTRL), this);
-     // _quit_shortcut2->setContext(Qt::ApplicationShortcut);
-     // connect(_quit_shortcut2,   &QShortcut::activated,
-     //         this,            &MainWindow::quitShortcut);
 
     TRACECF(debug, "Before initMonitors()");
     // reportWidgetChildren(ui->centralWidget, "Children of centralWidget, before initMonitors():");
@@ -398,13 +394,6 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
     _uiOptionsState     = new UserInterfaceOptionsState(parsed_cmd);
     globalState._otherOptionsState = _otherOptionsState;
     globalState._uiOptionsState    = _uiOptionsState;
-
-    TRACECF(true, "setting initial global class variables");
-    // ValueBaseWidget::setClassControlKeyRequired(_uiOptionsState->_controlKeyRequired);
-
-    // EnhancedSlider::setClassControlKeyRequired(_uiOptionsState->_controlKeyRequired);
-    // EnhancedComboBox::setClassControlKeyRequired(_uiOptionsState->_controlKeyRequired);
-    // SpinSlider::setClassControlKeyRequired(_uiOptionsState->_controlKeyRequired);
 
     QObject::connect(
           _uiOptionsState,  &UserInterfaceOptionsState::controlKeyRequired_changed,
@@ -1161,9 +1150,8 @@ void MainWindow::on_actionAbout_triggered()
 }
 
 
-// Recognize CONTROL key
-
-// Events related to control key
+//
+// Slots related to control key events
 //
 
 void MainWindow::keyPressEvent(QKeyEvent *   ev) {
@@ -1199,39 +1187,9 @@ void MainWindow::keyReleaseEvent(QKeyEvent *   ev) {
 }
 
 
-// Misc
-
-// Compilation fails without these, but where are they used?
-
-void MainWindow::showCentralWidgetByWidget(QWidget * pageWidget) {
-   TRACEC("===========> Setting current index, pageWidget object name = %s",
-          "dummy"  /* pageWidget->objectName() */);   // utf-8
-
-   int pageno = _ui->centralWidget->indexOf(pageWidget);
-   if (pageno < 0) {
-      TRACEC("page for widget not found");
-   }
-   else {
-      TRACEC("widget page number: %d\n", pageno);
-      _ui->centralWidget->setCurrentWidget(pageWidget);
-      _ui->centralWidget->show();
-   }
-}
-
-
-
-void MainWindow::showCentralWidgetPage(int pageno) {
-   TRACEC("===========> Setting current index, pageno = %d", pageno);
-   _ui->centralWidget->setCurrentIndex(pageno);
-   _ui->centralWidget->show();
-}
-
-
-
 //
 // Archived Unused Slots
 //
-
 
 #ifdef UNUSED
 void MainWindow::pageChanged(int pageno) {

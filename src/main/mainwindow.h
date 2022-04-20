@@ -103,11 +103,6 @@ public slots:
     void longRunningTaskEnd();
     void setStatusMsg(QString msg);
     void showSerialMsgBox(QString title, QString text, QMessageBox::Icon icon);
-
-    // or should these two be private?
-    void showCentralWidgetPage(int pageno);
-    void showCentralWidgetByWidget(QWidget * pageWidget);
-
     void forControlKeyRequired_changed(bool onoff);
 
 protected slots:
@@ -169,8 +164,6 @@ private:
 
 // *** Unused Methods, public and private, all types
  #ifdef UNUSED
-      void on_vcpTableView_clicked(const QModelIndex &index);
-      void on_vcpTableView_doubleClicked(const QModelIndex &index);
       void pageChanged(int pageno) override;
       void pageChangedByWidget(QWidget * widget) override;
      DDCA_Feature_Subset_Id feature_list_id() const;
@@ -191,22 +184,22 @@ public:
     bool                         _ctrl_key_is_pressed = false;
 
 private:
-    const char *               _cls;
-    // Ui::MainWindow*         _ui;
-    Ui_MainWindow *            _ui;
-    // DDCA_Display_Info_List *   _dlist ;
-    DDCA_Display_Ref *        _drefs;
-    int                        _drefs_ct = 0;
-    int                        _curDisplayIndex = -1;
-    View                       _curView = NoView;
-    QComboBox *                _toolbarDisplayCB;
-    OtherOptionsState *        _otherOptionsState = nullptr;
-    UserInterfaceOptionsState* _uiOptionsState = nullptr;
-    QVector<Monitor*>          _monitors;
-    DDCA_Feature_Subset_Id     _feature_list_id = DDCA_SUBSET_KNOWN;
-    QVector<VcpThread*>        _vcp_threads;
+    const char *                 _cls;
+    // Ui::MainWindow*           _ui;
+    Ui_MainWindow *              _ui;
+    // DDCA_Display_Info_List *  _dlist ;
+    DDCA_Display_Ref *           _drefs;
+    int                          _drefs_ct = 0;
+    int                          _curDisplayIndex = -1;
+    View                         _curView = NoView;
+    QComboBox *                  _toolbarDisplayCB;
+    OtherOptionsState *          _otherOptionsState = nullptr;
+    UserInterfaceOptionsState*  _uiOptionsState = nullptr;
+    QVector<Monitor*>           _monitors;
+    DDCA_Feature_Subset_Id      _feature_list_id = DDCA_SUBSET_KNOWN;
+    QVector<VcpThread*>         _vcp_threads;
 
-    QMessageBox*               _loadingMsgBox;
+    QMessageBox*                _loadingMsgBox;
 
     // Accumulates messages that will be shown in the SerialMsgBox once
     // initialization is sufficiently complete.  Not needed.
@@ -214,7 +207,6 @@ private:
 
     FeatureSelectionDialog*    _fsd = nullptr;
     OtherOptionsDialog*        _ood = nullptr;       // for future use
-    bool                       _widgetChangesAllowed = true;
 
     QShortcut * _quit_shortcut = nullptr;
 };
