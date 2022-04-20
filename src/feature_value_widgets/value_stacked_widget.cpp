@@ -148,24 +148,24 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
       GlobalState::instance()._otherOptionsState, &OtherOptionsState::ncValuesSourceChanged,
       this,                                       &ValueStackedWidget::setNcValuesSource );
 
-#ifdef UNUSED
+   // Initialize based on current UserInterfaceOptionsState value
+   bool initialControlKeyRequired =   GlobalState::instance()._uiOptionsState->_controlKeyRequired;
+   TRACECF(debug, "calling setInstanceControlKeyRequired(%s)", SBOOL(initialControlKeyRequired));
+   setInstanceControlKeyRequired(initialControlKeyRequired);
+
+#ifdef NOT_NEEDED
    QWidget::connect(
-      GlobalState::instance()._uiOptionsState,    &UserInterfaceOptionsState::controlKeyRequired_changed,
-      this,                                       &ValueStackedWidget::setInstanceControlKeyRequired );
+      GlobalState::instance()._mainWindow, &MainWindow::signalControlKeyRequired,
+      this,                                &ValueStackedWidget::setInstanceControlKeyRequired );
 #endif
-
-   setInstanceControlKeyPressed(false);   // to do, initialize based on current mainWindow value
-   QWidget::connect(
-      GlobalState::instance()._mainWindow, &MainWindow::signalControlKeyPressed,
-      this,                                &ValueStackedWidget::setInstanceControlKeyPressed );
-
-   setInstanceControlKeyRequired(
-         GlobalState::instance()._uiOptionsState->_controlKeyRequired);
 
    QWidget::connect(
       GlobalState::instance()._uiOptionsState, &UserInterfaceOptionsState::controlKeyRequired_changed,
       this,                                    &ValueStackedWidget::setInstanceControlKeyRequired );
 
+   QWidget::connect(
+      GlobalState::instance()._mainWindow, &MainWindow::signalControlKeyPressed,
+      this,                                &ValueStackedWidget::setInstanceControlKeyPressed );
 
     TRACECF(debug, "Done.");
 }
@@ -181,10 +181,11 @@ void ValueStackedWidget::enableSubwidgets() {
    bool enabled = !_instanceControlKeyRequired || _instanceControlKeyPressed;
    TRACEMCF(debug, "_id=%d, _pageno_selected=%d, calling setEnabled(%s) for subwidgets",
                    _id, _pageno_selected, SBOOL(enabled));
-   // for (int ndx = 0; ndx < _subwidgetCt; ndx++) {
-   //    _subwidget[ndx]->setEnabled(enabled);
-   // }
-   _cur_stacked_widget->setEnabled(enabled);
+   for (int ndx = 0; ndx < _subwidgetCt; ndx++) {
+      _subwidget[ndx]->setEnabled(enabled);
+   }
+   // if called during initial setup, _cur_stacked_widget apparently wrong
+   // _cur_stacked_widget->setEnabled(enabled);
 
    TRACEMCF(debug, "Done.");
 }
