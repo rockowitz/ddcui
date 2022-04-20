@@ -21,8 +21,6 @@ class SpinSlider : public QWidget {
 // *** Constructors and Methods
 
 public:
-   static void setClassControlKeyRequired(bool onoff);
-
    // allocation and initialization
    SpinSlider(QWidget * parent = nullptr);
    ~SpinSlider();
