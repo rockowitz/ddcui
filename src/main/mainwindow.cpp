@@ -393,20 +393,23 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
     globalState._otherOptionsState = _otherOptionsState;
     globalState._uiOptionsState    = _uiOptionsState;
 
+#ifdef UNUSED
     QObject::connect(
           _uiOptionsState,  &UserInterfaceOptionsState::controlKeyRequired_changed,
           this,             &MainWindow::forControlKeyRequired_changed);
+#endif
 
     QObject::connect(
         this,     &MainWindow::featureSelectionChanged,
         this,     &MainWindow::on_actionFeaturesScrollArea_triggered);
 
      // Start with Monitor Summary of first monitor instead if no view selected
-     if (_monitors.size() > 0)
+     if (_monitors.size() > 0) {
 // #ifdef WORKS
-        TRACECF(debug, "_monitors_size=%d. emitting signalMonitorSummaryView");
+        TRACECF(debug, "_monitors_size=%d. emitting signalMonitorSummaryView", _monitors.size());
         emit signalMonitorSummaryView();
 // #endif
+     }
 
 #ifdef BAD   // get dialog box that capabilities incomplete before main screen appears
      if (parsed_cmd->view == VIEW_UNSET || parsed_cmd->view == VIEW_SUMMARY)
@@ -459,21 +462,12 @@ MainWindow::~MainWindow()
 }
 
 
+#ifdef UNUSED
 void MainWindow::forControlKeyRequired_changed(bool onoff) {
-   bool debug = true;
-   TRACECF(debug, "setting classControlKeyRequired in widgets");
-#ifdef OLD
-   ValueBaseWidget::setClassControlKeyRequired(onoff);
-#endif
-
-#ifdef WIDGETS_ELIMINATED
-   //   SpinSlider::classControlKeyRequired = onoff;
-   SpinSlider::setClassControlKeyRequired(onoff);
-   EnhancedSlider::setClassControlKeyRequired(onoff);
-   EnhancedComboBox::setClassControlKeyRequired(onoff);
-#endif
-
+   bool debug = false;
+   TRACECF(debug, "Executing");
 }
+#endif
 
 
 //
@@ -563,9 +557,14 @@ void MainWindow::longRunningTaskEnd() {
 #ifdef SEGFAULT
    assert(GlobalState::instance());
    assert(GlobalState::instance()._uiOptionsState);
-   if (GlobalState::instance()._uiOptionsState->_controlKeyRequired)
-      setStatusMsg(QString("CONTROL key required to change values"));
+   if (GlobalState::instance()._uiOptionsState->_controlKeyRequired) {
+        QString msg("CONTROL key required to change values");
+  //      _ui->statusBar->showMessage(QString(msg));
+  //     setStatusMsg(msg);
+    statusBar()->showMessage(msg,30);
+  }
 #endif
+
    QGuiApplication::restoreOverrideCursor();
 }
 
@@ -665,8 +664,6 @@ void MainWindow::on_actionCapabilities_triggered()
        DDCA_Display_Info * dinfo = monitor->_displayInfo; // &_dlist->info[monitorNdx];
        DDCA_Display_Ref dref = dinfo->dref;
        char * caps_report = NULL;
-
-
 
        TRACECF(debug, "dref=%s, valid display %s",
              QS2S(monitor->dref_repr()),
@@ -836,10 +833,8 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
     // causes async feature reads in VcpThread, then load feature values from model into widgets
     monitor->_baseModel->setFeatureList(featuresToShow);
 
-    // TRACE("Done");
-
+    TRACECF(debug, "Done");
 }
-
 
 
 //
@@ -1097,11 +1092,7 @@ void MainWindow::for_actionUserInterfaceOptionsDialog_accept()
 {
    bool debug = false;
    TRACECF(debug, "Executing, Emitting userIntefaceOptionsChanged");
-   // need to test if real?
    emit userInterfaceOptionsChanged();
-
-   // unneeded here - set in UserInterfaceOptionsCialog
-   // _uiOptionsState->setControlKeyRequired(newval);
 }
 
 
@@ -1159,7 +1150,7 @@ void MainWindow::on_actionAbout_triggered()
 //
 
 void MainWindow::keyPressEvent(QKeyEvent *   ev) {
-   bool debug = true;
+   bool debug = false;
 
    TRACEMCF(debug, "Executing");
    if (debug)
@@ -1176,7 +1167,7 @@ void MainWindow::keyPressEvent(QKeyEvent *   ev) {
 
 
 void MainWindow::keyReleaseEvent(QKeyEvent *   ev) {
-   bool debug = true;
+   bool debug = false;
    TRACEMCF(debug, "Executing");
    if (debug)
       dbgrptQKeyEvent(ev);

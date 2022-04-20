@@ -88,6 +88,9 @@ public:
     void signalCapabilitiesView();
     void signalFeaturesView();
     void userInterfaceOptionsChanged();
+#ifdef NOT_NEEDED
+    void signalControlKeyRequired(bool onoff);
+#endif
     void showStats();     // needs parm for which
     void resetStats();
     void reportApplicationEventLoopStarted();
@@ -103,7 +106,9 @@ public slots:
     void longRunningTaskEnd();
     void setStatusMsg(QString msg);
     void showSerialMsgBox(QString title, QString text, QMessageBox::Icon icon);
+#ifdef NOT_NEEDED
     void forControlKeyRequired_changed(bool onoff);
+#endif
 
 protected slots:
     void keyPressEvent(QKeyEvent *   ev) override;
@@ -194,21 +199,21 @@ private:
     View                         _curView = NoView;
     QComboBox *                  _toolbarDisplayCB;
     OtherOptionsState *          _otherOptionsState = nullptr;
-    UserInterfaceOptionsState*  _uiOptionsState = nullptr;
-    QVector<Monitor*>           _monitors;
-    DDCA_Feature_Subset_Id      _feature_list_id = DDCA_SUBSET_KNOWN;
-    QVector<VcpThread*>         _vcp_threads;
+    UserInterfaceOptionsState*   _uiOptionsState = nullptr;
+    QVector<Monitor*>            _monitors;
+    DDCA_Feature_Subset_Id       _feature_list_id = DDCA_SUBSET_KNOWN;
+    QVector<VcpThread*>          _vcp_threads;
 
-    QMessageBox*                _loadingMsgBox;
+    QMessageBox*                 _loadingMsgBox;
 
     // Accumulates messages that will be shown in the SerialMsgBox once
     // initialization is sufficiently complete.  Not needed.
-    // QList<MsgBoxQueueEntry*>   _deferredMsgs;
+    // QList<MsgBoxQueueEntry*>  _deferredMsgs;
 
-    FeatureSelectionDialog*    _fsd = nullptr;
-    OtherOptionsDialog*        _ood = nullptr;       // for future use
+    FeatureSelectionDialog*      _fsd = nullptr;
+    OtherOptionsDialog*          _ood = nullptr;       // for future use
 
-    QShortcut * _quit_shortcut = nullptr;
+    QShortcut *                  _quit_shortcut = nullptr;
 };
 
 #endif // MAINWINDOW_H
