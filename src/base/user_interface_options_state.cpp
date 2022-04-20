@@ -23,7 +23,10 @@
  UserInterfaceOptionsState::UserInterfaceOptionsState(Parsed_Ddcui_Cmd* parsed_cmd)
      : _cls(metaObject()->className())
  {
+    bool debug = false;
+    TRACEMCF(debug, "Starting");
     _controlKeyRequired = parsed_cmd->flags & CMD_FLAG_UI_REQUIRE_CONTROL_KEY;
+    TRACEMCF(debug, "Done");
  }
 
 
