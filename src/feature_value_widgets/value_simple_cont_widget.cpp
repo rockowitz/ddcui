@@ -100,7 +100,7 @@ ValueSimpleContWidget::~ValueSimpleContWidget() {
 
 
 void   ValueSimpleContWidget::setEnabled(bool onoff) {
-   bool debug = true;
+   bool debug = false;
    TRACEMCF(debug, "_id=%d, _featureCode=0x%02x, onoff=%s", _id, _featureCode, SBOOL(onoff));
    ValueBaseWidget::setEnabled(onoff);
 #ifdef OUT
