@@ -23,8 +23,6 @@
 
 #include "base/core.h"
 #include "base/ddca_utils.h"
-#include "base/global_state.h"
-#include "base/other_options_state.h"
 #include "base/widget_debug.h"
 
 #include "nongui/feature_base_model.h"
@@ -125,11 +123,11 @@ void ValueNcplusWidget::layoutWidget() {
 ValueNcplusWidget::ValueNcplusWidget(QWidget *parent):
         ValueNcWidget(parent)
 {
-   bool debug  = false;
+   bool debug = false;
     _cls = strdup(metaObject()->className());
 
     // layoutWidget();
-    TRACEMCF(debug, "Executing. id=%d", _id );
+    TRACEMCF(debug, "Executing. _id=%d, _feature_code=0x%02x", _id, _featureCode );
 }
 
 ValueNcplusWidget::~ValueNcplusWidget() {
