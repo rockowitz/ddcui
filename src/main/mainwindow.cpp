@@ -11,6 +11,7 @@
 #include <QtCore/QList>
 #include <QtCore/QThread>
 #include <QtGui/QFont>
+#include <QtGui/QKeyEvent>
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QShortcut>     // 5.9
@@ -27,6 +28,8 @@
 #include "base/global_state.h"
 #include "base/monitor.h"
 #include "base/other_options_state.h"
+
+#include "core_widgets/spin_slider.h"
 
 #include "nongui/msgbox_queue.h"
 #include "nongui/vcpthread.h"    // includes vcprequest.h
@@ -125,8 +128,6 @@ void MainWindow::disconnectBaseModel(Monitor * curMonitor) {
    QObject::disconnect(baseModel,  &FeatureBaseModel::signalEndInitialLoad,
                        this,       &MainWindow::longRunningTaskEnd);
 }
-
-
 
 
 void MainWindow::freeMonitors() {
@@ -382,7 +383,10 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
      _quit_shortcut->setContext(Qt::ApplicationShortcut);
      connect(_quit_shortcut,   &QShortcut::activated,
              this,            &MainWindow::quitShortcut);
-
+     // QShortcut * _quit_shortcut2 = new QShortcut(QKeySequence(Qt::Key_C | Qt::CTRL), this);
+     // _quit_shortcut2->setContext(Qt::ApplicationShortcut);
+     // connect(_quit_shortcut2,   &QShortcut::activated,
+     //         this,            &MainWindow::quitShortcut);
 
     TRACECF(debug, "Before initMonitors()");
     // reportWidgetChildren(ui->centralWidget, "Children of centralWidget, before initMonitors():");
@@ -394,6 +398,17 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
     _uiOptionsState     = new UserInterfaceOptionsState(parsed_cmd);
     globalState._otherOptionsState = _otherOptionsState;
     globalState._uiOptionsState    = _uiOptionsState;
+
+    TRACECF(true, "setting initial global class variables");
+    // ValueBaseWidget::setClassControlKeyRequired(_uiOptionsState->_controlKeyRequired);
+
+    // EnhancedSlider::setClassControlKeyRequired(_uiOptionsState->_controlKeyRequired);
+    // EnhancedComboBox::setClassControlKeyRequired(_uiOptionsState->_controlKeyRequired);
+    // SpinSlider::setClassControlKeyRequired(_uiOptionsState->_controlKeyRequired);
+
+    QObject::connect(
+          _uiOptionsState,  &UserInterfaceOptionsState::controlKeyRequired_changed,
+          this,             &MainWindow::forControlKeyRequired_changed);
 
     QObject::connect(
         this,     &MainWindow::featureSelectionChanged,
@@ -454,6 +469,23 @@ MainWindow::~MainWindow()
     free(_drefs);
     TRACECF(debug, "Done");
     free((void*) _cls);
+}
+
+
+void MainWindow::forControlKeyRequired_changed(bool onoff) {
+   bool debug = true;
+   TRACECF(debug, "setting classControlKeyRequired in widgets");
+#ifdef OLD
+   ValueBaseWidget::setClassControlKeyRequired(onoff);
+#endif
+
+#ifdef WIDGETS_ELIMINATED
+   //   SpinSlider::classControlKeyRequired = onoff;
+   SpinSlider::setClassControlKeyRequired(onoff);
+   EnhancedSlider::setClassControlKeyRequired(onoff);
+   EnhancedComboBox::setClassControlKeyRequired(onoff);
+#endif
+
 }
 
 
@@ -1127,6 +1159,45 @@ void MainWindow::on_actionAbout_triggered()
     // QMessageBox::information(this, "..", msg);
     QMessageBox::about(this, "About ddcui", msg);
 }
+
+
+// Recognize CONTROL key
+
+// Events related to control key
+//
+
+void MainWindow::keyPressEvent(QKeyEvent *   ev) {
+   bool debug = true;
+
+   TRACEMCF(debug, "Executing");
+   if (debug)
+      dbgrptQKeyEvent(ev);
+
+   if (ev->key() == Qt::Key_Control)  {   // 68
+      _ctrl_key_is_pressed = true;
+      TRACEMCF(debug, "Control key recognized. Emitting signalControlKeyPressed(true)");
+      signalControlKeyPressed(true);
+   }
+   QMainWindow::keyPressEvent(ev);
+   ev->ignore();
+}
+
+
+void MainWindow::keyReleaseEvent(QKeyEvent *   ev) {
+   bool debug = true;
+   TRACEMCF(debug, "Executing");
+   if (debug)
+      dbgrptQKeyEvent(ev);
+
+   if (ev->key() == Qt::Key_Control) {   // 68
+      _ctrl_key_is_pressed = false;
+      TRACEMCF(debug, "Control key recognized. Emitting signalControlKeyPressed(false)");
+      signalControlKeyPressed(false);
+   }
+   QMainWindow::keyPressEvent(ev);
+   ev->ignore();
+}
+
 
 // Misc
 

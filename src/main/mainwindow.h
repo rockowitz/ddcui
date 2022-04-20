@@ -6,6 +6,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QtGui/QKeyEvent>
 #include <QtWidgets/QtWidgets>
 
 #include <ddcutil_types.h>
@@ -90,6 +91,7 @@ public:
     void showStats();     // needs parm for which
     void resetStats();
     void reportApplicationEventLoopStarted();
+    void signalControlKeyPressed(bool onoff);
 
 
 //
@@ -105,6 +107,12 @@ public slots:
     // or should these two be private?
     void showCentralWidgetPage(int pageno);
     void showCentralWidgetByWidget(QWidget * pageWidget);
+
+    void forControlKeyRequired_changed(bool onoff);
+
+protected slots:
+    void keyPressEvent(QKeyEvent *   ev) override;
+    void keyReleaseEvent(QKeyEvent * ev) override;
 
 private slots:
     // View Menu
@@ -146,6 +154,8 @@ private slots:
     // Shortcuts
     void quitShortcut();
 
+
+
 //
 // *** General methods ***
 //
@@ -178,6 +188,7 @@ public:
     MsgBoxQueue*                 _msgBoxQueue = nullptr;
     MsgBoxThread *               _msgBoxThread = nullptr;
     QMessageBox*                 _serialMsgBox = nullptr;
+    bool                         _ctrl_key_is_pressed = false;
 
 private:
     const char *               _cls;
@@ -203,6 +214,7 @@ private:
 
     FeatureSelectionDialog*    _fsd = nullptr;
     OtherOptionsDialog*        _ood = nullptr;       // for future use
+    bool                       _widgetChangesAllowed = true;
 
     QShortcut * _quit_shortcut = nullptr;
 };
