@@ -16,8 +16,6 @@
 
 #include "config.h"
 #include "c_util/data_structures.h"
-#include "base/other_options_state.h"
-#include "core_widgets/enhanced_combobox.h"
 #include "feature_value_widgets/value_base_widget.h"
 
 
@@ -37,6 +35,8 @@ public:
 
 public slots:
     void     reloadComboBox(NcValuesSource newSource, bool useLatestNames);
+    void     setEnabled(bool onoff) override;
+
 
 protected:
     // void  layoutWidgetAux();
@@ -56,8 +56,7 @@ private:
 // *** Member Variables ***
 
 protected:
-    // QComboBox *    _cb;
-    EnhancedComboBox * _cb;
+    QComboBox *    _cb;
     QHBoxLayout *  _layout;
     QLabel *       _extraInfo;
 

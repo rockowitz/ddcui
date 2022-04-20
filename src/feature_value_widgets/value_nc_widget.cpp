@@ -1,4 +1,4 @@
-/* value_nc_widget.cpp */
+/** @file value_nc_widget.cpp */
 
 // Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
@@ -11,8 +11,10 @@
 
 #include <iostream>
 
+#include <QtGui/QPalette>
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QLayout>
+#include <QtWidgets/QWidget>
 
 #include <ddcutil_c_api.h>
 
@@ -20,13 +22,9 @@
 #include "base/ddcui_parms.h"
 #include "base/core.h"
 #include "base/ddca_utils.h"
-#include "base/global_state.h"
-#include "base/other_options_state.h"
 #include "base/widget_debug.h"
+#include "feature_value_widgets/value_base_widget.h"
 
-#include "core_widgets/enhanced_combobox.h"
-
-#include "nongui/feature_base_model.h"
 
 static bool debugWidget = false;
 static bool showDimensionReports = false;
@@ -38,6 +36,7 @@ void ValueNcWidget::createWidgets() {
    bool debug = false;
    TRACECF(debug, "Starting. _id=%d", _id);
    _cb = createFormattedComboBox();   // in ValueBaseWidget
+   _savedBackgroundColor = _cb->backgroundRole();
 
    _extraInfo =  new QLabel("_extraInfo");
    _extraInfo->setMinimumSize(20,10);   // changing has no effect
@@ -96,7 +95,7 @@ ValueNcWidget::ValueNcWidget(QWidget *parent):
 {
     bool debug  = false;
     _cls = strdup(metaObject()->className());
-    TRACEMCF(debug, "Starting. id=%d", _id );
+    TRACEMCF(debug, "Starting. id=%d, _featureCode=0x%02x", _id, _featureCode );
 
     _layout = new QHBoxLayout();
     createWidgets();
@@ -113,6 +112,22 @@ ValueNcWidget::~ValueNcWidget() {
    // debugFunc = debugFunc || (_featureCode == 0x14);
    TRACECF(debugFunc, "Executing. _id=%d, _featureCode=0x%02x", _id, _featureCode);
    free((void*) _cls);
+}
+
+
+void   ValueNcWidget::setEnabled(bool onoff) {
+   bool debug = false;
+   TRACEMCF(debug, "onoff=%s", SBOOL(onoff));
+   ValueBaseWidget::setEnabled(onoff);
+#ifdef OUT
+   if (onoff) {
+      _cb->setBackgroundRole(_savedBackgroundColor);
+   }
+   else {
+      _cb->setBackgroundRole(QPalette::Dark);
+   }
+#endif
+   TRACEMCF(debug, "Done.");
 }
 
 
