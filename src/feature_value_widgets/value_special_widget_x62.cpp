@@ -47,7 +47,7 @@ ValueSpecialWidgetX62::ValueSpecialWidgetX62(QWidget *parent)
 {
     bool debug = false;
     _cls = strdup(metaObject()->className());
-    TRACECF(debug, "Starting.  ValueSpecialWidgetX62, _cls=%s", _cls );
+    TRACEMCF(debug, "Starting.  _cls=%s, _id=%d, _featureCode=0x%02x", _cls, _id, _featureCode );
     setRange(0x01, 0xfe);
 
     createInitialWidgets();
@@ -60,7 +60,7 @@ ValueSpecialWidgetX62::ValueSpecialWidgetX62(QWidget *parent)
     QObject::connect(_cb,  SIGNAL(activated(int)),
                      this, SLOT(combobox_activated(int)) );
 
-    TRACECF(debug, "Done. ValueSpecialWidgetX62");
+    TRACEMCF(debug, "Done.");
 }
 
 ValueSpecialWidgetX62::~ValueSpecialWidgetX62() {
@@ -162,4 +162,4 @@ void ValueSpecialWidgetX62::combobox_activated(int index) {
       TRACEMCF(debug, "Value not changed.");
    }
 }
-
+//ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddccccc
