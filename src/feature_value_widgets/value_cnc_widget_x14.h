@@ -58,6 +58,4 @@ private slots:
 #endif
 };
 
-
-
 #endif /* VALUE_CNC_WIDGET_X14_H_ */
