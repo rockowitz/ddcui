@@ -42,7 +42,6 @@ private:
 private:
     const char *        _cls;
     QPushButton *       _resetButton;
-    QPalette::ColorRole _savedBackgroundColor;
 };
 
 #endif // VALUE_RESET_WIDGET_H

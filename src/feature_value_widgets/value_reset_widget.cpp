@@ -86,8 +86,9 @@ void ValueResetWidget::layoutWidget() {
 ValueResetWidget::ValueResetWidget(QWidget *parent):
         ValueBaseWidget(parent)
 {
+   bool debug = false;
    _cls = strdup(metaObject()->className());
-   // TRACE("Starting." );
+   TRACEMCF(debug, "Starting. _id=%d, _featureCode=0x%02x", _id, _featureCode );
    layoutWidget();
 
    // QObject::connect(_resetButton,  &QAbstractButton::released),
@@ -95,6 +96,7 @@ ValueResetWidget::ValueResetWidget(QWidget *parent):
 
    QObject::connect(_resetButton,  SIGNAL(released()),
                     this,          SLOT(  on_resetButton_pressed()) );
+   TRACEMCF(debug, "Done.");
 }
 
 
@@ -107,33 +109,26 @@ void ValueResetWidget::setEnabled(bool onoff) {
    bool debug = false;
    TRACEMCF(debug, "Starting. onoff=%s", SBOOL(onoff));
    ValueBaseWidget::setEnabled(onoff);
+#ifdef OUT
    if (onoff) {
       _resetButton->setBackgroundRole(_savedBackgroundColor);
    }
    else {
       _resetButton->setBackgroundRole(QPalette::Dark);
    }
+#endif
    TRACEMCF(debug, "Done.");
 }
 
 
 void ValueResetWidget::on_resetButton_pressed() {
    bool debug = false;
-   TRACEMCF(debug, "Starting, _base_ctrl_key_is_pressed = %s, _instanceControlKeyRequired=%s, classControlKeyRequired=%s, "
-                   "ValueBaseWidget::classControllKeyRequired = %s, ValueResetWidget::classControlKeyRequired=%s, enabled=%s",
-            SBOOL(_instanceControlKeyIsPressed),
-            SBOOL(_instanceControlKeyRequired),
-            SBOOL(classControlKeyRequired),
-            SBOOL(ValueBaseWidget::classControlKeyRequired),
-            SBOOL(ValueResetWidget::classControlKeyRequired),
-            SBOOL(ValueBaseWidget::isEnabled() ) );
+   TRACEMCF(debug, "Starting. _id=%d, _featureCode=0x%02x, isEnabled=%s",
+                   _id, _featureCode, SBOOL(ValueBaseWidget::isEnabled()));
 
-   if (_instanceControlKeyIsPressed || !classControlKeyRequired) {
-      TRACEMCF(debug || debugValueWidgetSignals, "Button pressed. Emitting featureValueChanged()");
-      emit featureValueChanged(_featureCode, 0, 1);
-   }
-   else
-      TRACEMCF(debug|| debugValueWidgetSignals, "Button pressed.  NOT emitting featureValueChanged()");
+
+   TRACEMCF(debug || debugValueWidgetSignals, "Button pressed. Emitting featureValueChanged()");
+   emit featureValueChanged(_featureCode, 0, 1);
 }
 
 
