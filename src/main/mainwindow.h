@@ -104,11 +104,9 @@ public:
 public slots:
     void longRunningTaskStart();
     void longRunningTaskEnd();
-    void setStatusMsg(QString msg);
+    void setTransitoryStatusMsg(QString msg);
     void showSerialMsgBox(QString title, QString text, QMessageBox::Icon icon);
-#ifdef NOT_NEEDED
     void forControlKeyRequired_changed(bool onoff);
-#endif
 
 protected slots:
     void keyPressEvent(QKeyEvent *   ev) override;
@@ -118,7 +116,6 @@ private slots:
     // View Menu
     void on_actionMonitorSummary_triggered();
     void on_actionCapabilities_triggered();
-
     void on_actionFeaturesScrollArea_triggered();
 
     // Actions Menu
@@ -155,7 +152,6 @@ private slots:
     void quitShortcut();
 
 
-
 //
 // *** General methods ***
 //
@@ -165,7 +161,8 @@ public:
 
 private:
     // used only by slotfor_reportStats_triggered()
-      void capture_stats(DDCA_Stats_Type stats_type, bool show_thread_data);
+    void capture_stats(DDCA_Stats_Type stats_type, bool show_thread_data);
+    void ctrlKeyStatusMsg();
 
 // *** Unused Methods, public and private, all types
  #ifdef UNUSED
@@ -214,6 +211,7 @@ private:
     OtherOptionsDialog*          _ood = nullptr;       // for future use
 
     QShortcut *                  _quit_shortcut = nullptr;
+    QLabel* _ctlMsg = new QLabel("CTRL key required to change feature values");
 };
 
 #endif // MAINWINDOW_H

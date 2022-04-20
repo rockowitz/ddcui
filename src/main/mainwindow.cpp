@@ -112,7 +112,7 @@ void MainWindow::connectBaseModel(Monitor * curMonitor) {
    QObject::connect(baseModel,  &FeatureBaseModel::signalEndInitialLoad,
                     this,       &MainWindow::longRunningTaskEnd);
    QObject::connect(baseModel,  &FeatureBaseModel::signalStatusMsg,
-                    this,       &MainWindow::setStatusMsg);
+                    this,       &MainWindow::setTransitoryStatusMsg);
 }
 
 
@@ -120,7 +120,7 @@ void MainWindow::disconnectBaseModel(Monitor * curMonitor) {
    FeatureBaseModel * baseModel = curMonitor->_baseModel;
 
    QObject::disconnect(baseModel,  &FeatureBaseModel::signalStatusMsg,
-                       this,       &MainWindow::setStatusMsg);
+                       this,       &MainWindow::setTransitoryStatusMsg);
    QObject::disconnect(baseModel,  &FeatureBaseModel::signalStartInitialLoad,
                        this,       &MainWindow::longRunningTaskStart);
    QObject::disconnect(baseModel,  &FeatureBaseModel::signalEndInitialLoad,
@@ -257,7 +257,7 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
     TRACECF(debug, "Starting.  parsed_cmd=%p", parsed_cmd);
 
     longRunningTaskStart();
-    _ui->statusBar->showMessage(QString("Loading display information..."));
+    statusBar()->showMessage(QString("Loading display information..."));
 
 #ifdef OLD
     TRACECF(debug, "Calling ddca_get_display_info_list2()");
@@ -324,7 +324,7 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
 
     // Set message in status bar
     QString msg = QString("Detected ") + QString::number(_drefs_ct) + QString(" displays.");
-    _ui->statusBar->showMessage(msg);
+    statusBar()->showMessage(msg);
     longRunningTaskEnd();
 
     TRACECF(debug, "Done");
@@ -393,11 +393,9 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
     globalState._otherOptionsState = _otherOptionsState;
     globalState._uiOptionsState    = _uiOptionsState;
 
-#ifdef UNUSED
     QObject::connect(
-          _uiOptionsState,  &UserInterfaceOptionsState::controlKeyRequired_changed,
-          this,             &MainWindow::forControlKeyRequired_changed);
-#endif
+        _uiOptionsState,  &UserInterfaceOptionsState::controlKeyRequired_changed,
+        this,             &MainWindow::forControlKeyRequired_changed);
 
     QObject::connect(
         this,     &MainWindow::featureSelectionChanged,
@@ -405,10 +403,8 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
 
      // Start with Monitor Summary of first monitor instead if no view selected
      if (_monitors.size() > 0) {
-// #ifdef WORKS
         TRACECF(debug, "_monitors_size=%d. emitting signalMonitorSummaryView", _monitors.size());
         emit signalMonitorSummaryView();
-// #endif
      }
 
 #ifdef BAD   // get dialog box that capabilities incomplete before main screen appears
@@ -422,7 +418,6 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
         emit signalFeaturesView();
      }
 #endif
-
 
 
 #ifdef DOESNT_SOLVE_PROBLEM
@@ -462,21 +457,40 @@ MainWindow::~MainWindow()
 }
 
 
-#ifdef UNUSED
 void MainWindow::forControlKeyRequired_changed(bool onoff) {
    bool debug = false;
-   TRACECF(debug, "Executing");
+   TRACECF(debug, "Starting. onoff=%s", SBOOL(onoff));
+   ctrlKeyStatusMsg();
+   TRACECF(debug, "Done");
+
 }
-#endif
+
+
+void MainWindow::ctrlKeyStatusMsg() {
+   bool debug = false;
+   TRACECF(debug, "Starting");
+   if (_curView == View::FeaturesView && _uiOptionsState->_controlKeyRequired ) {
+      statusBar()->addWidget(_ctlMsg);  // Normal message, no timeout
+      _ctlMsg->show();
+   }
+   else {
+      statusBar()->removeWidget(_ctlMsg);
+   }
+   TRACECF(debug, "Done");
+}
+
 
 
 //
 // Status Message slots
 //
 
-void MainWindow::setStatusMsg(QString msg) {
-   // printf("(%s::%s) msg: %s\n", _cls, __func__, msg.toLatin1().data());  fflush(stdout);
-   statusBar()->showMessage(msg,30);
+void MainWindow::setTransitoryStatusMsg(QString msg) {
+   bool debug = false;
+   char * m = QS2S(msg);
+   TRACECF(debug, "Starting. msg = %s", m);
+   statusBar()->showMessage(msg,2000);
+   TRACECF(debug, "Done");
 }
 
 
@@ -484,7 +498,7 @@ void MainWindow::setStatusMsg(QString msg) {
 
 void MainWindow::reportDdcApiError(QString funcname, int rc) const {
      QString msg = funcname + "() returned " + QString::number(rc) + " - " + ddca_rc_name(rc);
-     _ui->statusBar->showMessage(msg);
+     statusBar()->showMessage(msg);
 
      // QErrorMessage * emsg;
      // invalid conversion from const QWidget* to QWidget*
@@ -554,18 +568,9 @@ void MainWindow::longRunningTaskEnd() {
    TRACECF(debug, "Executing");
    // _spinner->stop();
    // _loadingMsgBox->hide();
-#ifdef SEGFAULT
-   assert(GlobalState::instance());
-   assert(GlobalState::instance()._uiOptionsState);
-   if (GlobalState::instance()._uiOptionsState->_controlKeyRequired) {
-        QString msg("CONTROL key required to change values");
-  //      _ui->statusBar->showMessage(QString(msg));
-  //     setStatusMsg(msg);
-    statusBar()->showMessage(msg,30);
-  }
-#endif
-
+   ctrlKeyStatusMsg();
    QGuiApplication::restoreOverrideCursor();
+   TRACECF(debug, "Done");
 }
 
 
@@ -644,6 +649,7 @@ void MainWindow::on_actionMonitorSummary_triggered()
        _ui->centralWidget->setCurrentWidget(monitor->_page_moninfo);
        _ui->centralWidget->show();
     }
+    ctrlKeyStatusMsg();   // clears the message since not Features view
     TRACECF(debug, "_ui->actionCapabilities->isEnabled()=%s",
                    SBOOL(_ui->actionCapabilities->isEnabled() ));
 }
@@ -720,6 +726,7 @@ void MainWindow::on_actionCapabilities_triggered()
           }
        }
     }
+    ctrlKeyStatusMsg();   // clears the message since not Features view
 }
 
 
@@ -727,8 +734,8 @@ void MainWindow::on_actionCapabilities_triggered()
 
 void MainWindow::on_actionFeaturesScrollArea_triggered()
 {
-   bool debug = debugFeatureSelection;
-   debug = false;
+   bool debug = false;
+   debug = debug || debugFeatureSelection;
     if (debug) {
         TRACEC("Desired view: %d, feature list:", View::FeaturesView);
         this->_feature_selector->dbgrpt();
@@ -784,6 +791,7 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
           }
        }
     }
+    ctrlKeyStatusMsg();
 }
 
 
@@ -821,7 +829,6 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
              featuresToShow = ddca_feature_list_and(featuresToShow, caps_features);
           else
              featuresToShow = ddca_feature_list_or(featuresToShow, caps_features);
-
        }
     }
 

@@ -1,4 +1,4 @@
-/* features_scrollarea_ui.cpp */
+/** @file features_scrollarea_ui.cpp */
 
 // Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
