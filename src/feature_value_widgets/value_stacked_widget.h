@@ -41,9 +41,8 @@ public:
 
 public slots:
     void     setNcValuesSource(NcValuesSource newsrc, bool newUseLatestNames);
-#ifdef UNUSED
     void     setInstanceControlKeyRequired(bool onoff);
-#endif
+    void     setInstanceControlKeyPressed(bool onoff);
 
     // QSize sizeHint() const override;
     // void paintEvent(QPaintEvent *event) override;
@@ -53,6 +52,9 @@ signals:
 
 private slots:
     void forContainedWidgetChanged(uint8_t feature_code, uint8_t sh, uint8_t sl);
+
+private:
+    void enableSubwidgets();
 
 protected:
     static int nextId;
@@ -85,6 +87,12 @@ private:
     ValueBytesWidget*       _bytesWidget;
     ValueNcplusWidget*      _ncplusWidget;
     ValueSpecialWidgetX62*  _specialWidgetX62;
+
+    ValueBaseWidget *       _subwidget[10];
+    int                     _subwidgetCt = 0;
+
+    bool                    _instanceControlKeyRequired = false;
+    bool                    _instanceControlKeyPressed = false;
 };
 
 #endif // VALUE_STACKED_WIDGET_H

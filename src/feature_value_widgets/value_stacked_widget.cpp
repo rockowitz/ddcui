@@ -36,21 +36,36 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
     _id = ++nextId;
     TRACECF(debug, "Starting. id=%d", _id);
 
+    // _typedParent = dynamic_cast<FeatureWidget *>(parent);
+
     // this->setObjectName(QString::fromUtf8("value_stacked_widget"));   // ambiguous
     // setGeometry(QRect(209,6, 181, 20));
 
-    _newContWidget    = new ValueNewContWidget();
-    _simpleContWidget = new ValueSimpleContWidget();
-    _ncWidget         = new ValueNcWidget();
-    _stdWidget        = new ValueStdWidget();
-    _resetWidget      = new ValueResetWidget();
-    _2ButtonWidget    = new Value2ButtonWidget();
-    _cncWidgetX14     = new ValueCncWidgetX14();
-    _bytesWidget      = new ValueBytesWidget();
-    _ncplusWidget     = new ValueNcplusWidget();
-    _specialWidgetX62 = new ValueSpecialWidgetX62();
+    _newContWidget    = new ValueNewContWidget(this);
+    _simpleContWidget = new ValueSimpleContWidget(this);
+    _ncWidget         = new ValueNcWidget(this);
+    _stdWidget        = new ValueStdWidget(this);
+    _resetWidget      = new ValueResetWidget(this);
+    _2ButtonWidget    = new Value2ButtonWidget(this);
+    _cncWidgetX14     = new ValueCncWidgetX14(this);
+    _bytesWidget      = new ValueBytesWidget(this);
+    _ncplusWidget     = new ValueNcplusWidget(this);
+    _specialWidgetX62 = new ValueSpecialWidgetX62(this);
     TRACECF(debug," _ncWidget->_id=%d, _cncWidgetX14->_id=%d, _ncplusWidget._id=%d",
                   _ncWidget->_id,      _cncWidgetX14->_id,   _ncplusWidget->_id);
+
+    _subwidget[_subwidgetCt++] =         _stdWidget;
+    _subwidget[_subwidgetCt++] =     _newContWidget;
+    _subwidget[_subwidgetCt++] =  _simpleContWidget;
+    _subwidget[_subwidgetCt++] =           _ncWidget;
+    _subwidget[_subwidgetCt++] =     _resetWidget;
+    _subwidget[_subwidgetCt++] =    _2ButtonWidget;
+    _subwidget[_subwidgetCt++] =     _cncWidgetX14;
+    _subwidget[_subwidgetCt++] =       _bytesWidget;
+    _subwidget[_subwidgetCt++] =     _ncplusWidget;
+    _subwidget[_subwidgetCt++] =   _specialWidgetX62;
+    assert(_subwidgetCt == ARRAY_SIZE(_subwidget));
+
 
     // relying on _pageno_xxx order corresponds to addWidget() order
     _pageno_cont        = 0;
@@ -139,12 +154,63 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
       this,                                       &ValueStackedWidget::setInstanceControlKeyRequired );
 #endif
 
+   setInstanceControlKeyPressed(false);   // to do, initialize based on current mainWindow value
+   QWidget::connect(
+      GlobalState::instance()._mainWindow, &MainWindow::signalControlKeyPressed,
+      this,                                &ValueStackedWidget::setInstanceControlKeyPressed );
+
+   setInstanceControlKeyRequired(
+         GlobalState::instance()._uiOptionsState->_controlKeyRequired);
+
+   QWidget::connect(
+      GlobalState::instance()._uiOptionsState, &UserInterfaceOptionsState::controlKeyRequired_changed,
+      this,                                    &ValueStackedWidget::setInstanceControlKeyRequired );
+
+
     TRACECF(debug, "Done.");
 }
 
 
 ValueStackedWidget::~ValueStackedWidget() {
    free((void*) _cls);
+}
+
+
+void ValueStackedWidget::enableSubwidgets() {
+   bool debug = false;
+   bool enabled = !_instanceControlKeyRequired || _instanceControlKeyPressed;
+   TRACEMCF(debug, "_id=%d, _pageno_selected=%d, calling setEnabled(%s) for subwidgets",
+                   _id, _pageno_selected, SBOOL(enabled));
+   // for (int ndx = 0; ndx < _subwidgetCt; ndx++) {
+   //    _subwidget[ndx]->setEnabled(enabled);
+   // }
+   _cur_stacked_widget->setEnabled(enabled);
+
+   TRACEMCF(debug, "Done.");
+}
+
+
+// slot
+void ValueStackedWidget::setInstanceControlKeyRequired(bool onoff) {
+   bool debug = false;
+   debug = debug | debugValueWidgetSignals;
+   TRACEMCF(debug, "_id=%d, _pageno_selected=%d, onoff=%s", _id, _pageno_selected, SBOOL(onoff));
+
+   _instanceControlKeyRequired = onoff;
+   enableSubwidgets();
+
+   TRACEMCF(debug, "Done.");
+}
+
+void ValueStackedWidget::setInstanceControlKeyPressed(bool onoff) {
+   bool debug = false;
+   debug = debug | debugValueWidgetSignals;
+   TRACEMCF(debug, "_id=%d, _pageno_selected=%d, onoff=%s", _id, _pageno_selected, SBOOL(onoff));
+
+   _instanceControlKeyPressed = onoff;
+   enableSubwidgets();
+
+   TRACEMCF(debug, "Done.");
 }
 
 
@@ -201,10 +267,10 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
        setCurrentWidget(_cur_stacked_widget);
     }
 
-    else if (  _featureCode == 0x62    // Audio volume
-                 &&
-                 (vspec_eq(vspec, DDCA_VSPEC_V30) || vspec_eq(vspec, DDCA_VSPEC_V22) )
-              )
+    else if (_featureCode == 0x62    // Audio volume
+             &&
+             (vspec_eq(vspec, DDCA_VSPEC_V30) || vspec_eq(vspec, DDCA_VSPEC_V22) )
+            )
       {
          // TRACEC( "setting _specialWidgetX62");
          _pageno_selected = _pageno_x62;
@@ -338,17 +404,6 @@ uint16_t ValueStackedWidget::getCurrentValue() {
     return _cur_stacked_widget->getCurrentValue();
 }
 #endif
-
-
-#ifdef UNUSED
-void ValueStackedWidget::setInstanceControlKeyRequired(bool onoff) {
-   bool debug = true;
-   debug = debug | debugValueWidgetSignals;
-   TRACECF(debug, "onoff=%s", SBOOL(onoff));
-   _cur_stacked_widget->setInstanceControlKeyRequired(onoff);
-}
-#endif
-
 
 
 // QSize ValueStackedWidget::sizeHint() const {
