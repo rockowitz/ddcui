@@ -36,6 +36,9 @@
      <pointsize>10</pointsize>
     </font>
    </property>
+   <property name="focusPolicy">
+    <enum>Qt::StrongFocus</enum>
+   </property>
    <property name="orientation">
     <enum>Qt::Horizontal</enum>
    </property>
