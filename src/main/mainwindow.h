@@ -24,8 +24,8 @@ class FeatureSelector;
 class Monitor;
 class MsgBoxQueue;
 class MsgBoxThread;
-class OtherOptionsDialog;
-class OtherOptionsState;
+class NcValuesDialog;
+class NcValuesState;
 class QMessageBox;
 class UserInterfaceOptionsDialog;
 class UserInterfaceOptionsState;
@@ -195,7 +195,7 @@ private:
     int                          _curDisplayIndex = -1;
     View                         _curView = NoView;
     QComboBox *                  _toolbarDisplayCB;
-    OtherOptionsState *          _otherOptionsState = nullptr;
+    NcValuesState *          _otherOptionsState = nullptr;
     UserInterfaceOptionsState*   _uiOptionsState = nullptr;
     QVector<Monitor*>            _monitors;
     DDCA_Feature_Subset_Id       _feature_list_id = DDCA_SUBSET_KNOWN;
@@ -208,7 +208,7 @@ private:
     // QList<MsgBoxQueueEntry*>  _deferredMsgs;
 
     FeatureSelectionDialog*      _fsd = nullptr;
-    OtherOptionsDialog*          _ood = nullptr;       // for future use
+    NcValuesDialog*          _ood = nullptr;       // for future use
 
     QShortcut *                  _quit_shortcut = nullptr;
     QLabel* _ctlMsg = new QLabel("CTRL key required to change feature values");

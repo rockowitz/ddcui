@@ -61,8 +61,8 @@ protected:
     QLabel *       _extraInfo;
 
 private:
-    NcValuesSource _ncValuesSource = OtherOptionsState::DefaultNcValuesSource;
-    bool           _useLatestNcValues = OtherOptionsState::DefaultUseMaximalMccsNcValues;
+    NcValuesSource _ncValuesSource = NcValuesState::DefaultNcValuesSource;
+    bool           _useLatestNcValues = NcValuesState::DefaultUseMaximalMccsNcValues;
     Bit_Set_256    _observedValues = EMPTY_BIT_SET_256;
     Bit_Set_256    _validValues = EMPTY_BIT_SET_256;
     bool           _guiChange = false;

@@ -145,7 +145,7 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
 #endif
 
    QWidget::connect(
-      GlobalState::instance()._otherOptionsState, &OtherOptionsState::ncValuesSourceChanged,
+      GlobalState::instance()._ncValuesState, &NcValuesState::ncValuesSourceChanged,
       this,                                       &ValueStackedWidget::setNcValuesSource );
 
    // Initialize based on current UserInterfaceOptionsState value
@@ -381,11 +381,11 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
 
 #ifdef NO
     if (_pageno_selected == _pageno_nc || _pageno_selected == _pageno_ncplus) {
-       QWidget::connect(GlobalState::instance()._otherOptionsState, &OtherOptionsState::ncValuesSourceChanged,
+       QWidget::connect(GlobalState::instance()._ncValuesState, &NcValuesState::ncValuesSourceChanged,
                _ncWidget,                        &ValueNcWidget::reloadComboBox );
     }
     else if (_pageno_selected == _pageno_ncplus) {
-       QWidget::connect(GlobalState::instance()._otherOptionsState, &OtherOptionsState::ncValuesSourceChanged,
+       QWidget::connect(GlobalState::instance()._ncValuesState, &NcValuesState::ncValuesSourceChanged,
                _ncplusWidget,                        &ValueNcWidget::reloadComboBox );
     }
 #endif

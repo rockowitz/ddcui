@@ -12,9 +12,8 @@
 
 #include "cmdline/ddcui_parsed_cmd.h"
 #include "base/user_interface_options_state.h"
+#include "base/nc_values_state.h"
 #include "main/mainwindow.h"    // ugh - referencing out of base, to clean up
-#include "nc_values_state.h"
-
 
 class GlobalState {
    // Q_OBJECT
@@ -22,9 +21,9 @@ class GlobalState {
 public:
    static GlobalState& instance();
 
-   Parsed_Ddcui_Cmd *          _parsed_cmd        = nullptr;
-   OtherOptionsState *         _otherOptionsState = nullptr;
-   UserInterfaceOptionsState * _uiOptionsState    = nullptr;
+   Parsed_Ddcui_Cmd *          _parsed_cmd     = nullptr;
+   NcValuesState *             _ncValuesState  = nullptr;
+   UserInterfaceOptionsState * _uiOptionsState = nullptr;
 
    QApplication * _application  = nullptr;
    MainWindow *   _mainWindow   = nullptr;

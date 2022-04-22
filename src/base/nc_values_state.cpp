@@ -11,7 +11,7 @@
 #include "nc_values_state.h"
 
 
-// For Other-Options dialog
+// For NcValues dialog
 NcValuesSource parsedNcValuesSource_to_NcValuesSource(Parsed_NC_Values_Source val) {
    NcValuesSource ncvs = NcValuesFromBoth;      // put something
    // yes, the values in NcValuesSource and Parsed_NC_Values_Source match, but relying on that is brittle
@@ -30,21 +30,21 @@ NcValuesSource parsedNcValuesSource_to_NcValuesSource(Parsed_NC_Values_Source va
 }
 
 
-OtherOptionsState::OtherOptionsState() {}
+NcValuesState::NcValuesState() {}
 
-OtherOptionsState::OtherOptionsState(Parsed_Ddcui_Cmd * parsed_cmd) {
+NcValuesState::NcValuesState(Parsed_Ddcui_Cmd * parsed_cmd) {
    if (parsed_cmd->nc_values_source != NC_VALUES_SOURCE_UNSET)
       _ncValuesSource = parsedNcValuesSource_to_NcValuesSource(parsed_cmd->nc_values_source);
 }
 
 
-OtherOptionsState::OtherOptionsState(const OtherOptionsState &other) : QObject() {
+NcValuesState::NcValuesState(const NcValuesState &other) : QObject() {
    _ncValuesSource = other._ncValuesSource;
    // _useLatestNcValues = other._useLatestNcValues;
 }
 
 
-void OtherOptionsState::changeNcValuesSource(NcValuesSource mode, bool useLatestNcValues) {
+void NcValuesState::changeNcValuesSource(NcValuesSource mode, bool useLatestNcValues) {
    bool changed = (mode != _ncValuesSource || useLatestNcValues != _useLatestNcValues);
    _ncValuesSource = mode;
    // _useLatestNcValues = useLatestNcValues;

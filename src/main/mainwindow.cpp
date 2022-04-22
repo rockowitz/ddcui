@@ -388,9 +388,9 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
 
     // Initialize Options menu
     _feature_selector   = new FeatureSelector(parsed_cmd);
-    _otherOptionsState  = new OtherOptionsState(parsed_cmd);
+    _otherOptionsState  = new NcValuesState(parsed_cmd);
     _uiOptionsState     = new UserInterfaceOptionsState(parsed_cmd);
-    globalState._otherOptionsState = _otherOptionsState;
+    globalState._ncValuesState = _otherOptionsState;
     globalState._uiOptionsState    = _uiOptionsState;
 
     QObject::connect(
@@ -1032,7 +1032,7 @@ void MainWindow::on_actionOtherOptionsDialog_triggered()
    // display dialog box for selecting features
    TRACECF(debug, "triggered");
 
-   OtherOptionsDialog* dialog = new OtherOptionsDialog(this->_otherOptionsState, this);
+   NcValuesDialog* dialog = new NcValuesDialog(this->_otherOptionsState, this);
    // QObject::connect(dialog,   &OtherOptionsDialog::ncValuesSourceChanged,
    //                   this,    &MainWindow::for_actionOtherOptionsDialog_ncValuesSourceChanged);
    // QObject::connect(_otherOptionsState,   &OtherOptionsState::ncValuesSourceChanged,

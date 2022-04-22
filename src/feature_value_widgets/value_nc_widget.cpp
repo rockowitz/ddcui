@@ -183,7 +183,7 @@ void ValueNcWidget::setFeatureValue(const FeatureValue &fv) {
      _observedValues = bs256_add(_observedValues, _sl);
      TRACEMF(debug, "_observedValues after adding 0x%02x: %s", _sl, bs256_to_string(_observedValues, ""," "));
 
-    _ncValuesSource    = _globalState._otherOptionsState->_ncValuesSource;
+    _ncValuesSource    = _globalState._ncValuesState->_ncValuesSource;
     // _useLatestNcValues = _globalState._otherOptionsState->_useLatestNcValues;
     _useLatestNcValues = false;
     loadComboBox2();

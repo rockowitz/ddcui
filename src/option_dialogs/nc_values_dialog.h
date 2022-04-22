@@ -12,16 +12,16 @@
 #include "base/nc_values_state.h"
 
 namespace Ui {
-class OtherOptionsDialog;
+class NcValuesDialog;
 }
 
-class OtherOptionsDialog : public QDialog
+class NcValuesDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit OtherOptionsDialog(OtherOptionsState * state, QWidget *parent = 0);
-    ~OtherOptionsDialog();
+    explicit NcValuesDialog(NcValuesState * state, QWidget *parent = 0);
+    ~NcValuesDialog();
 
 signals:
      void ncValuesSourceChanged(NcValuesSource valuesSource, bool useLatestNcValueNames);
@@ -36,8 +36,8 @@ private:
     // void setUseLatestNcValueNames(bool newval);
 
     const char * _cls;
-    Ui::OtherOptionsDialog *ui;
-    OtherOptionsState * _state;
+    Ui::NcValuesDialog *ui;
+    NcValuesState * _state;
 };
 
 #endif // OTHER_OPTIONS_DIALOG_H

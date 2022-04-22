@@ -20,16 +20,16 @@ typedef enum {
 } NcValuesSource;
 
 
-class OtherOptionsState : public QObject {
+class NcValuesState : public QObject {
    Q_OBJECT
 
 public:
    static const NcValuesSource DefaultNcValuesSource = NcValuesFromCapabilities;
    static const bool           DefaultUseMaximalMccsNcValues = false;
 
-   OtherOptionsState();
-   OtherOptionsState(Parsed_Ddcui_Cmd * parsedCmd);
-   OtherOptionsState(const OtherOptionsState &other);
+   NcValuesState();
+   NcValuesState(Parsed_Ddcui_Cmd * parsedCmd);
+   NcValuesState(const NcValuesState &other);
 
    void changeNcValuesSource(NcValuesSource mode, bool useLatestNcValues);
 
