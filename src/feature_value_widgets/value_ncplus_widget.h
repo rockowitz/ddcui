@@ -16,9 +16,9 @@
 
 #include <ddcutil_types.h>
 
+#include "../base/nc_values_state.h"
 #include "config.h"
 #include "base/ddca_utils.h"
-#include "base/other_options_state.h"
 #include "feature_value_widgets/value_base_widget.h"
 
 #include "feature_value_widgets/value_nc_widget.h"

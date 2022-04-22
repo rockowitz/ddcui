@@ -131,7 +131,7 @@ set(SOURCES
     src/base/feature_selector.cpp 
     src/base/global_state.cpp
     src/base/monitor.h
-    src/base/other_options_state.cpp
+    src/base/nc_values_state.cpp
     src/base/user_interface_options_state.cpp
     src/base/widget_debug.cpp 
 
@@ -180,7 +180,7 @@ set(SOURCES
 
     src/action_dialogs/debug_actions_dialog.cpp
     src/option_dialogs/feature_selection_dialog.cpp 
-    src/option_dialogs/other_options_dialog.cpp
+    src/option_dialogs/nc_values_dialog.cpp
     src/option_dialogs/user_interface_options_dialog.cpp
 
     src/main/main.cpp
@@ -197,7 +197,7 @@ set(SOURCES
 
 set(UI_SOURCES
     src/option_dialogs/feature_selection_dialog.ui
-    src/option_dialogs/other_options_dialog.ui
+    src/option_dialogs/nc_values_dialog.ui
     src/option_dialogs/user_interface_options_dialog.ui
     src/action_dialogs/debug_actions_dialog.ui
    )

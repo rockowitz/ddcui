@@ -1,14 +1,14 @@
-/** \file other_options_state.cpp
+/** @file nc_values_state.cpp
  *  Maintains the current state of the NC Feature Values dialog, which
  *  controls which features are shown.
  */
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <assert.h>
 
-#include "other_options_state.h"
+#include "nc_values_state.h"
 
 
 // For Other-Options dialog

@@ -1,7 +1,6 @@
-/** \file other_options_dialog.h
- */
+/** @file nc_values_dialog.h */
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef OTHER_OPTIONS_DIALOG_H
@@ -10,7 +9,7 @@
 #include <QtWidgets/QAbstractButton>
 #include <QtWidgets/QDialog>
 
-#include "base/other_options_state.h"
+#include "base/nc_values_state.h"
 
 namespace Ui {
 class OtherOptionsDialog;
@@ -34,11 +33,10 @@ private slots:
 
 private:
     void setUiSource(NcValuesSource source);
-
     // void setUseLatestNcValueNames(bool newval);
 
-    Ui::OtherOptionsDialog *ui;
     const char * _cls;
+    Ui::OtherOptionsDialog *ui;
     OtherOptionsState * _state;
 };
 

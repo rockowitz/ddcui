@@ -27,8 +27,6 @@
 #include "base/ddcui_parms.h"
 #include "base/global_state.h"
 #include "base/monitor.h"
-#include "base/other_options_state.h"
-
 #include "core_widgets/spin_slider.h"
 
 #include "nongui/msgbox_queue.h"
@@ -45,7 +43,6 @@
 #include "feature_scrollarea/features_scrollarea_view.h"
 
 #include "option_dialogs/feature_selection_dialog.h"
-#include "option_dialogs/other_options_dialog.h"
 #include "option_dialogs/user_interface_options_dialog.h"
 
 #include "action_dialogs/debug_actions_dialog.h"
@@ -53,6 +50,9 @@
 #include "main/mainwindow_ui.h"
 #include "main/msgbox_thread.h"
 #include "main/mainwindow.h"
+
+#include "../base/nc_values_state.h"
+#include "../option_dialogs/nc_values_dialog.h"
 
 using namespace std;
 
