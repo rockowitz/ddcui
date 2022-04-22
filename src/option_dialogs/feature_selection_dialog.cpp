@@ -1,4 +1,4 @@
-/* feature_selection_dialog.cpp  */
+/** @file feature_selection_dialog.cpp  */
 
 // Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
@@ -296,10 +296,9 @@ void FeatureSelectionDialog::on_allCapabilities_checkbox_stateChanged(int arg1)
 // Accept
 void FeatureSelectionDialog::on_buttonBox_accepted()
 {
-    bool debugFunc = false;
-    debugFunc = debugFunc || debugFeatureSelection;
-    TRACECF(debugFunc, "=== Starting.");
-
+    bool debug = false;
+    debug = debug || debugFeatureSelection;
+    TRACECF(debug, "Starting.");
 
     DDCA_Feature_List customFlist = DDCA_EMPTY_FEATURE_LIST;
     DDCA_Feature_Subset_Id fsid = DDCA_SUBSET_UNSET;   // assignment to avoid warning re uninitialized var
@@ -324,13 +323,13 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
     else if (_ui->custom_radioButton->isChecked()) {
         fsid = DDCA_SUBSET_CUSTOM;
         QString text = _ui->custom_lineEdit->text().trimmed();
-        TRACECF(debugFunc, "custom radioButton: text: |%s|", QS2S(text));
+        TRACECF(debug, "custom radioButton: text: |%s|", QS2S(text));
         customFlist = validateCustomFeatureList(QS2S(text));
         if (ddca_feature_list_count(customFlist) == 0) {
-           TRACECF(debugFunc, "Custom feature error, returning");
+           TRACECF(debug, "Custom feature error, returning");
            return;   // there's a custom feature error, don't exit dialog
         }
-        TRACECF(debugFunc, "custom feature list: %s",
+        TRACECF(debug, "custom feature list: %s",
               ddca_feature_list_string(customFlist, "x", ", ") );
     }   // custom_radioButton
 
@@ -339,14 +338,14 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
     // end, custom radio button
     assert(fsid != DDCA_SUBSET_UNSET);
 
-    TRACECF(debugFunc, "Checking for any changes...fsid=%d, _featureSelector->featureSubsetId = %d",
+    TRACECF(debug, "Checking for any changes...fsid=%d, _featureSelector->featureSubsetId = %d",
                fsid, _featureSelector->_featureSubsetId);
     bool changed = false;
     if (fsid != _featureSelector->_featureSubsetId) {
        _featureSelector->_featureSubsetId = fsid;
        _featureSelector->_customFeatureList = customFlist;
        changed = true;
-       TRACECF(debugFunc,"feature set changed");
+       TRACECF(debug,"feature set changed");
     }
     else if (fsid == DDCA_SUBSET_CUSTOM) {
        DDCA_Feature_List old_flist = _featureSelector->_customFeatureList;
@@ -387,18 +386,18 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
         changed = true;
      }
 
-    if (debugFunc) {
+    if (debug) {
         TRACEC("_feature_selector:");
         _featureSelector->dbgrpt();
     }
 
     if (changed) {
-       TRACECF(debugFunc, "Signaling featureSelectionChanged()");
+       TRACECF(debug, "Signaling featureSelectionChanged()");
        emit featureSelectionChanged();
        // emit featureSelectionAccepted(fsid);
     }
     else {
-       TRACECF(debugFunc, "NOT Signaling featureSelectionChanged()");
+       TRACECF(debug, "NOT Signaling featureSelectionChanged()");
     }
     accept();
 }
@@ -442,6 +441,5 @@ void FeatureSelectionDialog::on_buttonBox_helpRequested()
     HelpDialog* hd = new HelpDialog(this);
     hd->setSource("qrc:docs/help_feature_selection.html");
     hd->exec();
-
 }
 

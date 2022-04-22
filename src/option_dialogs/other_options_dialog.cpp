@@ -1,4 +1,4 @@
-/* other_options_dialog.cpp */
+/** @file other_options_dialog.cpp */
 
 // Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
@@ -42,11 +42,9 @@ OtherOptionsDialog::OtherOptionsDialog(OtherOptionsState * state, QWidget *paren
     _cls( strdup(metaObject()->className()) ),
     _state(state)
 {
-    // _state = state;
     ui->setupUi(this);
     // this->setContextMenuPolicy(Qt::PreventContextMenu);
     setWindowFlag(Qt::WindowContextHelpButtonHint, false);
-
     setWindowTitle("ddcui - NC Feature Values");
     setUiSource(state->_ncValuesSource);
     // setUseLatestNcValueNames(state->_useLatestNcValues);

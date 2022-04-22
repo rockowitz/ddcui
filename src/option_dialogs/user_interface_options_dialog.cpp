@@ -1,4 +1,4 @@
-/** \file user_interface_options_dialog.cpp */
+/** @file user_interface_options_dialog.cpp */
 
 // Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
@@ -28,16 +28,14 @@ UserInterfaceOptionsDialog::UserInterfaceOptionsDialog(
            QWidget *parent)
     :  QDialog(parent)
     ,  _ui(new Ui::  UserInterfaceOptionsDialog)
+    , _cls(strdup(metaObject()->className()))
     , _state(state)
 {
     bool debug = false;
-    _cls = strdup(metaObject()->className());
     TRACECF(debug, "Constructor starting");
-    // _state = state;
     _ui->setupUi(this);
     setWindowFlag(Qt::WindowContextHelpButtonHint, false);
     // setWindowFlag(Qt::WindowMaximizeButtonHint, false);  // no effect
-
     setWindowTitle("ddcui - User Interface Options");
     // setUSource(state->ncValuesSource);
     TRACECF(debug, "Constructor done");
@@ -70,11 +68,11 @@ void UserInterfaceOptionsDialog::on_actionButtonBox_accepted()
 
     _state->setControlKeyRequired(newCtrlKeyRequired);
 
-    // no, automatically emitted when dialog accepted, by accept() or done()
+    // not needed, automatically emitted when dialog accepted, by accept() or done()
     // emit userInterfaceDialog_accepted(_state);  // probably not needed
 
     TRACECF(debugFunc, "Before calling accept()");
-    accept();  // causes accepteed() to be emitted
+    accept();  // causes accepted() to be emitted
 }
 
 
@@ -104,8 +102,6 @@ void UserInterfaceOptionsDialog::on_actionButtonBox_helpRequested()
     HelpDialog* hd = new HelpDialog(this);
     hd->setSource("qrc:docs/help_ui_options.html");
     hd->exec();
-
-
 #endif
 }
 
