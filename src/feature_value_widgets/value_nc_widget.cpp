@@ -180,7 +180,7 @@ void ValueNcWidget::setFeatureValue(const FeatureValue &fv) {
                    bs256_to_string(fv._observedNcValues, ""," "));
 
     // HACK2
-     _observedValues = bs256_add(_observedValues, _sl);
+     _observedValues = bs256_insert(_observedValues, _sl);
      TRACEMF(debug, "_observedValues after adding 0x%02x: %s", _sl, bs256_to_string(_observedValues, ""," "));
 
     _ncValuesSource    = _globalState._ncValuesState->_ncValuesSource;
@@ -339,7 +339,7 @@ void ValueNcWidget::setCurrentShSl(uint16_t newval) {
     if (!bs256_contains(_observedValues, _sl)) {
        TRACECF(debugFunc, "Value 0x%02x not found in existing _observedValues: %s",
                           _sl,  bs256_to_string(_observedValues, ""," "));
-       _observedValues = bs256_add(_observedValues, _sl);
+       _observedValues = bs256_insert(_observedValues, _sl);
        TRACECF(debugFunc, "After value 0x%02x added. _observedValues: %s",
                           _sl,  bs256_to_string(_observedValues, ""," "));
        loadComboBox2();   // reloads combo box, then sets current value

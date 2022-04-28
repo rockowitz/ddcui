@@ -28,7 +28,7 @@
 // appear multiple times.
 
 /** Creates a new **Byte_Value_Array** instance.
- * @return newly allocated **Byte_Value_Array**.
+ *  @return newly allocated **Byte_Value_Array**.
  */
 Byte_Value_Array bva_create() {
    GByteArray * ga = g_byte_array_new();
@@ -40,11 +40,11 @@ Byte_Value_Array bva_create() {
  *  containing the values from an existing instance
  *  that satisfy the filter function.
  *
- *  \param  bva **Byte_Value_Array** instance
- *  \param  filter_func  function that takes a byte value as an argument,
+ *  @param  bva **Byte_Value_Array** instance
+ *  @param  filter_func  function that takes a byte value as an argument,
  *                       returning true if the value should be included
  *                       in the output **Byte_Value_Array**
- *  \return new **Byte_Value_Array**
+ *  @return new **Byte_Value_Array**
  */
 Byte_Value_Array bva_filter(Byte_Value_Array  bva, IFilter filter_func) {
    GByteArray * src = (GByteArray*) bva;
@@ -159,12 +159,12 @@ void  bva_sort(Byte_Value_Array bva) {
  *  If the same value occurs multiple times in one array, it
  *  must occur the same number of times in the other.
  *
- *  \param  bva1  pointer to first instance
- *  \param  bva2  pointer to second instance
+ *  @param  bva1  pointer to first instance
+ *  @param  bva2  pointer to second instance
  *  \retval true  arrays are identical
  *  \retval false arrays not identical
  *
- *  \remark
+ *  @remark
  *  If bva1 or bva2 is null, it is considered to contain 0 values.
  */
 bool bva_sorted_eq(Byte_Value_Array bva1, Byte_Value_Array bva2) {
@@ -354,7 +354,7 @@ void bbf_free(Byte_Bit_Flags bbflags) {
  * @param bbflags instance handle
  * @param val     number of bit to set
  */
-void bbf_set(Byte_Bit_Flags bbflags, Byte val) {
+void bbf_insert(Byte_Bit_Flags bbflags, Byte val) {
    BYTE_BIT_UNOPAQUE(flags, bbflags);
    BYTE_BIT_VALIDATE(flags);
 
@@ -367,7 +367,7 @@ void bbf_set(Byte_Bit_Flags bbflags, Byte val) {
    flags->byte[flagndx] |= flagbit;
 #endif
 
-   Bit_Set_256 newval =  bs256_add(bs256_from_bbf(bbflags), val);
+   Bit_Set_256 newval =  bs256_insert(bs256_from_bbf(bbflags), val);
    memcpy( flags->byte, newval.bytes, 32);
 }
 
@@ -378,7 +378,7 @@ void bbf_set(Byte_Bit_Flags bbflags, Byte val) {
  * @param val     number of bit to test
  * @return        true/false
  */
-bool bbf_is_set(Byte_Bit_Flags bbflags, Byte val) {
+bool bbf_contains(Byte_Bit_Flags bbflags, Byte val) {
 // #ifdef OLD
    BYTE_BIT_UNOPAQUE(flags, bbflags);
    BYTE_BIT_VALIDATE(flags);
@@ -411,7 +411,7 @@ bool bbf_eq(Byte_Bit_Flags flags1, Byte_Bit_Flags flags2) {
  * @param bbflags2 handle to second instance
  * @return newly created instance with the result
  */
-Byte_Bit_Flags bbf_subtract(Byte_Bit_Flags bbflags1, Byte_Bit_Flags bbflags2) {
+Byte_Bit_Flags bbf_and_not(Byte_Bit_Flags bbflags1, Byte_Bit_Flags bbflags2) {
    BYTE_BIT_UNOPAQUE(flags1, bbflags1);
    BYTE_BIT_VALIDATE(flags1);
    BYTE_BIT_UNOPAQUE(flags2, bbflags2);
@@ -520,7 +520,7 @@ char * bbf_to_string(Byte_Bit_Flags bbflags) {
    unsigned int flagno = 0;
    for (flagno = 0; flagno < 256; flagno++) {
       Byte flg = (Byte) flagno;
-      if (bbf_is_set(flags, flg)) {
+      if (bbf_contains(flags, flg)) {
          if (pos > buffer) {
             *pos  = ' ';
             pos++;
@@ -556,7 +556,7 @@ int bbf_to_bytes(Byte_Bit_Flags bbflags, Byte * buffer, int buflen) {
    for (flagno = 0; flagno < 256; flagno++) {
       Byte flg = (Byte) flagno;
       // printf("(%s) flagno=%d, flg=0x%02x\n", __func__, flagno, flg);
-      if (bbf_is_set(flags, flg)) {
+      if (bbf_contains(flags, flg)) {
          // printf("(%s) Flag is set: %d, 0x%02x\n", __func__, flagno, flg);
          buffer[bufpos++] = flg;
       }
@@ -583,7 +583,7 @@ Buffer * bbf_to_buffer(Byte_Bit_Flags bbflags) {
    for (unsigned int flagno = 0; flagno < 256; flagno++) {
       Byte flg = (Byte) flagno;
       // printf("(%s) flagno=%d, flg=0x%02x\n", __func__, flagno, flg);
-      if (bbf_is_set(flags, flg)) {
+      if (bbf_contains(flags, flg)) {
          buffer_add(buf, flg);
       }
    }
@@ -603,8 +603,8 @@ typedef struct {
 /** Creates an iterator for a #Byte_Bit_Flags instance.
  *  The iterator is an opaque object.
  *
- * \param bbflags handle to #Byte_Bit_Flags instance
- * \return iterator
+ * @param bbflags handle to #Byte_Bit_Flags instance
+ * @return iterator
  */
 Byte_Bit_Flags_Iterator bbf_iter_new(Byte_Bit_Flags bbflags) {
    _Byte_Bit_Flags_Iterator * result = malloc(sizeof(_Byte_Bit_Flags_Iterator));
@@ -617,7 +617,7 @@ Byte_Bit_Flags_Iterator bbf_iter_new(Byte_Bit_Flags bbflags) {
 
 /** Free a #Byte_Bit_Flags_Iterator.
  *
- * \param bbf_iter handle to iterator (may be NULL)
+ * @param bbf_iter handle to iterator (may be NULL)
  */
 void bbf_iter_free(Byte_Bit_Flags_Iterator bbf_iter) {
    _Byte_Bit_Flags_Iterator * iter = (_Byte_Bit_Flags_Iterator *) bbf_iter;
@@ -632,7 +632,7 @@ void bbf_iter_free(Byte_Bit_Flags_Iterator bbf_iter) {
 /** Reinitializes an iterator.  Sets the current position before the first
  *  value.
  *
- * \param bbf_iter handle to iterator
+ * @param bbf_iter handle to iterator
  */
 void bbf_iter_reset(Byte_Bit_Flags_Iterator bbf_iter) {
    _Byte_Bit_Flags_Iterator * iter = (_Byte_Bit_Flags_Iterator *) bbf_iter;
@@ -644,8 +644,8 @@ void bbf_iter_reset(Byte_Bit_Flags_Iterator bbf_iter) {
 
 /** Returns the number of the next bit that is set.
  *
- * \param bbf_iter handle to iterator
- * \return number of next bit that is set, -1 if none
+ * @param bbf_iter handle to iterator
+ * @return number of next bit that is set, -1 if none
  */
 int bbf_iter_next(Byte_Bit_Flags_Iterator bbf_iter) {
    _Byte_Bit_Flags_Iterator * iter = (_Byte_Bit_Flags_Iterator *) bbf_iter;
@@ -654,7 +654,7 @@ int bbf_iter_next(Byte_Bit_Flags_Iterator bbf_iter) {
 
    int result = -1;
    for (int ndx = iter->lastpos + 1; ndx < 256; ndx++) {
-      if (bbf_is_set(iter->bbflags, ndx)) {
+      if (bbf_contains(iter->bbflags, ndx)) {
          result = ndx;
          iter->lastpos = ndx;
          break;
@@ -676,9 +676,9 @@ int bbf_iter_next(Byte_Bit_Flags_Iterator bbf_iter) {
  *  Note it is possible that the same byte appears more than once in the
  *  #Byte_Value_Array.
  *
- *  \param bva     #Byte_Value_Array to test
- *  \param bbflags #Byte_Bit_Flags to test
- *  \return        true/false
+ *  @param bva     #Byte_Value_Array to test
+ *  @param bbflags #Byte_Bit_Flags to test
+ *  @return        true/false
  */
 bool bva_bbf_same_values( Byte_Value_Array bva , Byte_Bit_Flags bbflags) {
    bool result = true;
@@ -686,7 +686,7 @@ bool bva_bbf_same_values( Byte_Value_Array bva , Byte_Bit_Flags bbflags) {
    for (item = 0; item < 256; item++) {
       // printf("item=%d\n", item);
       bool r1 = bva_contains(bva, item);
-      bool r2 = bbf_is_set(bbflags, item);
+      bool r2 = bbf_contains(bbflags, item);
       if (r1 != r2)
          result = false;
    }
@@ -696,15 +696,15 @@ bool bva_bbf_same_values( Byte_Value_Array bva , Byte_Bit_Flags bbflags) {
 
 /** Convert a #Byte_Value_Array to a #Byte_Bit_Flags
  *
- *  \param  bva  Byte_Value_Array
- *  \return ByteBitFlags
+ *  @param  bva  Byte_Value_Array
+ *  @return ByteBitFlags
  */
 Byte_Bit_Flags bva_to_bbf(Byte_Value_Array bva) {
    Byte_Bit_Flags bbf = bbf_create();
 
    for (int ndx = 0; ndx < bva_length(bva); ndx++) {
       Byte b = bva_get(bva, ndx);
-      bbf_set(bbf, b);
+      bbf_insert(bbf, b);
    }
    return bbf;
 }
@@ -713,8 +713,8 @@ Byte_Bit_Flags bva_to_bbf(Byte_Value_Array bva) {
 /** Function matching signature #Byte_Appender that adds a byte
  * to a #Byte_Value_Array.
  *
- * \param data_struct pointer to #Byte_Value_Array
- * \param val  byte to append
+ * @param data_struct pointer to #Byte_Value_Array
+ * @param val  byte to append
  */
 void bva_appender(void * data_struct, Byte val) {
    Byte_Value_Array bva = (Byte_Value_Array) data_struct;
@@ -725,13 +725,13 @@ void bva_appender(void * data_struct, Byte val) {
 /** Function matching signature #Byte_Appender that sets a bit in
  *  a #Byte_Bit_Flags
  *
- * \param data_struct pointer to #Byte_Bit_Flags
- * \param val  bit number to set
+ * @param data_struct pointer to #Byte_Bit_Flags
+ * @param val  bit number to set
  */
 void bbf_appender(void * data_struct, Byte val) {
    Byte_Bit_Flags bbf = (Byte_Bit_Flags) data_struct;
    assert(bbf);
-   bbf_set(bbf, val);
+   bbf_insert(bbf, val);
 }
 
 
@@ -739,7 +739,7 @@ void bbf_appender(void * data_struct, Byte val) {
  *
  * @param start starting address of hex values
  * @param len   length of hex values
- * @param data_struct opague handle to either a **Byte_Value_Array** or a **Byte_Bit_Flags**
+ * @param data_struct opaque handle to either a **Byte_Value_Array** or a **Byte_Bit_Flags**
  * @param appender function to add a value to **data_struct**
  *
  * @return false if any input data cannot be parsed, true otherwise
@@ -825,11 +825,11 @@ const Bit_Set_256 EMPTY_BIT_SET_256 = {{0}};
 
 /** Sets a flag in a #Bit_Set_256
  *
- *  \param  flags   existing #Bit_Set_256 value
- *  \param  flagno  flag number to set (0 based)
- *  \return updated set
+ *  @param  flags   existing #Bit_Set_256 value
+ *  @param  flagno  flag number to set (0 based)
+ *  @return updated set
  */
-Bit_Set_256 bs256_add(
+Bit_Set_256 bs256_insert(
     Bit_Set_256 bitset,
     Byte        bitno)
 {
@@ -860,9 +860,9 @@ Bit_Set_256 bs256_add(
 
 /** Tests if a bit is set in a #Bit_Set_256.
  *
- *  \param bitset  #Bit_Set_256 to check
- *  \param bitno   bit number to test (0 based)
- *  \return true/false
+ *  @param bitset  #Bit_Set_256 to check
+ *  @param bitno   bit number to test (0 based)
+ *  @return true/false
  */
 bool bs256_contains(
     Bit_Set_256 bitset,
@@ -889,8 +889,8 @@ bool bs256_contains(
 
 
 /** Returns the bit number of the first bit set.
- *  \param  bitset #Bit_Set_256 to check
- *  \return number of first bit that is set (0 based),
+ *  @param  bitset #Bit_Set_256 to check
+ *  @return number of first bit that is set (0 based),
  *          -1 if no bits set
  */
 int bs256_first_bit_set(
@@ -959,9 +959,9 @@ Bit_Set_256 bs256_and_not(
 #define BB256_REPR_BUF_SZ (3*32+1)
 /** Represents a #Bit_Set_256 value as a sequence of 32 hex values.
  *
- *  \param buf   buffer in which to return value
- *  \param bufsz buffer size, must be at least #BB256_REPR_BUF_SZ
- *  \param bbset value to represent
+ *  @param buf   buffer in which to return value
+ *  @param bufsz buffer size, must be at least #BB256_REPR_BUF_SZ
+ *  @param bbset value to represent
  */
 void bb256_repr(char * buf, int bufsz, Bit_Set_256 bbset) {
    assert(bufsz >= BB256_REPR_BUF_SZ);
@@ -983,8 +983,8 @@ void bb256_repr(char * buf, int bufsz, Bit_Set_256 bbset) {
 
 /** Returns the number of bits set in a #Bit_Set_256 instance.
  *
- *  \param  bbset  value to examine
- *  \return number of bits set
+ *  @param  bbset  value to examine
+ *  @return number of bits set
  */
 int bs256_count(
    Bit_Set_256 bbset)
@@ -1038,10 +1038,10 @@ int bs256_count(
  *  The value returned is valid until the next call to this function in the
  *  current thread.
  *
- *  \param  bitset value to represent
- *  \param  value_prefix  prefix for each hex number, typically "0x" or ""
- *  \param  sepstr        string to insert between each value, typically "", ",", or " "
- *  \return string representation, caller should not free
+ *  @param  bitset value to represent
+ *  @param  value_prefix  prefix for each hex number, typically "0x" or ""
+ *  @param  sepstr        string to insert between each value, typically "", ",", or " "
+ *  @return string representation, caller should not free
  */
 char *
 bs256_to_string(
@@ -1119,7 +1119,7 @@ bs256_iter_new(Bit_Set_256 bbflags) {
 
 /** Free a #Bit_Set_256_Iterator.
  *
- * \param bs256_iter handle to iterator (may be NULL)
+ * @param bs256_iter handle to iterator (may be NULL)
  */
 void
 bs256_iter_free(
@@ -1138,7 +1138,7 @@ bs256_iter_free(
 /** Reinitializes an iterator.  Sets the current position before the first
  *  value.
  *
- * \param bs256_iter handle to iterator
+ * @param bs256_iter handle to iterator
  */
 void
 bs256_iter_reset(
@@ -1153,8 +1153,8 @@ bs256_iter_reset(
 
 /** Returns the number of the next bit that is set.
  *
- * \param bs256_iter handle to iterator
- * \return number of next bit that is set, -1 if no more
+ * @param bs256_iter handle to iterator
+ * @return number of next bit that is set, -1 if no more
  */
 int
 bs256_iter_next(
@@ -1184,14 +1184,14 @@ bs256_iter_next(
 
 /** Parse a string containing a list of hex values.
  *
- *  \param unparsed_string
- *  \error_msgs_loc  if non-null, return null terminated string array of error messages here,
+ *  @param unparsed_string
+ *  @param error_msgs_loc  if non-null, return null terminated string array of error messages here,
  *                   caller is responsible for freeing
- *  \return #Bit_Set_256, will be EMPTY_BIT_SET_256 if errors
+ *  @return #Bit_Set_256, will be EMPTY_BIT_SET_256 if errors
  *
- *  \remark
- *  If error_msgs_loc is non-null on entry, on return it is non-null iff there
- *  are error messages, i.e. a 0 length array is never returned
+ *  @remark
+ *  If error_msgs_loc is non-null on entry, on return the value it points to
+ *  is non-null iff there are error messages, i.e. a 0 length array is never returned
  */
 Bit_Set_256 bs256_from_string(
       char *                         unparsed_string,
@@ -1234,7 +1234,7 @@ Bit_Set_256 bs256_from_string(
               printf("(parse_features_list) token= |%s|\n", token);
            Byte hex_value = 0;
            if ( any_one_byte_hex_string_to_byte_in_buf(token, &hex_value) ) {
-              result = bs256_add(result, hex_value);
+              result = bs256_insert(result, hex_value);
            }
            else {
               if (debug)
@@ -1822,9 +1822,9 @@ csb_new(int size) {
 
 /** Appends a string to a #Circular_String_Buffer.
  *
- *  \param   csb   #Circular_String_Buffer
- *  \param   line  string to append
- *  \param   copy  if true, a copy of the string is appended to the buffer
+ *  @param   csb   #Circular_String_Buffer
+ *  @param   line  string to append
+ *  @param   copy  if true, a copy of the string is appended to the buffer
  *                 if false, the string itself is appended
  */
 void
@@ -1845,8 +1845,8 @@ csb_add(Circular_String_Buffer * csb, char * line, bool copy) {
  *  allocated GPtrArray. The count of lines in the now empty #Circular_String_Buffer
  *  is set to 0.
  *
- *   \param csb #Circular_String_Buffer to convert
- *   \return    newly allocated #GPtrArray
+ *   @param csb #Circular_String_Buffer to convert
+ *   @return    newly allocated #GPtrArray
  */
 GPtrArray *
 csb_to_g_ptr_array(Circular_String_Buffer * csb) {

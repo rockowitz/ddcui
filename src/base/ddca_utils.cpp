@@ -25,7 +25,7 @@ Bit_Set_256
 bs256_from_cfr(DDCA_Cap_Vcp * cfr) {
    Bit_Set_256 result = EMPTY_BIT_SET_256;
    for (int ndx = 0; ndx < cfr->value_ct; ndx++) {
-      result = bs256_add(result, cfr->values[ndx]);
+      result = bs256_insert(result, cfr->values[ndx]);
     }
    return result;
 }
@@ -36,7 +36,7 @@ bs256_from_sl_values(DDCA_Feature_Value_Entry * sl_values) {
    if (sl_values) {
       DDCA_Feature_Value_Entry * cur = sl_values;
       while(cur->value_name) {
-         result = bs256_add(result, cur->value_code);
+         result = bs256_insert(result, cur->value_code);
          cur++;
       }
    }

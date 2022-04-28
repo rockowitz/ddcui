@@ -56,7 +56,7 @@ FeatureValue::FeatureValue(
 
        // alt: if (_finfo->feature_flags & DDCA_SIMPLE_NC )
        if (_finfo->sl_values && (getvcpStatus == 0) ) {
-          _observedNcValues = bs256_add(EMPTY_BIT_SET_256, val.sl);
+          _observedNcValues = bs256_insert(EMPTY_BIT_SET_256, val.sl);
        }
    }
    TRACECF(debugFunc, "Done. _observedNcValues = %s", bs256_to_string(_observedNcValues, "", " "));
@@ -114,7 +114,7 @@ FeatureValue::setCurrentValue(uint8_t sh, uint8_t sl) {
    _value.sl = sl;
 
    if (_finfo->sl_values) {
-      _observedNcValues = bs256_add(_observedNcValues, _value.sl);
+      _observedNcValues = bs256_insert(_observedNcValues, _value.sl);
    }
 
    TRACECF(debugFunc, "Finished. _observedNcValues = %s", bs256_to_string(_observedNcValues, "", " "));
@@ -127,7 +127,7 @@ FeatureValue::setCurrentValue(uint16_t newval) {
    ///_value.sh = newval >> 8;
    //_value.sl = newval & 0xff;
    //if (_finfo->sl_values) {
-   //   _observedNcValues = bs256_add(_observedNcValues, _value.sl);
+   //   _observedNcValues = bs256_insert(_observedNcValues, _value.sl);
    // }
 }
 
