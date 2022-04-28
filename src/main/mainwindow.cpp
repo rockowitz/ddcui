@@ -273,6 +273,39 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
     DDCA_Status ddcrc = ddca_get_display_refs(/*include invalid displays=*/true, &_drefs);
     TRACECF(debug, "ddca_get_display_refs() returned %d", ddcrc);
     assert(ddcrc == 0);
+
+    DDCA_Error_Detail * errs = ddca_get_error_detail();
+    if (errs) {
+       if (debug)
+          ddca_report_error_detail(errs, 2);
+       QString errMsg(errs->detail);
+       if (errs->cause_ct > 0) {
+          for (int ndx = 0; ndx < errs->cause_ct; ndx++) {
+              DDCA_Error_Detail * cause = errs->causes[ndx];
+              if (ndx == 0)
+                 errMsg.append(":\n");
+              else
+                 errMsg.append("\n");
+              // char * s = cause->detail;
+              // QString thisMsg(s);
+              QString thisMsg(cause->detail);
+              errMsg.append(thisMsg);
+          }
+       }
+       ddca_free_error_detail(errs);
+
+       QString qsTitle = QString("ddcutil Error");
+       QString qsDetail = QString(errMsg);
+       QMessageBox::Icon icon = QMessageBox::Warning;
+       MsgBoxQueueEntry * qe = new MsgBoxQueueEntry(qsTitle, qsDetail, icon);
+#ifdef DEFERRED_MSG_QUEUE
+       _deferredMsgs.append(qe);     // not needed
+#endif
+       TRACECF(debug, "Pre put, _msgBoxQueue=%p", _msgBoxQueue);
+       _msgBoxQueue->put(qe);
+
+    }
+
     for (_drefs_ct=0; _drefs[_drefs_ct]; _drefs_ct++) {}
     TRACECF(debug, "_drefs_ct = %d", _drefs_ct);
 
