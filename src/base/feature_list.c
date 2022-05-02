@@ -23,13 +23,13 @@
 /** Parse a string containing a list of feature codes
  *
  *  \param unparsed_string
- *  \error_msgs_loc  if non-null, return null terminated string array of error messages here,
+ *  \error_msgs_loc  return null terminated string array of error messages here,
  *                   caller is responsible for freeing
+ *                   set to NULL if no errors
  *  \return feature code set, DDCA_EMPTY_FEATURE_LIST if errors
  *
  *  \remark
- *  If error_msgs_loc is non-null on entry, on return it is non-null iff there
- *  are error messages, i.e. a 0 length array is never returned
+ *  On return. the value of error_msgs_loc is non-null iff errors occurred,
  */
 DDCA_Feature_List parse_custom_feature_list(
       char * unparsed_string,
@@ -110,5 +110,7 @@ DDCA_Feature_List parse_custom_feature_list(
           ntsa_show(*error_msgs_loc);
        }
     }
+    assert(!(*error_msgs_loc && ntsa_count(*error_msgs_loc) == 0));
+    assert(!(feature_list != DDCA_EMPTY_FEATURE_LIST && *error_msgs_loc));
     return feature_list;
 }
