@@ -34,7 +34,7 @@ DDCA_Feature_List FeatureSelectionDialog::validateCustomFeatureList(char * newva
 
    char ** error_msgs = NULL;
    customFlist = parse_custom_feature_list(newval, &error_msgs);
-   assert(!(customFlist != DDCA_EMPTY_FEATURE_LIST && error_msgs));
+   assert(!(ddca_feature_list_count(customFlist) > 0 && error_msgs));
    if (ddca_feature_list_count(customFlist) == 0) {
       QString qstitle("Feature Code Error");
       QMessageBox::Icon icon = QMessageBox::Critical;
