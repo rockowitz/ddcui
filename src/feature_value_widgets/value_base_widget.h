@@ -72,7 +72,7 @@ protected:
     DDCA_Status             _ddcrc = 0;
     GlobalState&            _globalState = GlobalState::instance();
     int                     _featureValueWidgetHeight = 20;
-    QPalette::ColorRole _savedBackgroundColor;
+    QPalette::ColorRole     _savedBackgroundColor = QPalette::Base;
 
 private:
     const char *            _cls;
