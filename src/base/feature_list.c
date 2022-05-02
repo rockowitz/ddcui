@@ -87,10 +87,8 @@ DDCA_Feature_List parse_custom_feature_list(
            }
        }
        assert(ndx == ntsal);
-       ntsa_free(pieces, /* free_strings */ true);
 
        ASSERT_IFF(ok, errors->len == 0);
-
        if (ok) {
           g_ptr_array_free(errors,true);
           *error_msgs_loc = NULL;
@@ -100,7 +98,8 @@ DDCA_Feature_List parse_custom_feature_list(
           *error_msgs_loc = g_ptr_array_to_ntsa(errors, false);
           g_ptr_array_free(errors, false);
        }
-     }
+    }
+    ntsa_free(pieces, /* free_strings */ true);
 
     if (debug) {
        const char * s = ddca_feature_list_string(feature_list, /*prefix*/ "x", /*sepstr*/ ",");
