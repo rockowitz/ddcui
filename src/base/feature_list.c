@@ -110,7 +110,7 @@ DDCA_Feature_List parse_custom_feature_list(
           ntsa_show(*error_msgs_loc);
        }
     }
-    assert(!(*error_msgs_loc && ntsa_length()(*error_msgs_loc) == 0));
+    assert(!(*error_msgs_loc && ntsa_length(*error_msgs_loc) == 0));
     assert(!(ddca_feature_list_count(feature_list) > 0 && *error_msgs_loc));
     return feature_list;
 }
