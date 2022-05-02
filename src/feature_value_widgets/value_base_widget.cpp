@@ -83,9 +83,9 @@ ValueBaseWidget::~ValueBaseWidget() {
    TRACEMCF(debug, "Executing. this._id = %d", _id);
 
    ddca_free_feature_metadata(_finfo);
-   free((void*)_cls);
 
    TRACEMCF(debug, "Done.");
+   free((void*)_cls);
 }
 
 
