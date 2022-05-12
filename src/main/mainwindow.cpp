@@ -279,11 +279,17 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
        if (debug)
           ddca_report_error_detail(errs, 2);
        QString errMsg(errs->detail);
+       bool permissionsError = false;
        if (errs->cause_ct > 0) {
           for (int ndx = 0; ndx < errs->cause_ct; ndx++) {
               DDCA_Error_Detail * cause = errs->causes[ndx];
+              TRACECF(debug, "errs->status_code=%d", errs->status_code);
+              if (cause->status_code == -13) {    // -EACCES
+
+                 permissionsError = true;
+              }
               if (ndx == 0)
-                 errMsg.append(":\n");
+                 errMsg.append(":\n\n");
               else
                  errMsg.append("\n");
               // char * s = cause->detail;
@@ -291,6 +297,10 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
               QString thisMsg(cause->detail);
               errMsg.append(thisMsg);
           }
+          // if (permissionsError) {
+          //    TRACECF(debug, "Appending URL");
+          //    errMsg.append("<p>For help, see <a href=http://www.ddcutil.com/permissions >ddcutil permissions</a>");
+          // }
        }
        ddca_free_error_detail(errs);
 
@@ -555,6 +565,7 @@ void MainWindow::showSerialMsgBox(QString title, QString text, QMessageBox::Icon
    serialMbox2->setModal(true);
    serialMbox2->setFont(_ui->mainMenuFont);
 #endif
+   // _serialMsgBox->setTextFormat(Qt::RichText);
    _serialMsgBox->setText(text);
    _serialMsgBox->setWindowTitle(title);
    _serialMsgBox->setIcon(icon);
