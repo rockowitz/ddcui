@@ -1,5 +1,36 @@
 # Changelog
 
+## [0.3.0] 2022-06-24
+
+### Added
+
+- CTL-Q terminates application (does not apply if in dialog boxes)
+- Report i2c and hiddev open errors using a message box instead of to the terminal
+
+
+### Changed
+
+- Changes for --require-control-key
+- implement Control Key required status message
+- Control key required now applies to all changes, not just slider
+- "Require control key to move slider" -> "Require control key to change values"
+- Special handling for feature X60: 
+  - allow extra sleep time before validation, on Dell U4320 returned Null Message
+    if getvcap for validation is called too soon
+- For simple NC values, do not include SH in validation (getvcp for feature x60 on U4320 returns non-zero SH)
+
+- cast pointers to ( void* ) to avoid compiler warnings
+
+
+### Fixed
+- Memory leaks
+- Fix free before final use in tracing
+- Custom feature list parsing: fix assert statements
+- Option dialogs: tab key was not jumping to the OK and Cancel buttons
+
+
+
+
 ## [0.2.2] 2022-02-22
 
 ### Fixed
