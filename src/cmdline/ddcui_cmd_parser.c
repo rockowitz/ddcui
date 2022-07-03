@@ -130,7 +130,6 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    Parsed_Ddcui_Cmd * parsed_cmd = new_parsed_ddcui_cmd();
 
    gboolean ddc_flag                = false;
-// gboolean enable_udf_flag         = true;
 // gboolean nousb_flag              = false;
    gboolean report_freed_excp_flag  = false;
    gboolean timestamp_trace_flag    = false;
@@ -138,8 +137,6 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    gboolean version_flag            = false;
    gboolean show_styles_flag        = false;
    gboolean show_active_style_flag  = false;
-// gboolean less_sleep_true_set     = false;
-// gboolean less_sleep_false_set    = false;
 // gboolean use_latest_nc_values_true_set = false;
 // gboolean use_latest_nc_values_false_set = false;
    gboolean hidpi_flag              = false;   //currently used only for testing
@@ -147,7 +144,6 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    gchar**  trace_classes           = NULL;
    gchar**  trace_filenames         = NULL;
    gchar**  trace_functions         = NULL;
-// char *   sleep_multiplier_work   = NULL;
 
 #ifdef DISABLE_VIEW_OPTION
    gchar*   view_work               = NULL;
@@ -183,18 +179,7 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    // output control
 
 #ifdef DISABLED_LIBDDCUTIL_ONLY
-      {"udf",     '\0', 0,    G_OPTION_ARG_NONE,     &enable_udf_flag,  "Enable user defined feature support", NULL},
-      {"noudf",   '\0', G_OPTION_FLAG_REVERSE,
-                              G_OPTION_ARG_NONE,     &enable_udf_flag,  "Disable user defined feature support", NULL},
       {"nousb",  '\0',  0,    G_OPTION_ARG_NONE,     &nousb_flag,       "Do not detect USB devices", NULL},
-
-      // library tuning
-      {"maxtries",'\0', 0,    G_OPTION_ARG_STRING,   &maxtrywork,       "Max try adjustment",  "comma separated list" },
-      {"sleep-multiplier", '\0', 0,
-                              G_OPTION_ARG_STRING,   &sleep_multiplier_work, "Multiplication factor for DDC sleeps", "number"},
-      {"less-sleep" ,'\0', 0, G_OPTION_ARG_NONE, &less_sleep_true_set, "Eliminate some sleeps",  NULL},
-      {"sleep-less" ,'\0', 0, G_OPTION_ARG_NONE, &less_sleep_true_set, "Eliminate some sleeps",  NULL},
-      {"no-sleep-less", '\0', 0, G_OPTION_ARG_NONE, &less_sleep_false_set, "Do not eliminate some sleeps", NULL},
 #endif
 
 
@@ -310,9 +295,6 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
          trcfunc_multiple_call_option_help,
          trcfile_multiple_call_option_help,
          stats_multiple_call_option_help,
-#ifdef DISABLED_LIBDDCUTIL_ONLY
-         maxtries_option_help,
-#endif
          NULL
          );
 
@@ -358,7 +340,6 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    SET_CMDFLAG(CMD_FLAG_THREAD_ID_TRACE,   thread_id_trace_flag);
    SET_CMDFLAG(CMD_FLAG_REPORT_FREED_EXCP, report_freed_excp_flag);
 
-// SET_CMDFLAG(CMD_FLAG_ENABLE_UDF,        enable_udf_flag);
 // SET_CMDFLAG(CMD_FLAG_NOUSB,             nousb_flag);
 
    SET_CMDFLAG(CMD_FLAG_SHOW_STYLES,       show_styles_flag);
@@ -398,69 +379,6 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
       parsed_cmd->include_only_capabilities_features = TRIVAL_UNSET;
 
 
-#ifdef USE_CONFIG_FILE
-// #ifdef REPLACE_NTSA
-   if (maxtrywork) {
-       bool saved_debug = debug;
-       debug = false;
-       // DBGMSF(debug, "retrywork, argument = |%s|", maxtrywork );
-       if (debug)
-          printf("(%s) maxtrywork, argument = |%s|\n", __func__, maxtrywork);
-
-       // Null_Terminated_String_Array pieces = strsplit(maxtrywork, ",");
-       gchar ** pieces = g_strsplit(maxtrywork, ",", -1);
-       // int ntsal = ntsa_length(pieces);
-       int ntsal = g_strv_length(pieces);
-       // DBGMSF(debug, "ntsal=%d", ntsal );
-       if (debug)
-          printf("(%s) ntsal=%d\n", __func__, ntsal);
-       if (ntsal != 3) {
-          fprintf(stderr, "--retries requires 3 values\n");
-          ok = false;
-       }
-       else {
-          int ndx = 0;
-          // char trimmed_piece[10];    // unused
-          for (; pieces[ndx] != NULL; ndx++) {
-             // char * token = strtrim_r(pieces[ndx], trimmed_piece, 10);
-             char * token = g_strstrip(pieces[ndx]);
-             int max_max_tries = ddca_max_max_tries();
-             // DBGMSG("token=|%s|", token);
-             if (strlen(token) > 0 && strcmp(token,".") != 0) {
-                int ival;
-                int ct = sscanf(token, "%d", &ival);
-                if (ct != 1) {
-                   fprintf(stderr, "Invalid --maxtries value: %s\n", token);
-                   ok = false;
-                }
-                else if (ival > max_max_tries) {
-                   fprintf(stderr, "--maxtries value %d exceeds %d\n", ival, max_max_tries);
-                   ok = false;
-                }
-                else {
-                   parsed_cmd->max_tries[ndx] = ival;
-                }
-             }
-          }
-          assert(ndx == ntsal);
-       }
-       // ntsa_free(pieces, /* free_strings */ true);
-       g_strfreev(pieces);
-
-       // DBGMSF(debug, "retries = %d,%d,%d", parsed_cmd->max_tries[0],
-       //                                    parsed_cmd->max_tries[1],
-       //                                 parsed_cmd->max_tries[2]);
-       if (debug)
-          printf("(%s) retries = %d,%d,%d\n",
-                __func__,
-                parsed_cmd->max_tries[0],
-                parsed_cmd->max_tries[1],
-                parsed_cmd->max_tries[2]);
-       debug = saved_debug;
-    }
-// #endif
-#endif
-
    if (custom_feature_set_work) {
       char ** error_msgs;         // Null_Terminated_String_Array error_msgs;
       DDCA_Feature_List flist = parse_custom_feature_list(custom_feature_set_work, &error_msgs);
@@ -479,33 +397,6 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
          }
       }
    }
-
-#ifdef USE_CONFIG_FILE_INSTEAD
-   parsed_cmd->enable_sleep_suppression = TRIVAL_UNSET;
-   if (less_sleep_true_set)
-      parsed_cmd->enable_sleep_suppression = TRIVAL_TRUE;
-   else if (less_sleep_false_set)
-      parsed_cmd->enable_sleep_suppression = TRIVAL_FALSE;
-
-
-   if (sleep_multiplier_work) {
-      // DBGMSF(debug, "sleep_multiplier_work = |%s|", sleep_multiplier_work);
-      float multiplier = 0.0f;
-      bool arg_ok = str_to_float(sleep_multiplier_work, &multiplier);
-      if (arg_ok) {
-         if (multiplier <= 0.0f)
-            arg_ok = false;
-      }
-
-      if (!arg_ok) {
-          fprintf(stderr, "Invalid sleep-multiplier: %s\n", sleep_multiplier_work );
-          ok = false;
-      }
-      else {
-         parsed_cmd->sleep_multiplier = multiplier;
-      }
-   }
-#endif
 
    // #ifdef MULTIPLE_TRACE
       if (trace_classes) {
@@ -623,7 +514,7 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
              DDCUTIL_VMAJOR, DDCUTIL_VMINOR, DDCUTIL_VMICRO, QT_VERSION_STR);
       printf("Executing using libddcutil %s, Qt %s\n\n",
              ddca_ddcutil_extended_version_string(), qVersion());
-      puts("Copyright (C) 2018-2021 Sanford Rockowitz");
+      puts("Copyright (C) 2018-2022 Sanford Rockowitz");
       puts("License GPLv2: GNU GPL version 2 or later <http://gnu.org/licenses/gpl.html>");
       puts("This is free software: you are free to change and redistribute it.");
       puts("There is NO WARRANTY, to the extent permitted by law.");
