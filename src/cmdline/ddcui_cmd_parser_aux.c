@@ -3,7 +3,7 @@
  *  Functions and strings that are independent of the parser package used.
  */
 
-// Copyright (C) 2014-2021 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2014-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 // #include <config.h>
@@ -87,14 +87,4 @@ char * stats_multiple_call_option_help =
        "  If no argument is specified, or ALL is specified, then all statistics classes are\n"
        "  output.\n"
       ;
-#ifdef LIBDDDCUTIL_DDCUTILRC
-char * maxtries_option_help =
-      "Retries:\n"
-      "  The argument to --maxtries is a comma separated list of 3 values:\n"
-      "    maximum write-only exchange count\n"
-      "    maximum write-read exchange count\n"
-      "    maximum multi-part-read exchange count\n"
-      "  A value of \"\" or \".\" leaves the default value unchanged\n"
-      "  e.g. --retries \",.,15\" changes only the maximum multi-part-read exchange count"
-      ;
-#endif
+
