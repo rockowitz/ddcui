@@ -237,9 +237,9 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
                               G_OPTION_ARG_CALLBACK, stats_arg_func,    "Show performance statistics",  "TRIES|ERRORS|CALLS|ALL"},
       {"ddc",     '\0', 0,    G_OPTION_ARG_NONE,     &ddc_flag,         "Report DDC protocol and data errors", NULL},
       {"force-slave-address",
-                  '\0', 0,    G_OPTION_ARG_NONE,     &force_slave_address_true_set, "Override EBUSY errors", NULL},
+                  '\0', 0,    G_OPTION_ARG_NONE,     &force_slave_address_true_set, "Deprecated", NULL},
       {"disable-force-slave-address",
-                  '\0', 0,    G_OPTION_ARG_NONE,     &force_slave_address_false_set, "Don't override EBUSY errors", NULL},
+                  '\0', 0,    G_OPTION_ARG_NONE,     &force_slave_address_false_set, "Deprecated", NULL},
 
 // Pre-GUI queries
       {"styles",   '\0',   0, G_OPTION_ARG_NONE,     &show_styles_flag,     "List known styles",        NULL},
@@ -341,6 +341,11 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    }
    ntsa_free(mangleable_argv, true);
 
+   if (force_slave_address_true_set)
+      fprintf(stderr, "Deprecated option ignored: --force_slave_address\n");
+   if (force_slave_address_false_set)
+      fprintf(stderr, "Deprecated option ignored: --disable-force_slave_address\n");
+
 #define SET_CMDFLAG(_bit, _flag) \
    do { \
       if (_flag) \
@@ -391,13 +396,6 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
 #endif
    else
       parsed_cmd->include_only_capabilities_features = TRIVAL_UNSET;
-
-   if (force_slave_address_true_set)
-      parsed_cmd->enable_force_slave_address = TRIVAL_TRUE;
-   else if (force_slave_address_false_set)
-      parsed_cmd->enable_force_slave_address = TRIVAL_FALSE;
-   else
-      parsed_cmd->enable_force_slave_address = TRIVAL_UNSET;
 
 
 #ifdef USE_CONFIG_FILE
