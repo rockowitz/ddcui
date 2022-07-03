@@ -67,7 +67,6 @@ typedef enum {
    CMD_FLAG_SHOW_ACTIVE_STYLE      = 0x000200,
 // CMD_FLAG_LATEST_NC_VALUE_NAMES  = 0x000400,
 
-   CMD_FLAG_TIMEOUT_I2C_IO         = 0x001000,
 //   CMD_FLAG_DEFER_SLEEPS           = 0x004000,
 //   CMD_FLAG_DSA                    = 0x008000,
 
