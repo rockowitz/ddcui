@@ -227,11 +227,6 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
    if (parsed_cmd->flags & CMD_FLAG_REPORT_FREED_EXCP)
       ddca_enable_error_info(true);
 
-   if (parsed_cmd->enable_force_slave_address == TRIVAL_TRUE)
-      ddca_enable_force_slave_address(true);
-   else if (parsed_cmd->enable_force_slave_address == TRIVAL_FALSE)
-      ddca_enable_force_slave_address(false);
-
 #ifdef USE_CONFIG_FILE
    if (parsed_cmd->max_tries[0] > 0) {
       ddca_set_max_tries(        DDCA_WRITE_ONLY_TRIES, parsed_cmd->max_tries[0]);
