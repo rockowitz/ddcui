@@ -171,7 +171,6 @@ void dbgrpt_parsed_ddcui_cmd(Parsed_Ddcui_Cmd * parsed_cmd) {
       printf("   initial model:             %s\n",   parsed_cmd->model);
       printf("   initial bus number:        %d\n",   parsed_cmd->busno);
 //      printf("   enable sleep suppression:  %s\n",   trival_repr(parsed_cmd->enable_sleep_suppression) );
-      printf("   force slave address:       %s\n",   trival_repr(parsed_cmd->enable_force_slave_address) );
       printf("   hidpi:                     %s\n",   sbool(parsed_cmd->flags & CMD_FLAG_HIDPI));
    }
 }
