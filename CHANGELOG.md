@@ -1,35 +1,29 @@
 # Changelog
 
-## [0.3.0] 2022-06-24
+## [0.3.0] 2022-06-29
 
 ### Added
-
-- CTL-Q terminates application (does not apply if in dialog boxes)
-- Report i2c and hiddev open errors using a message box instead of to the terminal
-
+- CTL-Q terminates **ddcui** (does not apply within dialog boxes)
 
 ### Changed
-
-- Changes for --require-control-key
-- implement Control Key required status message
-- Control key required now applies to all changes, not just slider
-- "Require control key to move slider" -> "Require control key to change values"
+- Errors opening /dev/i2c and /dev/usb/hiddev devices are reporting using a message box
+  instead of to the terminal. These are typically lack of permissions (Linux error EACCESS).
+- Optionally requiring the control key to be pressed when changing feature values now applies
+  to all changes, not just those made using sliders. (The option is set using command line 
+  option ***--require-control-key*** or the UI Options dialog box).
+  - A status message is issued when the control key is required.
 - Special handling for feature X60: 
-  - allow extra sleep time before validation, on Dell U4320 returned Null Message
-    if getvcap for validation is called too soon
-- For simple NC values, do not include SH in validation (getvcp for feature x60 on U4320 returns non-zero SH)
-
-- cast pointers to ( void* ) to avoid compiler warnings
-
+  - Allow extra sleep time before validation.  (It was observed that a Dell U4320 returns
+    a Null Message if getvcap for validation is called too quickly
+- For simple NC values, do not include the SH field in validation.
+  (getvcp for feature x60 on U4320 returns non-zero SH.)
 
 ### Fixed
+- Option dialogs: Tab key was not jumping to the OK and Cancel buttons
+- Fix free() before final use in certain cases of function tracing.
+- Custom feature lists: Fix assert statements.
 - Memory leaks
-- Fix free before final use in tracing
-- Custom feature list parsing: fix assert statements
-- Option dialogs: tab key was not jumping to the OK and Cancel buttons
-
-
-
+- Cast many pointers to ( void* ) to avoid compiler warnings
 
 ## [0.2.2] 2022-02-22
 
