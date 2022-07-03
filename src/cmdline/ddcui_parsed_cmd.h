@@ -56,8 +56,6 @@ typedef enum {
    CMD_FLAG_TIMESTAMP_TRACE        = 0x000002,  // prepend trace and debug msgs with elapsed time
    CMD_FLAG_REPORT_FREED_EXCP      = 0x000004,
    CMD_FLAG_THREAD_ID_TRACE        = 0x000008,
-
-// CMD_FLAG_ENABLE_UDF             = 0x000010,
 // CMD_FLAG_NOUSB                  = 0x000020,
 
    CMD_FLAG_SHOW_STYLES            = 0x000040,
@@ -66,9 +64,6 @@ typedef enum {
    CMD_FLAG_SHOW_UNSUPPORTED       = 0x000100,
    CMD_FLAG_SHOW_ACTIVE_STYLE      = 0x000200,
 // CMD_FLAG_LATEST_NC_VALUE_NAMES  = 0x000400,
-
-//   CMD_FLAG_DEFER_SLEEPS           = 0x004000,
-//   CMD_FLAG_DSA                    = 0x008000,
 
    CMD_FLAG_F1                   = 0x01000000,
    CMD_FLAG_F2                   = 0x02000000,
@@ -94,7 +89,6 @@ typedef struct {
    Parsed_View             view;
    Parsed_Feature_Set      feature_set;
    Parsed_NC_Values_Source nc_values_source;
-//   float                   sleep_multiplier;
    Optional_True_False     include_all_capabilities_features;
    Optional_True_False     include_only_capabilities_features;
    Optional_True_False     enable_sleep_suppression;
