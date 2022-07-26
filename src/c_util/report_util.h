@@ -15,7 +15,7 @@
 #include <stdbool.h>
 /** \endcond */
 
-#include "coredefs.h"
+#include "coredefs_base.h"
 #include "string_util.h"
 
 void rpt_set_default_output_dest(FILE* output_dest);

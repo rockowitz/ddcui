@@ -25,8 +25,8 @@
 #include <unistd.h>
 /** \endcond */
 
-#include "coredefs.h"
-#include "file_util.h"
+#include "coredefs_base.h"
+#include "file_util_base.h"
 #include "string_util.h"
 
 #include "report_util.h"
