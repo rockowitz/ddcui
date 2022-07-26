@@ -15,9 +15,10 @@
 #include <stdbool.h>
 /** \endcond */
 
-#include "coredefs_base.h"   // changed from ddcutil, was coredefs.h
+#include "coredefs.h"
 #include "string_util.h"
 
+void rpt_set_default_output_dest(FILE* output_dest);
 void rpt_push_output_dest(FILE* new_dest);
 void rpt_pop_output_dest();
 FILE * rpt_cur_output_dest();
