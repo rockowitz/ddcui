@@ -17,6 +17,8 @@
     a Null Message if getvcap for validation is called too quickly
 - For simple NC values, do not include the SH field in validation.
   (getvcp for feature x60 on U4320 returns non-zero SH.)
+- Options ***--force-slave-address*** and ***--disable-force-slave-address*** have no effect
+  and are deprecated.
 
 ### Fixed
 - Option dialogs: Tab key was not jumping to the OK and Cancel buttons
