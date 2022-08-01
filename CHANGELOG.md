@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.3.0] 2022-06-29
+## [0.3.0] 2022-07-28
 
 ### Added
 - CTL-Q terminates **ddcui** (does not apply within dialog boxes)
