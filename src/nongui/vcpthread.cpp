@@ -408,21 +408,9 @@ void VcpThread::getvcp(uint8_t featureCode, bool needMetadata)
        }
        TRACECF(debugFunc, "feature_code=0x%02x, ddca_get_non_table_vcp_value() returned %d - %s",
                   featureCode, ddcrc, ddca_rc_name(ddcrc));
-       // don't need to call rpt_ddca_status() if error, error will be reported
-       // in the value field for the feature code
-#ifdef OLD
-        if (ddcrc != 0) {
+       // don't need to call rpt_ddca_status() here if error,
+       // error will be reported in the value field for the feature code
 
-           if (ddcrc != DDCRC_REPORTED_UNSUPPORTED) {
-              rpt_ddca_status(featureCode, __func__, "ddca_get_nontable_vcp_value", ddcrc);
-           }
-        }
-        else {
-            // printf("ddca_get_nontable_vcp_value() returned:\n");
-            // printf("  opcode:   0x%02x, mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x\n",
-            //        feature_code, valrec.mh, valrec.ml, valrec.sh, valrec.sl);
-        }
-#endif
       // if (ddcrc == 0) {  // if get_nontable_vcp_value() succeeded
            // TODO:  get metadata once and cache
            DDCA_Status ddcrc2 = ddca_get_feature_metadata_by_dh(
@@ -434,14 +422,11 @@ void VcpThread::getvcp(uint8_t featureCode, bool needMetadata)
                      featureCode, ddcrc2, ddca_rc_name(ddcrc2));
            // if (featureCode == 0xdf || featureCode == 0xf4 || featureCode == 0xf5)
            //       ddca_dbgrpt_feature_metadata(finfo, 1);
-
            // if (debugFunc && ddcrc2 == 0) {
-           //     // OLD: ddcui_dbgrpt_ddca_feature_metadata(finfo);
            //    ddca_dbgrpt_feature_metadata(finfo, 1);
            // }
            if (ddcrc2 != 0) {
-              rpt_feature_error(FeatureMetadata, featureCode, "ddca_get_capabilitis_string", ddcrc);
-              // cout << "ddca_get_feature_metadata() returned " << ddcrc << endl;
+              rpt_feature_error(FeatureMetadata, featureCode, "ddca_get_feature_data_by_dh", ddcrc);
            }
 
            // whether or not succeeded, set feature info in  _baseModel so FeatureValueWidget can display error
@@ -449,7 +434,6 @@ void VcpThread::getvcp(uint8_t featureCode, bool needMetadata)
 
            _baseModel->setFeatureChecked(featureCode);
        // }  // end, get value succeeded
-
 
        ddcrc = perform_close_display(dh);
     }  // open succeeded
@@ -495,7 +479,6 @@ void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint16_t shsl)
        if (ddcrc != 0) {
           TRACECF(debugFunc, "ddca_set_non_table_vcp_value() returned %d = %s", ddcrc, ddca_rc_name(ddcrc));
           rpt_feature_error(FeatureWrite, feature_code, "ddca_set_non_table_vcp_value", ddcrc);
-
           goto bye;
        }
        if (!writeOnly) {
@@ -515,7 +498,6 @@ void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint16_t shsl)
                                    &valrec,
                                    &ddcrc);
            if (!simulated) {
-               // TRACEC("non-simulated");
                ddcrc = ddca_get_non_table_vcp_value(dh, feature_code, &valrec);
            }
            if (ddcrc != 0) {
@@ -536,10 +518,8 @@ void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint16_t shsl)
                  ok = (sl == valrec.sl && sh == valrec.sh);
               }
               if (!ok) {
-                 // TRACE("Calling rpt_verify_error()");
                  rpt_verify_error(feature_code, "ddca_set_non_table_vcp_value", sh, sl, valrec.sh, valrec.sl);
-              }    // ddca_set_non_table_vcp_value() succeeded
-              // 10/2019 coming here even if verify error???
+              }
               TRACECF(debugFunc, "Calling _baseModel->modelVcpValueUpdate()");
               _baseModel->modelVcpValueUpdate(feature_code, valrec.sh, valrec.sl);
            }  // ddca_get_non_table_vcp_value() succeeded
