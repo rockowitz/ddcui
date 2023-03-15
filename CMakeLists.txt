@@ -21,9 +21,14 @@ message(${VERBOSE} "  ddcui_libddcutil_version:  ${ddcui_libddcutil_version}" )
 option(USE_CCACHE "Use ccache" ON)
 message(STATUS "USE_CCACHE: ${USE_CCACHE}" )
 
-string(APPEND CMAKE_MODULE_PATH  ${CMAKE_SOURCE_DIR}) 
-include(validate_CMAKE_BUILD_TYPE)
+option(DDCUTIL_PROJECT_DIR "Root directory of ddcutil project" OFF)
+message(STATUS "DDCUTIL_PROJECT_DIR: ${DDCUTIL_PROJECT_DIR}")
 
+# set(CMAKE_MODULE_PATH_AUX "/shared/playproj/i2c/data/cmake/ddcutil") 
+# string(APPEND CMAKE_MODULE_PATH  ${CMAKE_SOURCE_DIR} " " ${CMAKE_MODULE_PATH_AUX}) 
+string(APPEND CMAKE_MODULE_PATH  ${CMAKE_SOURCE_DIR} ) 
+
+include(validate_CMAKE_BUILD_TYPE)
 
 project(ddcui VERSION 0.3.0 LANGUAGES C CXX)
 
@@ -69,6 +74,7 @@ message(${VERBOSE} "  INCLUDE:                  $ENV{INCLUDE}")
 message(${VERBOSE} "  LD_LIBRARY_PATH:          $ENV{LD_LIBARARY_PATH}")
 message(${VERBOSE} "  PKG_CONFIG_PATH:          $ENV{PKG_CONFIG_PATH} ")
 message(${VERBOSE} "cmake paths:")
+message(${VERBOSE} "  CMAKE_MODULE_PATH_AUX     ${CMAKE_MODULE_PATH_AUX}")
 message(${VERBOSE} "  CMAKE_MODULE_PATH:        ${CMAKE_MODULE_PATH}")
 message(${VERBOSE} "  CMAKE_PREFIX_PATH:        ${CMAKE_PREFIX_PATH}")
 message(${VERBOSE} "  CMAKE_BINARY_DIR:         ${CMAKE_BINARY_DIR}" )
@@ -102,11 +108,27 @@ message( ${VERBOSE} "  Qt5Help_INCLUDE_DIRS:     ${Qt5Help_INCLUDE_DIRS}"    )
 
 find_package (PkgConfig REQUIRED )
 pkg_check_modules(GLIB2 REQUIRED glib-2.0>=${ddcui_glib_version})
-pkg_check_modules(DDCUTIL REQUIRED ddcutil>=${ddcui_libddcutil_version})
-# set(DDCUTIL_LIBRARY_DIRS /usr/lib/x86_64-linux-gnu/)   # hack for testing
+
+# set (DDCUTIL_PROJECT_DIR "/shared/playproj/i2c")
+message( ${VERBOSE} "  DDCUTIL_PROJECT_DIR:      ${DDCUTIL_PROJECT_DIR}"  )
+
+if ( (DDCUTIL_PROJECT_DIR STREQUAL "OFF")) 
+   message(VERBOSE "Using ddcutil files using pkg_check_modules")
+   pkg_check_modules(DDCUTIL REQUIRED ddcutil>=${ddcui_libddcutil_version})
+   # set(DDCUTIL_LIBRARY_DIRS /usr/lib/x86_64-linux-gnu/)   # hack for testing
+else()
+   message(VERBOSE "Using ddcutil files from ${DDCUTIL_PROJECT_DIR}")
+   set(DDCUTIL_INCLUDE_DIRS ${DDCUTIL_PROJECT_DIR}/src/public)
+   set(DDCUTIL_LIBRARY_DIRS ${DDCUTIL_PROJECT_DIR}/src/.libs)
+   set(DDCUTIL_LIBRARIES ddcutil)
+endif()
+
+
 message( ${VERBOSE} "Set by pkg-config:" )
 message( ${VERBOSE} "  GLIB2_INCLUDE_DIRS:       ${GLIB2_INCLUDE_DIRS}"   )
 message( ${VERBOSE} "  GLIB2_LIBRARIES:          ${GLIB2_LIBRARIES}"      )
+
+message( ${VERBOSE} "  DDCUTIL_PROJECT_DIR:      ${DDCUTIL_PROJECT_DIR}"  )
 message( ${VERBOSE} "  DDCUTIL_INCLUDE_DIRS:     ${DDCUTIL_INCLUDE_DIRS}" )
 message( ${VERBOSE} "  DDCUTIL_LIBRARY_DIRS:     ${DDCUTIL_LIBRARY_DIRS}" )
 message( ${VERBOSE} "  DDCUTIL_LIBRARIES:        ${DDCUTIL_LIBRARIES}"    )
@@ -116,6 +138,7 @@ configure_file(cconfig.h.in config.h)
 set(SOURCES
     src/c_util/data_structures.c
     src/c_util/ddcutil_config_file.c
+	src/c_util/error_info.c
     src/c_util/file_util_base.c
     src/c_util/glib_util.c
     src/c_util/debug_util.c
