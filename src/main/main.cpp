@@ -1,11 +1,12 @@
 /** \file main.cpp */
 
-// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2023 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <glib-2.0/glib.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <syslog.h>
 #include <QtWidgets/QApplication>
 
 #include <ddcutil_c_api.h>
@@ -175,80 +176,121 @@ void dbgrpt_hidpiQApplication(QApplication& coreapp) {
 static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
    bool debug = false;
    if (debug)
-      printf("(%s) Starting. parsed_cmd=%p\n", __func__, (void*)parsed_cmd);
+      printf("(main.cpp:%s) Starting. parsed_cmd=%p\n", __func__, (void*)parsed_cmd);
 
    bool ok = true;
 
-   if (parsed_cmd->traced_functions) {
-      char * funcname = NULL;
-      int ndx = 0;
-      for (funcname = parsed_cmd->traced_functions[0];
-           funcname;
-           funcname = parsed_cmd->traced_functions[++ndx])
-      {
-         printf("(%s) adding traced function: %s\n",  __func__, funcname);
-         ddca_add_traced_function(funcname);
+   ddca_enable_error_info(debug);
+
+   DDCA_Init_Options opts = DDCA_INIT_OPTIONS_NONE;
+   if (parsed_cmd->flags & CMD_FLAG_DISABLE_SYSLOG)
+      opts = DDCA_INIT_OPTIONS_DISABLE_SYSLOG;
+   // if (parsed_cmd->flags & CMD_FLAG_DISABLE_LIBRARY_CONFIG_FILE)
+   if (parsed_cmd->library_options) {
+      // opts = (DDCA_Init_Options) (opts | DDCA_INIT_OPTIONS_DISABLE_CONFIG_FILE);
+   }
+   DDCA_Status rc = ddca_init(parsed_cmd->library_options, opts);
+   if (debug)
+      printf("(main.cpp:%s) ddca_init() returned %d\n", __func__, rc);
+
+   if (rc) {
+     DDCA_Error_Detail * erec = ddca_get_error_detail();
+     if (debug)
+        ddca_report_error_detail(erec, 1);
+     printf("%s\n", erec->detail);
+     for (int ndx = 0; ndx < erec->cause_ct; ndx++) {
+        printf("   %s\n", erec->causes[ndx]->detail);
+     }
+     ddca_free_error_detail(erec);
+     ok = false;
+   }
+   else {
+      if (parsed_cmd->traced_functions) {
+         char * funcname = NULL;
+         int ndx = 0;
+         for (funcname = parsed_cmd->traced_functions[0];
+              funcname;
+              funcname = parsed_cmd->traced_functions[++ndx])
+         {
+            printf("(%s) adding traced function: %s\n",  __func__, funcname);
+            ddca_add_traced_function(funcname);
+         }
       }
-   }
 
-   if (parsed_cmd->traced_files) {
-      char * filename = NULL;
-      int ndx = 0;
-      for (filename = parsed_cmd->traced_files[0];
-           filename;
-           filename = parsed_cmd->traced_files[++ndx]) {
-         printf("(%s) adding traced file: %s\n", __func__, filename);
-         ddca_add_traced_file(filename);
+      if (parsed_cmd->traced_files) {
+         char * filename = NULL;
+         int ndx = 0;
+         for (filename = parsed_cmd->traced_files[0];
+              filename;
+              filename = parsed_cmd->traced_files[++ndx]) {
+            printf("(%s) adding traced file: %s\n", __func__, filename);
+            ddca_add_traced_file(filename);
+         }
       }
+
+      uint16_t work = 0;
+      if (parsed_cmd->flags & CMD_FLAG_TIMESTAMP_TRACE) work |= DDCA_TRCOPT_TIMESTAMP;
+      if (parsed_cmd->flags & CMD_FLAG_THREAD_ID_TRACE) work |= DDCA_TRCOPT_THREAD_ID;
+
+      ddca_set_trace_options((DDCA_Trace_Options) work);
+
+         // flunks --permissive
+         // ddca_set_trace_options(
+         //       ( (parsed_cmd->flags & CMD_FLAG_TIMESTAMP_TRACE) ?  DDCA_TRCOPT_TIMESTAMP : 0) |
+         //       ( (parsed_cmd->flags & CMD_FLAG_THREAD_ID_TRACE) ?  DDCA_TRCOPT_THREAD_ID : 0)
+         //      );
+
+      ddca_add_trace_groups(parsed_cmd->traced_groups);
+
+      // Must be called before any API call that triggers display identification
+      // DDCA_Status rc =  // unused, comment out for now, need to properly set
+   //    ddca_enable_usb_display_detection(parsed_cmd->flags & CMD_FLAG_NOUSB);
+
+   // ddca_enable_udf(              parsed_cmd->flags & CMD_FLAG_ENABLE_UDF);
+
+      if (parsed_cmd->flags & CMD_FLAG_DDCDATA)
+         ddca_enable_report_ddc_errors(true);
+      if (parsed_cmd->flags & CMD_FLAG_REPORT_FREED_EXCP)
+         ddca_enable_error_info(true);
+
+   #ifdef USE_CONFIG_FILE
+      if (parsed_cmd->max_tries[0] > 0) {
+         ddca_set_max_tries(        DDCA_WRITE_ONLY_TRIES, parsed_cmd->max_tries[0]);
+      }
+      if (parsed_cmd->max_tries[1] > 0) {
+         ddca_set_max_tries(       DDCA_WRITE_READ_TRIES, parsed_cmd->max_tries[1]);
+      }
+      if (parsed_cmd->max_tries[2] > 0) {
+         ddca_set_max_tries(       DDCA_MULTI_PART_TRIES, parsed_cmd->max_tries[2]);
+      }
+      if (parsed_cmd->sleep_multiplier != 1.0f) {
+         ddca_set_default_sleep_multiplier(parsed_cmd->sleep_multiplier);
+      }
+
+      if (parsed_cmd->enable_sleep_suppression != TRIVAL_UNSET) {
+         bool val = (parsed_cmd->enable_sleep_suppression == TRIVAL_TRUE) ? true : false;
+         ddca_enable_sleep_suppression(val);
+      }
+   #endif
+
+   #ifdef FOR_TESTING
+      // *** TEMP ***
+      double old = ddca_set_sleep_multiplier(.5);
+      printf("(%s) ddca_set_sleep_multiplier(.5) returned %6.3f\n", __func__, old);
+      double cur = ddca_get_sleep_multiplier();
+      printf("(%s) ddca_get_sleep_multiplier() returned %6.3f\n", __func__, cur);
+      cur = ddca_get_default_sleep_multiplier();
+      printf("(%s) ddca_get_default_sleep_multiplier() returned %6.3f\n", __func__, cur);
+
+      old = ddca_set_default_sleep_multiplier(.0000001);
+      printf("(%s) ddca_set_default_sleep_multiplier(.0000001) returned %6.3f\n", __func__, old);
+      cur = ddca_get_default_sleep_multiplier();
+      printf("(%s) ddca_get_default_sleep_multiplier() returned %6.3f\n", __func__, cur);
+   #endif
    }
-
-   uint16_t work = 0;
-   if (parsed_cmd->flags & CMD_FLAG_TIMESTAMP_TRACE) work |= DDCA_TRCOPT_TIMESTAMP;
-   if (parsed_cmd->flags & CMD_FLAG_THREAD_ID_TRACE) work |= DDCA_TRCOPT_THREAD_ID;
-
-   ddca_set_trace_options((DDCA_Trace_Options) work);
-
-      // flunks --permissive
-      // ddca_set_trace_options(
-      //       ( (parsed_cmd->flags & CMD_FLAG_TIMESTAMP_TRACE) ?  DDCA_TRCOPT_TIMESTAMP : 0) |
-      //       ( (parsed_cmd->flags & CMD_FLAG_THREAD_ID_TRACE) ?  DDCA_TRCOPT_THREAD_ID : 0)
-      //      );
-
-   ddca_add_trace_groups(parsed_cmd->traced_groups);
-
-   // Must be called before any API call that triggers display identification
-   // DDCA_Status rc =  // unused, comment out for now, need to properly set
-//    ddca_enable_usb_display_detection(parsed_cmd->flags & CMD_FLAG_NOUSB);
-
-// ddca_enable_udf(              parsed_cmd->flags & CMD_FLAG_ENABLE_UDF);
-
-   if (parsed_cmd->flags & CMD_FLAG_DDCDATA)
-      ddca_enable_report_ddc_errors(true);
-   if (parsed_cmd->flags & CMD_FLAG_REPORT_FREED_EXCP)
-      ddca_enable_error_info(true);
-
-#ifdef USE_CONFIG_FILE
-   if (parsed_cmd->max_tries[0] > 0) {
-      ddca_set_max_tries(        DDCA_WRITE_ONLY_TRIES, parsed_cmd->max_tries[0]);
-   }
-   if (parsed_cmd->max_tries[1] > 0) {
-      ddca_set_max_tries(       DDCA_WRITE_READ_TRIES, parsed_cmd->max_tries[1]);
-   }
-   if (parsed_cmd->max_tries[2] > 0) {
-      ddca_set_max_tries(       DDCA_MULTI_PART_TRIES, parsed_cmd->max_tries[2]);
-   }
-   if (parsed_cmd->sleep_multiplier != 1.0f) {
-      ddca_set_default_sleep_multiplier(parsed_cmd->sleep_multiplier);
-   }
-
-   if (parsed_cmd->enable_sleep_suppression != TRIVAL_UNSET) {
-      bool val = (parsed_cmd->enable_sleep_suppression == TRIVAL_TRUE) ? true : false;
-      ddca_enable_sleep_suppression(val);
-   }
-#endif
 
    if (debug)
-      printf("(%s) Done.  Returning %s\n", __func__, SBOOL(ok));
+      printf("(main.cpp:%s) Done.  Returning %s\n", __func__, SBOOL(ok));
    return ok;
 }
 
@@ -261,9 +303,12 @@ int main(int argc, char *argv[])
        printf("(%s) prgname = %s, application_name = %s\n",
              __func__, g_get_prgname(), g_get_application_name() );
     }
+    openlog("ddcui", LOG_CONS|LOG_PID, LOG_USER);
     // must be called before parsed_ddcui_command(), o.w. --help reports libddcutil as name
     // n. also sets application_name
     g_set_prgname("ddcui");
+
+    int mainStatus = 0;
 
     // will remove any arguments that it recognizes, e.g. --widgetcount
     QApplication application(argc, argv);
@@ -276,6 +321,7 @@ int main(int argc, char *argv[])
     char *  config_fn;
     if (debug)
        printf("(%s) Calling apply_config_file()\n", __func__);
+
     int apply_config_rc = apply_config_file(
                        "ddcui",
                        argc,
@@ -299,72 +345,83 @@ int main(int argc, char *argv[])
     free(combined_config_file_options);
 
     if (errmsgs->len > 0) {
-       printf("Errors reading ddcui configuration file %s:\n", config_fn);
-       for (guint ndx = 0; ndx < errmsgs->len; ndx++)
-          printf("   %s\n", (char*) g_ptr_array_index(errmsgs, ndx));
+       fprintf(stderr,  "(main.cpp) Error(s) reading ddcui configuration from file %s:\n", config_fn);
+       syslog(LOG_CRIT, "(main.cpp) Error(s) reading ddcui configuration from file %s:",   config_fn);
+       for (guint ndx = 0; ndx < errmsgs->len; ndx++) {
+          fprintf(stderr,  "   %s\n", (char*) g_ptr_array_index(errmsgs, ndx));
+          syslog(LOG_CRIT, "   %s",   (char*) g_ptr_array_index(errmsgs, ndx));
+       }
     }
     g_ptr_array_free(errmsgs, true);
     free(config_fn);
-    if (apply_config_rc < 0)
-       return 1;
+    if (apply_config_rc < 0) {
+       mainStatus = 1;
+    }
+    else {
+       Parsed_Ddcui_Cmd * parsed_cmd = parse_ddcui_command(new_argc, new_argv);
+       if (!parsed_cmd)
+          return 1;
 
-    Parsed_Ddcui_Cmd * parsed_cmd = parse_ddcui_command(new_argc, new_argv);
-    if (!parsed_cmd)
-       return 1;
+       if (parsed_cmd->flags & CMD_FLAG_SHOW_STYLES) {
+          QStringList styles = QStyleFactory::keys();
+          printf("Known styles:\n");
+          for (int ndx = 0;  ndx < styles.size(); ndx++)
+             printf("  %s\n", styles.at(ndx).toLocal8Bit().constData());
+          return 0;
+       }
 
-    if (parsed_cmd->flags & CMD_FLAG_SHOW_STYLES) {
-       QStringList styles = QStyleFactory::keys();
-       printf("Known styles:\n");
-       for (int ndx = 0;  ndx < styles.size(); ndx++)
-          printf("  %s\n", styles.at(ndx).toLocal8Bit().constData());
-       return 0;
+       if (parsed_cmd->flags & CMD_FLAG_SHOW_ACTIVE_STYLE) {
+          const char * styleClass = QApplication::style()->metaObject()->className();
+          printf("Active style: %s\n", styleClass);
+       }
+
+       // local, not in ddcutil library
+        enable_trace_show_time(     parsed_cmd->flags & CMD_FLAG_TIMESTAMP_TRACE);
+        enable_trace_show_thread_id(parsed_cmd->flags & CMD_FLAG_THREAD_ID_TRACE);
+
+       if (!init_ddcutil_library(parsed_cmd)) {
+          mainStatus = 1;
+       }
+       else {
+
+          if (parsed_cmd->flags & CMD_FLAG_F1) {
+             dbgrpt_hidpi_environment_vars();
+             dbgrpt_hidpiQApplication(application);
+          }
+
+          GlobalState & globalState = GlobalState::instance();
+          init_core();
+
+          if (debug)
+             printf("(%s) Calling MainWindow constructor\n", __func__);
+          MainWindow w(parsed_cmd);
+          if (debug)
+             printf("(%s) MainWindow constructor completed\n", __func__);
+          globalState._mainWindow = &w;
+          globalState._application = &application;
+
+          // without w.show(), initial serial message box does not appear over MainWindow
+          w.show();
+
+      #ifdef PERSISTENT_SERIAL_MSG_BOX
+          w.initSerialMsgbox();
+          // how to defer until after main event loop started, i.e. a.exec() called
+          w.start_msgBoxThread();
+      #endif
+
+          if (debug)
+             printf("(%s) Calling Application::exec()\n", __func__);
+          mainStatus = application.exec();
+          if (debug)
+             printf("(%s) Application::exec() returned %d\n", __func__, mainStatus);
+          ddca_show_stats(parsed_cmd->stats_types,
+                          false,              // include_per_thread_data
+                          0);                 // depth
+
+          free_parsed_ddcui_cmd(parsed_cmd);   // make valgrind happier
+       }
     }
 
-    if (parsed_cmd->flags & CMD_FLAG_SHOW_ACTIVE_STYLE) {
-       const char * styleClass = QApplication::style()->metaObject()->className();
-       printf("Active style: %s\n", styleClass);
-    }
-
-    // local, not in ddcutil library
-     enable_trace_show_time(     parsed_cmd->flags & CMD_FLAG_TIMESTAMP_TRACE);
-     enable_trace_show_thread_id(parsed_cmd->flags & CMD_FLAG_THREAD_ID_TRACE);
-
-    if (!init_ddcutil_library(parsed_cmd))
-       return 1;
-
-    if (parsed_cmd->flags & CMD_FLAG_F1) {
-       dbgrpt_hidpi_environment_vars();
-       dbgrpt_hidpiQApplication(application);
-    }
-
-    GlobalState & globalState = GlobalState::instance();
-    init_core();
-
-    if (debug)
-       printf("(%s) Calling MainWindow constructor\n", __func__);
-    MainWindow w(parsed_cmd);
-    if (debug)
-       printf("(%s) MainWindow constructor completed\n", __func__);
-    globalState._mainWindow = &w;
-    globalState._application = &application;
-
-    // without w.show(), initial serial message box does not appear over MainWindow
-    w.show();
-
-#ifdef PERSISTENT_SERIAL_MSG_BOX
-    w.initSerialMsgbox();
-    // how to defer until after main event loop started, i.e. a.exec() called
-    w.start_msgBoxThread();
-#endif
-
-    if (debug)
-       printf("(%s) Calling Application::exec()\n", __func__);
-    int mainStatus = application.exec();
-    if (debug)
-       printf("(%s) Application::exec() returned %d\n", __func__, mainStatus);
-    ddca_show_stats(parsed_cmd->stats_types,
-                    false,              // include_per_thread_data
-                    0);                 // depth
-    // return mainStatus;
+bye:
     exit(mainStatus);
 }
