@@ -1,14 +1,14 @@
 /** @file string_util.c
+ *
  *  String utility functions
  */
 
-// Copyright (C) 2014-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2014-2023 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 
 /** \cond */
-// for strcasestr()
-// #define _GNU_SOURCE
+#define _GNU_SOURCE
 
 #include <assert.h>
 #include <ctype.h>
@@ -404,6 +404,23 @@ char * strjoin( const char ** pieces, const int ct0, const char * sepstr) {
    return result;
 }
 
+
+// TO DO: generalize
+char * int_array_to_string(uint16_t * start, int ct) {
+   int bufsz = ct*10;
+   char * buf = calloc(1, bufsz);
+   int next = 0;
+   for (int ctr =0; ctr < ct && next < bufsz; ctr++) {
+      g_snprintf(buf+next, bufsz-next,"%s%d", (next > 0) ? ", " : "", *(start+ctr) );
+      next = strlen(buf);
+   }
+   // DBGMSG("start=%p, ct=%d, returning %s", start, ct, buf);
+   return buf;
+}
+
+
+
+
 #ifdef FUTURE
 // YAGNI: String_Array
 
@@ -443,7 +460,7 @@ Null_Terminated_String_Array strsplit(const char * str_to_split, const char * de
    char** workstruct = calloc(sizeof(char *), max_pieces+1);
    int piecect = 0;
 
-   char * str_to_split_dup = strdup(str_to_split);
+   char * str_to_split_dup = g_strdup(str_to_split);
    char * rest = str_to_split_dup;
    char * token;
    // originally token assignment was in while() clause, but valgrind
@@ -453,7 +470,7 @@ Null_Terminated_String_Array strsplit(const char * str_to_split, const char * de
       if (debug)
          printf("(%s) token: |%s|\n", __func__, token);
       if (strlen(token) > 0)
-         workstruct[piecect++] = strdup(token);
+         workstruct[piecect++] = g_strdup(token);
       token = strsep(&rest, delims);
    }
    if (debug)
@@ -504,7 +521,7 @@ strsplit_maxlength(
              __func__, max_piece_length, delims, str_to_split);
 
    GPtrArray * pieces = g_ptr_array_sized_new(20);
-   char * str_to_split2 = strdup(str_to_split);   // work around constness
+   char * str_to_split2 = g_strdup(str_to_split);   // work around constness
    char * start = str_to_split2;
    char * str_to_split2_end = str_to_split2 + strlen(str_to_split);
    if (debug)
@@ -622,7 +639,7 @@ Null_Terminated_String_Array ntsa_join(
    char ** from = a1;
    while (*from) {
       if (dup)
-         *to = strdup(*from);
+         *to = g_strdup(*from);
       else
          *to = *from;
       to++;
@@ -631,7 +648,7 @@ Null_Terminated_String_Array ntsa_join(
    from = a2;
    while (*from) {
       if (dup)
-         *to = strdup(*from);
+         *to = g_strdup(*from);
       else
          *to = *from;
       to++;
@@ -660,7 +677,7 @@ Null_Terminated_String_Array ntsa_copy(Null_Terminated_String_Array a1, bool dup
    char ** from = a1;
    while (*from) {
       if (dup)
-         *to = strdup(*from);
+         *to = g_strdup(*from);
       else
          *to = *from;
       to++;
@@ -679,10 +696,10 @@ Null_Terminated_String_Array  ntsa_prepend(
    int new_ct = old_ct + 1;
    Null_Terminated_String_Array new_array = calloc((new_ct+1), sizeof(char *));
    char ** to = new_array;
-   *to++ = (dup) ? strdup(value) : value;
+   *to++ = (dup) ? g_strdup(value) : value;
    char ** from = old_array;
    while (*from) {
-      *to++ = (dup) ? strdup(*from) : *from;
+      *to++ = (dup) ? g_strdup(*from) : *from;
       from++;
    }
    *to = NULL;
@@ -794,7 +811,7 @@ g_ptr_array_to_ntsa(
    Null_Terminated_String_Array ntsa = calloc(gparray->len+1, sizeof(char *));
    for (guint ndx=0; ndx < gparray->len; ndx++) {
       if (duplicate)
-         ntsa[ndx] = strdup(g_ptr_array_index(gparray,ndx));
+         ntsa[ndx] = g_strdup(g_ptr_array_index(gparray,ndx));
       else
          ntsa[ndx] = g_ptr_array_index(gparray,ndx);
    }
@@ -840,7 +857,7 @@ void strlower(char * s) {
 char * strdup_uc(const char* s) {
    if (!s)
       return NULL;
-   char * us = strdup( s );
+   char * us = g_strdup( s );
    char * p = us;
    while (*p) {*p=toupper(*p); p++; }
    return us;
@@ -967,10 +984,10 @@ bool sbuf_append(char * buf, int bufsz, char * sepstr, char * nextval)
 // Numeric conversion
 //
 
-/** Converts a decimal or hexadecimal string to an integer value.
+/** Converts a decimal or hexadecimal string to a long integer value.
  *
  * @param sval   string representing an integer
- * @param p_ival address at which to store integer value
+ * @param p_ival address at which to store long integer value
  * @param base   10, 16, or 0 (see below)
  * @return true if conversion succeeded, false if it failed
  *
@@ -986,7 +1003,7 @@ bool sbuf_append(char * buf, int bufsz, char * sepstr, char * nextval)
  * @remark
  * This function wraps system function strtol(), hiding the ugly details.
  */
-bool str_to_int(const char * sval, int * p_ival, int base)
+bool str_to_long(const char * sval, long * p_ival, int base)
 {
    assert (base == 0 || base == 10 || base == 16);
    bool debug = false;
@@ -997,25 +1014,57 @@ bool str_to_int(const char * sval, int * p_ival, int base)
    bool ok = false;
    if (sval) {
       if ( *sval != '\0') {
-         long result = strtol(sval, &endptr, base); // allow hex
+         char * work = (sval[0] == 'x' || sval[0] == 'X')
+                          ? g_strdup_printf("0%s", sval)
+                          : strdup(sval);
+         if (debug)
+            printf("(%s) work = %s\n", __func__, work);
+
+         long result = strtol(work, &endptr, base); // allow hex
          // printf("(%s) sval=%p, endptr=%p, *endptr=|%c| (0x%02x), result=%ld\n",
          //        __func__, sval, endptr, *endptr, *endptr, result);
          if (*endptr == '\0') {
             *p_ival = result;
             ok = true;
          }
+         free(work);
       }
    }
 
    if (debug) {
       if (ok)
-        printf("(%s) sval=%s, Returning: %s, *ival = %d\n", __func__, sval, sbool(ok), *p_ival);
+        printf("(%s) sval=%s, Returning: %s, *ival = %ld\n", __func__, sval, sbool(ok), *p_ival);
       else
         printf("(%s) sval=%s, Returning: %s\n", __func__, sval, sbool(ok));
    }
    return ok;
 }
 
+
+/** Converts a decimal or hexadecimal string to an integer value.
+ *
+ * @param sval   string representing an integer
+ * @param p_ival address at which to store integer value
+ * @param base   10, 16, or 0 (see below)
+ * @return true if conversion succeeded, false if it failed
+ *
+ * @remark
+ * This function is implemented using #str_to_long().  See the documentation
+ * of that function for details.
+ * This function returns false if the value returned by #str_to_long() does
+ * fit in an int.
+ */
+bool str_to_int(const char * sval, int * p_ival, int base)
+{
+   long lval;
+   bool result = str_to_long(sval, &lval, base);
+   if (result) {
+      *p_ival = lval;
+      if (*p_ival!= lval)     // ensure that lval fits in an int
+         result = false;
+   }
+   return result;
+}
 
 /** Converts a string to a float value.
  *

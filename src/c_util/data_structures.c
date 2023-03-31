@@ -1,8 +1,6 @@
-/** @file data_structures.c
- *  General purpose data structures
- */
+/** @file data_structures.c  General purpose data structures */
 
-// Copyright (C) 2014-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2014-2023 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 /** \cond */
@@ -11,7 +9,8 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <string.h>        // C standard library
+#include <strings.h>      
 #include <sys/param.h>     // for MIN, MAX
 /** \endcond */
 
@@ -423,6 +422,65 @@ csb_to_g_ptr_array(Circular_String_Buffer * csb) {
 }
 
 
+#ifdef OLD
+//
+// Circular Integer Buffer
+//
+
+typedef struct {
+   int *    values;
+   int      size;
+   int      ct;
+} Circular_Integer_Buffer;
+
+
+/** Allocates a new #Circular_Integer_Buffer
+ *
+ *  @param  size  buffer size (number of entries)
+ *  @return newly allocated #Circular_Integer_Buffer
+ */
+Circular_Integer_Buffer *
+cib_new(int size) {
+   Circular_Integer_Buffer * cib = calloc(1, sizeof(Circular_Integer_Buffer));
+   cib->values = calloc(size, sizeof(int));
+   cib->size = size;
+   cib->ct = 0;
+   return cib;
+}
+
+
+void cib_free(Circular_Integer_Buffer * cib) {
+   free(cib->values);
+   free(cib);
+}
+
+
+/** Appends an integer to a #Circular_Integer_Buffer.
+ *
+ *  @param   cib   #Circular_Integer_Buffer
+ *  @param   value value to append
+ */
+void
+cib_add(Circular_Integer_Buffer * cib, int value) {
+    int nextpos = cib->ct % cib->size;
+    // printf("(%s) Adding at ct %d, pos %d, value %d\n", __func__, cib->ct, nextpos, value);
+       cib->values[nextpos] = value;
+    cib->ct++;
+}
+
+
+void cib_get_latest(Circular_Integer_Buffer * cib, int ct, int latest_values[]) {
+   assert(ct <= cib->ct);
+   int ctr = 0;
+
+   while(ctr < ct) {int_min
+      int ndx = (ctr > 0) ? (ctr-1) % cib->size : cib->size - 1;
+      latest_values[ctr] = cib->values[ ndx ];
+   }
+}
+
+#endif
+
 
 //
 // Identifier id to name and description lookup
@@ -568,7 +626,7 @@ char * vnt_interpret_flags(
         }
         cur_entry++;
      }
-     char * result = strdup(sbuf->str);
+     char * result = g_strdup(sbuf->str);
      g_string_free(sbuf, true);
 
      if (debug)
@@ -899,8 +957,8 @@ Bit_Set_256 bs256_insert(
     result.bytes[bytendx] |= flagbit;
 
     if (debug) {
-       char * bs1 = strdup(bs256_to_string(bitset,  "",""));
-       char * bs2 = strdup(bs256_to_string(result, "",""));
+       char * bs1 = g_strdup(bs256_to_string(bitset,  "",""));
+       char * bs2 = g_strdup(bs256_to_string(result, "",""));
        printf("(%s) old bitstring=%s, value %d, returning: %s\n",
               __func__, bs1, bitno, bs2);
        free( bs1);

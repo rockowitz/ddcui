@@ -2,11 +2,11 @@
  *  String utility functions header file
  */
 
-// Copyright (C) 2014-2021 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2014-2023 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#ifndef STRINGUTIL_H_
-#define STRINGUTIL_H_
+#ifndef STRING_UTIL_H_
+#define STRING_UTIL_H_
 
 /** \cond */
 #include <stdbool.h>
@@ -65,6 +65,8 @@ int matches_by_func(    const char * word, const char ** match_list, String_Comp
 int exactly_matches_any(const char * word, const char ** match_list);
 int starts_with_any(    const char * word, const char ** match_list);
 
+char * int_array_to_string(uint16_t * start, int ct);
+
 /** pointer to null-terminated array of strings */
 typedef char** Null_Terminated_String_Array;    // equivalent to GStrv
 void ntsa_free(  Null_Terminated_String_Array string_array, bool free_strings);
@@ -91,7 +93,8 @@ Null_Terminated_String_Array g_ptr_array_to_ntsa(GPtrArray * garray, bool duplic
 // Numeric conversion
 //
 
-bool str_to_int(const char * sval, int * p_ival, int base);
+bool str_to_long( const char * sval, long *  p_ival, int base);
+bool str_to_int(  const char * sval, int *   p_ival, int base);
 bool str_to_float(const char * sval, float * p_fval);
 
 
@@ -150,4 +153,4 @@ bool apply_filter_terms(const char * text, char ** terms, bool ignore_case);
 #endif
 
 
-#endif /* STRINGUTIL_H_ */
+#endif /* STRING_UTIL_H_ */
