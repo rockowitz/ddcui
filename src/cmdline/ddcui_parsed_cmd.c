@@ -1,6 +1,6 @@
 /** @file ddcui_parsed_cmd.c - parsed ddcui command line */
 
-// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2023 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 
@@ -146,6 +146,7 @@ void dbgrpt_parsed_ddcui_cmd(Parsed_Ddcui_Cmd * parsed_cmd) {
       }
       else
          printf("   traced_files:              none\n" );
+      printf("   library_options:           %s\n",   parsed_cmd->library_options);
 
       // char buf[20];
       // snprintf(buf,20, "%d,%d,%d", parsed_cmd->max_tries[0], parsed_cmd->max_tries[1], parsed_cmd->max_tries[2] );
@@ -169,6 +170,19 @@ void dbgrpt_parsed_ddcui_cmd(Parsed_Ddcui_Cmd * parsed_cmd) {
       printf("   initial model:             %s\n",   parsed_cmd->model);
       printf("   initial bus number:        %d\n",   parsed_cmd->busno);
       printf("   hidpi:                     %s\n",   sbool(parsed_cmd->flags & CMD_FLAG_HIDPI));
+      printf("   disable syslog:            %s\n",   sbool(parsed_cmd->flags & CMD_FLAG_DISABLE_SYSLOG));
+      printf("   disable library config file: %s\n", sbool(parsed_cmd->flags & CMD_FLAG_DISABLE_LIBRARY_CONFIG_FILE));
+
+      printf("   f1:                        %s\n",   sbool(parsed_cmd->flags & CMD_FLAG_F1) );
+      printf("   f2:                        %s\n",   sbool(parsed_cmd->flags & CMD_FLAG_F2) );
+      printf("   f3:                        %s\n",   sbool(parsed_cmd->flags & CMD_FLAG_F3) );
+      printf("   f4:                        %s\n",   sbool(parsed_cmd->flags & CMD_FLAG_F4) );
+      printf("   f5:                        %s\n",   sbool(parsed_cmd->flags & CMD_FLAG_F5) );
+      printf("   f6:                        %s\n",   sbool(parsed_cmd->flags & CMD_FLAG_F6) );
+      printf("   i1 set:                    %s\n",   sbool(parsed_cmd->flags & CMD_FLAG_I1_SET) );
+      printf("   i1:                        %d\n",   parsed_cmd->i1);
+      printf("   i2 set:                    %s\n",   sbool(parsed_cmd->flags & CMD_FLAG_I2_SET) );
+      printf("   i2:                        %d\n",   parsed_cmd->i2);
    }
 }
 

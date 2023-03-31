@@ -1,6 +1,6 @@
 /** @file ddcui_parsed_cmd.h - parsed ddcui command line */
 
-// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2023 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef DDCUI_PARSED_CMD_H_
@@ -71,8 +71,12 @@ typedef enum {
    CMD_FLAG_F4                   = 0x08000000,
    CMD_FLAG_F5                   = 0x10000000,
    CMD_FLAG_F6                   = 0x20000000,
+   CMD_FLAG_I1_SET               = 0x40000000,
+   CMD_FLAG_I2_SET               = 0x80000000,
 
-   CMD_FLAG_HIDPI                = 0x40000000,
+   CMD_FLAG_HIDPI               = 0x100000000,
+   CMD_FLAG_DISABLE_SYSLOG      = 0x200000000,
+   CMD_FLAG_DISABLE_LIBRARY_CONFIG_FILE = 0x400000000,
 
 } Parsed_Cmd_Flags;
 
@@ -84,7 +88,8 @@ typedef struct {
    DDCA_Trace_Group        traced_groups;
    char **                 traced_files;
    char **                 traced_functions;
-//   int                     max_tries[3];
+   char *                  library_options;  // unparsed string passed to libddcutil
+// int                     max_tries[3];
    Parsed_Cmd_Flags        flags;
    Parsed_View             view;
    Parsed_Feature_Set      feature_set;
@@ -95,6 +100,8 @@ typedef struct {
    char *                  model;
    int                     busno;
    DDCA_Feature_List       custom_feature_list;
+   int                     i1;     // utility options
+   int                     i2;     // utility options
 } Parsed_Ddcui_Cmd;
 
 

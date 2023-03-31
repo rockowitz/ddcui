@@ -2,7 +2,7 @@
  * ddcui command line parser
  */
 
-// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2023 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <config.h>
@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <syslog.h>
 
 #include <QtCore/qglobal.h>
 #include <QtCore/qconfig.h>
@@ -21,6 +22,7 @@
 #include <ddcutil_types.h>
 #include <ddcutil_c_api.h>
 
+#include "c_util/report_util.h"
 #include "c_util/string_util.h"
 #include "base/ddcui_parms.h"
 #include "base/feature_list.h"
@@ -78,6 +80,8 @@ gboolean stats_arg_func(const    gchar* option_name,
 }
 
 
+
+
 // signature GOptionParseFunc()
 gboolean pre_parse_hook(
       GOptionContext * context,
@@ -117,53 +121,55 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    if (debug) {
       printf("(%s) Starting\n", __func__ );
 
-      printf("argc=%d\n", argc);
+      printf("(%s) argc=%d\n", __func__, argc);
       for (int ndx=0; ndx < argc; ndx++) {
-         printf("argv[%d] = |%s|\n", ndx, argv[ndx]);
+         printf("(%s) argv[%d] = |%s|\n", __func__, ndx, argv[ndx]);
       }
+      assert(argc == ntsa_length(argv));
 
       printf("(%s) prgname = %s, application_name = %s\n",
              __func__, g_get_prgname(), g_get_application_name() );
    }
-   // g_set_application_name("ddcui1");
 
    Parsed_Ddcui_Cmd * parsed_cmd = new_parsed_ddcui_cmd();
 
-   gboolean ddc_flag                = false;
-// gboolean nousb_flag              = false;
-   gboolean report_freed_excp_flag  = false;
-   gboolean timestamp_trace_flag    = false;
-   gboolean thread_id_trace_flag    = false;
-   gboolean version_flag            = false;
-   gboolean show_styles_flag        = false;
-   gboolean show_active_style_flag  = false;
-// gboolean use_latest_nc_values_true_set = false;
+   gboolean ddc_flag                       = false;
+// gboolean nousb_flag                     = false;
+   gboolean report_freed_excp_flag         = false;
+   gboolean timestamp_trace_flag           = false;
+   gboolean thread_id_trace_flag           = false;
+   gboolean version_flag                   = false;
+   gboolean show_styles_flag               = false;
+   gboolean show_active_style_flag         = false;
+// gboolean use_latest_nc_values_true_set  = false;
 // gboolean use_latest_nc_values_false_set = false;
-   gboolean hidpi_flag              = false;   //currently used only for testing
-   gchar**  cmd_and_args            = NULL;
-   gchar**  trace_classes           = NULL;
-   gchar**  trace_filenames         = NULL;
-   gchar**  trace_functions         = NULL;
+   gboolean hidpi_flag                     = false;   //currently used only for testing
+   gchar**  cmd_and_args                   = NULL;
+   gchar**  trace_classes                  = NULL;
+   gchar**  trace_filenames                = NULL;
+   gchar**  trace_functions                = NULL;
+   gboolean disable_syslog                 = false;
+// gboolean disable_libddcutil_config_file = false;
 
 #ifdef DISABLE_VIEW_OPTION
-   gchar*   view_work               = NULL;
+   gchar*   view_work                      = NULL;
 #endif
-   gchar*   nc_values_source_work   = NULL;
-   gchar*   feature_set_work        = NULL;
-   gchar*   custom_feature_set_work = NULL;
-   gboolean control_key_required    = false;
-   gboolean show_unsupported_features = false;
+   gchar*   nc_values_source_work          = NULL;
+   gchar*   feature_set_work               = NULL;
+   gchar*   custom_feature_set_work        = NULL;
+   gboolean control_key_required           = false;
+   gboolean show_unsupported_features      = false;
 
-   gboolean only_capabilities_true_set  = false;
-// gboolean only_capabilities_false_set = false;
-   gboolean all_capabilities_true_set   = false;
-// gboolean all_capabilities_false_set  = false;
+   gboolean only_capabilities_true_set     = false;
+// gboolean only_capabilities_false_set    = false;
+   gboolean all_capabilities_true_set      = false;
+// gboolean all_capabilities_false_set     = false;
 
-   gboolean force_slave_address_true_set = false;
-   gboolean force_slave_address_false_set = false;
+   gboolean force_slave_address_true_set   = false;
+   gboolean force_slave_address_false_set  = false;
 
-   gboolean debug_parse             = false;
-   gboolean parse_only              = false;
+   gboolean debug_parse                    = false;
+   gboolean parse_only                     = false;
 
    gboolean f1_flag        = false;
    gboolean f2_flag        = false;
@@ -173,71 +179,78 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    gboolean f6_flag        = false;
 
    GOptionEntry public_option_entries[] = {
-   //  long_name short flags option-type          gpointer           description                    arg description
+   //  long_name short flags  option-type            gpointer           description                    arg description
    //  monitor selection options
-
-   // output control
-
-#ifdef DISABLED_LIBDDCUTIL_ONLY
-      {"nousb",  '\0',  0,    G_OPTION_ARG_NONE,     &nousb_flag,       "Do not detect USB devices", NULL},
-#endif
-
 
    // Options dialog
 
 #ifdef DISABLE_VIEW_OPTION
-      {"view",     '\0',   0, G_OPTION_ARG_STRING,   &view_work,            "Initial view",             "Summary|Capabilities|Features"},
+      {"view",      '\0',  0, G_OPTION_ARG_STRING,   &view_work,             "Initial view",             "Summary|Capabilities|Features"},
 #endif
       {"require-control-key",
-                   '\0',   0, G_OPTION_ARG_NONE,     &control_key_required, "Control key must be pressed to move slider", NULL},
+                   '\0',   0, G_OPTION_ARG_NONE,     &control_key_required,  "Control key must be pressed to move slider", NULL},
       {"nc-values-source",
-                   '\0',   0, G_OPTION_ARG_STRING,   &nc_values_source_work,  "Initial NC values source",   "MMCS|Capabilities|Both"},
+                   '\0',   0, G_OPTION_ARG_STRING,   &nc_values_source_work, "Initial NC values source",   "MMCS|Capabilities|Both"},
 
       {"feature-set",
-                   '\0',   0, G_OPTION_ARG_STRING,   &feature_set_work,  "Feature set selection",
+                   '\0',   0, G_OPTION_ARG_STRING,   &feature_set_work,      "Feature set selection",
                                                                                    "MMCS|Capabilities|Manufacturer|Color|Scan"},
-      // {"use-latest-nc-values",
-      //              '\0',   0, G_OPTION_ARG_NONE,     &use_latest_nc_values_true_set, "Use NC values from the latest MCCS version", NULL},
+//    {"use-latest-nc-values",
+//                 '\0',   0, G_OPTION_ARG_NONE,     &use_latest_nc_values_true_set, "Use NC values from the latest MCCS version", NULL},
 
       {"custom-feature-set",
-                  '\0',   0, G_OPTION_ARG_STRING,   &custom_feature_set_work, "User feature set definition",
+                   '\0',   0, G_OPTION_ARG_STRING,    &custom_feature_set_work, "User feature set definition",
                                                                     "comma separated list of feature codes"},
       {"show-unsupported",
-                   '\0',   0, G_OPTION_ARG_NONE,      &show_unsupported_features, "Show unsupported features", NULL},
+                   '\0',   0, G_OPTION_ARG_NONE,     &show_unsupported_features, "Show unsupported features", NULL},
       {"only-capabilities",
-                   '\0',   0, G_OPTION_ARG_NONE,      &only_capabilities_true_set, "Include only values in capabilities", NULL},
+                   '\0',   0, G_OPTION_ARG_NONE,     &only_capabilities_true_set, "Include only values in capabilities", NULL},
 //    {"not-only-capabilities",
 //                 '\0',  0, G_OPTION_ARG_NONE,      &only_capabilities_false_set, "Do not exclude values only in MCCS", NULL},
       {"all-capabilities",
-                   '\0',   0, G_OPTION_ARG_NONE,      &all_capabilities_true_set, "Include all values in capabilities", NULL},
-//      {"not-all-capabilities",
-//                     '\0', 0, G_OPTION_ARG_NONE,      &all_capabilities_false_set, "Negate include all values in capabilities", NULL},
+                   '\0',   0, G_OPTION_ARG_NONE,     &all_capabilities_true_set, "IncG_OPTION_ARG_INTlude all values in capabilities", NULL},
+//    {"not-all-capabilities",
+//                 '\0', 0, G_OPTION_ARG_NONE,       &all_capabilities_false_set, "Negate include all values in capabilities", NULL},
 
 // Display selection
-      {"model",    '\0',   0, G_OPTION_ARG_STRING, &parsed_cmd->model,                "Model of default display",              NULL},
-//    {"bus",      '\0',   0, G_OPTION_ARG_INT,    &parsed_cmd->busno,    "I2C bus number",                        "integer"},
+      {"model",    '\0',   0, G_OPTION_ARG_STRING,   &parsed_cmd->model,                "Model of default display",              NULL},
+//    {"bus",      '\0',   0, G_OPTION_ARG_INT,      &parsed_cmd->busno,    "I2C bus number",                        "integer"},
+#ifdef DISABLED_LIBDDCUTIL_ONLY
+      {"nousb",    '\0',   0, G_OPTION_ARG_NONE,     &nousb_flag,       "Do not detect USB devices", NULL},
+#endif
 
 // Tuning
-      {"stats",   's',  G_OPTION_FLAG_OPTIONAL_ARG,
-                              G_OPTION_ARG_CALLBACK, stats_arg_func,    "Show performance statistics",  "TRIES|ERRORS|CALLS|ALL"},
-      {"ddc",     '\0', 0,    G_OPTION_ARG_NONE,     &ddc_flag,         "Report DDC protocol and data errors", NULL},
+      {"stats",    's',  G_OPTION_FLAG_OPTIONAL_ARG,
+                            G_OPTION_ARG_CALLBACK, stats_arg_func,    "Show performance statistics",  "TRIES|ERRORS|CALLS|ALL"},
+      {"ddc",      '\0', 0, G_OPTION_ARG_NONE,     &ddc_flag,         "Report DDC protocol and data errors", NULL},
       {"force-slave-address",
-                  '\0', 0,    G_OPTION_ARG_NONE,     &force_slave_address_true_set, "Deprecated", NULL},
+                   '\0', 0, G_OPTION_ARG_NONE,     &force_slave_address_true_set, "Deprecated", NULL},
       {"disable-force-slave-address",
-                  '\0', 0,    G_OPTION_ARG_NONE,     &force_slave_address_false_set, "Deprecated", NULL},
+                   '\0', 0, G_OPTION_ARG_NONE,     &force_slave_address_false_set, "Deprecated", NULL},
 
 // Pre-GUI queries
-      {"styles",   '\0',   0, G_OPTION_ARG_NONE,     &show_styles_flag,     "List known styles",        NULL},
-      {"show-style", '\0', 0, G_OPTION_ARG_NONE,     &show_active_style_flag, "Show active style",      NULL},
-      {"version",  'V',    0, G_OPTION_ARG_NONE,     &version_flag,         "Show version information", NULL},
+      {"styles",   '\0', 0, G_OPTION_ARG_NONE,     &show_styles_flag,            "List known styles",   NULL},
+      {"show-style",'\0',0, G_OPTION_ARG_NONE,     &show_active_style_flag,      "Show active style",   NULL},
+
+// libddcutil options
+      {"libopts",  '\0', 0, G_OPTION_ARG_STRING,   &parsed_cmd->library_options, "libddcutil options",  "string"},
+//    {"disable-libddcutil-config-file",
+//                 '\0', 0, G_OPTION_ARG_NONE,     &disable_libddcutil_config_file, "Ignore config file for libddcutil", NULL},
+// output control
+      {"disable-syslog",
+                   '\0', 0, G_OPTION_ARG_NONE,     &disable_syslog,       "Do not write to system log", NULL},
+
+
+      {"version",  'V',  0, G_OPTION_ARG_NONE,     &version_flag,         "Show version information",   NULL},
       { NULL }
    };
 
+
    GOptionEntry development_options[] = {
 // debugging
-      {"excp",     '\0',   0, G_OPTION_ARG_NONE,     &report_freed_excp_flag,  "Report freed exceptions", NULL},
-      {"trace",    '\0',   0, G_OPTION_ARG_STRING_ARRAY, &trace_classes, "Trace a group",         "trace group name" },
-  //  {"trace",    '\0',   0, G_OPTION_ARG_STRING,   &tracework,         "Trace a group",          "comma separated list" },
+      {"excp",     '\0',   0, G_OPTION_ARG_NONE,   &report_freed_excp_flag, "Report freed exceptions", NULL},
+      {"trace",    '\0',   0, G_OPTION_ARG_STRING_ARRAY, &trace_classes,  "Trace a group",         "trace group name" },
+  //  {"trace",    '\0',   0, G_OPTION_ARG_STRING, &tracework,            "Trace a group",          "comma separated list" },
       {"trcfunc",  '\0',   0, G_OPTION_ARG_STRING_ARRAY, &trace_functions, "Trace a function",     "function name" },
       {"trcfile",  '\0',   0, G_OPTION_ARG_STRING_ARRAY, &trace_filenames, "Trace a file",         "file name" },
       {"timestamp",'\0',   0, G_OPTION_ARG_NONE,   &timestamp_trace_flag, "Prepend trace msgs with elapsed time",  NULL},
@@ -246,19 +259,21 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
       {"tid",      '\0',   0, G_OPTION_ARG_NONE,   &thread_id_trace_flag, "Prepend trace msgs with thread id",     NULL},
 
 // Debug parser
-      {"debug-parse", '\0', 0, G_OPTION_ARG_NONE,    &debug_parse,           "Show parse result",        NULL},
-      {"parse-only",  '\0', 0, G_OPTION_ARG_NONE,    &parse_only,            "Exit after parsing",       NULL},
+      {"debug-parse", '\0', 0, G_OPTION_ARG_NONE,  &debug_parse,          "Show parse result",        NULL},
+      {"parse-only",  '\0', 0, G_OPTION_ARG_NONE,  &parse_only,           "Exit after parsing",       NULL},
 
 // Other
       {"hidpi",    '\0',   0, G_OPTION_ARG_NONE,  &hidpi_flag,            "Test hidpi code", NULL},
 
 // Undocumented library flag options
-      {"f1",      '\0', 0,  G_OPTION_ARG_NONE,     &f1_flag,         "Special flag 1",    NULL},
-      {"f2",      '\0', 0,  G_OPTION_ARG_NONE,     &f2_flag,         "Special flag 2",    NULL},
-      {"f3",      '\0', 0,  G_OPTION_ARG_NONE,     &f3_flag,         "Special flag 3",    NULL},
-      {"f4",      '\0', 0,  G_OPTION_ARG_NONE,     &f4_flag,         "Special flag 4",    NULL},
-      {"f5",      '\0', 0,  G_OPTION_ARG_NONE,     &f5_flag,         "Special flag 5",    NULL},
-      {"f6",      '\0', 0,  G_OPTION_ARG_NONE,     &f6_flag,         "Special flag 6",    NULL},
+      {"f1",      '\0', 0,  G_OPTION_ARG_NONE,     &f1_flag,              "Special flag 1",    NULL},
+      {"f2",      '\0', 0,  G_OPTION_ARG_NONE,     &f2_flag,              "Special flag 2",    NULL},
+      {"f3",      '\0', 0,  G_OPTION_ARG_NONE,     &f3_flag,              "Special flag 3",    NULL},
+      {"f4",      '\0', 0,  G_OPTION_ARG_NONE,     &f4_flag,              "Special flag 4",    NULL},
+      {"f5",      '\0', 0,  G_OPTION_ARG_NONE,     &f5_flag,              "Special flag 5",    NULL},
+      {"f6",      '\0', 0,  G_OPTION_ARG_NONE,     &f6_flag,              "Special flag 6",    NULL},
+      {"i1",      '\0', 0,  G_OPTION_ARG_INT,      &parsed_cmd->i1,       "Special integer 1", NULL},
+      {"i2",      '\0', 0,  G_OPTION_ARG_INT,      &parsed_cmd->i2,       "Special integer 2", NULL},
 
       { NULL }
    };
@@ -305,28 +320,36 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    char ** mangleable_argv = argv;
    if (debug) {
       printf("(%s) Before g_option_context_parse_strv(), mangleable_argv:\n", __func__);
-      ntsa_show(mangleable_argv);
+      rpt_ntsa(mangleable_argv, 3);
    }
    bool ok = g_option_context_parse_strv(context, &mangleable_argv, &error);
    if (!ok) {
       if (error) {
-         fprintf(stderr, "ddcui option parsing failed: %s\n", error->message);
+         fprintf(stderr,  "ddcui option parsing failed: %s\n", error->message);
+         syslog(LOG_CRIT, "ddcui option parsing failed: %s",   error->message);
          g_error_free(error);
       }
       else {
-         fprintf(stderr, "ddcui option parsing failed.\n");
+         fprintf(stderr,  "ddcui option parsing failed.\n");
+         syslog(LOG_CRIT, "ddcui option parsing failed.");
       }
    }
    if (debug) {
       printf("(%s) Freeing mangleable_argv=%p:\n", __func__, (void*)mangleable_argv);
-      ntsa_show(mangleable_argv);
+      rpt_ntsa(mangleable_argv, 3);
    }
    ntsa_free(mangleable_argv, true);
 
-   if (force_slave_address_true_set)
-      fprintf(stderr, "Deprecated option ignored: --force_slave_address\n");
-   if (force_slave_address_false_set)
-      fprintf(stderr, "Deprecated option ignored: --disable-force_slave_address\n");
+   if (force_slave_address_true_set) {
+      char * s = "Deprecated option ignored: --force_slave_address";
+      fprintf(stderr,     "%s\n", s);
+      syslog(LOG_WARNING, "%s",   s);
+   }
+   if (force_slave_address_false_set) {
+      char * s = "Deprecated option ignored: --disable-force_slave_address";
+      fprintf(stderr,     "%s\n", s);
+      syslog(LOG_WARNING, "%s",   s);
+   }
 
 #define SET_CMDFLAG(_bit, _flag) \
    do { \
@@ -348,6 +371,8 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    SET_CMDFLAG(CMD_FLAG_UI_REQUIRE_CONTROL_KEY, control_key_required);
    SET_CMDFLAG(CMD_FLAG_SHOW_UNSUPPORTED,       show_unsupported_features);
 // SET_CMDFLAG(CMD_FLAG_LATEST_NC_VALUE_NAMES,  use_latest_nc_values_true_set);   // n. not handling case where default is true
+   SET_CMDFLAG(CMD_FLAG_DISABLE_SYSLOG,         disable_syslog);
+// SET_CMDFLAG(CMD_FLAG_DISABLE_LIBRARY_CONFIG_FILE, disable_libddcutil_config_file);
 
    SET_CMDFLAG(CMD_FLAG_F1,                f1_flag);
    SET_CMDFLAG(CMD_FLAG_F2,                f2_flag);
@@ -386,14 +411,19 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
       if (ddca_feature_list_count(flist) == 0) {
          ok = false;
          if (error_msgs) {
-            fprintf(stderr, "Errors in --custom-feature-set:\n");
+            char * s = "Errors in --custom-feature-set:";
+            fprintf(stderr, "%s\n", s);
+            syslog(LOG_CRIT, "%s", s);
             for (int ndx = 0; error_msgs[ndx]; ndx++) {
-               fprintf(stderr, "   %s\n", error_msgs[ndx]);
+               fprintf(stderr,  "   %s\n", error_msgs[ndx]);
+               syslog(LOG_CRIT, "   %s",   error_msgs[ndx]);
             }
             ntsa_free(error_msgs, true);
          }
          else {
-            fprintf(stderr, "Empty --custom-feature-set\n");
+            char * s = "Empty --custom-feature-set";
+            fprintf(stderr,  "%s\n", s);
+            syslog(LOG_CRIT, "%s",   s);
          }
       }
    }
@@ -416,7 +446,9 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
                   traceClasses |= tg;
                }
                else {
-                  fprintf(stderr, "Invalid trace group: %s\n", token);
+                  char * s = "Invalid trace group: ";
+                  fprintf(stderr,  "%s%s\n", s, token);
+                  syslog(LOG_CRIT, "%s%s",   s, token);
                   ok = false;
                }
            }
@@ -452,7 +484,9 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
          // printf("nc_values_source_work = %p -> |%s|\n", nc_values_source_work, nc_values_source_work);
          Parsed_NC_Values_Source src = find_nc_values_source_table_value(nc_values_source_work);
          if (src == NC_VALUES_SOURCE_UNSET) {
-            fprintf(stderr, "Unrecognized: %s\n", nc_values_source_work);
+            char * s = "Unrecognized: ";
+            fprintf(stderr, "%s%s\n", s, nc_values_source_work);
+            fprintf(stderr, "%s%s",   s, nc_values_source_work);
             ok = false;
          }
          else{
@@ -465,7 +499,8 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
       if (_NAME ## _work) {                          \
          _ENUM src = find_ ## _NAME ##_table_value(_NAME ## _work);            \
          if (src == _NOT_FOUND_VALUE) {                                        \
-            fprintf(stderr, "Unrecognized: %s\n", _NAME ## _work);             \
+            fprintf(stderr,  "Unrecognized: %s\n", _NAME ## _work);            \
+            syslog(LOG_CRIT, "Unrecognized: %s",   _NAME ## _work);            \
             ok = false;                                                        \
          }                                                                     \
          else{                                                                 \
@@ -480,14 +515,18 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
       if (parsed_cmd->feature_set != FS_UNSET &&
           ddca_feature_list_count(parsed_cmd->custom_feature_list) > 0)
       {
-         fprintf(stderr, "--feature-set and --custom-feature-set are mutually exclusive\n");
+         char * s = "--feature-set and --custom-feature-set are mutually exclusive";
+         fprintf(stderr,  "%s\n", s);
+         syslog(LOG_CRIT, "%s",   s);
          ok = false;
       }
 
       if (all_capabilities_true_set && only_capabilities_true_set) {
          if (parsed_cmd->feature_set != FS_CAPABILITIES) {
-            fprintf(stderr, "--all-capabilities and --only-capabilities are mutually exclusive"
-                            " except when --feature-set = CAPABILITIES\n");
+            char * s = "--all-capabilities and --only-capabilities are mutually exclusive"
+                            " except when --feature-set = CAPABILITIES";
+            fprintf(stderr,  "%s\n", s);
+            syslog(LOG_CRIT, "%s",   s);
             ok = false;
          }
       }
@@ -503,7 +542,8 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
          // }
 
          char * s = g_strjoinv(" ",cmd_and_args);
-         fprintf(stderr, "Unrecognized: %s\n", s);
+         fprintf(stderr,  "Unrecognized: %s\n", s);
+         syslog(LOG_CRIT, "Unrecognized: %s",   s);
          free(s);
          ok = false;
       }
