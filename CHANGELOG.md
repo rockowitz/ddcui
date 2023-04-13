@@ -1,5 +1,30 @@
 # Changelog
 
+## [0.3.1] 2023-mm-dd
+
+### Added
+
+- Option ***--disable-syslog***.  Normally **ddcui** and **libddcutil** write
+  important messages to the system log.  This option disables that behavior.
+- Option ***--libopts "<option string>"***.  Passes an option string to the 
+  shared library.  This string is appended to the option string obtained 
+  from configuration file $HOME/.config/ddcutil/ddcutilrc.
+
+### Changed
+
+- CMakeLists.txt recognizes option DDCUTIL_PROJECT_DIR, which specifies the
+  **ddcutil** project directory in which **libddcutil** is built. Using this
+  option avoids having to install **libddcutil.so** in a system directory in 
+  order for **ddcui** to use it.
+- Incremented required libddcutil version to 1.5.0
+
+### Removed
+
+- Options that exist solely to control **libddcutil** behavior. These can now
+  be passed using option ***--libopts***.
+
+### Fixed
+
 ## [0.3.0] 2022-07-28
 
 ### Added
@@ -16,7 +41,7 @@
   - Allow extra sleep time before validation.  (It was observed that a Dell U4320 returns
     a Null Message if getvcap for validation is called too quickly
 - For simple NC values, do not include the SH field in validation.
-  (getvcp for feature x60 on U4320 returns non-zero SH.)
+  (getvcp for feature x60 on Dell U4320 returns non-zero SH.)
 - Options ***--force-slave-address*** and ***--disable-force-slave-address*** have no effect
   and are deprecated.
 
