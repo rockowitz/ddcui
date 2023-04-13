@@ -10,7 +10,7 @@ endif()
 
 set(ddcui_qt_version         5.5)
 set(ddcui_glib_version       2.40)   # g_option_context_parse_strv() new in 2.40
-set(ddcui_libddcutil_version 1.2.2)
+set(ddcui_libddcutil_version 1.5.0)
 set(cmake_build_type_default "RelWithDebInfo")
 
 message(${VERBOSE} "Required Minimum Versions:")
@@ -107,10 +107,17 @@ find_package (PkgConfig REQUIRED )
 pkg_check_modules(GLIB2 REQUIRED glib-2.0>=${ddcui_glib_version})
 
 if ( (DDCUTIL_PROJECT_DIR STREQUAL "OFF")) 
-   message(VERBOSE "Locating ddcutil files using pkg_check_modules")
+   message( ${VERBOSE} "Locating ddcutil files using pkg_check_modules")
    pkg_check_modules(DDCUTIL REQUIRED ddcutil>=${ddcui_libddcutil_version})
 else()
-   message(VERBOSE "Using ddcutil files from ${DDCUTIL_PROJECT_DIR}")
+   message( ${VERBOSE} "Using ddcutil files from ${DDCUTIL_PROJECT_DIR}")
+   string(LENGTH ${DDCUTIL_PROJECT_DIR} N)
+   math(EXPR lastpos "${N}-1")
+   string(SUBSTRING ${DDCUTIL_PROJECT_DIR} ${lastpos} 1 CH)
+   if ( ( ${CH} STREQUAL /) )
+      string(SUBSTRING ${DDCUTIL_PROJECT_DIR} 0 ${lastpos} DDCUTIL_PROJECT_DIR)
+      message( ${VERBOSE} "Adjusted DDCUTIL_PROJECT_DIR:  ${DDCUTIL_PROJECT_DIR}")
+   endif()
    set(DDCUTIL_INCLUDE_DIRS ${DDCUTIL_PROJECT_DIR}/src/public)
    set(DDCUTIL_LIBRARY_DIRS ${DDCUTIL_PROJECT_DIR}/src/.libs)
    set(DDCUTIL_LIBRARIES ddcutil)
@@ -230,12 +237,15 @@ target_compile_options(ddcui PUBLIC "-fPIC" ${coverity_cflags})
 
 # redundant: ${Qt5Gui_INCLUDE_DIRS} ${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS}. 
 #            ${Qt5Help_INCLUDE_DIRS} is a superset of them all 
-target_include_directories(ddcui SYSTEM PRIVATE 
+target_include_directories(ddcui SYSTEM PRIVATE
                                  ${Qt5Help_INCLUDE_DIRS}
                                  ${GLIB2_INCLUDE_DIRS} 
                                  ${DDCUTIL_INCLUDE_DIRS})
 
 target_include_directories(ddcui PRIVATE src)
+
+# Use the Widgets module from Qt 5.
+target_link_libraries(ddcui Qt5::Widgets ${GLIB2_LIBRARIES} ${DDCUTIL_LIBRARIES})
 
 get_property(dirs TARGET ddcui PROPERTY INCLUDE_DIRECTORIES)
 message( ${VERBOSE} "INCLUDE_DIRECTORIES:     ${dirs}" )
@@ -244,8 +254,20 @@ foreach(d ${dirs})
   message(${VERBOSE} "  ${d}")
 endforeach()
 
-# Use the Widgets module from Qt 5.
-target_link_libraries(ddcui Qt5::Widgets ${GLIB2_LIBRARIES} ${DDCUTIL_LIBRARIES})
+get_property(dirs TARGET ddcui PROPERTY LINK_DIRECTORIES)
+message( ${VERBOSE} "LINK_DIRECTORIES:     ${dirs}" )
+message( ${VERBOSE} "Expanded:" )
+foreach(d ${dirs})
+  message(${VERBOSE} "  ${d}")
+endforeach()
+
+get_property(dirs TARGET ddcui PROPERTY LINK_LIBRARIES)
+message( ${VERBOSE} "LINK_LIBRARIES:     ${dirs}" )
+message( ${VERBOSE} "Expanded:" )
+foreach(d ${dirs})
+  message(${VERBOSE} "  ${d}")
+endforeach()
+
 
 
 ### make clean
