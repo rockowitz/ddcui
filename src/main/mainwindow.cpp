@@ -1175,7 +1175,7 @@ void MainWindow::on_actionAbout_triggered()
     // QMessageBox mbox;
     // mbox.setText("About ddcutil");
 
-    QString copyright = "Copyright (C) 2014-2022 Sanford Rockowitz\n";
+    QString copyright = "Copyright (C) 2014-2023 Sanford Rockowitz\n";
     copyright = copyright + "Licensed under the terms of the GNU General Public License (GPL) ";
     copyright = copyright + "Version 2.0 or later.";
 
