@@ -85,9 +85,6 @@ typedef enum {
 typedef struct {
    char                    marker[4];   // PARSED_CMD_MARKER
    DDCA_Stats_Type         stats_types;
-   DDCA_Trace_Group        traced_groups;
-   char **                 traced_files;
-   char **                 traced_functions;
    char *                  library_options;  // unparsed string passed to libddcutil
 // int                     max_tries[3];
    Parsed_Cmd_Flags        flags;

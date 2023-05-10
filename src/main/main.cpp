@@ -205,43 +205,6 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
      ok = false;
    }
    else {
-      if (parsed_cmd->traced_functions) {
-         char * funcname = NULL;
-         int ndx = 0;
-         for (funcname = parsed_cmd->traced_functions[0];
-              funcname;
-              funcname = parsed_cmd->traced_functions[++ndx])
-         {
-            printf("(%s) adding traced function: %s\n",  __func__, funcname);
-            ddca_add_traced_function(funcname);
-         }
-      }
-
-      if (parsed_cmd->traced_files) {
-         char * filename = NULL;
-         int ndx = 0;
-         for (filename = parsed_cmd->traced_files[0];
-              filename;
-              filename = parsed_cmd->traced_files[++ndx]) {
-            printf("(%s) adding traced file: %s\n", __func__, filename);
-            ddca_add_traced_file(filename);
-         }
-      }
-
-      uint16_t work = 0;
-      if (parsed_cmd->flags & CMD_FLAG_TIMESTAMP_TRACE) work |= DDCA_TRCOPT_TIMESTAMP;
-      if (parsed_cmd->flags & CMD_FLAG_THREAD_ID_TRACE) work |= DDCA_TRCOPT_THREAD_ID;
-
-      ddca_set_trace_options((DDCA_Trace_Options) work);
-
-         // flunks --permissive
-         // ddca_set_trace_options(
-         //       ( (parsed_cmd->flags & CMD_FLAG_TIMESTAMP_TRACE) ?  DDCA_TRCOPT_TIMESTAMP : 0) |
-         //       ( (parsed_cmd->flags & CMD_FLAG_THREAD_ID_TRACE) ?  DDCA_TRCOPT_THREAD_ID : 0)
-         //      );
-
-      ddca_add_trace_groups(parsed_cmd->traced_groups);
-
       // Must be called before any API call that triggers display identification
       // DDCA_Status rc =  // unused, comment out for now, need to properly set
    //    ddca_enable_usb_display_detection(parsed_cmd->flags & CMD_FLAG_NOUSB);

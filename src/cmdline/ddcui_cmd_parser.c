@@ -145,9 +145,6 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
 // gboolean use_latest_nc_values_false_set = false;
    gboolean hidpi_flag                     = false;   //currently used only for testing
    gchar**  cmd_and_args                   = NULL;
-   gchar**  trace_classes                  = NULL;
-   gchar**  trace_filenames                = NULL;
-   gchar**  trace_functions                = NULL;
    gboolean disable_syslog                 = false;
 // gboolean disable_libddcutil_config_file = false;
 
@@ -249,10 +246,6 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    GOptionEntry development_options[] = {
 // debugging
       {"excp",     '\0',   0, G_OPTION_ARG_NONE,   &report_freed_excp_flag, "Report freed exceptions", NULL},
-      {"trace",    '\0',   0, G_OPTION_ARG_STRING_ARRAY, &trace_classes,  "Trace a group",         "trace group name" },
-  //  {"trace",    '\0',   0, G_OPTION_ARG_STRING, &tracework,            "Trace a group",          "comma separated list" },
-      {"trcfunc",  '\0',   0, G_OPTION_ARG_STRING_ARRAY, &trace_functions, "Trace a function",     "function name" },
-      {"trcfile",  '\0',   0, G_OPTION_ARG_STRING_ARRAY, &trace_filenames, "Trace a file",         "file name" },
       {"timestamp",'\0',   0, G_OPTION_ARG_NONE,   &timestamp_trace_flag, "Prepend trace msgs with elapsed time",  NULL},
       {"ts",       '\0',   0, G_OPTION_ARG_NONE,   &timestamp_trace_flag, "Prepend trace msgs with elapsed time",  NULL},
       {"thread-id",'\0',   0, G_OPTION_ARG_NONE,   &thread_id_trace_flag, "Prepend trace msgs with thread id",     NULL},
@@ -428,43 +421,6 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
       }
    }
 
-   // #ifdef MULTIPLE_TRACE
-      if (trace_classes) {
-         DDCA_Trace_Group traceClasses = 0x00;
-         int ndx = 0;
-         for (;trace_classes[ndx] != NULL; ndx++) {
-            char * token = g_ascii_strup(trace_classes[ndx], -1);   // n g_ascii_strup returns newly allocated string
-            // DBGMSG("token=|%s|", token);
-            if (strcmp(token, "ALL") == 0 || strcmp(token, "*") == 0) {
-               traceClasses = DDCA_TRC_ALL;   // 0xff
-            }
-            else {
-               // DBGMSG("token: |%s|", token);
-               DDCA_Trace_Group tg = ddca_trace_group_name_to_value(token);
-               // DBGMSG("tg=0x%02x", tg);
-               if (tg) {
-                  traceClasses |= tg;
-               }
-               else {
-                  char * s = "Invalid trace group: ";
-                  fprintf(stderr,  "%s%s\n", s, token);
-                  syslog(LOG_CRIT, "%s%s",   s, token);
-                  ok = false;
-               }
-           }
-           free(token);
-         }
-         // DBGMSG("traceClasses = 0x%02x", traceClasses);
-         parsed_cmd->traced_groups = traceClasses;
-      }
-   // #endif
-
-      if (trace_functions) {
-         parsed_cmd->traced_functions = trace_functions;
-      }
-      if (trace_filenames) {
-         parsed_cmd->traced_files = trace_filenames;
-      }
 
 #ifdef DISABLE_VIEW_OPTION
       if (view_work) {

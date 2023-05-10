@@ -131,21 +131,7 @@ void dbgrpt_parsed_ddcui_cmd(Parsed_Ddcui_Cmd * parsed_cmd) {
    printf("(%s) Parsed_Cmd at %p\n", __func__, (void *) parsed_cmd);
    if (parsed_cmd) {
       printf("   stats:                     0x%08x\n",  parsed_cmd->stats_types);
-      printf("   traced_groups              0x%08x\n",  parsed_cmd->traced_groups);
-      if (parsed_cmd->traced_functions) {
-         char * joined = g_strjoinv(", ", parsed_cmd->traced_functions);
-         printf("   traced_functions:          %s\n", joined);
-         free(joined);
-      }
-      else
-         printf("   traced_functions:          none\n" );
-      if (parsed_cmd->traced_files) {
-         char * joined = g_strjoinv(", ", parsed_cmd->traced_files);
-         printf("   traced_files:                %s\n", joined);
-         free(joined);
-      }
-      else
-         printf("   traced_files:              none\n" );
+
       printf("   library_options:           %s\n",   parsed_cmd->library_options);
 
       // char buf[20];
@@ -199,9 +185,6 @@ void free_parsed_ddcui_cmd(Parsed_Ddcui_Cmd * parsed_cmd) {
    if (parsed_cmd) {
       assert ( memcmp(parsed_cmd->marker,PARSED_CMD_MARKER,4) == 0);
       parsed_cmd->marker[3] = 'x';
-
-      g_strfreev(parsed_cmd->traced_files);       // used instead of ntsa_free()
-      g_strfreev(parsed_cmd->traced_functions);
 
       free(parsed_cmd);
    }
