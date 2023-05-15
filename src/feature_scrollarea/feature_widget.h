@@ -6,7 +6,7 @@
 #ifndef FEATURE_WIDGET_H
 #define FEATURE_WIDGET_H
 
-#include "base/core.h"
+#include "../base/ddcui_core.h"
 #include "nongui/feature_value.h"
 
 #include "feature_value_widgets/value_stacked_widget.h"

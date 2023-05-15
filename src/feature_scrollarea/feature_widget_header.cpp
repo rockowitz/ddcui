@@ -12,10 +12,10 @@
 #include <QtWidgets/QSizePolicy>
 #include <QtWidgets/QHBoxLayout>
 
-#include "base/core.h"
 #include "base/widget_debug.h"
 
 #include "feature_widget_header.h"
+#include "../base/ddcui_core.h"
 
 
 static bool showDimensionReport = false;

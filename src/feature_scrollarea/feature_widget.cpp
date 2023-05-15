@@ -12,7 +12,7 @@
 #include <QtWidgets/QLabel>
 #include <QtGui/QResizeEvent>
 
-#include "base/core.h"
+#include "../base/ddcui_core.h"
 #include "base/widget_debug.h"
 #include "nongui/feature_base_model.h"
 

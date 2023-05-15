@@ -5,10 +5,10 @@
 
 #include <QtWidgets/QScrollArea>
 #include <QtCore/QSize>
-#include "base/core.h"
 #include "base/widget_debug.h"
 #include "feature_scrollarea/features_scrollarea_contents.h"
 #include "feature_scrollarea/features_scrollarea.h"
+#include "../base/ddcui_core.h"
 
 static bool showWidgetDimensions = false;
 static bool traceResizeEvents = false;

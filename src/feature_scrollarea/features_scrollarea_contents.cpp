@@ -13,7 +13,7 @@
 #include <QtWidgets/QScrollArea>
 #include <QtCore/QSize>
 
-#include "base/core.h"
+#include "../base/ddcui_core.h"
 #include "base/widget_debug.h"
 
 #include "feature_value_widgets/value_stacked_widget.h"

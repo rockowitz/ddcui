@@ -9,7 +9,7 @@
 #include <QtWidgets/QWidget>
 #include <QtGui/QResizeEvent>
 
-#include "../base/core.h"
+#include "../base/ddcui_core.h"
 
 class FeatureWidgetHeader : public QFrame {
    Q_OBJECT
