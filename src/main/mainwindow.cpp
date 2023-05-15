@@ -1,6 +1,6 @@
 /** \file mainwindow.cpp */
 
-// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2023 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "main/mainwindow.h"
@@ -18,7 +18,8 @@
 
 #include <ddcutil_c_api.h>
 
-#include "base/core.h"
+#include "base/ddcui_core.h"
+#include "base/nc_values_state.h"
 #include "base/global_state.h"
 #include "base/widget_debug.h"
 #include "help/help_dialog.h"
@@ -44,6 +45,7 @@
 
 #include "option_dialogs/feature_selection_dialog.h"
 #include "option_dialogs/user_interface_options_dialog.h"
+#include "option_dialogs/nc_values_dialog.h"
 
 #include "action_dialogs/debug_actions_dialog.h"
 
@@ -51,8 +53,8 @@
 #include "main/msgbox_thread.h"
 #include "main/mainwindow.h"
 
-#include "../base/nc_values_state.h"
-#include "../option_dialogs/nc_values_dialog.h"
+
+
 
 using namespace std;
 

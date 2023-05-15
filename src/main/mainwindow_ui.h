@@ -18,7 +18,7 @@
 #include <QtWidgets/QToolBar>
 #include <QtGui/QKeyEvent>
 
-#include "base/core.h"
+#include "../base/ddcui_core.h"
 #include "base/widget_debug.h"
 
 

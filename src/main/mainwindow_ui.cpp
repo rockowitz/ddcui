@@ -9,9 +9,8 @@
 // file with extension .ui to process.
 
 
-#include "base/core.h"
-
 #include "mainwindow_ui.h"
+#include "../base/ddcui_core.h"
 
 #ifdef DEBUG
 static
