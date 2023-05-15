@@ -1,21 +1,33 @@
-// core.h
+/** @file ddcui_core.h */
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2023 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#ifndef CORE_H
-#define CORE_H
+#ifndef DDCUI_CORE_H
+#define DDCUI_CORE_H
 
 #include <sys/types.h>
 #include <sys/syscall.h>
 #include <unistd.h>
 
-#include <QtCore/QtCore>
-#include <QtWidgets/QListWidgetItem>
 
 #include "config.h"
+// #include "ddcutil_types.h"
+// #include "ddcutil_c_api.h"
+
+#include <QtCore/QtCore>
+#include <QtGui/QtGui>
+#include <QtWidgets/QtWidgets>
+// #include <QtWidgets/QListWidgetItem>
+
 
 #include "ddcui_parms.h"
+
+// struct QMetaObject2;
+// const QMetaObject2 *qt_getQtMetaObject2() noexcept; // defined in qobject.h (which can't be included here)
+
+
+
 
 const QString ddcui_version = DDCUI_VSTRING;
 
@@ -37,13 +49,14 @@ extern QFont MainMenuFont2;
 
 void init_core();
 
-
 //
 // Tracing
 //
 
 bool enable_trace_show_time(bool onoff);
 bool enable_trace_show_thread_id(bool onoff);
+
+
 
 bool printftcmf(
       bool debug,
@@ -102,4 +115,4 @@ do { \
 #define SBOOL(val) ( (val) ? "true" : "false" )
 #define QS2S(qstr)  qstr.toLatin1().data()
 
-#endif // CORE_H
+#endif // DDCUI_CORE_H
