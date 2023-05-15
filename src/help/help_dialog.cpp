@@ -1,13 +1,14 @@
 // help_dialog.cpp
 
-// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2023 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <QtWidgets/QTextBrowser>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
-#include "base/core.h"
+#include "base/ddcui_core.h"
+
 #include "help_dialog.h"
 
 

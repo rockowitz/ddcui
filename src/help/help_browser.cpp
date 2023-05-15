@@ -1,6 +1,6 @@
 // help_browser.cpp
 
-// Copyright (C) 2020-2021 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2020-2023 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
  // Adapted from C++ GUI Programming With Qt 4
@@ -11,7 +11,8 @@
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QPushButton>
 
-#include "base/core.h"
+#include "base/ddcui_core.h"
+
 #include "help/help_browser.h"
 
 
