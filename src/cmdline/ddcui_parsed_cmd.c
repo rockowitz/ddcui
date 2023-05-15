@@ -156,8 +156,7 @@ void dbgrpt_parsed_ddcui_cmd(Parsed_Ddcui_Cmd * parsed_cmd) {
       printf("   initial model:             %s\n",   parsed_cmd->model);
       printf("   initial bus number:        %d\n",   parsed_cmd->busno);
       printf("   hidpi:                     %s\n",   sbool(parsed_cmd->flags & CMD_FLAG_HIDPI));
-      printf("   disable syslog:            %s\n",   sbool(parsed_cmd->flags & CMD_FLAG_DISABLE_SYSLOG));
-      printf("   disable library config file: %s\n", sbool(parsed_cmd->flags & CMD_FLAG_DISABLE_LIBRARY_CONFIG_FILE));
+      printf("   disable config file:       %s\n",   sbool(parsed_cmd->flags & CMD_FLAG_DISABLE_CONFIG_FILE));
 
       printf("   f1:                        %s\n",   sbool(parsed_cmd->flags & CMD_FLAG_F1) );
       printf("   f2:                        %s\n",   sbool(parsed_cmd->flags & CMD_FLAG_F2) );

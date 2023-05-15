@@ -6,6 +6,7 @@
 #ifndef DDCUI_PARSED_CMD_H_
 #define DDCUI_PARSED_CMD_H_
 
+
 #include <ddcutil_types.h>
 
 // Used to distinguish between an explicit option set vs no option set,
@@ -75,10 +76,11 @@ typedef enum {
    CMD_FLAG_I2_SET               = 0x80000000,
 
    CMD_FLAG_HIDPI               = 0x100000000,
-   CMD_FLAG_DISABLE_SYSLOG      = 0x200000000,
-   CMD_FLAG_DISABLE_LIBRARY_CONFIG_FILE = 0x400000000,
+   CMD_FLAG_DISABLE_CONFIG_FILE = 0x400000000,
+   CMD_FLAG_TRACE_TO_SYSLOG     = 0x800000000,
 
 } Parsed_Cmd_Flags;
+
 
 
 #define PARSED_CMD_MARKER  "PCMD"
@@ -97,8 +99,12 @@ typedef struct {
    char *                  model;
    int                     busno;
    DDCA_Feature_List       custom_feature_list;
+   DDCA_Syslog_Level       syslog_level;
    int                     i1;     // utility options
    int                     i2;     // utility options
+
+   bool                    enable_syslog_specified;  //??
+   bool                    disable_syslog_specified;
 } Parsed_Ddcui_Cmd;
 
 
