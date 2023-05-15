@@ -145,7 +145,8 @@ set(SOURCES
     src/c_util/string_util.c
     src/c_util/xdg_util.c
 
-    src/base/core.cpp 
+    src/base/ddcui_core_aux.c
+	src/base/ddcui_core.cpp 
     src/base/ddca_utils.cpp 
     src/base/ddcui_parms.cpp
     src/base/feature_list.c
