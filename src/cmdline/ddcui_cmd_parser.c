@@ -15,21 +15,21 @@
 #include <string.h>
 #include <syslog.h>
 
-#include <QtCore/qglobal.h>
-#include <QtCore/qconfig.h>
-
 #include <ddcutil_macros.h>
 #include <ddcutil_types.h>
 #include <ddcutil_c_api.h>
 
 #include "c_util/report_util.h"
 #include "c_util/string_util.h"
+
+// #include "base/ddcui_core.h"
 #include "base/ddcui_parms.h"
 #include "base/feature_list.h"
-#include "ddcui_cmd_parser.h"
 
-#include "ddcui_cmd_parser_aux.h"
-#include "ddcui_parsed_cmd.h"
+#include "cmdline/ddcui_cmd_parser_aux.h"
+#include "cmdline/ddcui_parsed_cmd.h"
+
+#include "ddcui_cmd_parser.h"
 
 
 // Variables used by callback function
@@ -80,8 +80,6 @@ gboolean stats_arg_func(const    gchar* option_name,
 }
 
 
-
-
 // signature GOptionParseFunc()
 gboolean pre_parse_hook(
       GOptionContext * context,
@@ -102,6 +100,31 @@ gboolean post_parse_hook(
    // printf("(%s) data = %d\n", __func__, GPOINTER_TO_INT(data));
    return true;
 }
+
+
+bool parse_ddcui_syslog_level(
+      const char *        sval,
+      Ddcui_Syslog_Level* result_loc)
+{
+   bool debug = true;
+   bool parsing_ok = true;
+   if (debug)
+      printf("(%s) sval=|%s|\n", __func__, sval);
+
+   *result_loc = ddca_syslog_level_from_name(sval);
+   if (*result_loc == DDCA_SYSLOG_NOT_SET) {
+      parsing_ok = false;
+      // emit_parser_error(errmsgs, __func__, "Invalid syslog level: %s", sval );
+      // emit_parser_error(errmsgs, __func__, "Valid values are NEVER, ERROR, WARN, INFO, DEBUG");
+      fprintf(stderr, "Invalid syslog level: %s\n", sval );
+      fprintf(stderr, "Valid values are NEVER, ERROR, WARN, INFO, DEBUG\n");
+   }
+   if (debug)
+      printf("(%s) Returning %s, *result_loc = %d\n",
+            __func__, sbool(parsing_ok), *result_loc);
+   return parsing_ok;
+}
+
 
 
 /** Primary parsing function
@@ -145,8 +168,13 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
 // gboolean use_latest_nc_values_false_set = false;
    gboolean hidpi_flag                     = false;   //currently used only for testing
    gchar**  cmd_and_args                   = NULL;
-   gboolean disable_syslog                 = false;
+
+   DDCA_Syslog_Level syslog_level = DDCA_SYSLOG_INFO;
+   char *   syslog_work     = NULL;
+   gboolean disable_config_file            = false;
 // gboolean disable_libddcutil_config_file = false;
+   gboolean trace_to_syslog_flag           = false;   //???
+
 
 #ifdef DISABLE_VIEW_OPTION
    gchar*   view_work                      = NULL;
@@ -231,17 +259,17 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
 
 // libddcutil options
       {"libopts",  '\0', 0, G_OPTION_ARG_STRING,   &parsed_cmd->library_options, "libddcutil options",  "string"},
-//    {"disable-libddcutil-config-file",
-//                 '\0', 0, G_OPTION_ARG_NONE,     &disable_libddcutil_config_file, "Ignore config file for libddcutil", NULL},
-// output control
-      {"disable-syslog",
-                   '\0', 0, G_OPTION_ARG_NONE,     &disable_syslog,       "Do not write to system log", NULL},
 
+// output control
+      {"disable-config-file",
+                   '\0', 0, G_OPTION_ARG_NONE,     &disable_config_file, "Ignore ddcutil config file", NULL},
+      {"noconfig", '\0', 0, G_OPTION_ARG_NONE,     &disable_config_file, "Ignore ddcutil config file", NULL},
+
+      {"syslog",   '\0', 0, G_OPTION_ARG_STRING,       &syslog_work,                    "system log level", "NONE, ERROR, WARN, INFO, NONE"},
 
       {"version",  'V',  0, G_OPTION_ARG_NONE,     &version_flag,         "Show version information",   NULL},
       { NULL }
    };
-
 
    GOptionEntry development_options[] = {
 // debugging
@@ -364,8 +392,7 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    SET_CMDFLAG(CMD_FLAG_UI_REQUIRE_CONTROL_KEY, control_key_required);
    SET_CMDFLAG(CMD_FLAG_SHOW_UNSUPPORTED,       show_unsupported_features);
 // SET_CMDFLAG(CMD_FLAG_LATEST_NC_VALUE_NAMES,  use_latest_nc_values_true_set);   // n. not handling case where default is true
-   SET_CMDFLAG(CMD_FLAG_DISABLE_SYSLOG,         disable_syslog);
-// SET_CMDFLAG(CMD_FLAG_DISABLE_LIBRARY_CONFIG_FILE, disable_libddcutil_config_file);
+   SET_CMDFLAG(CMD_FLAG_DISABLE_CONFIG_FILE, disable_config_file);
 
    SET_CMDFLAG(CMD_FLAG_F1,                f1_flag);
    SET_CMDFLAG(CMD_FLAG_F2,                f2_flag);
@@ -376,6 +403,18 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
 
    SET_CMDFLAG(CMD_FLAG_HIDPI,             hidpi_flag);
 #undef SET_CMDFLAG
+
+   if (syslog_work) {
+      Ddcui_Syslog_Level level;
+      bool this_ok = parse_ddcui_syslog_level(syslog_work, &level);
+      // printf("(%s) this_ok = %s\n", __func__, sbool(this_ok));
+      if (this_ok)
+         syslog_level = level;
+      else
+         ok = false;
+   }
+   parsed_cmd->syslog_level = syslog_level;
+
 
    if (all_capabilities_true_set)
       parsed_cmd->include_all_capabilities_features = TRIVAL_TRUE;
@@ -420,7 +459,6 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
          }
       }
    }
-
 
 #ifdef DISABLE_VIEW_OPTION
       if (view_work) {
@@ -505,16 +543,6 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
       }
 
    if (version_flag) {
-      printf("ddcui %s\n\n", DDCUI_VSTRING);
-      printf("Built using libddcutil version %d.%d.%d, Qt version %s\n",
-             DDCUTIL_VMAJOR, DDCUTIL_VMINOR, DDCUTIL_VMICRO, QT_VERSION_STR);
-      printf("Executing using libddcutil %s, Qt %s\n\n",
-             ddca_ddcutil_extended_version_string(), qVersion());
-      puts("Copyright (C) 2018-2022 Sanford Rockowitz");
-      puts("License GPLv2: GNU GPL version 2 or later <http://gnu.org/licenses/gpl.html>");
-      puts("This is free software: you are free to change and redistribute it.");
-      puts("There is NO WARRANTY, to the extent permitted by law.");
-      exit(0);
    }
 
    // DBGMSF(debug, "Calling g_option_context_free(), context=%p...", context);
