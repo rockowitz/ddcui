@@ -4,7 +4,7 @@
  * slow.  There is one instance of this class, i.e. one thread, for each monitor.
  */
 
-// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2023 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef VCPTHREAD_H
@@ -89,7 +89,6 @@ private:       // member variables
     VcpRequestQueue*     _requestQueue = NULL;
     FeatureBaseModel*    _baseModel;
     DDCA_Display_Handle  _dh = NULL;
-    bool                 _threadDescriptionPublished = false;
     DdcaSimulator *      _ddcaSimulator = NULL;
 };
 
