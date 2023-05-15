@@ -727,7 +727,7 @@ Null_Terminated_String_Array ntsa_create_empty_array() {
  */
 int ntsa_findx(
       Null_Terminated_String_Array string_array,
-      char *                       value,
+      const char *                 value,
       String_Comp_Func             func)
 {
    assert(string_array);
@@ -754,7 +754,7 @@ int ntsa_findx(
  *  @param  value         value to look for
  *  @return index of first matching entry, -1 if not found
  */
-int  ntsa_find(  Null_Terminated_String_Array string_array, char * value) {
+int  ntsa_find(  Null_Terminated_String_Array string_array, const char * value) {
    return ntsa_findx(string_array, value, streq);
 }
 
@@ -1193,7 +1193,7 @@ bool any_one_byte_hex_string_to_byte_in_buf(const char * s, Byte * result)
  *  The characters need not be null terminated.
  *
  *  @param  p_hh      pointer to hex characters.
- *  @param  converted pointer go byte in which converted value will be returned
+ *  @param  converted pointer to byte in which converted value will be returned
  *  @retval **true**  successful conversion
  *  @retval **false** **s** does not point to hex characters
  */
@@ -1212,15 +1212,16 @@ bool hhc_to_byte_in_buf(const char * p_hh, Byte * converted)
 /** Converts a string of hex characters (null terminated) to an array of bytes.
  *
  *  @param   hhs     string of hex characters
- *  @param   pBa     address at which to return pointer to byte array
+ *  @param   ba_loc  address at which to return pointer to byte array
  *  @retval  >= 0 number of bytes in array,
  *  @retval  -1   string could not be converted
  *
  * If successful, the byte array whose address is returned in pBa has
  * been malloc'd.  It is the responsibility of the caller to free it.
  */
-int hhs_to_byte_array(const char * hhs, Byte** pBa)
+int hhs_to_byte_array(const char * hhs, Byte** ba_loc)
 {
+   // printf("strlen(hhs) = %ld, ba_loc=%p\n", strlen(hhs), ba_loc);
    if ( strlen(hhs) % 2)     // if odd number of characters
       return -1;
    char xlate[] = "0123456789ABCDEF";
@@ -1248,7 +1249,7 @@ int hhs_to_byte_array(const char * hhs, Byte** pBa)
       bytect = -1;
    }
    else {
-      *pBa = ba;
+      *ba_loc = ba;
    }
    return bytect;
 }
