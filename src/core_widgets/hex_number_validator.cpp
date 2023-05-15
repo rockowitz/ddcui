@@ -5,7 +5,7 @@
 
 #include "hex_number_validator.h"
 
-#include "../base/core.h"
+#include "../base/ddcui_core.h"
 
 
 HexNumberValidator::HexNumberValidator(QObject * parent)

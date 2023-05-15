@@ -11,10 +11,10 @@
 
 #include <ddcutil_c_api.h>
 
-#include "base/core.h"
 #include "base/feature_selector.h"
 
 #include "cmdline/ddcui_parsed_cmd.h"
+#include "ddcui_core.h"
 
 
 // For feature selection dialog

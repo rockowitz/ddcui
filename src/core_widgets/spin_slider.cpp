@@ -8,11 +8,11 @@
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QWidget>
 
-#include "base/core.h"
 #include "base/global_state.h"
 #include "base/widget_debug.h"
 
 #include "core_widgets/spin_slider.h"
+#include "../base/ddcui_core.h"
 
 
 void SpinSlider::createWidgets() {

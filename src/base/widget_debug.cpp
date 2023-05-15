@@ -25,8 +25,8 @@
 #include <QtWidgets/QSizePolicy>
 #include <QtWidgets/QWidget>
 
-#include "core.h"
 #include "widget_debug.h"
+#include "ddcui_core.h"
 
 
 void reportBasicWidgetDimensions(

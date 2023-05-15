@@ -10,8 +10,8 @@
 
 #include "user_interface_options_state.h"
 
-#include "base/core.h"
 #include "cmdline/ddcui_parsed_cmd.h"
+#include "ddcui_core.h"
 
 
  UserInterfaceOptionsState::UserInterfaceOptionsState()

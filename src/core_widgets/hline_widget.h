@@ -8,7 +8,7 @@
 
 #include <QtWidgets/QWidget>
 
-#include "../base/core.h"
+#include "../base/ddcui_core.h"
 
 class HLineWidget  : public QFrame {
    Q_OBJECT
