@@ -1,6 +1,6 @@
-// ddcui_globals.cpp
+/** ddcui_core.cpp */
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2023 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <assert.h>
@@ -9,11 +9,17 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <syslog.h>
 #include <time.h>
 
-#include "ddcui_parms.h"
-#include "core.h"
+#include "ddcutil_types.h"
 
+#include "c_util/string_util.h"
+
+#include "ddcui_parms.h"
+#include "ddcui_core_aux.h"
+
+#include "ddcui_core.h"
 
 const int  FeatureRowHeight = 22;
 const int  FeatureHeaderHeight = 22;
@@ -153,6 +159,9 @@ bool enable_trace_show_thread_id(bool onoff) {
    return old;
 }
 
+bool enable_syslog = true;
+
+bool trace_to_syslog = false;  // write trace output to the system log as well as terminal
 
 bool printftcmf(
       bool debug,
@@ -228,6 +237,10 @@ bool printftcmf(
          fputs(buf2, stdout);    // no automatic terminating null
          fputs("\n", stdout);    //  if \n at end of format string for buf2 it's sometimes unrecognized
          fflush(stdout);
+
+         if (ddcui_syslog_level > DDCA_SYSLOG_NEVER) {
+            syslog(LOG_DEBUG, "%s", buf2);
+         }
 
          free(buffer);
          free(buf2);
