@@ -8,7 +8,7 @@
 #include <assert.h>
 #include <QtCore/QDebug>
 
-#include "base/core.h"
+#include "base/ddcui_core.h"
 #include "help/help_dialog.h"
 #include "help/help_browser.h"
 

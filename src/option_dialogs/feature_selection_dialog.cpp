@@ -15,7 +15,7 @@
 
 #include <ddcutil_types.h>
 
-#include "base/core.h"
+#include "base/ddcui_core.h"
 #include "base/feature_list.h"
 #include "base/global_state.h"
 #include "help/help_dialog.h"

@@ -1,6 +1,6 @@
 /* monitor.cpp */
 
-// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2023 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "base/monitor.h"
@@ -12,7 +12,7 @@
 
 #include <ddcutil_c_api.h>
 
-#include "base/core.h"
+#include "base/ddcui_core.h"
 #include "nongui/vcpthread.h"    // includes vcprequest.h
 #include "nongui/feature_value.h"
 

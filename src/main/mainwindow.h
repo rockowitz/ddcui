@@ -1,6 +1,6 @@
 /* mainwindow.h */
 
-// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2023 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef MAINWINDOW_H
@@ -11,9 +11,9 @@
 
 #include <ddcutil_types.h>
 
-#include "../base/nc_values_state.h"
+#include "base/ddcui_core.h"
+#include "base/nc_values_state.h"
 #include "cmdline/ddcui_parsed_cmd.h"
-#include "base/core.h"
 #include "base/user_interface_options_state.h"
 #include "nongui/msgbox_queue.h"
 
