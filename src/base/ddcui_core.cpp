@@ -161,8 +161,6 @@ bool enable_trace_show_thread_id(bool onoff) {
 
 bool enable_syslog = true;
 
-bool trace_to_syslog = false;  // write trace output to the system log as well as terminal
-
 bool printftcmf(
       bool debug,
       const char * metaclass_classname,
