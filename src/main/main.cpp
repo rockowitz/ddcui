@@ -13,7 +13,6 @@
 #include <ddcutil_c_api.h>
 #include <ddcutil_macros.h>
 
-// extern "C" {
 #include "c_util/ddcutil_config_file.h"
 #include "c_util/debug_util.h"
 #include "c_util/simple_ini_file.h"
@@ -22,7 +21,6 @@
 
 #include "cmdline/ddcui_cmd_parser.h"
 #include "cmdline/ddcui_parsed_cmd.h"
-// }
 
 #include "base/ddcui_core.h"
 #include "base/ddcui_parms.h"
