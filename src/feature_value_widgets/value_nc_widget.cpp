@@ -18,9 +18,9 @@
 
 #include <ddcutil_c_api.h>
 
+#include "../base/ddcui_core.h"
 #include "c_util/data_structures.h"
 #include "base/ddcui_parms.h"
-#include "base/core.h"
 #include "base/ddca_utils.h"
 #include "base/widget_debug.h"
 #include "feature_value_widgets/value_base_widget.h"

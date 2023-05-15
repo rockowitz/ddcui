@@ -19,8 +19,8 @@
 
 #include <QtWidgets/QHBoxLayout>
 
+#include "../../base/ddcui_core.h"
 #include "base/ddcui_parms.h"
-#include "base/core.h"
 #include "base/widget_debug.h"
 
 #include "c_util/string_util.h"

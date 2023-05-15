@@ -10,10 +10,10 @@
 #include <QtWidgets/QWidget>
 
 #include "base/ddcui_parms.h"
-#include "base/core.h"
 #include "base/widget_debug.h"
 
 #include "feature_value_widgets/value_simple_cont_widget.h"
+#include "../base/ddcui_core.h"
 
 
 static bool showDimensionReports = false;

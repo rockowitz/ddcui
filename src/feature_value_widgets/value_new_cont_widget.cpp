@@ -10,12 +10,12 @@
 
 #include "base/ddcui_parms.h"
 
-#include "base/core.h"
 #include "base/widget_debug.h"
 
 #include "c_util/string_util.h"
 
 #include "feature_value_widgets/value_new_cont_widget.h"
+#include "../base/ddcui_core.h"
 
 
 void ValueNewContWidget::layoutWidget(QHBoxLayout * layout) {

@@ -12,11 +12,11 @@
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QSizePolicy>
 
-#include "base/core.h"
 #include "base/global_state.h"
 #include "base/widget_debug.h"
 
 #include "ddcutil_c_api.h"
+#include "../base/ddcui_core.h"
 
 
 void ValueBaseWidget::setEnabled(bool onoff) {

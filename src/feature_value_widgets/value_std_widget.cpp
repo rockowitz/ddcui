@@ -11,11 +11,11 @@
 #include "ddcutil_status_codes.h"
 #include "ddcutil_c_api.h"
 
-#include "base/core.h"
 #include "base/feature_selector.h"
 #include "base/widget_debug.h"
 
 #include "feature_value_widgets/value_std_widget.h"
+#include "../base/ddcui_core.h"
 
 static bool showDimensionReport = false;
 static bool showBasicDims       = false || debugFeatureDimensions;
