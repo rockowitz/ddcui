@@ -10,24 +10,13 @@
 #include <sys/syscall.h>
 #include <unistd.h>
 
-
 #include "config.h"
-// #include "ddcutil_types.h"
-// #include "ddcutil_c_api.h"
 
 #include <QtCore/QtCore>
 #include <QtGui/QtGui>
 #include <QtWidgets/QtWidgets>
-// #include <QtWidgets/QListWidgetItem>
-
 
 #include "ddcui_parms.h"
-
-// struct QMetaObject2;
-// const QMetaObject2 *qt_getQtMetaObject2() noexcept; // defined in qobject.h (which can't be included here)
-
-
-
 
 const QString ddcui_version = DDCUI_VSTRING;
 
