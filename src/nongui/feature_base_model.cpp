@@ -4,7 +4,7 @@
  * QListView and QTableView.
  */
 
-// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2023 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "nongui/feature_base_model.h"
@@ -21,7 +21,8 @@
 #include <ddcutil_status_codes.h>
 
 #include "c_util/data_structures.h"
-#include "base/core.h"
+
+#include "base/ddcui_core.h"
 #include "base/global_state.h"
 #include "base/monitor.h"
 #include "base/ddca_utils.h"

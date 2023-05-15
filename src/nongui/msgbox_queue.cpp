@@ -1,6 +1,6 @@
 /* msgbox_queue.cpp - MsgBoxQueue and the MsgBoxQueueEntry class that populates it */
 
-// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2023 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <QtCore/QDebug>
@@ -9,13 +9,11 @@
 #include <assert.h>
 #include <iostream>
 
-#include "base/core.h"
+#include "base/ddcui_core.h"
 
 #include "nongui/msgbox_queue.h"
 
-
 static bool debugClass = false;
-
 
 /* MsgBoxQueueEntry and subclasses */
 

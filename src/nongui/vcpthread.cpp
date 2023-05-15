@@ -13,9 +13,10 @@
 
 #include <QtCore/QString>
 
-#include "base/core.h"
+#include "base/ddcui_core.h"
 #include "base/ddca_utils.h"
 #include "base/global_state.h"
+
 #include "nongui/vcpthread.h"
 
 using namespace std;
@@ -216,12 +217,6 @@ DDCA_Status VcpThread::perform_open_display(DDCA_Display_Handle * dh_loc)
    // if (ddcrc == 0) ddcrc = -EBUSY;
    if (ddcrc != 0) {
        rpt_nonfeature_error("performing open", "ddca_open_display2", ddcrc);
-   }
-   if (ddcrc == 0  && !_threadDescriptionPublished) {
-      TRACECF(debugFunc, "calling ddca_set_thread_description()");
-      // ddca_register_thread_dref(this->_dref);
-      ddca_append_thread_description( ddca_dref_repr(this->_dref) );
-      _threadDescriptionPublished = true;
    }
    TRACECF(debugFunc, "Returning %d", ddcrc);
    return ddcrc;

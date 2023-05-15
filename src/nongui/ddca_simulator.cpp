@@ -1,6 +1,6 @@
 // ddca_simulator.cpp
 
-// Copyright (C) 2020-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2020-2023 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "ddcutil_status_codes.h"
@@ -9,9 +9,10 @@
 
 #include <QtCore/QHash>
 
-#include "base/core.h"
+#include "base/ddcui_core.h"
 
 #include "ddca_simulator.h"
+
 
 typedef struct {
    uint8_t feature_code;

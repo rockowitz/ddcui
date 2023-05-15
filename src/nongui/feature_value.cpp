@@ -11,7 +11,8 @@
 #include "ddcutil_types.h"
 #include "ddcutil_c_api.h"
 
-#include "base/core.h"
+#include "base/ddcui_core.h"
+
 #include "nongui/feature_value.h"
 
 int FeatureValue::nextId = 0;
