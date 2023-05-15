@@ -7,33 +7,32 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <syslog.h>
+#include <QtCore/QtCore>
 #include <QtWidgets/QApplication>
 
 #include <ddcutil_c_api.h>
+#include <ddcutil_macros.h>
 
-extern "C" {
-#include "c_util/debug_util.h"
+// extern "C" {
 #include "c_util/ddcutil_config_file.h"
+#include "c_util/debug_util.h"
 #include "c_util/simple_ini_file.h"
 #include "c_util/string_util.h"
 #include "c_util/xdg_util.h"
 
-#include "cmdline/ddcui_parsed_cmd.h"
 #include "cmdline/ddcui_cmd_parser.h"
-}
+#include "cmdline/ddcui_parsed_cmd.h"
+// }
 
+#include "base/ddcui_core.h"
 #include "base/ddcui_parms.h"
 #include "base/global_state.h"
-#include "base/core.h"
 #include "main/msgbox_thread.h"
 
 #include "main/mainwindow.h"
 
 
-/* See: https://www.qt.io/blog/2016/01/26/high-dpi-support-in-qt-5-6
- */
-
-
+// See: https://www.qt.io/blog/2016/01/26/high-dpi-support-in-qt-5-6
 void dbgrpt_hidpi_environment_vars() {
    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
    QStringList varnames = {
@@ -183,13 +182,12 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
    ddca_enable_error_info(debug);
 
    DDCA_Init_Options opts = DDCA_INIT_OPTIONS_NONE;
-   if (parsed_cmd->flags & CMD_FLAG_DISABLE_SYSLOG)
-      opts = DDCA_INIT_OPTIONS_DISABLE_SYSLOG;
-   // if (parsed_cmd->flags & CMD_FLAG_DISABLE_LIBRARY_CONFIG_FILE)
+   if (parsed_cmd->flags & CMD_FLAG_DISABLE_CONFIG_FILE)
+      opts = (DDCA_Init_Options) (opts | DDCA_INIT_OPTIONS_DISABLE_CONFIG_FILE);
    if (parsed_cmd->library_options) {
       // opts = (DDCA_Init_Options) (opts | DDCA_INIT_OPTIONS_DISABLE_CONFIG_FILE);
    }
-   DDCA_Status rc = ddca_init(parsed_cmd->library_options, opts);
+   DDCA_Status rc = ddca_init(parsed_cmd->library_options, (DDCA_Syslog_Level) ddcui_syslog_level, opts);
    if (debug)
       printf("(main.cpp:%s) ddca_init() returned %d\n", __func__, rc);
 
@@ -207,9 +205,8 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
    else {
       // Must be called before any API call that triggers display identification
       // DDCA_Status rc =  // unused, comment out for now, need to properly set
-   //    ddca_enable_usb_display_detection(parsed_cmd->flags & CMD_FLAG_NOUSB);
-
-   // ddca_enable_udf(              parsed_cmd->flags & CMD_FLAG_ENABLE_UDF);
+      // ddca_enable_usb_display_detection(parsed_cmd->flags & CMD_FLAG_NOUSB);
+      // ddca_enable_udf(              parsed_cmd->flags & CMD_FLAG_ENABLE_UDF);
 
       if (parsed_cmd->flags & CMD_FLAG_DDCDATA)
          ddca_enable_report_ddc_errors(true);
@@ -266,7 +263,44 @@ int main(int argc, char *argv[])
        printf("(%s) prgname = %s, application_name = %s\n",
              __func__, g_get_prgname(), g_get_application_name() );
     }
-    openlog("ddcui", LOG_CONS|LOG_PID, LOG_USER);
+
+    bool show_version = ntsa_find(argv, "-V") >= 0 || ntsa_find(argv, "--version") >= 0;
+    // printf("(%s) %s\n", __func__, sbool(show_version));
+    if (show_version) {
+       printf("ddcui %s\n\n", DDCUI_VSTRING);
+       printf("Built using libddcutil version %d.%d.%d, Qt version %s\n",
+              DDCUTIL_VMAJOR, DDCUTIL_VMINOR, DDCUTIL_VMICRO, QT_VERSION_STR);
+       printf("Executing using libddcutil %s, Qt %s\n\n",
+              ddca_ddcutil_extended_version_string(), qVersion());
+       puts("Copyright (C) 2018-2022 Sanford Rockowitz");
+       puts("License GPLv2: GNU GPL version 2 or later <http://gnu.org/licenses/gpl.html>");
+       puts("This is free software: you are free to change and redistribute it.");
+       puts("There is NO WARRANTY, to the extent permitted by law.");
+       exit(0);
+    }
+
+    bool enable_syslog = true;
+    // if ( ntsa_find(argv, "--disable-syslog") >= 0 || ntsa_find(argv, "--nosyslog") >= 0 )
+    //    enable_syslog = false;
+    ddcui_syslog_level = DDCA_SYSLOG_INFO;  // ddcui default
+    int syslog_pos = ntsa_find(argv, "--syslog");
+    if (syslog_pos >= 0 && syslog_pos < (argc-1)) {
+       // printf("(%s) Parsing initial log level\n", __func__);
+       Ddcui_Syslog_Level parsed_level;
+       bool ok_level = parse_ddcui_syslog_level(argv[syslog_pos+1], &parsed_level);
+       if (ok_level)
+          ddcui_syslog_level = parsed_level;
+    }
+    printf("(%s) ddcui_syslog_level = %d\n", __func__, ddcui_syslog_level);
+
+
+    bool skip_config = (ntsa_find(argv, "--noconfig") >= 0 || ntsa_find(argv, "--disable-config-file") >= 0);
+
+    if (ddcui_syslog_level != DDCA_SYSLOG_NOT_SET && ddcui_syslog_level > DDCA_SYSLOG_NEVER)
+       openlog("ddcui", LOG_CONS|LOG_PID, LOG_USER);
+    // bool emit_syslog_info = ddcui_syslog_level != DDCA_SYSLOG_NOT_SET && ddcui_syslog_level >= DDCA_SYSLOG_INFO;
+    if (test_emit_ddcui_syslog(DDCA_SYSLOG_INFO))
+       syslog(LOG_INFO, "Starting");
     // must be called before parsed_ddcui_command(), o.w. --help reports libddcutil as name
     // n. also sets application_name
     g_set_prgname("ddcui");
@@ -281,42 +315,59 @@ int main(int argc, char *argv[])
     char ** new_argv = NULL;
     int new_argc = 0;
     char *  combined_config_file_options = NULL;
-    char *  config_fn;
-    if (debug)
-       printf("(%s) Calling apply_config_file()\n", __func__);
+    char *  config_fn = NULL;
+    int     apply_config_rc = 0;
 
-    int apply_config_rc = apply_config_file(
-                       "ddcui",
-                       argc,
-                       argv,
-                       &new_argc,
-                       &new_argv,
-                       &combined_config_file_options,
-                       &config_fn,
-                       errmsgs);
-    if (debug) {
-       printf("(%s) apply_config_file() returned %d\n", __func__, new_argc);
-       printf("(%s) combined_config_file_options=%s, config_fn=%s\n", __func__,
-              combined_config_file_options, config_fn);
-       printf("(%s) new_argc=%d, new_argv:\n", __func__, new_argc);
-       ntsa_show(new_argv);
+    if (skip_config) {
+       if (debug)
+          printf("(%s) Skipping config file", __func__);
+       new_argv = ntsa_copy(argv, true);
+       new_argc = argc;
     }
+    else {
+       if (debug)
+          printf("(%s) Calling apply_config_file()\n", __func__);
 
-    if (combined_config_file_options && strlen(combined_config_file_options) > 0)
-       printf("Applying ddcui      options from %s: %s\n",
-                    config_fn, combined_config_file_options);
-    free(combined_config_file_options);
-
-    if (errmsgs->len > 0) {
-       fprintf(stderr,  "(main.cpp) Error(s) reading ddcui configuration from file %s:\n", config_fn);
-       syslog(LOG_CRIT, "(main.cpp) Error(s) reading ddcui configuration from file %s:",   config_fn);
-       for (guint ndx = 0; ndx < errmsgs->len; ndx++) {
-          fprintf(stderr,  "   %s\n", (char*) g_ptr_array_index(errmsgs, ndx));
-          syslog(LOG_CRIT, "   %s",   (char*) g_ptr_array_index(errmsgs, ndx));
+       apply_config_rc = apply_config_file(
+                          "ddcui",
+                          argc,
+                          argv,
+                          &new_argc,
+                          &new_argv,
+                          &combined_config_file_options,
+                          &config_fn,
+                          errmsgs);
+       if (debug) {
+          printf("(%s) apply_config_file() returned %d\n", __func__, new_argc);
+          printf("(%s) combined_config_file_options=%s, config_fn=%s\n", __func__,
+                 combined_config_file_options, config_fn);
+          printf("(%s) new_argc=%d, new_argv:\n", __func__, new_argc);
+          ntsa_show(new_argv);
        }
+
+       if (combined_config_file_options && strlen(combined_config_file_options) > 0) {
+          printf("Applying ddcui      options from %s: %s\n",
+                       config_fn, combined_config_file_options);
+          if (test_emit_ddcui_syslog(DDCA_SYSLOG_INFO)) {
+                syslog(LOG_INFO, "Applying ddcui      options from %s: %s",
+                      config_fn, combined_config_file_options);
+          }
+       }
+       free(combined_config_file_options);
+       bool emit_syslog = test_emit_ddcui_syslog(DDCA_SYSLOG_ERROR);
+       if (errmsgs->len > 0) {
+          fprintf(stderr,  "(main.cpp) Error(s) reading ddcui configuration from file %s:\n", config_fn);
+          if (emit_syslog)
+             syslog(LOG_CRIT, "(main.cpp) Error(s) reading ddcui configuration from file %s:", config_fn);
+          for (guint ndx = 0; ndx < errmsgs->len; ndx++) {
+             fprintf(stderr,  "   %s\n", (char*) g_ptr_array_index(errmsgs, ndx));
+             if (emit_syslog)
+                syslog(LOG_CRIT, "   %s",   (char*) g_ptr_array_index(errmsgs, ndx));
+          }
+       }
+       g_ptr_array_free(errmsgs, true);
+       free(config_fn);
     }
-    g_ptr_array_free(errmsgs, true);
-    free(config_fn);
     if (apply_config_rc < 0) {
        mainStatus = 1;
     }
@@ -384,6 +435,8 @@ int main(int argc, char *argv[])
           free_parsed_ddcui_cmd(parsed_cmd);   // make valgrind happier
        }
     }
+    if (test_emit_ddcui_syslog(DDCA_SYSLOG_INFO))
+       syslog(LOG_INFO, "Done");
 
 bye:
     exit(mainStatus);
