@@ -14,6 +14,7 @@
 #include <sys/param.h>     // for MIN, MAX
 /** \endcond */
 
+#include "debug_util.h"
 #include "report_util.h"
 #include "string_util.h"
 
@@ -544,15 +545,15 @@ char * vnt_title(Value_Name_Title* table, uint32_t val) {
  *
  *  @result value id
  */
-uint32_t vnt_find_id(
+int32_t vnt_find_id(
            Value_Name_Title_Table table,
            const char * s,
            bool use_title,       // if false, search by symbolic name, if true, search by title
            bool ignore_case,
-           uint32_t default_id)
+           int32_t default_id)
 {
    assert(s);
-   uint32_t result = default_id;
+   int32_t result = default_id;
    Value_Name_Title * cur = table;
    for (; cur->name; cur++) {
       char * comparand = (use_title) ? cur->title : cur->name;
@@ -1428,7 +1429,7 @@ Bit_Set_256 bs256_from_string(
 {
     assert(unparsed_string);
     assert(error_msgs_loc);
-    bool debug = true;
+    bool debug = false;
     if (debug)
        printf("(bs256_from_string) unparsed_string = |%s|\n", unparsed_string );
 
@@ -1553,14 +1554,21 @@ Bit_Set_256 bva_to_bs256(Byte_Value_Array bva) {
 /** Function matching signature #Byte_Appender that adds a byte
  * to a #Byte_Value_Array.
  *
- * @param data_struct pointer to #Byte_Value_Array
- * @param val  byte to append
+ * @param data_struct  pointer to #Byte_Value_Array to modify
+ * @param val          byte to append
  */
 void bva_appender(void * data_struct, Byte val) {
    Byte_Value_Array bva = (Byte_Value_Array) data_struct;
    bva_append(bva, val);
 }
 
+
+/** Function matching signature #Byte_Appender that sets a bit
+ *  in a #Bit_Set_256.
+ *
+ * @param data_struct  pointer to #Bit_Set_256 to modify
+ * @param val          number of bit to set
+ */
 void bs256_appender(void * data_struct, Byte val) {
    assert(data_struct);
    Bit_Set_256 * bitset = (Bit_Set_256*) data_struct;
@@ -1647,4 +1655,61 @@ bool bs256_store_bytehex_list(Bit_Set_256 * pbitset, char * start, int len) {
    return store_bytehex_list(start, len, pbitset, bs256_appender);
 }
 
+
+//
+// Generic code to register and deregister callback functions.
+//
+
+/** Adds function to a set of registered callbacks
+ *
+ * @param  array of registered callbacks
+ * @param  function to add
+ * @retval true  success
+ * @retval false function already registered
+ */
+bool generic_register_callback(GPtrArray* registered_callbacks, void * func) {
+   bool debug = false;
+   DBGF(debug, "Starting. registered_callbacks=%p, func=%p", registered_callbacks, func);
+
+   if (!registered_callbacks) {
+      registered_callbacks = g_ptr_array_new();
+   }
+
+   bool new_registration = true;
+   for (int ndx = 0; ndx < registered_callbacks->len; ndx++) {
+      if (func == g_ptr_array_index(registered_callbacks, ndx)) {
+         new_registration = false;
+         break;
+      }
+   }
+   if (new_registration) {
+      g_ptr_array_add(registered_callbacks, func);
+   }
+
+   DBGF(debug, "Done.     Returning %s", SBOOL(new_registration));
+   return new_registration;
+}
+
+
+/** Unregisters a callback function
+ *
+ *  @param func function to remove
+ *  @retval true  function deregistered
+ *  @retval false function not found
+ *   */
+bool generic_unregister_callback(GPtrArray* registered_callbacks, void *func) {
+     bool debug = false;
+     DBGF(debug, "Starting. registered_callbacks=%p, func=%p", registered_callbacks, func);
+     bool found = false;
+     if (registered_callbacks) {
+        for (int ndx = 0; ndx < registered_callbacks->len; ndx++) {
+           if ( func == g_ptr_array_index(registered_callbacks, ndx)) {
+              g_ptr_array_remove_index(registered_callbacks,ndx);
+              found = true;
+           }
+        }
+     }
+     DBGF(debug, "Done.     Returning: %s", SBOOL(found));
+     return found;
+}
 

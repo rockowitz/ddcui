@@ -1411,7 +1411,8 @@ char * hexstring3_t(
    // int incr1 = 2 + sepsize;
    *buf = '\0';
    for (int i=0; i < len; i++) {
-      // printf("(%s) i=%d, strlen(buf)=%ld\n", __func__, i, strlen(buf));
+      if (debug)
+         printf("(%s) i=%d, buf=%p, strlen(buf)=%ld\n", __func__, i, buf, strlen(buf));
       sprintf(buf+strlen(buf), pattern, bytes[i]);
       bool insert_sepstr = (hunk_size == 0)
                                ? (i < (len-1) && sepstr)
