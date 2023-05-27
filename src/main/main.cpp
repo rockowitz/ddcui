@@ -169,6 +169,18 @@ void dbgrpt_hidpiQApplication(QApplication& coreapp) {
    }
 }
 
+#ifdef FUTURE
+void display_detection_callback(DDCA_Display_Detection_Report report) {
+  printf("(main.cpp/%s) Executing. dref=%p operation=%d\n",__func__, report.dref, report.operation);
+  return;
+}
+#endif
+
+void display_hotplug_callback() {
+  printf("(main.cpp/%s) Executing.\n", __func__);
+  return;
+}
+
 
 static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
    bool debug = false;
@@ -246,6 +258,10 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
       printf("(%s) ddca_get_default_sleep_multiplier() returned %6.3f\n", __func__, cur);
    #endif
    }
+
+   if (debug)
+      printf("(main.cpp:%s) Calling ddca_register_display_hotplug_callback()..\n", __func__);
+   ddca_register_display_hotplug_callback(display_hotplug_callback);
 
    if (debug)
       printf("(main.cpp:%s) Done.  Returning %s\n", __func__, SBOOL(ok));
