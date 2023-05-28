@@ -200,10 +200,7 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
       // so all syslog entries have the same program identifier
       opts = (DDCA_Init_Options) (opts | DDCA_INIT_OPTIONS_CLIENT_OPENED_SYSLOG);
    }
-   if (parsed_cmd->library_options) {
-      // opts = (DDCA_Init_Options) (opts | DDCA_INIT_OPTIONS_DISABLE_CONFIG_FILE);
-   }
-   DDCA_Status rc = ddca_init(parsed_cmd->library_options, (DDCA_Syslog_Level) ddcui_syslog_level, opts);
+   DDCA_Status rc = ddca_init(parsed_cmd->library_options, ddcui_syslog_level, opts);
    if (debug)
       printf("(main.cpp:%s) ddca_init() returned %d\n", __func__, rc);
 
@@ -302,7 +299,7 @@ int main(int argc, char *argv[])
     bool enable_syslog = true;
     // if ( ntsa_find(argv, "--disable-syslog") >= 0 || ntsa_find(argv, "--nosyslog") >= 0 )
     //    enable_syslog = false;
-    ddcui_syslog_level = DDCA_SYSLOG_INFO;  // ddcui default
+    ddcui_syslog_level = DDCA_SYSLOG_NOTICE;  // ddcui default
     int syslog_pos = ntsa_find(argv, "--syslog");
     if (syslog_pos >= 0 && syslog_pos < (argc-1)) {
        // printf("(%s) Parsing initial log level\n", __func__);
@@ -321,8 +318,8 @@ int main(int argc, char *argv[])
        openlog("ddcui", LOG_CONS|LOG_PID, LOG_USER);
     }
     // bool emit_syslog_info = ddcui_syslog_level != DDCA_SYSLOG_NOT_SET && ddcui_syslog_level >= DDCA_SYSLOG_INFO;
-    if (test_emit_ddcui_syslog(DDCA_SYSLOG_INFO))
-       syslog(LOG_INFO, "Starting");
+    if (test_emit_ddcui_syslog(DDCA_SYSLOG_NOTICE))
+       syslog(LOG_NOTICE, "Starting");
     // must be called before parsed_ddcui_command(), o.w. --help reports libddcutil as name
     // n. also sets application_name
     g_set_prgname("ddcui");
@@ -370,8 +367,8 @@ int main(int argc, char *argv[])
        if (combined_config_file_options && strlen(combined_config_file_options) > 0) {
           printf("Applying ddcui      options from %s: %s\n",
                        config_fn, combined_config_file_options);
-          if (test_emit_ddcui_syslog(DDCA_SYSLOG_INFO)) {
-                syslog(LOG_INFO, "Applying ddcui      options from %s: %s",
+          if (test_emit_ddcui_syslog(DDCA_SYSLOG_NOTICE)) {
+                syslog(LOG_NOTICE, "Applying ddcui      options from %s: %s",
                       config_fn, combined_config_file_options);
           }
        }
@@ -380,11 +377,11 @@ int main(int argc, char *argv[])
        if (errmsgs->len > 0) {
           fprintf(stderr,  "(main.cpp) Error(s) reading ddcui configuration from file %s:\n", config_fn);
           if (emit_syslog)
-             syslog(LOG_CRIT, "(main.cpp) Error(s) reading ddcui configuration from file %s:", config_fn);
+             syslog(LOG_ERR, "(main.cpp) Error(s) reading ddcui configuration from file %s:", config_fn);
           for (guint ndx = 0; ndx < errmsgs->len; ndx++) {
              fprintf(stderr,  "   %s\n", (char*) g_ptr_array_index(errmsgs, ndx));
              if (emit_syslog)
-                syslog(LOG_CRIT, "   %s",   (char*) g_ptr_array_index(errmsgs, ndx));
+                syslog(LOG_ERR, "   %s",   (char*) g_ptr_array_index(errmsgs, ndx));
           }
        }
        g_ptr_array_free(errmsgs, true);
@@ -457,8 +454,8 @@ int main(int argc, char *argv[])
           free_parsed_ddcui_cmd(parsed_cmd);   // make valgrind happier
        }
     }
-    if (test_emit_ddcui_syslog(DDCA_SYSLOG_INFO))
-       syslog(LOG_INFO, "ddcui done.");
+    if (test_emit_ddcui_syslog(DDCA_SYSLOG_NOTICE))
+       syslog(LOG_NOTICE, "ddcui done.");
 
 bye:
     exit(mainStatus);
