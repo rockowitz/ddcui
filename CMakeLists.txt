@@ -28,7 +28,7 @@ string(APPEND CMAKE_MODULE_PATH  ${CMAKE_SOURCE_DIR} )
 
 include(validate_CMAKE_BUILD_TYPE)
 
-project(ddcui VERSION 0.3.1 LANGUAGES C CXX)
+project(ddcui VERSION 0.4.0 LANGUAGES C CXX)
 
 message(STATUS "Build type is: ${CMAKE_BUILD_TYPE} (CMAKE_BUILD_TYPE)")
 message(${VERBOSE} "   CMAKE_CXX_FLAGS:                ${CMAKE_CXX_FLAGS}" )
