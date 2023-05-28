@@ -182,6 +182,8 @@ void display_hotplug_callback() {
 }
 
 
+static bool ddcui_opened_syslog = false;    // global
+
 static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
    bool debug = false;
    if (debug)
@@ -194,6 +196,10 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
    DDCA_Init_Options opts = DDCA_INIT_OPTIONS_NONE;
    if (parsed_cmd->flags & CMD_FLAG_DISABLE_CONFIG_FILE)
       opts = (DDCA_Init_Options) (opts | DDCA_INIT_OPTIONS_DISABLE_CONFIG_FILE);
+   if (ddcui_opened_syslog) {
+      // so all syslog entries have the same program identifier
+      opts = (DDCA_Init_Options) (opts | DDCA_INIT_OPTIONS_CLIENT_OPENED_SYSLOG);
+   }
    if (parsed_cmd->library_options) {
       // opts = (DDCA_Init_Options) (opts | DDCA_INIT_OPTIONS_DISABLE_CONFIG_FILE);
    }
@@ -310,8 +316,10 @@ int main(int argc, char *argv[])
 
     bool skip_config = (ntsa_find(argv, "--noconfig") >= 0 || ntsa_find(argv, "--disable-config-file") >= 0);
 
-    if (ddcui_syslog_level != DDCA_SYSLOG_NOT_SET && ddcui_syslog_level > DDCA_SYSLOG_NEVER)
+    if (ddcui_syslog_level != DDCA_SYSLOG_NOT_SET && ddcui_syslog_level > DDCA_SYSLOG_NEVER) {
+       ddcui_opened_syslog = true;
        openlog("ddcui", LOG_CONS|LOG_PID, LOG_USER);
+    }
     // bool emit_syslog_info = ddcui_syslog_level != DDCA_SYSLOG_NOT_SET && ddcui_syslog_level >= DDCA_SYSLOG_INFO;
     if (test_emit_ddcui_syslog(DDCA_SYSLOG_INFO))
        syslog(LOG_INFO, "Starting");
@@ -450,7 +458,7 @@ int main(int argc, char *argv[])
        }
     }
     if (test_emit_ddcui_syslog(DDCA_SYSLOG_INFO))
-       syslog(LOG_INFO, "Done");
+       syslog(LOG_INFO, "ddcui done.");
 
 bye:
     exit(mainStatus);
