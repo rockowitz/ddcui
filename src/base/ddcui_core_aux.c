@@ -25,6 +25,7 @@ bool test_emit_ddcui_syslog(Ddcui_Syslog_Level msg_level) {
    return result;
 }
 
+#ifdef OUT
 Ddcui_Syslog_Level ddcui_syslog_level_name_to_value(const char * name) {
    Ddcui_Syslog_Level ddcui_syslog_level = DDCA_SYSLOG_NOT_SET;
         if (streq(name, "DEBUG"))   ddcui_syslog_level = DDCA_SYSLOG_DEBUG;
@@ -34,6 +35,7 @@ Ddcui_Syslog_Level ddcui_syslog_level_name_to_value(const char * name) {
    else if (streq(name, "NEVER"))   ddcui_syslog_level = DDCA_SYSLOG_NEVER;
    return ddcui_syslog_level;
 }
+#endif
 
 #ifdef OUT
 const char * syslog_level_id_name(DDCA_Syslog_Level level) {
