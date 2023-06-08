@@ -137,9 +137,9 @@ void dbgrpt_parsed_ddcui_cmd(Parsed_Ddcui_Cmd * parsed_cmd) {
       // char buf[20];
       // snprintf(buf,20, "%d,%d,%d", parsed_cmd->max_tries[0], parsed_cmd->max_tries[1], parsed_cmd->max_tries[2] );
       // printf("   max_retries:               %s\n",   buf);
-      printf("   report_freed_exceptions:   %s\n",   sbool(parsed_cmd->flags & CMD_FLAG_REPORT_FREED_EXCP) );
+//    printf("   report_freed_exceptions:   %s\n",   sbool(parsed_cmd->flags & CMD_FLAG_REPORT_FREED_EXCP) );
 //    printf("   nousb                      %s\n",   sbool(parsed_cmd->flags & CMD_FLAG_NOUSB) );
-      printf("   display ddc errors:        %s\n",   sbool(parsed_cmd->flags & CMD_FLAG_DDCDATA) );
+//    printf("   display ddc errors:        %s\n",   sbool(parsed_cmd->flags & CMD_FLAG_DDCDATA) );
       printf("   timestamp prefix:          %s\n",   sbool(parsed_cmd->flags & CMD_FLAG_TIMESTAMP_TRACE) );
       printf("   thread_id prefix:          %s\n",   sbool(parsed_cmd->flags & CMD_FLAG_THREAD_ID_TRACE) );
       printf("   show styles:               %s\n",   sbool(parsed_cmd->flags & CMD_FLAG_SHOW_STYLES) );

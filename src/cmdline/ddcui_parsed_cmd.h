@@ -53,9 +53,9 @@ typedef enum {
 
 typedef enum {
    CMD_FLAG_NONE                   = 0x000000,
-   CMD_FLAG_DDCDATA                = 0x000001,
+// CMD_FLAG_DDCDATA                = 0x000001,
    CMD_FLAG_TIMESTAMP_TRACE        = 0x000002,  // prepend trace and debug msgs with elapsed time
-   CMD_FLAG_REPORT_FREED_EXCP      = 0x000004,
+// CMD_FLAG_REPORT_FREED_EXCP      = 0x000004,
    CMD_FLAG_THREAD_ID_TRACE        = 0x000008,
 // CMD_FLAG_NOUSB                  = 0x000020,
 
