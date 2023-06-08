@@ -191,7 +191,9 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
 
    bool ok = true;
 
+#ifdef REMOVED
    ddca_enable_error_info(debug);
+#endif
 
    DDCA_Init_Options opts = DDCA_INIT_OPTIONS_NONE;
    if (parsed_cmd->flags & CMD_FLAG_DISABLE_CONFIG_FILE)
@@ -221,10 +223,12 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
       // ddca_enable_usb_display_detection(parsed_cmd->flags & CMD_FLAG_NOUSB);
       // ddca_enable_udf(              parsed_cmd->flags & CMD_FLAG_ENABLE_UDF);
 
+#ifdef USE_CONFIG_FILE
       if (parsed_cmd->flags & CMD_FLAG_DDCDATA)
          ddca_enable_report_ddc_errors(true);
       if (parsed_cmd->flags & CMD_FLAG_REPORT_FREED_EXCP)
          ddca_enable_error_info(true);
+#endif
 
    #ifdef USE_CONFIG_FILE
       if (parsed_cmd->max_tries[0] > 0) {
@@ -308,7 +312,7 @@ int main(int argc, char *argv[])
        if (ok_level)
           ddcui_syslog_level = parsed_level;
     }
-    printf("(%s) ddcui_syslog_level = %d\n", __func__, ddcui_syslog_level);
+    // printf("(%s) ddcui_syslog_level = %d\n", __func__, ddcui_syslog_level);
 
 
     bool skip_config = (ntsa_find(argv, "--noconfig") >= 0 || ntsa_find(argv, "--disable-config-file") >= 0);
@@ -365,7 +369,7 @@ int main(int argc, char *argv[])
        }
 
        if (combined_config_file_options && strlen(combined_config_file_options) > 0) {
-          printf("Applying ddcui      options from %s: %s\n",
+          printf("Using ddcui      options from %s: %s\n",
                        config_fn, combined_config_file_options);
           if (test_emit_ddcui_syslog(DDCA_SYSLOG_NOTICE)) {
                 syslog(LOG_NOTICE, "Applying ddcui      options from %s: %s",
