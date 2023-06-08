@@ -106,10 +106,20 @@ bool parse_ddcui_syslog_level(
       const char *        sval,
       Ddcui_Syslog_Level* result_loc)
 {
-   bool debug = true;
+   bool debug = false;
    bool parsing_ok = true;
    if (debug)
       printf("(%s) sval=|%s|\n", __func__, sval);
+
+#ifdef REF
+   VNT(DDCA_SYSLOG_DEBUG,   "DEBUG"),
+   VNT(DDCA_SYSLOG_VERBOSE, "VERBOSE"),
+   VNT(DDCA_SYSLOG_INFO,    "INFO"),
+   VNT(DDCA_SYSLOG_NOTICE,  "NOTICE"),
+   VNT(DDCA_SYSLOG_WARNING, "WARN"),
+   VNT(DDCA_SYSLOG_ERROR,   "ERROR"),
+   VNT(DDCA_SYSLOG_NEVER,   "NEVER"),
+#endif
 
    *result_loc = ddca_syslog_level_from_name(sval);
    if (*result_loc == DDCA_SYSLOG_NOT_SET) {
@@ -117,7 +127,7 @@ bool parse_ddcui_syslog_level(
       // emit_parser_error(errmsgs, __func__, "Invalid syslog level: %s", sval );
       // emit_parser_error(errmsgs, __func__, "Valid values are NEVER, ERROR, WARN, INFO, DEBUG");
       fprintf(stderr, "Invalid syslog level: %s\n", sval );
-      fprintf(stderr, "Valid values are NEVER, ERROR, WARN, INFO, DEBUG\n");
+      fprintf(stderr, "Valid values are NEVER, ERROR, WARN, NOTICE, INFO, VERBOSE, DEBUG\n");
    }
    if (debug)
       printf("(%s) Returning %s, *result_loc = %d\n",
@@ -156,9 +166,9 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
 
    Parsed_Ddcui_Cmd * parsed_cmd = new_parsed_ddcui_cmd();
 
-   gboolean ddc_flag                       = false;
+// gboolean ddc_flag                       = false;
 // gboolean nousb_flag                     = false;
-   gboolean report_freed_excp_flag         = false;
+// gboolean report_freed_excp_flag         = false;
    gboolean timestamp_trace_flag           = false;
    gboolean thread_id_trace_flag           = false;
    gboolean version_flag                   = false;
@@ -184,6 +194,7 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    gchar*   custom_feature_set_work        = NULL;
    gboolean control_key_required           = false;
    gboolean show_unsupported_features      = false;
+   gchar**  libopts_pieces                 = NULL;
 
    gboolean only_capabilities_true_set     = false;
 // gboolean only_capabilities_false_set    = false;
@@ -233,7 +244,7 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
 //    {"not-only-capabilities",
 //                 '\0',  0, G_OPTION_ARG_NONE,      &only_capabilities_false_set, "Do not exclude values only in MCCS", NULL},
       {"all-capabilities",
-                   '\0',   0, G_OPTION_ARG_NONE,     &all_capabilities_true_set, "IncG_OPTION_ARG_INTlude all values in capabilities", NULL},
+                   '\0',   0, G_OPTION_ARG_NONE,     &all_capabilities_true_set, "Include all values in capabilities", NULL},
 //    {"not-all-capabilities",
 //                 '\0', 0, G_OPTION_ARG_NONE,       &all_capabilities_false_set, "Negate include all values in capabilities", NULL},
 
@@ -247,7 +258,7 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
 // Tuning
       {"stats",    's',  G_OPTION_FLAG_OPTIONAL_ARG,
                             G_OPTION_ARG_CALLBACK, stats_arg_func,    "Show performance statistics",  "TRIES|ERRORS|CALLS|ALL"},
-      {"ddc",      '\0', 0, G_OPTION_ARG_NONE,     &ddc_flag,         "Report DDC protocol and data errors", NULL},
+//    {"ddc",      '\0', 0, G_OPTION_ARG_NONE,     &ddc_flag,         "Report DDC protocol and data errors", NULL},
       {"force-slave-address",
                    '\0', 0, G_OPTION_ARG_NONE,     &force_slave_address_true_set, "Deprecated", NULL},
       {"disable-force-slave-address",
@@ -258,14 +269,14 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
       {"show-style",'\0',0, G_OPTION_ARG_NONE,     &show_active_style_flag,      "Show active style",   NULL},
 
 // libddcutil options
-      {"libopts",  '\0', 0, G_OPTION_ARG_STRING,   &parsed_cmd->library_options, "libddcutil options",  "string"},
+      {"libopts",  '\0', 0, G_OPTION_ARG_STRING_ARRAY, &libopts_pieces,  "libddcutil options",  "string"},
 
 // output control
       {"disable-config-file",
                    '\0', 0, G_OPTION_ARG_NONE,     &disable_config_file, "Ignore ddcutil config file", NULL},
       {"noconfig", '\0', 0, G_OPTION_ARG_NONE,     &disable_config_file, "Ignore ddcutil config file", NULL},
 
-      {"syslog",   '\0', 0, G_OPTION_ARG_STRING,       &syslog_work,                    "system log level", "NONE, ERROR, WARN, INFO, NONE"},
+      {"syslog",   '\0', 0, G_OPTION_ARG_STRING,   &syslog_work,                    "system log level", "NONE, ERROR, WARN, INFO, NONE"},
 
       {"version",  'V',  0, G_OPTION_ARG_NONE,     &version_flag,         "Show version information",   NULL},
       { NULL }
@@ -273,7 +284,7 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
 
    GOptionEntry development_options[] = {
 // debugging
-      {"excp",     '\0',   0, G_OPTION_ARG_NONE,   &report_freed_excp_flag, "Report freed exceptions", NULL},
+//    {"excp",     '\0',   0, G_OPTION_ARG_NONE,   &report_freed_excp_flag, "Report freed exceptions", NULL},
       {"timestamp",'\0',   0, G_OPTION_ARG_NONE,   &timestamp_trace_flag, "Prepend trace msgs with elapsed time",  NULL},
       {"ts",       '\0',   0, G_OPTION_ARG_NONE,   &timestamp_trace_flag, "Prepend trace msgs with elapsed time",  NULL},
       {"thread-id",'\0',   0, G_OPTION_ARG_NONE,   &thread_id_trace_flag, "Prepend trace msgs with thread id",     NULL},
@@ -296,10 +307,13 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
       {"i1",      '\0', 0,  G_OPTION_ARG_INT,      &parsed_cmd->i1,       "Special integer 1", NULL},
       {"i2",      '\0', 0,  G_OPTION_ARG_INT,      &parsed_cmd->i2,       "Special integer 2", NULL},
 
+  //    {G_OPTION_REMAINING,
+  //                    '\0', 0,  G_OPTION_ARG_STRING_ARRAY, &cmd_and_args, NULL,   NULL},
+
       { NULL }
    };
 
-#ifdef UNUSED
+#ifdef DOESNT_WORK
    GOptionEntry final_options[] = {
      // collect to verify that does not exist
       {G_OPTION_REMAINING,
@@ -318,10 +332,19 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    g_option_group_add_entries(development_option_group, development_options);
    g_option_group_set_parse_hooks(development_option_group, pre_parse_hook, post_parse_hook);
 
+#ifdef DOESNT_WORK
+   GOptionGroup * remainder_group =
+   g_option_group_new("remainder", "Command sink", "Should be empty", NULL, NULL);
+   g_option_group_add_entries(remainder_group, final_options);
+#endif
+
    GError* error = NULL;
    GOptionContext* context = g_option_context_new("- graphical interface to ddcutil");
    g_option_context_add_main_entries(context, public_option_entries, NULL);
    g_option_context_add_group(context, development_option_group);
+#ifdef DOESNT_WORK
+   g_option_context_add_group(context, remainder_group);
+#endif
 
    g_option_context_set_help_enabled(context, true);
    // bool ok = false;
@@ -343,6 +366,10 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
       printf("(%s) Before g_option_context_parse_strv(), mangleable_argv:\n", __func__);
       rpt_ntsa(mangleable_argv, 3);
    }
+   char * combined = strjoin((const char**)(mangleable_argv+1), ntsa_length(mangleable_argv)-1, " ");
+   printf("Applying combined ddcui options: %s\n", combined);
+   syslog(LOG_NOTICE,"Applying combined ddcui options: %s",   combined);
+   free(combined);
    bool ok = g_option_context_parse_strv(context, &mangleable_argv, &error);
    if (!ok) {
       if (error) {
@@ -355,7 +382,16 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
          syslog(LOG_CRIT, "ddcui option parsing failed.");
       }
    }
-   if (debug) {
+
+   if (ntsa_length(mangleable_argv) > 1) {
+      char * remainder = strjoin((const char**)(mangleable_argv+1), ntsa_length(mangleable_argv)-1, " ");
+      fprintf(stderr, "Unrecognized: %s\n", remainder);
+      syslog(LOG_CRIT, "Unrecognized: %s\n", remainder);
+      free(remainder);
+      ok = false;
+   }
+
+   if (false) {
       printf("(%s) Freeing mangleable_argv=%p:\n", __func__, (void*)mangleable_argv);
       rpt_ntsa(mangleable_argv, 3);
    }
@@ -372,6 +408,12 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
       syslog(LOG_WARNING, "%s",   s);
    }
 
+   if (libopts_pieces) {
+      char * combined_libopts_pieces = strjoin((const char**)libopts_pieces, ntsa_length(libopts_pieces), " ");
+      parsed_cmd->library_options = combined_libopts_pieces;
+      // printf("Combined_libopts_pieces: |%s|\n", combined_libopts_pieces);
+   }
+
 #define SET_CMDFLAG(_bit, _flag) \
    do { \
       if (_flag) \
@@ -379,10 +421,10 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    } while(0)
 
    parsed_cmd->stats_types      = stats_work;
-   SET_CMDFLAG(CMD_FLAG_DDCDATA,           ddc_flag);
+// SET_CMDFLAG(CMD_FLAG_DDCDATA,           ddc_flag);
    SET_CMDFLAG(CMD_FLAG_TIMESTAMP_TRACE,   timestamp_trace_flag);
    SET_CMDFLAG(CMD_FLAG_THREAD_ID_TRACE,   thread_id_trace_flag);
-   SET_CMDFLAG(CMD_FLAG_REPORT_FREED_EXCP, report_freed_excp_flag);
+// SET_CMDFLAG(CMD_FLAG_REPORT_FREED_EXCP, report_freed_excp_flag);
 
 // SET_CMDFLAG(CMD_FLAG_NOUSB,             nousb_flag);
 
