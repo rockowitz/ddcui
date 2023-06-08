@@ -69,7 +69,6 @@ FeatureValue::~FeatureValue() {
    debugFunc = debugFunc || (_featureCode == 0x14);
    TRACEC("Executing. _id=%d, _featureCode=0x%02x", _id, _featureCode);
 
-   ddca_free_display_ref(_dref);    // n. not checking return code
    ddca_free_feature_metadata(_finfo);
 }
 
