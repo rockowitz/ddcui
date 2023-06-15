@@ -369,10 +369,10 @@ int main(int argc, char *argv[])
        }
 
        if (combined_config_file_options && strlen(combined_config_file_options) > 0) {
-          printf("Using ddcui      options from %s: %s\n",
+          printf("Using ddcui options from %s: %s\n",
                        config_fn, combined_config_file_options);
           if (test_emit_ddcui_syslog(DDCA_SYSLOG_NOTICE)) {
-                syslog(LOG_NOTICE, "Applying ddcui      options from %s: %s",
+                syslog(LOG_NOTICE, "Applying ddcui options from %s: %s",
                       config_fn, combined_config_file_options);
           }
        }
