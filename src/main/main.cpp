@@ -266,9 +266,11 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
    #endif
    }
 
-   if (debug)
-      printf("(main.cpp:%s) Calling ddca_register_display_hotplug_callback()..\n", __func__);
-   ddca_register_display_hotplug_callback(display_hotplug_callback);
+   if (ok) {
+      if (debug)
+         printf("(main.cpp:%s) Calling ddca_register_display_hotplug_callback()..\n", __func__);
+      ddca_register_display_hotplug_callback(display_hotplug_callback);
+   }
 
    if (debug)
       printf("(main.cpp:%s) Done.  Returning %s\n", __func__, SBOOL(ok));
