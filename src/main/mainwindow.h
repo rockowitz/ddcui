@@ -124,6 +124,7 @@ private slots:
     void on_actionDebugActionsDialog_triggered();
     void for_resetStats_triggered();
     void for_reportStats_triggered(DDCA_Stats_Type stats_type, bool showTheadData);
+    void on_actionDebugLocks_triggered();
 
     // Options Menu
     void on_actionFeatureSelectionDialog_triggered();
@@ -161,7 +162,9 @@ public:
 
 private:
     // used only by slotfor_reportStats_triggered()
+    void showCapturedText(QString windowTitle, QString text);
     void capture_stats(DDCA_Stats_Type stats_type, bool show_thread_data);
+    void captureLocks();
     void ctrlKeyStatusMsg();
 
 // *** Unused Methods, public and private, all types
