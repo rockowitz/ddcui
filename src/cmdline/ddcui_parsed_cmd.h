@@ -7,7 +7,7 @@
 #define DDCUI_PARSED_CMD_H_
 
 
-#include <ddcutil_types.h>
+#include "ddcutil_types.h"
 
 // Used to distinguish between an explicit option set vs no option set,
 // in which case the default value will be used
