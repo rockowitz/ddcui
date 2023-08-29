@@ -938,6 +938,27 @@ void MainWindow::on_actionRedetect_triggered() {
 }
 
 
+void MainWindow::on_actionDebugLocks_triggered() {
+   bool debug = true;
+   TRACECF(debug, "Executing");
+   ddca_report_locks(0);
+   captureLocks();
+   TRACECF(debug,"Done");
+}
+
+
+void MainWindow::captureLocks() {
+       ddca_start_capture(DDCA_CAPTURE_NOOPTS);
+       // DDCA_Output_Level saved_ol = ddca_get_output_level();
+       // ddca_set_output_level(DDCA_OL_VERBOSE);
+       ddca_report_locks(0);
+       // ddca_set_output_level(saved_ol);
+       char * s = ddca_end_capture();  // API's buffer, do not free
+       QString qs(s);
+       free(s);
+       showCapturedText("Execution Statistics", qs);
+}
+
 // Actions->Debug: DebugActionsDialog slots
 
 void MainWindow::on_actionDebugActionsDialog_triggered()
@@ -975,6 +996,19 @@ void MainWindow::for_reportStats_triggered(DDCA_Stats_Type stats_type, bool show
 }
 
 
+void MainWindow::showCapturedText(QString windowTitle, QString text) {
+   const QFont& textFont = QFont(       "Monospace",  9, QFont::Normal);
+   // viewHelpByTextX(qs, QString("Statistics Report"), textFont,  this);
+   HelpDialog* hd = new HelpDialog(this);
+   hd->setFont(textFont);
+   hd->setText(text);
+   hd->resize(650,40);
+      // hd->_textBrowser->setSource(fn);
+   hd->setWindowTitle( windowTitle );
+   hd->exec();     // always modal
+}
+
+
 void MainWindow::capture_stats(DDCA_Stats_Type stats_type, bool show_thread_data) {
        ddca_start_capture(DDCA_CAPTURE_NOOPTS);
        // DDCA_Output_Level saved_ol = ddca_get_output_level();
@@ -984,6 +1018,8 @@ void MainWindow::capture_stats(DDCA_Stats_Type stats_type, bool show_thread_data
        char * s = ddca_end_capture();  // API's buffer, do not free
        QString qs(s);
        free(s);
+       showCapturedText("Execution Statistics", qs);
+#ifdef MOVED
        const QFont& textFont = QFont(       "Monospace",  9, QFont::Normal);
        // viewHelpByTextX(qs, QString("Statistics Report"), textFont,  this);
        HelpDialog* hd = new HelpDialog(this);
@@ -993,6 +1029,7 @@ void MainWindow::capture_stats(DDCA_Stats_Type stats_type, bool show_thread_data
           // hd->_textBrowser->setSource(fn);
        hd->setWindowTitle( "Execution Statistics" );
        hd->exec();     // always modal
+#endif
 }
 
 
