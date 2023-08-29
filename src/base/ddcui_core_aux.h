@@ -1,6 +1,6 @@
-// ddcui_core_aux.h
+/** @file ddcui_core_aux.h */
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2023 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef DDCUI_CORE_AUX_H_
@@ -12,7 +12,7 @@ extern "C" {
 
 #include <stdbool.h>
 
-#include <ddcutil_types.h>
+#include "ddcutil_types.h"
 
 #ifdef OLD
 typedef enum  {
