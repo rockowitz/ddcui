@@ -14,7 +14,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <syslog.h>
-
 #include <ddcutil_macros.h>
 #include <ddcutil_types.h>
 #include <ddcutil_c_api.h>
