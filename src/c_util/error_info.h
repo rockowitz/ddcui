@@ -27,7 +27,7 @@ extern "C" {
 
 #define ERROR_INFO_MARKER "EINF"
 
-/** Struct for reporting errors, designed for collecting retry failures */
+/** Struct for reporting errors, designed for collecting contributing errors */
 typedef struct error_info {
    char               marker[4];    ///<  always EINF
    int                status_code;  ///<  status code
@@ -45,6 +45,10 @@ typedef struct error_info {
 
 typedef char * (*ErrInfo_Status_String)(int code);
 
+bool errinfo_all_causes_same_status(
+      Error_Info * ddc_excp,
+      int          status_code);
+
 void errinfo_init(
       ErrInfo_Status_String  name_func,
       ErrInfo_Status_String  desc_func);
@@ -52,13 +56,18 @@ void errinfo_init(
 void errinfo_free(
       Error_Info *   erec);
 
+#define ERRINFO_FREE(_erec) \
+   if (_erec) \
+      errinfo_free(_erec);
+
 void errinfo_free_with_report(
       Error_Info *  erec,
       bool          report,
       const char *  func);
 
 #define ERRINFO_FREE_WITH_REPORT(_erec, _report) \
-   errinfo_free_with_report(_erec, (_report), __func__)
+   if (_erec) \
+      errinfo_free_with_report(_erec, (_report), __func__)
 
 Error_Info * errinfo_new(
       int            status_code,
@@ -126,6 +135,11 @@ char * errinfo_array_summary(
 
 char * errinfo_causes_string(
       Error_Info *   erec);
+
+void errinfo_report_collect(
+      Error_Info *   erec,
+      GPtrArray *    collector,
+      int            depth);
 
 void errinfo_report(
       Error_Info *   erec,

@@ -70,6 +70,48 @@ errinfo_init(
 
 
 //
+// Utilities
+//
+
+/** Checks whether all causes have the same status code.
+ *  If **status_code** != 0, all causes must have that value.
+ *  If **status_code** == 0, all causes must have the same status code
+ *  value as the first cause.
+ *
+ *  @param  erec        pointer to #Error_Info instance
+ *  @param  status_code status code value to check
+ *  @return true/false
+ *
+ *  if **erec** == NULL or the instance has no causes, returns false.
+ */
+bool
+errinfo_all_causes_same_status(
+      Error_Info * erec,
+      int          status_code)
+{
+   bool debug = false;
+   DBGF(debug, "Starting. status_code=%d, erec=%s", status_code, errinfo_summary(erec));
+   bool all_same = false;
+   if (erec) {
+      VALID_ERROR_INFO_PTR(erec);
+      if (erec->cause_ct > 0) {
+         if (status_code == 0)
+            status_code = erec->causes[0]->status_code;
+         all_same = true;
+         for (int ndx = 0; ndx < erec->cause_ct; ndx++) {
+            if (erec->causes[ndx]->status_code != status_code) {
+               all_same = false;
+               break;
+            }
+         }
+      }
+   }
+   DBGF(debug, "Returning: %s", SBOOL(all_same));
+   return all_same;
+}
+
+
+//
 // Instance destruction
 //
 
@@ -137,7 +179,7 @@ errinfo_free_with_report(
    if (erec) {
       if (report) {
          rpt_vstring(0, "(%s) Freeing exception:", func);
-            errinfo_report(erec, 1);
+         errinfo_report(erec, 1);
       }
       errinfo_free(erec);
    }
@@ -700,6 +742,8 @@ errinfo_causes_string(Error_Info * erec) {
 #endif
 
 
+
+
 /** Emits a full report of the contents of the specified #Error_Info,
  *  using report functions.
  *
@@ -707,7 +751,7 @@ errinfo_causes_string(Error_Info * erec) {
  *  \param  depth  logical indentation depth
  */
 void
-errinfo_report(Error_Info * erec, int depth) {
+errinfo_report_collect(Error_Info * erec, GPtrArray* collector, int depth) {
    assert(erec);
    int d1 = depth+1;
 
@@ -715,17 +759,17 @@ errinfo_report(Error_Info * erec, int depth) {
    // rpt_vstring(depth, "(%s) Location: %s", __func__, (erec->func) ? erec->func : "not set");
    // rpt_vstring(depth, "(%s) errinfo_name_func=%p, errinfo_desc_func=%p", __func__, errinfo_name_func, errinfo_desc_func);
    // rpt_push_output_dest(stderr);
-   rpt_vstring(depth, "Exception in function %s: status=%s",
+   rpt_vstring_collect(depth, collector, "Exception in function %s: status=%s",
          (erec->func) ? erec->func : "not set",
          errinfo_desc_func(erec->status_code) );  // can't call psc_desc(), violates layering
    if (erec->detail)
-      rpt_label(depth+1, erec->detail);
+      rpt_label_collect(depth+1, collector, erec->detail);
    // rpt_pop_output_dest();
 
    if (erec->cause_ct > 0) {
-      rpt_vstring(depth, "Caused by: ");
+      rpt_vstring_collect(depth, collector, "Caused by: ");
       for (int ndx = 0; ndx < erec->cause_ct; ndx++) {
-         errinfo_report(erec->causes[ndx], d1);
+         errinfo_report_collect(erec->causes[ndx], collector, d1);
       }
    }
 
@@ -738,7 +782,27 @@ errinfo_report(Error_Info * erec, int depth) {
    }
 #endif
    // rpt_vstring(depth, "(%s) Done", __func__);
+
 }
+
+
+void
+errinfo_report(Error_Info * erec, int depth) {
+      errinfo_report_collect(erec, NULL, depth);
+}
+
+
+
+#ifdef NO
+void errinfo_free_with_report(
+      Error_Info *  erec,
+      bool          report,
+      const char *  func)
+{
+   (void) errinfo_free_with_report_collect(erec, report, func, false);
+}
+#endif
+
 
 
 void
