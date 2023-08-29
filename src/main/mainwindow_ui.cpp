@@ -1,6 +1,6 @@
 /** \file mainwindow_ui.cpp  */
 
-// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2023 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 // Note:  This file cannot be named ui_mainwindow.cpp.
@@ -95,6 +95,10 @@ void Ui_MainWindow::initActions(QMainWindow * MainWindow)
     actionRescan->setObjectName(QString::fromUtf8("actionRescan"));
     actionRedetect = new QAction(MainWindow);
     actionRedetect->setObjectName(QString::fromUtf8("actionRedetect"));
+    actionDebugLocks = new QAction(MainWindow);
+    actionDebugLocks->setObjectName(QString::fromUtf8("actionDebugLocks"));
+    actionDebugLocks->setText(
+         QApplication::translate("MainWindow", "Debug Locks", nullptr, -1));
 
     // ??
     // QActionGroup* actionsGroup = new QActionGroup(MainWindow);
@@ -173,6 +177,7 @@ void Ui_MainWindow::setupMenus(QMainWindow *MainWindow)
     actionFeaturesScrollArea->setEnabled(false);
     actionRescan->setFont(mainMenuFont);
     actionRescan->setEnabled(false);
+    actionDebugLocks->setEnabled(true);
 
     actionRedetect->setText(  QApplication::translate("MainWindow", "Re&detect Displays", nullptr, -1));
     actionRedetect->setEnabled(true);
@@ -181,6 +186,7 @@ void Ui_MainWindow::setupMenus(QMainWindow *MainWindow)
     menuActions->addAction(actionRedetect);
     menuActions->addAction(actionRescan);
     menuActions->addAction(actionDebugActionsDialog);
+    menuActions->addAction(actionDebugLocks);
 
     menuHelp->addAction(actionContentsHelp);
     menuHelp->addAction(actionAbout);
