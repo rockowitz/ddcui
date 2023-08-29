@@ -31,6 +31,8 @@ include(validate_CMAKE_BUILD_TYPE)
 project(ddcui VERSION 0.4.0 LANGUAGES C CXX)
 
 message(STATUS "Build type is: ${CMAKE_BUILD_TYPE} (CMAKE_BUILD_TYPE)")
+message(${VERBOSE} "   CMAKE_C_COMPILER:               ${CMAKE_C_COMPILER}" )
+message(${VERBOSE} "   CMAKE_CXX_COMPILER:             ${CMAKE_CXX_COMPILER}" )
 message(${VERBOSE} "   CMAKE_CXX_FLAGS:                ${CMAKE_CXX_FLAGS}" )
 message(${VERBOSE} "   CMAKE_C_FLAGS:                  ${CMAKE_C_FLAGS}" )
 message(${VERBOSE} "   CMAKE_CXX_FLAGS_DEBUG:          ${CMAKE_CXX_FLAGS_DEBUG}" )
