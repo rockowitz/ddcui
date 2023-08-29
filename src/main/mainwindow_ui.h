@@ -1,6 +1,6 @@
 /* mainwindow_ui.h - Extracted from uic generated ui code */
 
-// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2023 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef UI_MAINWINDOW2_H
@@ -18,7 +18,7 @@
 #include <QtWidgets/QToolBar>
 #include <QtGui/QKeyEvent>
 
-#include "../base/ddcui_core.h"
+#include "base/ddcui_core.h"
 #include "base/widget_debug.h"
 
 
@@ -49,6 +49,7 @@ public:
     QAction     *actionRedetect = NULL;
     QAction     *actionRescan = NULL;
     QAction     *actionDebugActionsDialog = NULL;
+    QAction     *actionDebugLocks = NULL;
 
     QAction     *actionFeaturesScrollArea = NULL;
     QAction     *actionUserInterfaceOptionsDialog = NULL;
