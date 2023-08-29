@@ -213,7 +213,7 @@ DDCA_Status VcpThread::perform_open_display(DDCA_Display_Handle * dh_loc)
    debugFunc = debugFunc || debugThread;
    TRACECF(debugFunc, "Starting. dref=%s", ddca_dref_repr(this->_dref));
 
-   DDCA_Status ddcrc = ddca_open_display2(this->_dref, false, dh_loc);
+   DDCA_Status ddcrc = ddca_open_display2(this->_dref, true, dh_loc);
    // if (ddcrc == 0) ddcrc = -EBUSY;
    if (ddcrc != 0) {
        rpt_nonfeature_error("performing open", "ddca_open_display2", ddcrc);
