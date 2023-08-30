@@ -953,7 +953,7 @@ void MainWindow::captureLocks() {
        // ddca_set_output_level(DDCA_OL_VERBOSE);
        ddca_report_locks(0);
        // ddca_set_output_level(saved_ol);
-       char * s = ddca_end_capture();  // API's buffer, do not free
+       char * s = ddca_end_capture();
        QString qs(s);
        free(s);
        showCapturedText("Execution Statistics", qs);
@@ -1015,7 +1015,7 @@ void MainWindow::capture_stats(DDCA_Stats_Type stats_type, bool show_thread_data
        // ddca_set_output_level(DDCA_OL_VERBOSE);
        ddca_show_stats(stats_type, show_thread_data, 0);
        // ddca_set_output_level(saved_ol);
-       char * s = ddca_end_capture();  // API's buffer, do not free
+       char * s = ddca_end_capture();
        QString qs(s);
        free(s);
        showCapturedText("Execution Statistics", qs);
