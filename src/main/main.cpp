@@ -282,6 +282,8 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
 
 int main(int argc, char *argv[])
 {
+    set_simple_dbgmsg_min_funcname_size(0);
+
     bool debug = false;
     if (debug) {
        printf("(%s) Starting\n", __func__);
@@ -297,29 +299,26 @@ int main(int argc, char *argv[])
               DDCUTIL_VMAJOR, DDCUTIL_VMINOR, DDCUTIL_VMICRO, QT_VERSION_STR);
        printf("Executing using libddcutil %s, Qt %s\n\n",
               ddca_ddcutil_extended_version_string(), qVersion());
-       puts("Copyright (C) 2018-2022 Sanford Rockowitz");
+       puts("Copyright (C) 2018-2023 Sanford Rockowitz");
        puts("License GPLv2: GNU GPL version 2 or later <http://gnu.org/licenses/gpl.html>");
        puts("This is free software: you are free to change and redistribute it.");
        puts("There is NO WARRANTY, to the extent permitted by law.");
        exit(0);
     }
 
-    bool enable_syslog = true;
+    // bool enable_syslog = true;
     // if ( ntsa_find(argv, "--disable-syslog") >= 0 || ntsa_find(argv, "--nosyslog") >= 0 )
     //    enable_syslog = false;
     ddcui_syslog_level = DDCA_SYSLOG_NOTICE;  // ddcui default
     int syslog_pos = ntsa_find(argv, "--syslog");
     if (syslog_pos >= 0 && syslog_pos < (argc-1)) {
-       // printf("(%s) Parsing initial log level\n", __func__);
+       DBGF(debug, "Parsing initial log level");
        Ddcui_Syslog_Level parsed_level;
        bool ok_level = parse_ddcui_syslog_level(argv[syslog_pos+1], &parsed_level);
        if (ok_level)
           ddcui_syslog_level = parsed_level;
     }
-    // printf("(%s) ddcui_syslog_level = %d\n", __func__, ddcui_syslog_level);
-
-
-    bool skip_config = (ntsa_find(argv, "--noconfig") >= 0 || ntsa_find(argv, "--disable-config-file") >= 0);
+    DBGF(debug, "ddcui_syslog_level = %d", ddcui_syslog_level);
 
     if (ddcui_syslog_level != DDCA_SYSLOG_NOT_SET && ddcui_syslog_level > DDCA_SYSLOG_NEVER) {
        ddcui_opened_syslog = true;
@@ -334,27 +333,28 @@ int main(int argc, char *argv[])
 
     int mainStatus = 0;
 
+    DBGF(debug, "Calling QApplication() constructor");
     // will remove any arguments that it recognizes, e.g. --widgetcount
+    // As of 9/18/2023, emits msg: QSocketNotifier can only be used with threads started with QThread
     QApplication application(argc, argv);
+    DBGF(debug, "QApplication constructor done");
     application.setWindowIcon(QIcon(":/icons/ddcui_multires.ico"));
 
     GPtrArray * errmsgs = g_ptr_array_new_with_free_func(free);
     char ** new_argv = NULL;
-    int new_argc = 0;
+    int     new_argc = 0;
     char *  combined_config_file_options = NULL;
     char *  config_fn = NULL;
     int     apply_config_rc = 0;
 
+    bool skip_config = (ntsa_find(argv, "--noconfig") >= 0 || ntsa_find(argv, "--disable-config-file") >= 0);
     if (skip_config) {
-       if (debug)
-          printf("(%s) Skipping config file", __func__);
+       DBGF(debug, "Skipping config file");
        new_argv = ntsa_copy(argv, true);
        new_argc = argc;
     }
     else {
-       if (debug)
-          printf("(%s) Calling apply_config_file()\n", __func__);
-
+       DBGF(debug, "Calling apply_config_file()");
        apply_config_rc = apply_config_file(
                           "ddcui",
                           argc,
@@ -373,7 +373,7 @@ int main(int argc, char *argv[])
        }
 
        if (combined_config_file_options && strlen(combined_config_file_options) > 0) {
-          printf("Using ddcui options from %s: %s\n",
+          printf("ddcui: Options from %s: %s\n",
                        config_fn, combined_config_file_options);
           if (test_emit_ddcui_syslog(DDCA_SYSLOG_NOTICE)) {
                 syslog(LOG_NOTICE, "Applying ddcui options from %s: %s",
@@ -433,11 +433,10 @@ int main(int argc, char *argv[])
           GlobalState & globalState = GlobalState::instance();
           init_core();
 
-          if (debug)
-             printf("(%s) Calling MainWindow constructor\n", __func__);
+          DBGF(debug, "Calling MainWindow constructor", __func__);
           MainWindow w(parsed_cmd);
           if (debug)
-             printf("(%s) MainWindow constructor completed\n", __func__);
+          DBGF(debug,"MainWindow constructor completed", __func__);
           globalState._mainWindow = &w;
           globalState._application = &application;
 
@@ -450,11 +449,9 @@ int main(int argc, char *argv[])
           w.start_msgBoxThread();
       #endif
 
-          if (debug)
-             printf("(%s) Calling Application::exec()\n", __func__);
+          DBGF(debug, "Calling Application::exec()");
           mainStatus = application.exec();
-          if (debug)
-             printf("(%s) Application::exec() returned %d\n", __func__, mainStatus);
+          DBGF(debug, "Application::exec() returned %d", mainStatus);
           ddca_show_stats(parsed_cmd->stats_types,
                           false,              // include_per_thread_data
                           0);                 // depth
