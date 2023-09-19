@@ -366,7 +366,7 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
       rpt_ntsa(mangleable_argv, 3);
    }
    char * combined = strjoin((const char**)(mangleable_argv+1), ntsa_length(mangleable_argv)-1, " ");
-   printf("Applying combined ddcui options: %s\n", combined);
+   printf("ddcui: Applying combined options: %s\n", combined);
    syslog(LOG_NOTICE,"Applying combined ddcui options: %s",   combined);
    free(combined);
    bool ok = g_option_context_parse_strv(context, &mangleable_argv, &error);
