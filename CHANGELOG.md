@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.3.1] 2023-mm-dd
+## [0.4.2] 2023-09-27
 
 ### Added
 
@@ -9,6 +9,8 @@
 - Option ***--libopts "<option string>"***.  Passes an option string to the 
   shared library.  This string is appended to the option string obtained 
   from configuration file $HOME/.config/ddcutil/ddcutilrc.
+- Menu item Actions->Debug Locks reports locking the **libddcutil** as a
+  debugging aid.
 
 ### Changed
 
@@ -20,10 +22,10 @@
 
 ### Removed
 
-- Options that exist solely to control **libddcutil** behavior. These can now
-  be passed using option ***--libopts***.
+- **ddcui** options that exist solely to control **libddcutil** behavior.
+These include ***--ddc*** and ***--excp***, ***--trace***, ***--trcfunc***, and ***--trcfile***. 
+  These can now be passed as text strings using **ddcui** option ***--libopts***.
 
-### Fixed
 
 ## [0.3.0] 2022-07-28
 
