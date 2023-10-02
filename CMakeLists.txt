@@ -49,6 +49,21 @@ message(${VERBOSE} "   CMAKE_C_FLAGS_RELEASE:          ${CMAKE_C_FLAGS_RELEASE}"
 message(STATUS "Source directory: ${CMAKE_SOURCE_DIR} (CMAKE_SOURCE_DIR)" )
 message(STATUS "Build directory:  ${CMAKE_BINARY_DIR} (CMAKE_BINARY_DIR)" )
 
+  execute_process(
+      WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+      COMMAND git branch --show-current 2>/dev/null
+      OUTPUT_VARIABLE DDCUI_GIT_BRANCH
+      RESULT_VARIABLE GIT_CMD_STATUS
+   )
+   # message (${VERBOSE} " result_variable: ${GIT_CMD_STATUS}")
+   if (${GIT_CMD_STATUS} STREQUAL "0")
+      string(LENGTH ${DDCUI_GIT_BRANCH} N)
+      math(EXPR lastpos "${N}-1")
+      string(SUBSTRING ${DDCUI_GIT_BRANCH} 0 ${lastpos} DDCUI_GIT_BRANCH)
+      message( ${VERBOSE} "ddcui git branch:   ${DDCUI_GIT_BRANCH}")
+   else() 
+      message( ${VERBOSE} "ddcui source is not managed by git")
+   endif()
 if ( ${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR} ) 
    message(WARNING "Attempting to build in source directory.")
    if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.13")
@@ -123,6 +138,20 @@ else()
    set(DDCUTIL_INCLUDE_DIRS ${DDCUTIL_PROJECT_DIR}/src/public)
    set(DDCUTIL_LIBRARY_DIRS ${DDCUTIL_PROJECT_DIR}/src/.libs)
    set(DDCUTIL_LIBRARIES ddcutil)
+   execute_process(
+      WORKING_DIRECTORY ${DDCUTIL_PROJECT_DIR}
+      COMMAND git branch --show-current
+      OUTPUT_VARIABLE DDCUTIL_GIT_BRANCH
+      RESULT_VARIABLE GIT_CMD_STATUS
+   )
+   if (${GIT_CMD_STATUS} STREQUAL "0")
+      string(LENGTH ${DDCUTIL_GIT_BRANCH} N)
+      math(EXPR lastpos "${N}-1")
+      string(SUBSTRING ${DDCUTIL_GIT_BRANCH} 0 ${lastpos} DDCUTIL_GIT_BRANCH)
+      message( ${VERBOSE} "ddcutil git branch:   ${DDCUTIL_GIT_BRANCH}")
+   else() 
+      message( ${VERBOSE} "ddcui source is not managed by git")
+   endif()
 endif()
 
 message( ${VERBOSE} "Set by pkg-config:" )
