@@ -89,6 +89,7 @@ endif()
 
 if (ASAN)
    set (asan_flags -g -fsanitize=address -fsanitize-address-use-after-scope -fno-omit-frame-pointer)
+   set (ASAN_LIBRARY asan)
 endif()
 
 message(${VERBOSE} "Significant environment variables:")
@@ -184,7 +185,7 @@ set(SOURCES
     src/c_util/xdg_util.c
 
     src/base/ddcui_core_aux.c
-	  src/base/ddcui_core.cpp 
+    src/base/ddcui_core.cpp 
     src/base/ddca_utils.cpp 
     src/base/ddcui_parms.cpp
     src/base/feature_list.c
@@ -284,7 +285,7 @@ target_include_directories(ddcui SYSTEM PRIVATE
 target_include_directories(ddcui PRIVATE src)
 
 # Use the Widgets module from Qt 5.
-target_link_libraries(ddcui Qt5::Widgets ${GLIB2_LIBRARIES} ${DDCUTIL_LIBRARIES})
+target_link_libraries(ddcui ${ASAN_LIBRARY} Qt5::Widgets ${GLIB2_LIBRARIES} ${DDCUTIL_LIBRARIES})
 
 get_property(dirs TARGET ddcui PROPERTY INCLUDE_DIRECTORIES)
 message( ${VERBOSE} "INCLUDE_DIRECTORIES:     ${dirs}" )
