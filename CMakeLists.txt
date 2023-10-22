@@ -21,6 +21,9 @@ message(${VERBOSE} "  ddcui_libddcutil_version:  ${ddcui_libddcutil_version}" )
 option(USE_CCACHE "Use ccache" ON)
 message(STATUS "USE_CCACHE:                ${USE_CCACHE}" )
 
+option(ASAN "Build for ASAN" OFF)
+message(STATUS "ASAN:                      ${ASAN}")
+
 option(DDCUTIL_PROJECT_DIR "Root directory of ddcutil project" OFF)
 message(STATUS "DDCUTIL_PROJECT_DIR:       ${DDCUTIL_PROJECT_DIR}"  )
 
@@ -83,6 +86,10 @@ endif()
 # set (coverity_cflags --type_traits_helpers)
 # set (coverity_cflags --no_predefined_feature_test_macros)
 # set (COVERITY_DUMMIES OFF)
+
+if (ASAN)
+   set (asan_flags -g -fsanitize=address -fsanitize-address-use-after-scope -fno-omit-frame-pointer)
+endif()
 
 message(${VERBOSE} "Significant environment variables:")
 message(${VERBOSE} "  INCLUDE:                  $ENV{INCLUDE}")
@@ -177,7 +184,7 @@ set(SOURCES
     src/c_util/xdg_util.c
 
     src/base/ddcui_core_aux.c
-	src/base/ddcui_core.cpp 
+	  src/base/ddcui_core.cpp 
     src/base/ddca_utils.cpp 
     src/base/ddcui_parms.cpp
     src/base/feature_list.c
@@ -264,7 +271,7 @@ add_executable(ddcui ${SOURCES})
 
 # -Wno-format-pedantic -Wno-sign-compare -std=c++20 -Wno-format -pedantic -Wextra -Wall
 # set(more_options -Wno-gnu-zero-variadic-macro-arguments -Wno-unused-parameter -Wno-non-pod-varargs  )
-target_compile_options(ddcui PUBLIC "-fPIC" ${coverity_cflags})
+target_compile_options(ddcui PUBLIC "-fPIC" ${coverity_cflags} ${asan_flags})
 # add_compile_options(-Og -H V=1)
 
 # redundant: ${Qt5Gui_INCLUDE_DIRS} ${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS}. 
