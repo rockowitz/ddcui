@@ -184,7 +184,7 @@ void free_parsed_ddcui_cmd(Parsed_Ddcui_Cmd * parsed_cmd) {
    if (parsed_cmd) {
       assert ( memcmp(parsed_cmd->marker,PARSED_CMD_MARKER,4) == 0);
       parsed_cmd->marker[3] = 'x';
-
+      free(parsed_cmd->library_options);
       free(parsed_cmd);
    }
 
