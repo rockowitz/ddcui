@@ -202,6 +202,7 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
       // so all syslog entries have the same program identifier
       opts = (DDCA_Init_Options) (opts | DDCA_INIT_OPTIONS_CLIENT_OPENED_SYSLOG);
    }
+   opts = (DDCA_Init_Options) (opts | DDCA_INIT_OPTIONS_ENABLE_INIT_MSGS);
    DDCA_Status rc = ddca_init(parsed_cmd->library_options, ddcui_syslog_level, opts);
    if (debug)
       printf("(main.cpp:%s) ddca_init() returned %d\n", __func__, rc);
