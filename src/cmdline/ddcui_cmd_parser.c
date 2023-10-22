@@ -410,6 +410,7 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    if (libopts_pieces) {
       char * combined_libopts_pieces = strjoin((const char**)libopts_pieces, ntsa_length(libopts_pieces), " ");
       parsed_cmd->library_options = combined_libopts_pieces;
+      ntsa_free(libopts_pieces, true);
       // printf("Combined_libopts_pieces: |%s|\n", combined_libopts_pieces);
    }
 
@@ -453,6 +454,7 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
          syslog_level = level;
       else
          ok = false;
+      free(syslog_work);
    }
    parsed_cmd->syslog_level = syslog_level;
 
