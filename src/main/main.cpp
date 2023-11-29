@@ -4,14 +4,18 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <glib-2.0/glib.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <syslog.h>
+#include <time.h>
+
 #include <QtCore/QtCore>
 #include <QtWidgets/QApplication>
 
 #include <ddcutil_c_api.h>
 #include <ddcutil_macros.h>
+#include <ddcutil_types.h>
 
 #include "c_util/ddcutil_config_file.h"
 #include "c_util/debug_util.h"
@@ -25,9 +29,9 @@
 #include "base/ddcui_core.h"
 #include "base/ddcui_parms.h"
 #include "base/global_state.h"
-#include "main/msgbox_thread.h"
 
 #include "main/mainwindow.h"
+#include "main/msgbox_thread.h"
 
 
 // See: https://www.qt.io/blog/2016/01/26/high-dpi-support-in-qt-5-6
@@ -169,31 +173,40 @@ void dbgrpt_hidpiQApplication(QApplication& coreapp) {
    }
 }
 
-#ifdef FUTURE
-void display_detection_callback(DDCA_Display_Detection_Report report) {
-  printf("(main.cpp/%s) Executing. dref=%p operation=%d\n",__func__, report.dref, report.operation);
-  return;
-}
-#endif
 
-void display_hotplug_callback() {
-  printf("(main.cpp/%s) Executing.\n", __func__);
+intmax_t get_thread_id() {
+   pid_t tid = syscall(SYS_gettid);
+   return tid;
+}
+
+
+// typedef void (*DDCA_Display_Detection_Callback_Func)(DDCA_Display_Detection_Event);
+void display_detection_callback(DDCA_Display_Detection_Event report) {
+   char time_buf[40];
+   time_t epoch_seconds = time(NULL);
+   struct tm broken_down_time;
+   localtime_r(&epoch_seconds, &broken_down_time);
+   strftime(time_buf, 40, "%b %d %T", &broken_down_time);
+
+   intmax_t thread_id = get_thread_id();
+
+  printf("[%s][%6jd](main.cpp/%s) Executing. dref=%p=%s, operation=%d=%s\n",
+        time_buf, thread_id, __func__,
+        report.dref, ddca_dref_repr(report.dref),
+        report.event_type, ddca_display_event_type_name(report.event_type));
   return;
 }
 
 
 static bool ddcui_opened_syslog = false;    // global
 
+
 static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
-   bool debug = false;
+   bool debug = true;
    if (debug)
       printf("(main.cpp:%s) Starting. parsed_cmd=%p\n", __func__, (void*)parsed_cmd);
 
    bool ok = true;
-
-#ifdef REMOVED
-   ddca_enable_error_info(debug);
-#endif
 
    DDCA_Init_Options opts = DDCA_INIT_OPTIONS_NONE;
    if (parsed_cmd->flags & CMD_FLAG_DISABLE_CONFIG_FILE)
@@ -267,13 +280,11 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
    #endif
    }
 
-#ifdef FUTURE
    if (ok) {
       if (debug)
-         printf("(main.cpp:%s) Calling ddca_register_display_hotplug_callback()..\n", __func__);
-      ddca_register_display_hotplug_callback(display_hotplug_callback);
+         printf("(main.cpp:%s) Calling ddca_register_display_detection_callback()..\n", __func__);
+      ddca_register_display_detection_callback(display_detection_callback);
    }
-#endif
 
    if (debug)
       printf("(main.cpp:%s) Done.  Returning %s\n", __func__, SBOOL(ok));
