@@ -320,16 +320,17 @@ void VcpThread::capabilities() {
                                 ddca_dref_repr(this->_dref), ddca_rc_name(ddcrc));
             // DDCA_Error_Detail * err_detail =  ddca_get_error_detail();
             // ddca_report_error_detail(err_detail, 2);
-            double curmult = ddca_get_sleep_multiplier();
+            double curmult = 1.0f;
+            ddca_get_current_display_sleep_multiplier(this->_dref, &curmult);
             if (ddcrc == -EBADF) {
                TRACEC("EBADF");
                continue;
             }
 
             if (curmult <= 2.0f) {    // retry possible
-               curmult = curmult * 2;
-               TRACECF(debugRetry, "Adjusting thread sleep multiplier for %s to %5.2f",
-                                  ddca_dref_repr(this->_dref), curmult);
+               // curmult = curmult * 2;
+               // TRACECF(debugRetry, "Adjusting thread sleep multiplier for %s to %5.2f",
+               //                    ddca_dref_repr(this->_dref), curmult);
                // todo: output message in status bar that retrying
                // RETRYING DOESN"T HELP
                // ddca_set_sleep_multiplier(curmult);
