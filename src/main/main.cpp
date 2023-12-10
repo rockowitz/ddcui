@@ -340,6 +340,17 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
 }
 
 
+/** Gets the id number of the current process
+ *
+ *  \return  process number
+ */
+intmax_t get_process_id()
+{
+   pid_t pid = syscall(SYS_getpid);
+   return pid;
+}
+
+
 int main(int argc, char *argv[])
 {
     set_simple_dbgmsg_min_funcname_size(0);
@@ -513,6 +524,10 @@ int main(int argc, char *argv[])
           DBGF(debug, "Application::exec() returned %d", mainStatus);
           ddca_stop_watch_displays();    // prevent zombin thread
           ddca_report_locks(0);
+          // char spid[40];
+          // g_snprintf(spid, 40, "grep %ld /proc/locks", get_process_id() );
+          // int junk = system(spid);
+
           ddca_show_stats(parsed_cmd->stats_types,
                           false,              // include_per_thread_data
                           0);                 // depth
