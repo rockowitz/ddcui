@@ -200,9 +200,38 @@ void display_detection_callback(DDCA_Display_Detection_Event report) {
 
 static bool ddcui_opened_syslog = false;    // global
 
+#ifdef COPIED_FROM_API_BASE
+void report_parse_errors0(Error_Info * erec, int depth, int max_depth) {
+   char * edesc = psc_text(erec->status_code);
+
+   if (depth == 0)  {
+      rpt_vstring(depth, "%s: %s", edesc, erec->detail);
+   }
+   else {
+      rpt_vstring(depth, "%s", erec->detail);
+   }
+   if (depth < max_depth) {
+      if (erec->cause_ct > 0) {
+         for (int ndx = 0; ndx < erec->cause_ct; ndx++) {
+            Error_Info * cur = erec->causes[ndx];
+            report_parse_errors0(cur, depth+1, max_depth);
+         }
+      }
+   }
+}
+
+
+void report_parse_errors(Error_Info * erec) {
+   if (erec) {
+      rpt_push_output_dest(ferr());
+      report_parse_errors0(erec, 0, 3);
+      rpt_pop_output_dest();
+   }
+}
+#endif
 
 static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
-   bool debug = true;
+   bool debug = false;
    if (debug)
       printf("(main.cpp:%s) Starting. parsed_cmd=%p\n", __func__, (void*)parsed_cmd);
 
@@ -215,10 +244,29 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
       // so all syslog entries have the same program identifier
       opts = (DDCA_Init_Options) (opts | DDCA_INIT_OPTIONS_CLIENT_OPENED_SYSLOG);
    }
-   opts = (DDCA_Init_Options) (opts | DDCA_INIT_OPTIONS_ENABLE_INIT_MSGS);
-   DDCA_Status rc = ddca_init(parsed_cmd->library_options, ddcui_syslog_level, opts);
+   // opts = (DDCA_Init_Options) (opts | DDCA_INIT_OPTIONS_ENABLE_INIT_MSGS);
+   char ** infomsgs = NULL;
+   DDCA_Status rc = ddca_init2(parsed_cmd->library_options, ddcui_syslog_level, opts,  &infomsgs );
    if (debug)
       printf("(main.cpp:%s) ddca_init() returned %d\n", __func__, rc);
+
+   // printf("(%s) WOLF 0\n", __func__);
+   // if (infomsgs)
+   //    ntsa_show(infomsgs);
+   // printf("WOLF A\n");
+
+   if (infomsgs) {
+      // printf("Null_Terminated_String_Array at %p:\n", (void*) infomsgs);
+      int ndx = 0;
+      while (infomsgs[ndx]) {
+         printf("%s\n", infomsgs[ndx]);
+         ndx++;
+      }
+      // printf("Total entries: %d\n", ndx);
+      // g_strfreev(infomsgs);
+      ntsa_free(infomsgs, true);
+   }
+
 
    if (rc) {
      DDCA_Error_Detail * erec = ddca_get_error_detail();
@@ -436,7 +484,6 @@ int main(int argc, char *argv[])
           mainStatus = 1;
        }
        else {
-
           if (parsed_cmd->flags & CMD_FLAG_F1) {
              dbgrpt_hidpi_environment_vars();
              dbgrpt_hidpiQApplication(application);
@@ -464,6 +511,8 @@ int main(int argc, char *argv[])
           DBGF(debug, "Calling Application::exec()");
           mainStatus = application.exec();
           DBGF(debug, "Application::exec() returned %d", mainStatus);
+          ddca_stop_watch_displays();    // prevent zombin thread
+          ddca_report_locks(0);
           ddca_show_stats(parsed_cmd->stats_types,
                           false,              // include_per_thread_data
                           0);                 // depth
