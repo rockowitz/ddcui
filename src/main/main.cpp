@@ -506,6 +506,7 @@ int main(int argc, char *argv[])
           DBGF(debug, "Calling MainWindow constructor", __func__);
           MainWindow w(parsed_cmd);
           if (debug)
+
           DBGF(debug,"MainWindow constructor completed", __func__);
           globalState._mainWindow = &w;
           globalState._application = &application;
@@ -522,8 +523,8 @@ int main(int argc, char *argv[])
           DBGF(debug, "Calling Application::exec()");
           mainStatus = application.exec();
           DBGF(debug, "Application::exec() returned %d", mainStatus);
-          ddca_stop_watch_displays();    // prevent zombin thread
-          ddca_report_locks(0);
+          ddca_stop_watch_displays(/*wait=*/ false);    // prevent zombie thread
+          // ddca_report_locks(0);
           // char spid[40];
           // g_snprintf(spid, 40, "grep %ld /proc/locks", get_process_id() );
           // int junk = system(spid);
