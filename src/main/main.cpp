@@ -190,10 +190,10 @@ void display_detection_callback(DDCA_Display_Detection_Event report) {
 
    intmax_t thread_id = get_thread_id();
 
-  printf("[%s][%6jd](main.cpp/%s) Executing. dref=%p=%s, operation=%d=%s\n",
+  printf("[%s][%6jd](main.cpp/%s) Executing. dref=%p=%s, operation=%d=%s, busno=%d\n",
         time_buf, thread_id, __func__,
         report.dref, ddca_dref_repr(report.dref),
-        report.event_type, ddca_display_event_type_name(report.event_type));
+        report.event_type, ddca_display_event_type_name(report.event_type), report.io_path.path.i2c_busno);
   return;
 }
 
