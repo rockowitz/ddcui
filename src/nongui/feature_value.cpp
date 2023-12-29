@@ -60,7 +60,7 @@ FeatureValue::FeatureValue(
           _observedNcValues = bs256_insert(EMPTY_BIT_SET_256, val.sl);
        }
    }
-   TRACECF(debugFunc, "Done. _observedNcValues = %s", bs256_to_string(_observedNcValues, "", " "));
+   TRACECF(debugFunc, "Done. _observedNcValues = %s", bs256_to_string_t(_observedNcValues, "", " "));
 }
 
 
@@ -117,7 +117,7 @@ FeatureValue::setCurrentValue(uint8_t sh, uint8_t sl) {
       _observedNcValues = bs256_insert(_observedNcValues, _value.sl);
    }
 
-   TRACECF(debugFunc, "Finished. _observedNcValues = %s", bs256_to_string(_observedNcValues, "", " "));
+   TRACECF(debugFunc, "Finished. _observedNcValues = %s", bs256_to_string_t(_observedNcValues, "", " "));
 }
 
 
@@ -165,7 +165,7 @@ void FeatureValue::dbgrpt() const {
     printf("   _value.sh:        0x%02x\n", _value.sh);
     printf("   _value.sl:        0x%02x\n", _value.sl);
     printf("   _cap_vcp:         %p\n",     (void*) _capVcp);
-    printf("   _observedNcValues: %s", bs256_to_string(_observedNcValues, ""," "));
+    printf("   _observedNcValues: %s", bs256_to_string_t(_observedNcValues, ""," "));
     ddca_dbgrpt_feature_metadata(_finfo, 1);
 
 #ifdef NO
