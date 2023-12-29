@@ -180,6 +180,21 @@ intmax_t get_thread_id() {
 }
 
 
+void display_hotplug_callback() {
+   char time_buf[40];
+   time_t epoch_seconds = time(NULL);
+   struct tm broken_down_time;
+   localtime_r(&epoch_seconds, &broken_down_time);
+   strftime(time_buf, 40, "%b %d %T", &broken_down_time);
+
+   intmax_t thread_id = get_thread_id();
+
+  printf("[%s][%6jd](main.cpp/%s) Executing\n",
+        time_buf, thread_id, __func__);
+}
+
+
+
 // typedef void (*DDCA_Display_Detection_Callback_Func)(DDCA_Display_Detection_Event);
 void display_detection_callback(DDCA_Display_Detection_Event report) {
    char time_buf[40];
@@ -284,54 +299,13 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
       // DDCA_Status rc =  // unused, comment out for now, need to properly set
       // ddca_enable_usb_display_detection(parsed_cmd->flags & CMD_FLAG_NOUSB);
       // ddca_enable_udf(              parsed_cmd->flags & CMD_FLAG_ENABLE_UDF);
-
-#ifdef USE_CONFIG_FILE
-      if (parsed_cmd->flags & CMD_FLAG_DDCDATA)
-         ddca_enable_report_ddc_errors(true);
-      if (parsed_cmd->flags & CMD_FLAG_REPORT_FREED_EXCP)
-         ddca_enable_error_info(true);
-#endif
-
-   #ifdef USE_CONFIG_FILE
-      if (parsed_cmd->max_tries[0] > 0) {
-         ddca_set_max_tries(        DDCA_WRITE_ONLY_TRIES, parsed_cmd->max_tries[0]);
-      }
-      if (parsed_cmd->max_tries[1] > 0) {
-         ddca_set_max_tries(       DDCA_WRITE_READ_TRIES, parsed_cmd->max_tries[1]);
-      }
-      if (parsed_cmd->max_tries[2] > 0) {
-         ddca_set_max_tries(       DDCA_MULTI_PART_TRIES, parsed_cmd->max_tries[2]);
-      }
-      if (parsed_cmd->sleep_multiplier != 1.0f) {
-         ddca_set_default_sleep_multiplier(parsed_cmd->sleep_multiplier);
-      }
-
-      if (parsed_cmd->enable_sleep_suppression != TRIVAL_UNSET) {
-         bool val = (parsed_cmd->enable_sleep_suppression == TRIVAL_TRUE) ? true : false;
-         ddca_enable_sleep_suppression(val);
-      }
-   #endif
-
-   #ifdef FOR_TESTING
-      // *** TEMP ***
-      double old = ddca_set_sleep_multiplier(.5);
-      printf("(%s) ddca_set_sleep_multiplier(.5) returned %6.3f\n", __func__, old);
-      double cur = ddca_get_sleep_multiplier();
-      printf("(%s) ddca_get_sleep_multiplier() returned %6.3f\n", __func__, cur);
-      cur = ddca_get_default_sleep_multiplier();
-      printf("(%s) ddca_get_default_sleep_multiplier() returned %6.3f\n", __func__, cur);
-
-      old = ddca_set_default_sleep_multiplier(.0000001);
-      printf("(%s) ddca_set_default_sleep_multiplier(.0000001) returned %6.3f\n", __func__, old);
-      cur = ddca_get_default_sleep_multiplier();
-      printf("(%s) ddca_get_default_sleep_multiplier() returned %6.3f\n", __func__, cur);
-   #endif
    }
 
    if (ok) {
       if (debug)
          printf("(main.cpp:%s) Calling ddca_register_display_detection_callback()..\n", __func__);
       ddca_register_display_detection_callback(display_detection_callback);
+      ddca_register_display_hotplug_callback(display_hotplug_callback);
    }
 
    if (debug)
@@ -527,7 +501,7 @@ int main(int argc, char *argv[])
           // ddca_report_locks(0);
           // char spid[40];
           // g_snprintf(spid, 40, "grep %ld /proc/locks", get_process_id() );
-          // int junk = system(spid);
+          // (void) system(spid);
 
           ddca_show_stats(parsed_cmd->stats_types,
                           false,              // include_per_thread_data
