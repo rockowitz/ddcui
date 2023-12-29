@@ -204,7 +204,7 @@ void   FeatureBaseModel::modelVcpValueSet(
                                    ddcrc);
           _featureValues->append(fv);
           TRACECF(debugFunc, "Created new FeatureValue. id = %d, observedNcValues=%s",
-                             fv->_id, bs256_to_string(fv->_observedNcValues, "", " "));
+                             fv->_id, bs256_to_string_t(fv->_observedNcValues, "", " "));
 
         // Not needed, only thing that matters is end initial load
         // if (debugSignals)
@@ -215,7 +215,7 @@ void   FeatureBaseModel::modelVcpValueSet(
     else {
         FeatureValue * fv =  _featureValues->at(ndx);
         TRACECF(debugFunc, "Modifying existing FeatureValue, _id=%d, initial _observedNcValues=%s",
-                           fv->_id, bs256_to_string(fv->observedNcValues(), ""," " ) );
+                           fv->_id, bs256_to_string_t(fv->observedNcValues(), ""," " ) );
 
         // fv->_value.sh = feature_value->sh;
         // fv->_value.sl = feature_value->sl;
@@ -223,7 +223,7 @@ void   FeatureBaseModel::modelVcpValueSet(
         if ( ddcrc == fv->ddcrc() ) {
            fv->setCurrentValue(feature_value->sh, feature_value->sl);  // sets _observedNcValues
            TRACECF(debugFunc, "Updated FeatureValue _observedNcValues=%s",
-                 bs256_to_string(fv->observedNcValues(), ""," " ) );
+                 bs256_to_string_t(fv->observedNcValues(), ""," " ) );
 
            TRACECF(debugFunc || debugSignals,
                    "Emitting signalFeatureUpdated3(), feature code: 0x%02x, sl: 0x%02x",
@@ -258,13 +258,13 @@ FeatureBaseModel::modelVcpValueUpdate(
     assert (ndx >= 0);
     FeatureValue * fv =  _featureValues->at(ndx);
     TRACECF(debugFunc, "Found FeatureValue instance,  _observedNcValues=%s",
-                       bs256_to_string(fv->observedNcValues(), ""," " ) );
+                       bs256_to_string_t(fv->observedNcValues(), ""," " ) );
 
     // updates fv to the current value, sets _observedNcValues if appropriate
     fv->setCurrentValue(sh,sl);
 
     TRACECF(debugFunc, "Updated FeatureValue: _observedNcValues=%s",
-                       bs256_to_string(fv->observedNcValues(), ""," " ) );
+                       bs256_to_string_t(fv->observedNcValues(), ""," " ) );
     TRACECF(debugFunc || debugSignals, "Emitting signalFeatureUpdated3()");
     // -> &FeaturesScrollAreaView::onModelValueChanged
     emit signalFeatureUpdated3(__func__, feature_code, sh, sl);
