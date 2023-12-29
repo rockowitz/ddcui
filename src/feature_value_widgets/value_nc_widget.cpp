@@ -18,8 +18,8 @@
 
 #include <ddcutil_c_api.h>
 
-#include "../base/ddcui_core.h"
 #include "c_util/data_structures.h"
+#include "base/ddcui_core.h"
 #include "base/ddcui_parms.h"
 #include "base/ddca_utils.h"
 #include "base/widget_debug.h"
