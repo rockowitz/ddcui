@@ -180,7 +180,7 @@ intmax_t get_thread_id() {
 }
 
 
-void display_hotplug_callback() {
+void display_hotplug_callback(DDCA_Display_Hotplug_Event) {
    char time_buf[40];
    time_t epoch_seconds = time(NULL);
    struct tm broken_down_time;
@@ -194,7 +194,7 @@ void display_hotplug_callback() {
 }
 
 
-
+#ifdef UNUSED
 // typedef void (*DDCA_Display_Detection_Callback_Func)(DDCA_Display_Detection_Event);
 void display_detection_callback(DDCA_Display_Detection_Event report) {
    char time_buf[40];
@@ -211,6 +211,7 @@ void display_detection_callback(DDCA_Display_Detection_Event report) {
         report.event_type, ddca_display_event_type_name(report.event_type), report.io_path.path.i2c_busno);
   return;
 }
+#endif
 
 
 static bool ddcui_opened_syslog = false;    // global
@@ -303,8 +304,10 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
 
    if (ok) {
       if (debug)
-         printf("(main.cpp:%s) Calling ddca_register_display_detection_callback()..\n", __func__);
+         printf("(main.cpp:%s) Calling ddca_register_display_hotplug_callback()..\n", __func__);
+#ifdef UNUSED
       ddca_register_display_detection_callback(display_detection_callback);
+#endif
       ddca_register_display_hotplug_callback(display_hotplug_callback);
    }
 
