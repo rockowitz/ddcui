@@ -58,6 +58,82 @@
 
 using namespace std;
 
+
+
+intmax_t get_thread_id2() {
+   pid_t tid = syscall(SYS_gettid);
+   return tid;
+}
+
+
+void create_timestamp2(char* buf, int bufsz) {
+   assert(bufsz >= 40);
+   time_t epoch_seconds = time(NULL);
+   struct tm broken_down_time;
+   localtime_r(&epoch_seconds, &broken_down_time);
+   strftime(buf, 40, "%b %d %T", &broken_down_time);
+}
+
+
+
+void display_status_event_main_callback(DDCA_Display_Status_Event evt) {
+   char time_buf[40];
+   create_timestamp2(time_buf, 40);
+   intmax_t thread_id = get_thread_id2();
+  // printf("(%s) evt.dref=%p event_type=%d\n", __func__, evt.dref, evt.event_type);
+
+  printf("[%s][%6jd](mainwindow.cpp/%s) Executing. dref=%s, event_type = %s\n",
+        time_buf, thread_id, __func__, ddca_dref_repr(evt.dref), ddca_display_event_type_name(evt.event_type));
+
+  printf("[%s][%6jd](mainwindow.cpp/%s) ddca_validate_display_ref(%s) reports: %s\n",
+        time_buf, thread_id, __func__,
+        ddca_dref_repr(evt.dref),
+        ddca_rc_name(ddca_validate_display_ref(evt.dref, true)));
+
+#ifdef REF
+  QString qsTitle = QString("ddcutil Error");
+  QString qsDetail = QString("Invalid Model: %1").arg(parsed_cmd->model);
+  QMessageBox::Icon icon = QMessageBox::Warning;
+  MsgBoxQueueEntry * qe = new MsgBoxQueueEntry(qsTitle, qsDetail, icon);
+#ifdef DEFERRED_MSG_QUEUE
+  _deferredMsgs.append(qe);     // not needed
+#endif
+  TRACECF(debug, "Pre put, _msgBoxQueue=%p", _msgBoxQueue);
+  _msgBoxQueue->put(qe);
+#endif
+
+
+  if (evt.event_type == DDCA_EVENT_DISPLAY_CONNECTED || evt.event_type == DDCA_EVENT_DISPLAY_DISCONNECTED) {
+     QString qstitle("Display Status Change");
+     QMessageBox::Icon icon = QMessageBox::Warning;
+     QString qstext;;
+     // QString qstext = (evt.event_type == DDCA_EVENT_DISPLAY_CONNECTED)
+     //                    ?   QString("Display has been connected.   Redetect Displays")
+     //                    :   QString("Display has been disconnected.  Redetect displays");
+     if (evt.event_type == DDCA_EVENT_DISPLAY_CONNECTED)
+        qstext = QString("Display connected on %1, bus /dev/i2c-%2.\n\nRedetect displays")
+                        .arg(evt.connector_name).arg(  evt.io_path.path.i2c_busno) ;
+      else {
+        qstext = QString("Display disconnected on %1, bus /dev/i2c-%2.\n\nRedetect displays")
+                        .arg(evt.connector_name).arg(evt.io_path.path.i2c_busno);
+      }
+
+     MsgBoxQueueEntry* qe = new MsgBoxQueueEntry(qstitle, qstext, icon);
+     GlobalState::instance()._msgBoxQueue->put(qe);
+     // GlobalState::instance()._mainWindow->on_actionRedetect_triggered();  // creates new window
+
+  }
+  else {
+     printf("[%s][%6jd](mainwindow.cpp/%s) Ignoring event of type %s\n",
+           time_buf, thread_id, __func__, ddca_display_event_type_name(evt.event_type));
+  }
+
+}
+
+
+
+
+
 //
 // Constructor, Destructor, Initialization
 //
@@ -420,6 +496,8 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
     _msgBoxThread = new MsgBoxThread(_msgBoxQueue);
     globalState._msgBoxThread = _msgBoxThread;
     globalState._msgBoxQueue  = _msgBoxQueue;
+
+    ddca_register_display_status_callback(display_status_event_main_callback);
 
      // QShortcut * quit_shortcut = new QShortcut(QKeySequence(Qt::Key_Q | Qt::CTRL), this, SLOT(close()));
      _quit_shortcut = new QShortcut(QKeySequence(Qt::Key_Q | Qt::CTRL), this);
