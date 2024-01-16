@@ -107,6 +107,7 @@ public slots:
     void setTransitoryStatusMsg(QString msg);
     void showSerialMsgBox(QString title, QString text, QMessageBox::Icon icon);
     void forControlKeyRequired_changed(bool onoff);
+    void on_actionRedetect_triggered();
 
 protected slots:
     void keyPressEvent(QKeyEvent *   ev) override;
@@ -120,7 +121,7 @@ private slots:
 
     // Actions Menu
     void on_actionRescan_triggered();
-    void on_actionRedetect_triggered();
+    // void on_actionRedetect_triggered();
     void on_actionDebugActionsDialog_triggered();
     void for_resetStats_triggered();
     void for_reportStats_triggered(DDCA_Stats_Type stats_type, bool showTheadData);
