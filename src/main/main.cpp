@@ -180,17 +180,30 @@ intmax_t get_thread_id() {
 }
 
 
-void display_hotplug_callback(DDCA_Display_Hotplug_Event) {
-   char time_buf[40];
+void create_timestamp(char* buf, int bufsz) {
+   assert(bufsz >= 40);
    time_t epoch_seconds = time(NULL);
    struct tm broken_down_time;
    localtime_r(&epoch_seconds, &broken_down_time);
-   strftime(time_buf, 40, "%b %d %T", &broken_down_time);
+   strftime(buf, 40, "%b %d %T", &broken_down_time);
+}
 
+
+void display_status_event_callback(DDCA_Display_Status_Event evt) {
+   char time_buf[40];
+   create_timestamp(time_buf, 40);
    intmax_t thread_id = get_thread_id();
+  // printf("(%s) evt.dref=%p event_type=%d\n", __func__, evt.dref, evt.event_type);
 
-  printf("[%s][%6jd](main.cpp/%s) Executing\n",
-        time_buf, thread_id, __func__);
+  printf("[%s][%6jd](main.cpp/%s) Executing. dref=%s, bus=/dev/i2c-%d, event_type = %s\n",
+        time_buf, thread_id, __func__, ddca_dref_repr(evt.dref), evt.io_path.path.i2c_busno, ddca_display_event_type_name(evt.event_type));
+
+  if (evt.dref) {
+     printf("[%s][%6jd](main.cpp/%s) ddca_validate_display_ref(%s) reports: %s\n",
+           time_buf, thread_id, __func__,
+           ddca_dref_repr(evt.dref),
+           ddca_rc_name(ddca_validate_display_ref(evt.dref, true)));
+  }
 }
 
 
@@ -304,11 +317,8 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
 
    if (ok) {
       if (debug)
-         printf("(main.cpp:%s) Calling ddca_register_display_hotplug_callback()..\n", __func__);
-#ifdef UNUSED
-      ddca_register_display_detection_callback(display_detection_callback);
-#endif
-      ddca_register_display_hotplug_callback(display_hotplug_callback);
+         printf("(main.cpp:%s) Registering callback functions..\n", __func__);
+         ddca_register_display_status_callback(display_status_event_callback);
    }
 
    if (debug)
@@ -347,7 +357,7 @@ int main(int argc, char *argv[])
               DDCUTIL_VMAJOR, DDCUTIL_VMINOR, DDCUTIL_VMICRO, QT_VERSION_STR);
        printf("Executing using libddcutil %s, Qt %s\n\n",
               ddca_ddcutil_extended_version_string(), qVersion());
-       puts("Copyright (C) 2018-2023 Sanford Rockowitz");
+       puts("Copyright (C) 2018-2024 Sanford Rockowitz");
        puts("License GPLv2: GNU GPL version 2 or later <http://gnu.org/licenses/gpl.html>");
        puts("This is free software: you are free to change and redistribute it.");
        puts("There is NO WARRANTY, to the extent permitted by law.");
