@@ -318,7 +318,7 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
    if (ok) {
       if (debug)
          printf("(main.cpp:%s) Registering callback functions..\n", __func__);
-         ddca_register_display_status_callback(display_status_event_callback);
+      ddca_register_display_status_callback(display_status_event_callback);
    }
 
    if (debug)
