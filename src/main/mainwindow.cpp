@@ -1,11 +1,12 @@
 /** \file mainwindow.cpp */
 
-// Copyright (C) 2018-2023 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2024 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "main/mainwindow.h"
 
 #include <assert.h>
+#include <syslog.h>
 #include <iostream>
 
 #include <QtCore/QList>
@@ -17,24 +18,30 @@
 #include <QtWidgets/QShortcut>     // 5.9
 
 #include <ddcutil_c_api.h>
+#include <ddcutil_status_codes.h>
 
+#include "base/ddcui_core_aux.h"
 #include "base/ddcui_core.h"
-#include "base/nc_values_state.h"
-#include "base/global_state.h"
-#include "base/widget_debug.h"
-#include "help/help_dialog.h"
-#include "help/help_browser.h"
-
 #include "base/ddcui_parms.h"
 #include "base/global_state.h"
+#include "base/global_state.h"
 #include "base/monitor.h"
-#include "core_widgets/spin_slider.h"
+#include "base/nc_values_state.h"
+#include "base/user_interface_options_state.h"
+#include "base/widget_debug.h"
+
+#include "help/help_browser.h"
+#include "help/help_dialog.h"
 
 #include "nongui/msgbox_queue.h"
 #include "nongui/vcpthread.h"    // includes vcprequest.h
 
+#include "cmdline/ddcui_parsed_cmd.h"
+
 #include "monitor_desc/monitor_desc_actions.h"
 #include "monitor_desc/monitor_desc_ui.h"
+
+#include "core_widgets/spin_slider.h"
 
 #include "feature_value_widgets/value_stacked_widget.h"
 
@@ -54,10 +61,7 @@
 #include "main/mainwindow.h"
 
 
-
-
 using namespace std;
-
 
 
 intmax_t get_thread_id2() {
@@ -127,11 +131,7 @@ void display_status_event_main_callback(DDCA_Display_Status_Event evt) {
      printf("[%s][%6jd](mainwindow.cpp/%s) Ignoring event of type %s\n",
            time_buf, thread_id, __func__, ddca_display_event_type_name(evt.event_type));
   }
-
 }
-
-
-
 
 
 //
@@ -497,7 +497,25 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
     globalState._msgBoxThread = _msgBoxThread;
     globalState._msgBoxQueue  = _msgBoxQueue;
 
-    ddca_register_display_status_callback(display_status_event_main_callback);
+    if (parsed_cmd->flags & CMD_FLAG_WATCH_DISPLAYS) {
+       DDCA_Display_Event_Class event_classes;
+       DDCA_Status watch_rc = ddca_get_active_watch_classes(&event_classes);
+       if (watch_rc  == DDCRC_OK) {
+          if (!(event_classes & DDCA_EVENT_CLASS_DISPLAY_CONNECTION)) {
+             ddca_stop_watch_displays(true);
+             ddca_start_watch_displays(DDCA_EVENT_CLASS_DISPLAY_CONNECTION);
+             if (test_emit_ddcui_syslog(DDCA_SYSLOG_NOTICE))
+                syslog(LOG_NOTICE, "Restarted display watch thread with DDCA_EVENT_CLASS_DISPLAY_CONNECTION");
+          }
+       }
+       else {
+          DDCA_Status rc = ddca_start_watch_displays(DDCA_EVENT_CLASS_DISPLAY_CONNECTION);
+          assert(rc == DDCRC_OK);
+          if (test_emit_ddcui_syslog(DDCA_SYSLOG_NOTICE))
+             syslog(LOG_NOTICE, "Started display watch thread with DDCA_EVENT_CLASS_DISPLAY_CONNECTION");
+       }
+       ddca_register_display_status_callback(display_status_event_main_callback);
+    }
 
      // QShortcut * quit_shortcut = new QShortcut(QKeySequence(Qt::Key_Q | Qt::CTRL), this, SLOT(close()));
      _quit_shortcut = new QShortcut(QKeySequence(Qt::Key_Q | Qt::CTRL), this);
