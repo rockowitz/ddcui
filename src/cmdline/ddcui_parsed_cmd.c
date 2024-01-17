@@ -157,6 +157,7 @@ void dbgrpt_parsed_ddcui_cmd(Parsed_Ddcui_Cmd * parsed_cmd) {
       printf("   initial bus number:        %d\n",   parsed_cmd->busno);
       printf("   hidpi:                     %s\n",   sbool(parsed_cmd->flags & CMD_FLAG_HIDPI));
       printf("   disable config file:       %s\n",   sbool(parsed_cmd->flags & CMD_FLAG_DISABLE_CONFIG_FILE));
+      printf("   watch displays:            %s\n",   sbool(parsed_cmd->flags & CMD_FLAG_WATCH_DISPLAYS));
 
       printf("   f1:                        %s\n",   sbool(parsed_cmd->flags & CMD_FLAG_F1) );
       printf("   f2:                        %s\n",   sbool(parsed_cmd->flags & CMD_FLAG_F2) );
