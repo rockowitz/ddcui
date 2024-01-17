@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.5.0] 2023-01-17
+
+### Added
+
+- When libddcutil detects connection or disconnection of a display, ddcui 
+  puts up a dialog box reporting the change and indicating that the user
+  needs to redetect displays using Action->Redetect Displays.
+- Options ***--enable-watch-displays***, ***--disable-watch-displays***
+  By default **ddcui** watches for display connection events.
+
+### Changed
+
+- If multiple "options" lines are found in a segment of configuration file
+  ddcuirc, their contents are combined into a single value.
+
+### Building
+
+- Requires libddcutil.so.5.1 or later
+- If CMakeLists.txt option ASAN is specified, cmake compiles ddcui 
+using options required for ASAN and links the executable with libasan.
+
 ## [0.4.2] 2023-09-27
 
 ### Added
