@@ -183,7 +183,7 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    gboolean disable_config_file            = false;
 // gboolean disable_libddcutil_config_file = false;
    gboolean trace_to_syslog_flag           = false;   //???
-
+   gboolean watch_displays_flag     = true;   // the default
 
 #ifdef DISABLE_VIEW_OPTION
    gchar*   view_work                      = NULL;
@@ -269,6 +269,10 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
 
 // libddcutil options
       {"libopts",  '\0', 0, G_OPTION_ARG_STRING_ARRAY, &libopts_pieces,  "libddcutil options",  "string"},
+      {"enable-watch-displays",
+                   '\0', 0, G_OPTION_ARG_NONE,     &watch_displays_flag, "Watch for display connections (default)", NULL},
+      {"disable-watch-displays", '\0', G_OPTION_FLAG_REVERSE,
+                            G_OPTION_ARG_NONE,     &watch_displays_flag, "Do not watch for display connections", NULL},
 
 // output control
       {"disable-config-file",
@@ -435,6 +439,7 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    SET_CMDFLAG(CMD_FLAG_SHOW_UNSUPPORTED,       show_unsupported_features);
 // SET_CMDFLAG(CMD_FLAG_LATEST_NC_VALUE_NAMES,  use_latest_nc_values_true_set);   // n. not handling case where default is true
    SET_CMDFLAG(CMD_FLAG_DISABLE_CONFIG_FILE, disable_config_file);
+   SET_CMDFLAG(CMD_FLAG_WATCH_DISPLAYS,      watch_displays_flag);
 
    SET_CMDFLAG(CMD_FLAG_F1,                f1_flag);
    SET_CMDFLAG(CMD_FLAG_F2,                f2_flag);
