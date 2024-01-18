@@ -10,7 +10,7 @@ endif()
 
 set(ddcui_qt_version         5.5)
 set(ddcui_glib_version       2.40)   # g_option_context_parse_strv() new in 2.40
-set(ddcui_libddcutil_version 2.0.0)
+set(ddcui_libddcutil_version 2.1.0)
 set(cmake_build_type_default "RelWithDebInfo")
 
 message(${VERBOSE} "Required Minimum Versions:")
