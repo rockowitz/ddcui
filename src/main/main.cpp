@@ -315,9 +315,8 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
       // ddca_enable_udf(              parsed_cmd->flags & CMD_FLAG_ENABLE_UDF);
    }
 
-   if (ok) {
-      if (debug)
-         printf("(main.cpp:%s) Registering callback functions..\n", __func__);
+   if (ok && debug) {
+      printf("(main.cpp:%s) Registering callback functions..\n", __func__);
       ddca_register_display_status_callback(display_status_event_callback);
    }
 
