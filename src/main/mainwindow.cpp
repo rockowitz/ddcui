@@ -498,7 +498,9 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
     globalState._msgBoxQueue  = _msgBoxQueue;
 
     if (parsed_cmd->flags & CMD_FLAG_WATCH_DISPLAYS) {
+       bool watching_active = false;
        DDCA_Display_Event_Class event_classes;
+       // in case watch thread already started by libddcutil
        DDCA_Status watch_rc = ddca_get_active_watch_classes(&event_classes);
        if (watch_rc  == DDCRC_OK) {
           if (!(event_classes & DDCA_EVENT_CLASS_DISPLAY_CONNECTION)) {
@@ -507,14 +509,39 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
              if (test_emit_ddcui_syslog(DDCA_SYSLOG_NOTICE))
                 syslog(LOG_NOTICE, "Restarted display watch thread with DDCA_EVENT_CLASS_DISPLAY_CONNECTION");
           }
+          watching_active = true;
        }
        else {
           DDCA_Status rc = ddca_start_watch_displays(DDCA_EVENT_CLASS_DISPLAY_CONNECTION);
-          assert(rc == DDCRC_OK);
-          if (test_emit_ddcui_syslog(DDCA_SYSLOG_NOTICE))
-             syslog(LOG_NOTICE, "Started display watch thread with DDCA_EVENT_CLASS_DISPLAY_CONNECTION");
+          if (rc == DDCRC_OK) {
+             watching_active = true;
+             if (test_emit_ddcui_syslog(DDCA_SYSLOG_NOTICE))
+                syslog(LOG_NOTICE, "Started display watch thread with DDCA_EVENT_CLASS_DISPLAY_CONNECTION");
+          }
+          else {
+             if (test_emit_ddcui_syslog(DDCA_SYSLOG_ERROR))
+                syslog(LOG_ERR, "Failed to start watch thread.");
+
+             QString qstitle("Failed to start display watch thread");
+             QMessageBox::Icon icon = QMessageBox::Warning;
+             DDCA_Error_Detail * erec = ddca_get_error_detail();
+             QString qstext;
+             if (erec) {
+                qstext = QString(erec->detail);
+                ddca_free_error_detail(erec);
+             }
+             else {
+                qstext = QString("Unable to start display watch thread.  Status %1")
+                      .arg(ddca_rc_desc(rc));
+             }
+
+             MsgBoxQueueEntry* qe = new MsgBoxQueueEntry(qstitle, qstext, icon);
+             GlobalState::instance()._msgBoxQueue->put(qe);
+
+          }
        }
-       ddca_register_display_status_callback(display_status_event_main_callback);
+       if (watching_active)
+          ddca_register_display_status_callback(display_status_event_main_callback);
     }
 
      // QShortcut * quit_shortcut = new QShortcut(QKeySequence(Qt::Key_Q | Qt::CTRL), this, SLOT(close()));
