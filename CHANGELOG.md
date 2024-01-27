@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.5.2] 2023-01-27 
+
+- Ensure display status change detection is enabled for display connection
+  and disconnection, not for DPMS asleep.
+
 ## [0.5.0] 2023-01-17
 
 ### Added
