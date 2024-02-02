@@ -1,8 +1,9 @@
 // help_dialog.cpp
 
-// Copyright (C) 2018-2023 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2024 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+#include <QtCore/qglobal.h>
 #include <QtWidgets/QTextBrowser>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
@@ -21,7 +22,11 @@ void HelpDialog::createWidgets() {
 
 void HelpDialog::layoutWidgets() {
     setAttribute(Qt::WA_DeleteOnClose);
+#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
     setAttribute(Qt::WA_GroupLeader);
+#else
+    setWindowModality(Qt::NonModal);
+#endif
 
     Qt::WindowFlags flags = windowFlags();
     flags &= ~Qt::WindowContextHelpButtonHint;
