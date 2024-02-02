@@ -1,14 +1,20 @@
 // number_entry_widget.cpp
 
-// Copyright (C) 2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2024 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <assert.h>
 
+#include <QtCore/qglobal.h>
 #include <QtWidgets/QWidget>
 #include <QtCore/QString>
+#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
 #include <QtCore/QRegExp>
 #include <QtGui/QRegExpValidator>
+#else
+#include <QtCore/QRegularExpression>
+#include <QtGui/QRegularExpressionValidator>
+#endif
 #include <QtWidgets/QLineEdit>
 #include <QtGui/QValidator>
 
