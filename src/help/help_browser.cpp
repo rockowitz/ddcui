@@ -5,6 +5,7 @@
 
  // Adapted from C++ GUI Programming With Qt 4
 
+#include <QtCore/qglobal.h>
 #include <QtCore/QObject>
 #include <QtGui/QKeyEvent>
 #include <QtWidgets/QHBoxLayout>
@@ -108,7 +109,11 @@ HelpBrowser::HelpBrowser(
    layoutWidgets(navigable);
 
    setAttribute(Qt::WA_DeleteOnClose);
-   setAttribute(Qt::WA_GroupLeader);
+#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
+    setAttribute(Qt::WA_GroupLeader);
+#else
+    setWindowModality(Qt::NonModal);
+#endif
    // setWindowModality(Qt::ApplicationModal);   // choices: Qt::NonModal, Qt::WindowModal, Qt::ApplicationModal
 
    if (navigable) {
