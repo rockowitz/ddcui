@@ -2,7 +2,7 @@
 
 // Functions for debugging Qt layouts
 
-// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2024 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <glib-2.0/glib.h>
@@ -18,7 +18,8 @@
 #include <QtGui/QScreen>
 #include <QtGui/QWindow>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QDesktopWidget>
+// #include <QtWidgets/QDesktopWidget>   // removed in Qt6
+#include <QtGui/QScreen>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLayout>
@@ -435,8 +436,16 @@ void whereIsApplication() {
         printf("  virtualSize: %d,%d\n", virtualSize.width(), virtualSize.height());
    }
 
+#ifdef REMVOED_IN_QT6
    QDesktopWidget * desktopWidget = QApplication::desktop();
    printf("Desktop widget width, height: %d,%d\n", desktopWidget->width(),  desktopWidget->height() );
+#endif
+   // is this equivalent?
+   QScreen * screen = QApplication::primaryScreen();
+   QRect rect = screen->geometry();
+   printf("Primary screen width, height: %d,%d\n", rect.width(), rect.height());
+
+
 #ifdef FOR_TESTING
    printf("screen count: %d\n", desktopWidget->screenCount() );
    printf("is virtual desktop: %s\n", SBOOL( desktopWidget->isVirtualDesktop() ) );
