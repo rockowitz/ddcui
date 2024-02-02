@@ -1,3 +1,6 @@
+set(ddcui_version  0.5.3)
+message(STATUS "ddcui_version:  ${ddcui_version}")
+
 cmake_minimum_required(VERSION 3.10)
 
 message(STATUS "cmake version: ${CMAKE_VERSION}")
@@ -8,15 +11,19 @@ else()
    set(VERBOSE VERBOSE)
 endif()
 
-set(ddcui_qt_version         5.5)
+set(ddcui_qt5_min_version    5.5)
+set(ddcui_qt6_min_version    6.1)
 set(ddcui_glib_version       2.40)   # g_option_context_parse_strv() new in 2.40
 set(ddcui_libddcutil_version 2.1.0)
 set(cmake_build_type_default "RelWithDebInfo")
 
 message(${VERBOSE} "Required Minimum Versions:")
-message(${VERBOSE} "  ddcui_qt_version:          ${ddcui_qt_version}" )
+message(${VERBOSE} "  ddcui_qt5_min_version:     ${ddcui_qt5_min_version}" )
 message(${VERBOSE} "  ddcui_qlib_version:        ${ddcui_glib_version}" )
 message(${VERBOSE} "  ddcui_libddcutil_version:  ${ddcui_libddcutil_version}" ) 
+
+option(USE_QT6 "Use QT6 instead of QT5" OFF)
+message(STATUS "USE_QT6:      ${USE_QT6}")
 
 option(USE_CCACHE "Use ccache" ON)
 message(STATUS "USE_CCACHE:                ${USE_CCACHE}" )
@@ -31,7 +38,7 @@ string(APPEND CMAKE_MODULE_PATH  ${CMAKE_SOURCE_DIR} )
 
 include(validate_CMAKE_BUILD_TYPE)
 
-project(ddcui VERSION 0.5.2 LANGUAGES C CXX)
+project(ddcui VERSION ${ddcui_version} LANGUAGES C CXX)
 
 message(STATUS "Build type is: ${CMAKE_BUILD_TYPE} (CMAKE_BUILD_TYPE)")
 message(${VERBOSE} "   CMAKE_C_COMPILER:               ${CMAKE_C_COMPILER}" )
@@ -52,21 +59,22 @@ message(${VERBOSE} "   CMAKE_C_FLAGS_RELEASE:          ${CMAKE_C_FLAGS_RELEASE}"
 message(STATUS "Source directory: ${CMAKE_SOURCE_DIR} (CMAKE_SOURCE_DIR)" )
 message(STATUS "Build directory:  ${CMAKE_BINARY_DIR} (CMAKE_BINARY_DIR)" )
 
-  execute_process(
-      WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-      COMMAND git branch --show-current 2>/dev/null
-      OUTPUT_VARIABLE DDCUI_GIT_BRANCH
-      RESULT_VARIABLE GIT_CMD_STATUS
-   )
-   # message (${VERBOSE} " result_variable: ${GIT_CMD_STATUS}")
-   if (${GIT_CMD_STATUS} STREQUAL "0")
-      string(LENGTH ${DDCUI_GIT_BRANCH} N)
-      math(EXPR lastpos "${N}-1")
-      string(SUBSTRING ${DDCUI_GIT_BRANCH} 0 ${lastpos} DDCUI_GIT_BRANCH)
-      message( ${VERBOSE} "ddcui git branch:   ${DDCUI_GIT_BRANCH}")
-   else() 
-      message( ${VERBOSE} "ddcui source is not managed by git")
-   endif()
+execute_process(
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    COMMAND git branch --show-current 2>/dev/null
+    OUTPUT_VARIABLE DDCUI_GIT_BRANCH
+    RESULT_VARIABLE GIT_CMD_STATUS
+)
+# message (${VERBOSE} " result_variable: ${GIT_CMD_STATUS}")
+if (${GIT_CMD_STATUS} STREQUAL "0")
+   string(LENGTH ${DDCUI_GIT_BRANCH} N)
+   math(EXPR lastpos "${N}-1")
+   string(SUBSTRING ${DDCUI_GIT_BRANCH} 0 ${lastpos} DDCUI_GIT_BRANCH)
+   message( ${VERBOSE} "ddcui git branch:   ${DDCUI_GIT_BRANCH}")
+else() 
+   message( ${VERBOSE} "ddcui source is not managed by git")
+endif()
+
 if ( ${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR} ) 
    message(WARNING "Attempting to build in source directory.")
    if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.13")
@@ -119,14 +127,25 @@ message( ${VERBOSE} "  CMAKE_AUTOMOC:           ${CMAKE_AUTOMOC}")
 message( ${VERBOSE} "  CMAKE_AUTORCC:           ${CMAKE_AUTORCC}")
 # message( ${VERBOSE} "AUTOGEN_BUILD_DIR:       ${AUTOGEN_BUILD_DIR}") overrides default location
 
-set(QT5_LIBRARIES Qt5::Widgets )
-# Ensures all Qt componenets have same version: 
-find_package(Qt5 ${ddcui_qt_version} COMPONENTS Core Widgets Gui Help REQUIRED)
-message( ${VERBOSE} "Qt directories:")
-message( ${VERBOSE} "  Qt5Widgets_INCLUDE_DIRS:  ${Qt5Widgets_INCLUDE_DIRS}" )
-message( ${VERBOSE} "  Qt5Core_INCLUDE_DIRS:     ${Qt5Core_INCLUDE_DIRS}"    )
-message( ${VERBOSE} "  Qt5Gui_INCLUDE_DIRS:      ${Qt5Gui_INCLUDE_DIRS}"     )
-message( ${VERBOSE} "  Qt5Help_INCLUDE_DIRS:     ${Qt5Help_INCLUDE_DIRS}"    )
+if (USE_QT6)
+   set(QT6_LIBRARIES Qt6::Widgets )
+   # Ensures all Qt componenets have same version: 
+   find_package(Qt6 ${ddcui_qt6_min_version} COMPONENTS Core Widgets Gui Help REQUIRED)
+   message( ${VERBOSE} "Qt directories:")
+   message( ${VERBOSE} "  Qt6Widgets_INCLUDE_DIRS:  ${Qt6Widgets_INCLUDE_DIRS}" )
+   message( ${VERBOSE} "  Qt6Core_INCLUDE_DIRS:     ${Qt6Core_INCLUDE_DIRS}"    )
+   message( ${VERBOSE} "  Qt6Gui_INCLUDE_DIRS:      ${Qt6Gui_INCLUDE_DIRS}"     )
+   message( ${VERBOSE} "  Qt6Help_INCLUDE_DIRS:     ${Qt6Help_INCLUDE_DIRS}"    )
+else()
+   set(QT5_LIBRARIES Qt5::Widgets )
+   # Ensures all Qt componenets have same version: 
+   find_package(Qt5 ${ddcui_qt5_min_version} COMPONENTS Core Widgets Gui Help REQUIRED)
+   message( ${VERBOSE} "Qt directories:")
+   message( ${VERBOSE} "  Qt5Widgets_INCLUDE_DIRS:  ${Qt5Widgets_INCLUDE_DIRS}" )
+   message( ${VERBOSE} "  Qt5Core_INCLUDE_DIRS:     ${Qt5Core_INCLUDE_DIRS}"    )
+   message( ${VERBOSE} "  Qt5Gui_INCLUDE_DIRS:      ${Qt5Gui_INCLUDE_DIRS}"     )
+   message( ${VERBOSE} "  Qt5Help_INCLUDE_DIRS:     ${Qt5Help_INCLUDE_DIRS}"    )
+endif()
 
 find_package (PkgConfig REQUIRED )
 pkg_check_modules(GLIB2 REQUIRED glib-2.0>=${ddcui_glib_version})
@@ -284,8 +303,13 @@ target_include_directories(ddcui SYSTEM PRIVATE
 
 target_include_directories(ddcui PRIVATE src)
 
-# Use the Widgets module from Qt 5.
-target_link_libraries(ddcui ${ASAN_LIBRARY} Qt5::Widgets ${GLIB2_LIBRARIES} ${DDCUTIL_LIBRARIES})
+if (USE_QT6)
+   # Use the Widgets module from Qt 6.
+   target_link_libraries(ddcui ${ASAN_LIBRARY} Qt6::Widgets ${GLIB2_LIBRARIES} ${DDCUTIL_LIBRARIES})
+else()
+   # Use the Widgets module from Qt 5.
+   target_link_libraries(ddcui ${ASAN_LIBRARY} Qt5::Widgets ${GLIB2_LIBRARIES} ${DDCUTIL_LIBRARIES})
+endif()
 
 get_property(dirs TARGET ddcui PROPERTY INCLUDE_DIRECTORIES)
 message( ${VERBOSE} "INCLUDE_DIRECTORIES:     ${dirs}" )
