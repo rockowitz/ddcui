@@ -401,7 +401,12 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
         TRACECF(debug, "Processing display %d", ndx);
         DDCA_Display_Info * dinfo;
         DDCA_Status ddcrc = ddca_get_display_info(_drefs[ndx], &dinfo);
-        assert(ddcrc == 0);
+        if (ddcrc != 0) {
+           const char * expl = ddca_rc_desc(ddcrc);
+           syslog(LOG_ERR, "ddca_get_display_info() returned %s", expl);
+           TRACEC("ddca_get_display_info() returned %s", expl);
+           assert(ddcrc == 0);
+        }
         initOneMonitor(dinfo, ndx);
     }
 
@@ -618,6 +623,9 @@ MainWindow::~MainWindow()
     delete _feature_selector;
     delete _otherOptionsState;
     delete _uiOptionsState;
+    _msgBoxThread->quit();
+    TRACEMCF(debug, "Done.  _msgBoxThread halted");
+
     freeMonitors();
     free(_drefs);
     TRACECF(debug, "Done");
