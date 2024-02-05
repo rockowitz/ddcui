@@ -522,6 +522,7 @@ int main(int argc, char *argv[])
           free_parsed_ddcui_cmd(parsed_cmd);   // make valgrind happier
        }
     }
+    application.quit();
     if (test_emit_ddcui_syslog(DDCA_SYSLOG_NOTICE))
        syslog(LOG_NOTICE, "ddcui done.");
 
