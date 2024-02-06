@@ -402,7 +402,7 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
         DDCA_Display_Info * dinfo;
         DDCA_Status ddcrc = ddca_get_display_info(_drefs[ndx], &dinfo);
         if (ddcrc != 0) {
-           const char * expl = ddca_rc_desc(ddcrc);
+           const char * expl = ddca_rc_name(ddcrc);
            syslog(LOG_ERR, "ddca_get_display_info() returned %s", expl);
            TRACEC("ddca_get_display_info() returned %s", expl);
            assert(ddcrc == 0);
