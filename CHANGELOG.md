@@ -1,6 +1,10 @@
 # Changelog
+## [0.5.3] 2024-02-07
 
-## [0.5.2] 2023-01-27 
+- Minor cleanup
+- Partial (unfinished) Qt6 support
+
+## [0.5.2] 2024-01-27 
 
 - Ensure display status change detection is enabled for display connection
   and disconnection, not for DPMS asleep.
