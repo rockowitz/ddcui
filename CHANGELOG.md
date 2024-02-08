@@ -1,8 +1,7 @@
 # Changelog
 ## [0.5.3] 2024-02-07
 
-- Minor cleanup
-- Partial (unfinished) Qt6 support
+- Require libddcutil from ddcutil 2.1.3 or later
 
 ## [0.5.2] 2024-01-27 
 
