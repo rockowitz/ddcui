@@ -1,6 +1,6 @@
 /** \file main.cpp */
 
-// Copyright (C) 2018-2023 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2024 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <glib-2.0/glib.h>
@@ -279,11 +279,6 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
    if (debug)
       printf("(main.cpp:%s) ddca_init() returned %d\n", __func__, rc);
 
-   // printf("(%s) WOLF 0\n", __func__);
-   // if (infomsgs)
-   //    ntsa_show(infomsgs);
-   // printf("WOLF A\n");
-
    if (infomsgs) {
       // printf("Null_Terminated_String_Array at %p:\n", (void*) infomsgs);
       int ndx = 0;
@@ -295,7 +290,6 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
       // g_strfreev(infomsgs);
       ntsa_free(infomsgs, true);
    }
-
 
    if (rc) {
      DDCA_Error_Detail * erec = ddca_get_error_detail();
@@ -361,6 +355,23 @@ int main(int argc, char *argv[])
        puts("This is free software: you are free to change and redistribute it.");
        puts("There is NO WARRANTY, to the extent permitted by law.");
        exit(0);
+    }
+
+    DDCA_Ddcutil_Version_Spec vspec = ddca_ddcutil_version();
+    bool ok_vspec = false;
+    if (vspec.major >= 3)
+       ok_vspec = true;
+    else if (vspec.major == 2) {
+       if (vspec.minor >=2)
+          ok_vspec = true;
+       else if (vspec.minor == 1) {
+          if (vspec.micro >= 3)
+             ok_vspec = true;
+       }
+    }
+    if (!ok_vspec) {
+       printf("ddcui requires at least libddcutil version 2.1.3\n");
+       exit(1);
     }
 
     // bool enable_syslog = true;
