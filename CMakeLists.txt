@@ -432,6 +432,7 @@ install(FILES icons/video-display-16px.png  DESTINATION ${CMAKE_INSTALL_DATAROOT
 # GNOME classic only looks in pixmaps for icons:
 # install(FILES icons/ddcui-48px.png  DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pixmaps RENAME ddcui.png)
 
+install (FILES modules-load.d_ddcui.conf DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/modules-load.d RENAME ddcui.conf)
 
 ### make uninstall
 
