@@ -1,4 +1,12 @@
 # Changelog
+
+#@ [0.5.4] 2024-02-13
+
+### Added
+
+- Install file /usr/lib/modules-load.d/ddcui.conf to ensure that 
+  kernel module i2c-dev is loaded.
+
 ## [0.5.3] 2024-02-07
 
 - Require libddcutil from ddcutil 2.1.3 or later
