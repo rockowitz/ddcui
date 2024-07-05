@@ -268,6 +268,7 @@ set(SOURCES
     src/main/mainwindow_ui.cpp
     src/main/monitor.cpp 
     src/main/msgbox_thread.cpp
+	src/main/callback_manager.cpp
 )
 
 # file(GLOB dummy_SOURCES src/dummies/*.cpp)
