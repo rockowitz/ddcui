@@ -250,3 +250,19 @@ bool printftcmf(
    return msg_emitted;
 }
 
+
+intmax_t get_thread_id() {
+   pid_t tid = syscall(SYS_gettid);
+   return tid;
+}
+
+
+void create_timestamp(char* buf, int bufsz) {
+   assert(bufsz >= 40);
+   time_t epoch_seconds = time(NULL);
+   struct tm broken_down_time;
+   localtime_r(&epoch_seconds, &broken_down_time);
+   strftime(buf, 40, "%b %d %T", &broken_down_time);
+}
+
+

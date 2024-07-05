@@ -9,6 +9,7 @@
 #include <sys/types.h>
 #include <sys/syscall.h>
 #include <unistd.h>
+#include <stdint.h>
 
 #include "config.h"
 
@@ -44,6 +45,10 @@ void init_core();
 
 bool enable_trace_show_time(bool onoff);
 bool enable_trace_show_thread_id(bool onoff);
+
+
+intmax_t get_thread_id();
+void create_timestamp(char* buf, int bufsz);
 
 
 
