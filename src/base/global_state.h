@@ -13,6 +13,7 @@
 #include "cmdline/ddcui_parsed_cmd.h"
 #include "base/user_interface_options_state.h"
 #include "base/nc_values_state.h"
+#include "main/callback_manager.h"
 #include "main/mainwindow.h"    // ugh - referencing out of base, to clean up
 
 class GlobalState {
@@ -29,6 +30,7 @@ public:
    MainWindow *   _mainWindow   = nullptr;
    MsgBoxThread * _msgBoxThread = nullptr;
    MsgBoxQueue *  _msgBoxQueue  = nullptr;
+   CallbackManager * _callbackManager = nullptr;
 
 private:
    GlobalState();
