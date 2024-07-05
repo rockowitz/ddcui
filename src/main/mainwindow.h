@@ -1,6 +1,6 @@
 /* mainwindow.h */
 
-// Copyright (C) 2018-2023 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2024 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef MAINWINDOW_H
@@ -72,9 +72,11 @@ private:
     void connectBaseModel(Monitor * monitor);
     void disconnectBaseModel(Monitor * monitor);
     void freeMonitors();
+    int findMonitor(DDCA_Display_Ref dref);
     void initOneMonitor(DDCA_Display_Info * info, int curIndex);
     void setInitialDisplayIndex(Parsed_Ddcui_Cmd * parsed_cmd);
     void initMonitors(Parsed_Ddcui_Cmd * parsed_cmd);
+
     void loadMonitorFeatures(Monitor * monitor);
 
 //
@@ -108,6 +110,7 @@ public slots:
     void showSerialMsgBox(QString title, QString text, QMessageBox::Icon icon);
     void forControlKeyRequired_changed(bool onoff);
     void on_actionRedetect_triggered();
+    void forDisplayChanged(DDCA_Display_Status_Event evt);
 
 protected slots:
     void keyPressEvent(QKeyEvent *   ev) override;
@@ -160,6 +163,8 @@ private slots:
 
 public:
     void reportDdcApiError(QString funcname, int rc) const;
+    void addMonitor(DDCA_Display_Ref dref);
+    void removeMonitor(DDCA_Display_Ref dref);
 
 private:
     // used only by slotfor_reportStats_triggered()

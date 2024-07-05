@@ -24,7 +24,6 @@
 #include "base/ddcui_core.h"
 #include "base/ddcui_parms.h"
 #include "base/global_state.h"
-#include "base/global_state.h"
 #include "base/monitor.h"
 #include "base/nc_values_state.h"
 #include "base/user_interface_options_state.h"
@@ -63,75 +62,6 @@
 
 using namespace std;
 
-
-intmax_t get_thread_id2() {
-   pid_t tid = syscall(SYS_gettid);
-   return tid;
-}
-
-
-void create_timestamp2(char* buf, int bufsz) {
-   assert(bufsz >= 40);
-   time_t epoch_seconds = time(NULL);
-   struct tm broken_down_time;
-   localtime_r(&epoch_seconds, &broken_down_time);
-   strftime(buf, 40, "%b %d %T", &broken_down_time);
-}
-
-
-
-void display_status_event_main_callback(DDCA_Display_Status_Event evt) {
-   char time_buf[40];
-   create_timestamp2(time_buf, 40);
-   intmax_t thread_id = get_thread_id2();
-  // printf("(%s) evt.dref=%p event_type=%d\n", __func__, evt.dref, evt.event_type);
-
-  printf("[%s][%6jd](mainwindow.cpp/%s) Executing. dref=%s, event_type = %s\n",
-        time_buf, thread_id, __func__, ddca_dref_repr(evt.dref), ddca_display_event_type_name(evt.event_type));
-
-  printf("[%s][%6jd](mainwindow.cpp/%s) ddca_validate_display_ref(%s) reports: %s\n",
-        time_buf, thread_id, __func__,
-        ddca_dref_repr(evt.dref),
-        ddca_rc_name(ddca_validate_display_ref(evt.dref, true)));
-
-#ifdef REF
-  QString qsTitle = QString("ddcutil Error");
-  QString qsDetail = QString("Invalid Model: %1").arg(parsed_cmd->model);
-  QMessageBox::Icon icon = QMessageBox::Warning;
-  MsgBoxQueueEntry * qe = new MsgBoxQueueEntry(qsTitle, qsDetail, icon);
-#ifdef DEFERRED_MSG_QUEUE
-  _deferredMsgs.append(qe);     // not needed
-#endif
-  TRACECF(debug, "Pre put, _msgBoxQueue=%p", _msgBoxQueue);
-  _msgBoxQueue->put(qe);
-#endif
-
-
-  if (evt.event_type == DDCA_EVENT_DISPLAY_CONNECTED || evt.event_type == DDCA_EVENT_DISPLAY_DISCONNECTED) {
-     QString qstitle("Display Status Change");
-     QMessageBox::Icon icon = QMessageBox::Warning;
-     QString qstext;;
-     // QString qstext = (evt.event_type == DDCA_EVENT_DISPLAY_CONNECTED)
-     //                    ?   QString("Display has been connected.   Redetect Displays")
-     //                    :   QString("Display has been disconnected.  Redetect displays");
-     if (evt.event_type == DDCA_EVENT_DISPLAY_CONNECTED)
-        qstext = QString("Display connected on %1, bus /dev/i2c-%2.\n\nRedetect displays")
-                        .arg(evt.connector_name).arg(  evt.io_path.path.i2c_busno) ;
-      else {
-        qstext = QString("Display disconnected on %1, bus /dev/i2c-%2.\n\nRedetect displays")
-                        .arg(evt.connector_name).arg(evt.io_path.path.i2c_busno);
-      }
-
-     MsgBoxQueueEntry* qe = new MsgBoxQueueEntry(qstitle, qstext, icon);
-     GlobalState::instance()._msgBoxQueue->put(qe);
-     // GlobalState::instance()._mainWindow->on_actionRedetect_triggered();  // creates new window
-
-  }
-  else {
-     printf("[%s][%6jd](mainwindow.cpp/%s) Ignoring event of type %s\n",
-           time_buf, thread_id, __func__, ddca_display_event_type_name(evt.event_type));
-  }
-}
 
 
 //
@@ -206,6 +136,23 @@ void MainWindow::disconnectBaseModel(Monitor * curMonitor) {
 }
 
 
+int MainWindow::findMonitor(DDCA_Display_Ref dref) {
+   bool debug  = false;
+   TRACECF(debug, "dref=%s", ddca_dref_repr(dref));
+   int result = -1;
+   int ct0 = _monitors.size();
+   TRACECF(debug,"_monitors.size() = %d", ct0);
+   for (int ndx = _monitors.size()-1; ndx >= 0; ndx--) {
+      Monitor * curMonitor = _monitors.at(ndx);
+      if (curMonitor->_displayInfo->dref == dref) {
+         result = ndx;
+         break;
+      }
+   }
+   TRACECF(debug,"Returning: %d", result);
+   return result;
+}
+
 void MainWindow::freeMonitors() {
    bool debug = false;
    TRACECF(debug, "Starting");
@@ -234,7 +181,7 @@ void MainWindow::freeMonitors() {
 
 
 void MainWindow::initOneMonitor(DDCA_Display_Info * info, int curIndex) {
-   bool debug = false;
+   bool debug  = false;
    TRACECF(debug, "Starting. info=%p, curIndex=%d", info, curIndex);
 
    // Add entry for monitor in display selector combo box
@@ -284,6 +231,54 @@ void MainWindow::initOneMonitor(DDCA_Display_Info * info, int curIndex) {
       _ui->actionFeaturesScrollArea->setEnabled(false);
    }
    TRACECF(debug, "Done.");
+}
+
+void MainWindow::addMonitor(DDCA_Display_Ref dref) {
+   bool debug  = false;
+   TRACECF(debug, "dref=%s", ddca_dref_repr(dref));
+   DDCA_Display_Info * dinfo;
+   DDCA_Status ddcrc = ddca_get_display_info(dref, &dinfo);
+   if (ddcrc != 0) {
+      const char * expl = ddca_rc_name(ddcrc);
+      syslog(LOG_ERR, "ddca_get_display_info() returned %s", expl);
+      TRACEC("ddca_get_display_info() returned %s", expl);
+      assert(ddcrc == 0);
+   }
+   int nextIndex =  _toolbarDisplayCB->count();
+   initOneMonitor(dinfo, nextIndex);
+}
+
+
+void MainWindow::removeMonitor(DDCA_Display_Ref dref) {
+   bool debug  = false;
+   TRACECF(debug, "dref=%s", ddca_dref_repr(dref));
+
+   int monNdx = findMonitor(dref);
+   if (monNdx >= 0) {
+      Monitor * monitor = _monitors.at(monNdx);
+      TRACECF(debug, "monitor=%p", monitor);
+
+      // Remove entry for monitor from display selector combo box
+      QString mfg_id     = monitor->_displayInfo->mfg_id;
+      QString model_name = monitor->_displayInfo->model_name;
+      QString sn         = monitor->_displayInfo->sn;
+
+      QString s = model_name;
+      if (s.isEmpty() ) {
+         if ( sn.isEmpty() )
+            s = QString("Laptop");
+         else
+            s = QString("Unknown");    // don't expect this
+      }
+
+      int cbNdx = _toolbarDisplayCB->findText(s,Qt::MatchExactly);
+      _toolbarDisplayCB->removeItem(cbNdx);
+
+      TRACECF(debug, "deleting monitor monNdx=%d, monitor=%p, dispno=%d", monNdx, monitor, monitor->_displayInfo->dispno);
+      _monitors.removeAt(monNdx);
+      delete monitor;
+      TRACECF(debug, "deleted monitor monNdx=%d", monNdx);
+   }
 }
 
 
@@ -486,6 +481,10 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
     qRegisterMetaType<NcValuesSource>("NcValuesSource");
     qRegisterMetaType<QMessageBox::Icon>("QMessageBox::Icon");
 
+    qRegisterMetaType<DDCA_Display_Status_Event>("DDCA_Display_Status_Event");
+    qRegisterMetaType<DDCA_Display_Event_Type>("DDCA_Display_Event_Type");
+    qRegisterMetaType<DDCA_Display_Ref>("DDCA_Display_Ref");
+
     // ComboBox for display selection
     QLabel* toolbarDisplayLabel = new QLabel("&Display:  ");
     toolbarDisplayLabel->setFont(_ui->mainMenuFont);
@@ -516,7 +515,7 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
           }
           watching_active = true;
        }
-       else {
+       else { // normal case
           DDCA_Status rc = ddca_start_watch_displays(DDCA_EVENT_CLASS_DISPLAY_CONNECTION);
           if (rc == DDCRC_OK) {
              watching_active = true;
@@ -545,8 +544,10 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
 
           }
        }
-       if (watching_active)
-          ddca_register_display_status_callback(display_status_event_main_callback);
+       if (watching_active) {
+          // ddca_register_display_status_callback(display_status_event_main_callback);
+          CallbackManager::instance().registerCallbacks(this);
+       }
     }
 
      // QShortcut * quit_shortcut = new QShortcut(QKeySequence(Qt::Key_Q | Qt::CTRL), this, SLOT(close()));
@@ -1067,6 +1068,120 @@ void MainWindow::on_actionRedetect_triggered() {
 
    TRACECF(debug,"Done");
 }
+
+
+#ifdef DOESNT_WORK
+void MainWindow::forDisplayChanged(DDCA_Display_Status_Event evt) {
+   bool debug = true;
+   TRACECF(debug, "event type: %d = %s, dref=%s",
+          evt.event_type, ddca_display_event_type_name(evt.event_type),
+          ddca_dref_repr(evt.dref) );
+
+   if (evt.event_type ==  DDCA_EVENT_DISPLAY_CONNECTED ) {
+      addMonitor(evt.dref);
+   }
+   else if (evt.event_type == DDCA_EVENT_DISPLAY_DISCONNECTED) {
+      removeMonitor(evt.dref);
+   }
+   else {
+      syslog(LOG_ERR, "unexpected event type");
+      TRACEC("unexpected event type: %d = %s",
+             evt.event_type, ddca_display_event_type_name(evt.event_type));
+      assert(false);
+   }
+}
+#endif
+
+#ifdef EXECUTES_ON_WRONG_THREAD
+
+void display_status_event_main_callback(DDCA_Display_Status_Event evt) {
+   char time_buf[40];
+   create_timestamp(time_buf, 40);
+   intmax_t thread_id = get_thread_id();
+  // printf("(%s) evt.dref=%p event_type=%d\n", __func__, evt.dref, evt.event_type);
+
+  printf("[%s][%6jd](mainwindow.cpp/%s) Executing. dref=%s, event_type = %s\n",
+        time_buf, thread_id, __func__, ddca_dref_repr(evt.dref), ddca_display_event_type_name(evt.event_type));
+
+  printf("[%s][%6jd](mainwindow.cpp/%s) ddca_validate_display_ref(%s) reports: %s\n",
+        time_buf, thread_id, __func__,
+        ddca_dref_repr(evt.dref),
+        ddca_rc_name(ddca_validate_display_ref(evt.dref, true)));
+
+#ifdef REF
+  QString qsTitle = QString("ddcutil Error");
+  QString qsDetail = QString("Invalid Model: %1").arg(parsed_cmd->model);
+  QMessageBox::Icon icon = QMessageBox::Warning;
+  MsgBoxQueueEntry * qe = new MsgBoxQueueEntry(qsTitle, qsDetail, icon);
+#ifdef DEFERRED_MSG_QUEUE
+  _deferredMsgs.append(qe);     // not needed
+#endif
+  TRACECF(debug, "Pre put, _msgBoxQueue=%p", _msgBoxQueue);
+  _msgBoxQueue->put(qe);
+#endif
+
+
+  if (evt.event_type == DDCA_EVENT_DISPLAY_CONNECTED || evt.event_type == DDCA_EVENT_DISPLAY_DISCONNECTED) {
+     QString qstitle("Display Status Change");
+     QMessageBox::Icon icon = QMessageBox::Warning;
+     QString qstext;;
+     // QString qstext = (evt.event_type == DDCA_EVENT_DISPLAY_CONNECTED)
+     //                    ?   QString("Display has been connected.   Redetect Displays")
+     //                    :   QString("Display has been disconnected.  Redetect displays");
+     if (evt.event_type == DDCA_EVENT_DISPLAY_CONNECTED)
+        qstext = QString("Display connected on %1, bus /dev/i2c-%2.\n\nRedetect displays")
+                        .arg(evt.connector_name).arg(  evt.io_path.path.i2c_busno) ;
+      else {
+        qstext = QString("Display disconnected on %1, bus /dev/i2c-%2.\n\nRedetect displays")
+                        .arg(evt.connector_name).arg(evt.io_path.path.i2c_busno);
+      }
+
+     MsgBoxQueueEntry* qe = new MsgBoxQueueEntry(qstitle, qstext, icon);
+     GlobalState::instance()._msgBoxQueue->put(qe);
+     // GlobalState::instance()._mainWindow->on_actionRedetect_triggered();  // creates new window
+
+     MainWindow* mainWindow =    GlobalState::instance()._mainWindow;
+     if (evt.event_type == DDCA_EVENT_DISPLAY_CONNECTED) {
+        mainWindow->addMonitor(evt.dref);
+     }
+     else {
+        assert (evt.event_type == DDCA_EVENT_DISPLAY_DISCONNECTED);
+        mainWindow->removeMonitor(evt.dref);
+     }
+
+  }
+  else {
+     printf("[%s][%6jd](mainwindow.cpp/%s) Ignoring event of type %s\n",
+           time_buf, thread_id, __func__, ddca_display_event_type_name(evt.event_type));
+  }
+}
+#endif
+
+
+
+void MainWindow::forDisplayChanged(DDCA_Display_Status_Event evt) {
+   bool debug = true;
+   TRACECF(debug, "event type: %d = %s, dref=%s",
+          evt.event_type, ddca_display_event_type_name(evt.event_type),
+          ddca_dref_repr(evt.dref) );
+
+
+   if (evt.event_type ==  DDCA_EVENT_DISPLAY_CONNECTED ) {
+      addMonitor(evt.dref);
+   }
+   else if (evt.event_type == DDCA_EVENT_DISPLAY_DISCONNECTED) {
+      removeMonitor(evt.dref);
+   }
+   else {
+      syslog(LOG_ERR, "unexpected event type");
+      TRACEC("unexpected event type: %d = %s",
+             evt.event_type, ddca_display_event_type_name(evt.event_type));
+      assert(false);
+   }
+}
+
+
+
 
 
 void MainWindow::on_actionDebugLocks_triggered() {
