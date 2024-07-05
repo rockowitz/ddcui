@@ -30,6 +30,7 @@
 #include "base/ddcui_parms.h"
 #include "base/global_state.h"
 
+#include "main/callback_manager.h"
 #include "main/mainwindow.h"
 #include "main/msgbox_thread.h"
 
@@ -174,39 +175,6 @@ void dbgrpt_hidpiQApplication(QApplication& coreapp) {
 }
 
 
-intmax_t get_thread_id() {
-   pid_t tid = syscall(SYS_gettid);
-   return tid;
-}
-
-
-void create_timestamp(char* buf, int bufsz) {
-   assert(bufsz >= 40);
-   time_t epoch_seconds = time(NULL);
-   struct tm broken_down_time;
-   localtime_r(&epoch_seconds, &broken_down_time);
-   strftime(buf, 40, "%b %d %T", &broken_down_time);
-}
-
-
-void display_status_event_callback(DDCA_Display_Status_Event evt) {
-   char time_buf[40];
-   create_timestamp(time_buf, 40);
-   intmax_t thread_id = get_thread_id();
-  // printf("(%s) evt.dref=%p event_type=%d\n", __func__, evt.dref, evt.event_type);
-
-  printf("[%s][%6jd](main.cpp/%s) Executing. dref=%s, bus=/dev/i2c-%d, event_type = %s\n",
-        time_buf, thread_id, __func__, ddca_dref_repr(evt.dref), evt.io_path.path.i2c_busno, ddca_display_event_type_name(evt.event_type));
-
-  if (evt.dref) {
-     printf("[%s][%6jd](main.cpp/%s) ddca_validate_display_ref(%s) reports: %s\n",
-           time_buf, thread_id, __func__,
-           ddca_dref_repr(evt.dref),
-           ddca_rc_name(ddca_validate_display_ref(evt.dref, true)));
-  }
-}
-
-
 #ifdef UNUSED
 // typedef void (*DDCA_Display_Detection_Callback_Func)(DDCA_Display_Detection_Event);
 void display_detection_callback(DDCA_Display_Detection_Event report) {
@@ -309,10 +277,6 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
       // ddca_enable_udf(              parsed_cmd->flags & CMD_FLAG_ENABLE_UDF);
    }
 
-   if (ok && debug) {
-      printf("(main.cpp:%s) Registering callback functions..\n", __func__);
-      ddca_register_display_status_callback(display_status_event_callback);
-   }
 
    if (debug)
       printf("(main.cpp:%s) Done.  Returning %s\n", __func__, SBOOL(ok));
@@ -498,15 +462,18 @@ int main(int argc, char *argv[])
           }
 
           GlobalState & globalState = GlobalState::instance();
+          CallbackManager& callbackManager = CallbackManager::instance();
+          globalState._callbackManager = &callbackManager;
           init_core();
 
           DBGF(debug, "Calling MainWindow constructor", __func__);
           MainWindow w(parsed_cmd);
-          if (debug)
 
           DBGF(debug,"MainWindow constructor completed", __func__);
           globalState._mainWindow = &w;
           globalState._application = &application;
+
+          // callbackManager.registerCallbacks(&w);
 
           // without w.show(), initial serial message box does not appear over MainWindow
           w.show();
