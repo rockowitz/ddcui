@@ -78,6 +78,7 @@ Monitor::~Monitor() {
       delete _vcpThread;
       delete _baseModel;
    }
+   delete _featuresScrollAreaView;
    ddca_free_display_info(_displayInfo);
    TRACECF(debug, "Done");
    free((void*) _cls);
