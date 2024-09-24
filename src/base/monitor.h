@@ -1,6 +1,6 @@
 /* monitor.h */
 
-// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2024 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef MONITOR_H
@@ -13,6 +13,7 @@
 
 #include "config.h"
 #include "base/feature_selector.h"
+#include "feature_scrollarea/features_scrollarea_view.h"
 
 
 class QListView;
@@ -24,7 +25,7 @@ class QWidget;
 // class QHash;  // incomplete type, need full #include <QtCore/QHash>
 
 class FeatureBaseModel;
-class FeaturesScrollAreaView;
+// class FeaturesScrollAreaView;
 class VcpRequest;
 class VcpRequestQueue;
 class VcpThread;
@@ -40,14 +41,13 @@ public:
     Monitor(DDCA_Display_Info * display_info, int monitorNumber);
     ~Monitor();
 
-    bool supportsDdc();
-
-    bool capabilitiesCheckComplete();
-    bool capabilitiesCheckSuccessful();
+    bool              supportsDdc();
+    bool              capabilitiesCheckComplete();
+    bool              capabilitiesCheckSuccessful();
     DDCA_Feature_List getFeatureList(DDCA_Feature_Subset_Id);
-    DDCA_Display_Ref getDref();
-    QString dref_repr();
-    void dbgrpt();
+    DDCA_Display_Ref  getDref();
+    QString           dref_repr();
+    void              dbgrpt();
 
     const int            _monitorNumber = -1;    // 1 based
     DDCA_Display_Info *  _displayInfo;
