@@ -1,6 +1,6 @@
 /** @file value_stacked_widget.cpp */
 
-// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2024 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "feature_value_widgets/value_stacked_widget.h"
@@ -172,6 +172,19 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
 
 
 ValueStackedWidget::~ValueStackedWidget() {
+   bool debug = false;
+   TRACECF(debug, "Executing. _cls=%s", _cls);
+
+   delete _newContWidget;
+   delete _simpleContWidget ;
+   delete _ncWidget         ;
+   delete _stdWidget        ;
+   delete _resetWidget      ;
+   delete _2ButtonWidget    ;
+   delete _cncWidgetX14     ;
+   delete _bytesWidget      ;
+   delete _ncplusWidget     ;
+
    free((void*) _cls);
 }
 
