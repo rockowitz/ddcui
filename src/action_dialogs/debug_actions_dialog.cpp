@@ -1,6 +1,6 @@
 /** \file debug_actions_dialog.cpp */
 
-// Copyright (C) 2020-2021 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2020-2024 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <assert.h>
@@ -44,6 +44,8 @@ DebugActionsDialog::DebugActionsDialog(QWidget *parent)
             this,                    &DebugActionsDialog::for_actionErrorsStatsButton_clicked);
     connect(_ui->elapsed_pushButton, &QPushButton::clicked,
             this,                    &DebugActionsDialog::for_actionElapsedStatsButton_clicked);
+    connect(_ui->api_pushButton, &QPushButton::clicked,
+            this,                    &DebugActionsDialog::for_actionApiStatsButton_clicked);
     connect(_ui->extendedStats_checkBox,
                                      &QCheckBox::stateChanged,
              this   ,                 &DebugActionsDialog::for_actionExtendedStatsCheckBox_stateChanged);
@@ -146,6 +148,13 @@ void DebugActionsDialog::for_actionElapsedStatsButton_clicked(bool onoff) {
    TRACECF(debug, "Executing");
    bool isChecked =  _ui->extendedStats_checkBox->isChecked();
    emit reportStats_triggered(DDCA_STATS_ELAPSED, isChecked );
+}
+
+void DebugActionsDialog::for_actionApiStatsButton_clicked(bool onoff) {
+   bool debug = true;
+   TRACECF(debug, "Executing");
+   bool isChecked =  _ui->extendedStats_checkBox->isChecked();
+   emit reportStats_triggered(DDCA_STATS_API, isChecked );
 }
 
 void DebugActionsDialog::for_actionExtendedStatsCheckBox_stateChanged(int newState) {

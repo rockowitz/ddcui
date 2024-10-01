@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>235</width>
-    <height>399</height>
+    <height>458</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>360</y>
+     <y>410</y>
      <width>191</width>
      <height>32</height>
     </rect>
@@ -56,7 +56,7 @@
      <x>20</x>
      <y>40</y>
      <width>171</width>
-     <height>261</height>
+     <height>311</height>
     </rect>
    </property>
    <property name="title">
@@ -130,9 +130,9 @@
    <widget class="QCheckBox" name="extendedStats_checkBox">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>230</y>
-      <width>121</width>
+      <x>0</x>
+      <y>270</y>
+      <width>161</width>
       <height>22</height>
      </rect>
     </property>
@@ -140,13 +140,26 @@
      <string>Extended Stats</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="api_pushButton">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>230</y>
+      <width>88</width>
+      <height>34</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>API</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QPushButton" name="resetStats_pushButton">
    <property name="geometry">
     <rect>
-     <x>60</x>
-     <y>310</y>
-     <width>88</width>
+     <x>50</x>
+     <y>360</y>
+     <width>121</width>
      <height>34</height>
     </rect>
    </property>

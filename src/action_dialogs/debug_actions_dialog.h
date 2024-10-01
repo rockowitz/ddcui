@@ -1,6 +1,6 @@
 // debug_actions_dialog.h
 
-// Copyright (C) 2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2020-2024 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef DEBUG_ACTIONS_DIALOG_H
@@ -39,9 +39,9 @@ private slots:
     void for_actionErrorsStatsButton_clicked(bool onoff);
     void for_actionTriesStatsButton_clicked(bool onoff);
     void for_actionElapsedStatsButton_clicked(bool onoff);
+    void for_actionApiStatsButton_clicked(bool onoff);
 
     void for_actionExtendedStatsCheckBox_stateChanged(int newState);
-
 
     void for_actionResetStatsButton_clicked(bool onoff);
 
