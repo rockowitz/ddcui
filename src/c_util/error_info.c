@@ -110,6 +110,21 @@ errinfo_all_causes_same_status(
    return all_same;
 }
 
+#ifdef ALT
+bool
+errinfo_all_causes_same_status(Error_Info * ddc_excp, int status_code) {
+     bool all_same = true;
+     for (int ndx = 0; ndx < ddc_excp->cause_ct; ndx++) {
+        if (ddc_excp->causes[ndx]->status_code != status_code) {
+           all_same = false;
+           break;
+        }
+     }
+     return all_same;
+  }
+#endif
+
+
 
 //
 // Instance destruction
@@ -462,8 +477,7 @@ errinfo_new_with_causes(
  *  passed as a GPtrArray.
  *
  *  Note that the pointers in the **causes** array are copied to the new
- *  #Error_Info instance. The pointers should not be freed when destroying
- *  the original array of causes.
+ *  #Error_Info instance. The remainder of the GPtrArray is freed.
  *
  *  \param  code            status code of the new instance
  *  \param  causes          GPtrArray of #Error_Info instances
@@ -486,6 +500,7 @@ Error_Info * errinfo_new_with_causes_gptr(
    for (int ndx = 0; ndx < causes->len; ndx++) {
       errinfo_add_cause(result, g_ptr_array_index(causes,ndx));
    }
+   g_ptr_array_free(causes, false);
    return result;
 }
 

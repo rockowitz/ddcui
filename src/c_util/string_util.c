@@ -3,7 +3,7 @@
  *  String utility functions
  */
 
-// Copyright (C) 2014-2023 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2014-2024 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 
@@ -138,6 +138,9 @@ bool str_ends_with(const char * value_to_test, const char * suffix) {
  *  @return starting position of substring, -1 if not found
  */
 int str_contains(const char * value_to_test, const char * segment) {
+   bool debug = false;
+   if (debug)
+      printf("(%s) value_to_test=|%s|, segment=|%s|\n", __func__, value_to_test, segment);
    int result = -1;
    if (value_to_test && segment) {
       int seglen = strlen(segment);
@@ -149,6 +152,8 @@ int str_contains(const char * value_to_test, const char * segment) {
          }
       }
    }
+   if (debug)
+      printf("(%s) Returning: %d\n", __func__, result);
    return result;
 }
 
@@ -1231,7 +1236,7 @@ int hhs_to_byte_array(const char * hhs, Byte** ba_loc)
 {
    bool debug = false;
    if (debug)
-      printf("(%s) strlen(hhs) = %ld, ba_loc=%p\n", __func__, strlen(hhs), ba_loc);
+      printf("(%s) strlen(hhs) = %zu, ba_loc=%p\n", __func__, strlen(hhs), ba_loc);
    if ( strlen(hhs) % 2)     // if odd number of characters
       return -1;
    char xlate[] = "0123456789ABCDEF";
@@ -1492,7 +1497,7 @@ char * hexstring3_t(
          strcat(buf, sepstr);
    }
    if (debug) {
-      printf("(%s) strlen(buf) = %ld, required_size=%zu\n", __func__, strlen(buf), required_size );
+      printf("(%s) strlen(buf) = %zu, required_size=%zu\n", __func__, strlen(buf), required_size );
       printf("(%s)  buf=|%s|\n", __func__, buf );
    }
    assert(strlen(buf) <= required_size-1);

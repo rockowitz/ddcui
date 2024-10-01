@@ -219,6 +219,10 @@ void           bs256_iter_free( Bit_Set_256_Iterator iter);
 void           bs256_iter_reset(Bit_Set_256_Iterator iter);
 int            bs256_iter_next( Bit_Set_256_Iterator iter);
 
+// defines to make use a little less verbose
+#define BS256 Bit_Set_256
+#define BS256_REPR(_bs) bs256_to_string_decimal_t(_bs, "", " ")
+
 
 //
 // Bit_Set_32
@@ -235,7 +239,6 @@ Bit_Set_32     bs32_insert(Bit_Set_32 flags, uint8_t val);
 char*          bs32_to_bitstring(Bit_Set_32 val, char * buf, int bufsz);
 char*          bs32_to_string(Bit_Set_32 bitset, const char* value_prefix, const char* sepstr);
 char*          bs32_to_string_decimal(Bit_Set_32 bitset, const char* value_prefix, const char* sepstr);
-
 
 
 //
@@ -258,9 +261,8 @@ bool store_bytehex_list(char * start, int len, void * data_struct, Byte_Appender
 // Callback registration
 //
 
-bool generic_register_callback(GPtrArray** registered_callbacks_loc, void * func);
+void generic_register_callback(GPtrArray** registered_callbacks_loc, void * func);
 bool generic_unregister_callback(GPtrArray* registered_callbacks, void *func);
-
 
 
 #ifdef __cplusplus
