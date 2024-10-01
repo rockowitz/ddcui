@@ -493,12 +493,12 @@ int main(int argc, char *argv[])
           // g_snprintf(spid, 40, "grep %ld /proc/locks", get_process_id() );
           // (void) system(spid);
 
-          ddca_show_stats(parsed_cmd->stats_types,
-                          false,              // include_per_thread_data
-                          0);                 // depth
-
-          free_parsed_ddcui_cmd(parsed_cmd);   // make valgrind happier
+          if (parsed_cmd->stats_types)
+             ddca_show_stats(parsed_cmd->stats_types,
+                             false,              // include_per_thread_data
+                             0);                 // depth
        }
+       free_parsed_ddcui_cmd(parsed_cmd);   // make valgrind happier
     }
     application.quit();
     if (test_emit_ddcui_syslog(DDCA_SYSLOG_NOTICE))
