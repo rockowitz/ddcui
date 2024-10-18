@@ -44,6 +44,7 @@ public:
     void                     dbgrpt()      const;
     // void                     setObservedValues(Bit_Set_256 values);  // *** EXPERIMENTAL ***
     Bit_Set_256              observedNcValues() const;
+    void                     delete_finfo();
 
  // DDCA_Monitor_Model_Key   mmid()        const;
 

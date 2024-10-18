@@ -143,6 +143,14 @@ Bit_Set_256 FeatureValue::observedNcValues() const {
    return _observedNcValues;
 }
 
+void FeatureValue::delete_finfo() {
+   printf("deleting _finfo = %p\n", _finfo);
+   if (_finfo) {
+
+      ddca_free_feature_metadata(_finfo);
+      _finfo = NULL;
+   }
+}
 
 //DDCA_Monitor_Model_Key   FeatureValue::mmid()   const {
 //  // return _mmid;
