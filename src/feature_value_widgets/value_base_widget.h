@@ -2,7 +2,7 @@
  *  Superclass for all Value_..._Widgets
  */
 
-// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2024 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef VALUE_BASE_WIDGET_H
@@ -34,6 +34,7 @@ public:
     virtual void        setFeatureValue(const FeatureValue &fv);
     virtual void        setCurrentShSl(uint16_t newval);
     virtual uint16_t    getCurrentShSl();
+    virtual void        delete_finfo();
 
     // QSize            sizeHint() const override;   //   needed?
 

@@ -2,7 +2,7 @@
  *  Superclass of all feature value widgets
  */
 
-// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2024 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "feature_value_widgets/value_base_widget.h"
@@ -126,6 +126,11 @@ void ValueBaseWidget::setCurrentShSl(uint16_t newval) {
 uint16_t ValueBaseWidget::getCurrentShSl() {
     uint16_t result = (_sh << 8) | _sl;
     return result;
+}
+
+
+void   ValueBaseWidget::delete_finfo() {
+   ddca_free_feature_metadata(_finfo);
 }
 
 
