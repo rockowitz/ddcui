@@ -4,7 +4,7 @@
  * QListView and QTableView.
  */
 
-// Copyright (C) 2018-2023 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2024 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "nongui/feature_base_model.h"
@@ -71,6 +71,10 @@ FeatureBaseModel::~FeatureBaseModel() {
    bool debug = false;
    TRACECF(debug, "Executing. _monitor=%p, monitor number %d, dref: %s",
                   _monitor, _monitor->_displayInfo->dispno, _monitor->_displayInfo->dref);
+   for (int ndx = 0; ndx < _featureValues->size(); ndx++) {
+      FeatureValue * fv = _featureValues->at(ndx);
+      fv->delete_finfo();
+   }
    delete _featureValues;
    TRACECF(debug, "          _caps+string=%p->%s", _caps_string, _caps_string);
    free(_caps_string);   // raw capabilities
