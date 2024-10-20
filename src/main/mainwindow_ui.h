@@ -9,13 +9,13 @@
 #include <iostream>
 
 #include <QtGui/QFont>
-#include <QtWidgets/QAction>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMenuBar>
-#include <QtWidgets/QStackedWidget>
-#include <QtWidgets/QStatusBar>
-#include <QtWidgets/QToolBar>
+#include <QAction>
+#include <QApplication>
+#include <QMainWindow>
+#include <QMenuBar>
+#include <QStackedWidget>
+#include <QStatusBar>
+#include <QToolBar>
 #include <QtGui/QKeyEvent>
 
 #include "base/ddcui_core.h"
