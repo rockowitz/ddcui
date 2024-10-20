@@ -15,7 +15,7 @@
 #include <QtGui/QKeyEvent>
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QWidget>
-#include <QtWidgets/QShortcut>     // 5.9
+#include <QShortcut>     // 5.9
 
 #include <ddcutil_c_api.h>
 #include <ddcutil_status_codes.h>
