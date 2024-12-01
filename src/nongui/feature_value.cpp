@@ -144,9 +144,8 @@ Bit_Set_256 FeatureValue::observedNcValues() const {
 }
 
 void FeatureValue::delete_finfo() {
-   printf("deleting _finfo = %p\n", _finfo);
+   // printf("deleting _finfo = %p\n", _finfo);
    if (_finfo) {
-
       ddca_free_feature_metadata(_finfo);
       _finfo = NULL;
    }
