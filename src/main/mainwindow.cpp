@@ -811,7 +811,7 @@ void MainWindow::on_actionMonitorSummary_triggered()
 
        char * s = MonitorDescActions::capture_display_info_report(dinfo);
 
-       TRACECF(debug, "monitor=%p", monitor);
+       TRACECF(debug, "monitor=%p, s=%p -> %s", monitor, s, s);
        QPlainTextEdit * moninfoPlainText = monitor->_moninfoPlainText;
        // int pageno = monitor->_pageno_moninfo;
        moninfoPlainText->setPlainText(s);
@@ -1181,11 +1181,8 @@ void MainWindow::forDisplayChanged(DDCA_Display_Status_Event evt) {
 }
 
 
-
-
-
 void MainWindow::on_actionDebugLocks_triggered() {
-   bool debug = true;
+   bool debug = false;
    TRACECF(debug, "Executing");
    ddca_report_locks(0);
    captureLocks();
