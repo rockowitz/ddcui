@@ -9,7 +9,7 @@
  *  error is retained for use by higher levels in the call stack.
  */
 
-// Copyright (C) 2017-2023 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2017-2024 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 
@@ -75,6 +75,8 @@ Error_Info * errinfo_new(
       const char *   detail,
       ...);
 
+Error_Info * errinfo_copy(Error_Info* old);
+
 #define ERRINFO_NEW(_status_code, _detail, ...) \
    errinfo_new(_status_code, __func__, _detail, ##__VA_ARGS__)
 
@@ -105,7 +107,6 @@ Error_Info * errinfo_new_with_causes_gptr(
       const char *   func,
       char *         detail,
       ...);
-
 
 #ifdef UNUSED
 Error_Info * errinfo_new_with_callee_status_codes(
