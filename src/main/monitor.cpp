@@ -59,8 +59,8 @@ Monitor::Monitor(DDCA_Display_Info * display_info, int monitorNumber)
 
 Monitor::~Monitor() {
    bool debug = false;
-   TRACECF(debug, "Starting. monitor=%p, _monitor_number=%d, _displayInfo->dispno=%d, _baseModel=%p",
-         this, _monitorNumber, _displayInfo->dispno, _baseModel);
+   TRACECF(debug, "Starting. monitor=%p, _monitor_number=%d, _displayInfo->dispno=%d, _baseModel=%p, _moninfoPlainText=%p, _capabilitiesPlainTex=%p",
+         this, _monitorNumber, _displayInfo->dispno, _baseModel,  _moninfoPlainText, _capabilitiesPlainText);
 
    if (supportsDdc()) {
       _requestQueue->put(new HaltRequest());
@@ -77,6 +77,7 @@ Monitor::~Monitor() {
       delete _requestQueue;
       delete _vcpThread;
       delete _baseModel;
+      delete _moninfoPlainText;
    }
    delete _featuresScrollAreaView;
    ddca_free_display_info(_displayInfo);
