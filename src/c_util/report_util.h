@@ -3,7 +3,7 @@
  *  Report utility package
  */
 
-// Copyright (C) 2014-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2014-2024 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef REPORT_UTIL_H_
@@ -21,6 +21,19 @@ extern "C" {
 
 #include "coredefs_base.h"
 #include "string_util.h"
+
+#ifdef PERHAPS
+#define RPT_PREFIX_NONE   0x00
+#define RPT_PREFIX_PID    0x01
+#define RPT_PREFIX_TID    0x02
+#define RPT_PREFIX_TS     0x04
+#define RPT_PREFIX_WTD    0x08
+
+extern __thread Byte rpt_prefix_options;
+#endif
+
+extern bool redirect_reports_to_syslog;
+extern bool prefix_report_output;
 
 void rpt_set_default_output_dest(FILE* output_dest);
 void rpt_push_output_dest(FILE* new_dest);

@@ -11,7 +11,7 @@
  * - destination stack
  */
 
-// Copyright (C) 2014-2023 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2014-2024 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 /** \cond */
@@ -22,14 +22,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <syslog.h>
 #include <unistd.h>
 /** \endcond */
 
 #include "coredefs_base.h"
 #include "file_util_base.h"
+#include "msg_util.h"
 #include "string_util.h"
 
 #include "report_util.h"
+
+bool redirect_reports_to_syslog = false;
+bool prefix_report_output = false;
 
 
 #define DEFAULT_INDENT_SPACES_PER_DEPTH 3
@@ -244,14 +249,18 @@ void rpt_change_output_dest(FILE* new_dest) {
 
 // should not be needed, for diagnosing a problem
 void rpt_flush() {
-   fflush(rpt_cur_output_dest());
+   if (!redirect_reports_to_syslog)
+      fflush(rpt_cur_output_dest());
 }
 
 
 /** Writes a newline to the current output destination.
  */
 void rpt_nl() {
-   f0printf(rpt_cur_output_dest(), "\n");
+   if (redirect_reports_to_syslog)
+      syslog(LOG_NOTICE, "\n");
+   else
+      f0printf(rpt_cur_output_dest(), "\n");
 }
 
 
@@ -274,11 +283,20 @@ void rpt_title_collect(const char * title, GPtrArray * collector, int depth) {
    if (debug)
       printf("(%s) Writing to %p\n", __func__, (void*)rpt_cur_output_dest());
 
+   char prefix[100] = {0};
+   if (prefix_report_output)
+      get_msg_decoration(prefix, 100, redirect_reports_to_syslog);
+
    if (collector) {
       g_ptr_array_add(collector, g_strdup_printf("%*s%s\n", rpt_get_indent(depth), "", title));
    }
    else {
-      f0printf(rpt_cur_output_dest(), "%*s%s\n", rpt_get_indent(depth), "", title);
+      if (depth >= 0) {
+         if (redirect_reports_to_syslog)
+            syslog(LOG_NOTICE, "%s%*s%s\n", prefix, rpt_get_indent(depth), "", title);
+         else
+            f0printf(rpt_cur_output_dest(), "%s%*s%s\n", prefix, rpt_get_indent(depth), "", title);
+      }
    }
 }
 
@@ -447,7 +465,16 @@ void rpt_g_ptr_array(int depth, GPtrArray * strings) {
  *  @param depth logical indentation depth
  */
 void rpt_hex_dump(const Byte * data, int size, int depth) {
-   fhex_dump_indented(rpt_cur_output_dest(), data, size, rpt_get_indent(depth));
+   if (redirect_reports_to_syslog) {
+      GPtrArray * collector = g_ptr_array_new_with_free_func(g_free);
+      hex_dump_indented_collect(collector, data, size,  rpt_get_indent(depth));
+      for (int ndx = 0; ndx < collector->len; collector++) {
+         syslog(LOG_NOTICE, "%s", (char*) g_ptr_array_index(collector, ndx));
+      }
+      g_ptr_array_free(collector, true);
+   }
+   else
+      fhex_dump_indented(rpt_cur_output_dest(), data, size, rpt_get_indent(depth));
 }
 
 
