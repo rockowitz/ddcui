@@ -1,6 +1,6 @@
 /* monitor.cpp */
 
-// Copyright (C) 2018-2023 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2025 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "base/monitor.h"
@@ -187,7 +187,7 @@ void Monitor::putVcpRequest(VcpRequest * rqst) {
 
 // never called!
 void Monitor::vcpThreadFinished() {
-   bool debug = true;
+   bool debug =  true;
    TRACECF(debug, "vcp thread finished");
 }
 
