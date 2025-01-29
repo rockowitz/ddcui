@@ -1,6 +1,6 @@
 /** \file debug_actions_dialog.cpp */
 
-// Copyright (C) 2020-2024 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2020-2025 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <assert.h>
@@ -151,7 +151,7 @@ void DebugActionsDialog::for_actionElapsedStatsButton_clicked(bool onoff) {
 }
 
 void DebugActionsDialog::for_actionApiStatsButton_clicked(bool onoff) {
-   bool debug = true;
+   bool debug = false;
    TRACECF(debug, "Executing");
    bool isChecked =  _ui->extendedStats_checkBox->isChecked();
    emit reportStats_triggered(DDCA_STATS_API, isChecked );
