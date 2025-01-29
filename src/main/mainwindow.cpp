@@ -181,7 +181,7 @@ void MainWindow::freeMonitors() {
 
 
 void MainWindow::initOneMonitor(DDCA_Display_Info * info, int curIndex) {
-   bool debug  = false;
+   bool debug = false;
    TRACECF(debug, "Starting. info=%p, curIndex=%d", info, curIndex);
 
    // Add entry for monitor in display selector combo box
@@ -234,18 +234,22 @@ void MainWindow::initOneMonitor(DDCA_Display_Info * info, int curIndex) {
 }
 
 void MainWindow::addMonitor(DDCA_Display_Ref dref) {
-   bool debug  = false;
+   bool debug = false;
    TRACECF(debug, "dref=%s", ddca_dref_repr(dref));
    DDCA_Display_Info * dinfo;
    DDCA_Status ddcrc = ddca_get_display_info(dref, &dinfo);
+   const char * explain = ddca_rc_name(ddcrc);
+   TRACECF(debug, "ddca_get_display_info() returned %d %s", ddcrc, explain);
    if (ddcrc != 0) {
-      const char * expl = ddca_rc_name(ddcrc);
-      syslog(LOG_ERR, "ddca_get_display_info() returned %s", expl);
-      TRACEC("ddca_get_display_info() returned %s", expl);
+
+      syslog(LOG_ERR, "ddca_get_display_info() returned %s", explain);
+
       assert(ddcrc == 0);
    }
-   int nextIndex =  _toolbarDisplayCB->count();
-   initOneMonitor(dinfo, nextIndex);
+   else {
+      int nextIndex =  _toolbarDisplayCB->count();
+      initOneMonitor(dinfo, nextIndex);
+   }
 }
 
 
@@ -280,6 +284,21 @@ void MainWindow::removeMonitor(DDCA_Display_Ref dref) {
       TRACECF(debug, "deleted monitor monNdx=%d", monNdx);
    }
 }
+
+void MainWindow::enableMonitor(DDCA_Display_Ref dref) {
+   bool debug = false;
+   TRACECF(debug, "UNIMPLEMENTED dref=%s", ddca_dref_repr(dref));
+
+   int monNdx = findMonitor(dref);
+   if (monNdx >= 0) {
+      Monitor * monitor = _monitors.at(monNdx);
+      TRACECF(debug, "monitor=%p", monitor);
+
+
+      TRACECF(debug, "Enabled monitor monNdx=%d", monNdx);
+   }
+}
+
 
 
 void MainWindow::setInitialDisplayIndex(Parsed_Ddcui_Cmd * parsed_cmd) {
@@ -344,7 +363,7 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
 
     TRACECF(debug, "Calling ddca_get_display_refs()");
     DDCA_Status ddcrc = ddca_get_display_refs(/*include invalid displays=*/true, &_drefs);
-    TRACECF(debug, "ddca_get_display_refs() returned %d", ddcrc);
+    TRACECF(debug, "ddca_get_display_refs() returned %d, _drefs=%p", ddcrc, _drefs);
     assert(ddcrc == 0);
 
     DDCA_Error_Detail * errs = ddca_get_error_detail();
@@ -386,8 +405,7 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
 #endif
        TRACECF(debug, "Pre put, _msgBoxQueue=%p", _msgBoxQueue);
        _msgBoxQueue->put(qe);
-
-    }
+    } // end, error reporting
 
     for (_drefs_ct=0; _drefs[_drefs_ct]; _drefs_ct++) {}
     TRACECF(debug, "_drefs_ct = %d", _drefs_ct);
@@ -1072,7 +1090,7 @@ void MainWindow::on_actionRedetect_triggered() {
 
 #ifdef DOESNT_WORK
 void MainWindow::forDisplayChanged(DDCA_Display_Status_Event evt) {
-   bool debug = true;
+   bool debug = false;
    TRACECF(debug, "event type: %d = %s, dref=%s",
           evt.event_type, ddca_display_event_type_name(evt.event_type),
           ddca_dref_repr(evt.dref) );
@@ -1160,7 +1178,7 @@ void display_status_event_main_callback(DDCA_Display_Status_Event evt) {
 
 
 void MainWindow::forDisplayChanged(DDCA_Display_Status_Event evt) {
-   bool debug = true;
+   bool debug = false;
    TRACECF(debug, "event type: %d = %s, dref=%s",
           evt.event_type, ddca_display_event_type_name(evt.event_type),
           ddca_dref_repr(evt.dref) );
@@ -1171,6 +1189,9 @@ void MainWindow::forDisplayChanged(DDCA_Display_Status_Event evt) {
    }
    else if (evt.event_type == DDCA_EVENT_DISPLAY_DISCONNECTED) {
       removeMonitor(evt.dref);
+   }
+   else if (evt.event_type == DDCA_EVENT_DDC_ENABLED) {
+      enableMonitor(evt.dref);
    }
    else {
       syslog(LOG_ERR, "unexpected event type");
