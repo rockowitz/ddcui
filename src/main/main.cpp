@@ -1,6 +1,6 @@
 /** \file main.cpp */
 
-// Copyright (C) 2018-2024 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2025 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <glib-2.0/glib.h>
@@ -245,7 +245,7 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
    char ** infomsgs = NULL;
    DDCA_Status rc = ddca_init2(parsed_cmd->library_options, ddcui_syslog_level, opts,  &infomsgs );
    if (debug)
-      printf("(main.cpp:%s) ddca_init() returned %d\n", __func__, rc);
+      printf("(main.cpp:%s) ddca_init2() returned %d\n", __func__, rc);
 
    if (infomsgs) {
       // printf("Null_Terminated_String_Array at %p:\n", (void*) infomsgs);
@@ -259,7 +259,7 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
       ntsa_free(infomsgs, true);
    }
 
-   if (rc) {
+   if (rc < 0) {
      DDCA_Error_Detail * erec = ddca_get_error_detail();
      if (debug)
         ddca_report_error_detail(erec, 1);
@@ -453,6 +453,7 @@ int main(int argc, char *argv[])
         enable_trace_show_thread_id(parsed_cmd->flags & CMD_FLAG_THREAD_ID_TRACE);
 
        if (!init_ddcutil_library(parsed_cmd)) {
+          printf("init_ddcutil_library() failed\n");
           mainStatus = 1;
        }
        else {
