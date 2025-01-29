@@ -1,6 +1,6 @@
 /* mainwindow.h */
 
-// Copyright (C) 2018-2024 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2025 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef MAINWINDOW_H
@@ -165,6 +165,7 @@ public:
     void reportDdcApiError(QString funcname, int rc) const;
     void addMonitor(DDCA_Display_Ref dref);
     void removeMonitor(DDCA_Display_Ref dref);
+    void enableMonitor(DDCA_Display_Ref dref);
 
 private:
     // used only by slotfor_reportStats_triggered()
