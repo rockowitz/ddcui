@@ -2,7 +2,7 @@
  * ddcui command line parser
  */
 
-// Copyright (C) 2018-2023 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2025 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <config.h>
@@ -148,7 +148,7 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
 
    char * s = getenv("DDCUTIL_DEBUG_PARSE");
    if (s && strlen(s) > 0)
-      debug = true;
+      debug  = true;
 
    if (debug) {
       printf("(%s) Starting\n", __func__ );
