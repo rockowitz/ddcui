@@ -1,6 +1,6 @@
 // value_bytes_widget.cpp
 
-// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2025 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "value_bytes_widget.h"
@@ -302,7 +302,7 @@ uint16_t ValueBytesWidget::getCurrentShSl() {
 
 void  ValueBytesWidget::onApplyButtonClicked(bool checked) {
    bool debug = debugValueWidgetSignals;
-   // debug = true;
+   // debug =  true;
    // TRACEF(debug, "Executing. checked=%s", sbool(checked));
 
    if (_shNew != _sh || _slNew != _sl) {
