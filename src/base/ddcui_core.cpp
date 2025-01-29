@@ -1,6 +1,6 @@
 /** ddcui_core.cpp */
 
-// Copyright (C) 2018-2023 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2025 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <assert.h>
@@ -171,7 +171,7 @@ bool printftcmf(
       const char * format, ...)
 {
 #ifdef FOR_FUNCTION_DEBUG
-   bool metadebug = true;
+   bool metadebug =  true;
    if (metadebug) {
       printf("(printfcmf) debug=%s, metaclass_classname = %s, cls=%s, funcname=%s, lineno=%d, filename=%s\n",
                           sbool(debug), metaclass_classname, cls, funcname, lineno, filename);
@@ -215,7 +215,7 @@ bool printftcmf(
          char thread_prefix[15] = "";
          if (ddcui_trace_show_thread_id) {
             pid_t tid = syscall(SYS_gettid);
-            snprintf(thread_prefix, 15, "[%7jd]", (intmax_t) tid);  // is this proper format for pid_t
+            snprintf(thread_prefix, 15, "[%6jd]", (intmax_t) tid);  // is this proper format for pid_t
          }
 
 #ifdef FOR_FUNCTION_DEBUG
