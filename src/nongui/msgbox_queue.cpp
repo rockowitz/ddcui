@@ -1,6 +1,6 @@
 /* msgbox_queue.cpp - MsgBoxQueue and the MsgBoxQueueEntry class that populates it */
 
-// Copyright (C) 2018-2023 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2025 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <QtCore/QDebug>
@@ -70,8 +70,8 @@ MsgBoxQueue::MsgBoxQueue()
 
 
 void MsgBoxQueue::put(MsgBoxQueueEntry * request) {
-    // bool debugFunc = false || debugClass;
-    // TRACECF(debugFunc, "-> Starting. request: |%s|", QS2S(request->repr()));
+    bool debug = false || debugClass;
+    TRACECF(debug, "-> Starting. request: |%s|", QS2S(request->repr()));
     assert(request);
 
 #ifdef USE_MUTEX
@@ -85,15 +85,15 @@ void MsgBoxQueue::put(MsgBoxQueueEntry * request) {
     _usedBytes->release();
 #endif
     // dbgrpt_nolock();
-    // TRACECF(debugFunc, "Done");
+    TRACECF(debug, "Done");
 }
 
 
 void MsgBoxQueue::putMessages(QString qstitle, QMessageBox::Icon icon, char** msgs) {
-   bool debugFunc = false || debugClass;
-   TRACECF(debugFunc, "Starting");
+   bool debug = false || debugClass;
+   TRACECF(debug, "Starting");
    if (msgs) {
-      if (debugFunc) {
+      if (debug) {
          int ct = 0;
          while(msgs[ct]) ct++;
          TRACEC("%d error messages", ct);
@@ -101,21 +101,20 @@ void MsgBoxQueue::putMessages(QString qstitle, QMessageBox::Icon icon, char** ms
       for (int ndx = 0; msgs[ndx]; ndx++) {
          QString qsexpl = QString::asprintf("%s", msgs[ndx]);
          MsgBoxQueueEntry * qe = new MsgBoxQueueEntry(qstitle,qsexpl,icon);
-         TRACECF(debugFunc, "Calling _msgboxQueue.put() for qe: %s", __func__, QS2S(qe->repr()) );
+         TRACECF(debug, "Calling _msgboxQueue.put() for qe: %s", __func__, QS2S(qe->repr()) );
          put(qe);
       }
    }
-   TRACECF(debugFunc, "Done");
+   TRACECF(debug, "Done");
 }
 
 
 MsgBoxQueueEntry * MsgBoxQueue::pop() {
-    bool debugFunc = debugClass;
-    debugFunc = false;
-    TRACECF(debugFunc, "Starting");
+    bool debug = false || debugClass;
+    TRACECF(debug, "Starting");
 #ifdef USE_MUTEX
     _mutex.lock();
-    TRACECF(debugFunc, "After lock, before wait");
+    TRACECF(debug, "After lock, before wait");
     if (_queue.empty())
         _queueNonempty.wait(&_mutex);
     MsgBoxQueueEntry * rqst = _queue.dequeue();
@@ -126,10 +125,10 @@ MsgBoxQueueEntry * MsgBoxQueue::pop() {
     MsgBoxQueueEntry * rqst = _queue.dequeue();
     _freeBytes->release();
 
-    // TRACECF(debugFunc, "-> After releasing  _freeBytes. available=%d, request: |%s|",
+    // TRACECF(debug, "-> After releasing  _freeBytes. available=%d, request: |%s|",
     //       _freeBytes->available(), QS2S(rqst->repr()));
 #endif
-    TRACECF(debugFunc, "<- Done. Returning request: %s", QS2S(rqst->repr()) );
+    TRACECF(debug, "<- Done. Returning request: %s", QS2S(rqst->repr()) );
     return rqst;
 }
 
