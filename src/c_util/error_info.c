@@ -23,8 +23,10 @@
 
 #include "debug_util.h"
 #include "glib_util.h"
+#include "msg_util.h"
 #include "report_util.h"
 #include "string_util.h"
+#include "traced_function_stack.h"
 
 #include "error_info.h"
 
@@ -32,6 +34,11 @@
 // Validates a pointer to an #Error_Info, using asserts
 #define VALID_ERROR_INFO_PTR(ptr) \
    assert(ptr); \
+   if (memcmp(ptr->marker, ERROR_INFO_MARKER, 4) != 0) { \
+      DBG("Invalid ptr->marker, ptr=%p", ptr); \
+      show_backtrace(1); \
+      debug_current_traced_function_stack(false); \
+   } \
    assert(memcmp(ptr->marker, ERROR_INFO_MARKER, 4) == 0);
 
 
@@ -146,7 +153,7 @@ errinfo_free(Error_Info * erec){
       VALID_ERROR_INFO_PTR(erec);
 
       if (debug) {
-         printf("(%s) Freeing exception: \n", __func__);
+         DBG("Freeing exception:");
          errinfo_report(erec, 2);
       }
 
