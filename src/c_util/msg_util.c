@@ -16,6 +16,7 @@
 #include <time.h>
 
 #include "common_inlines.h"
+#include "common_printf_formats.h"
 #include "glib_util.h"
 #include "timestamp.h"
 #include "traced_function_stack.h"

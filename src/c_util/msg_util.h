@@ -13,8 +13,6 @@ extern "C" {
 #include <glib-2.0/glib.h>
 #include <stdbool.h>
 
-#define PRItid "[%6jd]"
-
 extern bool dbgtrc_show_time;       // prefix debug/trace messages with elapsed time
 extern bool dbgtrc_show_wall_time;  // prefix debug/trace messages with wall time
 extern bool dbgtrc_show_thread_id;  // prefix debug/trace messages with thread id

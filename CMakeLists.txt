@@ -193,6 +193,7 @@ configure_file(cconfig.h.in config.h)
 
 set(SOURCES
     src/c_util/common_inlines.h
+    src/c_util/common_printf_formats.h
     src/c_util/backtrace.c
     src/c_util/data_structures.c
     src/c_util/ddcutil_config_file.c
