@@ -1,6 +1,6 @@
 /* vcpthread.cpp */
 
-// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2025 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <errno.h>
@@ -274,7 +274,7 @@ void VcpThread::loadDynamicFeatureRecords()
 
 #ifdef TEST_ADJUST_RETRIES
 void VcpThread::adjustRetries() {
-   bool debugFunc = true;
+   bool debugFunc = false;
    // TRACECF(debugFunc, "Starting");
    // quick and dirty just to test the functionality
    // TODO: Wrap in reads/writes in lock
