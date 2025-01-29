@@ -192,15 +192,20 @@ message( ${VERBOSE} "  DDCUTIL_LIBRARIES:        ${DDCUTIL_LIBRARIES}"    )
 configure_file(cconfig.h.in config.h)
 
 set(SOURCES
+    src/c_util/common_inlines.h
+    src/c_util/backtrace.c
     src/c_util/data_structures.c
     src/c_util/ddcutil_config_file.c
     src/c_util/debug_util.c
     src/c_util/error_info.c
     src/c_util/file_util_base.c
     src/c_util/glib_util.c
+    src/c_util/msg_util.c
     src/c_util/report_util.c
     src/c_util/simple_ini_file.c
     src/c_util/string_util.c
+    src/c_util/traced_function_stack.c
+    src/c_util/timestamp.c
     src/c_util/xdg_util.c
 
     src/base/ddcui_core_aux.c
