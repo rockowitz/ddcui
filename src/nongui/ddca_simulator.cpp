@@ -1,6 +1,6 @@
 // ddca_simulator.cpp
 
-// Copyright (C) 2020-2023 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2020-2025 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "ddcutil_status_codes.h"
@@ -81,7 +81,7 @@ bool  DdcaSimulator::DdcaSimulator::simulateGetNonTableVcpValue(
       DDCA_Non_Table_Vcp_Value*  valrec,
       DDCA_Status *              pddcrc)
 {
-   bool debug = true;
+   bool debug = false;
    if (!simulationEnabled)
       return false;
 
@@ -125,7 +125,7 @@ bool DdcaSimulator::simulateSetNonTableVcpValue(
       uint8_t                    sl,
       DDCA_Status *              pddcrc)
 {
-   bool debug = true;
+   bool debug = false;
    if (!simulationEnabled)
       return false;
 
