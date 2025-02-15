@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.6.0] 2025-02-15
+
+Requires libddcutil from ddcutil 2.2.0 or later.
+
+### Changed
+
+- Dynamically add and remove displays as reported by libddcutil using a callback function.
+
+- Add API button to stats dialog
+
+## Building
+- Use "universal" headers in source code for compatibility between Qt5 and Qt6 (per Luis Periera)
+[ddcui pull rquest 64: Fixes a FTBFS using Qt6](https://github.com/rockowitz/ddcui/pull/64)
+
+
 #@ [0.5.4] 2024-02-13
 
 ### Added
