@@ -32,6 +32,8 @@
 /** \endcond */
 
 #include "backtrace.h"
+#include "common_printf_formats.h"
+#include "common_inlines.h"
 #include "report_util.h"
 #include "string_util.h"
 
@@ -55,7 +57,7 @@ void show_backtrace(int stack_adjust) {
 }
 
 
-static int min_funcname_size = 32;
+static int min_funcname_size = 30;
 
 void set_simple_dbgmsg_min_funcname_size(int new_size) {
    min_funcname_size = new_size;
@@ -72,8 +74,8 @@ bool simple_dbgmsg(
 {
    bool debug_func = false;
    if (debug_func)
-      printf("(simple_dbgmsg) Starting. debug_flag=%s, funcname=%s filename=%s, lineno=%d\n",
-                       sbool(debug_flag), funcname, filename, lineno);
+      printf(PRItid"(simple_dbgmsg) Starting. debug_flag=%s, funcname=%s filename=%s, lineno=%d\n",
+                       TID(), sbool(debug_flag), funcname, filename, lineno);
 
 #ifdef UNUSED
    char thread_prefix[15] = "";
@@ -100,5 +102,8 @@ bool simple_dbgmsg(
       msg_emitted = true;
    }
 
+
+   if (debug_func)
+      printf(PRItid"(simple_dbgmsg) Done. Returning: %s\n", TID(), SBOOL(msg_emitted));
    return msg_emitted;
 }

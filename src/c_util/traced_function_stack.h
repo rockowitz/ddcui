@@ -14,13 +14,23 @@ extern "C" {
 #include <stdbool.h>
 
 extern bool traced_function_stack_enabled;
+extern bool traced_function_stack_errors_fatal;
+extern __thread GQueue * traced_function_stack;
 extern __thread bool traced_function_stack_suspended;
+extern __thread bool debug_tfs;
+
+bool       set_debug_thread_tfs(bool newval);
 
 void       push_traced_function(const char * funcname);
 char*      peek_traced_function();
 void       pop_traced_function(const char * funcname);
+
+void       collect_traced_function_stack(GPtrArray* collector, GQueue * stack, bool reverse, int stack_adjust);
 void       debug_current_traced_function_stack(bool reverse);
 GPtrArray* get_current_traced_function_stack_contents(bool most_recent_last);
+void       current_traced_function_stack_to_syslog(int syslog_priority, bool reverse);
+
+void       reset_current_traced_function_stack();
 void       free_current_traced_function_stack();
 void       free_all_traced_function_stacks();
 
