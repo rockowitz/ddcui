@@ -314,7 +314,7 @@ int main(int argc, char *argv[])
               DDCUTIL_VMAJOR, DDCUTIL_VMINOR, DDCUTIL_VMICRO, QT_VERSION_STR);
        printf("Executing using libddcutil %s, Qt %s\n\n",
               ddca_ddcutil_extended_version_string(), qVersion());
-       puts("Copyright (C) 2018-2024 Sanford Rockowitz");
+       puts("Copyright (C) 2018-2025 Sanford Rockowitz");
        puts("License GPLv2: GNU GPL version 2 or later <http://gnu.org/licenses/gpl.html>");
        puts("This is free software: you are free to change and redistribute it.");
        puts("There is NO WARRANTY, to the extent permitted by law.");
@@ -328,13 +328,13 @@ int main(int argc, char *argv[])
     else if (vspec.major == 2) {
        if (vspec.minor >=2)
           ok_vspec = true;
-       else if (vspec.minor == 1) {
-          if (vspec.micro >= 3)
-             ok_vspec = true;
-       }
+       // else if (vspec.minor == 1) {
+       //    if (vspec.micro >= 3)
+       //       ok_vspec = true;
+       // }
     }
     if (!ok_vspec) {
-       printf("ddcui requires at least libddcutil version 2.1.3\n");
+       printf("ddcui requires at least libddcutil version 2.2.0\n");
        exit(1);
     }
 
