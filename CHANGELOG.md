@@ -2,7 +2,7 @@
 
 ## [0.6.0] 2025-02-15
 
-Requires libddcutil from ddcutil 2.2.0 or later.
+Requires libddcutil.so.5.2 from ddcutil 2.2.0 or later.
 
 ### Changed
 
