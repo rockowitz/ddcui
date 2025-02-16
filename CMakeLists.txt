@@ -1,7 +1,7 @@
 set(ddcui_version  0.6.0)
 message(STATUS "ddcui_version:  ${ddcui_version}")
 
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.15)
 
 message(STATUS "cmake version: ${CMAKE_VERSION}")
 # message(VERBOSE) requires cmake 3.15
@@ -13,8 +13,8 @@ endif()
 
 set(ddcui_qt5_min_version    5.5)
 set(ddcui_qt6_min_version    6.1)
-set(ddcui_glib_version       2.40)   # g_option_context_parse_strv() new in 2.40
-set(ddcui_libddcutil_version 2.1.0)
+set(ddcui_glib_version       2.60) 
+set(ddcui_libddcutil_version 2.2.0)
 set(cmake_build_type_default "RelWithDebInfo")
 
 message(${VERBOSE} "Required Minimum Versions:")
