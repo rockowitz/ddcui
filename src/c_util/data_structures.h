@@ -2,7 +2,7 @@
  *  General purpose data structures
  */
 
-// Copyright (C) 2014-2024 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2014-2025 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef DATA_STRUCTURES_H
@@ -20,6 +20,18 @@ extern "C" {
 
 #include "coredefs_base.h"   // for Byte
 #include "string_util.h"
+
+//
+// Represent None/Some/All
+//
+
+typedef enum {
+   NONE = 0,
+   SOME = 1,
+   ALL  = 2,
+} None_Some_All;
+
+const char * none_some_all_name(None_Some_All value);
 
 
 //
