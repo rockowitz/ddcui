@@ -1,7 +1,7 @@
 ddcui
 =====
 
-The [ddcutil website](http://www.ddcutil.com) is the primary location of information for ddcui users.
+The [ddcutil website](http://www.ddcutil.com) is the primary location of information for ddcui users. 
 
 Recent announcements can be found on the [home page](http://www.ddcutil.com). 
 
