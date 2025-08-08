@@ -2,7 +2,7 @@
  *  Portion of coredefs.h shared with ddcui
  */
 
-// Copyright (C) 2021-2023 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2021-2025 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef COREDEFS_BASE_H_
@@ -58,6 +58,12 @@ do { \
 } while(0)
 
 
+// Alternative that wrappers g_strlcpy() and casts the return value as void
+// so that there is no compiler/coverity warning re ignored return value.
+#define G_STRLCPY(_dst, _src, _size) \
+   (void) g_strlcpy(_dst, _src, _size)
+
+
 #define STRLCAT(_dst, _src, _size) \
 do { \
    strncat(_dst, _src, (_size)-1); \
@@ -85,8 +91,10 @@ do { \
 
 #ifdef TARGET_BSD
 #define I2C "iic"
+#define SYS "/compat/linux/sys"
 #else
 #define I2C "i2c"
+#define SYS "/sys"
 #endif
 
 #endif /* COREDEFS_BASE_H_ */

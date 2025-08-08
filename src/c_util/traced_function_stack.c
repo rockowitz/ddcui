@@ -23,8 +23,8 @@
 
 bool              traced_function_stack_enabled = false;
 bool              traced_function_stack_errors_fatal = false;
-__thread bool     traced_function_stack_suspended = false;
-__thread bool     debug_tfs = false;
+static __thread bool     traced_function_stack_suspended = false;
+static __thread bool     debug_tfs = false;
 __thread GQueue * traced_function_stack;
 
 static GPtrArray *   all_traced_function_stacks = NULL;
@@ -34,27 +34,40 @@ static __thread bool traced_function_stack_invalid = false;
 static void list_traced_function_stacks();
 
 
+/** Turns debug messages on or off for the current thread.
+ *
+ *  @param  newval  new setting
+ *  @return old setting
+ */
 bool set_debug_thread_tfs(bool newval) {
    bool old = debug_tfs;
-   debug_tfs = newval;
+   if (traced_function_stack_enabled)
+      debug_tfs = newval;
    // printf("(%s) debug_tfs\n", sbool(debug_tfs));
    return old;
 }
 
 
 /** Delete all entries in the traced function stack for the current thread,
- *  and reset the traced_function_stack flag.
+ *  and reset the traced_function_stack_invalid flag.
  */
 void reset_current_traced_function_stack() {
+   bool debug = false;
+   debug = debug || debug_tfs;
+   DBGF(debug, PRItid "Starting", TID());
+
    if (traced_function_stack) {
       int ct = g_queue_get_length(traced_function_stack);
       for (int ctr = 0; ctr<ct; ctr++) {
          char * funcname = g_queue_pop_tail(traced_function_stack);
+         DBGF(debug, PRItid, "Removed %s", TID(), funcname);
          free(funcname);
       }
       assert(g_queue_get_length(traced_function_stack) == 0);
    }
+
    traced_function_stack_invalid = false;
+   DBGF(debug, PRItid "Done", TID());
 }
 
 
@@ -77,21 +90,24 @@ void debug_traced_function_stack(GQueue * stack, bool reverse) {
       printf(PRItid" Traced function stack %p:\n", TID(), stack);
       int queue_len = g_queue_get_length(stack);
       if (queue_len > 0) {
-         // printf(PRItid"traced function stack (addr=%p, len=%d:\n", TID(), stack, queue_len );
+         // printf("%"PRItid"traced function stack (addr=%p, len=%d:\n", TID(), stack, queue_len );
          if (reverse) {
             for (int ndx =  g_queue_get_length(stack)-1; ndx >=0 ; ndx--) {
-               printf("   %s\n", (char*) g_queue_peek_nth(stack, ndx));
+               printf("   %2d: %s\n", ndx, (char*) g_queue_peek_nth(stack, ndx));
             }
          }
          else {
             for (int ndx = 0; ndx < g_queue_get_length(stack); ndx++) {
-               printf("   %s\n", (char*) g_queue_peek_nth(stack, ndx));
+               printf("   %2d: %s\n", ndx, (char*) g_queue_peek_nth(stack, ndx));
             }
          }
       }
       else {
          printf("    EMPTY\n");
       }
+   }
+   else {
+      printf(PRItid"Curent thread has no traced function stack.", TID());
    }
 }
 
@@ -101,18 +117,24 @@ void collect_traced_function_stack(GPtrArray* collector,
                                    bool       reverse,
                                    int        stack_adjust)
 {
+   bool debug = false;
+   if (debug)
+      debug_traced_function_stack(stack, false);
+
    if (stack && collector) {
-      // printf(PRItid" Traced function stack %p:\n", TID(), stack);
-      int queue_len = g_queue_get_length(stack) - stack_adjust;
-      if (queue_len > 0) {
-         // printf(PRItid"traced function stack (addr=%p, len=%d:\n", TID(), stack, queue_len );
+      DBGF(debug, PRItid" reverse=%s, stack_adjust=%d, Traced function stack %p:",
+            TID(), sbool(reverse), stack_adjust, stack);
+      int full_len = g_queue_get_length(stack);
+      int adjusted_len = full_len - stack_adjust;
+      if (adjusted_len > 0) {
+         DBGF(debug, PRItid"traced function stack (addr=%p, adjusted_len=%d:", TID(), stack, adjusted_len );
          if (reverse) {
-            for (int ndx =  g_queue_get_length(stack)-stack_adjust; ndx >=0 ; ndx--) {
+            for (int ndx =  full_len-1; ndx >=stack_adjust ; ndx--) {
                g_ptr_array_add(collector, strdup(g_queue_peek_nth(stack, ndx)));
             }
          }
          else {
-            for (int ndx = 0; ndx < g_queue_get_length(stack); ndx++) {
+            for (int ndx = stack_adjust; ndx < full_len; ndx++) {
                g_ptr_array_add(collector, strdup(g_queue_peek_nth(stack, ndx)));
             }
          }
@@ -127,7 +149,7 @@ void traced_function_stack_to_syslog(GQueue* callstack, int syslog_priority, boo
    }
    else {
       GPtrArray * collector = g_ptr_array_new_with_free_func(g_free);
-      collect_traced_function_stack(collector, callstack, reverse, 2);  // was 2
+      collect_traced_function_stack(collector, callstack, reverse, 0);
       // syslog(syslog_priority, "Traced function stack %p:", callstack);
 
       if (collector->len == 0)
@@ -170,6 +192,17 @@ void debug_current_traced_function_stack(bool reverse) {
    else {
       printf(PRItid" no traced function stack\n", TID());
    }
+}
+
+
+/** Returns the number of entries in the traced function stack for the
+ *  current thread.
+ *
+ *  @return number of entries, 0 if stack does not exist.
+ */
+int current_traced_function_stack_size() {
+   int qsize = (traced_function_stack) ? g_queue_get_length(traced_function_stack) : 0;
+   return qsize;
 }
 
 
@@ -233,7 +266,7 @@ static void list_traced_function_stacks() {
  */
 static GQueue * new_traced_function_stack(const char * funcname) {
    bool debug = false;
-   debug = debug | debug_tfs;
+   debug = debug || debug_tfs;
    if (debug) {
       printf(PRItid"(%s) Starting. initial function: %s\n", TID(), __func__, funcname);
       list_traced_function_stacks();
@@ -266,20 +299,24 @@ static GQueue * new_traced_function_stack(const char * funcname) {
 void push_traced_function(const char * funcname) {
    // printf("(%s) debug_tfs = %s\n", __func__, sbool(debug_tfs));
    bool debug = false;
-   debug = debug | debug_tfs;
+   debug = debug || debug_tfs;
    if (debug) {
-      printf(PRItid"(push_traced_function) funcname = %s, traced_function_stack_enabled=%d\n",
-            TID(), funcname, traced_function_stack_enabled);
-      syslog(LOG_DEBUG, PRItid"(push_traced_function) funcname = %s, traced_function_stack_enabled=%d\n",
-            TID(), funcname, traced_function_stack_enabled);
+      printf(PRItid"(%s) funcname = %s, "
+            "traced_function_stack_enabled=%s, traced_function_stack_suspended=%s\n",
+            TID(), __func__, funcname,
+            sbool(traced_function_stack_enabled), sbool(traced_function_stack_suspended));
+      syslog(LOG_DEBUG, PRItid"(%s) funcname = %s, "
+            "traced_function_stack_enabled=%s, traced_function_stack_suspended=%s\n",
+            TID(), __func__, funcname,
+            sbool(traced_function_stack_enabled), sbool(traced_function_stack_suspended));
    }
 
    if (traced_function_stack_enabled && !traced_function_stack_suspended) {
       if (!traced_function_stack) {
          traced_function_stack = new_traced_function_stack(funcname);
          if (debug)
-            printf(PRItid"(push_traced_function) allocated new traced_function_stack %p, starting with %s\n",
-                  TID(), traced_function_stack, funcname);
+            printf(PRItid"%s) allocated new traced_function_stack %p, starting with %s\n",
+                  TID(), __func__, traced_function_stack, funcname);
       }
       g_queue_push_head(traced_function_stack, g_strdup(funcname));
    }
@@ -291,7 +328,7 @@ void push_traced_function(const char * funcname) {
    //
    if (debug) {
       printf(PRItid" (%s) Done\n", TID(), __func__);
-      show_backtrace(0);
+      // show_backtrace(0);
       debug_current_traced_function_stack(false);
    }
 }
@@ -303,6 +340,7 @@ void push_traced_function(const char * funcname) {
  */
 char * peek_traced_function() {
    bool debug = false;
+   debug = debug || debug_tfs;
    if (debug)
       printf(PRItid"(%s) Starting.\n", TID(), __func__);
 
@@ -343,7 +381,18 @@ void tfs_error_msg(char * format, ...) {
  */
 void pop_traced_function(const char * funcname) {
    bool debug = false;
-   debug = debug | debug_tfs;
+   debug = debug || debug_tfs;
+
+   if (debug) {
+      printf(PRItid"(%s) expected = %s, "
+            "traced_function_stack_enabled=%s, traced_function_stack_suspended=%s\n",
+            TID(), __func__, funcname,
+            sbool(traced_function_stack_enabled), sbool(traced_function_stack_suspended));
+      syslog(LOG_DEBUG, PRItid"(%s) expected = %s, "
+            "traced_function_stack_enabled=%s, traced_function_stack_suspended=%s\n",
+            TID(), __func__, funcname,
+            sbool(traced_function_stack_enabled), sbool(traced_function_stack_suspended));
+   }
 
    if (traced_function_stack_enabled && !traced_function_stack_suspended && !traced_function_stack_invalid) {
       if (!traced_function_stack) {
@@ -359,7 +408,7 @@ void pop_traced_function(const char * funcname) {
 
             tfs_error_msg(PRItid" Function %s likely did not call push_traced_function() at start",
                       TID(), funcname);
-            show_backtrace(1);
+            // show_backtrace(1);
             backtrace_to_syslog(1,true);
             traced_function_stack_invalid = true;
             if (traced_function_stack_errors_fatal)
@@ -382,7 +431,7 @@ void pop_traced_function(const char * funcname) {
                }
 
                debug_current_traced_function_stack(/*reverse=*/ false);
-               show_backtrace(1);
+               // show_backtrace(1);
                backtrace_to_syslog(LOG_ERR, /* stack_adjust */ 1);
                current_traced_function_stack_to_syslog(LOG_ERR, /*reverse*/ false);
                traced_function_stack_invalid = true;
@@ -435,6 +484,7 @@ static void free_traced_function_stack(GQueue * stack) {
  */
 void free_current_traced_function_stack() {
    bool debug = false;
+   debug = debug || debug_tfs;
    if (traced_function_stack) {
       if (debug) {
          printf(PRItid"(free_current_traced_function_stack) traced_function_stack=%p. Executing.\n",
