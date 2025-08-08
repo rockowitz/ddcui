@@ -1,6 +1,6 @@
 /** \file mainwindow.cpp */
 
-// Copyright (C) 2018-2024 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2025 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "main/mainwindow.h"
@@ -180,7 +180,7 @@ void MainWindow::freeMonitors() {
 }
 
 
-void MainWindow::initOneMonitor(DDCA_Display_Info * info, int curIndex) {
+void MainWindow::initOneMonitor(DDCA_Display_Info2 * info, int curIndex) {
    bool debug = false;
    TRACECF(debug, "Starting. info=%p, curIndex=%d", info, curIndex);
 
@@ -236,13 +236,13 @@ void MainWindow::initOneMonitor(DDCA_Display_Info * info, int curIndex) {
 void MainWindow::addMonitor(DDCA_Display_Ref dref) {
    bool debug = false;
    TRACECF(debug, "dref=%s", ddca_dref_repr(dref));
-   DDCA_Display_Info * dinfo;
-   DDCA_Status ddcrc = ddca_get_display_info(dref, &dinfo);
+   DDCA_Display_Info2 * dinfo;
+   DDCA_Status ddcrc = ddca_get_display_info2(dref, &dinfo);
    const char * explain = ddca_rc_name(ddcrc);
-   TRACECF(debug, "ddca_get_display_info() returned %d %s", ddcrc, explain);
+   TRACECF(debug, "ddca_get_display_info2() returned %d %s", ddcrc, explain);
    if (ddcrc != 0) {
 
-      syslog(LOG_ERR, "ddca_get_display_info() returned %s", explain);
+      syslog(LOG_ERR, "ddca_get_display_info2() returned %s", explain);
 
       assert(ddcrc == 0);
    }
@@ -412,8 +412,8 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
 
     for (int ndx = 0; ndx < _drefs_ct; ndx++) {
         TRACECF(debug, "Processing display %d", ndx);
-        DDCA_Display_Info * dinfo;
-        DDCA_Status ddcrc = ddca_get_display_info(_drefs[ndx], &dinfo);
+        DDCA_Display_Info2 * dinfo;
+        DDCA_Status ddcrc = ddca_get_display_info2(_drefs[ndx], &dinfo);
         if (ddcrc != 0) {
            const char * expl = ddca_rc_name(ddcrc);
            syslog(LOG_ERR, "ddca_get_display_info() returned %s", expl);
@@ -823,7 +823,7 @@ void MainWindow::on_actionMonitorSummary_triggered()
     }
     else {
        Monitor * monitor = _monitors[monitorNdx];
-       DDCA_Display_Info * dinfo =  monitor->_displayInfo;    // &_dlist->info[monitorNdx];
+       DDCA_Display_Info2 * dinfo =  monitor->_displayInfo;    // &_dlist->info[monitorNdx];
        DDCA_Display_Ref dref = dinfo->dref;
        TRACECF(debug, "monitorNdx (%d), dref=%s", monitorNdx, ddca_dref_repr(dref));
 
@@ -863,7 +863,7 @@ void MainWindow::on_actionCapabilities_triggered()
     }
     else {
        Monitor * monitor = _monitors.at(monitorNdx);
-       DDCA_Display_Info * dinfo = monitor->_displayInfo; // &_dlist->info[monitorNdx];
+       DDCA_Display_Info2 * dinfo = monitor->_displayInfo; // &_dlist->info[monitorNdx];
        DDCA_Display_Ref dref = dinfo->dref;
        char * caps_report = NULL;
 
