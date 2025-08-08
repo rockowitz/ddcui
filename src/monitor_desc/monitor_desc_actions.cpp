@@ -1,6 +1,6 @@
 // monitor_desc_actions.cpp
 
-// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2025 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <stdlib.h>
@@ -16,7 +16,7 @@ namespace MonitorDescActions {
 
 char *
 capture_display_info_report(
-      DDCA_Display_Info * dinfo)
+      DDCA_Display_Info2 * dinfo)
 {
     bool debug = false;
     if (debug) {
@@ -25,7 +25,7 @@ capture_display_info_report(
     }
     ddca_start_capture(DDCA_CAPTURE_NOOPTS);
     DDCA_Output_Level saved_ol = ddca_set_output_level(DDCA_OL_VERBOSE);
-    ddca_report_display_info(dinfo, 0);
+    ddca_report_display_info2(dinfo, 0);
     ddca_set_output_level(saved_ol);
     char * s = ddca_end_capture();
     if (debug) {
