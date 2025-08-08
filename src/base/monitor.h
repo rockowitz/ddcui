@@ -38,7 +38,7 @@ class Monitor : public QObject
     Q_OBJECT
 
 public:
-    Monitor(DDCA_Display_Info * display_info, int monitorNumber);
+    Monitor(DDCA_Display_Info2 * display_info, int monitorNumber);
     ~Monitor();
 
     bool              supportsDdc();
@@ -50,7 +50,7 @@ public:
     void              dbgrpt();
 
     const int            _monitorNumber = -1;    // 1 based
-    DDCA_Display_Info *  _displayInfo;
+    DDCA_Display_Info2 * _displayInfo;
     FeatureBaseModel *   _baseModel;
     VcpRequestQueue*     _requestQueue;
 
