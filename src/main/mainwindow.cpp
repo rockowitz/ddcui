@@ -593,24 +593,26 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
         this,     &MainWindow::featureSelectionChanged,
         this,     &MainWindow::on_actionFeaturesScrollArea_triggered);
 
+     switch (parsed_cmd->view) {
+     case VIEW_SUMMARY:
+        _initialView = MonitorView;
+        break;
+     case VIEW_CAPABILITIES:
+        _initialView = CapabilitiesView;
+        break;
+     case VIEW_FEATURES:
+        _initialView = FeaturesView;
+        break;
+     default:
+        // No change from the default value
+        break;
+     }
+
      // Start with Monitor Summary of first monitor instead if no view selected
      if (_monitors.size() > 0) {
         TRACECF(debug, "_monitors_size=%d. emitting signalMonitorSummaryView", _monitors.size());
         emit signalMonitorSummaryView();
      }
-
-#ifdef BAD   // get dialog box that capabilities incomplete before main screen appears
-     if (parsed_cmd->view == VIEW_UNSET || parsed_cmd->view == VIEW_SUMMARY)
-        emit signalMonitorSummaryView();
-     else if (parsed_cmd->view == VIEW_CAPABILITIES) {
-        emit signalCapabilitiesView();
-     }
-     else {
-        assert (parsed_cmd->view == VIEW_FEATURES);
-        emit signalFeaturesView();
-     }
-#endif
-
 
 #ifdef DOESNT_SOLVE_PROBLEM
       // An attempt to address the problem of the Message Box for "early" messages
@@ -844,6 +846,23 @@ void MainWindow::on_actionMonitorSummary_triggered()
        // _ui->centralWidget->setCurrentIndex(pageno);
        _ui->centralWidget->setCurrentWidget(monitor->_page_moninfo);
        _ui->centralWidget->show();
+
+       if (!_initialViewShown) {
+          _initialViewShown = true;
+          switch(_initialView) {
+          case MonitorView:
+             // MonitorView is already active, do nothing
+             break;
+          case CapabilitiesView:
+             emit signalCapabilitiesView();
+             break;
+          case FeaturesView:
+             emit signalFeaturesView();
+             break;
+          case NoView:
+             break;
+          }
+       }
     }
     ctrlKeyStatusMsg();   // clears the message since not Features view
     TRACECF(debug, "_ui->actionCapabilities->isEnabled()=%s",
@@ -1079,10 +1098,12 @@ void MainWindow::on_actionRedetect_triggered() {
    // if no monitors, set _curDisplayIndex = -1
    // _curDisplayIndex = (_dlist->ct > 0) ? 0 : -1;
    _curDisplayIndex = (_drefs_ct > 0) ? 0 : -1;
+   _initialViewShown = false;
 
    // HANDLE CASE OF NO DDC MONITORS?
    TRACECF(debug, "Emitting signalMonitorSummaryView");
-   emit signalMonitorSummaryView();
+   // emit signalMonitorSummaryView() will invoke on_actionMonitorSummary_triggered() twice and will reset _initialView
+   on_actionMonitorSummary_triggered();
 
    TRACECF(debug,"Done");
 }

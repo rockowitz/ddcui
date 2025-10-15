@@ -185,9 +185,7 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    gboolean trace_to_syslog_flag           = false;   //???
    gboolean watch_displays_flag     = true;   // the default
 
-#ifdef DISABLE_VIEW_OPTION
    gchar*   view_work                      = NULL;
-#endif
    gchar*   nc_values_source_work          = NULL;
    gchar*   feature_set_work               = NULL;
    gchar*   custom_feature_set_work        = NULL;
@@ -219,9 +217,7 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
 
    // Options dialog
 
-#ifdef DISABLE_VIEW_OPTION
       {"view",      '\0',  0, G_OPTION_ARG_STRING,   &view_work,             "Initial view",             "Summary|Capabilities|Features"},
-#endif
       {"require-control-key",
                    '\0',   0, G_OPTION_ARG_NONE,     &control_key_required,  "Control key must be pressed to move slider", NULL},
       {"nc-values-source",
@@ -508,7 +504,6 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
       }
    }
 
-#ifdef DISABLE_VIEW_OPTION
       if (view_work) {
          // printf("view_work = %p -> |%s|\n", view_work, view_work);
          Parsed_View pv = find_view_table_value(view_work);
@@ -520,7 +515,6 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
             parsed_cmd->view = pv;
          }
       }
-#endif
 
       if (nc_values_source_work) {
          // printf("nc_values_source_work = %p -> |%s|\n", nc_values_source_work, nc_values_source_work);
