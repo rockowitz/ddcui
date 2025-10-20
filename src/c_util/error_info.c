@@ -199,6 +199,9 @@ errinfo_free_with_report(
       bool         report,
       const char * func)
 {
+   bool debug = false;
+   DBGF(debug, "Starting.  erec=%p, report=%s, func=%s", erec, SBOOL(report), func);
+
    if (erec) {
       if (report) {
          rpt_vstring(0, "(%s) Freeing exception:", func);
@@ -206,18 +209,10 @@ errinfo_free_with_report(
       }
       errinfo_free(erec);
    }
+
+   DBGF(debug, "Done.");
 }
 
-
-#ifdef ALT
-// signature satisfying GDestroyNotify()
-
-static void ddc_error_free2(void * erec) {
-   Error_Info* erec2 = (Error_Info *) erec;
-   VALID_ERROR_INFO_PTR(erec2);
-   errinfo_free(erec2);
-}
-#endif
 
 //
 // Instance modification
