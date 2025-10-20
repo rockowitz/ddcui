@@ -949,9 +949,13 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
        }
 
        if (!monitor->supportsDdc()) {
+          // hack, just handle /dev/i2c path
+          QString msg = QString("Display %1 on bus /dev/i2c-%2 does not support DDC (3)")
+                .arg(monitor->_displayInfo->model_name)
+                .arg(monitor->_displayInfo->path.path.i2c_busno);
           QMessageBox::warning(this,
                                "ddcui",
-                               "Display does not support DDC (3)",
+                               msg,
                                QMessageBox::Ok);
           // emit signalMonitorSummaryView();   // doesn't work
           on_actionMonitorSummary_triggered();
