@@ -962,12 +962,19 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
        }
 
        else if (!monitor->capabilitiesCheckComplete()) {
-          QMessageBox::warning(this, "ddcui", "Capabilities check incomplete", QMessageBox::Ok);
+          QString msg = QString("Capabilities check incomplete for display %1 on bus /dev/i2c-%2")
+                .arg(monitor->_displayInfo->model_name)
+                .arg(monitor->_displayInfo->path.path.i2c_busno);
+          QMessageBox::warning(this, "ddcui", msg, QMessageBox::Ok);
           on_actionMonitorSummary_triggered();
        }
 
        else if (!monitor->capabilitiesCheckSuccessful()) {
-          QMessageBox::warning(this, "ddcui", "Display does not support DDC (4)", QMessageBox::Ok);
+          // hack, just handle /dev/i2c path
+          QString msg = QString("Display %1 on bus /dev/i2c-%2 does not support DDC (4)")
+                .arg(monitor->_displayInfo->model_name)
+                .arg(monitor->_displayInfo->path.path.i2c_busno);
+          QMessageBox::warning(this, "ddcui", msg, QMessageBox::Ok);
           on_actionMonitorSummary_triggered();
        }
 
