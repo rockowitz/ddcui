@@ -508,7 +508,6 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
     toolbarDisplayLabel->setFont(_ui->mainMenuFont);
     _toolbarDisplayCB = new QComboBox();
     _toolbarDisplayCB->setObjectName("displaySelectorCombobox");
-    _toolbarDisplayCB->setStyleSheet("background-color:white; color:black;");
     _toolbarDisplayCB->setFont(_ui->mainMenuFont);
     toolbarDisplayLabel->setBuddy(_toolbarDisplayCB);
     _ui->mainToolBar->addWidget( toolbarDisplayLabel);
