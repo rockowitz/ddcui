@@ -130,25 +130,24 @@ message( ${VERBOSE} "  CMAKE_AUTORCC:           ${CMAKE_AUTORCC}")
 if (USE_QT6)
    set(QT6_LIBRARIES Qt6::Widgets )
    # Ensures all Qt componenets have same version: 
-   find_package(Qt6 ${ddcui_qt6_min_version} COMPONENTS Core Widgets Gui Help REQUIRED)
+   find_package(Qt6 ${ddcui_qt6_min_version} COMPONENTS Core Widgets Gui REQUIRED)
    message( ${VERBOSE} "Qt directories:")
    message( ${VERBOSE} "  Qt6Widgets_INCLUDE_DIRS:  ${Qt6Widgets_INCLUDE_DIRS}" )
    message( ${VERBOSE} "  Qt6Core_INCLUDE_DIRS:     ${Qt6Core_INCLUDE_DIRS}"    )
    message( ${VERBOSE} "  Qt6Gui_INCLUDE_DIRS:      ${Qt6Gui_INCLUDE_DIRS}"     )
-   message( ${VERBOSE} "  Qt6Help_INCLUDE_DIRS:     ${Qt6Help_INCLUDE_DIRS}"    )
 else()
    set(QT5_LIBRARIES Qt5::Widgets )
-   # Ensures all Qt componenets have same version: 
-   find_package(Qt5 ${ddcui_qt5_min_version} COMPONENTS Core Widgets Gui Help REQUIRED)
+   # Ensures all Qt componenets have same version:
+   find_package(Qt5 ${ddcui_qt5_min_version} COMPONENTS Core Widgets Gui REQUIRED)
    message( ${VERBOSE} "Qt directories:")
    message( ${VERBOSE} "  Qt5Widgets_INCLUDE_DIRS:  ${Qt5Widgets_INCLUDE_DIRS}" )
    message( ${VERBOSE} "  Qt5Core_INCLUDE_DIRS:     ${Qt5Core_INCLUDE_DIRS}"    )
    message( ${VERBOSE} "  Qt5Gui_INCLUDE_DIRS:      ${Qt5Gui_INCLUDE_DIRS}"     )
-   message( ${VERBOSE} "  Qt5Help_INCLUDE_DIRS:     ${Qt5Help_INCLUDE_DIRS}"    )
 endif()
 
 find_package (PkgConfig REQUIRED )
 pkg_check_modules(GLIB2 REQUIRED glib-2.0>=${ddcui_glib_version})
+pkg_check_modules(GIO REQUIRED gio-2.0)
 
 if ( (DDCUTIL_PROJECT_DIR STREQUAL "OFF")) 
    message( ${VERBOSE} "Locating ddcutil files using pkg_check_modules")
@@ -184,6 +183,8 @@ endif()
 message( ${VERBOSE} "Set by pkg-config:" )
 message( ${VERBOSE} "  GLIB2_INCLUDE_DIRS:       ${GLIB2_INCLUDE_DIRS}"   )
 message( ${VERBOSE} "  GLIB2_LIBRARIES:          ${GLIB2_LIBRARIES}"      )
+message( ${VERBOSE} "  GIO_INCLUDE_DIRS:         ${GIO_INCLUDE_DIRS}"     )
+message( ${VERBOSE} "  GIO_LIBRARIES:            ${GIO_LIBRARIES}"        )
 
 message( ${VERBOSE} "  DDCUTIL_INCLUDE_DIRS:     ${DDCUTIL_INCLUDE_DIRS}" )
 message( ${VERBOSE} "  DDCUTIL_LIBRARY_DIRS:     ${DDCUTIL_LIBRARY_DIRS}" )
@@ -305,17 +306,18 @@ target_compile_options(ddcui PUBLIC "-fPIC" ${coverity_cflags} ${asan_flags})
 #            ${Qt5Help_INCLUDE_DIRS} is a superset of them all 
 target_include_directories(ddcui SYSTEM PRIVATE
                                  ${Qt5Help_INCLUDE_DIRS}
-                                 ${GLIB2_INCLUDE_DIRS} 
+                                 ${GLIB2_INCLUDE_DIRS}
+                                 ${GIO_INCLUDE_DIRS}
                                  ${DDCUTIL_INCLUDE_DIRS})
 
 target_include_directories(ddcui PRIVATE src)
 
 if (USE_QT6)
    # Use the Widgets module from Qt 6.
-   target_link_libraries(ddcui ${ASAN_LIBRARY} Qt6::Widgets ${GLIB2_LIBRARIES} ${DDCUTIL_LIBRARIES})
+   target_link_libraries(ddcui ${ASAN_LIBRARY} Qt6::Widgets ${GLIB2_LIBRARIES} ${GIO_LIBRARIES} ${DDCUTIL_LIBRARIES})
 else()
    # Use the Widgets module from Qt 5.
-   target_link_libraries(ddcui ${ASAN_LIBRARY} Qt5::Widgets ${GLIB2_LIBRARIES} ${DDCUTIL_LIBRARIES})
+   target_link_libraries(ddcui ${ASAN_LIBRARY} Qt5::Widgets ${GLIB2_LIBRARIES} ${GIO_LIBRARIES} ${DDCUTIL_LIBRARIES})
 endif()
 
 get_property(dirs TARGET ddcui PROPERTY INCLUDE_DIRECTORIES)
