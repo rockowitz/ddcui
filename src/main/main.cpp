@@ -131,9 +131,8 @@ static void applyAdwaitaTheming() {
       style = QStyleFactory::create(QStringLiteral("adwaita"));
 
    if (style) {
-      auto *proxyStyle = new AdwaitaSliderStyle(style);
-      const QPalette palette = proxyStyle->standardPalette();
-      QApplication::setStyle(proxyStyle);
+      const QPalette palette = style->standardPalette();
+      QApplication::setStyle(style);
       QApplication::setPalette(palette);
    }
 
