@@ -19,12 +19,13 @@ void SpinSlider::createWidgets() {
    // _slider = new EnhancedSlider(Qt::Horizontal);
    _slider = new QSlider(Qt::Horizontal);
     _slider->setFocusPolicy(Qt::StrongFocus);
-    _slider->setTickPosition(QSlider::TicksBelow);   // alt TicksBothSides
+    _slider->setTickPosition(QSlider::NoTicks);
+    _slider->setAttribute(Qt::WA_Hover, true);
     _slider->setSingleStep(1);
-   // _slider->setFixedSize(200,18);  // was 18 , 14 stuffs slider to bottom
-    _slider->setMinimumSize(200,10);
+    _slider->setPageStep(5);
+    _slider->setMinimumWidth(200);
 
-    _slider->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+    _slider->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     // Trying to force a bit of space above and below slider
     // _slider->setContentsMargins(3,0,1,0);  // no effect
     // increases height of rows in at least style adwaita

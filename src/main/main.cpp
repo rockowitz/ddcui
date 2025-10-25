@@ -4,6 +4,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <glib-2.0/glib.h>
+#include <gio/gio.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,6 +13,11 @@
 
 #include <QtCore/QtCore>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QStyle>
+#include <QtWidgets/QStyleFactory>
+
+#include <QtGui/QIcon>
+#include <QtGui/QPalette>
 
 #include <ddcutil_c_api.h>
 #include <ddcutil_macros.h>
@@ -30,10 +36,109 @@
 #include "base/ddcui_parms.h"
 #include "base/global_state.h"
 
+#include "main/adwaita_slider_style.h"
 #include "main/callback_manager.h"
 #include "main/mainwindow.h"
 #include "main/msgbox_thread.h"
 
+
+enum class ThemePreference {
+   Unknown,
+   Light,
+   Dark
+};
+
+static ThemePreference parseThemeVariant(const gchar *value, bool allowPartialMatch) {
+   if (!value || !*value)
+      return ThemePreference::Unknown;
+
+   QString normalized = QString::fromUtf8(value).trimmed().toLower();
+   if (normalized.isEmpty())
+      return ThemePreference::Unknown;
+
+   if (normalized == QLatin1String("dark") || normalized == QLatin1String("prefer-dark"))
+      return ThemePreference::Dark;
+   if (normalized == QLatin1String("light") || normalized == QLatin1String("prefer-light"))
+      return ThemePreference::Light;
+   if (normalized == QLatin1String("default"))
+      return ThemePreference::Unknown;
+
+   if (allowPartialMatch) {
+      if (normalized.contains(QStringLiteral("dark")))
+         return ThemePreference::Dark;
+      if (normalized.contains(QStringLiteral("light")))
+         return ThemePreference::Light;
+   }
+
+   return ThemePreference::Unknown;
+}
+
+static ThemePreference themePreferenceFromEnvironment() {
+   ThemePreference preference = parseThemeVariant(g_getenv("ADW_THEME_VARIANT"), false);
+   if (preference != ThemePreference::Unknown)
+      return preference;
+
+   preference = parseThemeVariant(g_getenv("GTK_THEME"), true);
+   if (preference != ThemePreference::Unknown)
+      return preference;
+
+   const gchar *qtStyleOverride = g_getenv("QT_STYLE_OVERRIDE");
+   if (qtStyleOverride && QString::fromUtf8(qtStyleOverride).contains(QStringLiteral("adwaita"), Qt::CaseInsensitive)) {
+      preference = parseThemeVariant(qtStyleOverride, true);
+      if (preference != ThemePreference::Unknown)
+         return preference;
+   }
+
+   return ThemePreference::Unknown;
+}
+
+static ThemePreference themePreferenceFromGSettings() {
+   GSettings *settings = g_settings_new("org.gnome.desktop.interface");
+   if (!settings)
+      return ThemePreference::Unknown;
+
+   ThemePreference preference = ThemePreference::Unknown;
+
+   gchar *colorScheme = g_settings_get_string(settings, "color-scheme");
+   preference = parseThemeVariant(colorScheme, false);
+   g_free(colorScheme);
+
+   if (preference == ThemePreference::Unknown) {
+      gchar *gtkTheme = g_settings_get_string(settings, "gtk-theme");
+      preference = parseThemeVariant(gtkTheme, true);
+      g_free(gtkTheme);
+   }
+
+   g_object_unref(settings);
+   return preference;
+}
+
+static QString preferredAdwaitaStyle() {
+   ThemePreference preference = themePreferenceFromEnvironment();
+   if (preference == ThemePreference::Unknown)
+      preference = themePreferenceFromGSettings();
+
+   if (preference == ThemePreference::Dark)
+      return QStringLiteral("adwaita-dark");
+   return QStringLiteral("adwaita");
+}
+
+static void applyAdwaitaTheming() {
+   const QString styleName = preferredAdwaitaStyle();
+
+   QStyle *style = QStyleFactory::create(styleName);
+   if (!style && styleName.compare(QStringLiteral("adwaita"), Qt::CaseInsensitive) != 0)
+      style = QStyleFactory::create(QStringLiteral("adwaita"));
+
+   if (style) {
+      auto *proxyStyle = new AdwaitaSliderStyle(style);
+      const QPalette palette = proxyStyle->standardPalette();
+      QApplication::setStyle(proxyStyle);
+      QApplication::setPalette(palette);
+   }
+
+   QIcon::setThemeName(QStringLiteral("Adwaita"));
+}
 
 // See: https://www.qt.io/blog/2016/01/26/high-dpi-support-in-qt-5-6
 void dbgrpt_hidpi_environment_vars() {
@@ -370,6 +475,9 @@ int main(int argc, char *argv[])
     // As of 9/18/2023, emits msg: QSocketNotifier can only be used with threads started with QThread
     QApplication application(argc, argv);
     DBGF(debug, "QApplication constructor done");
+
+    applyAdwaitaTheming();
+
     application.setWindowIcon(QIcon(":/icons/ddcui_multires.ico"));
 
     GPtrArray * errmsgs = g_ptr_array_new_with_free_func(free);
