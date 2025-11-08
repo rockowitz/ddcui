@@ -37,7 +37,7 @@
    if (memcmp(ptr->marker, ERROR_INFO_MARKER, 4) != 0) { \
       DBG("Invalid ptr->marker, ptr=%p", ptr); \
       show_backtrace(1); \
-      debug_current_traced_function_stack(false); \
+      dbgrpt_current_traced_function_stack(false, true, 1); \
    } \
    assert(memcmp(ptr->marker, ERROR_INFO_MARKER, 4) == 0);
 
@@ -153,15 +153,15 @@ errinfo_free(Error_Info * erec){
       VALID_ERROR_INFO_PTR(erec);
 
       if (debug) {
-         DBG("Freeing exception:");
+         DBG("Freeing exception %p:", erec);
          errinfo_report(erec, 2);
       }
 
-      if (erec->detail)
-         free(erec->detail);
+      free(erec->detail);
+      free(erec->func);
 
       if (erec->cause_ct > 0) {
-         DBGF(debug, "Freeing causes...");
+         DBGF(debug, "Freeing %d causes...", erec->cause_ct);
          for (int ndx = 0; ndx < erec->cause_ct; ndx++) {
             errinfo_free(erec->causes[ndx]);
          }
@@ -176,9 +176,10 @@ errinfo_free(Error_Info * erec){
       }
 #endif
 
-      free(erec->func);
       erec->marker[3] = 'x';
+      DBGF(debug, "Freeing %p", erec);
       free(erec);
+
    }
 
    DBGF(debug, "Done.  Free'd: %p", (void*) erec);
