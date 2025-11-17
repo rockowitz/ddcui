@@ -204,8 +204,10 @@ private:
     int                          _drefs_ct = 0;
     int                          _curDisplayIndex = -1;
     View                         _curView = NoView;
-    View                         _initialView = FeaturesView;
-    bool                         _initialViewShown = false;
+// #ifdef VIEW_PR60
+    View                         _initialView = MonitorView;
+ //   bool                         _initialViewShown = false;
+// #endif
     QComboBox *                  _toolbarDisplayCB;
     NcValuesState *              _otherOptionsState = nullptr;
     UserInterfaceOptionsState*   _uiOptionsState = nullptr;

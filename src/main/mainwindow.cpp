@@ -153,6 +153,7 @@ int MainWindow::findMonitor(DDCA_Display_Ref dref) {
    return result;
 }
 
+
 void MainWindow::freeMonitors() {
    bool debug = false;
    TRACECF(debug, "Starting");
@@ -233,6 +234,7 @@ void MainWindow::initOneMonitor(DDCA_Display_Info2 * info, int curIndex) {
    TRACECF(debug, "Done.");
 }
 
+
 void MainWindow::addMonitor(DDCA_Display_Ref dref) {
    bool debug = false;
    TRACECF(debug, "dref=%s", ddca_dref_repr(dref));
@@ -241,10 +243,8 @@ void MainWindow::addMonitor(DDCA_Display_Ref dref) {
    const char * explain = ddca_rc_name(ddcrc);
    TRACECF(debug, "ddca_get_display_info2() returned %d %s", ddcrc, explain);
    if (ddcrc != 0) {
-
       syslog(LOG_ERR, "ddca_get_display_info2() returned %s", explain);
-
-      assert(ddcrc == 0);
+      assert(ddcrc == 0);   // ABORT!!!
    }
    else {
       int nextIndex =  _toolbarDisplayCB->count();
@@ -285,6 +285,7 @@ void MainWindow::removeMonitor(DDCA_Display_Ref dref) {
    }
 }
 
+
 void MainWindow::enableMonitor(DDCA_Display_Ref dref) {
    bool debug = false;
    TRACECF(debug, "UNIMPLEMENTED dref=%s", ddca_dref_repr(dref));
@@ -298,7 +299,6 @@ void MainWindow::enableMonitor(DDCA_Display_Ref dref) {
       TRACECF(debug, "Enabled monitor monNdx=%d", monNdx);
    }
 }
-
 
 
 void MainWindow::setInitialDisplayIndex(Parsed_Ddcui_Cmd * parsed_cmd) {
@@ -593,6 +593,8 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
         this,     &MainWindow::featureSelectionChanged,
         this,     &MainWindow::on_actionFeaturesScrollArea_triggered);
 
+// #ifdef VIEW_PR60
+    // note initial view, but currently does nothing
      switch (parsed_cmd->view) {
      case VIEW_SUMMARY:
         _initialView = MonitorView;
@@ -607,11 +609,42 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
         // No change from the default value
         break;
      }
+// #endif
 
-     // Start with Monitor Summary of first monitor instead if no view selected
-     if (_monitors.size() > 0) {
-        TRACECF(debug, "_monitors_size=%d. emitting signalMonitorSummaryView", _monitors.size());
+// was deleted by VIEW_PR60, restored for reference
+#ifdef BAD   // get dialog box that capabilities incomplete before main screen appears
+     if (parsed_cmd->view == VIEW_UNSET || parsed_cmd->view == VIEW_SUMMARY)
         emit signalMonitorSummaryView();
+     else if (parsed_cmd->view == VIEW_CAPABILITIES) {
+        emit signalCapabilitiesView();
+     }
+     else {
+        assert (parsed_cmd->view == VIEW_FEATURES);
+        emit signalFeaturesView();
+     }
+#endif
+
+     if (_monitors.size() > 0) {
+        debug = false;
+        if (parsed_cmd->view == VIEW_UNSET || parsed_cmd->view == VIEW_SUMMARY) {
+           TRACECF(debug, "_monitors_size=%d. emitting signalMonitorSummaryView", _monitors.size());
+           emit signalMonitorSummaryView();
+        }
+        else {
+           // on startup, don't want msg that capabilities not ready and forced to summary view
+           int sleep_millis = 000;
+           QThread::msleep(sleep_millis);
+
+           if (parsed_cmd->view == VIEW_CAPABILITIES) {
+              TRACECF(debug, "_monitors_size=%d. emitting signalCapabilitiesView", _monitors.size());
+              emit signalCapabilitiesView();
+           }
+           else {
+              assert (parsed_cmd->view == VIEW_FEATURES);
+              TRACECF(debug, "_monitors_size=%d. emitting signalFeaturesView", _monitors.size());
+              emit signalFeaturesView();
+           }
+        }
      }
 
 #ifdef DOESNT_SOLVE_PROBLEM
@@ -675,7 +708,6 @@ void MainWindow::ctrlKeyStatusMsg() {
    }
    TRACECF(debug, "Done");
 }
-
 
 
 //
@@ -746,7 +778,9 @@ void MainWindow::showSerialMsgBox(QString title, QString text, QMessageBox::Icon
 }
 
 
-//  ** Miscellaneous Slots
+//
+// Miscellaneous Slots
+//
 
 // Sets spinning cursor at start of a long running task
 // Both a direct call from initMonitors and a slot for FeatureBaseModel
@@ -758,6 +792,7 @@ void MainWindow::longRunningTaskStart() {
    // _loadingMsgBox->show();
    QGuiApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 }
+
 
 // Restores normal cursor at the of a long running task
 // Both a direct call from initMonitors and a slot for FeatureBaseModel
@@ -807,7 +842,7 @@ void MainWindow::displaySelectorCombobox_activated(int index) {
 
 
 //
-// *** View menu slots
+// View menu slots
 //
 
 // View->Summary
@@ -815,7 +850,7 @@ void MainWindow::displaySelectorCombobox_activated(int index) {
 void MainWindow::on_actionMonitorSummary_triggered()
 {
     bool debug = false;
-    // std::cout << "(MainWindow::on_actionMonitorSummary_triggered()" << endl;
+    // std::cout << "(MainWindow::on_actionMo_initialViewnitorSummary_triggered()" << endl;
 
     int monitorNdx = _toolbarDisplayCB->currentIndex();
     TRACEMF(debug, "monitorNdx=%d", monitorNdx);
@@ -847,6 +882,8 @@ void MainWindow::on_actionMonitorSummary_triggered()
        _ui->centralWidget->setCurrentWidget(monitor->_page_moninfo);
        _ui->centralWidget->show();
 
+#ifdef VIEW_PR60
+       // !!! WRONG LOCATION !!!
        if (!_initialViewShown) {
           _initialViewShown = true;
           switch(_initialView) {
@@ -863,6 +900,7 @@ void MainWindow::on_actionMonitorSummary_triggered()
              break;
           }
        }
+#endif
     }
     ctrlKeyStatusMsg();   // clears the message since not Features view
     TRACECF(debug, "_ui->actionCapabilities->isEnabled()=%s",
@@ -891,9 +929,13 @@ void MainWindow::on_actionCapabilities_triggered()
              SBOOL(monitor->supportsDdc()) );
 
        if (!monitor->supportsDdc()) {
+          // hack, just handle /dev/i2c path
+          QString msg = QString("Display %1 on bus /dev/i2c-%2 does not support DDC (1)")
+                .arg(dinfo->model_name)
+                .arg(dinfo->path.path.i2c_busno);
           QMessageBox::warning(this,
                                "ddcutil",
-                               "Display does not support DDC (1)",
+                               msg,
                                QMessageBox::Ok);
           // emit signalMonitorSummaryView();   // doesn't work
           on_actionMonitorSummary_triggered();
@@ -908,9 +950,13 @@ void MainWindow::on_actionCapabilities_triggered()
           on_actionMonitorSummary_triggered();
        }
        else if (!monitor->capabilitiesCheckSuccessful()) {
+          // hack, just handle /dev/i2c path
+          QString msg = QString("Display %1 on bus /dev/i2c-%2 does not support DDC (2)")
+                .arg(dinfo->model_name)
+                .arg(dinfo->path.path.i2c_busno);
           QMessageBox::warning(this,
                                "ddcutil",
-                               "Display does not support DDC (2)",
+                               msg,
                                QMessageBox::Ok);
           // emit signalMonitorSummaryView();   // doesn't work
           on_actionMonitorSummary_triggered();
@@ -1109,12 +1155,19 @@ void MainWindow::on_actionRedetect_triggered() {
    // if no monitors, set _curDisplayIndex = -1
    // _curDisplayIndex = (_dlist->ct > 0) ? 0 : -1;
    _curDisplayIndex = (_drefs_ct > 0) ? 0 : -1;
+#ifdef VIEW_PR_60
    _initialViewShown = false;
+#endif
 
    // HANDLE CASE OF NO DDC MONITORS?
+#ifdef VIEW_PR60
    TRACECF(debug, "Emitting signalMonitorSummaryView");
    // emit signalMonitorSummaryView() will invoke on_actionMonitorSummary_triggered() twice and will reset _initialView
    on_actionMonitorSummary_triggered();
+#else
+   emit signalMonitorSummaryView();
+#endif
+
 
    TRACECF(debug,"Done");
 }
@@ -1208,7 +1261,6 @@ void display_status_event_main_callback(DDCA_Display_Status_Event evt) {
 #endif
 
 
-
 void MainWindow::forDisplayChanged(DDCA_Display_Status_Event evt) {
    bool debug = false;
    TRACECF(debug, "event type: %d = %s, dref=%s",
@@ -1244,16 +1296,17 @@ void MainWindow::on_actionDebugLocks_triggered() {
 
 
 void MainWindow::captureLocks() {
-       ddca_start_capture(DDCA_CAPTURE_NOOPTS);
-       // DDCA_Output_Level saved_ol = ddca_get_output_level();
-       // ddca_set_output_level(DDCA_OL_VERBOSE);
-       ddca_report_locks(0);
-       // ddca_set_output_level(saved_ol);
-       char * s = ddca_end_capture();
-       QString qs(s);
-       free(s);
-       showCapturedText("Execution Statistics", qs);
+    ddca_start_capture(DDCA_CAPTURE_NOOPTS);
+    // DDCA_Output_Level saved_ol = ddca_get_output_level();
+    // ddca_set_output_level(DDCA_OL_VERBOSE);
+    ddca_report_locks(0);
+    // ddca_set_output_level(saved_ol);
+    char * s = ddca_end_capture();
+    QString qs(s);
+    free(s);
+    showCapturedText("Execution Statistics", qs);
 }
+
 
 // Actions->Debug: DebugActionsDialog slots
 
