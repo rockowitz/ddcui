@@ -36,7 +36,7 @@
 bool redirect_reports_to_syslog = false;
 bool tag_output = false;
 
-static bool default_prefix_report_output = false;
+static bool default_ornament_report_output = false;
 
 /** Sets the initial report ornamentation status.
  *
@@ -45,7 +45,7 @@ static bool default_prefix_report_output = false;
  *  @param output_dest  default output destination
  */
 void rpt_set_default_ornamentation_enabled(bool onoff) {
-   default_prefix_report_output = onoff;
+   default_ornament_report_output = onoff;
 }
 
 
@@ -81,16 +81,16 @@ void rpt_set_default_output_dest(FILE* output_dest) {
 //* Thread specific state */
 typedef struct {
    uint8_t indent_spaces_stack[INDENT_SPACES_STACK_SIZE];
-   int indent_spaces_stack_pos;    // initial  -1;
+   int     indent_spaces_stack_pos;    // initial  -1;
 
-   FILE* output_dest_stack[OUTPUT_DEST_STACK_SIZE];
-   int   output_dest_stack_pos;   // initial  -1;
+   FILE*   output_dest_stack[OUTPUT_DEST_STACK_SIZE];
+   int     output_dest_stack_pos;   // initial  -1;
 
    // work around for fact that can't initialize the initial stack entry to stdout
-   FILE* alt_initial_output_dest;     // initial NULL;
-   bool  initial_output_dest_changed; // initial false;
+   FILE*   alt_initial_output_dest;     // initial NULL;
+   bool    initial_output_dest_changed; // initial false;
 
-   bool  prefix_report_output;        // initial false
+   bool  ornament_report_output;        // initial false
    // bool  temporary_reports_to_syslog; // initial false
 } Per_Thread_Settings;
 
@@ -110,7 +110,7 @@ static Per_Thread_Settings *  get_thread_settings() {
       settings = g_new0(Per_Thread_Settings, 1);
       settings->indent_spaces_stack_pos = -1;
       settings->output_dest_stack_pos   = -1;
-      settings->prefix_report_output = default_prefix_report_output;
+      settings->ornament_report_output = default_ornament_report_output;
 
       if (default_output_dest)
          settings->output_dest_stack[++settings->output_dest_stack_pos] = default_output_dest;
@@ -130,14 +130,14 @@ static Per_Thread_Settings *  get_thread_settings() {
 
 bool rpt_get_ornamentation_enabled()  {
    Per_Thread_Settings * settings = get_thread_settings();
-   return settings->prefix_report_output;
+   return settings->ornament_report_output;
 }
 
 
 bool rpt_set_ornamentation_enabled(bool enabled) {
    Per_Thread_Settings * settings = get_thread_settings();
-   bool old = settings->prefix_report_output;
-   settings->prefix_report_output = enabled;
+   bool old = settings->ornament_report_output;
+   settings->ornament_report_output = enabled;
    return old;
 }
 
@@ -371,24 +371,31 @@ void xrpt_label_collect(Byte opts, int depth, const char * title, GPtrArray * co
              if (!xrpt_trc_to_syslog_only) {
                 if (rpt_get_ornamentation_enabled())
                    get_msg_decoration(prefix, 100, false);
-                f0printf(rpt_cur_output_dest(), "??%s%*s%s\n", prefix, rpt_get_indent(depth), "", title);
+                f0printf(rpt_cur_output_dest(), "%s%s%*s%s\n",
+                      (tag_output) ? "??" : "",
+                      prefix, rpt_get_indent(depth), "", title);
              }
              if (xrpt_trc_to_syslog) {
                 if (rpt_get_ornamentation_enabled())
                    get_msg_decoration(prefix, 100, true);
-                syslog(LOG_DEBUG,  "--%s%*s%s%s",
-                      prefix, rpt_get_indent(depth), "", title, (tag_output) ? " (I)" : "");
+                syslog(LOG_DEBUG,  "%s%s%*s%s",
+                      (tag_output) ? "--" : "",
+                      prefix, rpt_get_indent(depth), "", title);
              }
          }
          else {
             if (rpt_get_ornamentation_enabled())
                get_msg_decoration(prefix, 100, redirect_reports_to_syslog);
             if (redirect_reports_to_syslog) {
-               syslog(LOG_NOTICE, "%s%*s%s%s",
-                     prefix, rpt_get_indent(depth), "++", title, (tag_output) ? " (I)" : "");
+               syslog(LOG_NOTICE, "%s%s%*s",
+                     (tag_output) ? "++" : "",
+                     prefix,
+                     rpt_get_indent(depth), title);
             }
             else {
-               f0printf(rpt_cur_output_dest(), "!!%s%*s%s\n", prefix, rpt_get_indent(depth), "", title);
+               f0printf(rpt_cur_output_dest(), "%s%s%*s%s\n",
+                     (tag_output) ? "!!" : "",
+                     prefix, rpt_get_indent(depth), "", title);
             }
          }
       }
