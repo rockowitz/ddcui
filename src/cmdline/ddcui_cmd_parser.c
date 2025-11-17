@@ -215,9 +215,12 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    //  long_name short flags  option-type            gpointer           description                    arg description
    //  monitor selection options
 
-   // Options dialog
+   //  Miscellaneous
 
       {"view",      '\0',  0, G_OPTION_ARG_STRING,   &view_work,             "Initial view",             "Summary|Capabilities|Features"},
+
+   // Options dialog
+
       {"require-control-key",
                    '\0',   0, G_OPTION_ARG_NONE,     &control_key_required,  "Control key must be pressed to move slider", NULL},
       {"nc-values-source",
@@ -504,85 +507,86 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
       }
    }
 
-      if (view_work) {
-         // printf("view_work = %p -> |%s|\n", view_work, view_work);
-         Parsed_View pv = find_view_table_value(view_work);
-         if (pv == VIEW_UNSET) {
-            fprintf(stderr, "Unrecognized: %s\n", view_work);
-            ok = false;
-         }
-         else{
-            parsed_cmd->view = pv;
-         }
+   if (view_work) {
+      // printf("view_work = %p -> |%s|\n", view_work, view_work);
+      Parsed_View pv = find_view_table_value(view_work);
+      if (pv == VIEW_UNSET) {
+         fprintf(stderr, "Unrecognized: %s\n", view_work);
+         ok = false;
       }
+      else{
+         parsed_cmd->view = pv;
+      }
+      free(view_work);
+   }
 
-      if (nc_values_source_work) {
-         // printf("nc_values_source_work = %p -> |%s|\n", nc_values_source_work, nc_values_source_work);
-         Parsed_NC_Values_Source src = find_nc_values_source_table_value(nc_values_source_work);
-         if (src == NC_VALUES_SOURCE_UNSET) {
-            char * s = "Unrecognized: ";
-            fprintf(stderr, "%s%s\n", s, nc_values_source_work);
-            fprintf(stderr, "%s%s",   s, nc_values_source_work);
-            ok = false;
-         }
-         else{
-            parsed_cmd->nc_values_source = src;
-         }
+   if (nc_values_source_work) {
+      // printf("nc_values_source_work = %p -> |%s|\n", nc_values_source_work, nc_values_source_work);
+      Parsed_NC_Values_Source src = find_nc_values_source_table_value(nc_values_source_work);
+      if (src == NC_VALUES_SOURCE_UNSET) {
+         char * s = "Unrecognized: ";
+         fprintf(stderr, "%s%s\n", s, nc_values_source_work);
+         fprintf(stderr, "%s%s",   s, nc_values_source_work);
+         ok = false;
       }
+      else{
+         parsed_cmd->nc_values_source = src;
+      }
+   }
 
 // Does this macro make code cleaner or more obscure?
 #define VALUE_LOOKUP(_ENUM, _NAME, _NOT_FOUND_VALUE) \
-      if (_NAME ## _work) {                          \
-         _ENUM src = find_ ## _NAME ##_table_value(_NAME ## _work);            \
-         if (src == _NOT_FOUND_VALUE) {                                        \
-            fprintf(stderr,  "Unrecognized: %s\n", _NAME ## _work);            \
-            syslog(LOG_CRIT, "Unrecognized: %s",   _NAME ## _work);            \
-            ok = false;                                                        \
-         }                                                                     \
-         else{                                                                 \
-            parsed_cmd->_NAME = src;                                           \
-         }                                                                     \
-      }
+   if (_NAME ## _work) {                          \
+      _ENUM src = find_ ## _NAME ##_table_value(_NAME ## _work);            \
+      if (src == _NOT_FOUND_VALUE) {                                        \
+         fprintf(stderr,  "Unrecognized: %s\n", _NAME ## _work);            \
+         syslog(LOG_CRIT, "Unrecognized: %s",   _NAME ## _work);            \
+         ok = false;                                                        \
+      }                                                                     \
+      else{                                                                 \
+         parsed_cmd->_NAME = src;                                           \
+      }                                                                     \
+   }
 
-      VALUE_LOOKUP(Parsed_Feature_Set, feature_set, FS_UNSET);
+   VALUE_LOOKUP(Parsed_Feature_Set, feature_set, FS_UNSET);
 
 #undef VALUE_LOOKUP
 
-      if (parsed_cmd->feature_set != FS_UNSET &&
-          ddca_feature_list_count(parsed_cmd->custom_feature_list) > 0)
-      {
-         char * s = "--feature-set and --custom-feature-set are mutually exclusive";
+   if (parsed_cmd->feature_set != FS_UNSET &&
+       ddca_feature_list_count(parsed_cmd->custom_feature_list) > 0)
+   {
+      char * s = "--feature-set and --custom-feature-set are mutually exclusive";
+      fprintf(stderr,  "%s\n", s);
+      syslog(LOG_CRIT, "%s",   s);
+      ok = false;
+   }
+
+   if (all_capabilities_true_set && only_capabilities_true_set) {
+      if (parsed_cmd->feature_set != FS_CAPABILITIES) {
+         char * s = "--all-capabilities and --only-capabilities are mutually exclusive"
+                         " except when --feature-set = CAPABILITIES";
          fprintf(stderr,  "%s\n", s);
          syslog(LOG_CRIT, "%s",   s);
          ok = false;
       }
-
-      if (all_capabilities_true_set && only_capabilities_true_set) {
-         if (parsed_cmd->feature_set != FS_CAPABILITIES) {
-            char * s = "--all-capabilities and --only-capabilities are mutually exclusive"
-                            " except when --feature-set = CAPABILITIES";
-            fprintf(stderr,  "%s\n", s);
-            syslog(LOG_CRIT, "%s",   s);
-            ok = false;
-         }
-      }
+   }
 
 
-      if (cmd_and_args && cmd_and_args[0]) {
-         // int rest_ct = 0;   // unused
-         // don't pull debug into the if clause, need rest_ct to be set
-         // if (cmd_and_args) {
-         //    for (; cmd_and_args[rest_ct] != NULL; rest_ct++) {
-         //          DBGMSF(debug, "cmd_and_args[%d]: %s", rest_ct, cmd_and_args[rest_ct]);
-         //    }
-         // }
+   if (cmd_and_args && cmd_and_args[0]) {
+      // int rest_ct = 0;   // unused
+      // don't pull debug into the if clause, need rest_ct to be set
+      // if (cmd_and_args) {
+      //    for (; cmd_and_args[rest_ct] != NULL; rest_ct++) {
+      //          DBGMSF(debug, "cmd_and_args[%d]: %s", rest_ct, cmd_and_args[rest_ct]);
+      //    }
+      // }
 
-         char * s = g_strjoinv(" ",cmd_and_args);
-         fprintf(stderr,  "Unrecognized: %s\n", s);
-         syslog(LOG_CRIT, "Unrecognized: %s",   s);
-         free(s);
-         ok = false;
-      }
+      char * s = g_strjoinv(" ",cmd_and_args);
+      fprintf(stderr,  "Unrecognized: %s\n", s);
+      syslog(LOG_CRIT, "Unrecognized: %s",   s);
+      free(s);
+      ok = false;
+   }
 
    if (version_flag) {
    }
