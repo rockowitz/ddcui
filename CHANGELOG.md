@@ -6,12 +6,13 @@ Requires libddcutil.so.5.4 from ddcutil 2.2.3 or later.
 
 ### Added
 
-- Option ***--view***, specifies initial view 
-- Option ***--model*** ???
+- Option ***--view***, specifies initial view
+- The check for the model name specified in option ***--model***
+  is now case-insensitive. 
 
 ### Fixed
 
-- Improve handling of display changes reported by libddcutil. 
+- Improve handling of display changes reported by libddcutil.
   Actions->Redetect Displays should no longer be needed, but 
   is retained as a recovery operation. 
 
