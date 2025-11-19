@@ -394,8 +394,6 @@ void MainWindow::initOneMonitor(DDCA_Display_Info2 * info, int curIndex) {
 }
 
 
-
-
 void MainWindow::setInitialDisplayIndex(Parsed_Ddcui_Cmd * parsed_cmd) {
    bool debug = false;
    int initialDisplayIndex = -1;
