@@ -59,13 +59,168 @@
 #include "main/msgbox_thread.h"
 #include "main/mainwindow.h"
 
-
 using namespace std;
 
 
+//
+// Handle display change events
+//
+
+#ifdef EXECUTES_ON_WRONG_THREAD
+
+void display_status_event_main_callback(DDCA_Display_Status_Event evt) {
+   char time_buf[40];
+   create_timestamp(time_buf, 40);
+   intmax_t thread_id = get_thread_id();
+  // printf("(%s) evt.dref=%p event_type=%d\n", __func__, evt.dref, evt.event_type);
+
+  printf("[%s][%6jd](mainwindow.cpp/%s) Executing. dref=%s, event_type = %s\n",
+        time_buf, thread_id, __func__, ddca_dref_repr(evt.dref), ddca_display_event_type_name(evt.event_type));
+
+  printf("[%s][%6jd](mainwindow.cpp/%s) ddca_validate_display_ref(%s) reports: %s\n",
+        time_buf, thread_id, __func__,
+        ddca_dref_repr(evt.dref),
+        ddca_rc_name(ddca_validate_display_ref(evt.dref, true)));
+
+#ifdef REF
+  QString qsTitle = QString("ddcutil Error");
+  QString qsDetail = QString("Invalid Model: %1").arg(parsed_cmd->model);
+  QMessageBox::Icon icon = QMessageBox::Warning;
+  MsgBoxQueueEntry * qe = new MsgBoxQueueEntry(qsTitle, qsDetail, icon);
+#ifdef DEFERRED_MSG_QUEUE
+  _deferredMsgs.append(qe);     // not needed
+#endif
+  TRACECF(debug, "Pre put, _msgBoxQueue=%p", _msgBoxQueue);
+  _msgBoxQueue->put(qe);
+#endif
+
+  if (evt.event_type == DDCA_EVENT_DISPLAY_CONNECTED || evt.event_type == DDCA_EVENT_DISPLAY_DISCONNECTED) {
+     QString qstitle("Display Status Change");
+     QMessageBox::Icon icon = QMessageBox::Warning;
+     QString qstext;;
+     // QString qstext = (evt.event_type == DDCA_EVENT_DISPLAY_CONNECTED)
+     //                    ?   QString("Display has been connected.   Redetect Displays")
+     //                    :   QString("Display has been disconnected.  Redetect displays");
+     if (evt.event_type == DDCA_EVENT_DISPLAY_CONNECTED)
+        qstext = QString("Display connected on %1, bus /dev/i2c-%2.\n\nRedetect displays")
+                        .arg(evt.connector_name).arg(  evt.io_path.path.i2c_busno) ;
+      else {
+        qstext = QString("Display disconnected on %1, bus /dev/i2c-%2.\n\nRedetect displays")
+                        .arg(evt.connector_name).arg(evt.io_path.path.i2c_busno);
+      }
+
+     MsgBoxQueueEntry* qe = new MsgBoxQueueEntry(qstitle, qstext, icon);
+     GlobalState::instance()._msgBoxQueue->put(qe);
+     // GlobalState::instance()._mainWindow->on_actionRedetect_triggered();  // creates new window
+
+     MainWindow* mainWindow =    GlobalState::instance()._mainWindow;
+     if (evt.event_type == DDCA_EVENT_DISPLAY_CONNECTED) {
+        mainWindow->addMonitor(evt.dref);
+     }
+     else {
+        assert (evt.event_type == DDCA_EVENT_DISPLAY_DISCONNECTED);
+        mainWindow->removeMonitor(evt.dref);
+     }
+
+  }
+  else {
+     printf("[%s][%6jd](mainwindow.cpp/%s) Ignoring event of type %s\n",
+           time_buf, thread_id, __func__, ddca_display_event_type_name(evt.event_type));
+  }
+}
+#endif
+
+
+void MainWindow::forDisplayChanged(DDCA_Display_Status_Event evt) {
+   bool debug = false;
+   TRACECF(debug, "event type: %d = %s, dref=%s",
+          evt.event_type, ddca_display_event_type_name(evt.event_type),
+          ddca_dref_repr(evt.dref) );
+
+   if (evt.event_type ==  DDCA_EVENT_DISPLAY_CONNECTED ) {
+      addMonitor(evt.dref);
+   }
+   else if (evt.event_type == DDCA_EVENT_DISPLAY_DISCONNECTED) {
+      removeMonitor(evt.dref);
+   }
+   else if (evt.event_type == DDCA_EVENT_DDC_ENABLED) {
+      enableMonitor(evt.dref);
+   }
+   else {
+      syslog(LOG_ERR, "unexpected event type");
+      TRACEC("unexpected event type: %d = %s",
+             evt.event_type, ddca_display_event_type_name(evt.event_type));
+      assert(false);
+   }
+}
+
+
+// Called when a new monitor is detected
+void MainWindow::addMonitor(DDCA_Display_Ref dref) {
+   bool debug = false;
+   TRACECF(debug, "dref=%s", ddca_dref_repr(dref));
+   DDCA_Display_Info2 * dinfo;
+   DDCA_Status ddcrc = ddca_get_display_info2(dref, &dinfo);
+   const char * explain = ddca_rc_name(ddcrc);
+   TRACECF(debug, "ddca_get_display_info2() returned %d %s", ddcrc, explain);
+   if (ddcrc != 0) {
+      syslog(LOG_ERR, "ddca_get_display_info2() returned %s", explain);
+      assert(ddcrc == 0);   // ABORT!!!
+   }
+   else {
+      int nextIndex =  _toolbarDisplayCB->count();
+      initOneMonitor(dinfo, nextIndex);
+   }
+}
+
+
+// Called when a monitor is removed
+void MainWindow::removeMonitor(DDCA_Display_Ref dref) {
+   bool debug  = false;
+   TRACECF(debug, "dref=%s", ddca_dref_repr(dref));
+
+   int monNdx = findMonitor(dref);
+   if (monNdx >= 0) {
+      Monitor * monitor = _monitors.at(monNdx);
+      TRACECF(debug, "monitor=%p", monitor);
+
+      // Remove entry for monitor from display selector combo box
+      QString mfg_id     = monitor->_displayInfo->mfg_id;
+      QString model_name = monitor->_displayInfo->model_name;
+      QString sn         = monitor->_displayInfo->sn;
+
+      QString s = model_name;
+      if (s.isEmpty() ) {
+         if ( sn.isEmpty() )
+            s = QString("Laptop");
+         else
+            s = QString("Unknown");    // don't expect this
+      }
+
+      int cbNdx = _toolbarDisplayCB->findText(s,Qt::MatchExactly);
+      _toolbarDisplayCB->removeItem(cbNdx);
+
+      TRACECF(debug, "deleting monitor monNdx=%d, monitor=%p, dispno=%d", monNdx, monitor, monitor->_displayInfo->dispno);
+      _monitors.removeAt(monNdx);
+      delete monitor;
+      TRACECF(debug, "deleted monitor monNdx=%d", monNdx);
+   }
+}
+
+
+// Called when a monitor is enabled
+void MainWindow::enableMonitor(DDCA_Display_Ref dref) {
+   bool debug = false;
+   TRACECF(debug, "dref=%s", ddca_dref_repr(dref));
+   int monNdx = findMonitor(dref);
+   if (monNdx >= 0) {
+      Monitor * monitor = _monitors.at(monNdx);
+      TRACECF(debug, "Enabled monitor %p monNdx=%d", monitor, monNdx);
+   }
+}
 
 //
-// Constructor, Destructor, Initialization
+// Message Box Handling
 //
 
 // called from main.cpp before event mainwindow event loop started
@@ -111,6 +266,10 @@ void MainWindow::start_msgBoxThread() {
    TRACEMCF(debug, "Done.  _msgBoxThread started");
 }
 
+
+//
+// Constructor, Destructor, Initialization
+//
 
 void MainWindow::connectBaseModel(Monitor * curMonitor) {
    FeatureBaseModel * baseModel = curMonitor->_baseModel;
@@ -223,7 +382,7 @@ void MainWindow::initOneMonitor(DDCA_Display_Info2 * info, int curIndex) {
       curMonitor->_requestQueue->put(new LoadDfrRequest());
       curMonitor->_requestQueue->put(new VcpCapRequest());
 
-      // TODO: disable Capabilities and Features Views
+      // TODO: disable Capabiltest_emit_ddcui_syslogities and Features Views
       _ui->actionCapabilities->setEnabled(true);
       _ui->actionFeaturesScrollArea->setEnabled(true);
    }
@@ -235,70 +394,6 @@ void MainWindow::initOneMonitor(DDCA_Display_Info2 * info, int curIndex) {
 }
 
 
-void MainWindow::addMonitor(DDCA_Display_Ref dref) {
-   bool debug = false;
-   TRACECF(debug, "dref=%s", ddca_dref_repr(dref));
-   DDCA_Display_Info2 * dinfo;
-   DDCA_Status ddcrc = ddca_get_display_info2(dref, &dinfo);
-   const char * explain = ddca_rc_name(ddcrc);
-   TRACECF(debug, "ddca_get_display_info2() returned %d %s", ddcrc, explain);
-   if (ddcrc != 0) {
-      syslog(LOG_ERR, "ddca_get_display_info2() returned %s", explain);
-      assert(ddcrc == 0);   // ABORT!!!
-   }
-   else {
-      int nextIndex =  _toolbarDisplayCB->count();
-      initOneMonitor(dinfo, nextIndex);
-   }
-}
-
-
-void MainWindow::removeMonitor(DDCA_Display_Ref dref) {
-   bool debug  = false;
-   TRACECF(debug, "dref=%s", ddca_dref_repr(dref));
-
-   int monNdx = findMonitor(dref);
-   if (monNdx >= 0) {
-      Monitor * monitor = _monitors.at(monNdx);
-      TRACECF(debug, "monitor=%p", monitor);
-
-      // Remove entry for monitor from display selector combo box
-      QString mfg_id     = monitor->_displayInfo->mfg_id;
-      QString model_name = monitor->_displayInfo->model_name;
-      QString sn         = monitor->_displayInfo->sn;
-
-      QString s = model_name;
-      if (s.isEmpty() ) {
-         if ( sn.isEmpty() )
-            s = QString("Laptop");
-         else
-            s = QString("Unknown");    // don't expect this
-      }
-
-      int cbNdx = _toolbarDisplayCB->findText(s,Qt::MatchExactly);
-      _toolbarDisplayCB->removeItem(cbNdx);
-
-      TRACECF(debug, "deleting monitor monNdx=%d, monitor=%p, dispno=%d", monNdx, monitor, monitor->_displayInfo->dispno);
-      _monitors.removeAt(monNdx);
-      delete monitor;
-      TRACECF(debug, "deleted monitor monNdx=%d", monNdx);
-   }
-}
-
-
-void MainWindow::enableMonitor(DDCA_Display_Ref dref) {
-   bool debug = false;
-   TRACECF(debug, "UNIMPLEMENTED dref=%s", ddca_dref_repr(dref));
-
-   int monNdx = findMonitor(dref);
-   if (monNdx >= 0) {
-      Monitor * monitor = _monitors.at(monNdx);
-      TRACECF(debug, "monitor=%p", monitor);
-
-
-      TRACECF(debug, "Enabled monitor monNdx=%d", monNdx);
-   }
-}
 
 
 void MainWindow::setInitialDisplayIndex(Parsed_Ddcui_Cmd * parsed_cmd) {
@@ -324,7 +419,7 @@ void MainWindow::setInitialDisplayIndex(Parsed_Ddcui_Cmd * parsed_cmd) {
          // queue status dialog
          initialDisplayIndex = 0;
 
-         QString qsTitle = QString("ddcutil Error");
+         QString qsTitle = QString("ddcui Error");
          QString qsDetail = QString("Invalid Model: %1").arg(parsed_cmd->model);
          QMessageBox::Icon icon = QMessageBox::Warning;
          MsgBoxQueueEntry * qe = new MsgBoxQueueEntry(qsTitle, qsDetail, icon);
@@ -351,17 +446,6 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
     longRunningTaskStart();
     statusBar()->showMessage(QString("Loading display information..."));
 
-#ifdef OLD
-    TRACECF(debug, "Calling ddca_get_display_info_list2()");
-    DDCA_Status ddcrc = ddca_get_display_info_list2(
-                            true,         // include invalid displays
-                            &_dlist);
-    TRACECF(debug, "ddca_get_display_info_list2() returned %d", ddcrc);
-    assert(ddcrc == 0);
-    TRACECF(debug, "_dlist->ct = %d", _dlist->ct);
-#endif
-
-    TRACECF(debug, "Calling ddca_get_display_refs()");
     DDCA_Status ddcrc = ddca_get_display_refs(/*include invalid displays=*/true, &_drefs);
     TRACECF(debug, "ddca_get_display_refs() returned %d, _drefs=%p", ddcrc, _drefs);
     assert(ddcrc == 0);
@@ -377,7 +461,6 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
               DDCA_Error_Detail * cause = errs->causes[ndx];
               TRACECF(debug, "errs->status_code=%d", errs->status_code);
               if (cause->status_code == -13) {    // -EACCES
-
                  permissionsError = true;
               }
               if (ndx == 0)
@@ -479,6 +562,54 @@ void MainWindow::quitShortcut() {
 }
 
 
+// Extracted from MainWindow constructor for clarity
+void MainWindow::startWatchDisplays() {
+   bool watching_active = false;
+   DDCA_Display_Event_Class event_classes;
+   // in case watch thread already started by libddcutil
+   DDCA_Status watch_rc = ddca_get_active_watch_classes(&event_classes);
+   if (watch_rc  == DDCRC_OK) {
+      if (!(event_classes & DDCA_EVENT_CLASS_DISPLAY_CONNECTION)) {
+         ddca_stop_watch_displays(true);
+         ddca_start_watch_displays(DDCA_EVENT_CLASS_DISPLAY_CONNECTION);
+         if (test_emit_ddcui_syslog(DDCA_SYSLOG_NOTICE))
+            syslog(LOG_NOTICE, "Restarted display watch thread with DDCA_EVENT_CLASS_DISPLAY_CONNECTION");
+      }
+      watching_active = true;
+   }
+   else { // normal case
+      DDCA_Status rc = ddca_start_watch_displays(DDCA_EVENT_CLASS_DISPLAY_CONNECTION);
+      if (rc == DDCRC_OK) {
+         watching_active = true;
+         if (test_emit_ddcui_syslog(DDCA_SYSLOG_NOTICE))
+            syslog(LOG_NOTICE, "Started display watch thread with DDCA_EVENT_CLASS_DISPLAY_CONNECTION");
+      }
+      else {
+         if (test_emit_ddcui_syslog(DDCA_SYSLOG_ERROR))
+            syslog(LOG_ERR, "Failed to start watch thread.");
+         QString qstitle("Failed to start display watch thread");
+         QMessageBox::Icon icon = QMessageBox::Warning;
+         DDCA_Error_Detail * erec = ddca_get_error_detail();
+         QString qstext;
+         if (erec) {
+            qstext = QString(erec->detail);
+            ddca_free_error_detail(erec);
+         }
+         else {
+            qstext = QString("Unable to start display watch thread.  Status %1").arg(ddca_rc_desc(rc));
+         }
+
+         MsgBoxQueueEntry* qe = new MsgBoxQueueEntry(qstitle, qstext, icon);
+         GlobalState::instance()._msgBoxQueue->put(qe);
+      }
+   }
+   if (watching_active) {
+      // ddca_register_display_status_callback(display_status_event_main_callback);
+      CallbackManager::instance().registerCallbacks(this);
+   }
+}
+
+
 MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
     QMainWindow(parent),
     _ui(new Ui_MainWindow(this))
@@ -518,60 +649,13 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
     _msgBoxThread = new MsgBoxThread(_msgBoxQueue);
     globalState._msgBoxThread = _msgBoxThread;
     globalState._msgBoxQueue  = _msgBoxQueue;
-
     if (parsed_cmd->flags & CMD_FLAG_WATCH_DISPLAYS) {
-       bool watching_active = false;
-       DDCA_Display_Event_Class event_classes;
-       // in case watch thread already started by libddcutil
-       DDCA_Status watch_rc = ddca_get_active_watch_classes(&event_classes);
-       if (watch_rc  == DDCRC_OK) {
-          if (!(event_classes & DDCA_EVENT_CLASS_DISPLAY_CONNECTION)) {
-             ddca_stop_watch_displays(true);
-             ddca_start_watch_displays(DDCA_EVENT_CLASS_DISPLAY_CONNECTION);
-             if (test_emit_ddcui_syslog(DDCA_SYSLOG_NOTICE))
-                syslog(LOG_NOTICE, "Restarted display watch thread with DDCA_EVENT_CLASS_DISPLAY_CONNECTION");
-          }
-          watching_active = true;
-       }
-       else { // normal case
-          DDCA_Status rc = ddca_start_watch_displays(DDCA_EVENT_CLASS_DISPLAY_CONNECTION);
-          if (rc == DDCRC_OK) {
-             watching_active = true;
-             if (test_emit_ddcui_syslog(DDCA_SYSLOG_NOTICE))
-                syslog(LOG_NOTICE, "Started display watch thread with DDCA_EVENT_CLASS_DISPLAY_CONNECTION");
-          }
-          else {
-             if (test_emit_ddcui_syslog(DDCA_SYSLOG_ERROR))
-                syslog(LOG_ERR, "Failed to start watch thread.");
-
-             QString qstitle("Failed to start display watch thread");
-             QMessageBox::Icon icon = QMessageBox::Warning;
-             DDCA_Error_Detail * erec = ddca_get_error_detail();
-             QString qstext;
-             if (erec) {
-                qstext = QString(erec->detail);
-                ddca_free_error_detail(erec);
-             }
-             else {
-                qstext = QString("Unable to start display watch thread.  Status %1")
-                      .arg(ddca_rc_desc(rc));
-             }
-
-             MsgBoxQueueEntry* qe = new MsgBoxQueueEntry(qstitle, qstext, icon);
-             GlobalState::instance()._msgBoxQueue->put(qe);
-
-          }
-       }
-       if (watching_active) {
-          // ddca_register_display_status_callback(display_status_event_main_callback);
-          CallbackManager::instance().registerCallbacks(this);
-       }
+       startWatchDisplays();
     }
 
-     // QShortcut * quit_shortcut = new QShortcut(QKeySequence(Qt::Key_Q | Qt::CTRL), this, SLOT(close()));
-     _quit_shortcut = new QShortcut(QKeySequence(Qt::Key_Q | Qt::CTRL), this);
-     _quit_shortcut->setContext(Qt::ApplicationShortcut);
-     connect(_quit_shortcut,   &QShortcut::activated,
+    _quit_shortcut = new QShortcut(QKeySequence(Qt::Key_Q | Qt::CTRL), this);
+    _quit_shortcut->setContext(Qt::ApplicationShortcut);
+    connect(_quit_shortcut,   &QShortcut::activated,
              this,            &MainWindow::quitShortcut);
 
     TRACECF(debug, "Before initMonitors()");
@@ -582,22 +666,19 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
     _feature_selector   = new FeatureSelector(parsed_cmd);
     _otherOptionsState  = new NcValuesState(parsed_cmd);
     _uiOptionsState     = new UserInterfaceOptionsState(parsed_cmd);
-    globalState._ncValuesState = _otherOptionsState;
-    globalState._uiOptionsState    = _uiOptionsState;
-
+    globalState._ncValuesState  = _otherOptionsState;
+    globalState._uiOptionsState = _uiOptionsState;
     QObject::connect(
         _uiOptionsState,  &UserInterfaceOptionsState::controlKeyRequired_changed,
         this,             &MainWindow::forControlKeyRequired_changed);
-
     QObject::connect(
         this,     &MainWindow::featureSelectionChanged,
         this,     &MainWindow::on_actionFeaturesScrollArea_triggered);
 
-// #ifdef VIEW_PR60
-    // note initial view, but currently does nothing
      switch (parsed_cmd->view) {
      case VIEW_SUMMARY:
-        _initialView = MonitorView;
+     case VIEW_UNSET:
+        _initialView = SummaryView;
         break;
      case VIEW_CAPABILITIES:
         _initialView = CapabilitiesView;
@@ -605,11 +686,7 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
      case VIEW_FEATURES:
         _initialView = FeaturesView;
         break;
-     default:
-        // No change from the default value
-        break;
      }
-// #endif
 
 // was deleted by VIEW_PR60, restored for reference
 #ifdef BAD   // get dialog box that capabilities incomplete before main screen appears
@@ -626,21 +703,22 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
 
      if (_monitors.size() > 0) {
         debug = false;
-        if (parsed_cmd->view == VIEW_UNSET || parsed_cmd->view == VIEW_SUMMARY) {
+        if (_initialView == SummaryView) {
            TRACECF(debug, "_monitors_size=%d. emitting signalMonitorSummaryView", _monitors.size());
            emit signalMonitorSummaryView();
         }
         else {
-           // on startup, don't want msg that capabilities not ready and forced to summary view
-           int sleep_millis = 000;
+           // on startup, don't want msg that capabilities not ready and be forced to summary view
+           int sleep_millis = 000;  // *** TO BE TUNED ***
+           TRACECF(debug, "Sleeping %d millis before emitting view signal", sleep_millis);
            QThread::msleep(sleep_millis);
 
-           if (parsed_cmd->view == VIEW_CAPABILITIES) {
+           if (_initialView = CapabilitiesView) {
               TRACECF(debug, "_monitors_size=%d. emitting signalCapabilitiesView", _monitors.size());
               emit signalCapabilitiesView();
            }
            else {
-              assert (parsed_cmd->view == VIEW_FEATURES);
+              assert (_initialView == FeaturesView);
               TRACECF(debug, "_monitors_size=%d. emitting signalFeaturesView", _monitors.size());
               emit signalFeaturesView();
            }
@@ -687,12 +765,16 @@ MainWindow::~MainWindow()
 }
 
 
+//
+// Control key option for changing feature values
+//
+
+// Slot for UserInterfaceOptionsState::controlKeyRequired_changed,
 void MainWindow::forControlKeyRequired_changed(bool onoff) {
    bool debug = false;
    TRACECF(debug, "Starting. onoff=%s", SBOOL(onoff));
    ctrlKeyStatusMsg();
    TRACECF(debug, "Done");
-
 }
 
 
@@ -819,7 +901,7 @@ void MainWindow::displaySelectorCombobox_currentIndexChanged(int index) {
    // From index, get the Monitor object
    // if not support DDC, always emit signalMonitorSummaryView
    switch(_curView) {
-   case MonitorView:
+   case SummaryView:
       emit signalMonitorSummaryView();
       break;
    case CapabilitiesView:
@@ -845,7 +927,7 @@ void MainWindow::displaySelectorCombobox_activated(int index) {
 // View menu slots
 //
 
-// View->Summary
+// MonitorsView
 
 void MainWindow::on_actionMonitorSummary_triggered()
 {
@@ -872,7 +954,7 @@ void MainWindow::on_actionMonitorSummary_triggered()
        moninfoPlainText->setPlainText(s);
        free(s);
 
-       _curView = View::MonitorView;
+       _curView = View::SummaryView;
        _ui->actionRescan->setEnabled(false);
        _ui->actionMonitorSummary->setChecked(true);
        bool b = monitor->supportsDdc();
@@ -881,26 +963,6 @@ void MainWindow::on_actionMonitorSummary_triggered()
        // _ui->centralWidget->setCurrentIndex(pageno);
        _ui->centralWidget->setCurrentWidget(monitor->_page_moninfo);
        _ui->centralWidget->show();
-
-#ifdef VIEW_PR60
-       // !!! WRONG LOCATION !!!
-       if (!_initialViewShown) {
-          _initialViewShown = true;
-          switch(_initialView) {
-          case MonitorView:
-             // MonitorView is already active, do nothing
-             break;
-          case CapabilitiesView:
-             emit signalCapabilitiesView();
-             break;
-          case FeaturesView:
-             emit signalFeaturesView();
-             break;
-          case NoView:
-             break;
-          }
-       }
-#endif
     }
     ctrlKeyStatusMsg();   // clears the message since not Features view
     TRACECF(debug, "_ui->actionCapabilities->isEnabled()=%s",
@@ -908,7 +970,7 @@ void MainWindow::on_actionMonitorSummary_triggered()
 }
 
 
-// View->Capabilities
+// CapabilitiesView
 
 void MainWindow::on_actionCapabilities_triggered()
 {
@@ -933,19 +995,13 @@ void MainWindow::on_actionCapabilities_triggered()
           QString msg = QString("Display %1 on bus /dev/i2c-%2 does not support DDC (1)")
                 .arg(dinfo->model_name)
                 .arg(dinfo->path.path.i2c_busno);
-          QMessageBox::warning(this,
-                               "ddcutil",
-                               msg,
-                               QMessageBox::Ok);
+          QMessageBox::warning(this, "ddcui", msg, QMessageBox::Ok);
           // emit signalMonitorSummaryView();   // doesn't work
           on_actionMonitorSummary_triggered();
        }
 
        else if (!monitor->capabilitiesCheckComplete()) {
-          QMessageBox::warning(this,
-                               "ddcutil",
-                               "Capabilities check still in progress",
-                               QMessageBox::Ok);
+          QMessageBox::warning(this, "ddcui", "Capabilities check still in progress", QMessageBox::Ok);
           // emit signalMonitorSummaryView();   // doesn't work
           on_actionMonitorSummary_triggered();
        }
@@ -954,10 +1010,7 @@ void MainWindow::on_actionCapabilities_triggered()
           QString msg = QString("Display %1 on bus /dev/i2c-%2 does not support DDC (2)")
                 .arg(dinfo->model_name)
                 .arg(dinfo->path.path.i2c_busno);
-          QMessageBox::warning(this,
-                               "ddcutil",
-                               msg,
-                               QMessageBox::Ok);
+          QMessageBox::warning(this, "ddcui", msg, QMessageBox::Ok);
           // emit signalMonitorSummaryView();   // doesn't work
           on_actionMonitorSummary_triggered();
        }
@@ -991,7 +1044,7 @@ void MainWindow::on_actionCapabilities_triggered()
 }
 
 
-// View->Features
+// FeaturesView
 
 void MainWindow::on_actionFeaturesScrollArea_triggered()
 {
@@ -1018,10 +1071,7 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
           QString msg = QString("Display %1 on bus /dev/i2c-%2 does not support DDC (3)")
                 .arg(monitor->_displayInfo->model_name)
                 .arg(monitor->_displayInfo->path.path.i2c_busno);
-          QMessageBox::warning(this,
-                               "ddcui",
-                               msg,
-                               QMessageBox::Ok);
+          QMessageBox::warning(this, "ddcui", msg, QMessageBox::Ok);
           // emit signalMonitorSummaryView();   // doesn't work
           on_actionMonitorSummary_triggered();
        }
@@ -1044,7 +1094,6 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
        }
 
        else {
-
           // TODO Combine View, features view
           if (_curView                     != View::FeaturesView  ||
               _curDisplayIndex             != monitorNdx          ||
@@ -1055,7 +1104,6 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
              _curView = View::FeaturesView;
              _ui->actionRescan->setEnabled(true);
              _ui->actionFeaturesScrollArea->setChecked(true);
-
              monitor->_curFeatureSelector   = *_feature_selector;
           }
           else {
@@ -1120,17 +1168,9 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
 // *** Actions Menu Slots
 //
 
-// Actions->Rescan slots
+// Actions->Redetect
 
-void MainWindow::on_actionRescan_triggered() {
-   bool debug = false;
-   TRACECF(debug, "Executing");
-   assert(_curView == FeaturesView);
-   assert(_curDisplayIndex >= 0);
-   _monitors[_curDisplayIndex]->_baseModel->reloadFeatures();
-}
-
-
+// redetect displays
 void MainWindow::on_actionRedetect_triggered() {
    bool debug = false;
    TRACECF(debug, "Executing");
@@ -1153,181 +1193,28 @@ void MainWindow::on_actionRedetect_triggered() {
 
    // reinit UI to first monitor, summary view
    // if no monitors, set _curDisplayIndex = -1
-   // _curDisplayIndex = (_dlist->ct > 0) ? 0 : -1;
    _curDisplayIndex = (_drefs_ct > 0) ? 0 : -1;
-#ifdef VIEW_PR_60
-   _initialViewShown = false;
-#endif
 
    // HANDLE CASE OF NO DDC MONITORS?
-#ifdef VIEW_PR60
-   TRACECF(debug, "Emitting signalMonitorSummaryView");
-   // emit signalMonitorSummaryView() will invoke on_actionMonitorSummary_triggered() twice and will reset _initialView
-   on_actionMonitorSummary_triggered();
-#else
    emit signalMonitorSummaryView();
-#endif
-
 
    TRACECF(debug,"Done");
 }
 
 
-#ifdef DOESNT_WORK
-void MainWindow::forDisplayChanged(DDCA_Display_Status_Event evt) {
-   bool debug = false;
-   TRACECF(debug, "event type: %d = %s, dref=%s",
-          evt.event_type, ddca_display_event_type_name(evt.event_type),
-          ddca_dref_repr(evt.dref) );
+// Actions->Rescan
 
-   if (evt.event_type ==  DDCA_EVENT_DISPLAY_CONNECTED ) {
-      addMonitor(evt.dref);
-   }
-   else if (evt.event_type == DDCA_EVENT_DISPLAY_DISCONNECTED) {
-      removeMonitor(evt.dref);
-   }
-   else {
-      syslog(LOG_ERR, "unexpected event type");
-      TRACEC("unexpected event type: %d = %s",
-             evt.event_type, ddca_display_event_type_name(evt.event_type));
-      assert(false);
-   }
-}
-#endif
-
-#ifdef EXECUTES_ON_WRONG_THREAD
-
-void display_status_event_main_callback(DDCA_Display_Status_Event evt) {
-   char time_buf[40];
-   create_timestamp(time_buf, 40);
-   intmax_t thread_id = get_thread_id();
-  // printf("(%s) evt.dref=%p event_type=%d\n", __func__, evt.dref, evt.event_type);
-
-  printf("[%s][%6jd](mainwindow.cpp/%s) Executing. dref=%s, event_type = %s\n",
-        time_buf, thread_id, __func__, ddca_dref_repr(evt.dref), ddca_display_event_type_name(evt.event_type));
-
-  printf("[%s][%6jd](mainwindow.cpp/%s) ddca_validate_display_ref(%s) reports: %s\n",
-        time_buf, thread_id, __func__,
-        ddca_dref_repr(evt.dref),
-        ddca_rc_name(ddca_validate_display_ref(evt.dref, true)));
-
-#ifdef REF
-  QString qsTitle = QString("ddcutil Error");
-  QString qsDetail = QString("Invalid Model: %1").arg(parsed_cmd->model);
-  QMessageBox::Icon icon = QMessageBox::Warning;
-  MsgBoxQueueEntry * qe = new MsgBoxQueueEntry(qsTitle, qsDetail, icon);
-#ifdef DEFERRED_MSG_QUEUE
-  _deferredMsgs.append(qe);     // not needed
-#endif
-  TRACECF(debug, "Pre put, _msgBoxQueue=%p", _msgBoxQueue);
-  _msgBoxQueue->put(qe);
-#endif
-
-
-  if (evt.event_type == DDCA_EVENT_DISPLAY_CONNECTED || evt.event_type == DDCA_EVENT_DISPLAY_DISCONNECTED) {
-     QString qstitle("Display Status Change");
-     QMessageBox::Icon icon = QMessageBox::Warning;
-     QString qstext;;
-     // QString qstext = (evt.event_type == DDCA_EVENT_DISPLAY_CONNECTED)
-     //                    ?   QString("Display has been connected.   Redetect Displays")
-     //                    :   QString("Display has been disconnected.  Redetect displays");
-     if (evt.event_type == DDCA_EVENT_DISPLAY_CONNECTED)
-        qstext = QString("Display connected on %1, bus /dev/i2c-%2.\n\nRedetect displays")
-                        .arg(evt.connector_name).arg(  evt.io_path.path.i2c_busno) ;
-      else {
-        qstext = QString("Display disconnected on %1, bus /dev/i2c-%2.\n\nRedetect displays")
-                        .arg(evt.connector_name).arg(evt.io_path.path.i2c_busno);
-      }
-
-     MsgBoxQueueEntry* qe = new MsgBoxQueueEntry(qstitle, qstext, icon);
-     GlobalState::instance()._msgBoxQueue->put(qe);
-     // GlobalState::instance()._mainWindow->on_actionRedetect_triggered();  // creates new window
-
-     MainWindow* mainWindow =    GlobalState::instance()._mainWindow;
-     if (evt.event_type == DDCA_EVENT_DISPLAY_CONNECTED) {
-        mainWindow->addMonitor(evt.dref);
-     }
-     else {
-        assert (evt.event_type == DDCA_EVENT_DISPLAY_DISCONNECTED);
-        mainWindow->removeMonitor(evt.dref);
-     }
-
-  }
-  else {
-     printf("[%s][%6jd](mainwindow.cpp/%s) Ignoring event of type %s\n",
-           time_buf, thread_id, __func__, ddca_display_event_type_name(evt.event_type));
-  }
-}
-#endif
-
-
-void MainWindow::forDisplayChanged(DDCA_Display_Status_Event evt) {
-   bool debug = false;
-   TRACECF(debug, "event type: %d = %s, dref=%s",
-          evt.event_type, ddca_display_event_type_name(evt.event_type),
-          ddca_dref_repr(evt.dref) );
-
-
-   if (evt.event_type ==  DDCA_EVENT_DISPLAY_CONNECTED ) {
-      addMonitor(evt.dref);
-   }
-   else if (evt.event_type == DDCA_EVENT_DISPLAY_DISCONNECTED) {
-      removeMonitor(evt.dref);
-   }
-   else if (evt.event_type == DDCA_EVENT_DDC_ENABLED) {
-      enableMonitor(evt.dref);
-   }
-   else {
-      syslog(LOG_ERR, "unexpected event type");
-      TRACEC("unexpected event type: %d = %s",
-             evt.event_type, ddca_display_event_type_name(evt.event_type));
-      assert(false);
-   }
-}
-
-
-void MainWindow::on_actionDebugLocks_triggered() {
+// rescan features for current monitor
+void MainWindow::on_actionRescan_triggered() {
    bool debug = false;
    TRACECF(debug, "Executing");
-   ddca_report_locks(0);
-   captureLocks();
-   TRACECF(debug,"Done");
+   assert(_curView == FeaturesView);
+   assert(_curDisplayIndex >= 0);
+   _monitors[_curDisplayIndex]->_baseModel->reloadFeatures();
 }
 
 
-void MainWindow::captureLocks() {
-    ddca_start_capture(DDCA_CAPTURE_NOOPTS);
-    // DDCA_Output_Level saved_ol = ddca_get_output_level();
-    // ddca_set_output_level(DDCA_OL_VERBOSE);
-    ddca_report_locks(0);
-    // ddca_set_output_level(saved_ol);
-    char * s = ddca_end_capture();
-    QString qs(s);
-    free(s);
-    showCapturedText("Execution Statistics", qs);
-}
-
-
-// Actions->Debug: DebugActionsDialog slots
-
-void MainWindow::on_actionDebugActionsDialog_triggered()
-{
-   // bool debug = false;
-   // TODO: allocate once and save dialog, cf feature selection
-   // display dialog box for selecting features
-
-   // TRACECF(debug, "triggered");
-   // assert(false);  // for testing
-
-   DebugActionsDialog* dialog = new DebugActionsDialog(this);
-   QObject::connect(dialog, &DebugActionsDialog::resetStats_triggered,
-                    this,   &MainWindow::for_resetStats_triggered);
-   QObject::connect(dialog, &DebugActionsDialog::reportStats_triggered,
-                    this,   &MainWindow::for_reportStats_triggered);
-   dialog->exec();
-   delete dialog;
-}
-
+// Actions->Execution Statistics
 
 void MainWindow::for_resetStats_triggered() {
    bool debug = false;
@@ -1379,6 +1266,51 @@ void MainWindow::capture_stats(DDCA_Stats_Type stats_type, bool show_thread_data
        hd->setWindowTitle( "Execution Statistics" );
        hd->exec();     // always modal
 #endif
+}
+
+
+// Actions->Debug Locks
+
+void MainWindow::on_actionDebugLocks_triggered() {
+   bool debug = false;
+   TRACECF(debug, "Executing");
+   ddca_report_locks(0);
+   captureLocks();
+   TRACECF(debug,"Done");
+}
+
+
+void MainWindow::captureLocks() {
+    ddca_start_capture(DDCA_CAPTURE_NOOPTS);
+    // DDCA_Output_Level saved_ol = ddca_get_output_level();
+    // ddca_set_output_level(DDCA_OL_VERBOSE);
+    ddca_report_locks(0);
+    // ddca_set_output_level(saved_ol);
+    char * s = ddca_end_capture();
+    QString qs(s);
+    free(s);
+    showCapturedText("Execution Statistics", qs);
+}
+
+
+// Actions->Debug: DebugActionsDialog slots
+
+void MainWindow::on_actionDebugActionsDialog_triggered()
+{
+   // bool debug = false;
+   // TODO: allocate once and save dialog, cf feature selection
+   // display dialog box for selecting features
+
+   // TRACECF(debug, "triggered");
+   // assert(false);  // for testing
+
+   DebugActionsDialog* dialog = new DebugActionsDialog(this);
+   QObject::connect(dialog, &DebugActionsDialog::resetStats_triggered,
+                    this,   &MainWindow::for_resetStats_triggered);
+   QObject::connect(dialog, &DebugActionsDialog::reportStats_triggered,
+                    this,   &MainWindow::for_reportStats_triggered);
+   dialog->exec();
+   delete dialog;
 }
 
 
@@ -1492,6 +1424,7 @@ void MainWindow::for_actionOtherOptionsDialog_ncValuesSourceChanged(
    TRACECF(debug, "Done");
 }
 #endif
+
 
 // Options->User Interface Options slots: UserInterfaceOptionsDialog
 
