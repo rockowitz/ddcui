@@ -407,7 +407,7 @@ void MainWindow::setInitialDisplayIndex(Parsed_Ddcui_Cmd * parsed_cmd) {
          // on the command line.
          TRACECF(debug, "ndx=%d, parsed_cmd->model = |%s|, curname = |%s|",
                  ndx, parsed_cmd->model, QS2S(curName));
-         if (userModelParm == curName) {
+         if (QString::compare(userModelParm, curName, Qt::CaseInsensitive) == 0) {
             initialDisplayIndex = ndx;
             TRACECF(debug, "model found, ndx=%d", ndx);
             break;
