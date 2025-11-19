@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.6.1] 2025-11-19
+
+Requires libddcutil.so.5.4 from ddcutil 2.2.3 or later.
+
+### Added
+
+- Option ***--view***, specifies initial view 
+- Option ***--model*** ???
+
+### Fixed
+
+- Improve handling of display changes reported by libddcutil. 
+  Actions->Redetect Displays should no longer be needed, but 
+  is retained as a recovery operation. 
+
+
+
+
 ## [0.6.0] 2025-02-15
 
 Requires libddcutil.so.5.2 from ddcutil 2.2.0 or later.
