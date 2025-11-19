@@ -1,4 +1,9 @@
-// callback_manager.cpp
+/** \file callback_manager.cpp
+ *
+ *  This class exists so that code that actually handles display
+ *  changes does not execute on the callback function thread,
+ *  allowing the callback to return quickly.
+ */
 
 // Copyright (C) 2018-2025 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later

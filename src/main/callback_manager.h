@@ -1,6 +1,11 @@
-// callback_manager.h
+/** \file callback_manager.h
+ *
+ *  This class exists so that code that actually handles display
+ *  changes does not execute on the callback function thread,
+ *  allowing the callback to return quickly.
+ */
 
-// Copyright (C) 2024 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2024-2025 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef CALLBACK_MANAGER_H_
