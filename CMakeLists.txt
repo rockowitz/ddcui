@@ -429,7 +429,7 @@ install(FILES AUTHORS CHANGELOG.md NEWS.md README.md
 # endif()
 
 install(FILES ddcui.desktop                 DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/applications)
-install(FILES ddcui.appdata.xml             DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/metainfo)
+install(FILES ddcui.appdata.xml             DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/metainfo                   RENAME com.ddcutil.ddcui.metainfo.xml)
 install(FILES icons/video-display-128px.png DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/128x128/apps RENAME ddcui.png)
 install(FILES icons/video-display-64px.png  DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/64x64/apps   RENAME ddcui.png)
 install(FILES icons/video-display-48px.png  DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/48x48/apps   RENAME ddcui.png)
