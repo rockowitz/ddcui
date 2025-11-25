@@ -428,8 +428,12 @@ install(FILES AUTHORS CHANGELOG.md NEWS.md README.md
                                               DESTINATION ${CMAKE_INSTALL_DOCDIR})
 # endif()
 
-install(FILES ddcui.desktop                 DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/applications)
-install(FILES ddcui.appdata.xml             DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/metainfo)
+# remove files with old appdata names if they exist
+install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E rm -f ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATAROOTDIR}/applications/ddcui.desktop )")
+install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E rm -f ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATAROOTDIR}/metainfo/ddcui.appdata.xml )")
+
+install(FILES com.ddcutil.ddcui.desktop     DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/applications)
+install(FILES com.ddcutil.ddcui.appdata.xml DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/metainfo)
 install(FILES icons/video-display-128px.png DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/128x128/apps RENAME ddcui.png)
 install(FILES icons/video-display-64px.png  DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/64x64/apps   RENAME ddcui.png)
 install(FILES icons/video-display-48px.png  DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/48x48/apps   RENAME ddcui.png)
