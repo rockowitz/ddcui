@@ -479,11 +479,11 @@ int main(int argc, char *argv[])
           // without w.show(), initial serial message box does not appear over MainWindow
           w.show();
 
-      #ifdef PERSISTENT_SERIAL_MSG_BOX
+#ifdef PERSISTENT_SERIAL_MSG_BOX
           w.initSerialMsgbox();
           // how to defer until after main event loop started, i.e. a.exec() called
           w.start_msgBoxThread();
-      #endif
+#endif
 
           DBGF(debug, "Calling Application::exec()");
           mainStatus = application.exec();
