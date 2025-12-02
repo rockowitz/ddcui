@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.6.1] 2025-11-19
+## [0.6.1] 2025-12-02
 
 Requires libddcutil.so.5.4 from ddcutil 2.2.3 or later.
 
@@ -10,14 +10,23 @@ Requires libddcutil.so.5.4 from ddcutil 2.2.3 or later.
 - The check for the model name specified in option ***--model***
   is now case-insensitive. 
 
+### Changed
+
+- CMakeLists.txt defaults to QT6. To build with QT, use 
+  argument ***-DUSE_QT5***.
+ 
 ### Fixed
 
 - Improve handling of display changes reported by libddcutil.
   Actions->Redetect Displays should no longer be needed, but 
-  is retained as a recovery operation. 
-
-
-
+  is retained as a recovery operation.
+- Make closely adhere to ambiguous appdata naming standards
+  Renamed files:
+  - ddcui.appdata.xml -> com.ddcutil.ddcui.metainfo.xml
+  - ddcui.desktop -> com.ddcutil.ddcui.desktop
+  Command **make install** erases files with the old names if they exist
+  Addresses pull request #71
+- CMakeLists.txt: replace deprecated execute_program() with exec_process()
 
 ## [0.6.0] 2025-02-15
 
