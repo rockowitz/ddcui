@@ -22,8 +22,15 @@ message(${VERBOSE} "  ddcui_qt5_min_version:     ${ddcui_qt5_min_version}" )
 message(${VERBOSE} "  ddcui_qlib_version:        ${ddcui_glib_version}" )
 message(${VERBOSE} "  ddcui_libddcutil_version:  ${ddcui_libddcutil_version}" ) 
 
-option(USE_QT6 "Use QT6 instead of QT5" OFF)
-message(STATUS "USE_QT6:      ${USE_QT6}")
+option(USE_QT5 "Use QT5 instead of QT6" OFF)
+option(USE_QT6 "Use QT6 (default)" ON)
+if (USE_QT5)
+   set (USE_QT6 OFF)
+endif()
+
+message(STATUS "USE_QT5:                   ${USE_QT5}")
+message(STATUS "USE_QT6:                   ${USE_QT6}")
+
 
 option(USE_CCACHE "Use ccache" ON)
 message(STATUS "USE_CCACHE:                ${USE_CCACHE}" )
