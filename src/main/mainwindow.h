@@ -78,6 +78,7 @@ private:
     void initMonitors(Parsed_Ddcui_Cmd * parsed_cmd);
 
     void loadMonitorFeatures(Monitor * monitor);
+    bool checkAltViewOk(Monitor * monitor);
 
 //
 // *** Signals
@@ -97,6 +98,11 @@ public:
     void resetStats();
     void reportApplicationEventLoopStarted();
     void signalControlKeyPressed(bool onoff);
+
+private:
+    signals:
+    void signalRedetectDisplaysStart();
+    void signalRedetectDisplaysEnd();
 
 
 //
@@ -207,7 +213,7 @@ private:
     View                         _curView = NoView;
 // #ifdef VIEW_PR60
     View                         _initialView = SummaryView;
- //   bool                         _initialViewShown = false;
+    bool                         _initialViewShown = false;
 // #endif
     QComboBox *                  _toolbarDisplayCB;
     NcValuesState *              _otherOptionsState = nullptr;
