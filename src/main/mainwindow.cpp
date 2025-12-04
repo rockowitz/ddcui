@@ -567,15 +567,16 @@ void MainWindow::startWatchDisplays() {
    // in case watch thread already started by libddcutil
    DDCA_Status watch_rc = ddca_get_active_watch_classes(&event_classes);
    if (watch_rc  == DDCRC_OK) {
-      if (!(event_classes & DDCA_EVENT_CLASS_DISPLAY_CONNECTION)) {
-         ddca_stop_watch_displays(true);
-         ddca_start_watch_displays(DDCA_EVENT_CLASS_DISPLAY_CONNECTION);
-         if (test_emit_ddcui_syslog(DDCA_SYSLOG_NOTICE))
-            syslog(LOG_NOTICE, "Restarted display watch thread with DDCA_EVENT_CLASS_DISPLAY_CONNECTION");
+      if ((event_classes & DDCA_EVENT_CLASS_DISPLAY_CONNECTION)) {
+        watching_active = true;
       }
-      watching_active = true;
+      else {
+         ddca_stop_watch_displays(true);
+         if (test_emit_ddcui_syslog(DDCA_SYSLOG_NOTICE))
+            syslog(LOG_NOTICE, "Halted watch thread running without DDCA_EVENT_CLASS_DISPLAY_CONNECTION");
+      }
    }
-   else { // normal case
+   if (!watching_active) {
       DDCA_Status rc = ddca_start_watch_displays(DDCA_EVENT_CLASS_DISPLAY_CONNECTION);
       if (rc == DDCRC_OK) {
          watching_active = true;
@@ -585,8 +586,6 @@ void MainWindow::startWatchDisplays() {
       else {
          if (test_emit_ddcui_syslog(DDCA_SYSLOG_ERROR))
             syslog(LOG_ERR, "Failed to start watch thread.");
-         QString qstitle("Failed to start display watch thread");
-         QMessageBox::Icon icon = QMessageBox::Warning;
          DDCA_Error_Detail * erec = ddca_get_error_detail();
          QString qstext;
          if (erec) {
@@ -597,7 +596,10 @@ void MainWindow::startWatchDisplays() {
             qstext = QString("Unable to start display watch thread.  Status %1").arg(ddca_rc_desc(rc));
          }
 
-         MsgBoxQueueEntry* qe = new MsgBoxQueueEntry(qstitle, qstext, icon);
+         MsgBoxQueueEntry* qe = new MsgBoxQueueEntry(
+               "Failed to start display watch thread",
+               qstext,
+               QMessageBox::Warning);
          GlobalState::instance()._msgBoxQueue->put(qe);
       }
    }
