@@ -225,7 +225,7 @@ void MainWindow::enableMonitor(DDCA_Display_Ref dref) {
 
 // called from main.cpp before event mainwindow event loop started
 void MainWindow::initSerialMsgbox() {
-   bool debug = false;
+   bool debug  = false;
    TRACEMCF(debug, "Starting");
    // QMessageBox for displaying error messages, one at a time
    // using persistent serial message box
@@ -251,7 +251,7 @@ void MainWindow::initSerialMsgbox() {
 
 
 void MainWindow::start_msgBoxThread() {
-   bool debug = false;
+   bool debug  = false;
    TRACEMCF(debug, "Starting");
 
 #ifdef DEFERRED_MSG_QUEUE
@@ -700,18 +700,19 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
 #endif
 
      if (_monitors.size() > 0) {
-        debug = false;
         if (_initialView == SummaryView) {
            TRACECF(debug, "_monitors_size=%d. emitting signalMonitorSummaryView", _monitors.size());
            emit signalMonitorSummaryView();
         }
         else {
+#ifdef OUT
            // on startup, don't want msg that capabilities not ready and be forced to summary view
            int sleep_millis = 000;  // *** TO BE TUNED ***
            TRACECF(debug, "Sleeping %d millis before emitting view signal", sleep_millis);
            QThread::msleep(sleep_millis);
+#endif
 
-           if (_initialView = CapabilitiesView) {
+           if (_initialView == CapabilitiesView) {
               TRACECF(debug, "_monitors_size=%d. emitting signalCapabilitiesView", _monitors.size());
               emit signalCapabilitiesView();
            }
@@ -739,6 +740,12 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
      TRACEMC("Emitting reportApplicationEventLoopStarted()");
      emit reportApplicationEventLoopStarted();   // will not be delivered until application event loop started
 #endif
+
+     QObject::connect(this,       &MainWindow::signalRedetectDisplaysStart,
+                      this,       &MainWindow::longRunningTaskStart);
+     QObject::connect(this,       &MainWindow::signalRedetectDisplaysEnd,
+                      this,       &MainWindow::longRunningTaskEnd);
+
 
      TRACECF(debug, "Done");
 }
@@ -862,28 +869,44 @@ void MainWindow::showSerialMsgBox(QString title, QString text, QMessageBox::Icon
 // Miscellaneous Slots
 //
 
+static int longRunningTaskNesting = 0;
+
 // Sets spinning cursor at start of a long running task
 // Both a direct call from initMonitors and a slot for FeatureBaseModel
+// Appears to have no effect when called because initial 
 void MainWindow::longRunningTaskStart() {
-   bool debug = false;
-   // needs counter
-   TRACECF(debug, "Executing");
+   bool debug  = false;
+   TRACECF(debug, "Starting. longRunningTaskNesting=%d", longRunningTaskNesting);
+   longRunningTaskNesting++;
+
    // _spinner->start();
    // _loadingMsgBox->show();
-   QGuiApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+   if (longRunningTaskNesting == 1) {
+      statusBar()->showMessage(QString("Please wait..."));
+      QGuiApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+   }
+   TRACECF(debug, "Done.     longRunningTaskNesting=%d", longRunningTaskNesting);
 }
 
 
 // Restores normal cursor at the of a long running task
 // Both a direct call from initMonitors and a slot for FeatureBaseModel
 void MainWindow::longRunningTaskEnd() {
-   bool debug = false;
-   TRACECF(debug, "Executing");
-   // _spinner->stop();
-   // _loadingMsgBox->hide();
-   ctrlKeyStatusMsg();
-   QGuiApplication::restoreOverrideCursor();
-   TRACECF(debug, "Done");
+   bool debug  = false;
+   TRACECF(debug, "Starting. longRunningTaskNesting=%d", longRunningTaskNesting);
+   if (longRunningTaskNesting > 0)
+      longRunningTaskNesting--;
+   if (longRunningTaskNesting == 0) {
+      statusBar()->clearMessage();
+      // _spinner->stop();
+      // _loadingMsgBox->hide();
+      ctrlKeyStatusMsg();
+      QGuiApplication::restoreOverrideCursor();
+   }
+   else
+      TRACECF(debug, "longRunningTaskNesting=%d > 0, not clearing status message", longRunningTaskNesting);
+
+   TRACECF(debug, "Done.     longRunningTaskNesting=%d", longRunningTaskNesting);
 }
 
 
@@ -961,6 +984,7 @@ void MainWindow::on_actionMonitorSummary_triggered()
        // _ui->centralWidget->setCurrentIndex(pageno);
        _ui->centralWidget->setCurrentWidget(monitor->_page_moninfo);
        _ui->centralWidget->show();
+       _initialViewShown = true;
     }
     ctrlKeyStatusMsg();   // clears the message since not Features view
     TRACECF(debug, "_ui->actionCapabilities->isEnabled()=%s",
@@ -968,11 +992,92 @@ void MainWindow::on_actionMonitorSummary_triggered()
 }
 
 
+// Checks to be performed before entering alternate views (Capabilities, Features)
+bool MainWindow::checkAltViewOk(Monitor * monitor) {
+   bool debug  = false;
+   TRACECF(debug, "Starting. dref=%s, valid display %s, _initChecksDone=%s",
+         QS2S(monitor->dref_repr()),
+         sbool(monitor->supportsDdc()), sbool(monitor->_initChecksDone) );
+
+   DDCA_Display_Info2 * dinfo = monitor->_displayInfo;
+
+   MsgBoxQueueEntry * qe = nullptr;
+   if (!monitor->_initChecksDone) {
+      QString path = (dinfo->path.io_mode == DDCA_IO_I2C)
+                         ? QString("bus /dev/i2c-") + QString::number(dinfo->path.path.i2c_busno)
+                         : QString("usb /dev/usb/hiddev" + QString::number(dinfo->path.path.hiddev_devno) );
+
+      QString msg;
+      if (!monitor->supportsDdc()) {
+         msg = QString("Display %1 on %2 does not support DDC (1)")
+               .arg(dinfo->model_name)
+               .arg(path);
+        //  qe = new MsgBoxQueueEntry("ddcui", msg, QMessageBox::Warning);
+      }
+
+      else {
+         bool capabilitiesChecked = false;
+         if (monitor->capabilitiesCheckComplete()) {
+            capabilitiesChecked = true;
+         }
+         else {
+            if (!_initialViewShown) {
+               // on startup, be patient
+               TRACECF(debug, "Capabilities check not complete, but initial view not yet shown, waiting");
+               int max_wait_millisec = 1000;
+               int waited_millisec = 0;
+               while (!(capabilitiesChecked=monitor->capabilitiesCheckComplete()) &&
+                      waited_millisec < max_wait_millisec)
+               {
+                  QThread::msleep(100);   // wait a bit for capabilities check to finish
+                  waited_millisec += 100;
+               }
+               TRACECF(debug, "After wait, capabilitiesChecked=%s after %d millisec",
+                           SBOOL(capabilitiesChecked), waited_millisec);
+            }
+         }
+
+         if (!capabilitiesChecked) {
+            msg = QString("Capabilities check still in progress for display %1 on %2")
+                    .arg(dinfo->model_name)
+                    .arg(path);
+            // qe = new MsgBoxQueueEntry("ddcui", msg, QMessageBox::Warning);
+         }
+
+         else {
+            bool b = monitor->capabilitiesCheckSuccessful();
+            _ui->actionCapabilities->setEnabled(b);
+            _ui->actionFeaturesScrollArea->setEnabled(b);
+            if (!b) {
+               msg = QString("Display %1 on %2 does not report Capabilities (2)")
+                  .arg(dinfo->model_name)
+                  .arg(path);
+               // qe = new MsgBoxQueueEntry("ddcui", msg, QMessageBox::Warning);
+            }
+         }
+      }
+
+      if (!msg.isNull()) {
+         qe = new MsgBoxQueueEntry("ddcui", msg, QMessageBox::Warning);
+   #ifdef DEFERRED_MSG_QUEUE
+         _deferredMsgs.append(qe);     // not needed
+   #endif
+         TRACECF(debug, "Pre put, _msgBoxQueue=%p", _msgBoxQueue);
+         _msgBoxQueue->put(qe);
+      }
+      monitor->_initChecksDone = true;
+   }
+
+   TRACECF(debug, "Done.  Returning %s", sbool(!qe));
+   return !qe;
+}
+
+
 // CapabilitiesView
 
 void MainWindow::on_actionCapabilities_triggered()
 {
-    bool debug = false;
+    bool debug  = false;
     int monitorNdx = _toolbarDisplayCB->currentIndex();
     TRACECF(debug, "monitorNdx=%d", monitorNdx);
     if (monitorNdx < 0) {
@@ -983,32 +1088,8 @@ void MainWindow::on_actionCapabilities_triggered()
        DDCA_Display_Info2 * dinfo = monitor->_displayInfo; // &_dlist->info[monitorNdx];
        DDCA_Display_Ref dref = dinfo->dref;
        char * caps_report = NULL;
-
-       TRACECF(debug, "dref=%s, valid display %s",
-             QS2S(monitor->dref_repr()),
-             SBOOL(monitor->supportsDdc()) );
-
-       if (!monitor->supportsDdc()) {
-          // hack, just handle /dev/i2c path
-          QString msg = QString("Display %1 on bus /dev/i2c-%2 does not support DDC (1)")
-                .arg(dinfo->model_name)
-                .arg(dinfo->path.path.i2c_busno);
-          QMessageBox::warning(this, "ddcui", msg, QMessageBox::Ok);
-          // emit signalMonitorSummaryView();   // doesn't work
-          on_actionMonitorSummary_triggered();
-       }
-
-       else if (!monitor->capabilitiesCheckComplete()) {
-          QMessageBox::warning(this, "ddcui", "Capabilities check still in progress", QMessageBox::Ok);
-          // emit signalMonitorSummaryView();   // doesn't work
-          on_actionMonitorSummary_triggered();
-       }
-       else if (!monitor->capabilitiesCheckSuccessful()) {
-          // hack, just handle /dev/i2c path
-          QString msg = QString("Display %1 on bus /dev/i2c-%2 does not support DDC (2)")
-                .arg(dinfo->model_name)
-                .arg(dinfo->path.path.i2c_busno);
-          QMessageBox::warning(this, "ddcui", msg, QMessageBox::Ok);
+       if (!checkAltViewOk(monitor)) {
+          // checkAltViewOk handles error reporting
           // emit signalMonitorSummaryView();   // doesn't work
           on_actionMonitorSummary_triggered();
        }
@@ -1035,6 +1116,7 @@ void MainWindow::on_actionCapabilities_triggered()
               // _ui->centralWidget->setCurrentIndex(pageno);    // need proper constants
               _ui->centralWidget->setCurrentWidget(monitor->_page_capabilities);
               _ui->centralWidget->show();
+              _initialViewShown = true;
           }
        }
     }
@@ -1046,7 +1128,7 @@ void MainWindow::on_actionCapabilities_triggered()
 
 void MainWindow::on_actionFeaturesScrollArea_triggered()
 {
-   bool debug = false;
+   bool debug  = false;
    debug = debug || debugFeatureSelection;
     if (debug) {
         TRACEC("Desired view: %d, feature list:", View::FeaturesView);
@@ -1064,30 +1146,9 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
            monitor->_curFeatureSelector.dbgrpt();
        }
 
-       if (!monitor->supportsDdc()) {
-          // hack, just handle /dev/i2c path
-          QString msg = QString("Display %1 on bus /dev/i2c-%2 does not support DDC (3)")
-                .arg(monitor->_displayInfo->model_name)
-                .arg(monitor->_displayInfo->path.path.i2c_busno);
-          QMessageBox::warning(this, "ddcui", msg, QMessageBox::Ok);
+       if (!checkAltViewOk(monitor)) {
+          // checkAltViewOk handles error reporting
           // emit signalMonitorSummaryView();   // doesn't work
-          on_actionMonitorSummary_triggered();
-       }
-
-       else if (!monitor->capabilitiesCheckComplete()) {
-          QString msg = QString("Capabilities check incomplete for display %1 on bus /dev/i2c-%2")
-                .arg(monitor->_displayInfo->model_name)
-                .arg(monitor->_displayInfo->path.path.i2c_busno);
-          QMessageBox::warning(this, "ddcui", msg, QMessageBox::Ok);
-          on_actionMonitorSummary_triggered();
-       }
-
-       else if (!monitor->capabilitiesCheckSuccessful()) {
-          // hack, just handle /dev/i2c path
-          QString msg = QString("Display %1 on bus /dev/i2c-%2 does not support DDC (4)")
-                .arg(monitor->_displayInfo->model_name)
-                .arg(monitor->_displayInfo->path.path.i2c_busno);
-          QMessageBox::warning(this, "ddcui", msg, QMessageBox::Ok);
           on_actionMonitorSummary_triggered();
        }
 
@@ -1107,6 +1168,7 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
           else {
              TRACECF(debug, "Unchanged view and feature set, no need to load");
           }
+          _initialViewShown = true;   // right location?
        }
     }
     ctrlKeyStatusMsg();
@@ -1170,8 +1232,10 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
 
 // redetect displays
 void MainWindow::on_actionRedetect_triggered() {
-   bool debug = false;
+   bool debug  = false;
    TRACECF(debug, "Executing");
+   // longRunningTaskStart();
+   emit signalRedetectDisplaysStart();
 
    this->freeMonitors();
    free(_drefs);
@@ -1196,6 +1260,8 @@ void MainWindow::on_actionRedetect_triggered() {
    // HANDLE CASE OF NO DDC MONITORS?
    emit signalMonitorSummaryView();
 
+   // longRunningTaskEnd();
+   emit signalRedetectDisplaysEnd();
    TRACECF(debug,"Done");
 }
 
