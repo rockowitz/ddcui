@@ -1,26 +1,27 @@
 # Changelog
 
-## [0.6.1] 2025-12-02
+## [0.6.1] 2025-12-04
 
 Requires libddcutil.so.5.4 from ddcutil 2.2.3 or later.
 
 ### Added
 
-- Option ***--view***, specifies initial view
+- Option ***--view***, specifies initial view (Summary, Capabilities, or
+  Features). The default is Summary.
 - The check for the model name specified in option ***--model***
   is now case-insensitive. 
 
 ### Changed
 
-- CMakeLists.txt defaults to QT6. To build with QT, use 
+- CMakeLists.txt defaults to QT6. To build with QT5, use cmake 
   argument ***-DUSE_QT5***.
  
 ### Fixed
 
-- Improve handling of display changes reported by libddcutil.
-  Actions->Redetect Displays should no longer be needed, but 
-  is retained as a recovery operation.
-- Make closely adhere to ambiguous appdata naming standards
+- Improve handling of display connection changes reported by libddcutil.
+  Action **Redetect Displays** should no longer be needed, but is retained
+  as a recovery operation.
+- More closely adhere to ambiguous appdata naming standards
   Renamed files:
   - ddcui.appdata.xml -> com.ddcutil.ddcui.metainfo.xml
   - ddcui.desktop -> com.ddcutil.ddcui.desktop
