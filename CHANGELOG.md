@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.6.1] 2025-12-04
+## [0.6.1] 2025-12-05
 
 Requires libddcutil.so.5.4 from ddcutil 2.2.3 or later.
 
@@ -25,7 +25,7 @@ Requires libddcutil.so.5.4 from ddcutil 2.2.3 or later.
   Renamed files:
   - ddcui.appdata.xml -> com.ddcutil.ddcui.metainfo.xml
   - ddcui.desktop -> com.ddcutil.ddcui.desktop
-  Command **make install** erases files with the old names if they exist
+  Command **make install** erases files with the old names if they exist.
   Addresses pull request #71
 - CMakeLists.txt: replace deprecated execute_program() with exec_process()
 
