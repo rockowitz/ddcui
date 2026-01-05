@@ -12,13 +12,16 @@ else()
 endif()
 
 set(ddcui_qt5_min_version    5.5)
-set(ddcui_qt6_min_version    6.1)
+# QCheckBox::checkStateChanged() added in 6.7
+# QCheckBox::stateChanged() deprecated in 6.9
+set(ddcui_qt6_min_version    6.7)
 set(ddcui_glib_version       2.60) 
 set(ddcui_libddcutil_version 2.2.0)
 set(cmake_build_type_default "RelWithDebInfo")
 
 message(${VERBOSE} "Required Minimum Versions:")
 message(${VERBOSE} "  ddcui_qt5_min_version:     ${ddcui_qt5_min_version}" )
+message(${VERBOSE} "  ddcui_qt6_min_version:     ${ddcui_qt6_min_version}" )
 message(${VERBOSE} "  ddcui_qlib_version:        ${ddcui_glib_version}" )
 message(${VERBOSE} "  ddcui_libddcutil_version:  ${ddcui_libddcutil_version}" ) 
 
