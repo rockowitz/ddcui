@@ -13,21 +13,21 @@ Requires libddcutil.so.5.4 from ddcutil 2.2.3 or later.
 
 ### Changed
 
-- CMakeLists.txt defaults to QT6. To build with QT5, use cmake 
-  argument ***-DUSE_QT5***.
+- CMakeLists.txt defaults to QT 6. The minimum supported QT 6 version is 6.7.
+  To build with QT5, use cmake argument ***-DUSE_QT5***.
  
 ### Fixed
 
 - Improve handling of display connection changes reported by libddcutil.
   Action **Redetect Displays** should no longer be needed, but is retained
   as a recovery operation.
-- More closely adhere to ambiguous appdata naming standards
+- More closely adhere to ambiguous appdata naming standards.
   Renamed files:
   - ddcui.appdata.xml -> com.ddcutil.ddcui.metainfo.xml
   - ddcui.desktop -> com.ddcutil.ddcui.desktop
   Command **make install** erases files with the old names if they exist.
   Addresses pull request #71
-- CMakeLists.txt: replace deprecated execute_program() with exec_process()
+- CMakeLists.txt: replace deprecated execute_program() with exec_process().
 
 ## [0.6.0] 2025-02-15
 
