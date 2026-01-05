@@ -47,8 +47,8 @@ DebugActionsDialog::DebugActionsDialog(QWidget *parent)
     connect(_ui->api_pushButton, &QPushButton::clicked,
             this,                    &DebugActionsDialog::for_actionApiStatsButton_clicked);
     connect(_ui->extendedStats_checkBox,
-                                     &QCheckBox::stateChanged,
-             this   ,                 &DebugActionsDialog::for_actionExtendedStatsCheckBox_stateChanged);
+                                     &QCheckBox::checkStateChanged,
+             this,                   &DebugActionsDialog::for_actionExtendedStatsCheckBox_checkStateHasChanged);
     TRACECF(debug, "Constructor done. _cls = %s", _cls);
 }
 
@@ -157,9 +157,11 @@ void DebugActionsDialog::for_actionApiStatsButton_clicked(bool onoff) {
    emit reportStats_triggered(DDCA_STATS_API, isChecked );
 }
 
-void DebugActionsDialog::for_actionExtendedStatsCheckBox_stateChanged(int newState) {
+void DebugActionsDialog::for_actionExtendedStatsCheckBox_checkStateHasChanged(
+      Qt::CheckState newState)
+{
    bool debug = false;
-      bool checked =  _ui->extendedStats_checkBox->isChecked() ;
+   bool checked =  _ui->extendedStats_checkBox->isChecked() ;
    TRACECF(debug, "Executing. checked = %s, newState x = %d",  SBOOL( checked), newState  );
 }
 
