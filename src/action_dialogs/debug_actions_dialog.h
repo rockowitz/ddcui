@@ -41,7 +41,7 @@ private slots:
     void for_actionElapsedStatsButton_clicked(bool onoff);
     void for_actionApiStatsButton_clicked(bool onoff);
 
-    void for_actionExtendedStatsCheckBox_stateChanged(int newState);
+    void for_actionExtendedStatsCheckBox_checkStateHasChanged(Qt::CheckState newState);
 
     void for_actionResetStatsButton_clicked(bool onoff);
 

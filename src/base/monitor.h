@@ -1,6 +1,6 @@
 /* monitor.h */
 
-// Copyright (C) 2018-2024 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2025 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef MONITOR_H
@@ -38,7 +38,7 @@ class Monitor : public QObject
     Q_OBJECT
 
 public:
-    Monitor(DDCA_Display_Info * display_info, int monitorNumber);
+    Monitor(DDCA_Display_Info2 * display_info, int monitorNumber);
     ~Monitor();
 
     bool              supportsDdc();
@@ -49,8 +49,9 @@ public:
     QString           dref_repr();
     void              dbgrpt();
 
+    bool                 _initChecksDone = false;
     const int            _monitorNumber = -1;    // 1 based
-    DDCA_Display_Info *  _displayInfo;
+    DDCA_Display_Info2 * _displayInfo;
     FeatureBaseModel *   _baseModel;
     VcpRequestQueue*     _requestQueue;
 

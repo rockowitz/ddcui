@@ -12,18 +12,28 @@ else()
 endif()
 
 set(ddcui_qt5_min_version    5.5)
-set(ddcui_qt6_min_version    6.1)
+# QCheckBox::checkStateChanged() added in 6.7
+# QCheckBox::stateChanged() deprecated in 6.9
+set(ddcui_qt6_min_version    6.7)
 set(ddcui_glib_version       2.60) 
 set(ddcui_libddcutil_version 2.2.0)
 set(cmake_build_type_default "RelWithDebInfo")
 
 message(${VERBOSE} "Required Minimum Versions:")
 message(${VERBOSE} "  ddcui_qt5_min_version:     ${ddcui_qt5_min_version}" )
+message(${VERBOSE} "  ddcui_qt6_min_version:     ${ddcui_qt6_min_version}" )
 message(${VERBOSE} "  ddcui_qlib_version:        ${ddcui_glib_version}" )
 message(${VERBOSE} "  ddcui_libddcutil_version:  ${ddcui_libddcutil_version}" ) 
 
-option(USE_QT6 "Use QT6 instead of QT5" OFF)
-message(STATUS "USE_QT6:      ${USE_QT6}")
+option(USE_QT5 "Use QT5 instead of QT6" OFF)
+option(USE_QT6 "Use QT6 (default)" ON)
+if (USE_QT5)
+   set (USE_QT6 OFF)
+endif()
+
+message(STATUS "USE_QT5:                   ${USE_QT5}")
+message(STATUS "USE_QT6:                   ${USE_QT6}")
+
 
 option(USE_CCACHE "Use ccache" ON)
 message(STATUS "USE_CCACHE:                ${USE_CCACHE}" )
@@ -428,13 +438,17 @@ install(FILES AUTHORS CHANGELOG.md NEWS.md README.md
                                               DESTINATION ${CMAKE_INSTALL_DOCDIR})
 # endif()
 
-install(FILES ddcui.desktop                 DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/applications)
-install(FILES ddcui.appdata.xml             DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/metainfo)
-install(FILES icons/video-display-128px.png DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/128x128/apps RENAME ddcui.png)
-install(FILES icons/video-display-64px.png  DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/64x64/apps   RENAME ddcui.png)
-install(FILES icons/video-display-48px.png  DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/48x48/apps   RENAME ddcui.png)
-install(FILES icons/video-display-32px.png  DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/32x32/apps   RENAME ddcui.png)
-install(FILES icons/video-display-16px.png  DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/16x16/apps   RENAME ddcui.png)
+# remove files with old appdata names if they exist
+install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E rm -f ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATAROOTDIR}/applications/ddcui.desktop )")
+install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E rm -f ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATAROOTDIR}/metainfo/ddcui.appdata.xml )")
+
+install(FILES com.ddcutil.ddcui.desktop      DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/applications)
+install(FILES com.ddcutil.ddcui.metainfo.xml DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/metainfo)
+install(FILES icons/video-display-128px.png  DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/128x128/apps RENAME ddcui.png)
+install(FILES icons/video-display-64px.png   DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/64x64/apps   RENAME ddcui.png)
+install(FILES icons/video-display-48px.png   DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/48x48/apps   RENAME ddcui.png)
+install(FILES icons/video-display-32px.png   DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/32x32/apps   RENAME ddcui.png)
+install(FILES icons/video-display-16px.png   DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/16x16/apps   RENAME ddcui.png)
 # install(FILES icons/ddcui.svg       DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/scalable/apps)
 # GNOME classic only looks in pixmaps for icons:
 # install(FILES icons/ddcui-48px.png  DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pixmaps RENAME ddcui.png)

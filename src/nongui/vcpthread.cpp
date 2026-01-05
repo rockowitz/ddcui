@@ -25,7 +25,7 @@ static bool debugThread = false;
 
 VcpThread::VcpThread(
         QObject*            parent,
-        DDCA_Display_Info * dinfo,
+        DDCA_Display_Info2* dinfo,
         VcpRequestQueue*    requestQueue,
         FeatureBaseModel *  baseModel)
     : QThread(parent)

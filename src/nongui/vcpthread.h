@@ -4,7 +4,7 @@
  * slow.  There is one instance of this class, i.e. one thread, for each monitor.
  */
 
-// Copyright (C) 2018-2023 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2025 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef VCPTHREAD_H
@@ -27,7 +27,7 @@ class VcpThread : public QThread
 public:
     VcpThread(
         QObject*            parent,
-        DDCA_Display_Info  *dinfo,
+        DDCA_Display_Info2 *dinfo,
         VcpRequestQueue    *requestQueue,
         FeatureBaseModel   *baseModel);
 
@@ -85,7 +85,7 @@ private:  // member functions
 private:       // member variables
     const char *         _cls = "VcpThread";  //= strdup(metaObject()->className());
     DDCA_Display_Ref     _dref;
-    DDCA_Display_Info*   _dinfo;
+    DDCA_Display_Info2*  _dinfo;
     VcpRequestQueue*     _requestQueue = NULL;
     FeatureBaseModel*    _baseModel;
     DDCA_Display_Handle  _dh = NULL;

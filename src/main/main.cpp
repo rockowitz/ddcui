@@ -153,6 +153,7 @@ void dbgrptQScreen(QScreen * screen) {
 }
 
 
+#ifdef DEPRECATED_IN_QT6
 void dbgrpt_hidpiQApplication(QApplication& coreapp) {
    bool b = coreapp.testAttribute(Qt::AA_Use96Dpi);
    printf("AA_Use96Dpi:    %s\n", SBOOL(b));
@@ -173,6 +174,7 @@ void dbgrpt_hidpiQApplication(QApplication& coreapp) {
       dbgrptQScreen(screens[ndx]);
    }
 }
+#endif
 
 
 #ifdef UNUSED
@@ -459,7 +461,9 @@ int main(int argc, char *argv[])
        else {
           if (parsed_cmd->flags & CMD_FLAG_F1) {
              dbgrpt_hidpi_environment_vars();
+#ifdef DEPRECATED_IN_QT6
              dbgrpt_hidpiQApplication(application);
+#endif
           }
 
           GlobalState & globalState = GlobalState::instance();
@@ -479,11 +483,11 @@ int main(int argc, char *argv[])
           // without w.show(), initial serial message box does not appear over MainWindow
           w.show();
 
-      #ifdef PERSISTENT_SERIAL_MSG_BOX
+#ifdef PERSISTENT_SERIAL_MSG_BOX
           w.initSerialMsgbox();
           // how to defer until after main event loop started, i.e. a.exec() called
           w.start_msgBoxThread();
-      #endif
+#endif
 
           DBGF(debug, "Calling Application::exec()");
           mainStatus = application.exec();

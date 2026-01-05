@@ -50,7 +50,7 @@ class MainWindow : public QMainWindow
 public:
     enum View {
         NoView,
-        MonitorView,
+        SummaryView,
         CapabilitiesView,
         FeaturesView
     };
@@ -72,12 +72,13 @@ private:
     void connectBaseModel(Monitor * monitor);
     void disconnectBaseModel(Monitor * monitor);
     void freeMonitors();
-    int findMonitor(DDCA_Display_Ref dref);
-    void initOneMonitor(DDCA_Display_Info * info, int curIndex);
+    int  findMonitor(DDCA_Display_Ref dref);
+    void initOneMonitor(DDCA_Display_Info2 * info, int curIndex);
     void setInitialDisplayIndex(Parsed_Ddcui_Cmd * parsed_cmd);
     void initMonitors(Parsed_Ddcui_Cmd * parsed_cmd);
 
     void loadMonitorFeatures(Monitor * monitor);
+    bool checkAltViewOk(Monitor * monitor);
 
 //
 // *** Signals
@@ -97,6 +98,11 @@ public:
     void resetStats();
     void reportApplicationEventLoopStarted();
     void signalControlKeyPressed(bool onoff);
+
+private:
+    signals:
+    void signalRedetectDisplaysStart();
+    void signalRedetectDisplaysEnd();
 
 
 //
@@ -173,13 +179,14 @@ private:
     void capture_stats(DDCA_Stats_Type stats_type, bool show_thread_data);
     void captureLocks();
     void ctrlKeyStatusMsg();
+    void startWatchDisplays();
 
 // *** Unused Methods, public and private, all types
  #ifdef UNUSED
-      void pageChanged(int pageno) override;
-      void pageChangedByWidget(QWidget * widget) override;
-     DDCA_Feature_Subset_Id feature_list_id() const;
-     void set_feature_list_id(DDCA_Feature_Subset_Id feature_list_id);
+    void pageChanged(int pageno) override;
+    void pageChangedByWidget(QWidget * widget) override;
+    DDCA_Feature_Subset_Id feature_list_id() const;
+    void set_feature_list_id(DDCA_Feature_Subset_Id feature_list_id);
  #endif
 
 
@@ -204,8 +211,12 @@ private:
     int                          _drefs_ct = 0;
     int                          _curDisplayIndex = -1;
     View                         _curView = NoView;
+// #ifdef VIEW_PR60
+    View                         _initialView = SummaryView;
+    bool                         _initialViewShown = false;
+// #endif
     QComboBox *                  _toolbarDisplayCB;
-    NcValuesState *          _otherOptionsState = nullptr;
+    NcValuesState *              _otherOptionsState = nullptr;
     UserInterfaceOptionsState*   _uiOptionsState = nullptr;
     QVector<Monitor*>            _monitors;
     DDCA_Feature_Subset_Id       _feature_list_id = DDCA_SUBSET_KNOWN;
@@ -218,7 +229,7 @@ private:
     // QList<MsgBoxQueueEntry*>  _deferredMsgs;
 
     FeatureSelectionDialog*      _fsd = nullptr;
-    NcValuesDialog*          _ood = nullptr;       // for future use
+    NcValuesDialog*              _ood = nullptr;       // for future use
 
     QShortcut *                  _quit_shortcut = nullptr;
     QLabel* _ctlMsg = new QLabel("CTRL key required to change feature values");

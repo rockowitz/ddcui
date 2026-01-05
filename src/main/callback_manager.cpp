@@ -1,4 +1,9 @@
-// callback_manager.cpp
+/** \file callback_manager.cpp
+ *
+ *  This class exists so that code that actually handles display
+ *  changes does not execute on the callback function thread,
+ *  allowing the callback to return quickly.
+ */
 
 // Copyright (C) 2018-2025 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
@@ -100,7 +105,7 @@ void CallbackManager::emitDisplayChanged(DDCA_Display_Status_Event evt) {
 
 
 void display_status_event_callback(DDCA_Display_Status_Event evt) {
-   bool debug = true;
+   bool debug  = false;
    char time_buf[40];
    create_timestamp(time_buf, 40);
    intmax_t thread_id = get_thread_id();

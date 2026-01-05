@@ -1,6 +1,6 @@
 // monitor_desc_actions.h
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2025 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef MONITOR_DESC_ACTIONS_H_
@@ -15,7 +15,7 @@ namespace MonitorDescActions {
 
 char *
 capture_display_info_report(
-      DDCA_Display_Info * dinfo);
+      DDCA_Display_Info2 * dinfo);
 
 DDCA_Status
 capture_capabilities_report(

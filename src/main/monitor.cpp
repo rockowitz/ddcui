@@ -17,7 +17,7 @@
 #include "nongui/feature_value.h"
 
 
-Monitor::Monitor(DDCA_Display_Info * display_info, int monitorNumber)
+Monitor::Monitor(DDCA_Display_Info2 * display_info, int monitorNumber)
     : _monitorNumber(monitorNumber)
     , _displayInfo(display_info)
     , _baseModel(NULL)
@@ -80,7 +80,7 @@ Monitor::~Monitor() {
       delete _moninfoPlainText;
    }
    delete _featuresScrollAreaView;
-   ddca_free_display_info(_displayInfo);
+   ddca_free_display_info2(_displayInfo);
    TRACECF(debug, "Done");
    free((void*) _cls);
 }
