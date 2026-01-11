@@ -1,11 +1,12 @@
 // debug_actions_dialog.h
 
-// Copyright (C) 2020-2024 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2020-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef DEBUG_ACTIONS_DIALOG_H
 #define DEBUG_ACTIONS_DIALOG_H
 
+#include <QtGlobal>
 #include <QtCore/QObject>       // Becasue MOC
 #include <QtWidgets/QAbstractButton>
 #include <QtWidgets/QDialog>
@@ -41,7 +42,11 @@ private slots:
     void for_actionElapsedStatsButton_clicked(bool onoff);
     void for_actionApiStatsButton_clicked(bool onoff);
 
+#if QT_VERSION < QT_VERSION_CHECK(6,7,0)
+    void for_actionExtendedStatsCheckBox_stateChanged(int newState);
+#else
     void for_actionExtendedStatsCheckBox_checkStateHasChanged(Qt::CheckState newState);
+#endif
 
     void for_actionResetStatsButton_clicked(bool onoff);
 

@@ -1,9 +1,10 @@
 /** \file debug_actions_dialog.cpp */
 
-// Copyright (C) 2020-2025 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2020-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <assert.h>
+#include <QtGlobal>
 #include <QtCore/QDebug>
 #include <QtWidgets/QCheckBox>
 
@@ -44,11 +45,17 @@ DebugActionsDialog::DebugActionsDialog(QWidget *parent)
             this,                    &DebugActionsDialog::for_actionErrorsStatsButton_clicked);
     connect(_ui->elapsed_pushButton, &QPushButton::clicked,
             this,                    &DebugActionsDialog::for_actionElapsedStatsButton_clicked);
-    connect(_ui->api_pushButton, &QPushButton::clicked,
+    connect(_ui->api_pushButton,     &QPushButton::clicked,
             this,                    &DebugActionsDialog::for_actionApiStatsButton_clicked);
+#if QT_VERSION < QT_VERSION_CHECK(6,7,0)
+    connect(_ui->extendedStats_checkBox,
+                                     &QCheckBox::stateChanged,
+             this   ,                 &DebugActionsDialog::for_actionExtendedStatsCheckBox_stateChanged);
+#else
     connect(_ui->extendedStats_checkBox,
                                      &QCheckBox::checkStateChanged,
              this,                   &DebugActionsDialog::for_actionExtendedStatsCheckBox_checkStateHasChanged);
+#endif
     TRACECF(debug, "Constructor done. _cls = %s", _cls);
 }
 
@@ -157,6 +164,14 @@ void DebugActionsDialog::for_actionApiStatsButton_clicked(bool onoff) {
    emit reportStats_triggered(DDCA_STATS_API, isChecked );
 }
 
+#if QT_VERSION < QT_VERSION_CHECK(6,7,0)
+void DebugActionsDialog::for_actionExtendedStatsCheckBox_stateChanged(int newState)
+{
+   bool debug = false;
+      bool checked =  _ui->extendedStats_checkBox->isChecked() ;
+   TRACECF(debug, "Executing. checked = %s, newState x = %d",  SBOOL( checked), newState  );
+}
+#else
 void DebugActionsDialog::for_actionExtendedStatsCheckBox_checkStateHasChanged(
       Qt::CheckState newState)
 {
@@ -164,6 +179,7 @@ void DebugActionsDialog::for_actionExtendedStatsCheckBox_checkStateHasChanged(
    bool checked =  _ui->extendedStats_checkBox->isChecked() ;
    TRACECF(debug, "Executing. checked = %s, newState x = %d",  SBOOL( checked), newState  );
 }
+#endif
 
 
 void DebugActionsDialog::for_actionResetStatsButton_clicked(bool onoff)
