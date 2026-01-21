@@ -40,8 +40,11 @@ private slots:
     void for_actionTriesStatsButton_clicked(bool onoff);
     void for_actionElapsedStatsButton_clicked(bool onoff);
     void for_actionApiStatsButton_clicked(bool onoff);
-
+#if QT_VERSION >= 0x060700
     void for_actionExtendedStatsCheckBox_checkStateHasChanged(Qt::CheckState newState);
+#else
+    void for_actionExtendedStatsCheckBox_stateChanged(int newState);
+#endif
 
     void for_actionResetStatsButton_clicked(bool onoff);
 
