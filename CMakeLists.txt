@@ -1,4 +1,4 @@
-set(ddcui_version  0.6.1)
+set(ddcui_version  0.7.0)
 message(STATUS "ddcui_version:  ${ddcui_version}")
 
 cmake_minimum_required(VERSION 3.15)
