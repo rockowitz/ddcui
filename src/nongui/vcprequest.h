@@ -1,6 +1,6 @@
 /* vcprequest.h - VcpRequestQueue and the VcpRequest classes that populate the queue */
 
-// Copyright (C) 2018-2021 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef VCPREQUEST_H
@@ -57,7 +57,6 @@ public:
 #endif
 
 
-
 class VcpCapRequest: public VcpRequest {
 public:
     VcpCapRequest();
@@ -85,7 +84,6 @@ public:
     bool                  _needMetadata;
 };
 
-
 class VcpSetRequest: public VcpRequest {
 public:
     VcpSetRequest(uint8_t featureCode, uint8_t newSh, uint8_t newSl, bool writeOnly=false);
@@ -97,13 +95,11 @@ public:
     bool                  _writeOnly = false;
 };
 
-
 class VcpStartInitialLoadRequest : public VcpRequest {
 public:
     VcpStartInitialLoadRequest();
     ~VcpStartInitialLoadRequest();
 };
-
 
 class VcpEndInitialLoadRequest : public VcpRequest {
 public:
@@ -125,8 +121,7 @@ public:
 //  VcpRequest* popCondensed();   // future
     void halt();
     void dbgrpt();
-
-
+    void purge();
 
 // public slots:
     void        put(VcpRequest* request);
@@ -140,4 +135,3 @@ private:
 };
 
 #endif // VCPREQUEST_H
-

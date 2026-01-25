@@ -1,6 +1,6 @@
 /* vcprequest.cpp - VcpRequestQueue and the classes that populate it */
 
-// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 // #include <string.h>
@@ -87,12 +87,14 @@ VcpRequestQueue::VcpRequestQueue()
     _queue = QQueue<VcpRequest*>();
 }
 
+
 VcpRequestQueue::~VcpRequestQueue()
 {
    bool debug = false;
    if (debug)
       printf("(%s) Executing VcpRequestQueue destructor\n", __func__);
 }
+
 
 void VcpRequestQueue::put(VcpRequest * request) {
     // printf("VcpRequestQueue::put) -> request type: %d\n" , request->_type);
@@ -102,6 +104,7 @@ void VcpRequestQueue::put(VcpRequest * request) {
     _queueNonempty.wakeOne();
     _mutex.unlock();
 }
+
 
 VcpRequest * VcpRequestQueue::pop() {
     _mutex.lock();
@@ -118,6 +121,7 @@ VcpRequest * VcpRequestQueue::pop() {
     return rqst;
 }
 
+
 void VcpRequestQueue::halt() {
    _mutex.lock();
    // purge the queue
@@ -127,6 +131,17 @@ void VcpRequestQueue::halt() {
    }
    HaltRequest * rqst = new HaltRequest();
    _queue.enqueue(rqst);
+   _mutex.unlock();
+}
+
+
+void VcpRequestQueue::purge() {
+   _mutex.lock();
+   // purge the queue
+   while (!_queue.empty()) {
+      VcpRequest * rqst = _queue.dequeue();
+      delete rqst;
+   }
    _mutex.unlock();
 }
 
@@ -141,8 +156,6 @@ void VcpRequestQueue::dbgrpt() {
 
    }
     _mutex.unlock();
-
 }
 
 // VcpRequest VcpRequestQueue::peek() { }
-
