@@ -2,7 +2,7 @@
 //
 // Wrap ddcutil API functionality
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef DDCA_UTILS_H_
@@ -38,5 +38,8 @@ ddcutil_format_error_detail(
       DDCA_Error_Detail * erec,
       QString             causesTitle,
       int                 indentation_per_depth);
+
+QString
+ddcutil_comboBoxModelName(DDCA_Display_Info2* dinfo);
 
 #endif /* DDCA_UTILS_H_ */

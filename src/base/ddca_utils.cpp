@@ -1,6 +1,6 @@
 // ddca_utils.cpp
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <assert.h>
@@ -29,6 +29,7 @@ bs256_from_cfr(DDCA_Cap_Vcp * cfr) {
     }
    return result;
 }
+
 
 Bit_Set_256
 bs256_from_sl_values(DDCA_Feature_Value_Entry * sl_values) {
@@ -196,4 +197,24 @@ ddcui_dbgrpt_ddca_feature_metadata(
       printf("Simple NC values; No table specified\n");
 }
 #endif
+
+
+
+// model name to be shown in display selector combo box
+QString ddcutil_comboBoxModelName(DDCA_Display_Info2* dinfo) {
+
+   // Remove entry for monitor from display selector combo box
+   QString mfg_id     = dinfo->mfg_id;
+   QString model_name = dinfo->model_name;
+   QString sn         = dinfo->sn;
+
+   QString s = model_name;
+   if (s.isEmpty() ) {
+      if ( sn.isEmpty() )
+         s = QString("Laptop");
+      else
+         s = QString("Unknown");    // don't expect this
+   }
+   return s;
+}
 
