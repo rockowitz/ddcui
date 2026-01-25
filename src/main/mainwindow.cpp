@@ -137,11 +137,15 @@ void MainWindow::forDisplayChanged(DDCA_Display_Status_Event evt) {
           evt.event_type, ddca_display_event_type_name(evt.event_type),
           ddca_dref_repr(evt.dref) );
 
+   int newDisplayIndex = -1;
    if (evt.event_type ==  DDCA_EVENT_DISPLAY_CONNECTED ) {
-      addMonitor(evt.dref);
+       newDisplayIndex = addMonitor(evt.dref);
+
    }
    else if (evt.event_type == DDCA_EVENT_DISPLAY_DISCONNECTED) {
-      removeMonitor(evt.dref);
+      int curIndex = _toolbarDisplayCB->currentIndex();
+      int removedIndex = removeMonitor(evt.dref);
+
    }
    else if (evt.event_type == DDCA_EVENT_DDC_ENABLED) {
       enableMonitor(evt.dref);
@@ -156,9 +160,10 @@ void MainWindow::forDisplayChanged(DDCA_Display_Status_Event evt) {
 
 
 // Called when a new monitor is detected
-void MainWindow::addMonitor(DDCA_Display_Ref dref) {
+int MainWindow::addMonitor(DDCA_Display_Ref dref) {
    bool debug = false;
    TRACECF(debug, "dref=%s", ddca_dref_repr(dref));
+   int nextIndex = -1;
    DDCA_Display_Info2 * dinfo;
    DDCA_Status ddcrc = ddca_get_display_info2(dref, &dinfo);
    const char * explain = ddca_rc_name(ddcrc);
@@ -167,16 +172,15 @@ void MainWindow::addMonitor(DDCA_Display_Ref dref) {
       syslog(LOG_ERR, "ddca_get_display_info2() returned %s", explain);
       assert(ddcrc == 0);   // ABORT!!!
    }
-   else {
-      int nextIndex =  _toolbarDisplayCB->count();
-      initOneMonitor(dinfo, nextIndex);
-   }
+   // initialize monitor data structures, add to display selector combo box
+   initOneMonitor(dinfo, nextIndex);
+   return nextIndex;
 }
 
 
 // Called when a monitor is removed
-void MainWindow::removeMonitor(DDCA_Display_Ref dref) {
-   bool debug  = false;
+int MainWindow::removeMonitor(DDCA_Display_Ref dref) {
+   bool debug  = true;
    TRACECF(debug, "dref=%s", ddca_dref_repr(dref));
 
    int monNdx = findMonitor(dref);
@@ -185,26 +189,30 @@ void MainWindow::removeMonitor(DDCA_Display_Ref dref) {
       TRACECF(debug, "monitor=%p", monitor);
 
       // Remove entry for monitor from display selector combo box
-      QString mfg_id     = monitor->_displayInfo->mfg_id;
-      QString model_name = monitor->_displayInfo->model_name;
-      QString sn         = monitor->_displayInfo->sn;
+      // QString comboBoxString = monitor->comboBoxModelName();
+      QString comboBoxString = ddcutil_comboBoxModelName(monitor->_displayInfo);
+      int curIndex = _toolbarDisplayCB->currentIndex();
+      int indexToDelete = _toolbarDisplayCB->findText(comboBoxString,Qt::MatchExactly);
 
-      QString s = model_name;
-      if (s.isEmpty() ) {
-         if ( sn.isEmpty() )
-            s = QString("Laptop");
-         else
-            s = QString("Unknown");    // don't expect this
-      }
-
-      int cbNdx = _toolbarDisplayCB->findText(s,Qt::MatchExactly);
-      _toolbarDisplayCB->removeItem(cbNdx);
-
+      // disconnect signals from base model of monitor being removed
+      disconnectBaseModel(monitor);
+     _toolbarDisplayCB->removeItem(indexToDelete);
       TRACECF(debug, "deleting monitor monNdx=%d, monitor=%p, dispno=%d", monNdx, monitor, monitor->_displayInfo->dispno);
       _monitors.removeAt(monNdx);
       delete monitor;
       TRACECF(debug, "deleted monitor monNdx=%d", monNdx);
+
+      int newCurIndex = -1;
+      if (curIndex == indexToDelete) {
+         if (_toolbarDisplayCB->count() > 0) {
+            _toolbarDisplayCB->setCurrentIndex(0);   // select first monitor
+            newCurIndex = 0;
+            // emit signalMonitorSummaryView();   // doesn't work
+            on_actionMonitorSummary_triggered();
+         }
+      }
    }
+   return monNdx;
 }
 
 
@@ -344,28 +352,19 @@ void MainWindow::initOneMonitor(DDCA_Display_Info2 * info, int curIndex) {
    bool debug = false;
    TRACECF(debug, "Starting. info=%p, curIndex=%d", info, curIndex);
 
-   // Add entry for monitor in display selector combo box
-   QString mfg_id     = info->mfg_id;
-   QString model_name = info->model_name;
-   QString sn         = info->sn;
-#ifdef ALT
-   QString mfg_id     = _dlist->info[ndx].mmid.mfg_id;
-   QString model_name = _dlist->info[ndx].mmid.model_name;
-#endif
-
-   QString s = model_name;
-   if (s.isEmpty() ) {
-      if ( sn.isEmpty() )
-         s = QString("Laptop");
-      else
-         s = QString("Unknown");    // don't expect this
-   }
-
    int monitorNumber = curIndex+1;
-   _toolbarDisplayCB->addItem(s, QVariant(monitorNumber));
+   _toolbarDisplayCB->addItem(ddcutil_comboBoxModelName(info), QVariant(monitorNumber));
 
    // Create Monitor instance, initialize data structures
    Monitor * curMonitor = new Monitor(info, monitorNumber);
+
+   TRACECF(true, "connecting reportDisconnected");
+   GlobalState& globals = GlobalState::instance();
+   QObject::connect(curMonitor,  &Monitor::reportDisconnected,
+                    //globals._mainWindow,
+                    this,
+                    &MainWindow::removeMonitor);
+   TRACECF(true, "connected reportDisconnected");
 
    _monitors.append(curMonitor);
    initMonitorInfoWidget(curMonitor, _ui->centralWidget);
@@ -748,7 +747,6 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
      QObject::connect(this,       &MainWindow::signalRedetectDisplaysEnd,
                       this,       &MainWindow::longRunningTaskEnd);
 
-
      TRACECF(debug, "Done");
 }
 
@@ -964,6 +962,7 @@ void MainWindow::on_actionMonitorSummary_triggered()
        // _ui->centralWidget->hide();
     }
     else {
+       // find Monitor rec
        Monitor * monitor = _monitors[monitorNdx];
        DDCA_Display_Info2 * dinfo =  monitor->_displayInfo;    // &_dlist->info[monitorNdx];
        DDCA_Display_Ref dref = dinfo->dref;
