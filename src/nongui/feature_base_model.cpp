@@ -4,7 +4,7 @@
  * QListView and QTableView.
  */
 
-// Copyright (C) 2018-2024 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "nongui/feature_base_model.h"
@@ -427,6 +427,16 @@ void FeatureBaseModel::reloadFeatures() {
    _monitor->_requestQueue->put(new VcpEndInitialLoadRequest);
 
    TRACECF(debug, "Done");
+}
+
+
+void FeatureBaseModel::markDisconnected(DDCA_Display_Ref dref) {
+   bool debug = true;
+   TRACECF(debug, "DDCA_Display_Ref = %p", dref);
+   _monitor->markDisconnected();   // or should this be emit signalDisconnected(dref) ?
+   // GlobalState& _globalState = GlobalState::instance();
+    TRACECF(debug, "emitting signalEndInitialLoad()");
+   emit signalEndInitialLoad();
 }
 
 

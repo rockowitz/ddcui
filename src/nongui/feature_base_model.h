@@ -1,6 +1,6 @@
 /* feature_base_model.h - Records all VCP feature values for a single monitor */
 
-// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef FEATURE_BASE_MODEL_H
@@ -69,6 +69,7 @@ public:
     void setFeatureChecked(uint8_t featureCode);
     void reloadFeatures();
     void reloadSpecificFeatures(int ct, uint8_t* features);
+    void markDisconnected(DDCA_Display_Ref dref);
 
     // *** Public Member Variables ***
     const char *        _cls;    // className
@@ -87,6 +88,7 @@ signals:
     void signalVcpRequest(VcpRequest * rqst);  // used to call into monitor
     void signalModelError(uint8_t featureCode, QString msg);
     void signalStatusMsg(QString msg);
+    // void signalDisconnected(DDCA_Display_Ref dref);
 
 protected:
 #ifdef FEATURE_CHANGE_OBSERVER
