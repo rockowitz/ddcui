@@ -4,7 +4,7 @@
  * slow.  There is one instance of this class, i.e. one thread, for each monitor.
  */
 
-// Copyright (C) 2018-2025 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef VCPTHREAD_H
@@ -81,6 +81,10 @@ private:  // member functions
           uint8_t             expectedSl,
           uint8_t             observedSh,
           uint8_t             observedSl);
+    DDCA_Status getMetadata(
+          DDCA_Display_Handle     dh,
+          uint8_t                 feature_code,
+          DDCA_Feature_Metadata** finfo_loc);
 
 private:       // member variables
     const char *         _cls = "VcpThread";  //= strdup(metaObject()->className());

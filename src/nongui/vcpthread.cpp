@@ -1,6 +1,6 @@
 /* vcpthread.cpp */
 
-// Copyright (C) 2018-2025 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <errno.h>
@@ -375,6 +375,33 @@ void VcpThread::capabilities() {
 } // function
 
 
+DDCA_Status VcpThread::getMetadata(
+      DDCA_Display_Handle     dh,
+      uint8_t                 feature_code,
+      DDCA_Feature_Metadata** finfo_loc)
+{
+   bool debugFunc = false;
+   // TODO:  get metadata once and cache
+   DDCA_Status ddcrc = ddca_get_feature_metadata_by_dh(
+                          feature_code,
+                          dh,
+                          true,         /* create_default_if_not_found*/
+                          finfo_loc);
+   TRACECF(debugFunc, "ddca_get_feature_metadata_by_dh() for feature 0x%02x returned %d - %s",
+         feature_code, ddcrc, ddca_rc_name(ddcrc));
+   // if (featureCode == 0xdf || featureCode == 0xf4 || featureCode == 0xf5)
+   //       ddca_dbgrpt_feature_metadata(finfo, 1);
+   // if (debugFunc && ddcrcMetadat == 0) {
+   //    ddca_dbgrpt_feature_metadata(finfo, 1);
+   if (ddcrc != 0) {
+      rpt_feature_error(FeatureMetadata, feature_code, "ddca_get_feature_data_by_dh", ddcrc);
+      *finfo_loc = nullptr; // indicate no metadata
+   }
+
+   return ddcrc;
+}
+
+
 // Process RQGetVcp
 void VcpThread::getvcp(uint8_t featureCode, bool needMetadata)
 {
@@ -387,6 +414,7 @@ void VcpThread::getvcp(uint8_t featureCode, bool needMetadata)
     DDCA_Non_Table_Vcp_Value              valrec;
     DDCA_Feature_Metadata *               finfo;
 
+    DDCA_Status ddcrcMetadata = 0;
     DDCA_Status ddcrc = perform_open_display(&dh);
     if (ddcrc == 0) {
        QString msg;
@@ -404,32 +432,39 @@ void VcpThread::getvcp(uint8_t featureCode, bool needMetadata)
        }
        TRACECF(debugFunc, "feature_code=0x%02x, ddca_get_non_table_vcp_value() returned %d - %s",
                   featureCode, ddcrc, ddca_rc_name(ddcrc));
-       // don't need to call rpt_ddca_status() here if error,
-       // error will be reported in the value field for the feature code
+       if (ddcrc == DDCRC_DISCONNECTED) { // server went away
+          TRACECF(debugFunc, "DDCRC_DISCONNECTED received, NOT purging request queue");
+          // this->_requestQueue->purge();
+       }
+       else {
+          if (ddcrc != 0) {
+             rpt_feature_error(FeatureRead, featureCode, "ddca_get_nontable_vcp_value", ddcrc);
+          }
+          else {
+             // TRACECF(debugFunc,
+             //      "  opcode: 0x%02x, requested: 0x%02x, reported: 0x%02x",
+             //      valrec.opcode,
+             //      valrec.requested_value,
+             //      valrec.reported_value);
+             // error will be reported in the value field for the feature code
 
-      // if (ddcrc == 0) {  // if get_nontable_vcp_value() succeeded
-           // TODO:  get metadata once and cache
-           DDCA_Status ddcrc2 = ddca_get_feature_metadata_by_dh(
-                      featureCode,
-                      dh,
-                      true,       // create_default_if_not_found
-                      &finfo);
-           TRACECF(debugFunc, "ddca_get_feature_metadata_by_dh() for feature 0x%02x returned %d - %s",
-                     featureCode, ddcrc2, ddca_rc_name(ddcrc2));
-           // if (featureCode == 0xdf || featureCode == 0xf4 || featureCode == 0xf5)
-           //       ddca_dbgrpt_feature_metadata(finfo, 1);
-           // if (debugFunc && ddcrc2 == 0) {
-           //    ddca_dbgrpt_feature_metadata(finfo, 1);
-           // }
-           if (ddcrc2 != 0) {
-              rpt_feature_error(FeatureMetadata, featureCode, "ddca_get_feature_data_by_dh", ddcrc);
-           }
+             if (needMetadata) {
+                // TODO:  get metadata once and cache
+                ddcrcMetadata = getMetadata(dh, featureCode, &finfo);
+             }
+          }
+          // whether or not succeeded, set feature info in  _baseModel so FeatureValueWidget can display error
 
-           // whether or not succeeded, set feature info in  _baseModel so FeatureValueWidget can display error
-           _baseModel->modelVcpValueSet(featureCode, this->_dref, finfo, &valrec, ddcrc);
-
-           _baseModel->setFeatureChecked(featureCode);
-       // }  // end, get value succeeded
+          _baseModel->modelVcpValueSet(featureCode, this->_dref, finfo, &valrec, ddcrc);
+          _baseModel->setFeatureChecked(featureCode);
+       }
+       if (ddcrcMetadata == DDCRC_DISCONNECTED || ddcrc == DDCRC_DISCONNECTED) {
+          // monitor disappeared
+          TRACECF(debugFunc, "DDCRC_DISCONNECTED received, purging request queue");
+         this->_requestQueue->purge();
+          TRACECF(debugFunc, "request queue purged");
+          _baseModel->markDisconnected(this->_dref);
+       }
 
        ddcrc = perform_close_display(dh);
     }  // open succeeded
@@ -475,6 +510,15 @@ void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint16_t shsl)
        if (ddcrc != 0) {
           TRACECF(debugFunc, "ddca_set_non_table_vcp_value() returned %d = %s", ddcrc, ddca_rc_name(ddcrc));
           rpt_feature_error(FeatureWrite, feature_code, "ddca_set_non_table_vcp_value", ddcrc);
+
+          if (ddcrc == DDCRC_DISCONNECTED) {
+             // monitor disappeared
+             TRACECF(debugFunc, "DDCRC_DISCONNECTED received, purging request queue");
+             this->_requestQueue->purge();
+             TRACECF(debugFunc, "request queue purged");
+             _baseModel->markDisconnected(this->_dref);
+          }
+
           goto bye;
        }
        if (!writeOnly) {
@@ -566,20 +610,23 @@ void VcpThread::run()
 {
     bool debug = false;
 
-    forever {
+    while(true) {    // eclipse parser does not recognize keyword forever
         VcpRequest * rqst = this->_requestQueue->pop();
+        TRACECF(debug, "Received request. rqst->_type=%d", rqst->_type);
         switch(rqst->_type) {
         case VcpRequestType::RQGetVcp:
         {
             VcpGetRequest* getRqst = static_cast<VcpGetRequest*>(rqst);
             // printf("(VcpThread::run) VcpGetRequest. feature_code=0x%02x\n", getRqst->_featureCode);
-            // TRACE("VcpGetRequest. feature code = 0x%02x", getRqst->_featureCode);
+            TRACECF(debug, "VcpGetRequest. feature code = 0x%02x", getRqst->_featureCode);
             getvcp(getRqst->_featureCode, getRqst->_needMetadata);
             break;
         }
         case VcpRequestType::RQSetVcp:
         {
             VcpSetRequest* setRqst = static_cast<VcpSetRequest*>(rqst);
+            TRACECF(debug, "RQSetVcp. feature code=0x%02x, newSl=%d\n",
+                        setRqst->_featureCode, setRqst->_newSl);  fflush(stdout);
             // if (debugThread)
             //     printf("(VcpThread::run) RQSetVcp. feature code=0x%02x, newval=%d\n",
             //            setRqst->_featureCode, setRqst->_newval);  fflush(stdout);
