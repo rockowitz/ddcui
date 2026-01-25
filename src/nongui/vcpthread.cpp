@@ -99,7 +99,7 @@ void VcpThread::rpt_nonfeature_error(
                    action, ddcaFuncName, ddcrc);
    QString qsexpl = QString("");
    if (erec) {
-      QString smooshed = ddcutil_format_error_detail(erec, QString(""), 3);
+      QString smooshed = ddcu_format_error_detail(erec, QString(""), 3);
       qsexpl = QString("Error %1 for display %2 - %3.\n\n"
                        "API function %4 returned %5(%6): %7")
                        .arg(action)

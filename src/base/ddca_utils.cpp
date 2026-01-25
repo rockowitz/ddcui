@@ -1,6 +1,6 @@
 // ddca_utils.cpp
 
-// Copyright (C) 2018-2026Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <assert.h>
@@ -95,7 +95,7 @@ int_max(int v1, int v2) {
 
 
 DDCA_Cap_Vcp *
-ddcutil_find_cap_vcp(DDCA_Capabilities * parsed_caps, uint8_t feature_code)
+ddcu_find_cap_vcp(DDCA_Capabilities * parsed_caps, uint8_t feature_code)
 {
    DDCA_Cap_Vcp * result = NULL;
    if (parsed_caps) {
@@ -157,7 +157,7 @@ format_error_detail_aux(
 
 
 QString
-ddcutil_format_error_detail(
+ddcu_format_error_detail(
       DDCA_Error_Detail * erec,
       QString             causesTitle,
       int                 indentation_per_depth)
@@ -201,7 +201,7 @@ ddcui_dbgrpt_ddca_feature_metadata(
 
 
 // model name to be shown in display selector combo box
-QString ddcutil_comboBoxModelName(DDCA_Display_Info2* dinfo) {
+QString ddcu_comboBoxModelName(DDCA_Display_Info2* dinfo) {
 
    // Remove entry for monitor from display selector combo box
    QString mfg_id     = dinfo->mfg_id;

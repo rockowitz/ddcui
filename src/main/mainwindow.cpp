@@ -161,7 +161,7 @@ void MainWindow::forDisplayChanged(DDCA_Display_Status_Event evt) {
 
 // Called when a new monitor is detected
 int MainWindow::addMonitor(DDCA_Display_Ref dref) {
-   bool debug = false;
+   bool debug = true;
    TRACECF(debug, "dref=%s", ddca_dref_repr(dref));
    int nextIndex = -1;
    DDCA_Display_Info2 * dinfo;
@@ -190,7 +190,7 @@ int MainWindow::removeMonitor(DDCA_Display_Ref dref) {
 
       // Remove entry for monitor from display selector combo box
       // QString comboBoxString = monitor->comboBoxModelName();
-      QString comboBoxString = ddcutil_comboBoxModelName(monitor->_displayInfo);
+      QString comboBoxString = ddcu_comboBoxModelName(monitor->_displayInfo);
       int curIndex = _toolbarDisplayCB->currentIndex();
       int indexToDelete = _toolbarDisplayCB->findText(comboBoxString,Qt::MatchExactly);
 
@@ -353,7 +353,7 @@ void MainWindow::initOneMonitor(DDCA_Display_Info2 * info, int curIndex) {
    TRACECF(debug, "Starting. info=%p, curIndex=%d", info, curIndex);
 
    int monitorNumber = curIndex+1;
-   _toolbarDisplayCB->addItem(ddcutil_comboBoxModelName(info), QVariant(monitorNumber));
+   _toolbarDisplayCB->addItem(ddcu_comboBoxModelName(info), QVariant(monitorNumber));
 
    // Create Monitor instance, initialize data structures
    Monitor * curMonitor = new Monitor(info, monitorNumber);

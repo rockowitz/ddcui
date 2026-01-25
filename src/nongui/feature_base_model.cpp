@@ -197,7 +197,7 @@ void   FeatureBaseModel::modelVcpValueSet(
 
         DDCA_Cap_Vcp * cap_vcp = NULL;
         if (_parsed_caps)
-           cap_vcp = ddcutil_find_cap_vcp(_parsed_caps, feature_code);
+           cap_vcp = ddcu_find_cap_vcp(_parsed_caps, feature_code);
 
         FeatureValue * fv = new FeatureValue(
                                    feature_code,

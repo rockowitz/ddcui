@@ -21,7 +21,7 @@ Bit_Set_256 bs256_from_sl_values(DDCA_Feature_Value_Entry * sl_values);
 // Capabilities
 
 DDCA_Cap_Vcp *
-ddcutil_find_cap_vcp(
+ddcu_find_cap_vcp(
       DDCA_Capabilities *        parsed_caps,
       uint8_t                    feature_code);
 
@@ -34,12 +34,12 @@ free_ddca_feature_value_table(
 // Error Reporting
 
 QString
-ddcutil_format_error_detail(
+ddcu_format_error_detail(
       DDCA_Error_Detail * erec,
       QString             causesTitle,
       int                 indentation_per_depth);
 
 QString
-ddcutil_comboBoxModelName(DDCA_Display_Info2* dinfo);
+ddcu_comboBoxModelName(DDCA_Display_Info2* dinfo);
 
 #endif /* DDCA_UTILS_H_ */
