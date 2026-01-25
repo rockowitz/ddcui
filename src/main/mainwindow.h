@@ -169,8 +169,8 @@ private slots:
 
 public:
     void reportDdcApiError(QString funcname, int rc) const;
-    void addMonitor(DDCA_Display_Ref dref);
-    void removeMonitor(DDCA_Display_Ref dref);
+    int  addMonitor(DDCA_Display_Ref dref);
+    int  removeMonitor(DDCA_Display_Ref dref);
     void enableMonitor(DDCA_Display_Ref dref);
 
 private:
