@@ -40,7 +40,6 @@ public:
     Monitor(DDCA_Display_Info2 * display_info, int monitorNumber);
     ~Monitor();
 
-    QString           comboBoxModelName();
     bool              supportsDdc();
     bool              capabilitiesCheckComplete();
     bool              capabilitiesCheckSuccessful();

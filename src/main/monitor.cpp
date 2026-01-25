@@ -1,6 +1,6 @@
 /* monitor.cpp */
 
-// Copyright (C) 2018-2025 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "base/monitor.h"
@@ -49,6 +49,15 @@ Monitor::Monitor(DDCA_Display_Info2 * display_info, int monitorNumber)
 
       QObject::connect(_baseModel,  SIGNAL(signalVcpRequest(VcpRequest*)),
                        this, SLOT(  putVcpRequest(VcpRequest*)));
+
+#ifdef OUT
+      TRACECF(true, "connecting reportDisconnected");
+      GlobalState& globals = GlobalState::instance();
+      QObject::connect(this,                 &Monitor::reportDisconnected,
+                       globals._mainWindow, &MainWindow::removeMonitor);
+      TRACECF(true, "connected reportDisconnected");
+#endif
+
    }
 
    TRACECF(debug, "Done.     _monitorNumber=%d, dref: %s", _monitorNumber, ddca_dref_repr(_displayInfo->dref));
@@ -191,5 +200,10 @@ void Monitor::vcpThreadFinished() {
    TRACECF(debug, "vcp thread finished");
 }
 
+void Monitor::markDisconnected() {
+   bool debug =  true;
+   TRACECF(debug, "starting");
+   emit reportDisconnected(this->_displayInfo->dref);
+   TRACECF(debug, "emitted");
 
-
+}
