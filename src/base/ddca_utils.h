@@ -42,4 +42,6 @@ ddcu_format_error_detail(
 QString
 ddcu_comboBoxModelName(DDCA_Display_Info2* dinfo);
 
+bool ddcu_dpath_eq(DDCA_IO_Path p1, DDCA_IO_Path p2);
+
 #endif /* DDCA_UTILS_H_ */

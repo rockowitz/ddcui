@@ -218,3 +218,27 @@ QString ddcu_comboBoxModelName(DDCA_Display_Info2* dinfo) {
    return s;
 }
 
+
+
+/** Tests 2 #DDCA_IO_Path instances for equality
+ *
+ *  \param p1  first instance
+ *  \param p2  second instance
+ *  \return  true/false
+ */
+bool ddcu_dpath_eq(DDCA_IO_Path p1, DDCA_IO_Path p2) {
+   bool result = false;
+   if (p1.io_mode == p2.io_mode) {
+      switch(p1.io_mode) {
+      case DDCA_IO_I2C:
+         result = (p1.path.i2c_busno == p2.path.i2c_busno);
+         break;
+      case DDCA_IO_USB:
+         result = p1.path.hiddev_devno == p2.path.hiddev_devno;
+      }
+   }
+   return result;
+}
+
+
+
