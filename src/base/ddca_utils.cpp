@@ -199,7 +199,6 @@ ddcui_dbgrpt_ddca_feature_metadata(
 #endif
 
 
-
 // model name to be shown in display selector combo box
 QString ddcu_comboBoxModelName(DDCA_Display_Info2* dinfo) {
 
@@ -217,7 +216,6 @@ QString ddcu_comboBoxModelName(DDCA_Display_Info2* dinfo) {
    }
    return s;
 }
-
 
 
 /** Tests 2 #DDCA_IO_Path instances for equality
@@ -239,6 +237,3 @@ bool ddcu_dpath_eq(DDCA_IO_Path p1, DDCA_IO_Path p2) {
    }
    return result;
 }
-
-
-
