@@ -66,6 +66,20 @@ Monitor::Monitor(DDCA_Display_Info2 * display_info, int monitorNumber)
 }
 
 
+void Monitor::recheck() {
+   bool debug = true;
+   TRACECF(debug, "Starting");
+   // get displayinfo for dref
+   DDCA_Display_Ref ddca_dref = this->_displayInfo->dref;
+   DDCA_Display_Info2 * new_dinfo = nullptr;
+   ddca_get_display_info2(ddca_dref, &new_dinfo);
+   DDCA_Display_Info2 * old_dinfo = this->_displayInfo;
+   this->_displayInfo = new_dinfo;
+   ddca_free_display_info2(old_dinfo);
+   TRACECF(debug,"Done");
+}
+
+
 Monitor::~Monitor() {
    bool debug = false;
    TRACECF(debug, "Starting. monitor=%p, _monitor_number=%d, _displayInfo->dispno=%d, _baseModel=%p, _moninfoPlainText=%p, _capabilitiesPlainTex=%p",
@@ -199,6 +213,7 @@ void Monitor::vcpThreadFinished() {
    bool debug =  true;
    TRACECF(debug, "vcp thread finished");
 }
+
 
 void Monitor::markDisconnected() {
    bool debug =  true;

@@ -48,6 +48,7 @@ public:
     QString           dref_repr();
     void              dbgrpt();
     void              markDisconnected();
+    void              recheck();
 
     bool                 _initChecksDone = false;
     const int            _monitorNumber = -1;    // 1 based
