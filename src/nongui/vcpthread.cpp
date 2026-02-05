@@ -40,7 +40,6 @@ VcpThread::VcpThread(
     _dref         = dinfo->dref;
     _ddcaSimulator = new DdcaSimulator();
 
-    // ddca_report_display_info(dinfo, 4);
     // ddca_dbgrpt_display_ref(_dref, 4);
     TRACECF(debug, "Done.     _dref=%s", ddca_dref_repr(_dref));
 }
@@ -609,6 +608,12 @@ void VcpThread::endInitialLoad(void)
 void VcpThread::run()
 {
     bool debug = false;
+    TRACECF(debug, "Starting");
+
+    qInfo() << "Thread started"
+            << QThread::currentThread()
+            << "id" << QThread::currentThreadId()
+            << "objectName" << QThread::currentThread()->objectName();
 
     while(true) {    // eclipse parser does not recognize keyword forever
         VcpRequest * rqst = this->_requestQueue->pop();
