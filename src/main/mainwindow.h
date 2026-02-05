@@ -73,6 +73,8 @@ private:
     void disconnectBaseModel(Monitor * monitor);
     void freeMonitors();
     int  findMonitor(DDCA_Display_Ref dref);
+    int  matchMonitor(DDCA_Display_Ref dref);
+    Monitor * getMonitorInstance(DDCA_Display_Ref dref);
     void initOneMonitor(DDCA_Display_Info2 * info, int curIndex);
     void setInitialDisplayIndex(Parsed_Ddcui_Cmd * parsed_cmd);
     void initMonitors(Parsed_Ddcui_Cmd * parsed_cmd);
