@@ -279,7 +279,6 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
       // ddca_enable_udf(              parsed_cmd->flags & CMD_FLAG_ENABLE_UDF);
    }
 
-
    if (debug)
       printf("(main.cpp:%s) Done.  Returning %s\n", __func__, SBOOL(ok));
    return ok;
@@ -301,11 +300,10 @@ int main(int argc, char *argv[])
 {
     set_simple_dbgmsg_min_funcname_size(0);
 
-    bool debug = false;
+    bool debug = true;
     if (debug) {
-       printf("(%s) Starting\n", __func__);
-       printf("(%s) prgname = %s, application_name = %s\n",
-             __func__, g_get_prgname(), g_get_application_name() );
+       DBG("Starting");
+       DBG("prgname = %s, application_name = %s", g_get_prgname(), g_get_application_name() );
     }
 
     bool show_version = ntsa_find(argv, "-V") >= 0 || ntsa_find(argv, "--version") >= 0;
@@ -316,7 +314,7 @@ int main(int argc, char *argv[])
               DDCUTIL_VMAJOR, DDCUTIL_VMINOR, DDCUTIL_VMICRO, QT_VERSION_STR);
        printf("Executing using libddcutil %s, Qt %s\n\n",
               ddca_ddcutil_extended_version_string(), qVersion());
-       puts("Copyright (C) 2018-2025 Sanford Rockowitz");
+       puts("Copyright (C) 2018-2026 Sanford Rockowitz");
        puts("License GPLv2: GNU GPL version 2 or later <http://gnu.org/licenses/gpl.html>");
        puts("This is free software: you are free to change and redistribute it.");
        puts("There is NO WARRANTY, to the extent permitted by law.");
@@ -399,10 +397,10 @@ int main(int argc, char *argv[])
                           &config_fn,
                           errmsgs);
        if (debug) {
-          printf("(%s) apply_config_file() returned %d\n", __func__, new_argc);
-          printf("(%s) combined_config_file_options=%s, config_fn=%s\n", __func__,
-                 combined_config_file_options, config_fn);
-          printf("(%s) new_argc=%d, new_argv:\n", __func__, new_argc);
+          DBG("apply_config_file() returned %d", new_argc);
+          DBG("combined_config_file_options=%s, config_fn=%s",
+                combined_config_file_options, config_fn);
+          DBG("new_argc=%d, new_argv:", new_argc);
           ntsa_show(new_argv);
        }
 
@@ -490,6 +488,12 @@ int main(int argc, char *argv[])
 #endif
 
           DBGF(debug, "Calling Application::exec()");
+#ifdef OUT
+          qInfo() << "before application.exec(), thread = "
+                  << QThread::currentThread()
+                  << "id" << QThread::currentThreadId()
+                  << "objectName" << QThread::currentThread()->objectName();
+#endif
           mainStatus = application.exec();
           DBGF(debug, "Application::exec() returned %d", mainStatus);
           ddca_stop_watch_displays(/*wait=*/ false);    // prevent zombie thread
