@@ -139,22 +139,32 @@ void MainWindow::forDisplayChanged(DDCA_Display_Status_Event evt) {
 
    int newDisplayIndex = -1;
    if (evt.event_type ==  DDCA_EVENT_DISPLAY_CONNECTED ) {
-       newDisplayIndex = addMonitor(evt.dref);
+      int monndx = matchMonitor(evt.dref);
+      TRACECF(debug, "matchMonitor returned %d", monndx);
+      if (monndx >= 0) {
+         Monitor * monitor = _monitors.at(monndx);
+         monitor->recheck();
 
+         // hack
+         removeMonitor(monitor->_displayInfo->dref);
+      }
+      newDisplayIndex = addMonitor(evt.dref);
    }
+
    else if (evt.event_type == DDCA_EVENT_DISPLAY_DISCONNECTED) {
       int curIndex = _toolbarDisplayCB->currentIndex();
       int removedIndex = removeMonitor(evt.dref);
-
    }
+
    else if (evt.event_type == DDCA_EVENT_DDC_ENABLED) {
       enableMonitor(evt.dref);
    }
+
    else {
-      syslog(LOG_ERR, "unexpected event type");
-      TRACEC("unexpected event type: %d = %s",
+      syslog(LOG_ERR, "Unexpected event type");
+      TRACEC("Unexpected event type: %d = %s",
              evt.event_type, ddca_display_event_type_name(evt.event_type));
-      assert(false);
+      // assert(false);
    }
 }
 
@@ -212,6 +222,7 @@ int MainWindow::removeMonitor(DDCA_Display_Ref dref) {
          }
       }
    }
+   TRACECF(debug, "Done.  Returning %d", monNdx);
    return monNdx;
 }
 
@@ -294,17 +305,19 @@ void MainWindow::connectBaseModel(Monitor * curMonitor) {
 void MainWindow::disconnectBaseModel(Monitor * curMonitor) {
    FeatureBaseModel * baseModel = curMonitor->_baseModel;
 
-   QObject::disconnect(baseModel,  &FeatureBaseModel::signalStatusMsg,
-                       this,       &MainWindow::setTransitoryStatusMsg);
-   QObject::disconnect(baseModel,  &FeatureBaseModel::signalStartInitialLoad,
-                       this,       &MainWindow::longRunningTaskStart);
-   QObject::disconnect(baseModel,  &FeatureBaseModel::signalEndInitialLoad,
-                       this,       &MainWindow::longRunningTaskEnd);
+   if (baseModel) {
+      QObject::disconnect(baseModel,  &FeatureBaseModel::signalStatusMsg,
+                          this,       &MainWindow::setTransitoryStatusMsg);
+      QObject::disconnect(baseModel,  &FeatureBaseModel::signalStartInitialLoad,
+                          this,       &MainWindow::longRunningTaskStart);
+      QObject::disconnect(baseModel,  &FeatureBaseModel::signalEndInitialLoad,
+                          this,       &MainWindow::longRunningTaskEnd);
+   }
 }
 
 
 int MainWindow::findMonitor(DDCA_Display_Ref dref) {
-   bool debug  = false;
+   bool debug  = true;
    TRACECF(debug, "dref=%s", ddca_dref_repr(dref));
    int result = -1;
    int ct0 = _monitors.size();
@@ -321,8 +334,33 @@ int MainWindow::findMonitor(DDCA_Display_Ref dref) {
 }
 
 
+int MainWindow::matchMonitor(DDCA_Display_Ref dref) {
+   bool debug  = true;
+   TRACECF(debug, "dref=%s", ddca_dref_repr(dref));
+   int result = -1;
+   int ct0 = _monitors.size();
+   TRACECF(debug,"_monitors.size() = %d", ct0);
+
+   DDCA_Display_Info2 * dinfo0 = NULL;
+   ddca_get_display_info2(dref, &dinfo0);
+   assert(dinfo0);
+   DDCA_IO_Path p0 = dinfo0->path;
+   for (int ndx = _monitors.size()-1; ndx >= 0; ndx--) {
+      Monitor * curMonitor = _monitors.at(ndx);
+      DDCA_IO_Path p1 = curMonitor->_displayInfo->path;
+      if (ddcu_dpath_eq(p0, p1)) {
+         result = ndx;
+         break;
+      }
+   }
+   ddca_free_display_info2(dinfo0);
+   TRACECF(debug,"Returning: %d", result);
+   return result;
+}
+
+
 void MainWindow::freeMonitors() {
-   bool debug = false;
+   bool debug = true;
    TRACECF(debug, "Starting");
 
    int ct0 = _monitors.size();
@@ -359,11 +397,8 @@ void MainWindow::initOneMonitor(DDCA_Display_Info2 * info, int curIndex) {
    Monitor * curMonitor = new Monitor(info, monitorNumber);
 
    TRACECF(true, "connecting reportDisconnected");
-   GlobalState& globals = GlobalState::instance();
-   QObject::connect(curMonitor,  &Monitor::reportDisconnected,
-                    //globals._mainWindow,
-                    this,
-                    &MainWindow::removeMonitor);
+   QObject::connect(curMonitor, &Monitor::reportDisconnected,
+                    this,       &MainWindow::removeMonitor);
    TRACECF(true, "connected reportDisconnected");
 
    _monitors.append(curMonitor);
@@ -415,7 +450,6 @@ void MainWindow::setInitialDisplayIndex(Parsed_Ddcui_Cmd * parsed_cmd) {
       if (initialDisplayIndex < 0) {
          // queue status dialog
          initialDisplayIndex = 0;
-
          QString qsTitle = QString("ddcui Error");
          QString qsDetail = QString("Invalid Model: %1").arg(parsed_cmd->model);
          QMessageBox::Icon icon = QMessageBox::Warning;
@@ -452,22 +486,16 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
        if (debug)
           ddca_report_error_detail(errs, 2);
        QString errMsg(errs->detail);
-       bool permissionsError = false;
+       // bool permissionsError = false;
        if (errs->cause_ct > 0) {
           for (int ndx = 0; ndx < errs->cause_ct; ndx++) {
               DDCA_Error_Detail * cause = errs->causes[ndx];
               TRACECF(debug, "errs->status_code=%d", errs->status_code);
-              if (cause->status_code == -13) {    // -EACCES
-                 permissionsError = true;
-              }
-              if (ndx == 0)
-                 errMsg.append(":\n\n");
-              else
-                 errMsg.append("\n");
-              // char * s = cause->detail;
-              // QString thisMsg(s);
-              QString thisMsg(cause->detail);
-              errMsg.append(thisMsg);
+              // if (cause->status_code == -13) {    // -EACCES
+              //    permissionsError = true;
+              // }
+              errMsg.append((ndx == 0) ? ":\n\n" : "\n");
+              errMsg.append(cause->detail);
           }
           // if (permissionsError) {
           //    TRACECF(debug, "Appending URL");
@@ -615,9 +643,10 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
     // _ui(new Ui::MainWindow)
     // , PageChangeObserver()
 {
-    bool debug = false;
+    bool debug = true;
     _cls = strdup(metaObject()->className());
-    TRACECF(debug, "Starting");
+    TRACECF(debug, "Starting. thread = %d", get_thread_id());
+
     GlobalState& globalState = GlobalState::instance();
     globalState._parsed_cmd = parsed_cmd;  // in case of reinitialization
 
@@ -943,7 +972,6 @@ void MainWindow::displaySelectorCombobox_activated(int index) {
 #endif
 
 
-
 //
 // View menu slots
 //
@@ -952,7 +980,7 @@ void MainWindow::displaySelectorCombobox_activated(int index) {
 
 void MainWindow::on_actionMonitorSummary_triggered()
 {
-    bool debug = false;
+    bool debug = true;
     // std::cout << "(MainWindow::on_actionMo_initialViewnitorSummary_triggered()" << endl;
 
     int monitorNdx = _toolbarDisplayCB->currentIndex();
@@ -966,7 +994,7 @@ void MainWindow::on_actionMonitorSummary_triggered()
        Monitor * monitor = _monitors[monitorNdx];
        DDCA_Display_Info2 * dinfo =  monitor->_displayInfo;    // &_dlist->info[monitorNdx];
        DDCA_Display_Ref dref = dinfo->dref;
-       TRACECF(debug, "monitorNdx (%d), dref=%s", monitorNdx, ddca_dref_repr(dref));
+       TRACEMF(debug, "monitorNdx (%d), dref=%s", monitorNdx, ddca_dref_repr(dref));
 
        char * s = MonitorDescActions::capture_display_info_report(dinfo);
 
@@ -1196,7 +1224,6 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
        TRACECF(debug,
            "features_to_show: (%d) %s", ddca_feature_list_count(featuresToShow),
                                         ddca_feature_list_string(featuresToShow, NULL, (char*)" "));
-
        if (_feature_selector->_includeOnlyCapabilities || _feature_selector->_includeAllCapabilities) {
           // need to test _parsed_caps is valid
           // n. simply manipulates data structures, does not perform monitor io
