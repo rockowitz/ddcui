@@ -610,10 +610,12 @@ void VcpThread::run()
     bool debug = false;
     TRACECF(debug, "Starting");
 
+#ifdef TEMP
     qInfo() << "Thread started"
             << QThread::currentThread()
             << "id" << QThread::currentThreadId()
             << "objectName" << QThread::currentThread()->objectName();
+#endif
 
     while(true) {    // eclipse parser does not recognize keyword forever
         VcpRequest * rqst = this->_requestQueue->pop();
