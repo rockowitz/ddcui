@@ -1,6 +1,6 @@
 /** \file mainwindow.cpp */
 
-// Copyright (C) 2018-2025 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "main/mainwindow.h"
@@ -143,8 +143,7 @@ void MainWindow::forDisplayChanged(DDCA_Display_Status_Event evt) {
       TRACECF(debug, "matchMonitor returned %d", monndx);
       if (monndx >= 0) {
          Monitor * monitor = _monitors.at(monndx);
-         monitor->recheck();
-
+         // monitor->recheck();
          // hack
          removeMonitor(monitor->_displayInfo->dref);
       }
@@ -171,7 +170,7 @@ void MainWindow::forDisplayChanged(DDCA_Display_Status_Event evt) {
 
 // Called when a new monitor is detected
 int MainWindow::addMonitor(DDCA_Display_Ref dref) {
-   bool debug = true;
+   bool debug = false;
    TRACECF(debug, "dref=%s", ddca_dref_repr(dref));
    int nextIndex = -1;
    DDCA_Display_Info2 * dinfo;
@@ -360,14 +359,15 @@ int MainWindow::matchMonitor(DDCA_Display_Ref dref) {
 
 
 void MainWindow::freeMonitors() {
-   bool debug = true;
+   bool debug = false;
    TRACECF(debug, "Starting");
 
    int ct0 = _monitors.size();
    TRACECF(debug,"_monitors.size() = %d", ct0);
    for (int ndx = _monitors.size()-1; ndx >= 0; ndx--) {
       Monitor * curMonitor = _monitors.at(ndx);
-      TRACECF(debug, "deleting monitor ndx=%d, curMonitor=%p, dispno=%d", ndx, curMonitor, curMonitor->_displayInfo->dispno);
+      TRACECF(debug, "deleting monitor ndx=%d, curMonitor=%p, dispno=%d",
+                     ndx, curMonitor, curMonitor->_displayInfo->dispno);
       _monitors.removeAt(ndx);
       delete curMonitor;
       TRACECF(debug, "deleted monitor ndx=%d", ndx);
@@ -379,7 +379,7 @@ void MainWindow::freeMonitors() {
    int ct = _toolbarDisplayCB->count();
    TRACECF(debug,"_toolbarDisplayCB->size() = %d", ct);
    for (int ndx = ct-1; ndx >= 0; ndx--) {
-     _toolbarDisplayCB->removeItem(ndx);
+      _toolbarDisplayCB->removeItem(ndx);
    }
 
    TRACECF(debug, "Done");
@@ -396,10 +396,10 @@ void MainWindow::initOneMonitor(DDCA_Display_Info2 * info, int curIndex) {
    // Create Monitor instance, initialize data structures
    Monitor * curMonitor = new Monitor(info, monitorNumber);
 
-   TRACECF(true, "connecting reportDisconnected");
+   TRACECF(debug, "connecting reportDisconnected");
    QObject::connect(curMonitor, &Monitor::reportDisconnected,
                     this,       &MainWindow::removeMonitor);
-   TRACECF(true, "connected reportDisconnected");
+   TRACECF(debug, "connected reportDisconnected");
 
    _monitors.append(curMonitor);
    initMonitorInfoWidget(curMonitor, _ui->centralWidget);
@@ -643,7 +643,7 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
     // _ui(new Ui::MainWindow)
     // , PageChangeObserver()
 {
-    bool debug = true;
+    bool debug = false;
     _cls = strdup(metaObject()->className());
     TRACECF(debug, "Starting. thread = %d", get_thread_id());
 
@@ -980,7 +980,7 @@ void MainWindow::displaySelectorCombobox_activated(int index) {
 
 void MainWindow::on_actionMonitorSummary_triggered()
 {
-    bool debug = true;
+    bool debug = false;
     // std::cout << "(MainWindow::on_actionMo_initialViewnitorSummary_triggered()" << endl;
 
     int monitorNdx = _toolbarDisplayCB->currentIndex();
