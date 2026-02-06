@@ -65,9 +65,9 @@ Monitor::Monitor(DDCA_Display_Info2 * display_info, int monitorNumber)
    //   ddca_report_display_info(_displayInfo, 3);
 }
 
-
+#ifdef UNUSED
 void Monitor::recheck() {
-   bool debug = true;
+   bool debug = false;
    TRACECF(debug, "Starting");
    // get displayinfo for dref
    DDCA_Display_Ref ddca_dref = this->_displayInfo->dref;
@@ -78,6 +78,7 @@ void Monitor::recheck() {
    ddca_free_display_info2(old_dinfo);
    TRACECF(debug,"Done");
 }
+#endif
 
 
 Monitor::~Monitor() {
@@ -218,6 +219,15 @@ void Monitor::vcpThreadFinished() {
 void Monitor::markDisconnected() {
    bool debug =  true;
    TRACECF(debug, "starting");
+
+   QString qstitle("Display Status Change");
+   QMessageBox::Icon icon = QMessageBox::Warning;
+   QString qstext = QString("Display disconnected on %1, bus /dev/i2c-%2.\n")
+              //     .arg(evt.connector_name).arg(evt.io_path.path.i2c_busno);
+                     .arg(_displayInfo->drm_card_connector).arg( _displayInfo->path.path.i2c_busno);
+   MsgBoxQueueEntry* qe = new MsgBoxQueueEntry(qstitle, qstext, icon);
+   GlobalState::instance()._msgBoxQueue->put(qe);
+
    emit reportDisconnected(this->_displayInfo->dref);
    TRACECF(debug, "emitted");
 
