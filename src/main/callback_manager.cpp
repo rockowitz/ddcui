@@ -5,7 +5,7 @@
  *  allowing the callback to return quickly.
  */
 
-// Copyright (C) 2018-2025 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <glib-2.0/glib.h>
