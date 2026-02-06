@@ -251,6 +251,17 @@ bool printftcmf(
 }
 
 
+/** Gets the id number of the current process
+ *
+ *  \return  process number
+ */
+intmax_t get_process_id()
+{
+   pid_t pid = syscall(SYS_getpid);
+   return pid;
+}
+
+
 intmax_t get_thread_id() {
    pid_t tid = syscall(SYS_gettid);
    return tid;

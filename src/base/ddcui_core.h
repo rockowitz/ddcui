@@ -43,23 +43,19 @@ void init_core();
 // Tracing
 //
 
-bool enable_trace_show_time(bool onoff);
-bool enable_trace_show_thread_id(bool onoff);
-
-
+bool     enable_trace_show_time(bool onoff);
+bool     enable_trace_show_thread_id(bool onoff);
 intmax_t get_thread_id();
-void create_timestamp(char* buf, int bufsz);
-
-
-
-bool printftcmf(
-      bool debug,
-      const char * metaclass_classname,
-      const char * cls,
-      const char * funcname,
-      int lineno,
-      const char * filename,
-      const char * format, ...);
+intmax_t get_process_id();
+void     create_timestamp(char* buf, int bufsz);
+bool     printftcmf(
+            bool debug,
+            const char * metaclass_classname,
+            const char * cls,
+            const char * funcname,
+            int lineno,
+            const char * filename,
+            const char * format, ...);
 
 // Naming conventions:
 //   C    use _cls
