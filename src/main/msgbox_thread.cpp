@@ -4,7 +4,7 @@
  *  dialog box. This avoids a flurry of simultaneous dialog boxes.
  */
 
-// Copyright (C) 2018-2023 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <iostream>
@@ -50,18 +50,28 @@ void MsgBoxThread::run() {
     QThread::msleep(initial_sleep_millis);
     TRACECF(debugThread, "Initial sleep complete");
 
-    forever {
+    while (true) {    // eclipse doesn't recognize keyword forever
         TRACECF(debugThread, "Waiting to pop"); fflush(stdout);
         MsgBoxQueueEntry * rqst = this->_requestQueue->pop();
         TRACECF(debugThread, "Popped: _boxTitle: %s, _boxText: %s",
                                 QS2S(rqst->_boxTitle), QS2S(rqst->_boxText));
-
-        _semaphore->acquire();
-        TRACECF(debugThread, "Acquired semaphore");
-        emit postSerialMsgBox(rqst->_boxTitle, rqst->_boxText, rqst->_boxIcon);
-        // requires MainWindow; clearer since MainWindow::showSerialMsgBox is what gets called
-        // but would require knowing MainWindow
-        // showSerialMsgBox(rqst->_boxTitle, rqst->_boxText, rqst->_boxIcon);
+        TRACECF(debugThread, "_lastText: %s", QS2S(_lastText));
+        // Duplicate message can occur becuase UDEV doesn't report disconnection
+        // events immediately, but instead just before a subsequent connection.
+        // In the meantime, a DDCRC_DISCONNECTED status code on a feature request
+        // causes a disconnected message to be posted
+        if (rqst->_boxText != _lastText) {
+           _semaphore->acquire();
+           TRACECF(debugThread, "Acquired semaphore");
+           emit postSerialMsgBox(rqst->_boxTitle, rqst->_boxText, rqst->_boxIcon);
+           // requires MainWindow; clearer since MainWindow::showSerialMsgBox is what gets called
+           // but would require knowing MainWindow
+           // showSerialMsgBox(rqst->_boxTitle, rqst->_boxText, rqst->_boxIcon);
+           _lastText = rqst->_boxText;
+        }
+        else {
+           TRACECF(debugThread, "Skipping duplicate message");
+        }
         delete rqst;
     }
 }

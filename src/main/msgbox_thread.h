@@ -4,7 +4,7 @@
  *  dialog box. This avoids a flurry of simultaneous dialog boxes.
  */
 
-// Copyright (C) 2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef MSGBOX_THREAD_H
@@ -38,6 +38,8 @@ private:
     const char *   _cls = "MsgBoxThread";
     MsgBoxQueue *  _requestQueue = nullptr;
     QSemaphore *   _semaphore = nullptr;
+    // char  *        _lastMsgText = nullptr;
+    QString        _lastText;
 };
 
 #endif // MSGBOX_THREAD_H
