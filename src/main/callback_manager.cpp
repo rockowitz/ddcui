@@ -57,17 +57,17 @@ void postEventMsg(DDCA_Display_Status_Event evt) {
    {
       QString qstitle("Display Status Change");
       QMessageBox::Icon icon = QMessageBox::Warning;
-      QString qstext;;
+      QString qstext;
       // QString qstext = (evt.event_type == DDCA_EVENT_DISPLAY_CONNECTED)
       //                    ?   QString("Display has been connected.   Redetect Displays")
       //                    :   QString("Display has been disconnected.  Redetect displays");
       if (evt.event_type == DDCA_EVENT_DISPLAY_CONNECTED) {
          if (evt.flags & DDCA_DISPLAY_EVENT_DDC_WORKING)
          qstext = QString("Display connected on %1, bus /dev/i2c-%2.")
-                         .arg(evt.connector_name).arg(  evt.io_path.path.i2c_busno) ;
+                         .arg(evt.connector_name).arg(  evt.io_path.path.i2c_busno);
          else
             qstext = QString("Display connected on %1, bus /dev/i2c-%2.\nDDC communication not working.")
-                            .arg(evt.connector_name).arg(  evt.io_path.path.i2c_busno) ;
+                            .arg(evt.connector_name).arg(  evt.io_path.path.i2c_busno);
       }
        else if (evt.event_type == DDCA_EVENT_DISPLAY_DISCONNECTED) {
          qstext = QString("Display disconnected on %1, bus /dev/i2c-%2.\n")
