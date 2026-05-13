@@ -1,4 +1,4 @@
-/** @file widget_debug.cpp *
+/** @file widget_debug.cpp */
 
 // Functions for debugging Qt layouts
 
