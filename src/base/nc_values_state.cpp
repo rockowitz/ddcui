@@ -3,11 +3,12 @@
  *  controls which features are shown.
  */
 
-// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <assert.h>
 
+#include "cmdline/ddcui_parsed_cmd.h"
 #include "nc_values_state.h"
 
 
@@ -44,15 +45,15 @@ NcValuesState::NcValuesState(const NcValuesState &other) : QObject() {
 }
 
 
+#ifdef UNUSED
 void NcValuesState::changeNcValuesSource(NcValuesSource mode, bool useLatestNcValues) {
    bool changed = (mode != _ncValuesSource || useLatestNcValues != _useLatestNcValues);
    _ncValuesSource = mode;
    // _useLatestNcValues = useLatestNcValues;
    if (changed)
       emit ncValuesSourceChanged(_ncValuesSource, _useLatestNcValues);
-
 }
-
+#endif
 
 
 const char *
