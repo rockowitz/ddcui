@@ -1,9 +1,7 @@
 /** @file value_stacked_widget.cpp */
 
-// Copyright (C) 2018-2024 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
-
-#include "feature_value_widgets/value_stacked_widget.h"
 
 #include <assert.h>
 #include <string.h>
@@ -13,7 +11,7 @@
 #include <QtWidgets/QStackedWidget>
 #include <QtWidgets/QVBoxLayout>
 
-#include "../base/ddcui_core.h"
+#include "base/ddcui_core.h"
 #include "base/widget_debug.h"
 
 #include "feature_value_widgets/value_bytes_widget.h"
@@ -22,6 +20,7 @@
 #include "feature_value_widgets/value_new_cont_widget.h"
 #include "feature_value_widgets/value_std_widget.h"
 
+#include "feature_value_widgets/value_stacked_widget.h"
 
 static bool dimensionReportShown = false;
 
@@ -184,6 +183,7 @@ ValueStackedWidget::~ValueStackedWidget() {
    delete _cncWidgetX14     ;
    delete _bytesWidget      ;
    delete _ncplusWidget     ;
+   delete _specialWidgetX62 ;
 
    free((void*) _cls);
 }
@@ -324,7 +324,7 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
     }
 
     else if ( _featureCode == 0xca) {
-       _pageno_selected = _pageno_ncplus;;
+       _pageno_selected = _pageno_ncplus;
        _cur_stacked_widget = _ncplusWidget;
        // setCurrentIndex(_pageno_ncplus);
        setCurrentWidget(_cur_stacked_widget);
