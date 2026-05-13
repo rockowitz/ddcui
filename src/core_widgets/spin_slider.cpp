@@ -1,18 +1,17 @@
-/** @file slider_spinner.cpp
+/** @file spin_slider.cpp
  *  Combines a slider with a spinbox
  */
 
-// Copyright (C) 2020-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2020-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QWidget>
 
-#include "base/global_state.h"
 #include "base/widget_debug.h"
 
+#include "base/ddcui_core.h"
 #include "core_widgets/spin_slider.h"
-#include "../base/ddcui_core.h"
 
 
 void SpinSlider::createWidgets() {
