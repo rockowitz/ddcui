@@ -1,22 +1,17 @@
 /** \file value_new_cont_widget.cpp */
 
-// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
-
-#include "base/ddcui_parms.h"
 
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QLayout>
 
 #include "base/ddcui_parms.h"
 
+#include "base/ddcui_core.h"
 #include "base/widget_debug.h"
 
-#include "c_util/string_util.h"
-
 #include "feature_value_widgets/value_new_cont_widget.h"
-#include "../base/ddcui_core.h"
-
 
 void ValueNewContWidget::layoutWidget(QHBoxLayout * layout) {
     bool debug = false;
