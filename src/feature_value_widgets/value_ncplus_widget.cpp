@@ -1,9 +1,9 @@
-/* value_ncplus_widget.cpp
+/*** @file value_ncplus_widget.cpp
  *
  * For NC features with additional information in a byte other than SL
  */
 
-// Copyright (C) 2020-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2020-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "feature_value_widgets/value_ncplus_widget.h"
@@ -13,15 +13,13 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <iostream>
-
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QLayout>
 #include <QtWidgets/QLabel>
 
 #include <ddcutil_c_api.h>
 
-#include "../base/ddcui_core.h"
+#include "base/ddcui_core.h"
 #include "base/ddca_utils.h"
 #include "base/widget_debug.h"
 
