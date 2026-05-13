@@ -1,6 +1,6 @@
 /** ddcui_core.cpp */
 
-// Copyright (C) 2018-2025 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <assert.h>
@@ -13,8 +13,6 @@
 #include <time.h>
 
 #include "ddcutil_types.h"
-
-#include "c_util/string_util.h"
 
 #include "ddcui_parms.h"
 #include "ddcui_core_aux.h"
