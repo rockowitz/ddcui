@@ -1,6 +1,6 @@
-// number_entry_widget.cpp
+/** @file number_entry_widget.cpp */
 
-// Copyright (C) 2024 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2024-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <assert.h>
@@ -50,7 +50,7 @@ NumberEntryWidget::NumberEntryWidget(
       int     style,      // not currently used
       QSize   size,
       QWidget *parent)
-   : QLineEdit(nullptr)
+   : QLineEdit(parent)
    , _bytect(bytect)
    , _curval(0)
    , _widgetState(NumberEntryWidget::StateOldValid)
