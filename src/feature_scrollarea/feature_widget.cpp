@@ -16,8 +16,7 @@
 #include "base/widget_debug.h"
 #include "nongui/feature_base_model.h"
 
-#include "feature_value_widgets/value_stacked_widget.h"
-
+#include "feature_scrollarea/feature_widget.h"
 
 static bool showBasicDims    = false  || debugFeatureDimensions;
 static bool showFullDims     = false;
