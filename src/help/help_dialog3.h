@@ -1,7 +1,7 @@
 #ifndef HELP_DIALOG3_H
 #define HELP_DIALOG3_H
 
-#include <QDialog>
+#include <QtWidgets/QDialog>
 
 namespace Ui {
 class HelpDialog3;
