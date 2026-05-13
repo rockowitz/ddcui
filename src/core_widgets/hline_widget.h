@@ -6,9 +6,7 @@
 #ifndef HLINE_WIDGET_H_
 #define HLINE_WIDGET_H_
 
-#include <QtWidgets/QWidget>
-
-#include "../base/ddcui_core.h"
+#include <QtWidgets/QFrame>
 
 class HLineWidget  : public QFrame {
    Q_OBJECT
