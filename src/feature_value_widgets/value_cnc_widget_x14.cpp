@@ -3,7 +3,7 @@
  *  Special handling for complex non-continuous feature x14 - Color Preset
  */
 
-// Copyright (C) 2019-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2019-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "feature_value_widgets/value_cnc_widget_x14.h"
@@ -11,8 +11,6 @@
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
-
-#include <iostream>
 
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QLayout>
