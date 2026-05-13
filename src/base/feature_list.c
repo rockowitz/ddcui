@@ -1,7 +1,7 @@
-/** \file feature_list.cpp
+/** \file feature_list.c
  */
 
-// Copyright (C) 2020-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2020-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <assert.h>
@@ -14,8 +14,8 @@
 #include <ddcutil_types.h>
 #include <ddcutil_c_api.h>
 
+#include "c_util/coredefs_base.h"
 #include "c_util/string_util.h"
-#include "base/ddcui_parms.h"
 
 #include "base/feature_list.h"
 
@@ -73,14 +73,14 @@ DDCA_Feature_List parse_custom_feature_list(
            // char * token = strtrim_r(pieces[ndx], trimmed_piece, 10);
            char * token = g_strstrip(pieces[ndx]);
            if (debug)
-              printf("(parse_features_list) token= |%s|\n", token);
+              printf("(parse_custom_feature_list) token= |%s|\n", token);
            Byte feature_code = 0;
            if ( any_one_byte_hex_string_to_byte_in_buf(token, &feature_code) ) {
               ddca_feature_list_add(&feature_list, feature_code);
            }
            else {
               if (debug)
-                 printf("(parsed_feature_list) Invalid feature code in --custom_features: %s\n", token);
+                 printf("(parse_custom_feature_list) Invalid feature code in --custom_features: %s\n", token);
               char * s = g_strdup_printf("Invalid feature code: %s", token);
               g_ptr_array_add(errors, s);
               ok = false;
