@@ -233,6 +233,7 @@ bool ddcu_dpath_eq(DDCA_IO_Path p1, DDCA_IO_Path p2) {
          break;
       case DDCA_IO_USB:
          result = p1.path.hiddev_devno == p2.path.hiddev_devno;
+         break;
       }
    }
    return result;
