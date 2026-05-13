@@ -1,11 +1,13 @@
 /** @file ddcui_parsed_cmd.h - parsed ddcui command line */
 
-// Copyright (C) 2018-2023 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef DDCUI_PARSED_CMD_H_
 #define DDCUI_PARSED_CMD_H_
 
+
+#include <stdbool.h>
 
 #include "ddcutil_types.h"
 
@@ -118,7 +120,7 @@ Parsed_View              find_view_table_value(const char * value);
 
 const char *             get_nc_values_source_table_symbol(Parsed_NC_Values_Source src_id);
 Parsed_NC_Values_Source  find_nc_values_source_table_value(const char * value);
-Parsed_Feature_Set       find_feature_set_table_value( char * value);
+Parsed_Feature_Set       find_feature_set_table_value(const char * value);
 
 
 // Lifecycle and debug

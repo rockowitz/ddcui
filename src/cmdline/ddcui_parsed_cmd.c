@@ -1,12 +1,11 @@
 /** @file ddcui_parsed_cmd.c - parsed ddcui command line */
 
-// Copyright (C) 2018-2023 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 
 /** \cond */
 #include <assert.h>
-#include <glib-2.0/glib.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -113,7 +112,7 @@ Parsed_NC_Values_Source  find_nc_values_source_table_value(const char * value) {
               NC_VALUES_SOURCE_UNSET);
 }
 
-Parsed_Feature_Set       find_feature_set_table_value(char * value) {
+Parsed_Feature_Set find_feature_set_table_value(const char * value) {
    return vnt_find_id(
               feature_set_table,
               value,
@@ -186,6 +185,7 @@ void free_parsed_ddcui_cmd(Parsed_Ddcui_Cmd * parsed_cmd) {
       assert ( memcmp(parsed_cmd->marker,PARSED_CMD_MARKER,4) == 0);
       parsed_cmd->marker[3] = 'x';
       free(parsed_cmd->library_options);
+      free(parsed_cmd->model);
       free(parsed_cmd);
    }
 
