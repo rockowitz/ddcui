@@ -2,7 +2,7 @@
  * ddcui command line parser
  */
 
-// Copyright (C) 2018-2025 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <config.h>
@@ -388,7 +388,7 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    if (ntsa_length(mangleable_argv) > 1) {
       char * remainder = strjoin((const char**)(mangleable_argv+1), ntsa_length(mangleable_argv)-1, " ");
       fprintf(stderr, "Unrecognized: %s\n", remainder);
-      syslog(LOG_CRIT, "Unrecognized: %s\n", remainder);
+      syslog(LOG_CRIT, "Unrecognized: %s", remainder);
       free(remainder);
       ok = false;
    }
@@ -400,12 +400,12 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    ntsa_free(mangleable_argv, true);
 
    if (force_slave_address_true_set) {
-      char * s = "Deprecated option ignored: --force_slave_address";
+      char * s = "Deprecated option ignored: --force-slave-address";
       fprintf(stderr,     "%s\n", s);
       syslog(LOG_WARNING, "%s",   s);
    }
    if (force_slave_address_false_set) {
-      char * s = "Deprecated option ignored: --disable-force_slave_address";
+      char * s = "Deprecated option ignored: --disable-force-slave-address";
       fprintf(stderr,     "%s\n", s);
       syslog(LOG_WARNING, "%s",   s);
    }
@@ -525,8 +525,8 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
       Parsed_NC_Values_Source src = find_nc_values_source_table_value(nc_values_source_work);
       if (src == NC_VALUES_SOURCE_UNSET) {
          char * s = "Unrecognized: ";
-         fprintf(stderr, "%s%s\n", s, nc_values_source_work);
-         fprintf(stderr, "%s%s",   s, nc_values_source_work);
+         fprintf(stderr,     "%s%s\n", s, nc_values_source_work);
+         syslog(LOG_CRIT,    "%s%s",   s, nc_values_source_work);
          ok = false;
       }
       else{
