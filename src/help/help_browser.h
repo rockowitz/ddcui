@@ -1,15 +1,14 @@
 // help_browser.h
 
-// Copyright (C) 2020-2021 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2020-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
-
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QDialogButtonBox>
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QTextBrowser>
 
 #ifndef HELP_BROWSER_H_
 #define HELP_BROWSER_H_
+
+#include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QTextBrowser>
 
 
 class HelpBrowser : public QWidget
