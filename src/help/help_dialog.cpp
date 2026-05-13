@@ -1,6 +1,6 @@
 // help_dialog.cpp
 
-// Copyright (C) 2018-2024 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <QtCore/qglobal.h>
@@ -164,12 +164,7 @@ void HelpDialog::viewResourceHelp(QString simpleFn, QString title, QWidget * par
 }
 
 
-
 void HelpDialog::updateWindowTitle()
 {
-setWindowTitle(tr("Help: %1").arg(_textBrowser->documentTitle()));
+   setWindowTitle(tr("Help: %1").arg(_textBrowser->documentTitle()));
 }
-
-
-
-
