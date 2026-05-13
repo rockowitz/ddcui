@@ -1,18 +1,15 @@
 // feature_list.h
 
-// Copyright (C) 2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2020-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
+
+#ifndef FEATURE_LIST_H_
+#define FEATURE_LIST_H_
 
 #include "ddcutil_types.h"
 
 #include "c_util/string_util.h"
 
-#ifndef FEATURE_LIST_H_
-#define FEATURE_LIST_H_
-
-
-#define ASSERT_IFF(_cond1, _cond2) \
-   assert( ( (_cond1) && (_cond2) ) || ( !(_cond1) && !(_cond2) ) )
 
 #ifdef __cplusplus
 extern "C"
