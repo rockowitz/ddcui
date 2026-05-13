@@ -1,15 +1,15 @@
-// feature_widget_header.h
+/** @file feature_widget_header.h */
 
-// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef FEATURE_WIDGET_HEADER_H_
 #define FEATURE_WIDGET_HEADER_H_
 
-#include <QtWidgets/QWidget>
+#include <QtWidgets/QFrame>
 #include <QtGui/QResizeEvent>
 
-#include "../base/ddcui_core.h"
+#include "base/ddcui_core.h"
 
 class FeatureWidgetHeader : public QFrame {
    Q_OBJECT
