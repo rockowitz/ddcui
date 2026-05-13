@@ -1,8 +1,8 @@
-// widget_debug.cpp
+/** @file widget_debug.cpp *
 
 // Functions for debugging Qt layouts
 
-// Copyright (C) 2018-2024 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <glib-2.0/glib.h>
@@ -19,7 +19,6 @@
 #include <QtGui/QWindow>
 #include <QtWidgets/QApplication>
 // #include <QtWidgets/QDesktopWidget>   // removed in Qt6
-#include <QtGui/QScreen>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLayout>
@@ -386,7 +385,7 @@ void reportFrameDimensions(
    case QFrame::Box:       s = (char*) "Box";          break;
    case QFrame::Panel:     s = (char*) "Panel";        break;
    case QFrame::StyledPanel:  s = (char*) "StyledPanel";  break;
-   case QFrame::HLine:        s = (char*) "HLIine";       break;
+   case QFrame::HLine:        s = (char*) "HLine";        break;
    case QFrame::VLine:        s = (char*) "VLine";        break;
    case QFrame::WinPanel:    s = (char*) "WinPanel";     break;
    }
