@@ -2,29 +2,19 @@
  *  Widget containing a Reset button
  */
 
-
-// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#include "feature_value_widgets/value_reset_widget.h"
-
-#include <assert.h>
-#include <stdio.h>
-#include <string.h>
-#include <iostream>
-
-#include <QtCore/QRect>
-#include <QtGui/QPaintEvent>
 #include <QtGui/QPalette>
-#include <QtGui/QRegion>
 #include <QtWidgets/QLayout>
 #include <QtWidgets/QPushButton>
 
 #include <ddcutil_c_api.h>
 
-#include "../base/ddcui_core.h"
+#include "base/ddcui_core.h"
 #include "base/widget_debug.h"
 
+#include "feature_value_widgets/value_reset_widget.h"
 
 static bool showDimensionReport = false;
 static bool showBasicDims = false || debugFeatureDimensions;
