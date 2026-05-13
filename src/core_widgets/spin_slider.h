@@ -2,7 +2,7 @@
  *  Combines a slider with a spinbox
  */
 
-// Copyright (C) 2020-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2020-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef SPIN_SLIDER_H_
@@ -12,8 +12,6 @@
 #include <QtWidgets/QSlider>
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QLayout>
-
-#include "nongui/feature_value.h"
 
 class SpinSlider : public QWidget {
    Q_OBJECT
