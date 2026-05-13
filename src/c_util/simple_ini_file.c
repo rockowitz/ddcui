@@ -3,7 +3,7 @@
  *  Reads an INI style configuration file
  */
 
-// Copyright (C) 2021-2025 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2021-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <assert.h>
@@ -116,9 +116,9 @@ bool is_kv(char * s, char ** key_loc, char ** value_loc) {
 static void emit_error_msg(GPtrArray * errmsgs, char * format, ...)
 {
    char buffer[200];
-   va_list(args);
+   va_list args;
    va_start(args, format);
-   vsnprintf(buffer, 100, format, args);
+   vsnprintf(buffer, 200, format, args);
    va_end(args);
 
    if (errmsgs)
@@ -138,14 +138,14 @@ static void emit_error_msg(GPtrArray * errmsgs, char * format, ...)
  */
 bool validate_section_name(char *          section_name,
                            int             lineno,
-                           Ini_Valid_Section_Key_Pairs valid_section_key_pairs[],
+                           Ini_Valid_Section_Key_Pair valid_section_key_pairs[],
                            int             valid_section_key_pairs_ct,
                            GPtrArray *     errmsgs)
 {
    bool debug = false;
    bool found = false;
    for (int ndx = 0; ndx < valid_section_key_pairs_ct; ndx++) {
-      Ini_Valid_Section_Key_Pairs valid_kvp = valid_section_key_pairs[ndx];
+      Ini_Valid_Section_Key_Pair valid_kvp = valid_section_key_pairs[ndx];
       bool matched = streq(section_name, valid_kvp.segment_name);
       DBGF(debug, "section_name=|%s|, valid section name = %s, matched=%s",
                   section_name, valid_kvp.segment_name, sbool(matched));
@@ -154,11 +154,6 @@ bool validate_section_name(char *          section_name,
         break;
       }
    }
-#ifdef NOT_HERE
-   if (!found) {
-      g_ptr_array_add(errmsgs, g_strdup_printf("Invalid section name: %s at line %d", section_name, lineno));
-   }
-#endif
    return found;
 }
 
@@ -177,14 +172,14 @@ bool validate_section_name(char *          section_name,
  */
 bool validate_section_key(char *          section_key,
                           int             lineno,
-                          Ini_Valid_Section_Key_Pairs valid_section_key_pairs[],
+                          Ini_Valid_Section_Key_Pair valid_section_key_pairs[],
                           int             valid_section_key_pairs_ct,
                           GPtrArray *     errmsgs)
 {
    bool debug = false;
    bool found = false;
    for (int ndx = 0; ndx < valid_section_key_pairs_ct; ndx++) {
-      Ini_Valid_Section_Key_Pairs valid_kvp = valid_section_key_pairs[ndx];
+      Ini_Valid_Section_Key_Pair valid_kvp = valid_section_key_pairs[ndx];
       char * valid_seg_val_name = g_strdup_printf("%s/%s", valid_kvp.segment_name, valid_kvp.key_name);
       bool matched = (streq(section_key,  valid_seg_val_name));
       DBGF(debug, "valid_seg_val_name=|%s| matched=%s", valid_seg_val_name, sbool(matched));
@@ -194,11 +189,6 @@ bool validate_section_key(char *          section_key,
         break;
       }
    }
-#ifdef NOT_HERE
-   if (!found) {
-      g_ptr_array_add(errmsgs, g_strdup_printf("Invalid segment/key pair: %s at line %d", section_key, lineno));
-   }
-#endif
    return found;
 }
 
@@ -228,7 +218,7 @@ bool validate_section_key(char *          section_key,
  */
 int ini_file_load(
            const char *                ini_file_name,
-           Ini_Valid_Section_Key_Pairs valid_section_key_pairs[],
+           Ini_Valid_Section_Key_Pair  valid_section_key_pairs[],
            int                         valid_section_key_pair_ct,
            GPtrArray *                 errmsgs,
            Parsed_Ini_File**           parsed_ini_loc)
@@ -344,17 +334,6 @@ int ini_file_load(
       if (cur_segment)
          free(cur_segment);
       if ( error_ct > 0 ) {
-#ifdef NO
-         if (errinfo_accum) {
-            Error_Info * master_err = errinfo_new(-EBADMSG, __func__,
-                                        "Errors processing configuration file %s", ini_file_name);
-            for (int ndx = 0; ndx < errmsgs->len; ndx++) {
-               errinfo_add_cause(master_err,
-                                 errinfo_new(-EBADMSG, __func__, g_ptr_array_index(errmsgs, ndx)));
-            }
-            g_ptr_array_add(errinfo_accum, master_err);
-         }
-#endif
          result = -EBADMSG;
          g_hash_table_destroy(ini_file_hash);
          ini_file_hash = NULL;
@@ -387,9 +366,10 @@ int ini_file_load(
    return result;
 }
 
+
 #ifdef UNUSED
 bool ini_file_validate(Parsed_Ini_File *          parsed_ini_file,
-                       Ini_Valid_Section_Key_Pairs   valid_segment_key_pairs[],
+                       Ini_Valid_Section_Key_Pair valid_segment_key_pairs[],
                        int                        kvp_ct,
                        GPtrArray *                errmsgs)
 {
@@ -412,7 +392,7 @@ bool ini_file_validate(Parsed_Ini_File *          parsed_ini_file,
       DBGF(debug, "Read key/value pair %s", hash_key);
       bool found_kv = false;
       for (int ndx = 0; ndx < kvp_ct; ndx++) {
-         Ini_Valid_Section_Key_Pairs valid_kvp = valid_segment_key_pairs[ndx];
+         Ini_Valid_Section_Key_Pair valid_kvp = valid_segment_key_pairs[ndx];
          char * valid_seg_val_name = g_strdup_printf("%s/%s", valid_kvp.segment_name, valid_kvp.key_name);
 
          bool matched = (streq(hash_key,  valid_seg_val_name));
@@ -482,19 +462,19 @@ char * ini_file_get_value(
    assert(memcmp(parsed_ini_file->marker, PARSED_INI_FILE_MARKER, 4) == 0);
    assert(segment);
    assert(id);
-   DBGF(debug, "(%s) parsed_ini_file=|%p|, parsed_ini_file->hash_table=%p, segment=|%s|. id=|%s|",
-               __func__, parsed_ini_file, parsed_ini_file->hash_table, segment,id);
+   DBGF(debug, "parsed_ini_file=|%p|, parsed_ini_file->hash_table=%p, segment=|%s|. id=|%s|",
+               parsed_ini_file, parsed_ini_file->hash_table, segment,id);
 
    char * result = NULL;
    if (parsed_ini_file->hash_table) {
       char * full_key = g_strdup_printf("%s/%s", segment, id);
       strlower(full_key);
-      DBGF(debug, "(%s) parsed_ini_file->hash_table=%p, full_key=|%s|",
-                  __func__, parsed_ini_file->hash_table,full_key);
+      DBGF(debug, "parsed_ini_file->hash_table=%p, full_key=|%s|",
+                  parsed_ini_file->hash_table,full_key);
       result = g_hash_table_lookup(parsed_ini_file->hash_table, full_key);
       free(full_key);
    }
-   DBGF(debug, "(%s) segment=%s, id=%s, returning: %s", __func__, segment, id, result);
+   DBGF(debug, "segment=%s, id=%s, returning: %s", segment, id, result);
    return result;
 }
 

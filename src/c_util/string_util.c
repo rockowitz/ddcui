@@ -3,7 +3,7 @@
  *  String utility functions
  */
 
-// Copyright (C) 2014-2024 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2014-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 /** \cond */
@@ -20,7 +20,7 @@
 /** \endcond */
 
 #include "glib_util.h"
-#include "debug_util.h"  // temp
+// #include "debug_util.h"  // temp
 
 #include "string_util.h"
 
@@ -60,6 +60,22 @@ bool streq(const char * s1, const char * s2) {
    bool result = false;
    if ( (s1 == NULL && s2 == NULL) ||
         (s1 != NULL && s2 != NULL && (strcmp(s1, s2) == 0) )
+      )
+      result = true;
+   return result;
+}
+
+
+/** Compares 2 strings for equality, ignoring case, and handling nulls
+ *
+ *  @param s1  first string
+ *  @param s2  second string
+ *  @return true if the strings match, false if not
+ */
+bool streqcase(const char * s1, const char * s2) {
+   bool result = false;
+   if ( (s1 == NULL && s2 == NULL) ||
+        (s1 != NULL && s2 != NULL && (strcasecmp(s1, s2) == 0) )
       )
       result = true;
    return result;
@@ -964,7 +980,7 @@ int indirect_strcmp(const void * a, const void * b) {
  * @retval false  normal append
  *
  * @remark
- * Consider allowing the truncation maker, currently "..." to be
+ * Consider allowing the truncation marker, currently "..." to be
  * specified as a parameter.
  */
 bool sbuf_append(char * buf, int bufsz, char * sepstr, char * nextval)
@@ -1150,16 +1166,16 @@ bool hhs_to_byte_in_buf(const char * s, Byte * result)
    if (strlen(s) != 2)
       ok = false;
    else {
-   char * endptr = NULL;
-   errno = 0;
-   long longtemp = strtol(s, &endptr, 16 );
-   int errsv = errno;
-   // printf("(%s) After strtol, longtemp=%ld  \n", __func__, longtemp );
-   // printf("errno=%d, s=|%s|, s=0x%02x &s=%p, longtemp = %ld, endptr=%p, *endptr=0x%02x\n",
-   //        errsv, s, s, &s, longtemp, endptr,*endptr);
-   // if (*endptr != '\0' || errsv != 0) {
-   if (endptr != s+2 || errsv != 0) {
-      ok = false;
+      char * endptr = NULL;
+      errno = 0;
+      long longtemp = strtol(s, &endptr, 16 );
+      int errsv = errno;
+      // printf("(%s) After strtol, longtemp=%ld  \n", __func__, longtemp );
+      // printf("errno=%d, s=|%s|, &s=%p, longtemp = %ld, endptr=%p, *endptr=0x%02x\n",
+      //        errsv, s, &s, longtemp, endptr,*endptr);
+      // if (*endptr != '\0' || errsv != 0) {
+      if (endptr != s+2 || errsv != 0) {
+         ok = false;
    }
    else
       *result = (Byte) longtemp;
@@ -1186,17 +1202,25 @@ bool hhs_to_byte_in_buf(const char * s, Byte * result)
 bool any_one_byte_hex_string_to_byte_in_buf(const char * s, Byte * result)
 {
    // printf("(%s) s = |%s|\n", __func__, s);
+   bool ok = false;
    char * suc = strdup_uc(s);
-   char * suc0 = suc;
    if (str_starts_with(suc, "0X"))
          suc = suc + 2;
    else if (*suc == 'X')
          suc = suc + 1;
    else if (str_ends_with(suc, "H"))
          *(suc+strlen(suc)-1) = '\0';
-   bool ok = hhs_to_byte_in_buf(suc, result);
-   free(suc0);
-   // printf("(%s) returning %d, *result=0x%02x\n", __func__, ok, *result);
+   if (strlen(suc) == 1 || strlen(suc) == 2) {
+      char buf[3];
+      if (strlen(suc) == 2)
+         strcpy(buf,suc);
+      else if (strlen(suc) == 1) {
+         strcpy(buf,"00");
+         buf[1] = suc[0];
+      }
+      ok = hhs_to_byte_in_buf(buf, result);
+   }
+   // printf("(%s) returning %s, *result=0x%02x\n", __func__, SBOOL(ok), *result);
    return ok;
 }
 
@@ -1485,7 +1509,7 @@ char * hexstring3_t(
    *buf = '\0';
    for (int i=0; i < len; i++) {
       if (debug)
-         printf("(%s) i=%d, buf=%p, strlen(buf)=%ld\n", __func__, i, buf, strlen(buf));
+         printf("(%s) i=%d, buf=%p, strlen(buf)=%zu\n", __func__, i, buf, strlen(buf));
       // sprintf(buf+strlen(buf), pattern, bytes[i]);
       byte_to_hs(bytes[i], buf+strlen(buf), uppercase);
 
@@ -1542,12 +1566,15 @@ char * hexstring_t(
 void hex_dump_indented_collect(GPtrArray * collector, const Byte* data, int size, int indents)
 {
    bool debug = false;
-   DBGF(debug, "Starting. indents=%d", indents);
+   if (debug)
+      printf("(%s) Starting. indents=%d", __func__, indents);
    assert(collector);
+#ifdef OUT   // creates circular dependency with backtrace_util.c
    if (debug) {
       show_backtrace(0);
       backtrace_to_syslog(LOG_NOTICE, 0);
    }
+#endif
 
    int i; // index in data...
    int j; // index in line...
@@ -1595,7 +1622,8 @@ void hex_dump_indented_collect(GPtrArray * collector, const Byte* data, int size
       char * line = g_strdup_printf("%s%s", indentation, buffer);
       g_ptr_array_add(collector, line);
    }
-   DBGF(debug, "Done");
+   if (debug)
+      printf("(%s) Dpme.", __func__);
 }
 
 

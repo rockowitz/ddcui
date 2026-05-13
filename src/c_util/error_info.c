@@ -1,4 +1,4 @@
-/** \f error_info.c
+/** \file error_info.c
  *
  *  Struct for reporting errors.
  *
@@ -9,7 +9,7 @@
  *  error is retained for use by higher levels in the call stack.
  */
 
-// Copyright (C) 2017-2025 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2017-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 
@@ -19,8 +19,10 @@
 #include <glib-2.0/glib.h>
 #include <stdlib.h>
 #include <string.h>
+#include <syslog.h>
 /** \endcond */
 
+#include "backtrace.h"
 #include "debug_util.h"
 #include "glib_util.h"
 #include "msg_util.h"
@@ -717,7 +719,7 @@ errinfo_array_summary(
  */
 char *
 errinfo_causes_string(Error_Info * erec) {
-   // bool debug = false;
+   bool debug = false;
 
    GString * gs = g_string_new(NULL);
 
@@ -751,7 +753,7 @@ errinfo_causes_string(Error_Info * erec) {
    char * result = gs->str;
    g_string_free(gs, false);
 
-   // DBGMSF(debug, "Done.  Returning: |%s|", result);
+   DBGF(debug, "Done.  Returning: |%s|", result);
    return result;
 
 #ifdef OLD
@@ -912,6 +914,25 @@ errinfo_report(Error_Info * erec, int depth) {
 }
 
 
+/** Writes a full report of the contents of the specified #Error_Info
+ *  to the system log, using the specified syslog priority.
+ *
+ *  \param  syslog_priority  syslog priority to use for log entries
+ *  \param  erec             pointer to #Error_Info
+ *  \param  depth            logical indentation depth
+ */
+void
+errinfo_report_to_syslog(int syslog_priority, Error_Info * erec, int depth) {
+   GPtrArray * collector = g_ptr_array_new_with_free_func(g_free);
+   errinfo_report_collect(erec, collector, depth);
+   for (int ndx = 0; ndx < collector->len; ndx++) {
+      char * line = g_ptr_array_index(collector, ndx);
+      syslog(syslog_priority, "%s", line);
+   }
+   g_ptr_array_free(collector, true);
+}
+
+
 /** Reports detail strings for a #Error_Info record and
  *  each of its contained errors.
  *
@@ -958,20 +979,21 @@ errinfo_summary(Error_Info * erec) {
    static GPrivate  esumm_key     = G_PRIVATE_INIT(g_free);
    static GPrivate  esumm_len_key = G_PRIVATE_INIT(g_free);
 
-   // rpt_vstring(1, "(%s) errinfo_name_func=%p, errinfo_desc_func=%p", __func__, errinfo_name_func, errinfo_desc_func);
+   // DBG("errinfo_name_func=%p, errinfo_desc_func=%p",errinfo_name_func, errinfo_desc_func);
 
-   char * desc = errinfo_name_func(erec->status_code);  // thread safe buffer owned by psc_desc(), do not free()
+   char * rc_name = errinfo_name_func(erec->status_code);  // thread safe buffer owned by psc_desc(), do not free()
+  // char * rc_desc = errinfo_desc_func(erec->status_code);
 
    gchar * buf1 = NULL;
    if (erec->cause_ct == 0) {
 #ifdef ALT
    if (erec->causes_alt || erec->causes_alt->len == 0) {
 #endif
-      buf1 = g_strdup_printf("Error_Info[%s in %s]", desc, erec->func);
+      buf1 = g_strdup_printf("Error_Info[%s in %s]", rc_name, erec->func);
    }
    else {
       char * causes = errinfo_causes_string(erec);
-      buf1 = g_strdup_printf("Error_Info[%s in %s, causes: %s]", desc, erec->func, causes);
+      buf1 = g_strdup_printf("Error_Info[%s in %s, causes: %s]", rc_name, erec->func, causes);
       free(causes);
    }
    int required_size = strlen(buf1) + 1;

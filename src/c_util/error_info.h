@@ -1,4 +1,4 @@
-/** \f error_info.h
+/** \file error_info.h
  *
  *  Struct for reporting errors that collects causes
  *
@@ -146,7 +146,14 @@ void errinfo_report(
       Error_Info *   erec,
       int            depth);
 
-void errinfo_report_details(Error_Info * erec, int depth);
+void errinfo_report_to_syslog(
+      int            syslog_priority,
+      Error_Info *   erec,
+      int            depth);
+
+void errinfo_report_details(
+      Error_Info *   erec,
+      int            depth);
 
 char * errinfo_summary(
       Error_Info *   erec);

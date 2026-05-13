@@ -3,7 +3,7 @@
  * Functions for debugging
  */
 
-// Copyright (C) 2016-2024 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2016-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "config.h"
@@ -31,31 +31,12 @@
 
 /** \endcond */
 
-#include "backtrace.h"
 #include "common_printf_formats.h"
 #include "common_inlines.h"
 #include "report_util.h"
 #include "string_util.h"
 
 #include "debug_util.h"
-
-
-void show_backtrace(int stack_adjust) {
-   int depth = 0;
-   GPtrArray * callstack = get_backtrace(stack_adjust+2); // +2 for get_backtrace(), backtrace()
-   if (!callstack) {
-      perror("backtrace() unavailable");
-   }
-   else {
-      rpt_label(depth, "Current call stack (using backtrace()):");
-      for (int ndx = 0; ndx < callstack->len; ndx++) {
-         rpt_vstring(depth, "   %s", (char *) g_ptr_array_index(callstack, ndx));
-      }
-      g_ptr_array_set_free_func(callstack, g_free);
-      g_ptr_array_free(callstack, true);
-   }
-}
-
 
 static int min_funcname_size = 30;
 
@@ -86,7 +67,7 @@ bool simple_dbgmsg(
 
    bool msg_emitted = false;
    if ( debug_flag ) {
-      va_list(args);
+      va_list args;
       va_start(args, format);
       char * buffer = g_strdup_vprintf(format, args);
       va_end(args);

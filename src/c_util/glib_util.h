@@ -3,7 +3,7 @@
  *  Utility functions for glib.
  */
 
-// Copyright (C) 2014-2021 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2014-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 
@@ -92,12 +92,15 @@ gaux_ptr_array_find_with_equal_func(
       GPtrArray *    haystack,
       gconstpointer  needle,
       GEqualFunc     equal_func,
-      guint *        index_);
+      guint *        index_loc);
+
+#define G_PTR_ARRAY_ADD_STRING(_collector, _format, ...) \
+do { \
+      g_ptr_array_add(_collector, g_strdup_printf(_format, ##__VA_ARGS__)); \
+} while(0)
 
 #ifdef __cplusplus
 }
 #endif
-
-
 
 #endif /* GLIB_UTIL_H_ */
