@@ -1,6 +1,6 @@
 /** \file mainwindow_ui.cpp  */
 
-// Copyright (C) 2018-2023 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 // Note:  This file cannot be named ui_mainwindow.cpp.
@@ -8,9 +8,10 @@
 // If a cpp file starts with "ui_", cmake looks for a corresponding
 // file with extension .ui to process.
 
+#include "base/ddcui_core.h"
 
 #include "mainwindow_ui.h"
-#include "../base/ddcui_core.h"
+
 
 #ifdef DEBUG
 static
