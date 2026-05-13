@@ -110,6 +110,7 @@ FeatureSelector::FeatureSelector(const FeatureSelector &other) {
    _showUnsupportedFeatures = other._showUnsupportedFeatures ;
    _includeOnlyCapabilities = other._includeOnlyCapabilities ;
    _includeAllCapabilities  = other._includeAllCapabilities;
+   _customFeatureList       = other._customFeatureList;
 }
 
 
