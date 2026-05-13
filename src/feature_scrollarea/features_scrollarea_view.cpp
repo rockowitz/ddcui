@@ -1,6 +1,6 @@
 /* features_scrollarea_view.cpp */
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "feature_scrollarea/features_scrollarea_view.h"
