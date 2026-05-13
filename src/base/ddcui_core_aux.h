@@ -1,6 +1,6 @@
 /** @file ddcui_core_aux.h */
 
-// Copyright (C) 2018-2023 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef DDCUI_CORE_AUX_H_
@@ -29,7 +29,9 @@ typedef DDCA_Syslog_Level Ddcui_Syslog_Level;
 
 extern Ddcui_Syslog_Level  ddcui_syslog_level;
 
+#ifdef OUT
 Ddcui_Syslog_Level ddcui_syslog_level_name_to_value(const char * name);
+#endif
 
 bool test_emit_ddcui_syslog(Ddcui_Syslog_Level msg_level);
 
