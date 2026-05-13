@@ -1,6 +1,6 @@
 /** \file main.cpp */
 
-// Copyright (C) 2018-2025 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <glib-2.0/glib.h>
@@ -247,8 +247,7 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
    // opts = (DDCA_Init_Options) (opts | DDCA_INIT_OPTIONS_ENABLE_INIT_MSGS);
    char ** infomsgs = NULL;
    DDCA_Status rc = ddca_init2(parsed_cmd->library_options, ddcui_syslog_level, opts,  &infomsgs );
-   if (debug)
-      printf("(main.cpp:%s) ddca_init2() returned %d\n", __func__, rc);
+   DBGF(debug, "ddca_init2() returned %d", rc);
 
    if (infomsgs) {
       // printf("Null_Terminated_String_Array at %p:\n", (void*) infomsgs);
@@ -262,9 +261,12 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
    }
 
    if (rc < 0) {
+
      DDCA_Error_Detail * erec = ddca_get_error_detail();
-     if (debug)
+     if (debug) {
+        DBG("Reporting error detail:");
         ddca_report_error_detail(erec, 1);
+     }
      printf("%s\n", erec->detail);
      for (int ndx = 0; ndx < erec->cause_ct; ndx++) {
         printf("   %s\n", erec->causes[ndx]->detail);
@@ -289,16 +291,10 @@ int resolve_command_line(int     argc,
                          int *   out_argc,
                          char *** out_argv)
 {
-   bool debug = true;
-   // for now, just copy
-  //  *out_argc = argc;
-   // *out_argv = ntsa_copy(argv, true);
-
+   bool debug = false;
    char ** new_argv = NULL;
    int     new_argc = 0;
-
    GPtrArray * errmsgs = g_ptr_array_new_with_free_func(free);
-
    char *  combined_config_file_options = NULL;
    char *  config_fn = NULL;
    int     apply_config_rc = 0;
@@ -481,10 +477,10 @@ int main(int argc, char *argv[])
           globalState._callbackManager = &callbackManager;
           init_core();
 
-          DBGF(debug, "Calling MainWindow constructor", __func__);
+          DBGF(debug, "Calling MainWindow constructor");
           MainWindow w(parsed_cmd);
 
-          DBGF(debug,"MainWindow constructor completed", __func__);
+          DBGF(debug, "MainWindow constructor completed");
           globalState._mainWindow = &w;
           globalState._application = &application;
 
