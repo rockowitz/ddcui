@@ -18,7 +18,7 @@
 
 #include <ddcutil_c_api.h>
 
-#include "../base/ddcui_core.h"
+#include "base/ddcui_core.h"
 #include "base/ddca_utils.h"
 #include "base/widget_debug.h"
 
