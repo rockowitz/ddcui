@@ -1,19 +1,17 @@
-/** \file cmd_parser_aux.c
+/** \file ddcui_cmd_parser_aux.c
  *
  *  Functions and strings that are independent of the parser package used.
  */
 
-// Copyright (C) 2014-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2014-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 // #include <config.h>
 
 /** \cond */
-#include <assert.h>
 #include <ctype.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include <stdlib.h>
 
 // #include "util/string_util.h"
 /** \endcond */
@@ -74,7 +72,7 @@ char * trcfunc_multiple_call_option_help =
 char * trcfile_multiple_call_option_help =
        "Trace by file name:\n"
        "  The argument to --trcfile is a simple file name.  Use the --trcfile option multiple\n"
-       "  times to trace multiple functions, e.g. \"--trcfile ddc_edid.c --trcfile ddc_output.c\"\n"
+       "  times to trace multiple files, e.g. \"--trcfile ddc_edid.c --trcfile ddc_output.c\"\n"
       ;
 
 
@@ -83,7 +81,7 @@ char * stats_multiple_call_option_help =
        "  The argument to --stats is a statistics class.  Use the --stats option multiple\n"
        "  times to activate multiple statistics classes, e.g. \"--stats calls --stats errors\"\n"
        "  Valid statistics classes are:  TRY, TRIES, ERRS, ERRORS, CALLS, ALL.\n"
-       "  Statistics class names are not case sensitive and can abbreviated to 3 characters.\n"
+       "  Statistics class names are not case sensitive and can be abbreviated to 3 characters.\n"
        "  If no argument is specified, or ALL is specified, then all statistics classes are\n"
        "  output.\n"
       ;
