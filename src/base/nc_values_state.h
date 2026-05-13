@@ -2,7 +2,7 @@
  *  Maintains the current state of the NC Feature Values dialog
  */
 
-// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef NC_VALUES_STATE_H_
@@ -34,7 +34,7 @@ public:
    void changeNcValuesSource(NcValuesSource mode, bool useLatestNcValues);
 
    NcValuesSource _ncValuesSource = DefaultNcValuesSource;
-   bool           _useLatestNcValues = DefaultUseMaximalMccsNcValues;
+   // bool           _useLatestNcValues = DefaultUseMaximalMccsNcValues;
 
 signals:
    void ncValuesSourceChanged(NcValuesSource valuesSource, bool latestNcValues);
@@ -42,4 +42,4 @@ signals:
 
 const char * ncValuesSourceName(NcValuesSource source) ;
 
-#endif /* OPTIONS_STATE_H_ */
+#endif /* NC_VALUES_STATE_H_ */
