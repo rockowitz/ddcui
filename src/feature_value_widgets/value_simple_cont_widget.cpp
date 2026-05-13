@@ -1,6 +1,6 @@
 /** @file value_simple_cont_widget.cpp */
 
-// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <assert.h>
@@ -10,11 +10,10 @@
 #include <QtWidgets/QWidget>
 
 #include "base/ddcui_parms.h"
+#include "base/ddcui_core.h"
 #include "base/widget_debug.h"
 
 #include "feature_value_widgets/value_simple_cont_widget.h"
-#include "../base/ddcui_core.h"
-
 
 static bool showDimensionReports = false;
 static bool showBasicDims  = false || debugFeatureDimensions;
@@ -246,7 +245,7 @@ void ValueSimpleContWidget::resizeEvent(QResizeEvent * evt)
 
    if (show) {
       TRACEC("_id=%d, old size = %d, %d, new size = %d, %d ",
-              oldSz.width(), oldSz.height(), newSz.width(), newSz.height(), _id);
+              _id, oldSz.width(), oldSz.height(), newSz.width(), newSz.height());
    }
 
    evt->ignore();
