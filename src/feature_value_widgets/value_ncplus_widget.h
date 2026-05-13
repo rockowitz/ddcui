@@ -1,9 +1,9 @@
-/* value_ncplus_widget.cpp
+/* value_ncplus_widget.h
  *
  * For NC features with additional information in a byte other than SL
  */
 
-// Copyright (C) 2021-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2021-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef VALUE_NCPLUS_WIDGET_H_
@@ -16,13 +16,13 @@
 
 #include <ddcutil_types.h>
 
-#include "../base/nc_values_state.h"
 #include "config.h"
+
+#include "base/nc_values_state.h"
 #include "base/ddca_utils.h"
 #include "feature_value_widgets/value_base_widget.h"
 
 #include "feature_value_widgets/value_nc_widget.h"
-
 
 class ValueNcplusWidget : public ValueNcWidget
 {
