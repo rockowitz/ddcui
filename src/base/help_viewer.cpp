@@ -1,11 +1,11 @@
-// help_viewer.cpp
+/** @file help_viewer.cpp */
 
-// Copyright (C) 2018 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "help_viewer.h"
 
-void HelpViewer::show(QString &simpleFn, QString& title) {
+void HelpViewer::show(QString simpleFn, QString title) {
    QString fn = simpleFn.prepend(":/docs/");
    QFile f(fn);
    f.open(QFile::ReadOnly | QFile::Text);
