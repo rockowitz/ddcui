@@ -1,6 +1,6 @@
-/*** @file feature_widget.cpp  Custom widget for displaying/editing a VCP feature */
+/** @file feature_widget.cpp  Custom widget for displaying/editing a VCP feature */
 
-// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "feature_scrollarea/feature_widget.h"
@@ -12,13 +12,11 @@
 #include <QtWidgets/QLabel>
 #include <QtGui/QResizeEvent>
 
-#include "../base/ddcui_core.h"
+#include "base/ddcui_core.h"
 #include "base/widget_debug.h"
 #include "nongui/feature_base_model.h"
 
-#include "feature_value_widgets/value_nc_widget.h"
 #include "feature_value_widgets/value_stacked_widget.h"
-#include "feature_value_widgets/value_std_widget.h"
 
 
 static bool showBasicDims    = false  || debugFeatureDimensions;
@@ -202,7 +200,7 @@ void FeatureWidget::setFeatureValue(FeatureValue &fv)
     _valueWidget->setFeatureValue(fv);
 
     TRACECF(debug, "After calling valueWidget->setFeatureValue()");
-    _layout->addWidget(_valueWidget);
+    _layout->addWidget(_valueWidget); // claude says redundant, _valueWidget already added in constructor ??
 }
 
 
