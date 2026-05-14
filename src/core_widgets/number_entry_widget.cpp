@@ -6,17 +6,17 @@
 #include <assert.h>
 
 #include <QtCore/qglobal.h>
-#include <QtWidgets/QWidget>
-#include <QtCore/QString>
+#include <QWidget>
+#include <QString>
 #if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-#include <QtCore/QRegExp>
-#include <QtGui/QRegExpValidator>
+#include <QRegExp>
+#include <QRegExpValidator>
 #else
-#include <QtCore/QRegularExpression>
-#include <QtGui/QRegularExpressionValidator>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
 #endif
-#include <QtWidgets/QLineEdit>
-#include <QtGui/QValidator>
+#include <QLineEdit>
+#include <QValidator>
 
 #include "base/ddcui_parms.h"
 #include "base/widget_debug.h"

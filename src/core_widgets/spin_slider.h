@@ -8,10 +8,10 @@
 #ifndef SPIN_SLIDER_H_
 #define SPIN_SLIDER_H_
 
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QSlider>
-#include <QtWidgets/QSpinBox>
-#include <QtWidgets/QLayout>
+#include <QWidget>
+#include <QSlider>
+#include <QSpinBox>
+#include <QLayout>
 
 class SpinSlider : public QWidget {
    Q_OBJECT

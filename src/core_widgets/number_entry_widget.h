@@ -8,8 +8,8 @@
 
 #include <stdint.h>
 
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QLineEdit>
+#include <QWidget>
+#include <QLineEdit>
 
 
 class NumberEntryWidget : public QLineEdit

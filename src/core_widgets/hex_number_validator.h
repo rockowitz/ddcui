@@ -7,7 +7,7 @@
 #define HEX_NUMBER_VALIDATOR_H_
 
 
-#include <QtGui/QValidator>
+#include <QValidator>
 
 class HexNumberValidator : public QValidator
 {

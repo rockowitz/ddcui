@@ -5,8 +5,8 @@
 // Copyright (C) 2020-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QWidget>
+#include <QHBoxLayout>
+#include <QWidget>
 
 #include "base/widget_debug.h"
 
