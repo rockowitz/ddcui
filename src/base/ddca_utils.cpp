@@ -15,9 +15,9 @@
 
 extern "C" {
 #include "c_util/data_structures.h"
+}
 
 #include "ddca_utils.h"
-}
 
 // Parsed capabilities and feature values
 
