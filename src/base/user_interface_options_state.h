@@ -7,7 +7,7 @@
 #ifndef USER_INTERFACE_OPTIONS_STATE_H_
 #define USER_INTERFACE_OPTIONS_STATE_H_
 
-#include <QtCore/QObject>
+#include <QObject>
 
 #include "cmdline/ddcui_parsed_cmd.h"
 

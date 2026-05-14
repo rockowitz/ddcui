@@ -6,8 +6,8 @@
 #ifndef MONITOR_H
 #define MONITOR_H
 
-#include <QtCore/QObject>
-#include <QtCore/QHash>
+#include <QObject>
+#include <QHash>
 
 #include <ddcutil_c_api.h>
 
@@ -21,7 +21,7 @@ class QPlainTextEdit;
 class QTableView;
 class QTableWidget;
 class QWidget;
-// class QHash;  // incomplete type, need full #include <QtCore/QHash>
+// class QHash;  // incomplete type, need full #include <QHash>
 
 class FeatureBaseModel;
 // class FeaturesScrollAreaView;

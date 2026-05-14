@@ -11,7 +11,7 @@
 
 #include <ddcutil_types.h>
 
-#include <QtCore/QString>
+#include <QString>
 
 extern "C" {
 #include "c_util/data_structures.h"

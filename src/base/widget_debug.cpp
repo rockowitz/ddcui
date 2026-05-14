@@ -9,21 +9,21 @@
 #include <string.h>
 #include <stdio.h>
 
-#include <QtCore/QMargins>
-#include <QtCore/QRect>
-#include <QtCore/QSize>
-#include <QtCore/QString>
-#include <QtGui/QKeyEvent>
-#include <QtGui/QRegion>
-#include <QtGui/QScreen>
-#include <QtGui/QWindow>
-#include <QtWidgets/QApplication>
+#include <QMargins>
+#include <QRect>
+#include <QSize>
+#include <QString>
+#include <QKeyEvent>
+#include <QRegion>
+#include <QScreen>
+#include <QWindow>
+#include <QApplication>
 // #include <QtWidgets/QDesktopWidget>   // removed in Qt6
-#include <QtWidgets/QFrame>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QLayout>
-#include <QtWidgets/QSizePolicy>
-#include <QtWidgets/QWidget>
+#include <QFrame>
+#include <QLabel>
+#include <QLayout>
+#include <QSizePolicy>
+#include <QWidget>
 
 #include "widget_debug.h"
 #include "ddcui_core.h"

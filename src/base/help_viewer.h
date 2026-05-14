@@ -6,8 +6,8 @@
 #ifndef HELP_VIEWER_H_
 #define HELP_VIEWER_H_
 
-#include <QtCore/QtCore>
-#include <QtWidgets/QDialog>
+#include <QtCore>
+#include <QDialog>
 
 class QTextBrowser;
 

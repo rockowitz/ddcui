@@ -13,9 +13,9 @@
 
 #include "config.h"
 
-#include <QtCore/QtCore>
-#include <QtGui/QtGui>
-#include <QtWidgets/QtWidgets>
+#include <QtCore>
+#include <QtGui>
+#include <QtWidgets>
 
 #include "ddcui_parms.h"
 

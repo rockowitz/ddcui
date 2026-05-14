@@ -9,7 +9,7 @@
 #define DDCA_UTILS_H_
 
 #include <ddcutil_types.h>
-#include <QtCore/QString>
+#include <QString>
 
 #include "c_util/data_structures.h"
 

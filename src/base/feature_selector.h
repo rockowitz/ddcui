@@ -10,7 +10,7 @@
 #ifndef FEATURE_SELECTOR_H
 #define FEATURE_SELECTOR_H
 
-#include <QtCore/QObject>
+#include <QObject>
 
 #include "ddcutil_types.h"
 

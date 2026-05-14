@@ -8,7 +8,7 @@
 #ifndef NC_VALUES_STATE_H_
 #define NC_VALUES_STATE_H_
 
-#include <QtCore/QObject>
+#include <QObject>
 
 #include "cmdline/ddcui_parsed_cmd.h"
 
