@@ -3,7 +3,7 @@
 // Copyright (C) 2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#include "../base/ddcui_core.h"
+#include "base/ddcui_core.h"
 
 #include "hex_number_validator.h"
 

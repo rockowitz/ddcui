@@ -7,7 +7,7 @@
 #include <QSize>
 #include "base/widget_debug.h"
 #include "feature_scrollarea/features_scrollarea_contents.h"
-#include "../base/ddcui_core.h"
+#include "base/ddcui_core.h"
 
 #include "feature_scrollarea/features_scrollarea.h"
 

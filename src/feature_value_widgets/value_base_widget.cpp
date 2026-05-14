@@ -14,7 +14,7 @@
 #include "base/widget_debug.h"
 
 #include "ddcutil_c_api.h"
-#include "../base/ddcui_core.h"
+#include "base/ddcui_core.h"
 
 #include "feature_value_widgets/value_base_widget.h"
 

@@ -12,7 +12,7 @@
 #include <QLineEdit>
 #include <QHBoxLayout>
 
-#include "../base/ddcui_core.h"
+#include "base/ddcui_core.h"
 #include "base/ddcui_parms.h"
 #include "base/widget_debug.h"
 

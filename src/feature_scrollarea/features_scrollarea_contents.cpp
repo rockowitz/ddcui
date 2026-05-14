@@ -11,7 +11,7 @@
 #include <QScrollArea>
 #include <QSize>
 
-#include "../base/ddcui_core.h"
+#include "base/ddcui_core.h"
 #include "base/widget_debug.h"
 
 #include "feature_value_widgets/value_stacked_widget.h"

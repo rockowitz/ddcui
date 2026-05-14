@@ -22,7 +22,7 @@
 #include "base/widget_debug.h"
 
 #include "hex_number_validator.h"
-#include "../base/ddcui_core.h"
+#include "base/ddcui_core.h"
 
 #include "number_entry_widget.h"
 

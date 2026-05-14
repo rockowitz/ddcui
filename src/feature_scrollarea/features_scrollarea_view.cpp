@@ -14,8 +14,8 @@
 #include <string.h>
 #include <typeinfo>
 
-#include "../base/ddcui_core.h"
-#include "../base/nc_values_state.h"
+#include "base/ddcui_core.h"
+#include "base/nc_values_state.h"
 #include "base/global_state.h"
 #include "base/monitor.h"
 #include "base/widget_debug.h"

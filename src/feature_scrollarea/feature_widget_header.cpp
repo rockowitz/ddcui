@@ -14,7 +14,7 @@
 
 #include "base/widget_debug.h"
 
-#include "../base/ddcui_core.h"
+#include "base/ddcui_core.h"
 
 #include "feature_widget_header.h"
 
