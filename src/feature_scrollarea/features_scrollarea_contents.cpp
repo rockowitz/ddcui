@@ -3,8 +3,6 @@
 // Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#include "feature_scrollarea/features_scrollarea_contents.h"
-
 #include <assert.h>
 #include <string.h>
 #include <stdio.h>
@@ -19,11 +17,11 @@
 #include "feature_value_widgets/value_stacked_widget.h"
 #include "feature_scrollarea/feature_widget.h"
 
+#include "feature_scrollarea/features_scrollarea_contents.h"
 
 static bool debugWidget = false;
 static bool showWidgetDimensions = false;
 static bool traceResizeEvents = false;
-
 
 FeaturesScrollAreaContents::FeaturesScrollAreaContents(QWidget * parent) :
     QWidget(parent)
@@ -55,25 +53,21 @@ FeaturesScrollAreaContents::FeaturesScrollAreaContents(QWidget * parent) :
    }
 }
 
-
 FeaturesScrollAreaContents::~FeaturesScrollAreaContents() {
    bool debug = false;
    TRACECF(debug, "Executing");
    // TODO IMPLEMENT!!!
 }
 
-
 void FeaturesScrollAreaContents::setModel(FeatureBaseModel * baseModel) {
    _baseModel = baseModel;
 }
-
 
 void FeaturesScrollAreaContents::setContainingScrollArea(QScrollArea * scrollArea) {
    _containingScrollArea = scrollArea;
    // no, just adds horizontal scrollbar on bottom
    // scrollArea->setWidgetResizable(true);
 }
-
 
 #ifdef UNUSED
 void FeaturesScrollAreaContents::setInstanceControlKeyRequired(bool onoff) {
@@ -99,7 +93,6 @@ void FeaturesScrollAreaContents::featureAdded(FeatureValue fv)
 }
 #endif
 
-
 #ifdef OLD
 // Unused!
 void FeaturesScrollAreaContents::featureUpdated(char feature_code)
@@ -113,11 +106,9 @@ void FeaturesScrollAreaContents::featureUpdated(char feature_code)
    // find the entry in _widgets
    _widgets[feature_code];
 
-
    // set value in the widget
 }
 #endif
-
 
 void FeaturesScrollAreaContents::startInitialLoad(void)
 {
@@ -139,12 +130,10 @@ void FeaturesScrollAreaContents::endInitialLoad()
    emit showCentralWidgetByWidget(_containingScrollArea);
 }
 
-
 #ifdef PAGE_CHANGE_OBSERVER
 void FeaturesScrollAreaContents::addPageChangeObserver(PageChangeObserver * observer) {
    _pageChangeObservers->append(observer);
 }
-
 
 void FeaturesScrollAreaContents::notifyPageChangeObservers(int pageno) {
    int ct = _pageChangeObservers->count();
@@ -157,7 +146,6 @@ void FeaturesScrollAreaContents::notifyPageChangeObservers(int pageno) {
 }
 #endif
 
-
 void FeaturesScrollAreaContents::resize(int w, int h)
 {
    TRACEC("width = %d, height = %s", w, h);
@@ -168,7 +156,6 @@ void FeaturesScrollAreaContents::resize(QSize sz)
    TRACEC("width = %d, height = %s", sz.width(), sz.height());
    QWidget::resize(sz);
 }
-
 
 void FeaturesScrollAreaContents::resizeEvent(QResizeEvent * evt)
 {
@@ -185,5 +172,4 @@ void FeaturesScrollAreaContents::resizeEvent(QResizeEvent * evt)
 int FeaturesScrollAreaContents::maxRowHeight() {
    return 0;
 }
-
 

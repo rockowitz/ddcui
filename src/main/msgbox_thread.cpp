@@ -12,6 +12,7 @@
 #include <QSemaphore>
 
 #include "base/ddcui_core.h"
+
 #include "main/msgbox_thread.h"
 
 static bool debugThread = false;
@@ -25,17 +26,14 @@ MsgBoxThread::MsgBoxThread(MsgBoxQueue*    requestQueue)
    _semaphore = new QSemaphore(1);
 }
 
-
 MsgBoxThread::~MsgBoxThread() {
    delete _semaphore;
 }
-
 
 void MsgBoxThread::msbgoxClosed(int result) {
    TRACECF(debugThread, "Releasing semaphore");
    _semaphore->release();
 }
-
 
 void MsgBoxThread::run() {
 #ifdef NO
@@ -99,5 +97,4 @@ void MsgBoxThread::showSerialMsgBox(QString title, QString text, QMessageBox::Ic
 
 }
 #endif
-
 

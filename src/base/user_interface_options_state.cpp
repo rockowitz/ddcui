@@ -8,17 +8,15 @@
 // NB was originally named ui_options_state.h etc, but the ui prefix is
 // special, causes the user interface compiler to look for a dialog named ui_options_state_dialog
 
-#include "user_interface_options_state.h"
-
 #include "cmdline/ddcui_parsed_cmd.h"
 #include "ddcui_core.h"
 
+#include "user_interface_options_state.h"
 
  UserInterfaceOptionsState::UserInterfaceOptionsState()
      : _cls(metaObject()->className())
  {
  }
-
 
  UserInterfaceOptionsState::UserInterfaceOptionsState(Parsed_Ddcui_Cmd* parsed_cmd)
      : _cls(metaObject()->className())
@@ -29,14 +27,12 @@
     TRACEMCF(debug, "Done");
  }
 
-
  UserInterfaceOptionsState::UserInterfaceOptionsState(UserInterfaceOptionsState &other)
      : QObject()
      , _cls(metaObject()->className())
  {
     _controlKeyRequired = other._controlKeyRequired;
  }
-
 
  void UserInterfaceOptionsState::setControlKeyRequired(bool onoff) {
     bool debug = false;

@@ -11,11 +11,10 @@
 
 #include <ddcutil_c_api.h>
 
-#include "base/feature_selector.h"
-
 #include "cmdline/ddcui_parsed_cmd.h"
 #include "ddcui_core.h"
 
+#include "base/feature_selector.h"
 
 // For feature selection dialog
 DDCA_Feature_Subset_Id parsedFeatureSet_to_ddcaFeatureSubsetId(Parsed_Feature_Set fs) {
@@ -32,7 +31,6 @@ DDCA_Feature_Subset_Id parsedFeatureSet_to_ddcaFeatureSubsetId(Parsed_Feature_Se
    return fsid;
 }
 
-
 bool defaultIncludeOnlyCapabilities(DDCA_Feature_Subset_Id fsid) {
    bool result = false;
    if (fsid == DDCA_SUBSET_KNOWN        ||
@@ -43,14 +41,12 @@ bool defaultIncludeOnlyCapabilities(DDCA_Feature_Subset_Id fsid) {
    return result;
 }
 
-
 bool defaultIncludeAllCapabilities(DDCA_Feature_Subset_Id fsid) {
    bool result = false;
    if (fsid == DDCA_SUBSET_CAPABILITIES)
       result = true;
    return result;
 }
-
 
 void FeatureSelector::applyParsedOptions(Parsed_Ddcui_Cmd * parsed_cmd) {
    bool debug = false;
@@ -94,15 +90,12 @@ void FeatureSelector::applyParsedOptions(Parsed_Ddcui_Cmd * parsed_cmd) {
     }
 }
 
-
 FeatureSelector::FeatureSelector() {
 }
-
 
 FeatureSelector::FeatureSelector(Parsed_Ddcui_Cmd * parsedCmd) {
    applyParsedOptions(parsedCmd);
 }
-
 
 FeatureSelector::FeatureSelector(const FeatureSelector &other) {
    _featureSubsetId         = other._featureSubsetId;
@@ -112,7 +105,6 @@ FeatureSelector::FeatureSelector(const FeatureSelector &other) {
    _includeAllCapabilities  = other._includeAllCapabilities;
    _customFeatureList       = other._customFeatureList;
 }
-
 
 bool FeatureSelector::operator==(const FeatureSelector &other) const {
    bool debugFunc = false;
@@ -133,11 +125,9 @@ bool FeatureSelector::operator==(const FeatureSelector &other) const {
    return result;
 }
 
-
 bool FeatureSelector::operator!=(const FeatureSelector &other) const {
    return !(*this == other);
 }
-
 
 void FeatureSelector::dbgrpt() {
    printf("   feature_list_id:          %d - %s\n", _featureSubsetId, ddca_feature_list_id_name(_featureSubsetId));

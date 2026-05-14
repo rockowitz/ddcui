@@ -14,13 +14,12 @@
 
 #include "base/widget_debug.h"
 
-#include "feature_widget_header.h"
 #include "../base/ddcui_core.h"
 
+#include "feature_widget_header.h"
 
 static bool showDimensionReport = false;
 static bool showResizeEvents = false;
-
 
 static QLabel* stdLabelSetup(QLabel * l) {
    // l->setFrameStyle(QFrame::NoFrame | QFrame::Plain);
@@ -37,7 +36,6 @@ static QLabel* stdLabelSetup(QLabel * l) {
 
    return l;
 }
-
 
 void FeatureWidgetHeader::layoutWidget() {
    QLabel * _codeLabel  = stdLabelSetup( new QLabel("Code")  );
@@ -101,7 +99,6 @@ void FeatureWidgetHeader::layoutWidget() {
    }
 }
 
-
 FeatureWidgetHeader::FeatureWidgetHeader(QWidget * parent)
 : QFrame(parent)
 {
@@ -109,11 +106,9 @@ FeatureWidgetHeader::FeatureWidgetHeader(QWidget * parent)
    layoutWidget();
 }
 
-
 FeatureWidgetHeader::~FeatureWidgetHeader() {
    // TODO Auto-generated destructor stub
 }
-
 
 void FeatureWidgetHeader::resizeEvent(QResizeEvent * evt)
 {
@@ -126,6 +121,4 @@ void FeatureWidgetHeader::resizeEvent(QResizeEvent * evt)
    }
    evt->ignore();
 }
-
-
 

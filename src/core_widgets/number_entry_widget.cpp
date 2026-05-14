@@ -22,9 +22,9 @@
 #include "base/widget_debug.h"
 
 #include "hex_number_validator.h"
-#include "number_entry_widget.h"
 #include "../base/ddcui_core.h"
 
+#include "number_entry_widget.h"
 
 void NumberEntryWidget::layoutWidget(
       uint8_t bytect,
@@ -42,7 +42,6 @@ void NumberEntryWidget::layoutWidget(
        setStyleSheet("background-color:orange;");
 }
 
- 
 // initializes _widgetState to StateOldValid
 NumberEntryWidget::NumberEntryWidget(
       uint8_t bytect,
@@ -97,7 +96,6 @@ NumberEntryWidget::NumberEntryWidget(
     connect(this, &NumberEntryWidget::textEdited,  this, &NumberEntryWidget::onTextEdited);
 }
 
-
 uint16_t
 NumberEntryWidget::getExistingValue()
 {
@@ -106,7 +104,6 @@ NumberEntryWidget::getExistingValue()
    return _curval;
 }
 
-
 uint16_t
 NumberEntryWidget::getNewValue()
 {
@@ -114,7 +111,6 @@ NumberEntryWidget::getNewValue()
    TRACECF(debug, "widget = %s, returning: x%04x", QS2S(this->objectName()), _valueEntered);
    return _valueEntered;
 }
-
 
 // sets the current value
 // changes state to StateOldValue
@@ -133,13 +129,11 @@ NumberEntryWidget::setValue(uint16_t newval)
    _widgetState = NumberEntryWidget::StateOldValid;
 }
 
-
 NumberEntryWidget::States
 NumberEntryWidget::getState()
 {
    return _widgetState;
 }
-
 
 // if widgestate = OldState, do nothing
 // o.w. sets the displayed value to curval
@@ -158,14 +152,12 @@ NumberEntryWidget::reset()
    TRACECF(debug, "Done. _curState = %d", _widgetState);
 }
       
-
 #ifdef OLD
 void
 NumberEntryWidget::onTextEdited(const QString &text) {
    TRACECF(true, "Starting. text=%s", text.toLatin1().data());
    bool ok = false;
    if (text.length() > 0) {
-
 
       int newval = text.toInt(&ok, 16);
       if (ok) {          // should already have been checked
@@ -183,7 +175,6 @@ NumberEntryWidget::onTextEdited(const QString &text) {
    emit NumberEntryWidget::isValidValue(_fieldNumber, ok);
 }
 #endif
-
 
 // sets newval to the int value of the tex text
 // if value shown has length 0, sets state to Invalid
@@ -222,7 +213,6 @@ NumberEntryWidget::onTextEdited(const QString &text) {
    //    _curval = newval;
    TRACECF(debug, "Done. setting _widgetState to %d", _widgetState);
 }
-
 
 // For exploring behavior
 

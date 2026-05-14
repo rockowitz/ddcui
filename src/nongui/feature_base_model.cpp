@@ -7,8 +7,6 @@
 // Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#include "nongui/feature_base_model.h"
-
 #include <assert.h>
 #include <iostream>
 #include <typeinfo>
@@ -29,7 +27,7 @@
 
 #include "nongui/feature_value.h"
 
-
+#include "nongui/feature_base_model.h"
 
 static bool debugModel = false;
 
@@ -65,7 +63,6 @@ FeatureBaseModel::FeatureBaseModel(Monitor * monitor)
                    _monitor->_displayInfo->dref);
 }
 
-
 FeatureBaseModel::~FeatureBaseModel() {
    bool debug = false;
    TRACECF(debug, "Executing. _monitor=%p, monitor number %d, dref: %p",
@@ -81,7 +78,6 @@ FeatureBaseModel::~FeatureBaseModel() {
    TRACECF(debug, "Done.");
    free((void*) _cls);
 }
-
 
 /** Returns the index of the entry for the specified feature in _feature_values
  *
@@ -100,7 +96,6 @@ int FeatureBaseModel::modelVcpValueIndex(uint8_t feature_code) {
     return result;
 }
 
-
 /** Returns the #FeatureValue instance for the specified feature.
  *
  * \param feature_code
@@ -117,7 +112,6 @@ FeatureValue * FeatureBaseModel::modelVcpValueFind(uint8_t feature_code) {
     }
     return result;
 }
-
 
 FeatureValue * FeatureBaseModel::modelVcpValueFilteredFind(uint8_t feature_code) {
    bool debug = false;
@@ -136,7 +130,6 @@ FeatureValue * FeatureBaseModel::modelVcpValueFilteredFind(uint8_t feature_code)
    return result;
 }
 
-
 /** Returns a #FeatureValue instance based on its location in
  * #_featureValues
  *
@@ -151,13 +144,11 @@ FeatureValue * FeatureBaseModel::modelVcpValueAt(int ndx) const {
     return result;
 }
 
-
 /** Returns the number of #FeatureValue instances. 
  */
 int FeatureBaseModel::modelVcpValueCount(void) const {
     return _featureValues->count();
 }
-
 
 // IDEA: Separate function for update?
 //      modelVcpValueAdd() 
@@ -242,7 +233,6 @@ void   FeatureBaseModel::modelVcpValueSet(
     }
 }
 
-
 // called from VcpThread::setvcp()
 void
 FeatureBaseModel::modelVcpValueUpdate(
@@ -297,7 +287,6 @@ FeatureBaseModel::modelVcpValueUpdate(
 
 }
 
-
 // This really belongs in Monitor
 void
 FeatureBaseModel::setCapabilities(
@@ -314,7 +303,6 @@ FeatureBaseModel::setCapabilities(
    _parsed_caps = parsed_capabilities;
 }
 
-
 #ifdef UNUSED
 void
 FeatureBaseModel::modelMccsVersionSet(
@@ -323,14 +311,12 @@ FeatureBaseModel::modelMccsVersionSet(
     _vspec = vspec;
 }
 
-
 DDCA_MCCS_Version_Spec
 FeatureBaseModel::mccsVersionSpec()
 {
     return _vspec;
 }
 #endif
-
 
 void
 FeatureBaseModel::setFeatureList(
@@ -367,7 +353,6 @@ FeatureBaseModel::setFeatureList(
    TRACECF(debugFunc, "Done");
 }
 
-
 // reload specific features, but only if they were already loaded
 // used when setting one feature requires rereading others
 
@@ -393,7 +378,6 @@ FeatureBaseModel::reloadSpecificFeatures(int ct, uint8_t* features) {
       }
    }
 }
-
 
 void FeatureBaseModel::setFeatureChecked(uint8_t featureCode) {
    ddca_feature_list_add(&_featuresChecked, featureCode);
@@ -427,7 +411,6 @@ void FeatureBaseModel::reloadFeatures() {
    TRACECF(debug, "Done");
 }
 
-
 void FeatureBaseModel::markDisconnected(DDCA_Display_Ref dref) {
    bool debug = true;
    TRACECF(debug, "DDCA_Display_Ref = %p", dref);
@@ -436,7 +419,6 @@ void FeatureBaseModel::markDisconnected(DDCA_Display_Ref dref) {
     TRACECF(debug, "emitting signalEndInitialLoad()");
    emit signalEndInitialLoad();
 }
-
 
 /** Debugging function to report the contents of the current 
  *  #FeatureBaseModel instance. 
@@ -457,14 +439,12 @@ void FeatureBaseModel::dbgrpt() {
     }
 }
 
-
 void  FeatureBaseModel::modelStartInitialLoad(void) {
    bool debug = false;
    _initialLoadActive = true;
     TRACECF(debug, "=> Emitting signalStartInitialLoad");
     emit signalStartInitialLoad();
 }
-
 
 void  FeatureBaseModel::modelEndInitialLoad(void) {
    bool debug = false;
@@ -473,18 +453,15 @@ void  FeatureBaseModel::modelEndInitialLoad(void) {
     emit signalEndInitialLoad();   // claude added emit - is there a reason this was a simple call?
 }
 
-
 void  FeatureBaseModel::setStatusMsg(QString msg) {
    // printf("(%s::%s) => msg=%s\n", _cls, __func__, msg.toLatin1().data());  fflush(stdout);
    emit signalStatusMsg(msg);
 }
 
-
 #ifdef FEATURE_CHANGE_OBSERVER
 void  FeatureBaseModel::addFeatureChangeObserver(FeatureChangeObserver* observer) {
     _featureChangeObservers->append(observer);
 }
-
 
 void FeatureBaseModel::notifyFeatureChangeObservers(uint8_t feature_code) {
     if (debugSignals)

@@ -7,12 +7,12 @@
 #include <QSize>
 #include "base/widget_debug.h"
 #include "feature_scrollarea/features_scrollarea_contents.h"
-#include "feature_scrollarea/features_scrollarea.h"
 #include "../base/ddcui_core.h"
+
+#include "feature_scrollarea/features_scrollarea.h"
 
 static bool showWidgetDimensions = false;
 static bool traceResizeEvents = false;
-
 
 void FeaturesScrollArea::layoutWidget() {
    if (debugLayout) {
@@ -25,7 +25,6 @@ void FeaturesScrollArea::layoutWidget() {
    }
 }
 
-
 FeaturesScrollArea::FeaturesScrollArea(QWidget *parent)
     : QScrollArea(parent)
 {
@@ -34,11 +33,9 @@ FeaturesScrollArea::FeaturesScrollArea(QWidget *parent)
    layoutWidget();
 }
 
-
 FeaturesScrollArea::~FeaturesScrollArea()
 {
 }
-
 
 void FeaturesScrollArea::resizeEvent(QResizeEvent * evt)
 {

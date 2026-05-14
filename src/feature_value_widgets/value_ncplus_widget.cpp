@@ -6,8 +6,6 @@
 // Copyright (C) 2020-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#include "feature_value_widgets/value_ncplus_widget.h"
-
 #include <assert.h>
 #include <glib-2.0/glib.h>
 #include <stdio.h>
@@ -28,9 +26,10 @@
 #include "feature_value_widgets/value_cnc_widget_x14.h"
 #include "feature_value_widgets/value_nc_widget.h"
 
+#include "feature_value_widgets/value_ncplus_widget.h"
+
 // static bool dimensionReportShown = false;  // unused
 static bool showResizeEvents = false;
-
 
 #ifdef UNUSED
 void ValueNcplusWidget::layoutWidget() {
@@ -65,7 +64,6 @@ void ValueNcplusWidget::layoutWidget() {
     _auxTitle->setSizePolicy(*sizePolicy);
     // delete sizePolicy;
 
-
     _auxDetail->setMinimumSize(20,10);
       _auxDetail->setFrameStyle( QFrame::Plain | QFrame::NoFrame);  // ValueStdWidget has the frame, not Label
       _auxDetail->setFont(font);
@@ -82,7 +80,6 @@ void ValueNcplusWidget::layoutWidget() {
      // _layout->addWidget(_auxDetail);
      _layout->addStretch(1);
 
-
 #ifdef APPLY_CANCEL
     if (useApplyCancel) {
        _layout->addWidget(_applyButton);
@@ -95,10 +92,8 @@ void ValueNcplusWidget::layoutWidget() {
     // _layout->addSpacing(10);
 #endif
 
-
      _layout->setContentsMargins(0,0,0,0);
      setLayout(_layout);
-
 
      if (debugLayout) {
          if (!dimensionReportShown) {
@@ -117,7 +112,6 @@ void ValueNcplusWidget::layoutWidget() {
 }
 #endif
 
-
 ValueNcplusWidget::ValueNcplusWidget(QWidget *parent):
         ValueNcWidget(parent)
 {
@@ -131,7 +125,6 @@ ValueNcplusWidget::ValueNcplusWidget(QWidget *parent):
 ValueNcplusWidget::~ValueNcplusWidget() {
    free((void*) _cls);
 }
-
 
 void ValueNcplusWidget::setAuxFieldsX14()    // Color preset
 {
@@ -182,7 +175,6 @@ void ValueNcplusWidget::setAuxFieldsXca() {     // OSD
    }
 }
 
-
 void ValueNcplusWidget::setAuxFields() {
    if (_featureCode == 0x14) {
       setAuxFieldsX14();
@@ -191,7 +183,6 @@ void ValueNcplusWidget::setAuxFields() {
       setAuxFieldsXca();
    }
 }
-
 
 void ValueNcplusWidget::setFeatureValue(const FeatureValue &fv) {
    DDCA_MCCS_Version_Spec vspec = fv.vspec();
@@ -205,12 +196,10 @@ void ValueNcplusWidget::setFeatureValue(const FeatureValue &fv) {
    // TRACE("Done");
 }
 
-
 void ValueNcplusWidget::setCurrentShSl(uint16_t newval) {
    ValueNcWidget::setCurrentShSl(newval);
    setAuxFields();
 }
-
 
 void ValueNcplusWidget::resizeEvent(QResizeEvent * evt)
 {

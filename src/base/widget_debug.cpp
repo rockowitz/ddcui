@@ -25,9 +25,9 @@
 #include <QSizePolicy>
 #include <QWidget>
 
-#include "widget_debug.h"
 #include "ddcui_core.h"
 
+#include "widget_debug.h"
 
 void reportBasicWidgetDimensions(
       QWidget *    w,
@@ -72,7 +72,6 @@ void reportBasicWidgetDimensions(
         rect.width(), rect.height() );
 }
 
-
 #ifdef NOT_NEEDED
 void reportBasicWindowDimensions2(
       const char * classname,
@@ -84,8 +83,6 @@ void reportBasicWindowDimensions2(
 {
 }
 #endif
-
-
 
 void reportWidgetChildren(QWidget * w, const char * msg) {
     if (msg)
@@ -99,7 +96,6 @@ void reportWidgetChildren(QWidget * w, const char * msg) {
     }
     fflush(stdout);
 }
-
 
 const char * sizePolicyName(QSizePolicy::Policy policy) {
    char * s = NULL;
@@ -115,9 +111,6 @@ const char * sizePolicyName(QSizePolicy::Policy policy) {
    }
    return s;
 }
-
-
-
 
 void reportPolicy(   QSizePolicy::Policy  hp,
       int depth,
@@ -155,7 +148,6 @@ void reportPolicy(   QSizePolicy::Policy  hp,
 
     printf("%s     %s\n", indent, s);
 }
-
 
 void reportQSizePolicy(
       QSizePolicy p ,
@@ -214,8 +206,6 @@ void reportQSizePolicy(
     //     more?
 }
 
-
-
 void reportLayout(
       QLayout * lay, int depth)
 {
@@ -253,7 +243,6 @@ void reportLayout(
         // and more
 }
 
-
 void reportWidgetDimensions(
       QWidget *    w,
       const char * className,
@@ -269,7 +258,6 @@ void reportWidgetDimensions(
     if (msg)
        printf("%s\n", msg);
     // printf("(%s::%s) Dimensions:\n", className, funcName);
-
 
     QSize sz = w->baseSize();
     printf("%sbaseSize:              %d,%d\n", indent,  sz.width(), sz.height());
@@ -351,7 +339,6 @@ void reportWidgetDimensions(
      QSizePolicy sizePolicy = w->sizePolicy();
      reportQSizePolicy(sizePolicy, d1, "widget sizePolicy:");
 
-
      QLayout * lay = w->layout();
      if (lay) {
         printf("%sLayout:\n", indent);
@@ -362,7 +349,6 @@ void reportWidgetDimensions(
 
      printf("\n");  fflush(stdout);
 }
-
 
 void reportFrameDimensions(
       QFrame * f,
@@ -399,7 +385,6 @@ void reportFrameDimensions(
    reportWidgetDimensions(f, className, funcName);
 }
 
-
 void reportLabelDimensions(
       QLabel * label,
       const char * className,
@@ -414,7 +399,6 @@ void reportLabelDimensions(
 
    reportFrameDimensions(label, className, funcName, NULL);
 }
-
 
 void whereIsApplication() {
    printf("Application screens\n");
@@ -444,7 +428,6 @@ void whereIsApplication() {
    QRect rect = screen->geometry();
    printf("Primary screen width, height: %d,%d\n", rect.width(), rect.height());
 
-
 #ifdef FOR_TESTING
    printf("screen count: %d\n", desktopWidget->screenCount() );
    printf("is virtual desktop: %s\n", SBOOL( desktopWidget->isVirtualDesktop() ) );
@@ -453,7 +436,6 @@ void whereIsApplication() {
           geometry.left(), geometry.top(), geometry.right(), geometry.bottom() );
 #endif
 }
-
 
 void whereAmI(QWidget * w, const char * msg) {
    if (msg)
@@ -475,7 +457,6 @@ void whereAmI(QWidget * w, const char * msg) {
 #endif
    }
 }
-
 
 void dbgrptQKeyEvent(QKeyEvent * event) {
    printf("  key:  %d\n", event->key());

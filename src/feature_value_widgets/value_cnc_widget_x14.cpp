@@ -6,8 +6,6 @@
 // Copyright (C) 2019-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#include "feature_value_widgets/value_cnc_widget_x14.h"
-
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
@@ -26,6 +24,7 @@
 
 #include "feature_value_widgets/value_nc_widget.h"
 
+#include "feature_value_widgets/value_cnc_widget_x14.h"
 
 ValueCncWidgetX14::ValueCncWidgetX14(QWidget *parent):
         ValueNcWidget(parent)
@@ -130,13 +129,11 @@ ValueCncWidgetX14::ValueCncWidgetX14(QWidget *parent):
      setLayout(_layout);
 }
 
-
 ValueCncWidgetX14::~ValueCncWidgetX14() {
    free((void*) _cls);
    delete _mhlabel;
    delete _mhdesc;
 }
-
 
 void     ValueCncWidgetX14::setFeatureValue(const FeatureValue &fv) {
    ValueNcWidget::setFeatureValue(fv);

@@ -3,8 +3,6 @@
 // Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#include "feature_value_widgets/value_nc_widget.h"
-
 #include <assert.h>
 #include <string.h>
 
@@ -22,12 +20,12 @@
 #include "base/widget_debug.h"
 #include "feature_value_widgets/value_base_widget.h"
 
+#include "feature_value_widgets/value_nc_widget.h"
 
 static bool debugWidget = false;
 static bool showDimensionReports = false;
 static bool showBasicDims = false || debugFeatureDimensions;
 static bool showResizeEvents = false;
-
 
 void ValueNcWidget::createWidgets() {
    bool debug = false;
@@ -47,7 +45,6 @@ void ValueNcWidget::createWidgets() {
 
    TRACECF(debug, "Done. _id=%d", _id);
 }
-
 
 void ValueNcWidget::layoutWidget() {
     // TRACE("Starting");
@@ -86,7 +83,6 @@ void ValueNcWidget::layoutWidget() {
    // TRACE("Done");
 }
 
-
 ValueNcWidget::ValueNcWidget(QWidget *parent):
         ValueBaseWidget(parent)
 {
@@ -103,14 +99,12 @@ ValueNcWidget::ValueNcWidget(QWidget *parent):
     TRACEMCF(debug, "Done");
 }
 
-
 ValueNcWidget::~ValueNcWidget() {
    bool debugFunc = false;
    // debugFunc = debugFunc || (_featureCode == 0x14);
    TRACECF(debugFunc, "Executing. _id=%d, _featureCode=0x%02x", _id, _featureCode);
    free((void*) _cls);
 }
-
 
 void   ValueNcWidget::setEnabled(bool onoff) {
    bool debug = false;
@@ -126,7 +120,6 @@ void   ValueNcWidget::setEnabled(bool onoff) {
 #endif
    TRACEMCF(debug, "Done.");
 }
-
 
 /*
     It is possible that the monitor returns a value that is not in the capabilities/MCCS list.
@@ -144,7 +137,6 @@ void   ValueNcWidget::setEnabled(bool onoff) {
     in the FeatureValue.  It adds the value passed to the local _observedNcValues.
     Therefore _observedNcValues remains in sync with the master list.
  */
-
 
 void ValueNcWidget::setFeatureValue(const FeatureValue &fv) {
     bool debug = false;  // || (fv.featureCode() == 0x14);
@@ -192,7 +184,6 @@ void ValueNcWidget::setFeatureValue(const FeatureValue &fv) {
     TRACEMCF(debug, "Done");
 }
 
-
 // copied from feature_metadata.c
 char *
 ValueNcWidget::sl_value_table_lookup(
@@ -217,7 +208,6 @@ ValueNcWidget::sl_value_table_lookup(
    TRACEMF(debug, "Returning %p -> %s", result, result);
    return result;
 }
-
 
 void ValueNcWidget::loadComboBox2() {
    bool debugFunc = false;  // (_featureCode == 0x14);
@@ -295,7 +285,6 @@ void ValueNcWidget::loadComboBox2() {
                       _featureCode, _sl, _cb->currentIndex());
 }
 
-
 void ValueNcWidget::reloadComboBox(NcValuesSource newSource, bool newUseLatestNames) {
    bool debugFunc = false; // (_featureCode == 0x14);
    debugFunc = debugFunc || debugNcValues;
@@ -318,7 +307,6 @@ void ValueNcWidget::reloadComboBox(NcValuesSource newSource, bool newUseLatestNa
 
    TRACEMF(debugFunc, "Done");
 }
-
 
 void ValueNcWidget::setCurrentShSl(uint16_t newval) {
    bool debugFunc = false;  //  (_featureCode == 0x14);
@@ -364,7 +352,6 @@ int ValueNcWidget::findItem(uint8_t sl_value) {
     return result;
 }
 
-
 uint16_t ValueNcWidget::getCurrentShSl() {
     // get sl from combobox
     int ndx = _cb->currentIndex();
@@ -376,7 +363,6 @@ uint16_t ValueNcWidget::getCurrentShSl() {
     uint16_t result = (_sh << 8) | _sl;
     return result;
 }
-
 
 void ValueNcWidget::combobox_activated(int index) {
    bool debug = false;
@@ -404,7 +390,6 @@ void ValueNcWidget::combobox_activated(int index) {
       TRACEMCF(debug, "Value not changed.");
    }
 }
-
 
 void ValueNcWidget::resizeEvent(QResizeEvent * evt)
 {

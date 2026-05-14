@@ -15,9 +15,9 @@
 
 extern "C" {
 #include "c_util/data_structures.h"
-}
-#include "ddca_utils.h"
 
+#include "ddca_utils.h"
+}
 
 // Parsed capabilities and feature values
 
@@ -29,7 +29,6 @@ bs256_from_cfr(DDCA_Cap_Vcp * cfr) {
     }
    return result;
 }
-
 
 Bit_Set_256
 bs256_from_sl_values(DDCA_Feature_Value_Entry * sl_values) {
@@ -43,7 +42,6 @@ bs256_from_sl_values(DDCA_Feature_Value_Entry * sl_values) {
    }
    return result;
 }
-
 
 #ifdef UNUSED
 static bool
@@ -74,7 +72,6 @@ find_feature_value_entry(DDCA_Feature_Value_Entry * sl_values, uint8_t feature_c
    return result;
 }
 
-
 static int
 feature_value_entry_ct(DDCA_Feature_Value_Entry * sl_values) {
    int ct = 0;
@@ -93,7 +90,6 @@ int_max(int v1, int v2) {
 }
 #endif
 
-
 DDCA_Cap_Vcp *
 ddcu_find_cap_vcp(DDCA_Capabilities * parsed_caps, uint8_t feature_code)
 {
@@ -110,7 +106,6 @@ ddcu_find_cap_vcp(DDCA_Capabilities * parsed_caps, uint8_t feature_code)
    return result;
 }
 
-
 // Error Reporting
 
 // declaration for recursive call
@@ -121,7 +116,6 @@ format_error_detail_aux(
       int                 indentation_per_depth,
       int                 cur_depth,
       QString&            accum);
-
 
 static void
 format_error_detail_aux(
@@ -155,7 +149,6 @@ format_error_detail_aux(
    }
 }
 
-
 QString
 ddcu_format_error_detail(
       DDCA_Error_Detail * erec,
@@ -166,7 +159,6 @@ ddcu_format_error_detail(
    format_error_detail_aux(erec, causesTitle, indentation_per_depth, 0, accum);
    return accum;
 }
-
 
 #ifdef OLD   // use api function ddca_dbgrpt_feature_metadata()
 void
@@ -198,7 +190,6 @@ ddcui_dbgrpt_ddca_feature_metadata(
 }
 #endif
 
-
 // model name to be shown in display selector combo box
 QString ddcu_comboBoxModelName(DDCA_Display_Info2* dinfo) {
 
@@ -216,7 +207,6 @@ QString ddcu_comboBoxModelName(DDCA_Display_Info2* dinfo) {
    }
    return s;
 }
-
 
 /** Tests 2 #DDCA_IO_Path instances for equality
  *

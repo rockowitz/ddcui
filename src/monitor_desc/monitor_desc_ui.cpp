@@ -3,8 +3,6 @@
 // Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#include "monitor_desc/monitor_desc_ui.h"
-
 #include <QWidget>
 #include <QPlainTextEdit>
 #include <QHBoxLayout>
@@ -14,6 +12,7 @@
 
 #include "base/monitor.h"
 
+#include "monitor_desc/monitor_desc_ui.h"
 
 // Common initialization for monitor info and capabilities
 
@@ -38,7 +37,6 @@ void initPlaintextWidget(
 
       // Layout stacked widget page: page_widget, contains moninfoPlainText
       QWidget * page_widget = new QWidget();
-
 
       QPlainTextEdit *plainTextWidget;
 
@@ -80,7 +78,6 @@ void initPlaintextWidget(
       *pagePlainText_loc = plainTextWidget;
 }
 
-
 QWidget * initMonitorInfoWidget(
       Monitor *         curMonitor,
       QStackedWidget *  stackedWidget)
@@ -95,7 +92,6 @@ QWidget * initMonitorInfoWidget(
 
     return curMonitor->_page_moninfo;
 }
-
 
 QWidget * initCapabilitiesWidget(
       Monitor *         curMonitor,

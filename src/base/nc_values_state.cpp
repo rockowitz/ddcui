@@ -9,8 +9,8 @@
 #include <assert.h>
 
 #include "cmdline/ddcui_parsed_cmd.h"
-#include "nc_values_state.h"
 
+#include "nc_values_state.h"
 
 // For NcValues dialog
 NcValuesSource parsedNcValuesSource_to_NcValuesSource(Parsed_NC_Values_Source val) {
@@ -30,7 +30,6 @@ NcValuesSource parsedNcValuesSource_to_NcValuesSource(Parsed_NC_Values_Source va
    return ncvs;
 }
 
-
 NcValuesState::NcValuesState() {}
 
 NcValuesState::NcValuesState(Parsed_Ddcui_Cmd * parsed_cmd) {
@@ -38,12 +37,10 @@ NcValuesState::NcValuesState(Parsed_Ddcui_Cmd * parsed_cmd) {
       _ncValuesSource = parsedNcValuesSource_to_NcValuesSource(parsed_cmd->nc_values_source);
 }
 
-
 NcValuesState::NcValuesState(const NcValuesState &other) : QObject() {
    _ncValuesSource = other._ncValuesSource;
    // _useLatestNcValues = other._useLatestNcValues;
 }
-
 
 #ifdef UNUSED
 void NcValuesState::changeNcValuesSource(NcValuesSource mode, bool useLatestNcValues) {
@@ -54,7 +51,6 @@ void NcValuesState::changeNcValuesSource(NcValuesSource mode, bool useLatestNcVa
       emit ncValuesSourceChanged(_ncValuesSource, _useLatestNcValues);
 }
 #endif
-
 
 const char *
 ncValuesSourceName(NcValuesSource source)
@@ -68,5 +64,4 @@ ncValuesSourceName(NcValuesSource source)
      }
      return result;
 }
-
 

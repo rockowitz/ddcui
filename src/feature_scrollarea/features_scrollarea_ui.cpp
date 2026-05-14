@@ -12,10 +12,10 @@
 #include "base/monitor.h"
 
 #include "features_scrollarea_view.h"
-#include "features_scrollarea_ui.h"
 
 #include "nongui/msgbox_queue.h"
 
+#include "features_scrollarea_ui.h"
 
 // Sets curMonitor->featuresScrollAreaView
 // on endInitialLoad, creates new scrollarea, scrollareacontents, does not set them in Monitor
@@ -44,5 +44,4 @@ void initFeaturesScrollAreaView(
    // QObject::connect(featuresView, &FeaturesScrollAreaView::signalVcpRequest,
    //                  curMonitor,   &Monitor::putVcpRequest);
 }
-
 

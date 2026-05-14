@@ -3,8 +3,6 @@
 // Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#include "feature_scrollarea/features_scrollarea_view.h"
-
 #include <QString>
 #include <QMessageBox>
 #include <QScrollArea>
@@ -29,6 +27,7 @@
 #include "feature_scrollarea/features_scrollarea_contents.h"
 #include "feature_scrollarea/features_scrollarea.h"
 
+#include "feature_scrollarea/features_scrollarea_view.h"
 
 static bool showDimensionReport = false;
 
@@ -55,7 +54,6 @@ FeaturesScrollAreaView::FeaturesScrollAreaView(
    TRACEMCF(debug, "Executing. this->_id=%d, _msgboxQueue=%p", _id, _msgboxQueue);
 }
 
-
 #ifdef UNUSED
 void FeaturesScrollAreaView::setInstanceControlKeyRequired(bool onoff) {
    bool debugFunc = true;
@@ -71,8 +69,6 @@ void FeaturesScrollAreaView::setInstanceControlKeyRequired(bool onoff) {
    }
 }
 #endif
-
-
 
 void FeaturesScrollAreaView::freeContents(void) {
    bool debug = false;
@@ -95,7 +91,6 @@ void FeaturesScrollAreaView::freeContents(void) {
       _centralStackedWidget->removeWidget(scrollWrapWidget);
    }
 }
-
 
 // triggered by signal FeatureBaseModel::signalEndInitialLoad
 void FeaturesScrollAreaView::onEndInitialLoad(void) {
@@ -236,8 +231,6 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
                    maxHeight2, maxHintHeight2); ;
 #endif
 
-
-
 #ifdef NO
     TRACEMCF(debugFunc, "Setting height of each FeatureWidget...");
     for (int ndx = 0; ndx < children2.count(); ndx++) {
@@ -251,7 +244,6 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
     }
     // printf("(onEndInitialLoad) WOLF 5\n");  fflush(stdout);
 #endif
-
 
     if (debugLayout) {
        static bool dimensionReportShown = false;
@@ -275,12 +267,10 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
     TRACEMCF(debugFunc, "Done.  feature count: %d", ct);
 }
 
-
 QSize FeaturesScrollAreaView::maxRowSize() {
    QSize result(0,0);
    return result;
 }
-
 
 void FeaturesScrollAreaView::onUIValueChanged(
       uint8_t featureCode,
@@ -335,7 +325,6 @@ void FeaturesScrollAreaView::onUIValueChanged(
    }
    TRACEMCF(debug, "Done");
 }
-
 
 void FeaturesScrollAreaView::onModelValueChanged(
       const char* caller,
@@ -401,7 +390,6 @@ void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc, bool
 }
 #endif
 
-
 #ifdef OLD
 void FeaturesScrollAreaView::onModelDdcDetailedError(DdcDetailedError* perec) {
     bool debugFunc = false;
@@ -419,7 +407,6 @@ void FeaturesScrollAreaView::onModelDdcDetailedError(DdcDetailedError* perec) {
    TRACEMCF(debugFunc, "Calling _msgboxQueue.put() for qe: %s", QS2S(qe->repr()));
    _msgboxQueue->put(qe);
 }
-
 
 void FeaturesScrollAreaView::onModelDdcFeatureError(DdcFeatureError* perec) {
     bool debugFunc = false;

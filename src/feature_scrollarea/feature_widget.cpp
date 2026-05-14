@@ -3,8 +3,6 @@
 // Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#include "feature_scrollarea/feature_widget.h"
-
 #include <assert.h>
 
 #include <QVBoxLayout>
@@ -23,7 +21,6 @@ static bool showFullDims     = false;
 static bool showResizeEvents = false;
 
 // static QFont monoValueFont;
-
 
 // used for all but the value field
 static QLabel * createFeatureWidgetField(
@@ -48,7 +45,6 @@ static QLabel * createFeatureWidgetField(
 
    return field;
 }
-
 
 void FeatureWidget::setupFeatureWidget()
 {
@@ -118,13 +114,11 @@ void FeatureWidget::setupFeatureWidget()
    TRACECF(debug, "Done");
 }
 
-
 void FeatureWidget::setupConnections()
 {
    QObject::connect(_valueWidget, &ValueStackedWidget::stackedFeatureValueChanged,
                     this,         &FeatureWidget::onInternalValueChanged);
 }
-
 
 int FeatureWidget::nextId = 0;
 
@@ -136,7 +130,6 @@ FeatureWidget::FeatureWidget(QWidget *parent)
     setupFeatureWidget();
     setupConnections();
 }
-
 
 FeatureWidget::FeatureWidget(FeatureValue& fv, QWidget *parent)
    : QWidget(parent)
@@ -151,11 +144,9 @@ FeatureWidget::FeatureWidget(FeatureValue& fv, QWidget *parent)
     setFeatureValue(fv);
 }
 
-
 FeatureWidget::~FeatureWidget() {
    free((void*) _cls);
 }
-
 
 // Used only to set feature value immediately after constructor called
 void FeatureWidget::setFeatureValue(FeatureValue &fv)
@@ -202,13 +193,11 @@ void FeatureWidget::setFeatureValue(FeatureValue &fv)
     _layout->addWidget(_valueWidget); // claude says redundant, _valueWidget already added in constructor ??
 }
 
-
 #ifdef UNUSED
 void FeatureWidget::setInstanceControlKeyRequired(bool onoff) {
    _valueWidget->setInstanceControlKeyRequired(onoff);
 }
 #endif
-
 
 void FeatureWidget::setCurrentValue(uint16_t newval)
 {
@@ -225,7 +214,6 @@ QSize FeatureWidget::sizeHint() const
 }
 #endif
 
-
 #ifdef NO
 void FeatureWidget::paintEvent(QPaintEvent *event) {
      printf("%s::%s)\n", _cls, __func__); fflush(stdout);
@@ -233,7 +221,6 @@ void FeatureWidget::paintEvent(QPaintEvent *event) {
      _featureCodeField->update();  // causes separate X window - NO NOT THIS
 }
 #endif
-
 
 void FeatureWidget::dbgrpt() const
 {
@@ -243,7 +230,6 @@ void FeatureWidget::dbgrpt() const
     //        objname, _feature_code, _feature_flags, _mh, _ml, _sh, _sl);
     TRACEC("%-20s feature code: 0x%02x, flags: 0x%04x", objname, _feature_code, _feature_flags);
 }
-
 
 void FeatureWidget::onInternalValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl)
 {
@@ -257,7 +243,6 @@ void FeatureWidget::onInternalValueChanged(uint8_t featureCode, uint8_t sh, uint
                     featureCode, SBOOL(writeOnlyFeature), sh, sl);
    emit valueChanged(featureCode, writeOnlyFeature, sh, sl);
 }
-
 
 #ifdef UNUSED
 // SimpleFeatureValueObserver
@@ -285,7 +270,6 @@ void FeatureWidget::setNcValuesSource(NcValuesSource newsrc, bool useLatestNcVal
    TRACEMF(debug, "Done");
 }
 #endif
-
 
 void FeatureWidget::resizeEvent(QResizeEvent * evt)
 {

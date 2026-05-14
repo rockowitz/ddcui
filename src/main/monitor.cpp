@@ -3,8 +3,6 @@
 // Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#include "base/monitor.h"
-
 #include <assert.h>
 #include <string.h>
 
@@ -16,6 +14,7 @@
 #include "nongui/vcpthread.h"    // includes vcprequest.h
 #include "nongui/feature_value.h"
 
+#include "base/monitor.h"
 
 Monitor::Monitor(DDCA_Display_Info2 * display_info, int monitorNumber)
     : _monitorNumber(monitorNumber)
@@ -80,7 +79,6 @@ void Monitor::recheck() {
 }
 #endif
 
-
 Monitor::~Monitor() {
    bool debug = false;
    TRACECF(debug, "Starting. monitor=%p, _monitor_number=%d, _displayInfo->dispno=%d, _baseModel=%p, _moninfoPlainText=%p, _capabilitiesPlainTex=%p",
@@ -109,18 +107,15 @@ Monitor::~Monitor() {
    free((void*) _cls);
 }
 
-
 void Monitor::dbgrpt() {
    printf("_monitorNumber:      %d\n",    _monitorNumber);
    printf("_displayInfo->dref:  %p -> %s\n",     _displayInfo->dref, ddca_dref_repr(_displayInfo->dref));
    fflush(stdout);
 }
 
-
 DDCA_Display_Ref Monitor::getDref() {
    return _displayInfo->dref;
 }
-
 
 QString Monitor::dref_repr() {
    if (!_displayInfo->dref)
@@ -128,7 +123,6 @@ QString Monitor::dref_repr() {
    else
       return   QString( ddca_dref_repr(_displayInfo->dref) );
 }
-
 
 DDCA_Feature_List
 Monitor::getFeatureList(DDCA_Feature_Subset_Id feature_list_id) {
@@ -169,7 +163,6 @@ Monitor::getFeatureList(DDCA_Feature_Subset_Id feature_list_id) {
     return result;
 }
 
-
 // consider replacing 2 booleans with an enum with 3 states
 
 bool Monitor::capabilitiesCheckComplete() {
@@ -182,7 +175,6 @@ bool Monitor::capabilitiesCheckComplete() {
    return result;
 }
 
-
 bool Monitor::capabilitiesCheckSuccessful() {
    bool debug = false;
    bool result = (_displayInfo->dispno >  0);   // dispno -1 if API found display invalid, -2 if phantom
@@ -192,14 +184,12 @@ bool Monitor::capabilitiesCheckSuccessful() {
    return result;
 }
 
-
 bool Monitor::supportsDdc() {
    bool debug = false;
    bool result = (_displayInfo->dispno >  0);   // dispno -1 if API found display invalid, -2 if phantom
    TRACECF(debug, "dref=%s, returning %s", QS2S(dref_repr()), SBOOL(result));
    return result;
 }
-
 
  // called by initFeaturesScrollAreaView
 void Monitor::putVcpRequest(VcpRequest * rqst) {
@@ -208,13 +198,11 @@ void Monitor::putVcpRequest(VcpRequest * rqst) {
     _requestQueue->put(rqst);
 }
 
-
 // never called!
 void Monitor::vcpThreadFinished() {
    bool debug =  true;
    TRACECF(debug, "vcp thread finished");
 }
-
 
 void Monitor::markDisconnected() {
    bool debug =  true;

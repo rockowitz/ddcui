@@ -5,8 +5,6 @@
 // Copyright (C) 2018-2024 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#include "feature_value_widgets/value_base_widget.h"
-
 #include <QMargins>
 #include <QComboBox>
 #include <QFrame>
@@ -18,6 +16,7 @@
 #include "ddcutil_c_api.h"
 #include "../base/ddcui_core.h"
 
+#include "feature_value_widgets/value_base_widget.h"
 
 void ValueBaseWidget::setEnabled(bool onoff) {
    bool debug = false;
@@ -29,7 +28,6 @@ void ValueBaseWidget::setEnabled(bool onoff) {
 
    TRACEMCF(debug, "Done.");
 }
-
 
 // utility method that provides consistent formatting for comboboxes
 QComboBox * ValueBaseWidget::createFormattedComboBox() {
@@ -55,9 +53,7 @@ QComboBox * ValueBaseWidget::createFormattedComboBox() {
    return cb;
 }
 
-
 int ValueBaseWidget::nextId = 0;
-
 
 ValueBaseWidget::ValueBaseWidget(QWidget *parent)
      : QFrame(parent)             // ValueAbstractWidget(parent)
@@ -77,7 +73,6 @@ ValueBaseWidget::ValueBaseWidget(QWidget *parent)
    TRACECF(debug, "Done");
 }
 
-
 ValueBaseWidget::~ValueBaseWidget() {
    bool debug = false;
    TRACEMCF(debug, "Executing. this._id = %d", _id);
@@ -87,7 +82,6 @@ ValueBaseWidget::~ValueBaseWidget() {
    TRACEMCF(debug, "Done.");
    free((void*)_cls);
 }
-
 
 void ValueBaseWidget::setFeatureValue(const FeatureValue &fv) {
    bool debug = false;
@@ -106,7 +100,6 @@ void ValueBaseWidget::setFeatureValue(const FeatureValue &fv) {
     _ddcrc          = fv.ddcrc();
 }
 
-
 #ifdef UNNEEDED
 // hack to give ValueNcWidget access to parsed capabilities
 void ValueBaseWidget::setBaseModel(FeatureBaseModel * model) {
@@ -116,23 +109,19 @@ void ValueBaseWidget::setBaseModel(FeatureBaseModel * model) {
 }
 #endif
 
-
 void ValueBaseWidget::setCurrentShSl(uint16_t newval) {
     _sh = newval >> 8;
     _sl = newval & 0xff;
 }
-
 
 uint16_t ValueBaseWidget::getCurrentShSl() {
     uint16_t result = (_sh << 8) | _sl;
     return result;
 }
 
-
 void   ValueBaseWidget::delete_finfo() {
    ddca_free_feature_metadata(_finfo);
 }
-
 
 #ifdef NO
 QSize ValueBaseWidget::sizeHint() const {

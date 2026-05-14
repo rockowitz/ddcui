@@ -3,8 +3,6 @@
 // Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#include "main/mainwindow.h"
-
 #include <assert.h>
 #include <syslog.h>
 #include <iostream>
@@ -57,10 +55,10 @@
 
 #include "main/mainwindow_ui.h"
 #include "main/msgbox_thread.h"
+
 #include "main/mainwindow.h"
 
 using namespace std;
-
 
 //
 // Handle display change events
@@ -130,7 +128,6 @@ void display_status_event_main_callback(DDCA_Display_Status_Event evt) {
 }
 #endif
 
-
 void MainWindow::forDisplayChanged(DDCA_Display_Status_Event evt) {
    bool debug = false;
    TRACECF(debug, "event type: %d = %s, dref=%s",
@@ -167,7 +164,6 @@ void MainWindow::forDisplayChanged(DDCA_Display_Status_Event evt) {
    }
 }
 
-
 // Called when a new monitor is detected
 int MainWindow::addMonitor(DDCA_Display_Ref dref) {
    bool debug = false;
@@ -185,7 +181,6 @@ int MainWindow::addMonitor(DDCA_Display_Ref dref) {
    initOneMonitor(dinfo, nextIndex);
    return nextIndex;
 }
-
 
 // Called when a monitor is removed
 int MainWindow::removeMonitor(DDCA_Display_Ref dref) {
@@ -225,7 +220,6 @@ int MainWindow::removeMonitor(DDCA_Display_Ref dref) {
    return monNdx;
 }
 
-
 // Called when a monitor is enabled
 void MainWindow::enableMonitor(DDCA_Display_Ref dref) {
    bool debug = false;
@@ -263,10 +257,8 @@ void MainWindow::initSerialMsgbox() {
    // Defer until after MainWindow::show() so that dialog box appears over main window
    // _msgBoxThread->start();
 
-
    TRACEMCF(debug, "Done");
 }
-
 
 void MainWindow::start_msgBoxThread() {
    bool debug  = false;
@@ -284,7 +276,6 @@ void MainWindow::start_msgBoxThread() {
    TRACEMCF(debug, "Done.  _msgBoxThread started");
 }
 
-
 //
 // Constructor, Destructor, Initialization
 //
@@ -300,7 +291,6 @@ void MainWindow::connectBaseModel(Monitor * curMonitor) {
                     this,       &MainWindow::setTransitoryStatusMsg);
 }
 
-
 void MainWindow::disconnectBaseModel(Monitor * curMonitor) {
    FeatureBaseModel * baseModel = curMonitor->_baseModel;
 
@@ -313,7 +303,6 @@ void MainWindow::disconnectBaseModel(Monitor * curMonitor) {
                           this,       &MainWindow::longRunningTaskEnd);
    }
 }
-
 
 int MainWindow::findMonitor(DDCA_Display_Ref dref) {
    bool debug  = true;
@@ -331,7 +320,6 @@ int MainWindow::findMonitor(DDCA_Display_Ref dref) {
    TRACECF(debug,"Returning: %d", result);
    return result;
 }
-
 
 int MainWindow::matchMonitor(DDCA_Display_Ref dref) {
    bool debug  = true;
@@ -356,7 +344,6 @@ int MainWindow::matchMonitor(DDCA_Display_Ref dref) {
    TRACECF(debug,"Returning: %d", result);
    return result;
 }
-
 
 void MainWindow::freeMonitors() {
    bool debug = false;
@@ -384,7 +371,6 @@ void MainWindow::freeMonitors() {
 
    TRACECF(debug, "Done");
 }
-
 
 void MainWindow::initOneMonitor(DDCA_Display_Info2 * info, int curIndex) {
    bool debug = false;
@@ -427,7 +413,6 @@ void MainWindow::initOneMonitor(DDCA_Display_Info2 * info, int curIndex) {
    TRACECF(debug, "Done.");
 }
 
-
 void MainWindow::setInitialDisplayIndex(Parsed_Ddcui_Cmd * parsed_cmd) {
    bool debug = false;
    int initialDisplayIndex = -1;
@@ -468,7 +453,6 @@ void MainWindow::setInitialDisplayIndex(Parsed_Ddcui_Cmd * parsed_cmd) {
 
    _toolbarDisplayCB->setCurrentIndex(initialDisplayIndex);
 }
-
 
 void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
     bool debug = false;
@@ -577,7 +561,6 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
     TRACECF(debug, "Done");
 }
 
-
 void MainWindow::quitShortcut() {
    bool debug = false;
    TRACECF(debug, "Executing");
@@ -585,7 +568,6 @@ void MainWindow::quitShortcut() {
    TRACECF(debug, "Before _application->exit()");
    GlobalState::instance()._application->exit(0);
 }
-
 
 // Extracted from MainWindow constructor for clarity
 void MainWindow::startWatchDisplays() {
@@ -635,7 +617,6 @@ void MainWindow::startWatchDisplays() {
       CallbackManager::instance().registerCallbacks(this);
    }
 }
-
 
 MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
     QMainWindow(parent),
@@ -779,7 +760,6 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
      TRACECF(debug, "Done");
 }
 
-
 MainWindow::~MainWindow()
 {
     bool debug = false;
@@ -798,7 +778,6 @@ MainWindow::~MainWindow()
     free((void*) _cls);
 }
 
-
 //
 // Control key option for changing feature values
 //
@@ -810,7 +789,6 @@ void MainWindow::forControlKeyRequired_changed(bool onoff) {
    ctrlKeyStatusMsg();
    TRACECF(debug, "Done");
 }
-
 
 void MainWindow::ctrlKeyStatusMsg() {
    bool debug = false;
@@ -825,7 +803,6 @@ void MainWindow::ctrlKeyStatusMsg() {
    TRACECF(debug, "Done");
 }
 
-
 //
 // Status Message slots
 //
@@ -838,7 +815,6 @@ void MainWindow::setTransitoryStatusMsg(QString msg) {
    TRACECF(debug, "Done");
 }
 
-
 // Report API error in status bar
 
 void MainWindow::reportDdcApiError(QString funcname, int rc) const {
@@ -850,7 +826,6 @@ void MainWindow::reportDdcApiError(QString funcname, int rc) const {
      // emsg = new QErrorMessage(this);
      // emsg->showMessage("oy vey");
 }
-
 
 //
 // SerialMsgBox slots
@@ -882,7 +857,6 @@ void MainWindow::showSerialMsgBox(QString title, QString text, QMessageBox::Icon
    TRACEMCF(debug, "Done.     After serialMsgBox2->exec() returns.");
 // #endif
 
-
 #ifdef NO
    _serialMsgBox->setText(text);
    _serialMsgBox->setWindowTitle(title);
@@ -892,7 +866,6 @@ void MainWindow::showSerialMsgBox(QString title, QString text, QMessageBox::Icon
 #endif
 
 }
-
 
 //
 // Miscellaneous Slots
@@ -917,7 +890,6 @@ void MainWindow::longRunningTaskStart() {
    TRACECF(debug, "Done.     longRunningTaskNesting=%d", longRunningTaskNesting);
 }
 
-
 // Restores normal cursor at the of a long running task
 // Both a direct call from initMonitors and a slot for FeatureBaseModel
 void MainWindow::longRunningTaskEnd() {
@@ -937,7 +909,6 @@ void MainWindow::longRunningTaskEnd() {
 
    TRACECF(debug, "Done.     longRunningTaskNesting=%d", longRunningTaskNesting);
 }
-
 
 //
 // Display-selection combo box slots
@@ -970,7 +941,6 @@ void MainWindow::displaySelectorCombobox_activated(int index) {
    printf("(%s::%s) index=%d\n", _cls, __func__, index); fflush(stdout);
 }
 #endif
-
 
 //
 // View menu slots
@@ -1019,7 +989,6 @@ void MainWindow::on_actionMonitorSummary_triggered()
     TRACECF(debug, "_ui->actionCapabilities->isEnabled()=%s",
                    SBOOL(_ui->actionCapabilities->isEnabled() ));
 }
-
 
 // Checks to be performed before entering alternate views (Capabilities, Features)
 bool MainWindow::checkAltViewOk(Monitor * monitor) {
@@ -1101,7 +1070,6 @@ bool MainWindow::checkAltViewOk(Monitor * monitor) {
    return !qe;
 }
 
-
 // CapabilitiesView
 
 void MainWindow::on_actionCapabilities_triggered()
@@ -1151,7 +1119,6 @@ void MainWindow::on_actionCapabilities_triggered()
     }
     ctrlKeyStatusMsg();   // clears the message since not Features view
 }
-
 
 // FeaturesView
 
@@ -1203,7 +1170,6 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
     ctrlKeyStatusMsg();
 }
 
-
 void MainWindow::loadMonitorFeatures(Monitor * monitor) {
    bool debug = false;
    debug |= debugFeatureLists;
@@ -1251,7 +1217,6 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
     TRACECF(debug, "Done");
 }
 
-
 //
 // *** Actions Menu Slots
 //
@@ -1293,7 +1258,6 @@ void MainWindow::on_actionRedetect_triggered() {
    TRACECF(debug,"Done");
 }
 
-
 // Actions->Rescan
 
 // rescan features for current monitor
@@ -1305,7 +1269,6 @@ void MainWindow::on_actionRescan_triggered() {
    _monitors[_curDisplayIndex]->_baseModel->reloadFeatures();
 }
 
-
 // Actions->Execution Statistics
 
 void MainWindow::for_resetStats_triggered() {
@@ -1314,7 +1277,6 @@ void MainWindow::for_resetStats_triggered() {
    ddca_reset_stats();
 }
 
-
 void MainWindow::for_reportStats_triggered(DDCA_Stats_Type stats_type, bool show_thread_data) {
    bool debug = false;
    TRACECF(debug, "triggered. stats_type = %d", stats_type);
@@ -1322,7 +1284,6 @@ void MainWindow::for_reportStats_triggered(DDCA_Stats_Type stats_type, bool show
    // ddca_show_stats(stats_type, show_thread_data, 0);
    capture_stats(stats_type, show_thread_data);
 }
-
 
 void MainWindow::showCapturedText(QString windowTitle, QString text) {
    const QFont& textFont = QFont(       "Monospace",  9, QFont::Normal);
@@ -1335,7 +1296,6 @@ void MainWindow::showCapturedText(QString windowTitle, QString text) {
    hd->setWindowTitle( windowTitle );
    hd->exec();     // always modal
 }
-
 
 void MainWindow::capture_stats(DDCA_Stats_Type stats_type, bool show_thread_data) {
        ddca_start_capture(DDCA_CAPTURE_NOOPTS);
@@ -1360,7 +1320,6 @@ void MainWindow::capture_stats(DDCA_Stats_Type stats_type, bool show_thread_data
 #endif
 }
 
-
 // Actions->Debug Locks
 
 void MainWindow::on_actionDebugLocks_triggered() {
@@ -1370,7 +1329,6 @@ void MainWindow::on_actionDebugLocks_triggered() {
    captureLocks();
    TRACECF(debug,"Done");
 }
-
 
 void MainWindow::captureLocks() {
     ddca_start_capture(DDCA_CAPTURE_NOOPTS);
@@ -1383,7 +1341,6 @@ void MainWindow::captureLocks() {
     free(s);
     showCapturedText("Execution Statistics", qs);
 }
-
 
 // Actions->Debug: DebugActionsDialog slots
 
@@ -1404,7 +1361,6 @@ void MainWindow::on_actionDebugActionsDialog_triggered()
    dialog->exec();
    delete dialog;
 }
-
 
 //
 // Options Menu Slots
@@ -1429,7 +1385,6 @@ void MainWindow::on_actionFeatureSelectionDialog_triggered()
     _fsd->exec();
   //   delete _fsd;
 }
-
 
 // named "for_action..." instead of "on_action..." to avoid the connectSlotsByName naming convention
 // FeatureSelectionDialog not allocated at time connectSlotsByName() called, must use
@@ -1465,7 +1420,6 @@ void MainWindow::for_actionFeatureSelectionDialog_accepted()
 
 }
 
-
 #ifdef UNUSED
 DDCA_Feature_Subset_Id MainWindow::feature_list_id() const {
     return this->_feature_list_id;
@@ -1476,8 +1430,6 @@ void MainWindow::set_feature_list_id(DDCA_Feature_Subset_Id feature_list_id) {
     this->_feature_list_id = feature_list_id;
 }
 #endif
-
-
 
 // Options->OtherOptions slots
 
@@ -1517,7 +1469,6 @@ void MainWindow::for_actionOtherOptionsDialog_ncValuesSourceChanged(
 }
 #endif
 
-
 // Options->User Interface Options slots: UserInterfaceOptionsDialog
 
 // causes the dialog to display
@@ -1551,14 +1502,12 @@ void MainWindow::on_actionUserInterfaceOptionsDialog_triggered()
     delete dialog;
 }
 
-
 void MainWindow::for_actionUserInterfaceOptionsDialog_accept()
 {
    bool debug = false;
    TRACECF(debug, "Executing, Emitting userIntefaceOptionsChanged");
    emit userInterfaceOptionsChanged();
 }
-
 
 //
 // Help Menu Slots
@@ -1570,12 +1519,10 @@ void MainWindow::on_actionContentsHelp_triggered()
     HelpBrowser::showPage(QString("qrc:/docs/help_general.html"), /*navigable=*/ true);
 }
 
-
 void MainWindow::on_actionAbout_Qt_triggered()
 {
     QMessageBox::aboutQt(this, "About Qt");
 }
-
 
 void MainWindow::on_actionAbout_triggered()
 {
@@ -1593,7 +1540,6 @@ void MainWindow::on_actionAbout_triggered()
     copyright = copyright + "Licensed under the terms of the GNU General Public License (GPL) ";
     copyright = copyright + "Version 2.0 or later.";
 
-
     QString msg = "";
     msg = msg + "ddcui version:    " + ddcui_version   + "\n";
     msg = msg + "   User defined features enabled:      " + ans3 + "\n\n";
@@ -1609,7 +1555,6 @@ void MainWindow::on_actionAbout_triggered()
     // QMessageBox::information(this, "..", msg);
     QMessageBox::about(this, "About ddcui", msg);
 }
-
 
 //
 // Slots related to control key events
@@ -1631,7 +1576,6 @@ void MainWindow::keyPressEvent(QKeyEvent *   ev) {
    ev->ignore();
 }
 
-
 void MainWindow::keyReleaseEvent(QKeyEvent *   ev) {
    bool debug = false;
    TRACEMCF(debug, "Executing");
@@ -1647,7 +1591,6 @@ void MainWindow::keyReleaseEvent(QKeyEvent *   ev) {
    ev->ignore();
 }
 
-
 //
 // Archived Unused Slots
 //
@@ -1659,14 +1602,12 @@ void MainWindow::pageChanged(int pageno) {
     showCentralWidgetPage(pageno);
 }
 
-
 void MainWindow::pageChangedByWidget(QWidget * widget) {
     printf("(%s::%s) widget=%p\n", _cls, __func__, widget); fflush(stdout);
    //  std::cout << "    objectName: " << objectName.toStdString() << std::endl;
     showCentralWidgetByWidget(widget);
 }
 #endif
-
 
 #ifdef UNUSED
 void MainWindow::on_vcpTableView_clicked(const QModelIndex &index)

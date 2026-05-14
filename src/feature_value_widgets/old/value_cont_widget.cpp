@@ -3,8 +3,6 @@
 // Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#include "feature_value_widgets/value_cont_widget.h"
-
 #include <string.h>
 
 #include <QtWidgets/QWidget>
@@ -26,6 +24,8 @@
 #include "c_util/string_util.h"
 
 #include "core_widgets/enhanced_slider.h"
+
+#include "feature_value_widgets/value_cont_widget.h"
 
 int ValueContWidget::idGenerator = 1;
 
@@ -118,7 +118,6 @@ void ValueContWidget::subLayout() {
 
 }
 
-
 void ValueContWidget::layoutWidget() {
    subLayout();
 
@@ -201,7 +200,6 @@ void ValueContWidget::layoutWidget() {
     }
 }
 
-
 ValueContWidget::ValueContWidget(QWidget *parent)
     : ValueBaseWidget(parent)
     , _newval(0)
@@ -247,7 +245,6 @@ ValueContWidget::ValueContWidget(QWidget *parent)
             this,            SLOT(onSpinBoxTimedOut()));
 }
 
-
 void ValueContWidget::setFeatureValue(const FeatureValue &fv) {
     bool debug = debugValueWidgetSignals;
     // debug = true;
@@ -279,7 +276,6 @@ void ValueContWidget::setFeatureValue(const FeatureValue &fv) {
     _guiChange = true;
     TRACEMCF(debug, "Done");
 }
-
 
 void ValueContWidget::setCurrentShSl(uint16_t newval) {
     bool debug = false;
@@ -314,7 +310,6 @@ void ValueContWidget::onSliderValueChanged(int value) {
 }
 #endif
 
-
 void ValueContWidget::onSliderReleased() {
    bool debug = debugValueWidgetSignals;
    // debug = true;
@@ -333,7 +328,6 @@ void ValueContWidget::onSliderReleased() {
       emit featureValueChanged(_featureCode, new_sh, new_sl);
 }
 
-
 void ValueContWidget::onSpinBoxValueChanged(int value) {
    bool debug = debugValueWidgetSignals;
    // debug = true;
@@ -347,7 +341,6 @@ void ValueContWidget::onSpinBoxValueChanged(int value) {
    //    printf("(%s::%s) sh=0x%02x, sl=0x%02x \n", _cls, __func__, new_sh, new_sl); fflush(stdout);
    // emit featureValueChanged(_feature_code, new_sh, new_sl);
    _newval = newval;
-
 
    // QTimer::singleShot(1000, this, SLOT(onSpinBoxTimedOut()));
    if (_guiChange) {
@@ -379,8 +372,6 @@ void ValueContWidget::setControlKeyRequired(bool onoff) {
 }
 #endif
 
-
-
 #ifdef UNNEEDED
 void ValueContWidget::when_ckrChanged(bool onoff) {
    // should probably use a function, but quick and dirty
@@ -394,8 +385,6 @@ void ValueContWidget::onSpinBoxEditingFinished() {
        printf("(%s::%s) \n", _cls, __func__); fflush(stdout);
 }
 #endif
-
-
 
 #ifdef USELESS
 
@@ -416,7 +405,6 @@ void ValueContWidget::leaveEvent(QEvent * event) {
 }
 
 #endif
-
 
 void ValueContWidget::resizeEvent(QResizeEvent * evt)
 {

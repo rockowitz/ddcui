@@ -3,10 +3,9 @@
 // Copyright (C) 2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#include "hex_number_validator.h"
-
 #include "../base/ddcui_core.h"
 
+#include "hex_number_validator.h"
 
 HexNumberValidator::HexNumberValidator(QObject * parent)
   : QValidator(parent)
@@ -22,7 +21,6 @@ static inline bool isHexDigit(QChar ch) {
         (ch >= '0' && ch <= '9') );
    return result;
 }
-
 
 HexNumberValidator::State HexNumberValidator::validate(QString &input, int &pos) const
 {

@@ -3,8 +3,6 @@
 // Copyright (C) 2018-2025 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#include "value_bytes_widget.h"
-
 #include <assert.h>
 #include <string.h>
 
@@ -20,12 +18,13 @@
 
 #include "feature_value_widgets/value_base_widget.h"
 
+#include "value_bytes_widget.h"
+
 int ValueBytesWidget::idGenerator = 1;
 static bool showDimensionReports = false;
 
 static bool titleDimensionReportShown = false;
 static bool dimensionReportShown = false;
-
 
 QLabel *
 ValueBytesWidget::newTitle(QString title, int titleHeight) {
@@ -56,7 +55,6 @@ ValueBytesWidget::newTitle(QString title, int titleHeight) {
 
    return lab;
 }
-
 
 void
 ValueBytesWidget::createWidgets() {
@@ -118,7 +116,6 @@ ValueBytesWidget::createWidgets() {
    _cancelButton->setEnabled(false);
 }
 
-
 void
 ValueBytesWidget::layoutWidget() {
    int afterValueSpace = 15;
@@ -169,7 +166,6 @@ ValueBytesWidget::layoutWidget() {
           TRACEC("_mhvalue dimensions");
           reportWidgetDimensions(_mhValue, _cls, __func__);
 
-
           TRACEC("_mlTitle dimensions");
           reportWidgetDimensions(_mlTitle, _cls, __func__);
 
@@ -188,7 +184,6 @@ ValueBytesWidget::layoutWidget() {
       }
    }
 }
-
 
 ValueBytesWidget::ValueBytesWidget(QWidget *parent)
     : ValueBaseWidget(parent)
@@ -213,11 +208,9 @@ ValueBytesWidget::ValueBytesWidget(QWidget *parent)
     TRACEMCF(debug, "Done");
 }
 
-
 ValueBytesWidget::~ValueBytesWidget() {
    free((void*) _cls);
 }
-
 
 void ValueBytesWidget::when_combobox_activated(int ndx) {
    uint8_t new_sh = ndx >> 8;
@@ -229,7 +222,6 @@ void ValueBytesWidget::when_combobox_activated(int ndx) {
       _cancelButton->setEnabled(true);
    }
 }
-
 
 void ValueBytesWidget::setFeatureValue(const FeatureValue &fv) {
     bool debug = debugValueWidgetSignals;
@@ -271,7 +263,6 @@ void ValueBytesWidget::setFeatureValue(const FeatureValue &fv) {
    TRACEMCF(debug, "Done");
 }
 
-
 void ValueBytesWidget::setCurrentShSl(uint16_t newval) {
     ValueBaseWidget::setCurrentShSl(newval);
     _guiChange = false;
@@ -290,7 +281,6 @@ void ValueBytesWidget::setCurrentShSl(uint16_t newval) {
     _guiChange = true;
 }
 
-
 // MOC not finding base class implementation #ifdef SHOULD_USE_BASE
 uint16_t ValueBytesWidget::getCurrentShSl() {
     return ValueBaseWidget::getCurrentShSl();
@@ -298,7 +288,6 @@ uint16_t ValueBytesWidget::getCurrentShSl() {
     // return result;
 }
 // #endif
-
 
 void  ValueBytesWidget::onApplyButtonClicked(bool checked) {
    bool debug = debugValueWidgetSignals;
@@ -318,7 +307,6 @@ void  ValueBytesWidget::onApplyButtonClicked(bool checked) {
    _applyButton->setEnabled(false);
    _cancelButton->setEnabled(false);
 }
-
 
 void ValueBytesWidget::onCancelButtonClicked(bool checked) {
    _shNew = _sh;

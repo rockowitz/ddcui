@@ -11,8 +11,8 @@
 #include "base/widget_debug.h"
 
 #include "base/ddcui_core.h"
-#include "core_widgets/spin_slider.h"
 
+#include "core_widgets/spin_slider.h"
 
 void SpinSlider::createWidgets() {
    // _slider = new EnhancedSlider(Qt::Horizontal);
@@ -44,7 +44,6 @@ void SpinSlider::createWidgets() {
        _spinBox->setStyleSheet("background-color:green;");
 }
 
-
 QLayout* SpinSlider::layoutWidget() {
    QLayout* layout = new QHBoxLayout();
 
@@ -62,7 +61,6 @@ QLayout* SpinSlider::layoutWidget() {
 
    return layout;
 }
-
 
 SpinSlider::SpinSlider(QWidget * parent)
         : QWidget(parent)
@@ -86,7 +84,6 @@ SpinSlider::SpinSlider(QWidget * parent)
    connect(_spinBox, SIGNAL(valueChanged(int)),
            _slider,  SLOT(  setValue(int)));
 
-
     _spinBoxTimer = new QTimer();
     _spinBoxTimer->setSingleShot(true);
     _spinBoxTimer->setInterval(1000);
@@ -94,7 +91,6 @@ SpinSlider::SpinSlider(QWidget * parent)
     connect(_spinBoxTimer,   SIGNAL(timeout()),
             this,            SLOT(onSpinBoxTimedOut()));
 }
-
 
 SpinSlider::~SpinSlider() {
    delete _spinBoxTimer;
@@ -105,13 +101,11 @@ void SpinSlider::setFeatureCode(uint8_t featureCode) {
    _isFeatureCodeSet = true;
 }
 
-
 void SpinSlider::setRange(int minval, int maxval) {
     _slider->setTickInterval((maxval-minval)/10);
     _slider->setRange(minval, maxval);
     _spinBox->setRange(minval, maxval);
 }
-
 
 // Called by the containing class to update the widget
 void SpinSlider::setShSl(uint16_t newval) {
@@ -135,7 +129,6 @@ void SpinSlider::setShSl(uint16_t newval) {
     TRACECF(debug, "Done");
 }
 
-
 // Used by the containing class to query the widget's value after having been
 // notified that that widget value has changed.
 uint16_t SpinSlider::getShSl() {
@@ -145,7 +138,6 @@ uint16_t SpinSlider::getShSl() {
     uint16_t result = (sh << 8) | sl;
     return result;
 }
-
 
 void SpinSlider::onSliderReleased() {
    bool debug = false;
@@ -165,7 +157,6 @@ void SpinSlider::onSliderReleased() {
       emit featureValueChanged(_featureCode, new_sh, new_sl);
    // }
 }
-
 
 void SpinSlider::onSpinBoxValueChanged(int value) {
    bool debug = false;
@@ -192,7 +183,6 @@ void SpinSlider::onSpinBoxValueChanged(int value) {
    //    TRACECF(debug,"Not starting spinbox timer");
    // }
 }
-
 
 void SpinSlider::onSpinBoxTimedOut() {
    bool debug = false;

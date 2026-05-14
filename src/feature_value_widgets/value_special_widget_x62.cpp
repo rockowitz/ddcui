@@ -9,6 +9,7 @@
 
 #include "base/ddcui_parms.h"
 #include "value_simple_cont_widget.h"
+
 #include "value_special_widget_x62.h"
 
 static bool debugWidget = true;
@@ -23,7 +24,6 @@ void ValueSpecialWidgetX62::createInitialWidgets() {
 
    TRACECF(debug, "Done.  ValueSpecialWidgetX62::createInitialWidgets()");
 }
-
 
 void ValueSpecialWidgetX62::layoutWidget(QHBoxLayout * layout) {
    bool debug = false;
@@ -40,7 +40,6 @@ void ValueSpecialWidgetX62::layoutWidget(QHBoxLayout * layout) {
    setLayout(layout);
    TRACECF(debug, "Done. ValueSpecialWidgetX62::layoutWidget" );
 }
-
 
 ValueSpecialWidgetX62::ValueSpecialWidgetX62(QWidget *parent)
     : ValueSimpleContWidget(parent)
@@ -69,7 +68,6 @@ ValueSpecialWidgetX62::~ValueSpecialWidgetX62() {
    free((void*) _cls);
 }
 
-
 void ValueSpecialWidgetX62::setFeatureValue(const FeatureValue &fv) {
    bool debug = false;
 
@@ -80,7 +78,6 @@ void ValueSpecialWidgetX62::setFeatureValue(const FeatureValue &fv) {
    TRACEMCF(debug, "Done");
 }
 
-
 void ValueSpecialWidgetX62::loadComboBox() {
 
    _cb->addItem(QString("0: Mute"),             QVariant(  0) );
@@ -89,7 +86,6 @@ void ValueSpecialWidgetX62::loadComboBox() {
 
    _cb->setCurrentIndex(2);
 }
-
 
 void ValueSpecialWidgetX62::setCurrentShSl(uint16_t newval) {
    bool debugFunc = false;
@@ -118,7 +114,6 @@ void ValueSpecialWidgetX62::setCurrentShSl(uint16_t newval) {
    }
 }
 
-
 uint16_t ValueSpecialWidgetX62::getCurrentShSl() {
     // get sl from combobox
     if (_cb->currentIndex() == 0)
@@ -133,7 +128,6 @@ uint16_t ValueSpecialWidgetX62::getCurrentShSl() {
     uint16_t result = (_sh << 8) | _sl;
     return result;
 }
-
 
 void ValueSpecialWidgetX62::combobox_activated(int index) {
    bool debug = false;
