@@ -1,12 +1,11 @@
 /** @file nc_values_dialog.cpp */
 
-// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "nc_values_dialog.h"
 
 #include <assert.h>
-#include <QtCore/QDebug>
 
 #include "base/ddcui_core.h"
 #include "help/help_dialog.h"
@@ -88,6 +87,7 @@ void NcValuesDialog::on_buttonBox_helpRequested()
    // HelpBrowser::showPage("qrc:docs/help_nc_values.html", false);
 
    HelpDialog* hd = new HelpDialog(this);
+   hd->setAttribute(Qt::WA_DeleteOnClose);
    hd->setSource("qrc:docs/help_nc_values.html");
    hd->exec();
 }
