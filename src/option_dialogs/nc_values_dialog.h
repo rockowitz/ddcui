@@ -1,13 +1,13 @@
 /** @file nc_values_dialog.h */
 
-// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#ifndef OTHER_OPTIONS_DIALOG_H
-#define OTHER_OPTIONS_DIALOG_H
+#ifndef NC_VALUES_DIALOG_H
+#define NC_VALUES_DIALOG_H
 
-#include <QtWidgets/QAbstractButton>
-#include <QtWidgets/QDialog>
+#include <QAbstractButton>
+#include <QDialog>
 
 #include "base/nc_values_state.h"
 
@@ -40,4 +40,4 @@ private:
     NcValuesState * _state;
 };
 
-#endif // OTHER_OPTIONS_DIALOG_H
+#endif // NC_VALUES_DIALOG_H
