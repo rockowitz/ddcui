@@ -1,13 +1,13 @@
-/** feature_selection_dialog.h  */
+/** @file feature_selection_dialog.h  */
 
-// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef FEATURESELECTIONDIALOG_H
 #define FEATURESELECTIONDIALOG_H
 
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QAbstractButton>
+#include <QDialog>
+#include <QAbstractButton>
 
 #include <ddcutil_c_api.h>
 
