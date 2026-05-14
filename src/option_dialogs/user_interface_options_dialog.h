@@ -6,8 +6,8 @@
 #ifndef USER_INTERFACE_OPTIONS_DIALOG_H
 #define USER_INTERFACE_OPTIONS_DIALOG_H
 
-#include <QtWidgets/QAbstractButton>
-#include <QtWidgets/QDialog>
+#include <QAbstractButton>
+#include <QDialog>
 
 #include "base/user_interface_options_state.h"
 
