@@ -3,7 +3,6 @@
 // Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-
 /** \cond */
 #include <assert.h>
 #include <stdbool.h>
@@ -15,14 +14,13 @@
 #include "ddcutil_c_api.h"
 
 #include "c_util/data_structures.h"
-#include "ddcui_parsed_cmd.h"
 
+#include "ddcui_parsed_cmd.h"
 
 // // all uses of this local function are safe,
 // static inline char * sbool(int b) {
 //    return (b) ? "true" : "false";
 // }
-
 
 const char * trival_repr(Optional_True_False value) {
    char * result = NULL;
@@ -33,7 +31,6 @@ const char * trival_repr(Optional_True_False value) {
    }
    return result;
 }
-
 
 /** Allocates new Parsed_Cmd data structure, sets default values.
  *
@@ -48,7 +45,6 @@ Parsed_Ddcui_Cmd *  new_parsed_ddcui_cmd() {
    parsed_cmd->busno = -1;
    return parsed_cmd;
 }
-
 
 // VNT tables for enums
 
@@ -78,7 +74,6 @@ Value_Name_Title nc_values_source_table[] = {
        VNT(  NC_VALUES_SOURCE_BOTH,         "Both"),
        VNT_END
 };
-
 
 // VNT access functions
 
@@ -120,7 +115,6 @@ Parsed_Feature_Set find_feature_set_table_value(const char * value) {
               true,      // ignore case
               FS_UNSET);
 }
-
 
 /** Debugging report of #Parsed_Cmd struct
  *
@@ -170,7 +164,6 @@ void dbgrpt_parsed_ddcui_cmd(Parsed_Ddcui_Cmd * parsed_cmd) {
       printf("   i2:                        %d\n",   parsed_cmd->i2);
    }
 }
-
 
 /** Frees a #Parsed_Cmd instance
  *
