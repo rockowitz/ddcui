@@ -1,6 +1,6 @@
 /** @file user_interface_options_dialog.cpp */
 
-// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "user_interface_options_dialog.h"
@@ -9,7 +9,6 @@
 #include "ui_user_interface_options_dialog.h"
 
 #include <assert.h>
-#include <QtCore/QDebug>
 
 #include "base/ddcui_core.h"
 #include "base/user_interface_options_state.h"
@@ -27,7 +26,7 @@ UserInterfaceOptionsDialog::UserInterfaceOptionsDialog(
            UserInterfaceOptionsState * state,
            QWidget *parent)
     :  QDialog(parent)
-    ,  _ui(new Ui::  UserInterfaceOptionsDialog)
+    ,  _ui(new Ui::UserInterfaceOptionsDialog)
     , _cls(strdup(metaObject()->className()))
     , _state(state)
 {
@@ -100,6 +99,7 @@ void UserInterfaceOptionsDialog::on_actionButtonBox_helpRequested()
     // HelpBrowser::showPage(":docs/help_ui_options.html", false);
 
     HelpDialog* hd = new HelpDialog(this);
+    hd->setAttribute(Qt::WA_DeleteOnClose);
     hd->setSource("qrc:docs/help_ui_options.html");
     hd->exec();
 #endif
