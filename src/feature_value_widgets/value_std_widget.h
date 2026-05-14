@@ -6,8 +6,8 @@
 #ifndef VALUE_STD_WIDGET_H
 #define VALUE_STD_WIDGET_H
 
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QLabel>
+#include <QWidget>
+#include <QLabel>
 
 #include "feature_value_widgets/value_base_widget.h"
 

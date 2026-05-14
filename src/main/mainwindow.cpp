@@ -9,12 +9,12 @@
 #include <syslog.h>
 #include <iostream>
 
-#include <QtCore/QList>
-#include <QtCore/QThread>
-#include <QtGui/QFont>
-#include <QtGui/QKeyEvent>
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QWidget>
+#include <QList>
+#include <QThread>
+#include <QFont>
+#include <QKeyEvent>
+#include <QMessageBox>
+#include <QWidget>
 #include <QShortcut>     // 5.9
 
 #include <ddcutil_c_api.h>
@@ -151,8 +151,8 @@ void MainWindow::forDisplayChanged(DDCA_Display_Status_Event evt) {
    }
 
    else if (evt.event_type == DDCA_EVENT_DISPLAY_DISCONNECTED) {
-      int curIndex = _toolbarDisplayCB->currentIndex();
-      int removedIndex = removeMonitor(evt.dref);
+      // int curIndex = _toolbarDisplayCB->currentIndex();
+      // int removedIndex = removeMonitor(evt.dref);
    }
 
    else if (evt.event_type == DDCA_EVENT_DDC_ENABLED) {
@@ -1589,7 +1589,7 @@ void MainWindow::on_actionAbout_triggered()
     // QMessageBox mbox;
     // mbox.setText("About ddcutil");
 
-    QString copyright = "Copyright (C) 2014-2025 Sanford Rockowitz\n";
+    QString copyright = "Copyright (C) 2014-2026 Sanford Rockowitz\n";
     copyright = copyright + "Licensed under the terms of the GNU General Public License (GPL) ";
     copyright = copyright + "Version 2.0 or later.";
 

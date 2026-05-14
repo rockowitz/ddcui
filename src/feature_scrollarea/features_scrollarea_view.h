@@ -12,7 +12,7 @@
 #ifndef FEATURES_SCROLLAREA_VIEW_H
 #define FEATURES_SCROLLAREA_VIEW_H
 
-#include <QtCore/QObject>
+#include <QObject>
 
 #include "nongui/feature_base_model.h"
 

@@ -6,11 +6,11 @@
 // Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#include <QtWidgets/QFrame>
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QSizePolicy>
-#include <QtWidgets/QHBoxLayout>
+#include <QFrame>
+#include <QWidget>
+#include <QLabel>
+#include <QSizePolicy>
+#include <QHBoxLayout>
 
 #include "base/widget_debug.h"
 

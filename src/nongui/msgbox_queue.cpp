@@ -3,8 +3,8 @@
 // Copyright (C) 2018-2025 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#include <QtCore/QDebug>
-#include <QtWidgets/QMessageBox>
+#include <QDebug>
+#include <QMessageBox>
 
 #include <assert.h>
 #include <iostream>
@@ -41,7 +41,7 @@ QString MsgBoxQueueEntry::repr() {
    // qDebug() << "_boxText: "  << _boxText;
    // qDebug() << "_boxIcon: "  << _boxIcon;
 
-   QString msg = QString("[title=0x%1, text=%2, icon=%3]")
+   QString msg = QString("[title=%1, text=%2, icon=%3]")
                     .arg(_boxTitle)
                     .arg(_boxText)
                     .arg(_boxIcon);
@@ -52,6 +52,15 @@ QString MsgBoxQueueEntry::repr() {
 
 
 /* MsgBoxQueue */
+
+MsgBoxQueue::~MsgBoxQueue()
+{
+#ifndef USE_MUTEX
+   delete _freeBytes;
+   delete _usedBytes;
+#endif
+}
+
 
 MsgBoxQueue::MsgBoxQueue()
 {
@@ -101,7 +110,7 @@ void MsgBoxQueue::putMessages(QString qstitle, QMessageBox::Icon icon, char** ms
       for (int ndx = 0; msgs[ndx]; ndx++) {
          QString qsexpl = QString::asprintf("%s", msgs[ndx]);
          MsgBoxQueueEntry * qe = new MsgBoxQueueEntry(qstitle,qsexpl,icon);
-         TRACECF(debug, "Calling _msgboxQueue.put() for qe: %s", __func__, QS2S(qe->repr()) );
+         TRACECF(debug, "Calling put() for qe: %s", QS2S(qe->repr()) );
          put(qe);
       }
    }

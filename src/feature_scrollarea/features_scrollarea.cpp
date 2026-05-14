@@ -3,8 +3,8 @@
 // Copyright (C) 2019-2020 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#include <QtWidgets/QScrollArea>
-#include <QtCore/QSize>
+#include <QScrollArea>
+#include <QSize>
 #include "base/widget_debug.h"
 #include "feature_scrollarea/features_scrollarea_contents.h"
 #include "feature_scrollarea/features_scrollarea.h"

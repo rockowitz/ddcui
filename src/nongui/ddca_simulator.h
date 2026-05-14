@@ -6,7 +6,7 @@
 #ifndef DDCA_SIMULATOR_H_
 #define DDCA_SIMULATOR_H_
 
-#include <QtCore/QObject>
+#include <QObject>
 
 #include "ddcutil_types.h"
 

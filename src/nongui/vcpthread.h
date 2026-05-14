@@ -10,8 +10,8 @@
 #ifndef VCPTHREAD_H
 #define VCPTHREAD_H
 
-#include <QtCore/QObject>
-#include <QtCore/QThread>
+#include <QObject>
+#include <QThread>
 
 #include "ddcutil_c_api.h"
 
@@ -46,7 +46,9 @@ public:
 private:  // member functions
     void getvcp(uint8_t feature_code, bool needMetadata);
     void setvcp(uint8_t feature_code, bool writeOnly, uint16_t newval);
+#ifdef TEST_ADJUST_RETRIES
     void adjustRetries();
+#endif
     DDCA_Status
          perform_open_display(DDCA_Display_Handle * dh_loc);
     DDCA_Status
@@ -92,7 +94,7 @@ private:       // member variables
     DDCA_Display_Info2*  _dinfo;
     VcpRequestQueue*     _requestQueue = NULL;
     FeatureBaseModel*    _baseModel;
-    DDCA_Display_Handle  _dh = NULL;
+//  DDCA_Display_Handle  _dh = NULL;     // unused
     DdcaSimulator *      _ddcaSimulator = NULL;
 };
 

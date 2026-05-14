@@ -8,9 +8,9 @@
 #ifndef VALUE_BASE_WIDGET_H
 #define VALUE_BASE_WIDGET_H
 
-#include <QtWidgets/QFrame>
-#include <QtWidgets/QComboBox>
-#include <QtGui/QPalette>
+#include <QFrame>
+#include <QComboBox>
+#include <QPalette>
 
 #include <ddcutil_types.h>
 

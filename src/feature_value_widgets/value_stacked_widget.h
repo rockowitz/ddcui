@@ -6,7 +6,7 @@
 #ifndef VALUE_STACKED_WIDGET_H
 #define VALUE_STACKED_WIDGET_H
 
-#include <QtWidgets/QStackedWidget>
+#include <QStackedWidget>
 
 #include "value_2button_widget.h"
 #include "value_base_widget.h"

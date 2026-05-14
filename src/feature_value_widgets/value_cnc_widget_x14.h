@@ -9,10 +9,10 @@
 #ifndef VALUE_CNC_WIDGET_X14_H_
 #define VALUE_CNC_WIDGET_X14_H_
 
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QLabel>
+#include <QWidget>
+#include <QComboBox>
+#include <QPushButton>
+#include <QLabel>
 
 #include "../base/nc_values_state.h"
 #include "config.h"

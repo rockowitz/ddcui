@@ -1,12 +1,12 @@
 /* feature_value.h */
 
-// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef FEATURE_VALUE_H
 #define FEATURE_VALUE_H
 
-#include <QtCore/QMetaType>
+#include <QMetaType>
 
 #include "ddcutil_types.h"
 
@@ -58,11 +58,9 @@ public:
     Bit_Set_256              _observedNcValues = EMPTY_BIT_SET_256;
     int                      _id;
 
-protected:
-    static int               nextId;
-
 private:
-    const char *             _cls = "FeatureValue";
+    static int               nextId;
+    const char *             _cls;
     uint8_t                  _featureCode = 0;
     DDCA_Display_Ref         _dref   = NULL;
     DDCA_Feature_Metadata *  _finfo  = NULL;

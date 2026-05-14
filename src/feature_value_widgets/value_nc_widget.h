@@ -8,11 +8,11 @@
 #ifndef VALUE_NC_WIDGET_H
 #define VALUE_NC_WIDGET_H
 
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QLayout>
-#include <QtWidgets/QLabel>
+#include <QWidget>
+#include <QComboBox>
+#include <QPushButton>
+#include <QLayout>
+#include <QLabel>
 
 #include "config.h"
 #include "c_util/data_structures.h"

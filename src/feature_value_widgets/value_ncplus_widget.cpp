@@ -13,9 +13,9 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QLayout>
-#include <QtWidgets/QLabel>
+#include <QComboBox>
+#include <QLayout>
+#include <QLabel>
 
 #include <ddcutil_c_api.h>
 

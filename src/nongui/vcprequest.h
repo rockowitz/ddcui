@@ -8,9 +8,9 @@
 
 #include <stdint.h>
 
-#include <QtCore/QMutex>
-#include <QtCore/QQueue>
-#include <QtCore/QWaitCondition>
+#include <QMutex>
+#include <QQueue>
+#include <QWaitCondition>
 
 #include <ddcutil_c_api.h>
 
@@ -34,7 +34,7 @@ class VcpRequest
 {
 public:
     VcpRequest(VcpRequestType type);
-    ~VcpRequest();
+    virtual ~VcpRequest();
 
     VcpRequestType _type;
 };

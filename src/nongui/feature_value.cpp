@@ -1,6 +1,6 @@
 /* feature_value.cpp */
 
-// Copyright (C) 2018-2023 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 // #include <QMetaType>
@@ -69,7 +69,8 @@ FeatureValue::~FeatureValue() {
    debugFunc = debugFunc || (_featureCode == 0x14);
    TRACEC("Executing. _id=%d, _featureCode=0x%02x", _id, _featureCode);
 
-   ddca_free_feature_metadata(_finfo);
+   if (_finfo)
+      ddca_free_feature_metadata(_finfo);
 }
 
 
@@ -85,6 +86,7 @@ FeatureValue::dref()   const {
 
 DDCA_MCCS_Version_Spec
 FeatureValue::vspec()  const {
+   assert(_finfo);
    return _finfo->vcp_version;
 }
 
@@ -95,6 +97,7 @@ FeatureValue::finfo() const {
 
 DDCA_Feature_Flags
 FeatureValue::flags() const {
+   assert(_finfo);
    return _finfo->feature_flags;
 }
 
@@ -113,7 +116,7 @@ FeatureValue::setCurrentValue(uint8_t sh, uint8_t sl) {
    _value.sh = sh;
    _value.sl = sl;
 
-   if (_finfo->sl_values) {
+   if (_finfo && _finfo->sl_values) {
       _observedNcValues = bs256_insert(_observedNcValues, _value.sl);
    }
 
@@ -166,14 +169,16 @@ void FeatureValue::dbgrpt() const {
     printf("   _feature_code:    0x%02x\n", _featureCode);
     printf("   dref:             %s\n",    ddca_dref_repr(dref()));
  // printf("   _vspec:           %d.%d\n", _finfo.vspec.major, _finfo.vspec.minor);
-    printf("   _feature_flags:   0x%04x\n", _finfo->feature_flags);
+    if (_finfo)
+       printf("   _feature_flags:   0x%04x\n", _finfo->feature_flags);
     printf("   _value.mh:        0x%02x\n", _value.mh);
     printf("   _value.ml:        0x%02x\n", _value.ml);
     printf("   _value.sh:        0x%02x\n", _value.sh);
     printf("   _value.sl:        0x%02x\n", _value.sl);
     printf("   _cap_vcp:         %p\n",     (void*) _capVcp);
     printf("   _observedNcValues: %s", bs256_to_string_t(_observedNcValues, ""," "));
-    ddca_dbgrpt_feature_metadata(_finfo, 1);
+    if (_finfo)
+       ddca_dbgrpt_feature_metadata(_finfo, 1);
 
 #ifdef NO
     if (_finfo.mmid) {

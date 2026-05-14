@@ -3,11 +3,11 @@
 // Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QSizePolicy>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QStackedWidget>
-#include <QtWidgets/QLabel>
+#include <QApplication>
+#include <QSizePolicy>
+#include <QHBoxLayout>
+#include <QStackedWidget>
+#include <QLabel>
 
 #include "base/monitor.h"
 

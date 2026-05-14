@@ -13,12 +13,12 @@
 #include <iostream>
 #include <typeinfo>
 
-#include <QtCore/QVector>
-#include <QtCore/QByteArray>
+#include <QVector>
+#include <QByteArray>
 
-#include <ddcutil_types.h>
-#include <ddcutil_c_api.h>
-#include <ddcutil_status_codes.h>
+#include "ddcutil_types.h"
+#include "ddcutil_c_api.h"
+#include "ddcutil_status_codes.h"
 
 #include "c_util/data_structures.h"
 
@@ -30,7 +30,6 @@
 #include "nongui/feature_value.h"
 
 
-using namespace std;
 
 static bool debugModel = false;
 
@@ -69,7 +68,7 @@ FeatureBaseModel::FeatureBaseModel(Monitor * monitor)
 
 FeatureBaseModel::~FeatureBaseModel() {
    bool debug = false;
-   TRACECF(debug, "Executing. _monitor=%p, monitor number %d, dref: %s",
+   TRACECF(debug, "Executing. _monitor=%p, monitor number %d, dref: %p",
                   _monitor, _monitor->_displayInfo->dispno, _monitor->_displayInfo->dref);
    for (int ndx = 0; ndx < _featureValues->size(); ndx++) {
       FeatureValue * fv = _featureValues->at(ndx);
@@ -194,7 +193,6 @@ void   FeatureBaseModel::modelVcpValueSet(
     int ndx = modelVcpValueIndex(feature_code);
     if (ndx < 0) {
         // TRACECF(debugFunc, "Creating new FeatureValue");
-
         DDCA_Cap_Vcp * cap_vcp = NULL;
         if (_parsed_caps)
            cap_vcp = ddcu_find_cap_vcp(_parsed_caps, feature_code);
@@ -206,9 +204,9 @@ void   FeatureBaseModel::modelVcpValueSet(
                                    cap_vcp,
                                    *feature_value,
                                    ddcrc);
-          _featureValues->append(fv);
-          TRACECF(debugFunc, "Created new FeatureValue. id = %d, observedNcValues=%s",
-                             fv->_id, bs256_to_string_t(fv->_observedNcValues, "", " "));
+        _featureValues->append(fv);
+        TRACECF(debugFunc, "Created new FeatureValue. id = %d, observedNcValues=%s",
+                           fv->_id, bs256_to_string_t(fv->_observedNcValues, "", " "));
 
         // Not needed, only thing that matters is end initial load
         // if (debugSignals)
@@ -450,7 +448,7 @@ void FeatureBaseModel::dbgrpt() {
     for (int ndx = 0; ndx < ct; ndx++) {
         FeatureValue* fv = _featureValues->at(ndx);
         // printf("   feature_code: 0x%02x\n", fv->_feature_code);
-        printf("   code=0x%02x, mh=0x%02x, ml-0x%02x, sh=0x%02x, sl=0x%02x\n",
+        printf("   code=0x%02x, mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x\n",
                fv->featureCode(),
                fv->val().mh,
                fv->val().ml,
@@ -472,7 +470,7 @@ void  FeatureBaseModel::modelEndInitialLoad(void) {
    bool debug = false;
    _initialLoadActive = false;
     TRACECF(debug, "=> Emitting signalEndInitialLoad");
-    signalEndInitialLoad();
+    emit signalEndInitialLoad();   // claude added emit - is there a reason this was a simple call?
 }
 
 

@@ -9,10 +9,10 @@
 #ifndef VALUE_NCPLUS_WIDGET_H_
 #define VALUE_NCPLUS_WIDGET_H_
 
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QLabel>
+#include <QWidget>
+#include <QComboBox>
+#include <QPushButton>
+#include <QLabel>
 
 #include <ddcutil_types.h>
 

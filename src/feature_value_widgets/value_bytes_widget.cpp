@@ -8,11 +8,11 @@
 #include <assert.h>
 #include <string.h>
 
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QHBoxLayout>
+#include <QWidget>
+#include <QLabel>
+#include <QPushButton>
+#include <QLineEdit>
+#include <QHBoxLayout>
 
 #include "../base/ddcui_core.h"
 #include "base/ddcui_parms.h"

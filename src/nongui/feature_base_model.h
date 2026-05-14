@@ -6,7 +6,7 @@
 #ifndef FEATURE_BASE_MODEL_H
 #define FEATURE_BASE_MODEL_H
 
-#include <QtCore/QObject>
+#include <QObject>
 
 #include "ddcutil_types.h"
 

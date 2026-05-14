@@ -11,7 +11,7 @@
 
 #include "config.h"
 
-#include <QtWidgets/QLineEdit>
+#include <QLineEdit>
 
 #include "core_widgets/number_entry_widget.h"
 #include "nongui/feature_value.h"

@@ -8,11 +8,11 @@
 
 #include <stdint.h>
 
-#include <QtCore/QMutex>
-#include <QtCore/QQueue>
-#include <QtCore/QWaitCondition>
-#include <QtCore/QSemaphore>
-#include <QtWidgets/QMessageBox>
+#include <QMutex>
+#include <QQueue>
+#include <QWaitCondition>
+#include <QSemaphore>
+#include <QMessageBox>
 
 
 /* MsgBoxQueue entries */
@@ -43,6 +43,7 @@ class MsgBoxQueue
 
 public:
     MsgBoxQueue();
+    ~MsgBoxQueue();
 
     MsgBoxQueueEntry* pop();
     void              put(MsgBoxQueueEntry* request);

@@ -11,7 +11,7 @@
 #ifndef CALLBACK_MANAGER_H_
 #define CALLBACK_MANAGER_H_
 
-#include <QtCore/QObject>
+#include <QObject>
 
 #include <ddcutil_c_api.h>
 

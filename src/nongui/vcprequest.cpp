@@ -19,6 +19,13 @@ VcpRequest::~VcpRequest()
 {
 }
 
+VcpCapRequest::~VcpCapRequest() {}
+LoadDfrRequest::~LoadDfrRequest() {}
+HaltRequest::~HaltRequest() {}
+VcpGetRequest::~VcpGetRequest() {}
+VcpSetRequest::~VcpSetRequest() {}
+VcpStartInitialLoadRequest::~VcpStartInitialLoadRequest() {}
+
 #ifdef NOT_NEEDED
 VcpDumpStatsRequest::VcpDumpStatsRequest(DDCA_Stats_Type stats_type)
     : VcpRequest::VcpRequest(VcpRequestType::RQDumpStats)
@@ -131,6 +138,7 @@ void VcpRequestQueue::halt() {
    }
    HaltRequest * rqst = new HaltRequest();
    _queue.enqueue(rqst);
+   _queueNonempty.wakeOne();
    _mutex.unlock();
 }
 
@@ -149,7 +157,7 @@ void VcpRequestQueue::purge() {
 void VcpRequestQueue::dbgrpt() {
    _mutex.lock();
    int ct = _queue.size();
-   printf("Queue contains %d entries", ct);
+   printf("Queue contains %d entries\n", ct);
    for (int ndx = 0; ndx < ct; ndx++) {
       VcpRequest * rqst = _queue.at(ndx);
       printf("   type: %d\n", rqst->_type);

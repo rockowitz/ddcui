@@ -3,8 +3,8 @@
 // Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QLayout>
+#include <QWidget>
+#include <QLayout>
 
 #include "base/ddcui_parms.h"
 

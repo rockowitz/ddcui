@@ -6,8 +6,8 @@
 #ifndef FEATURES_SCROLLAREA_CONTENTS_H_
 #define FEATURES_SCROLLAREA_CONTENTS_H_
 
-#include <QtCore/QSize>
-#include <QtGui/QResizeEvent>
+#include <QSize>
+#include <QResizeEvent>
 
 #include "nongui/feature_value.h"
 #include "nongui/feature_base_model.h"

@@ -5,9 +5,9 @@
 // Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#include <QtGui/QPalette>
-#include <QtWidgets/QLayout>
-#include <QtWidgets/QPushButton>
+#include <QPalette>
+#include <QLayout>
+#include <QPushButton>
 
 #include <ddcutil_c_api.h>
 

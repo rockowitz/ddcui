@@ -8,7 +8,7 @@
 
 #include <iostream>
 
-#include <QtGui/QFont>
+#include <QFont>
 #include <QAction>
 #include <QApplication>
 #include <QMainWindow>
@@ -16,7 +16,7 @@
 #include <QStackedWidget>
 #include <QStatusBar>
 #include <QToolBar>
-#include <QtGui/QKeyEvent>
+#include <QKeyEvent>
 
 #include "base/ddcui_core.h"
 #include "base/widget_debug.h"

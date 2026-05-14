@@ -10,7 +10,7 @@
 
 #include "config.h"
 
-#include <QtWidgets/QHBoxLayout>
+#include <QHBoxLayout>
 
 #include "nongui/feature_value.h"
 #include "feature_value_widgets/value_simple_cont_widget.h"

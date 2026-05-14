@@ -8,7 +8,7 @@
 #include <assert.h>
 #include <string.h>
 
-#include <QtCore/QVector>
+#include <QVector>
 
 #include <ddcutil_c_api.h>
 

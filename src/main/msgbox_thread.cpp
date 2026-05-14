@@ -7,12 +7,9 @@
 // Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#include <iostream>
-#include <string.h>
-
-#include <QtCore/QString>
-#include <QtCore/QThread>
-#include <QtCore/QSemaphore>
+#include <QString>
+#include <QThread>
+#include <QSemaphore>
 
 #include "base/ddcui_core.h"
 #include "main/msgbox_thread.h"
@@ -26,6 +23,11 @@ MsgBoxThread::MsgBoxThread(MsgBoxQueue*    requestQueue)
    // bool debug = false;
    TRACECF(debugThread, "Executing");
    _semaphore = new QSemaphore(1);
+}
+
+
+MsgBoxThread::~MsgBoxThread() {
+   delete _semaphore;
 }
 
 

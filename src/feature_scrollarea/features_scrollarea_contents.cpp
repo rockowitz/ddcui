@@ -9,9 +9,9 @@
 #include <string.h>
 #include <stdio.h>
 
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QScrollArea>
-#include <QtCore/QSize>
+#include <QVBoxLayout>
+#include <QScrollArea>
+#include <QSize>
 
 #include "../base/ddcui_core.h"
 #include "base/widget_debug.h"

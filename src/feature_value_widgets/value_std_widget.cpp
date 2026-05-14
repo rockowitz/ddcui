@@ -3,9 +3,9 @@
 // Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#include <QtCore/QRect>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QLabel>
+#include <QRect>
+#include <QHBoxLayout>
+#include <QLabel>
 
 #include "ddcutil_status_codes.h"
 #include "ddcutil_c_api.h"

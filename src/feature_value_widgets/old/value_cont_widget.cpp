@@ -8,16 +8,16 @@
 #include <string.h>
 
 #include <QtWidgets/QWidget>
-// #include <QtWidgets/QSlider>
-#include <QtWidgets/QSpinBox>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QPushButton>
+// #include <QSlider>
+#include <QSpinBox>
+#include <QLabel>
+#include <QPushButton>
 
-#include <QtGui/QKeyEvent>
+#include <QKeyEvent>
 #include <QtGui/QFocusEvent>
 #include <QtCore/QEvent>
 
-#include <QtWidgets/QHBoxLayout>
+#include <QHBoxLayout>
 
 #include "../../base/ddcui_core.h"
 #include "base/ddcui_parms.h"

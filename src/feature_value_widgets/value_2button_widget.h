@@ -8,7 +8,7 @@
 #ifndef VALUE_2BUTTON_WIDGET_H
 #define VALUE_2BUTTON_WIDGET_H
 
-#include <QtWidgets/QWidget>
+#include <QWidget>
 
 #include "value_base_widget.h"
 

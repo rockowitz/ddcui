@@ -11,7 +11,7 @@
 #include "ddcutil_status_codes.h"  // using quotes allows Eclipse to find in workspace
 #include "ddcutil_c_api.h"
 
-#include <QtCore/QString>
+#include <QString>
 
 #include "base/ddcui_core.h"
 #include "base/ddca_utils.h"
@@ -100,12 +100,13 @@ void VcpThread::rpt_nonfeature_error(
    if (erec) {
       QString smooshed = ddcu_format_error_detail(erec, QString(""), 3);
       qsexpl = QString("Error %1 for display %2 - %3.\n\n"
-                       "API function %4 returned %5(%6): %7")
+                       "API function %4 returned %5 (%6): %7")
                        .arg(action)
                        .arg(_dinfo->dispno)
                        .arg(_dinfo->model_name)
                        .arg(ddcaFuncName)
                        .arg(ddca_rc_name(ddcrc))
+                       .arg(ddcrc)
                        .arg(smooshed);
    }
    else {
@@ -186,7 +187,7 @@ void VcpThread::rpt_verify_error(
    }
    else {
       QString qsexpl = QString("Verification failed after value change for feature 0x%1.\n\n"
-                            "Expected value: %2 (0x%3), Reported value: %4 (0x%05)")
+                            "Expected value: %2 (0x%3), Reported value: %4 (0x%5)")
                                   .arg(featureCode, 2, 16, QLatin1Char('0'))
                                   .arg(expectedValue)
                                   .arg(expectedValue, 4, 16, QLatin1Char('0'))
@@ -244,7 +245,7 @@ DDCA_Status VcpThread::perform_close_display(DDCA_Display_Handle dh)
 // Process RQLoadDfr
 void VcpThread::loadDynamicFeatureRecords()
 {
-   bool debugFunc = debugThread;
+   bool debugFunc = false;
    debugFunc = debugFunc || debugThread;
    TRACECF(debugFunc, "Starting. dref=%s", ddca_dref_repr(this->_dref));
 
@@ -291,8 +292,7 @@ void VcpThread::adjustRetries() {
 
 // Process RQCapabilities
 void VcpThread::capabilities() {
-   bool debugFunc = debugThread;
-   debugFunc = false;
+   bool debugFunc = false;
    bool debugRetry = false;
    debugFunc = debugFunc || debugThread;
    debugRetry = debugRetry || debugFunc;
@@ -340,7 +340,7 @@ void VcpThread::capabilities() {
             else {  // failure, can't retry
                if (retry_count > 0)
                   TRACECF(debugRetry || true, "Capabilities check failed after %d retries, retries exhausted", retry_count);
-               rpt_nonfeature_error("getting capabilities string", "ddca_get_capabilitis_string", ddcrc);
+               rpt_nonfeature_error("getting capabilities string", "ddca_get_capabilities_string", ddcrc);
             }  // end, failure, can't retry
          }  // ddca_get_capabilities() failed
          else if (retry_count > 0) {
@@ -351,7 +351,7 @@ void VcpThread::capabilities() {
       if (ddcrc == 0) {   // ddca_get_capabilities_string() succeeded, try to parse
          ddcrc = ddca_parse_capabilities_string(caps, &parsed_caps);
          if (ddcrc != 0) {
-            rpt_nonfeature_error("parsing capabilities string", "ddca_parse_capabilitis_string", ddcrc);
+            rpt_nonfeature_error("parsing capabilities string", "ddca_parse_capabilities_string", ddcrc);
          }
          // free(caps);
       }
@@ -411,7 +411,7 @@ void VcpThread::getvcp(uint8_t featureCode, bool needMetadata)
 
     DDCA_Display_Handle                   dh;
     DDCA_Non_Table_Vcp_Value              valrec;
-    DDCA_Feature_Metadata *               finfo;
+    DDCA_Feature_Metadata *               finfo = nullptr;
 
     DDCA_Status ddcrcMetadata = 0;
     DDCA_Status ddcrc = perform_open_display(&dh);
@@ -548,16 +548,18 @@ void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint16_t shsl)
                          feature_code, sh, sl, valrec.mh, valrec.ml, valrec.sh, valrec.sl);
 
               FeatureValue* fv = _baseModel->modelVcpValueFind(feature_code);
-              DDCA_Feature_Metadata * finfo = fv->finfo();
-              bool ok = true;
-              if (finfo->feature_flags & (DDCA_SIMPLE_NC | DDCA_NC_CONT)) {
-                 ok = (sl == valrec.sl);
-              }
-              else {
-                 ok = (sl == valrec.sl && sh == valrec.sh);
-              }
-              if (!ok) {
-                 rpt_verify_error(feature_code, "ddca_set_non_table_vcp_value", sh, sl, valrec.sh, valrec.sl);
+              if (fv) {
+                 DDCA_Feature_Metadata * finfo = fv->finfo();
+                 bool ok = true;
+                 if (finfo && (finfo->feature_flags & (DDCA_SIMPLE_NC | DDCA_NC_CONT))) {
+                    ok = (sl == valrec.sl);
+                 }
+                 else {
+                    ok = (sl == valrec.sl && sh == valrec.sh);
+                 }
+                 if (!ok) {
+                    rpt_verify_error(feature_code, "ddca_set_non_table_vcp_value", sh, sl, valrec.sh, valrec.sl);
+                 }
               }
               TRACECF(debugFunc, "Calling _baseModel->modelVcpValueUpdate()");
               _baseModel->modelVcpValueUpdate(feature_code, valrec.sh, valrec.sl);
@@ -568,9 +570,7 @@ bye:
        ddcrc = ddca_close_display(dh);
        TRACECF(debugFunc, "ddca_close_display() returned %d", ddcrc);
        if (ddcrc != 0) {
-           TRACECF(debugFunc, "ddca_close_display() returned %d", ddcrc);
            rpt_nonfeature_error("performing close", "ddca_close_display", ddcrc);
-
        }
     }   // open succeeded
     TRACECF(debugFunc, "Done");

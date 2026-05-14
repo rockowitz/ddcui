@@ -7,10 +7,10 @@
 
 #include "feature_value_widgets/value_base_widget.h"
 
-#include <QtCore/QMargins>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QFrame>
-#include <QtWidgets/QSizePolicy>
+#include <QMargins>
+#include <QComboBox>
+#include <QFrame>
+#include <QSizePolicy>
 
 #include "base/global_state.h"
 #include "base/widget_debug.h"

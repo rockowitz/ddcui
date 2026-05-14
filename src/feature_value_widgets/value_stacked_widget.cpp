@@ -7,9 +7,9 @@
 #include <string.h>
 #include <stdio.h>
 
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QStackedWidget>
-#include <QtWidgets/QVBoxLayout>
+#include <QWidget>
+#include <QStackedWidget>
+#include <QVBoxLayout>
 
 #include "base/ddcui_core.h"
 #include "base/widget_debug.h"

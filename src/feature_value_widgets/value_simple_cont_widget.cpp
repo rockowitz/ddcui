@@ -5,9 +5,9 @@
 
 #include <assert.h>
 
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QWidget>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QWidget>
 
 #include "base/ddcui_parms.h"
 #include "base/ddcui_core.h"

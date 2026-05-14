@@ -6,8 +6,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QtGui/QKeyEvent>
-#include <QtWidgets/QtWidgets>
+#include <QKeyEvent>
+#include <QtWidgets>
 
 #include <ddcutil_types.h>
 

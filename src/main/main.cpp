@@ -10,8 +10,8 @@
 #include <syslog.h>
 #include <time.h>
 
-#include <QtCore/QtCore>
-#include <QtWidgets/QApplication>
+#include <QtCore>
+#include <QApplication>
 
 #include <ddcutil_c_api.h>
 #include <ddcutil_macros.h>

@@ -6,8 +6,8 @@
 #ifndef FEATURES_SCROLLAREA_H_
 #define FEATURES_SCROLLAREA_H_
 
-#include <QtWidgets/QScrollArea>
-#include <QtGui/QResizeEvent>
+#include <QScrollArea>
+#include <QResizeEvent>
 
 class FeaturesScrollArea : public QScrollArea {
     Q_OBJECT

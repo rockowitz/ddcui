@@ -6,8 +6,8 @@
 #ifndef FEATURE_WIDGET_HEADER_H_
 #define FEATURE_WIDGET_HEADER_H_
 
-#include <QtWidgets/QFrame>
-#include <QtGui/QResizeEvent>
+#include <QFrame>
+#include <QResizeEvent>
 
 #include "base/ddcui_core.h"
 

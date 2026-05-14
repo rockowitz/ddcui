@@ -10,9 +10,9 @@
 #ifndef MSGBOX_THREAD_H
 #define MSGBOX_THREAD_H
 
-#include <QtCore/QObject>
-#include <QtCore/QThread>
-#include <QtWidgets/QMessageBox>
+#include <QObject>
+#include <QThread>
+#include <QMessageBox>
 
 #include "nongui/msgbox_queue.h"
 
@@ -24,6 +24,7 @@ class MsgBoxThread : public QThread
 
 public:
     MsgBoxThread(MsgBoxQueue *requestQueue);
+    ~MsgBoxThread();
     void run() override;
 
 signals:

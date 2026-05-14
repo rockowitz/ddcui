@@ -9,9 +9,9 @@
 #include <string.h>
 #include <iostream>
 
-#include <QtGui/QPalette>
-#include <QtWidgets/QLayout>
-#include <QtWidgets/QPushButton>
+#include <QPalette>
+#include <QLayout>
+#include <QPushButton>
 
 #include "base/ddcui_core.h"
 #include "base/widget_debug.h"

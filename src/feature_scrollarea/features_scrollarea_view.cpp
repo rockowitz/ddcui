@@ -5,11 +5,11 @@
 
 #include "feature_scrollarea/features_scrollarea_view.h"
 
-#include <QtCore/QString>
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QScrollArea>
-#include <QtWidgets/QStackedWidget>
-#include <QtWidgets/QVBoxLayout>
+#include <QString>
+#include <QMessageBox>
+#include <QScrollArea>
+#include <QStackedWidget>
+#include <QVBoxLayout>
 
 #include <iostream>
 #include <stdio.h>

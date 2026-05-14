@@ -1,13 +1,13 @@
 // ddca_simulator.cpp
 
-// Copyright (C) 2020-2025 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2020-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "ddcutil_status_codes.h"
 #include "ddcutil_types.h"
 #include "ddcutil_c_api.h"
 
-#include <QtCore/QHash>
+#include <QHash>
 
 #include "base/ddcui_core.h"
 
@@ -35,10 +35,10 @@ SimTableEntry simTable[] = {
 //    {0x10, "Brightness",   DDCA_VSPEC_V21, DDCRC_DDC_DATA, 0,0,0,0}
       {0x1a, "Blue Gain",   DDCA_VSPEC_V21, DDCRC_DDC_DATA, 0,0,0,0}
 };
-int simTableCt = sizeof(simTable)/sizeof(SimTableEntry);
+static int simTableCt = sizeof(simTable)/sizeof(SimTableEntry);
 
 // Maintains values that have been set by simulated ddca_set_non_table_vcp_value():
-QHash<uint8_t,uint16_t> simVals;
+static QHash<uint8_t,uint16_t> simVals;
 
 
 static bool vspec_eq(DDCA_MCCS_Version_Spec vspec1, DDCA_MCCS_Version_Spec vspec2) {
@@ -49,7 +49,7 @@ static bool vspec_eq(DDCA_MCCS_Version_Spec vspec1, DDCA_MCCS_Version_Spec vspec
 }
 
 
-int findSimTableEntry(uint8_t feature_code, DDCA_MCCS_Version_Spec vspec) {
+static int findSimTableEntry(uint8_t feature_code, DDCA_MCCS_Version_Spec vspec) {
    int result = -1;
    for (int ndx = 0; ndx < simTableCt; ndx++) {
       if (simTable[ndx].feature_code == feature_code &&
@@ -74,7 +74,7 @@ DdcaSimulator::~DdcaSimulator() {
 }
 
 
-bool  DdcaSimulator::DdcaSimulator::simulateGetNonTableVcpValue(
+bool  DdcaSimulator::simulateGetNonTableVcpValue(
       DDCA_MCCS_Version_Spec     vspec,
       DDCA_Display_Handle        dh,
       uint8_t                    featureCode,
@@ -137,11 +137,10 @@ bool DdcaSimulator::simulateSetNonTableVcpValue(
       simVals.insert(featureCode, shsl);
       simulated = true;
       TRACEC("Simulating set feature 0x%02x, shsl=0x%04x", featureCode, shsl);
-      *pddcrc = DDCRC_OK;
    }
    if (simulated)
       TRACECF(debug, "Feature 0x%02x, vspec=%d.%d. returning %s. ddcrc=%s",
            featureCode, vspec.major, vspec.minor, SBOOL(simulated),  ddca_rc_name(*pddcrc) );
-    return simulated;
+   return simulated;
 }
 

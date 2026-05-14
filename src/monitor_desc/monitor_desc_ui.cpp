@@ -5,12 +5,12 @@
 
 #include "monitor_desc/monitor_desc_ui.h"
 
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QPlainTextEdit>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QStackedWidget>
-// #include <QtWidgets/QSizePolicy>
+#include <QWidget>
+#include <QPlainTextEdit>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QStackedWidget>
+// #include <QSizePolicy>
 
 #include "base/monitor.h"
 

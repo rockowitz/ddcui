@@ -7,10 +7,10 @@
 
 #include <assert.h>
 
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QLabel>
-#include <QtGui/QResizeEvent>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QResizeEvent>
 
 #include "base/ddcui_core.h"
 #include "base/widget_debug.h"

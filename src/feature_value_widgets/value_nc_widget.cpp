@@ -8,10 +8,10 @@
 #include <assert.h>
 #include <string.h>
 
-#include <QtGui/QPalette>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QLayout>
-#include <QtWidgets/QWidget>
+#include <QPalette>
+#include <QComboBox>
+#include <QLayout>
+#include <QWidget>
 
 #include <ddcutil_c_api.h>
 
