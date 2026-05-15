@@ -128,6 +128,113 @@ void display_status_event_main_callback(DDCA_Display_Status_Event evt) {
 }
 #endif
 
+
+/** Called when a new monitor is detected
+ *
+ * @oaran dref  Display reference for monitor being added
+ * @return index in Monitors array of monitor added, or -1 if error
+ *
+ * Initializes monitor data structures, adds monitor to display selector combo box
+ */
+int MainWindow::addMonitor(DDCA_Display_Ref dref) {
+   bool debug = false;
+   TRACECF(debug, "Starting. dref=%s", ddca_dref_repr(dref));
+   int nextIndex = -1;
+   DDCA_Display_Info2 * dinfo;
+   DDCA_Status ddcrc = ddca_get_display_info2(dref, &dinfo);
+   const char * explain = ddca_rc_name(ddcrc);
+   TRACECF(debug, "ddca_get_display_info2() returned %d %s", ddcrc, explain);
+   if (ddcrc != 0) {
+      syslog(LOG_ERR, "ddca_get_display_info2() returned %s", explain);
+      assert(ddcrc == 0);   // ABORT!!!
+   }
+   // initialize monitor data structures, add to display selector combo box
+   initOneMonitor(dinfo, nextIndex);
+   TRACECF(debug, "Done.  Returning %d", nextIndex);
+   return nextIndex;
+}
+
+
+/** Called when a monitor is removed
+ *
+ *  @oaran dref  Display reference for monitor being removed
+ *  @return index in Monitors array of monitor removed, or -1 if not found
+ *
+ *  - Finds monitor in Monitors array by matching dref
+ *  - Locates the monitor in display selector combo box
+ *  - Disconnects signals to combo box from base model of monitor being removed
+ *  - Deletes monitor from Monitors array
+ *  - If current monitor is being removed, selects first monitor in combo box
+ *    and sets summary view
+ */
+int MainWindow::removeMonitor(DDCA_Display_Ref dref) {
+   bool debug  = true;
+   TRACECF(debug, "Starting. dref=%s", ddca_dref_repr(dref));
+
+   int monNdx = findMonitor(dref);
+   if (monNdx >= 0) {
+      Monitor * monitor = _monitors.at(monNdx);
+      TRACECF(debug, "monitor=%p, dref=%s, monitor->_displayInfo->dref=%s",
+              monitor, ddca_dref_repr(dref), ddca_dref_repr(monitor->_displayInfo->dref));
+
+      // Remove entry for monitor from display selector combo box
+      // QString comboBoxString = monitor->comboBoxModelName();
+      QString comboBoxString = ddcu_comboBoxModelName(monitor->_displayInfo);
+      int curIndex = _toolbarDisplayCB->currentIndex();
+      int indexToDelete = _toolbarDisplayCB->findText(comboBoxString,Qt::MatchExactly);
+
+      // disconnect signals from base model of monitor being removed
+      disconnectBaseModel(monitor);
+     _toolbarDisplayCB->removeItem(indexToDelete);
+      TRACECF(debug, "deleting monitor monNdx=%d, monitor=%p, dispno=%d", monNdx, monitor, monitor->_displayInfo->dispno);
+      _monitors.removeAt(monNdx);
+      delete monitor;
+      TRACECF(debug, "deleted monitor monNdx=%d", monNdx);
+
+      int newCurIndex = -1;
+      if (curIndex == indexToDelete) {
+         if (_toolbarDisplayCB->count() > 0) {
+            _toolbarDisplayCB->setCurrentIndex(0);   // select first monitor
+            newCurIndex = 0;
+            // emit signalMonitorSummaryView();   // doesn't work
+            on_actionMonitorSummary_triggered();
+         }
+      }
+   }
+   else {
+      TRACECF(debug, "No monitor found for dref=%s", ddca_dref_repr(dref));
+   }
+
+   TRACECF(debug, "Done.  Returning %d", monNdx);
+   return monNdx;
+}
+
+/** Called when a monitor becomes enabled
+ *
+ * @oaran dref  Display reference for monitor being enabled
+ */
+void MainWindow::enableMonitor(DDCA_Display_Ref dref) {
+   bool debug = false;
+   TRACECF(debug, "dref=%s", ddca_dref_repr(dref));
+   int monNdx = findMonitor(dref);
+   if (monNdx >= 0) {
+      Monitor * monitor = _monitors.at(monNdx);
+      TRACECF(debug, "Enabled monitor %p monNdx=%d", monitor, monNdx);
+   }
+}
+
+
+/** Called when a display change event is received
+ *
+ * @oaran evt  Display change event received
+ *
+ * - For DDCA_EVENT_DISPLAY_CONNECTED:
+ *      adds monitor for display to Monitors array and display selector combo box
+ * - For DDCA_EVENT_DISPLAY_DISCONNECTED:
+ *      removes monitor for display from Monitors array and display selector combo box
+ * - For DDCA_EVENT_DDC_ENABLED:
+ *      enables monitor for DDC communication
+ */
 void MainWindow::forDisplayChanged(DDCA_Display_Status_Event evt) {
    bool debug = false;
    TRACECF(debug, "Starting. event type: %d = %s, dref=%s",
@@ -167,74 +274,6 @@ void MainWindow::forDisplayChanged(DDCA_Display_Status_Event evt) {
    TRACECF(debug, "Done. newDisplayIndex=%d", newDisplayIndex);
 }
 
-// Called when a new monitor is detected
-int MainWindow::addMonitor(DDCA_Display_Ref dref) {
-   bool debug = false;
-   TRACECF(debug, "Starting. dref=%s", ddca_dref_repr(dref));
-   int nextIndex = -1;
-   DDCA_Display_Info2 * dinfo;
-   DDCA_Status ddcrc = ddca_get_display_info2(dref, &dinfo);
-   const char * explain = ddca_rc_name(ddcrc);
-   TRACECF(debug, "ddca_get_display_info2() returned %d %s", ddcrc, explain);
-   if (ddcrc != 0) {
-      syslog(LOG_ERR, "ddca_get_display_info2() returned %s", explain);
-      assert(ddcrc == 0);   // ABORT!!!
-   }
-   // initialize monitor data structures, add to display selector combo box
-   initOneMonitor(dinfo, nextIndex);
-   TRACECF(debug, "Done.  Returning %d", nextIndex);
-   return nextIndex;
-}
-
-// Called when a monitor is removed
-int MainWindow::removeMonitor(DDCA_Display_Ref dref) {
-   bool debug  = true;
-   TRACECF(debug, "dref=%s", ddca_dref_repr(dref));
-
-   int monNdx = findMonitor(dref);
-   if (monNdx >= 0) {
-      Monitor * monitor = _monitors.at(monNdx);
-      TRACECF(debug, "monitor=%p, dref=%s, monitor->_displayInfo->dref=%s",
-              monitor, ddca_dref_repr(dref), ddca_dref_repr(monitor->_displayInfo->dref));
-
-      // Remove entry for monitor from display selector combo box
-      // QString comboBoxString = monitor->comboBoxModelName();
-      QString comboBoxString = ddcu_comboBoxModelName(monitor->_displayInfo);
-      int curIndex = _toolbarDisplayCB->currentIndex();
-      int indexToDelete = _toolbarDisplayCB->findText(comboBoxString,Qt::MatchExactly);
-
-      // disconnect signals from base model of monitor being removed
-      disconnectBaseModel(monitor);
-     _toolbarDisplayCB->removeItem(indexToDelete);
-      TRACECF(debug, "deleting monitor monNdx=%d, monitor=%p, dispno=%d", monNdx, monitor, monitor->_displayInfo->dispno);
-      _monitors.removeAt(monNdx);
-      delete monitor;
-      TRACECF(debug, "deleted monitor monNdx=%d", monNdx);
-
-      int newCurIndex = -1;
-      if (curIndex == indexToDelete) {
-         if (_toolbarDisplayCB->count() > 0) {
-            _toolbarDisplayCB->setCurrentIndex(0);   // select first monitor
-            newCurIndex = 0;
-            // emit signalMonitorSummaryView();   // doesn't work
-            on_actionMonitorSummary_triggered();
-         }
-      }
-   }
-   TRACECF(debug, "Done.  Returning %d", monNdx);
-   return monNdx;
-}
-
-// Called when a monitor is enabled
-void MainWindow::enableMonitor(DDCA_Display_Ref dref) {
-   bool debug = false;
-   TRACECF(debug, "dref=%s", ddca_dref_repr(dref));
-   int monNdx = findMonitor(dref);
-   if (monNdx >= 0) {
-      Monitor * monitor = _monitors.at(monNdx);
-      TRACECF(debug, "Enabled monitor %p monNdx=%d", monitor, monNdx);
-   }
-}
 
 //
 // Message Box Handling
@@ -281,6 +320,7 @@ void MainWindow::start_msgBoxThread() {
    TRACEMCF(debug, "Done.  _msgBoxThread started");
 }
 
+
 //
 // Constructor, Destructor, Initialization
 //
@@ -309,6 +349,12 @@ void MainWindow::disconnectBaseModel(Monitor * curMonitor) {
    }
 }
 
+
+/** Find monitor in Monitors array by matching dref
+ *
+ * @oaran dref  Display reference for monitor being found
+ * @return index in Monitors array of monitor found, or -1 if not found
+ */
 int MainWindow::findMonitor(DDCA_Display_Ref dref) {
    bool debug  = true;
    TRACECF(debug, "Starting. dref=%s", ddca_dref_repr(dref));
@@ -326,6 +372,12 @@ int MainWindow::findMonitor(DDCA_Display_Ref dref) {
    return result;
 }
 
+
+/** Find monitor in Monitors array by matching io path
+ *
+ * @oaran dref  Display reference for monitor being found
+ * @return index in Monitors array of monitor found, or -1 if not found
+ */
 int MainWindow::matchMonitor(DDCA_Display_Ref dref) {
    bool debug  = true;
    TRACECF(debug, "Starting. dref=%s", ddca_dref_repr(dref));
@@ -350,6 +402,16 @@ int MainWindow::matchMonitor(DDCA_Display_Ref dref) {
    return result;
 }
 
+
+/** Deletes all monitors in Monitors array
+ *
+ *  For each monitor:
+ *   - disconnects signals from base model
+ *  - removes it from the Monitors array and deletes it
+ *  Clears the display selector combo box
+ *
+ *  Called when Redetect Displays is selected from menu, and from destructor
+ */
 void MainWindow::freeMonitors() {
    bool debug = false;
    TRACECF(debug, "Starting");
