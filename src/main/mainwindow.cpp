@@ -130,7 +130,7 @@ void display_status_event_main_callback(DDCA_Display_Status_Event evt) {
 
 void MainWindow::forDisplayChanged(DDCA_Display_Status_Event evt) {
    bool debug = false;
-   TRACECF(debug, "event type: %d = %s, dref=%s",
+   TRACECF(debug, "Starting. event type: %d = %s, dref=%s",
           evt.event_type, ddca_display_event_type_name(evt.event_type),
           ddca_dref_repr(evt.dref) );
 
@@ -148,8 +148,10 @@ void MainWindow::forDisplayChanged(DDCA_Display_Status_Event evt) {
    }
 
    else if (evt.event_type == DDCA_EVENT_DISPLAY_DISCONNECTED) {
+      /* int removedIndex = */
+      removeMonitor(evt.dref);
       // int curIndex = _toolbarDisplayCB->currentIndex();
-      // int removedIndex = removeMonitor(evt.dref);
+
    }
 
    else if (evt.event_type == DDCA_EVENT_DDC_ENABLED) {
@@ -162,12 +164,13 @@ void MainWindow::forDisplayChanged(DDCA_Display_Status_Event evt) {
              evt.event_type, ddca_display_event_type_name(evt.event_type));
       // assert(false);
    }
+   TRACECF(debug, "Done. newDisplayIndex=%d", newDisplayIndex);
 }
 
 // Called when a new monitor is detected
 int MainWindow::addMonitor(DDCA_Display_Ref dref) {
    bool debug = false;
-   TRACECF(debug, "dref=%s", ddca_dref_repr(dref));
+   TRACECF(debug, "Starting. dref=%s", ddca_dref_repr(dref));
    int nextIndex = -1;
    DDCA_Display_Info2 * dinfo;
    DDCA_Status ddcrc = ddca_get_display_info2(dref, &dinfo);
@@ -179,6 +182,7 @@ int MainWindow::addMonitor(DDCA_Display_Ref dref) {
    }
    // initialize monitor data structures, add to display selector combo box
    initOneMonitor(dinfo, nextIndex);
+   TRACECF(debug, "Done.  Returning %d", nextIndex);
    return nextIndex;
 }
 
@@ -190,7 +194,8 @@ int MainWindow::removeMonitor(DDCA_Display_Ref dref) {
    int monNdx = findMonitor(dref);
    if (monNdx >= 0) {
       Monitor * monitor = _monitors.at(monNdx);
-      TRACECF(debug, "monitor=%p", monitor);
+      TRACECF(debug, "monitor=%p, dref=%s, monitor->_displayInfo->dref=%s",
+              monitor, ddca_dref_repr(dref), ddca_dref_repr(monitor->_displayInfo->dref));
 
       // Remove entry for monitor from display selector combo box
       // QString comboBoxString = monitor->comboBoxModelName();
@@ -306,10 +311,10 @@ void MainWindow::disconnectBaseModel(Monitor * curMonitor) {
 
 int MainWindow::findMonitor(DDCA_Display_Ref dref) {
    bool debug  = true;
-   TRACECF(debug, "dref=%s", ddca_dref_repr(dref));
+   TRACECF(debug, "Starting. dref=%s", ddca_dref_repr(dref));
    int result = -1;
    int ct0 = _monitors.size();
-   TRACECF(debug,"_monitors.size() = %d", ct0);
+   // TRACECF(debug,"_monitors.size() = %d", ct0);
    for (int ndx = _monitors.size()-1; ndx >= 0; ndx--) {
       Monitor * curMonitor = _monitors.at(ndx);
       if (curMonitor->_displayInfo->dref == dref) {
@@ -323,10 +328,10 @@ int MainWindow::findMonitor(DDCA_Display_Ref dref) {
 
 int MainWindow::matchMonitor(DDCA_Display_Ref dref) {
    bool debug  = true;
-   TRACECF(debug, "dref=%s", ddca_dref_repr(dref));
+   TRACECF(debug, "Starting. dref=%s", ddca_dref_repr(dref));
    int result = -1;
    int ct0 = _monitors.size();
-   TRACECF(debug,"_monitors.size() = %d", ct0);
+   // TRACECF(debug,"_monitors.size() = %d", ct0);
 
    DDCA_Display_Info2 * dinfo0 = NULL;
    ddca_get_display_info2(dref, &dinfo0);
