@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.15)
 
 message(STATUS "cmake version: ${CMAKE_VERSION}")
 # message(VERBOSE) requires cmake 3.15
-if (CMAKE_VERSION VERSION_LESS 15) 
+if (CMAKE_VERSION VERSION_LESS "3.15")
    set(VERBOSE STATUS)
 else()
    set(VERBOSE VERBOSE)
@@ -41,7 +41,7 @@ message(STATUS "USE_CCACHE:                ${USE_CCACHE}" )
 option(ASAN "Build for ASAN" OFF)
 message(STATUS "ASAN:                      ${ASAN}")
 
-option(DDCUTIL_PROJECT_DIR "Root directory of ddcutil project" OFF)
+set(DDCUTIL_PROJECT_DIR "" CACHE PATH "Root directory of ddcutil project")
 message(STATUS "DDCUTIL_PROJECT_DIR:       ${DDCUTIL_PROJECT_DIR}"  )
 
 string(APPEND CMAKE_MODULE_PATH  ${CMAKE_SOURCE_DIR} ) 
@@ -112,7 +112,7 @@ endif()
 
 message(${VERBOSE} "Significant environment variables:")
 message(${VERBOSE} "  INCLUDE:                  $ENV{INCLUDE}")
-message(${VERBOSE} "  LD_LIBRARY_PATH:          $ENV{LD_LIBARARY_PATH}")
+message(${VERBOSE} "  LD_LIBRARY_PATH:          $ENV{LD_LIBRARY_PATH}")
 message(${VERBOSE} "  PKG_CONFIG_PATH:          $ENV{PKG_CONFIG_PATH} ")
 message(${VERBOSE} "cmake paths:")
 message(${VERBOSE} "  CMAKE_MODULE_PATH:        ${CMAKE_MODULE_PATH}")
@@ -160,7 +160,7 @@ endif()
 find_package (PkgConfig REQUIRED )
 pkg_check_modules(GLIB2 REQUIRED glib-2.0>=${ddcui_glib_version})
 
-if ( (DDCUTIL_PROJECT_DIR STREQUAL "OFF")) 
+if (DDCUTIL_PROJECT_DIR STREQUAL "")
    message( ${VERBOSE} "Locating ddcutil files using pkg_check_modules")
    pkg_check_modules(DDCUTIL REQUIRED ddcutil>=${ddcui_libddcutil_version})
 else()
@@ -187,7 +187,7 @@ else()
       string(SUBSTRING ${DDCUTIL_GIT_BRANCH} 0 ${lastpos} DDCUTIL_GIT_BRANCH)
       message( ${VERBOSE} "ddcutil git branch:   ${DDCUTIL_GIT_BRANCH}")
    else() 
-      message( ${VERBOSE} "ddcui source is not managed by git")
+      message( ${VERBOSE} "ddcutil source is not managed by git")
    endif()
 endif()
 
@@ -226,7 +226,7 @@ set(SOURCES
     src/base/feature_list.c
     src/base/feature_selector.cpp 
     src/base/global_state.cpp
-    src/base/monitor.h
+	src/base/monitor.h
     src/base/nc_values_state.cpp
     src/base/user_interface_options_state.cpp
     src/base/widget_debug.cpp 
@@ -311,21 +311,26 @@ add_executable(ddcui ${SOURCES})
 target_compile_options(ddcui PUBLIC "-fPIC" ${coverity_cflags} ${asan_flags})
 # add_compile_options(-Og -H V=1)
 
-# redundant: ${Qt5Gui_INCLUDE_DIRS} ${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS}. 
-#            ${Qt5Help_INCLUDE_DIRS} is a superset of them all 
-target_include_directories(ddcui SYSTEM PRIVATE
-                                 ${Qt5Help_INCLUDE_DIRS}
-                                 ${GLIB2_INCLUDE_DIRS} 
-                                 ${DDCUTIL_INCLUDE_DIRS})
+# redundant: ${QtNGui_INCLUDE_DIRS} ${QtNCore_INCLUDE_DIRS} ${QtNWidgets_INCLUDE_DIRS}.
+#            ${QtNHelp_INCLUDE_DIRS} is a superset of them all
+if (USE_QT6)
+   target_include_directories(ddcui SYSTEM PRIVATE
+                                    ${Qt6Help_INCLUDE_DIRS}
+                                    ${GLIB2_INCLUDE_DIRS}
+                                    ${DDCUTIL_INCLUDE_DIRS})
+else()
+   target_include_directories(ddcui SYSTEM PRIVATE
+                                    ${Qt5Help_INCLUDE_DIRS}
+                                    ${GLIB2_INCLUDE_DIRS}
+                                    ${DDCUTIL_INCLUDE_DIRS})
+endif()
 
 target_include_directories(ddcui PRIVATE src)
 
 if (USE_QT6)
-   # Use the Widgets module from Qt 6.
-   target_link_libraries(ddcui ${ASAN_LIBRARY} Qt6::Widgets ${GLIB2_LIBRARIES} ${DDCUTIL_LIBRARIES})
+   target_link_libraries(ddcui ${ASAN_LIBRARY} Qt6::Widgets Qt6::Help ${GLIB2_LIBRARIES} ${DDCUTIL_LIBRARIES})
 else()
-   # Use the Widgets module from Qt 5.
-   target_link_libraries(ddcui ${ASAN_LIBRARY} Qt5::Widgets ${GLIB2_LIBRARIES} ${DDCUTIL_LIBRARIES})
+   target_link_libraries(ddcui ${ASAN_LIBRARY} Qt5::Widgets Qt5::Help ${GLIB2_LIBRARIES} ${DDCUTIL_LIBRARIES})
 endif()
 
 get_property(dirs TARGET ddcui PROPERTY INCLUDE_DIRECTORIES)
