@@ -220,9 +220,10 @@ set(SOURCES
     src/c_util/xdg_util.c
 
     src/base/ddcui_core_aux.c
-    src/base/ddcui_core.cpp 
-    src/base/ddca_utils.cpp 
+    src/base/ddcui_core.cpp
+    src/base/ddca_utils.cpp
     src/base/ddcui_parms.cpp
+    src/base/ddcui_trace_control.c
     src/base/feature_list.c
     src/base/feature_selector.cpp 
     src/base/global_state.cpp

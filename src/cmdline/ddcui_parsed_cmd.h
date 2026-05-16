@@ -108,6 +108,8 @@ typedef struct {
 
    bool                    enable_syslog_specified;  //??
    bool                    disable_syslog_specified;
+
+   char **                 traced_methods;
 } Parsed_Ddcui_Cmd;
 
 

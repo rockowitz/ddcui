@@ -28,6 +28,7 @@
 
 #include "base/ddcui_core.h"
 #include "base/ddcui_parms.h"
+#include "base/ddcui_trace_control.h"
 #include "base/global_state.h"
 
 #include "main/callback_manager.h"
@@ -236,6 +237,11 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
       printf("(main.cpp:%s) Starting. parsed_cmd=%p\n", __func__, (void*)parsed_cmd);
 
    bool ok = true;
+
+   if (parsed_cmd->traced_methods) {
+      for (int ndx = 0; parsed_cmd->traced_methods[ndx]; ndx++)
+         add_traced_method(parsed_cmd->traced_methods[ndx]);
+   }
 
    DDCA_Init_Options opts = DDCA_INIT_OPTIONS_NONE;
    if (parsed_cmd->flags & CMD_FLAG_DISABLE_CONFIG_FILE)

@@ -300,6 +300,8 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
       {"hidpi",    '\0',   0, G_OPTION_ARG_NONE,  &hidpi_flag,            "Test hidpi code", NULL},
 
 // Undocumented library flag options
+      {"trcmethod", '\0', 0, G_OPTION_ARG_STRING_ARRAY, &parsed_cmd->traced_methods, "Trace methods", "method name"},
+
       {"f1",      '\0', 0,  G_OPTION_ARG_NONE,     &f1_flag,              "Special flag 1",    NULL},
       {"f2",      '\0', 0,  G_OPTION_ARG_NONE,     &f2_flag,              "Special flag 2",    NULL},
       {"f3",      '\0', 0,  G_OPTION_ARG_NONE,     &f3_flag,              "Special flag 3",    NULL},
@@ -355,6 +357,7 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
          tracing_multiple_call_option_help,
          trcfunc_multiple_call_option_help,
          trcfile_multiple_call_option_help,
+         trcmethod_multiple_call_option_help,
          stats_multiple_call_option_help,
          NULL
          );

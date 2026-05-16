@@ -15,6 +15,7 @@
 
 #include "c_util/data_structures.h"
 
+#include "base/ddcui_trace_control.h"
 #include "ddcui_parsed_cmd.h"
 
 // // all uses of this local function are safe,
@@ -152,6 +153,14 @@ void dbgrpt_parsed_ddcui_cmd(Parsed_Ddcui_Cmd * parsed_cmd) {
       printf("   disable config file:       %s\n",   sbool(parsed_cmd->flags & CMD_FLAG_DISABLE_CONFIG_FILE));
       printf("   watch displays:            %s\n",   sbool(parsed_cmd->flags & CMD_FLAG_WATCH_DISPLAYS));
 
+      if (parsed_cmd->traced_methods) {
+         char * joined = g_strjoinv(", ", (gchar **) parsed_cmd->traced_methods);
+         printf("   traced_methods:            %s\n", joined);
+         free(joined);
+      }
+      else
+         printf("   traced_methods:            none\n");
+      dbgrpt_traced_method_table(1);
       printf("   f1:                        %s\n",   sbool(parsed_cmd->flags & CMD_FLAG_F1) );
       printf("   f2:                        %s\n",   sbool(parsed_cmd->flags & CMD_FLAG_F2) );
       printf("   f3:                        %s\n",   sbool(parsed_cmd->flags & CMD_FLAG_F3) );
@@ -179,6 +188,7 @@ void free_parsed_ddcui_cmd(Parsed_Ddcui_Cmd * parsed_cmd) {
       parsed_cmd->marker[3] = 'x';
       free(parsed_cmd->library_options);
       free(parsed_cmd->model);
+      ntsa_free(parsed_cmd->traced_methods, true);
       free(parsed_cmd);
    }
 

@@ -75,6 +75,12 @@ char * trcfile_multiple_call_option_help =
        "  times to trace multiple files, e.g. \"--trcfile ddc_edid.c --trcfile ddc_output.c\"\n"
       ;
 
+char * trcmethod_multiple_call_option_help =
+       "Trace by method name:\n"
+       "  The argument to --trcmethod is a method name.  Use the --trcmethod option multiple\n"
+       "  times to trace multiple methods, e.g. \"--trcmethod method1 --trcmethod method2\"\n"
+      ;
+
 
 char * stats_multiple_call_option_help =
        "Stats:\n"
