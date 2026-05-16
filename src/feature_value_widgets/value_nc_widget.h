@@ -2,7 +2,7 @@
  *  Widget to display/edit a simple Non-Continuous VCP feature value
  */
 
-// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef VALUE_NC_WIDGET_H
@@ -68,5 +68,7 @@ private:
     bool           _guiChange = false;
     const char *   _cls;
 };
+
+void init_value_nc_widget();
 
 #endif // VALUE_NC_WIDGET_H

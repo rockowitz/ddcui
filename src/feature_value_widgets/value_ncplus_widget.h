@@ -52,5 +52,7 @@ private:
     const char *    _cls;
 };
 
+void init_value_ncplus_widget();
+
 #endif /* VALUE_NCPLUS_WIDGET_H_ */
 

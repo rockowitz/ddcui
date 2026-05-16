@@ -2,7 +2,7 @@
  *  Widget containing 2 named buttons
  */
 
-// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef VALUE_2BUTTON_WIDGET_H
@@ -48,5 +48,7 @@ private:     // member variables
     uint8_t             _val1;
     uint8_t             _val2;
 };
+
+void init_value_2button_widget();
 
 #endif // VALUE_2BUTTON_WIDGET_H

@@ -1,6 +1,6 @@
 // value_bytes_widget.cpp
 
-// Copyright (C) 2018-2025 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <assert.h>
@@ -15,6 +15,8 @@
 #include "base/ddcui_core.h"
 #include "base/ddcui_parms.h"
 #include "base/widget_debug.h"
+#include "c_util/debug_util.h"
+#include "base/ddcui_rtti.h"
 
 #include "feature_value_widgets/value_base_widget.h"
 
@@ -314,5 +316,14 @@ void ValueBytesWidget::onCancelButtonClicked(bool checked) {
 
    _applyButton->setEnabled(false);
    _cancelButton->setEnabled(false);
+}
+
+
+void init_value_bytes_widget() {
+   bool debug = true;
+   DBGF(debug, "Starting");
+   RTTI_ADD_METHOD(ValueBytesWidget::ValueBytesWidget);
+   RTTI_ADD_METHOD(ValueBytesWidget::setFeatureValue);
+   DBGF(debug, "Done");
 }
 

@@ -1,6 +1,6 @@
 /** @file value_stacked_widget.h */
 
-// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef VALUE_STACKED_WIDGET_H
@@ -94,6 +94,8 @@ private:
     bool                    _instanceControlKeyRequired = false;
     bool                    _instanceControlKeyPressed = false;
 };
+
+void init_value_stacked_widget();
 
 #endif // VALUE_STACKED_WIDGET_H
 

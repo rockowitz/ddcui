@@ -15,6 +15,8 @@
 
 #include "base/ddcui_core.h"
 #include "base/widget_debug.h"
+#include "c_util/debug_util.h"
+#include "base/ddcui_rtti.h"
 
 #include "feature_value_widgets/value_2button_widget.h"
 
@@ -144,6 +146,18 @@ void Value2ButtonWidget::on_button2_pressed() {
 //   }
 //   else
 //      TRACEMCF(debug|| debugValueWidgetSignals, "Button pressed.  NOT emitting featureValueChanged()");
+}
+
+
+void init_value_2button_widget() {
+   bool debug = true;
+   DBGF(debug, "Starting");
+   RTTI_ADD_METHOD(Value2ButtonWidget::Value2ButtonWidget);
+   RTTI_ADD_METHOD(Value2ButtonWidget::~Value2ButtonWidget);
+   RTTI_ADD_METHOD(Value2ButtonWidget::setEnabled);
+   RTTI_ADD_METHOD(Value2ButtonWidget::on_button1_pressed);
+   RTTI_ADD_METHOD(Value2ButtonWidget::on_button2_pressed);
+   DBGF(debug, "Done");
 }
 
 

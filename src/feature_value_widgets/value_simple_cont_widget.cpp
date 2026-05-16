@@ -12,6 +12,8 @@
 #include "base/ddcui_parms.h"
 #include "base/ddcui_core.h"
 #include "base/widget_debug.h"
+#include "c_util/debug_util.h"
+#include "base/ddcui_rtti.h"
 
 #include "feature_value_widgets/value_simple_cont_widget.h"
 
@@ -301,5 +303,22 @@ void ValueSimpleContWidget::debugSimpleContLayout()
        fflush(stdout);
        basicDimsShown = true;
     }
+}
+
+
+void init_value_simple_cont_widget() {
+   bool debug = true;
+   DBGF(debug, "Starting");
+   RTTI_ADD_METHOD(ValueSimpleContWidget::ValueSimpleContWidget);
+   RTTI_ADD_METHOD(ValueSimpleContWidget::~ValueSimpleContWidget);
+   RTTI_ADD_METHOD(ValueSimpleContWidget::additionalWidgets);
+   RTTI_ADD_METHOD(ValueSimpleContWidget::createWidgets);
+   RTTI_ADD_METHOD(ValueSimpleContWidget::layoutWidget);
+   RTTI_ADD_METHOD(ValueSimpleContWidget::setEnabled);
+   RTTI_ADD_METHOD(ValueSimpleContWidget::setRange);
+   RTTI_ADD_METHOD(ValueSimpleContWidget::setFeatureValue);
+   RTTI_ADD_METHOD(ValueSimpleContWidget::setCurrentShSl);
+   RTTI_ADD_METHOD(ValueSimpleContWidget::onFeatureValueChanged);
+   DBGF(debug, "Done");
 }
 

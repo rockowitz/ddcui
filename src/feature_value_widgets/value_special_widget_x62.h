@@ -2,7 +2,7 @@
  *  Adjust audio volume
  */
 
-// Copyright (C) 2020-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2020-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef VALUE_SPECIAL_WIDGET_X62_H_
@@ -41,6 +41,8 @@ private:           // member variables
     const char *     _cls;
     QComboBox *      _cb;
 };
+
+void init_value_special_widget_x62();
 
 #endif  // VALUE_SPECIAL_WIDGET_X62_H_
 

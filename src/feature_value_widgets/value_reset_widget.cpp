@@ -13,6 +13,8 @@
 
 #include "base/ddcui_core.h"
 #include "base/widget_debug.h"
+#include "c_util/debug_util.h"
+#include "base/ddcui_rtti.h"
 
 #include "feature_value_widgets/value_reset_widget.h"
 
@@ -151,4 +153,14 @@ void ValueResetWidget::resizeEvent(QResizeEvent * evt)
    }
 
    evt->ignore();
+}
+
+
+void init_value_reset_widget() {
+   bool debug = true;
+   DBGF(debug, "Starting");
+   RTTI_ADD_METHOD(ValueResetWidget::ValueResetWidget);
+   RTTI_ADD_METHOD(ValueResetWidget::setEnabled);
+   RTTI_ADD_METHOD(ValueResetWidget::on_resetButton_pressed);
+   DBGF(debug, "Done");
 }

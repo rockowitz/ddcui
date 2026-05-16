@@ -3,7 +3,7 @@
  * For undefined features.
  */
 
-// Copyright (C) 2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2022-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef VALUE_BYTES_WIDGET_H_
@@ -66,5 +66,7 @@ private:   // member variables
     uint8_t                _shNew;
     uint8_t                _slNew;
 };
+
+void init_value_bytes_widget();
 
 #endif /* VALUE_BYTES_WIDGET_H_ */

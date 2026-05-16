@@ -8,6 +8,9 @@
 #include <assert.h>
 
 #include "base/ddcui_parms.h"
+#include "c_util/debug_util.h"
+#include "base/ddcui_rtti.h"
+
 #include "value_simple_cont_widget.h"
 
 #include "value_special_widget_x62.h"
@@ -155,4 +158,18 @@ void ValueSpecialWidgetX62::combobox_activated(int index) {
    else {
       TRACEMCF(debug, "Value not changed.");
    }
+}
+
+
+void init_value_special_widget_x62() {
+   bool debug = true;
+   DBGF(debug, "Starting");
+   RTTI_ADD_METHOD(ValueSpecialWidgetX62::ValueSpecialWidgetX62);
+   RTTI_ADD_METHOD(ValueSpecialWidgetX62::~ValueSpecialWidgetX62);
+   RTTI_ADD_METHOD(ValueSpecialWidgetX62::createInitialWidgets);
+   RTTI_ADD_METHOD(ValueSpecialWidgetX62::layoutWidget);
+   RTTI_ADD_METHOD(ValueSpecialWidgetX62::setFeatureValue);
+   RTTI_ADD_METHOD(ValueSpecialWidgetX62::setCurrentShSl);
+   RTTI_ADD_METHOD(ValueSpecialWidgetX62::combobox_activated);
+   DBGF(debug, "Done");
 }

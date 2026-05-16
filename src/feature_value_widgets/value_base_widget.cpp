@@ -2,7 +2,7 @@
  *  Superclass of all feature value widgets
  */
 
-// Copyright (C) 2018-2024 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <QMargins>
@@ -15,6 +15,8 @@
 
 #include "ddcutil_c_api.h"
 #include "base/ddcui_core.h"
+#include "c_util/debug_util.h"
+#include "base/ddcui_rtti.h"
 
 #include "feature_value_widgets/value_base_widget.h"
 
@@ -121,6 +123,18 @@ uint16_t ValueBaseWidget::getCurrentShSl() {
 
 void   ValueBaseWidget::delete_finfo() {
    ddca_free_feature_metadata(_finfo);
+}
+
+
+void init_value_base_widget() {
+   bool debug = true;
+   DBGF(debug, "Starting");
+   RTTI_ADD_METHOD(ValueBaseWidget::ValueBaseWidget);
+   RTTI_ADD_METHOD(ValueBaseWidget::~ValueBaseWidget);
+   RTTI_ADD_METHOD(ValueBaseWidget::setEnabled);
+   RTTI_ADD_METHOD(ValueBaseWidget::setFeatureValue);
+   RTTI_ADD_METHOD(ValueBaseWidget::createFormattedComboBox);
+   DBGF(debug, "Done");
 }
 
 #ifdef NO

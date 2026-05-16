@@ -13,6 +13,8 @@
 
 #include "base/ddcui_core.h"
 #include "base/widget_debug.h"
+#include "c_util/debug_util.h"
+#include "base/ddcui_rtti.h"
 
 #include "feature_value_widgets/value_bytes_widget.h"
 #include "feature_value_widgets/value_cnc_widget_x14.h"
@@ -467,5 +469,20 @@ void ValueStackedWidget::setNcValuesSource(NcValuesSource newValuesSource, bool 
    }
 
    TRACECF(debug, "Done");
+}
+
+
+void init_value_stacked_widget() {
+   bool debug = true;
+   DBGF(debug, "Starting");
+   RTTI_ADD_METHOD(ValueStackedWidget::ValueStackedWidget);
+   RTTI_ADD_METHOD(ValueStackedWidget::~ValueStackedWidget);
+   RTTI_ADD_METHOD(ValueStackedWidget::enableSubwidgets);
+   RTTI_ADD_METHOD(ValueStackedWidget::setInstanceControlKeyRequired);
+   RTTI_ADD_METHOD(ValueStackedWidget::setInstanceControlKeyPressed);
+   RTTI_ADD_METHOD(ValueStackedWidget::setFeatureValue);
+   RTTI_ADD_METHOD(ValueStackedWidget::forContainedWidgetChanged);
+   RTTI_ADD_METHOD(ValueStackedWidget::setNcValuesSource);
+   DBGF(debug, "Done");
 }
 

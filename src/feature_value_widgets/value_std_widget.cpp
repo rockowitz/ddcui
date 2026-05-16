@@ -13,6 +13,8 @@
 #include "base/ddcui_core.h"
 #include "base/feature_selector.h"
 #include "base/widget_debug.h"
+#include "c_util/debug_util.h"
+#include "base/ddcui_rtti.h"
 
 #include "feature_value_widgets/value_std_widget.h"
 
@@ -223,6 +225,15 @@ void ValueStdWidget::resizeEvent(QResizeEvent * evt)
    }
 
    evt->ignore();
+}
+
+
+void init_value_std_widget() {
+   bool debug = true;
+   DBGF(debug, "Starting");
+   RTTI_ADD_METHOD(ValueStdWidget::setFeatureValue);
+   RTTI_ADD_METHOD(ValueStdWidget::setEnabled);
+   DBGF(debug, "Done");
 }
 
 

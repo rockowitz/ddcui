@@ -2,7 +2,7 @@
  *  Superclass for all Value_..._Widgets
  */
 
-// Copyright (C) 2018-2024 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef VALUE_BASE_WIDGET_H
@@ -79,5 +79,7 @@ private:
     const char *            _cls;
 
 };
+
+void init_value_base_widget();
 
 #endif // VALUE_BASE_WIDGET_H

@@ -3,7 +3,7 @@
   * Display/edit a Continuous VCP feature value with specified minimum and maximum values
   */
 
-// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef VALUE_SIMPLE_CONT_WIDGET_H
@@ -55,6 +55,8 @@ protected:   // member variables
 private:     // member variables
     const char *  _cls;
 };
+
+void init_value_simple_cont_widget();
 
 #endif // VALUE_SIMPLE_CONT_WIDGET_H
 

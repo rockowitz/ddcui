@@ -10,6 +10,8 @@
 
 #include "base/ddcui_core.h"
 #include "base/widget_debug.h"
+#include "c_util/debug_util.h"
+#include "base/ddcui_rtti.h"
 
 #include "feature_value_widgets/value_new_cont_widget.h"
 
@@ -67,5 +69,16 @@ void ValueNewContWidget::setFeatureValue(const FeatureValue &fv) {
     _maxValue->setText(QString::number(maxval));
 
     TRACEMCF(debug, "Done");
+}
+
+
+void init_value_new_cont_widget() {
+   bool debug = true;
+   DBGF(debug, "Starting");
+   RTTI_ADD_METHOD(ValueNewContWidget::ValueNewContWidget);
+   RTTI_ADD_METHOD(ValueNewContWidget::~ValueNewContWidget);
+   RTTI_ADD_METHOD(ValueNewContWidget::layoutWidget);
+   RTTI_ADD_METHOD(ValueNewContWidget::setFeatureValue);
+   DBGF(debug, "Done");
 }
 

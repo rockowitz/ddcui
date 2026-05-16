@@ -14,7 +14,9 @@
 #include <ddcutil_c_api.h>
 
 #include "c_util/data_structures.h"
+#include "c_util/debug_util.h"
 #include "base/ddcui_core.h"
+#include "base/ddcui_rtti.h"
 #include "base/ddcui_parms.h"
 #include "base/ddca_utils.h"
 #include "base/widget_debug.h"
@@ -410,5 +412,22 @@ void ValueNcWidget::resizeEvent(QResizeEvent * evt)
    }
 
    evt->ignore();
+}
+
+
+void init_value_nc_widget() {
+   bool debug = true;
+   DBGF(debug, "Starting");
+   RTTI_ADD_METHOD(ValueNcWidget::ValueNcWidget);
+   RTTI_ADD_METHOD(ValueNcWidget::~ValueNcWidget);
+   RTTI_ADD_METHOD(ValueNcWidget::setEnabled);
+   RTTI_ADD_METHOD(ValueNcWidget::setFeatureValue);
+   RTTI_ADD_METHOD(ValueNcWidget::setCurrentShSl);
+   RTTI_ADD_METHOD(ValueNcWidget::reloadComboBox);
+   RTTI_ADD_METHOD(ValueNcWidget::combobox_activated);
+   RTTI_ADD_METHOD(ValueNcWidget::loadComboBox2);
+   RTTI_ADD_METHOD(ValueNcWidget::sl_value_table_lookup);
+   RTTI_ADD_METHOD(ValueNcWidget::createWidgets);
+   DBGF(debug, "Done");
 }
 

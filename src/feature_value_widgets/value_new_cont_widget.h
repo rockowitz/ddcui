@@ -2,7 +2,7 @@
  *  Widget for displaying/editing a Continuous VCP feature value
  */
 
-// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef VALUE_NEW_CONT_WIDGET_H
@@ -30,6 +30,8 @@ private:
 
     const char * _cls;
 };
+
+void init_value_new_cont_widget();
 
 #endif // VALUE_NEW_CONT_WIDGET_H
 

@@ -17,8 +17,10 @@
 
 #include <ddcutil_c_api.h>
 
+#include "c_util/debug_util.h"
 #include "base/ddcui_core.h"
 #include "base/ddca_utils.h"
+#include "base/ddcui_rtti.h"
 #include "base/widget_debug.h"
 
 #include "nongui/feature_base_model.h"
@@ -220,4 +222,13 @@ void ValueNcplusWidget::resizeEvent(QResizeEvent * evt)
    }
 
    evt->ignore();
+}
+
+
+void init_value_ncplus_widget() {
+   bool debug = true;
+   DBGF(debug, "Starting");
+   RTTI_ADD_METHOD(ValueNcplusWidget::ValueNcplusWidget);
+   RTTI_ADD_METHOD(ValueNcplusWidget::setFeatureValue);
+   DBGF(debug, "Done");
 }
