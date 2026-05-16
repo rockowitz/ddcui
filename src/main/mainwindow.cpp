@@ -129,6 +129,60 @@ void display_status_event_main_callback(DDCA_Display_Status_Event evt) {
 #endif
 
 
+
+/** Find monitor in Monitors array by matching dref
+ *
+ * @oaran dref  Display reference for monitor being found
+ * @return index in Monitors array of monitor found, or -1 if not found
+ */
+int MainWindow::findMonitor(DDCA_Display_Ref dref) {
+   bool debug  = false;
+   TRACECF(debug, "Starting. dref=%s", ddca_dref_repr(dref));
+   int result = -1;
+   int ct0 = _monitors.size();
+   // TRACECF(debug,"_monitors.size() = %d", ct0);
+   for (int ndx = _monitors.size()-1; ndx >= 0; ndx--) {
+      Monitor * curMonitor = _monitors.at(ndx);
+      if (curMonitor->_displayInfo->dref == dref) {
+         result = ndx;
+         break;
+      }
+   }
+   TRACECF(debug,"Returning: %d", result);
+   return result;
+}
+
+
+/** Find monitor in Monitors array by matching io path
+ *
+ * @oaran dref  Display reference for monitor being found
+ * @return index in Monitors array of monitor found, or -1 if not found
+ */
+int MainWindow::matchMonitor(DDCA_Display_Ref dref) {
+   bool debug  = false;
+   TRACECF(debug, "Starting. dref=%s", ddca_dref_repr(dref));
+   int result = -1;
+   int ct0 = _monitors.size();
+   // TRACECF(debug,"_monitors.size() = %d", ct0);
+
+   DDCA_Display_Info2 * dinfo0 = NULL;
+   ddca_get_display_info2(dref, &dinfo0);
+   assert(dinfo0);
+   DDCA_IO_Path p0 = dinfo0->path;
+   for (int ndx = _monitors.size()-1; ndx >= 0; ndx--) {
+      Monitor * curMonitor = _monitors.at(ndx);
+      DDCA_IO_Path p1 = curMonitor->_displayInfo->path;
+      if (ddcu_dpath_eq(p0, p1)) {
+         result = ndx;
+         break;
+      }
+   }
+   ddca_free_display_info2(dinfo0);
+   TRACECF(debug,"Returning: %d", result);
+   return result;
+}
+
+
 /** Called when a new monitor is detected
  *
  * @oaran dref  Display reference for monitor being added
@@ -137,7 +191,7 @@ void display_status_event_main_callback(DDCA_Display_Status_Event evt) {
  * Initializes monitor data structures, adds monitor to display selector combo box
  */
 int MainWindow::addMonitor(DDCA_Display_Ref dref) {
-   bool debug = false;
+   bool debug = true;
    TRACECF(debug, "Starting. dref=%s", ddca_dref_repr(dref));
    int nextIndex = -1;
    DDCA_Display_Info2 * dinfo;
@@ -174,8 +228,7 @@ int MainWindow::removeMonitor(DDCA_Display_Ref dref) {
    int monNdx = findMonitor(dref);
    if (monNdx >= 0) {
       Monitor * monitor = _monitors.at(monNdx);
-      TRACECF(debug, "monitor=%p, dref=%s, monitor->_displayInfo->dref=%s",
-              monitor, ddca_dref_repr(dref), ddca_dref_repr(monitor->_displayInfo->dref));
+      TRACECF(debug, "Starting. monitor=%p, dref=%s", monitor, ddca_dref_repr(dref));
 
       // Remove entry for monitor from display selector combo box
       // QString comboBoxString = monitor->comboBoxModelName();
@@ -186,10 +239,11 @@ int MainWindow::removeMonitor(DDCA_Display_Ref dref) {
       // disconnect signals from base model of monitor being removed
       disconnectBaseModel(monitor);
      _toolbarDisplayCB->removeItem(indexToDelete);
-      TRACECF(debug, "deleting monitor monNdx=%d, monitor=%p, dispno=%d", monNdx, monitor, monitor->_displayInfo->dispno);
+      TRACECF(debug, "deleting monitor monNdx=%d, monitor=%p, dispno=%d",
+                     monNdx, monitor, monitor->_displayInfo->dispno);
       _monitors.removeAt(monNdx);
       delete monitor;
-      TRACECF(debug, "deleted monitor monNdx=%d", monNdx);
+      // TRACECF(debug, "deleted monitor monNdx=%d", monNdx);
 
       int newCurIndex = -1;
       if (curIndex == indexToDelete) {
@@ -214,8 +268,8 @@ int MainWindow::removeMonitor(DDCA_Display_Ref dref) {
  * @oaran dref  Display reference for monitor being enabled
  */
 void MainWindow::enableMonitor(DDCA_Display_Ref dref) {
-   bool debug = false;
-   TRACECF(debug, "dref=%s", ddca_dref_repr(dref));
+   bool debug = true;
+   TRACECF(debug, "Starting. dref=%s", ddca_dref_repr(dref));
    int monNdx = findMonitor(dref);
    if (monNdx >= 0) {
       Monitor * monitor = _monitors.at(monNdx);
@@ -236,7 +290,7 @@ void MainWindow::enableMonitor(DDCA_Display_Ref dref) {
  *      enables monitor for DDC communication
  */
 void MainWindow::forDisplayChanged(DDCA_Display_Status_Event evt) {
-   bool debug = false;
+   bool debug = true;
    TRACECF(debug, "Starting. event type: %d = %s, dref=%s",
           evt.event_type, ddca_display_event_type_name(evt.event_type),
           ddca_dref_repr(evt.dref) );
@@ -347,59 +401,6 @@ void MainWindow::disconnectBaseModel(Monitor * curMonitor) {
       QObject::disconnect(baseModel,  &FeatureBaseModel::signalEndInitialLoad,
                           this,       &MainWindow::longRunningTaskEnd);
    }
-}
-
-
-/** Find monitor in Monitors array by matching dref
- *
- * @oaran dref  Display reference for monitor being found
- * @return index in Monitors array of monitor found, or -1 if not found
- */
-int MainWindow::findMonitor(DDCA_Display_Ref dref) {
-   bool debug  = true;
-   TRACECF(debug, "Starting. dref=%s", ddca_dref_repr(dref));
-   int result = -1;
-   int ct0 = _monitors.size();
-   // TRACECF(debug,"_monitors.size() = %d", ct0);
-   for (int ndx = _monitors.size()-1; ndx >= 0; ndx--) {
-      Monitor * curMonitor = _monitors.at(ndx);
-      if (curMonitor->_displayInfo->dref == dref) {
-         result = ndx;
-         break;
-      }
-   }
-   TRACECF(debug,"Returning: %d", result);
-   return result;
-}
-
-
-/** Find monitor in Monitors array by matching io path
- *
- * @oaran dref  Display reference for monitor being found
- * @return index in Monitors array of monitor found, or -1 if not found
- */
-int MainWindow::matchMonitor(DDCA_Display_Ref dref) {
-   bool debug  = true;
-   TRACECF(debug, "Starting. dref=%s", ddca_dref_repr(dref));
-   int result = -1;
-   int ct0 = _monitors.size();
-   // TRACECF(debug,"_monitors.size() = %d", ct0);
-
-   DDCA_Display_Info2 * dinfo0 = NULL;
-   ddca_get_display_info2(dref, &dinfo0);
-   assert(dinfo0);
-   DDCA_IO_Path p0 = dinfo0->path;
-   for (int ndx = _monitors.size()-1; ndx >= 0; ndx--) {
-      Monitor * curMonitor = _monitors.at(ndx);
-      DDCA_IO_Path p1 = curMonitor->_displayInfo->path;
-      if (ddcu_dpath_eq(p0, p1)) {
-         result = ndx;
-         break;
-      }
-   }
-   ddca_free_display_info2(dinfo0);
-   TRACECF(debug,"Returning: %d", result);
-   return result;
 }
 
 
