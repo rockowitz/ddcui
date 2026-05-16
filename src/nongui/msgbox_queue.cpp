@@ -1,6 +1,6 @@
 /* msgbox_queue.cpp - MsgBoxQueue and the MsgBoxQueueEntry class that populates it */
 
-// Copyright (C) 2018-2025 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <QDebug>
@@ -9,7 +9,9 @@
 #include <assert.h>
 #include <iostream>
 
+#include "c_util/debug_util.h"
 #include "base/ddcui_core.h"
+#include "base/ddcui_rtti.h"
 
 #include "nongui/msgbox_queue.h"
 
@@ -157,3 +159,15 @@ void MsgBoxQueue::dbgrpt() {
    dbgrpt_nolock();
    _mutex.unlock();
 }
+
+
+void init_msgbox_queue() {
+   bool debug = true;
+   DBGF(debug, "Starting");
+   RTTI_ADD_METHOD(MsgBoxQueue::put);
+   RTTI_ADD_METHOD(MsgBoxQueue::pop);
+   DBGF(debug, "Done");
+}
+
+
+

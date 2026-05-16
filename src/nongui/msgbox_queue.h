@@ -15,6 +15,8 @@
 #include <QMessageBox>
 
 
+void init_msgbox_queue();
+
 /* MsgBoxQueue entries */
 
 class MsgBoxQueueEntry

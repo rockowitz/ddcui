@@ -28,12 +28,16 @@
 
 #include "base/ddcui_core.h"
 #include "base/ddcui_parms.h"
+#include "base/ddcui_rtti.h"
 #include "base/ddcui_trace_control.h"
 #include "base/global_state.h"
+
+#include "nongui/msgbox_queue.h"
 
 #include "main/callback_manager.h"
 #include "main/mainwindow.h"
 #include "main/msgbox_thread.h"
+
 
 
 // See: https://www.qt.io/blog/2016/01/26/high-dpi-support-in-qt-5-6
@@ -231,6 +235,14 @@ void report_parse_errors(Error_Info * erec) {
 #endif
 
 
+static void init_rtti() {
+   bool debug = true;
+   DBGF(debug, "Starting");
+   init_msgbox_queue();
+   DBGF(debug, "Done");
+}
+
+
 static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
    bool debug = false;
    if (debug)
@@ -401,6 +413,12 @@ int main(int argc, char *argv[])
        printf("ddcui requires at least libddcutil version 2.2.0\n");
        exit(1);
     }
+
+    // initialize rtti function name table
+    DBG("Initializing RTTI function name table");
+    init_rtti();
+    dbgrpt_rtti_method_name_table(3, true);
+
 
     // bool enable_syslog = true;
     // if ( ntsa_find(argv, "--disable-syslog") >= 0 || ntsa_find(argv, "--nosyslog") >= 0 )
