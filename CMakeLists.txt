@@ -252,7 +252,8 @@ set(SOURCES
     src/monitor_desc/monitor_desc_actions.cpp
     src/monitor_desc/monitor_desc_ui.cpp 
 
-    src/feature_value_widgets/value_2button_widget.cpp 
+    src/feature_value_widgets/feature_value_widgets_init.cpp
+    src/feature_value_widgets/value_2button_widget.cpp
     src/feature_value_widgets/value_base_widget.cpp
     src/feature_value_widgets/value_bytes_widget.cpp
     src/feature_value_widgets/value_cnc_widget_x14.cpp
