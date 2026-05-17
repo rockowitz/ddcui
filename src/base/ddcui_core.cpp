@@ -16,6 +16,7 @@
 
 #include "ddcui_parms.h"
 #include "ddcui_core_aux.h"
+#include "ddcui_trace_control.h"
 
 #include "ddcui_core.h"
 
@@ -177,6 +178,8 @@ bool printftcmf(
       fflush(stdout);
    }
 #endif
+
+   debug = debug || is_traced_file(filename) || is_traced_method(funcname);
 
    bool msg_emitted = false;
    if (debug) {

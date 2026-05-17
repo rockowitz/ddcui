@@ -58,7 +58,7 @@ void add_traced_method(const char * methodname) {
  *  @param  methodname  method name
  *  @return **true** if the method is being traced, **false** if not
  */
-bool is_trace_method(const char * methodname) {
+bool is_traced_method(const char * methodname) {
    bool result = (traced_method_table &&
                   gaux_ptr_array_find_with_equal_func(
                         traced_method_table, methodname, g_str_equal, NULL));
@@ -93,6 +93,8 @@ void dbgrpt_traced_method_table(int depth) {
  *  @param  filename  file name
  *
  *  @remark
+ *  The canonical form stored is the basename without any .c or .cpp extension.
+ *  @remark
  *  If the **traced_file_table** does not already exist, it is created.
  */
 void add_traced_file(const char * filename) {
@@ -105,14 +107,10 @@ void add_traced_file(const char * filename) {
 
    if (filename) {
       gchar * bname = g_path_get_basename(filename);
-      if (!str_ends_with(bname, ".c")) {
-         int newsz = strlen(bname) + 2 + 1;
-         gchar * temp = calloc(1, newsz);
-         strcpy(temp, bname);
-         strcat(temp, ".c");
-         free(bname);
-         bname = temp;
-      }
+      if (str_ends_with(bname, ".cpp"))
+         bname[strlen(bname) - 4] = '\0';
+      else if (str_ends_with(bname, ".c"))
+         bname[strlen(bname) - 2] = '\0';
 
       bool missing = !gaux_ptr_array_find_with_equal_func(
                            traced_file_table, bname, g_str_equal, NULL);
@@ -136,6 +134,10 @@ bool is_traced_file(const char * filename) {
    bool result = false;
    if (filename) {
       gchar * bname = g_path_get_basename(filename);
+      if (str_ends_with(bname, ".cpp"))
+         bname[strlen(bname) - 4] = '\0';
+      else if (str_ends_with(bname, ".c"))
+         bname[strlen(bname) - 2] = '\0';
       result = (traced_file_table &&
                 gaux_ptr_array_find_with_equal_func(
                       traced_file_table, bname, g_str_equal, NULL));

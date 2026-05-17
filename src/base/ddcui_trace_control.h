@@ -16,7 +16,7 @@ extern "C" {
 #endif
 
 void add_traced_method(      const char * methodname);
-bool is_trace_method(        const char * methodname);
+bool is_traced_method(       const char * methodname);
 void dbgrpt_traced_method_table(int depth);
 
 void add_traced_file(        const char * filename);
