@@ -103,26 +103,27 @@ void add_traced_file(const char * filename) {
    if (!traced_file_table)
       traced_file_table = g_ptr_array_new();
 
-   gchar * bname = g_path_get_basename(filename);
-   if (!str_ends_with(bname, ".c")) {
-      int newsz = strlen(bname) + 2 + 1;
-      gchar * temp = calloc(1, newsz);
-      strcpy(temp, bname);
-      strcat(temp, ".c");
-      free(bname);
-      bname = temp;
+   if (filename) {
+      gchar * bname = g_path_get_basename(filename);
+      if (!str_ends_with(bname, ".c")) {
+         int newsz = strlen(bname) + 2 + 1;
+         gchar * temp = calloc(1, newsz);
+         strcpy(temp, bname);
+         strcat(temp, ".c");
+         free(bname);
+         bname = temp;
+      }
+
+      bool missing = !gaux_ptr_array_find_with_equal_func(
+                           traced_file_table, bname, g_str_equal, NULL);
+      if (missing)
+         g_ptr_array_add(traced_file_table, bname);
+      else
+         free(bname);
    }
 
-   bool missing = !gaux_ptr_array_find_with_equal_func(
-                        traced_file_table, bname, g_str_equal, NULL);
-   if (missing)
-      g_ptr_array_add(traced_file_table, bname);
-   else
-      free(bname);
-
    if (debug)
-      printf("(%s) Done. filename=|%s|, missing=%s\n",
-             __func__, filename, missing ? "true" : "false");
+      printf("(%s) Done. filename=|%s|\n", __func__, filename);
 }
 
 
