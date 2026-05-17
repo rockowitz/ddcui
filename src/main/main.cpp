@@ -303,6 +303,7 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
          }
       }
       // infomsgs = g_ptr_array_to_ntsa(errmsgs, /*duplicate*/ true);
+      dbgrpt_traced_method_table(2);
    }
 
    if (parsed_cmd->traced_files) {
