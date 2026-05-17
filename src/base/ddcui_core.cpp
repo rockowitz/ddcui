@@ -14,6 +14,8 @@
 
 #include "ddcutil_types.h"
 
+#include "c_util/string_util.h"
+
 #include "ddcui_parms.h"
 #include "ddcui_core_aux.h"
 #include "ddcui_trace_control.h"
@@ -190,7 +192,7 @@ bool printftcmf(
 
          char * funcbuf = nullptr;
          if (metaclass_classname && cls) {
-            if (strcmp(metaclass_classname, cls) == 0) {
+            if (streq(metaclass_classname, cls)) {
                funcbuf = g_strdup_printf("%s::%s", metaclass_classname, funcname);
             }
             else {

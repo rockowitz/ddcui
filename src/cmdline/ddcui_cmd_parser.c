@@ -49,16 +49,16 @@ gboolean stats_arg_func(const    gchar* option_name,
    bool ok = true;
    if (value) {
       char * v2 = g_ascii_strup(value, -1);  // n. returns newly allocated string
-      if ( strcmp(v2,"ALL") == 0 ) {
+      if ( streq(v2,"ALL") ) {
          stats_work |= DDCA_STATS_ALL;
       }
-      else if (strcmp(v2,"TRY") == 0 || is_abbrev(v2, "TRIES",3)) {
+      else if (streq(v2,"TRY") || is_abbrev(v2, "TRIES",3)) {
          stats_work |= DDCA_STATS_TRIES;
       }
       else if ( is_abbrev(v2, "CALLS",3)) {
          stats_work |= DDCA_STATS_CALLS;
       }
-      else if (strcmp(v2,"ERRS") == 0 || is_abbrev(v2, "ERRORS",3)) {
+      else if (streq(v2,"ERRS") || is_abbrev(v2, "ERRORS",3)) {
          stats_work |= DDCA_STATS_ERRORS;
       }
       else if ( is_abbrev(v2,"ELAPSED",3) || is_abbrev(v2, "TIME",3)) {
