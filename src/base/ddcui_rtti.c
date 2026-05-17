@@ -38,12 +38,26 @@ void rtti_method_name_table_add(const char * method_name) {
 
 /** Checks if a method name is in the method name table.
  *
- *  @param  method_name  method name
+ *  @param  method_name  method name, either simple or Class::method form
  *  @return **true** if found, **false** if not
+ *
+ *  @remark
+ *  If method_name contains no "::", matches any entry whose method portion
+ *  (after "::") equals method_name. If it contains "::", exact match only.
  */
 bool rtti_method_name_table_contains(const char * method_name) {
-   return (method_name_table &&
-           gaux_ptr_array_find_with_equal_func(method_name_table, method_name, g_str_equal, NULL));
+   if (!method_name_table || !method_name)
+      return false;
+   if (strstr(method_name, "::"))
+      return gaux_ptr_array_find_with_equal_func(method_name_table, method_name, g_str_equal, NULL);
+   for (guint ndx = 0; ndx < method_name_table->len; ndx++) {
+      const char * entry = (const char *) g_ptr_array_index(method_name_table, ndx);
+      const char * sep = strstr(entry, "::");
+      const char * entry_method = sep ? sep + 2 : entry;
+      if (g_str_equal(entry_method, method_name))
+         return true;
+   }
+   return false;
 }
 
 
