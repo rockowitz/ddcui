@@ -1,6 +1,6 @@
 /** @file ddcui_trace_control.h
  *
- *  Manage whether tracing is performed for ddcui Qt C++ methods.
+ *  Manage whether tracing is performed for ddcui Qt C++ methods and files.
  */
 
 // Copyright (C) 2026 Sanford Rockowitz <rockowitz@minsoft.com>
@@ -18,6 +18,10 @@ extern "C" {
 void add_traced_method(      const char * methodname);
 bool is_trace_method(        const char * methodname);
 void dbgrpt_traced_method_table(int depth);
+
+void add_traced_file(        const char * filename);
+bool is_traced_file(         const char * filename);
+void dbgrpt_traced_file_table(int depth);
 
 #ifdef __cplusplus
 }
