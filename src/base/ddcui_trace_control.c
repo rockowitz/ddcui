@@ -72,8 +72,8 @@ void add_traced_method(const char * methodname) {
       Traced_Method_Entry * entry = g_ptr_array_index(traced_method_table, ndx);
       bool class_match = (entry->class_name == NULL && class_name == NULL) ||
                          (entry->class_name != NULL && class_name != NULL &&
-                          strcmp(entry->class_name, class_name) == 0);
-      if (class_match && strcmp(entry->method_name, method_name) == 0)
+                          streq(entry->class_name, class_name));
+      if (class_match && streq(entry->method_name, method_name))
          missing = false;
    }
 
@@ -108,9 +108,9 @@ bool is_traced_method(const char * methodname) {
 
       for (guint ndx = 0; ndx < traced_method_table->len && !result; ndx++) {
          Traced_Method_Entry * entry = g_ptr_array_index(traced_method_table, ndx);
-         if (strcmp(entry->method_name, method_name) == 0) {
+         if (streq(entry->method_name, method_name)) {
             if (entry->class_name == NULL || class_name == NULL ||
-                strcmp(entry->class_name, class_name) == 0)
+                streq(entry->class_name, class_name))
                result = true;
          }
       }
