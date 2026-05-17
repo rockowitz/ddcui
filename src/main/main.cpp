@@ -303,6 +303,12 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
       // infomsgs = g_ptr_array_to_ntsa(errmsgs, /*duplicate*/ true);
    }
 
+   if (parsed_cmd->traced_files) {
+      for (int ndx = 0; parsed_cmd->traced_files[ndx]; ndx++) {
+         add_traced_file(parsed_cmd->traced_files[ndx]);
+      }
+   }
+
    if (infomsgs) {
       // printf("Null_Terminated_String_Array at %p:\n", (void*) infomsgs);
       int ndx = 0;

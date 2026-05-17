@@ -301,6 +301,7 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
 
 // Undocumented library flag options
       {"trcmethod", '\0', 0, G_OPTION_ARG_STRING_ARRAY, &parsed_cmd->traced_methods, "Trace methods", "method name"},
+      {"trcfile",   '\0', 0, G_OPTION_ARG_STRING_ARRAY, &parsed_cmd->traced_files,   "Trace files",   "file name"},
 
       {"f1",      '\0', 0,  G_OPTION_ARG_NONE,     &f1_flag,              "Special flag 1",    NULL},
       {"f2",      '\0', 0,  G_OPTION_ARG_NONE,     &f2_flag,              "Special flag 2",    NULL},
