@@ -10,6 +10,7 @@
 #include <glib-2.0/glib.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <string.h>
 /** \endcond */
 
 #include "c_util/glib_util.h"
@@ -18,6 +19,26 @@
 
 #include "base/ddcui_trace_control.h"
 
+typedef struct {
+   char * class_name;
+   char * method_name;
+} Traced_Method_Entry;
+
+static void parse_method_name(
+      const char *  methodname,
+      char **       class_name_loc,
+      char **       method_name_loc)
+{
+   const char * sep = strstr(methodname, "::");
+   if (sep) {
+      *class_name_loc  = g_strndup(methodname, sep - methodname);
+      *method_name_loc = g_strdup(sep + 2);
+   }
+   else {
+      *class_name_loc  = NULL;
+      *method_name_loc = g_strdup(methodname);
+   }
+}
 
 // traced_method_table and traced_file_table are implemented using GPtrArray.
 // These data structures are used only for testing, and
@@ -42,10 +63,30 @@ void add_traced_method(const char * methodname) {
    if (!traced_method_table)
       traced_method_table = g_ptr_array_new();
 
-   bool missing = !gaux_ptr_array_find_with_equal_func(
-                        traced_method_table, methodname, g_str_equal, NULL);
-   if (missing)
-      g_ptr_array_add(traced_method_table, g_strdup(methodname));
+   char * class_name;
+   char * method_name;
+   parse_method_name(methodname, &class_name, &method_name);
+
+   bool missing = true;
+   for (guint ndx = 0; ndx < traced_method_table->len && missing; ndx++) {
+      Traced_Method_Entry * entry = g_ptr_array_index(traced_method_table, ndx);
+      bool class_match = (entry->class_name == NULL && class_name == NULL) ||
+                         (entry->class_name != NULL && class_name != NULL &&
+                          strcmp(entry->class_name, class_name) == 0);
+      if (class_match && strcmp(entry->method_name, method_name) == 0)
+         missing = false;
+   }
+
+   if (missing) {
+      Traced_Method_Entry * entry = calloc(1, sizeof(Traced_Method_Entry));
+      entry->class_name  = class_name;
+      entry->method_name = method_name;
+      g_ptr_array_add(traced_method_table, entry);
+   }
+   else {
+      free(class_name);
+      free(method_name);
+   }
 
    if (debug)
       printf("(%s) Done. methodname=|%s|, missing=%s\n",
@@ -59,9 +100,23 @@ void add_traced_method(const char * methodname) {
  *  @return **true** if the method is being traced, **false** if not
  */
 bool is_traced_method(const char * methodname) {
-   bool result = (traced_method_table &&
-                  gaux_ptr_array_find_with_equal_func(
-                        traced_method_table, methodname, g_str_equal, NULL));
+   bool result = false;
+   if (traced_method_table && methodname) {
+      char * class_name;
+      char * method_name;
+      parse_method_name(methodname, &class_name, &method_name);
+
+      for (guint ndx = 0; ndx < traced_method_table->len && !result; ndx++) {
+         Traced_Method_Entry * entry = g_ptr_array_index(traced_method_table, ndx);
+         if (strcmp(entry->method_name, method_name) == 0) {
+            if (entry->class_name == NULL || class_name == NULL ||
+                strcmp(entry->class_name, class_name) == 0)
+               result = true;
+         }
+      }
+      free(class_name);
+      free(method_name);
+   }
    return result;
 }
 
@@ -76,10 +131,13 @@ void dbgrpt_traced_method_table(int depth) {
       if (traced_method_table->len == 0)
          rpt_vstring(depth+1, "(empty)");
       else {
-         g_ptr_array_sort(traced_method_table, gaux_ptr_scomp);
-         for (guint ndx = 0; ndx < traced_method_table->len; ndx++)
-            rpt_vstring(depth+1, "%s",
-                        (char *) g_ptr_array_index(traced_method_table, ndx));
+         for (guint ndx = 0; ndx < traced_method_table->len; ndx++) {
+            Traced_Method_Entry * entry = g_ptr_array_index(traced_method_table, ndx);
+            if (entry->class_name)
+               rpt_vstring(depth+1, "%s::%s", entry->class_name, entry->method_name);
+            else
+               rpt_vstring(depth+1, "%s", entry->method_name);
+         }
       }
    }
    else {
