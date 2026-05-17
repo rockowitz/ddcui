@@ -90,4 +90,6 @@ private:
 
 };
 
+void init_feature_widget();
+
 #endif // FEATURE_WIDGET_H

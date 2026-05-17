@@ -11,6 +11,8 @@
 #include <ddcutil_c_api.h>
 
 #include "base/ddcui_core.h"
+#include "c_util/debug_util.h"
+#include "base/ddcui_rtti.h"
 #include "nongui/vcpthread.h"    // includes vcprequest.h
 #include "nongui/feature_value.h"
 
@@ -219,4 +221,17 @@ void Monitor::markDisconnected() {
    emit reportDisconnected(this->_displayInfo->dref);
    TRACECF(debug, "emitted");
 
+}
+
+
+void init_monitor() {
+   bool debug = true;
+   DBGF(debug, "Starting");
+   RTTI_ADD_METHOD(Monitor::Monitor);
+   RTTI_ADD_METHOD(Monitor::~Monitor);
+   RTTI_ADD_METHOD(Monitor::getFeatureList);
+   RTTI_ADD_METHOD(Monitor::putVcpRequest);
+   RTTI_ADD_METHOD(Monitor::vcpThreadFinished);
+   RTTI_ADD_METHOD(Monitor::markDisconnected);
+   DBGF(debug, "Done");
 }

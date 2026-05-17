@@ -9,6 +9,8 @@
 #include <QtWidgets/QCheckBox>
 
 #include "base/ddcui_core.h"
+#include "c_util/debug_util.h"
+#include "base/ddcui_rtti.h"
 #include "help/help_dialog.h"
 #include "help/help_browser.h"
 
@@ -188,3 +190,17 @@ void DebugActionsDialog::for_actionResetStatsButton_clicked(bool onoff)
    emit resetStats_triggered();
 }
 
+void init_debug_actions_dialog() {
+   bool debug = true;
+   DBGF(debug, "Starting");
+   RTTI_ADD_METHOD(DebugActionsDialog::DebugActionsDialog);
+   RTTI_ADD_METHOD(DebugActionsDialog::on_actionButtonBox_accepted);
+   RTTI_ADD_METHOD(DebugActionsDialog::for_actionAllStatsButton_clicked);
+   RTTI_ADD_METHOD(DebugActionsDialog::for_actionCallsStatsButton_clicked);
+   RTTI_ADD_METHOD(DebugActionsDialog::for_actionErrorsStatsButton_clicked);
+   RTTI_ADD_METHOD(DebugActionsDialog::for_actionTriesStatsButton_clicked);
+   RTTI_ADD_METHOD(DebugActionsDialog::for_actionElapsedStatsButton_clicked);
+   RTTI_ADD_METHOD(DebugActionsDialog::for_actionApiStatsButton_clicked);
+   RTTI_ADD_METHOD(DebugActionsDialog::for_actionResetStatsButton_clicked);
+   DBGF(debug, "Done");
+}

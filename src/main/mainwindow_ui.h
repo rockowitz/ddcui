@@ -1,6 +1,6 @@
 /* mainwindow_ui.h - Extracted from uic generated ui code */
 
-// Copyright (C) 2018-2023 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef UI_MAINWINDOW2_H
@@ -114,5 +114,7 @@ private:
 // } // namespace Ui
 
 // QT_END_NAMESPACE
+
+void init_mainwindow_ui();
 
 #endif // UI_MAINWINDOW2_H

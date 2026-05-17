@@ -98,4 +98,6 @@ private:       // member variables
     DdcaSimulator *      _ddcaSimulator = NULL;
 };
 
+void init_vcpthread();
+
 #endif // VCPTHREAD_H

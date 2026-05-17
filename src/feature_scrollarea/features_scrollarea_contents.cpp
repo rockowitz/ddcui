@@ -1,6 +1,6 @@
 // features_scroll_area_contents.cpp - Contains rows of FeatureWidgets
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <assert.h>
@@ -13,6 +13,8 @@
 
 #include "base/ddcui_core.h"
 #include "base/widget_debug.h"
+#include "c_util/debug_util.h"
+#include "base/ddcui_rtti.h"
 
 #include "feature_value_widgets/value_stacked_widget.h"
 #include "feature_scrollarea/feature_widget.h"
@@ -173,3 +175,14 @@ int FeaturesScrollAreaContents::maxRowHeight() {
    return 0;
 }
 
+
+void init_features_scrollarea_contents() {
+   bool debug = true;
+   DBGF(debug, "Starting");
+   RTTI_ADD_METHOD(FeaturesScrollAreaContents::FeaturesScrollAreaContents);
+   RTTI_ADD_METHOD(FeaturesScrollAreaContents::~FeaturesScrollAreaContents);
+   RTTI_ADD_METHOD(FeaturesScrollAreaContents::startInitialLoad);
+   RTTI_ADD_METHOD(FeaturesScrollAreaContents::endInitialLoad);
+   RTTI_ADD_METHOD(FeaturesScrollAreaContents::resize);
+   DBGF(debug, "Done");
+}

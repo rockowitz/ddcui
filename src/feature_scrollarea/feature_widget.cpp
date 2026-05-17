@@ -12,6 +12,8 @@
 
 #include "base/ddcui_core.h"
 #include "base/widget_debug.h"
+#include "c_util/debug_util.h"
+#include "base/ddcui_rtti.h"
 #include "nongui/feature_base_model.h"
 
 #include "feature_scrollarea/feature_widget.h"
@@ -304,3 +306,12 @@ void FeatureWidget::resizeEvent(QResizeEvent * evt)
    evt->accept();
 }
 
+
+void init_feature_widget() {
+   bool debug = true;
+   DBGF(debug, "Starting");
+   RTTI_ADD_METHOD(FeatureWidget::setupFeatureWidget);
+   RTTI_ADD_METHOD(FeatureWidget::FeatureWidget);
+   RTTI_ADD_METHOD(FeatureWidget::setFeatureValue);
+   DBGF(debug, "Done");
+}

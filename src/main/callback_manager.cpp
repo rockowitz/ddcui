@@ -21,6 +21,7 @@
 
 #include "c_util/ddcutil_config_file.h"
 #include "c_util/debug_util.h"
+#include "base/ddcui_rtti.h"
 #include "c_util/simple_ini_file.h"
 #include "c_util/string_util.h"
 #include "c_util/xdg_util.h"
@@ -140,3 +141,10 @@ void CallbackManager::registerCallbacks(MainWindow * mainwindow) {
                     mainwindow, &MainWindow::forDisplayChanged);
 }
 
+
+void init_callback_manager() {
+   bool debug = true;
+   DBGF(debug, "Starting");
+   RTTI_ADD_METHOD(CallbackManager::emitDisplayChanged);
+   DBGF(debug, "Done");
+}

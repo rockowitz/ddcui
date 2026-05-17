@@ -55,4 +55,6 @@ private:
    // enum          _valueChangeInitiator { ChangedByModel, ChangedByGUI };
 };
 
+void init_spin_slider();
+
 #endif /* SPIN_SLIDER_H_ */

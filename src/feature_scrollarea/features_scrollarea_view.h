@@ -6,7 +6,7 @@
  * There is one instance of this class for each detected monitor.
  */
 
-// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef FEATURES_SCROLLAREA_VIEW_H
@@ -83,4 +83,6 @@ private:        // member variables
     // quick and dirty for now, eventually replace by hash
     FeatureWidget *    _widgets[256] = {0};
 };
+void init_features_scrollarea_view();
+
 #endif // FEATURES_SCROLLAREA_VIEW_H

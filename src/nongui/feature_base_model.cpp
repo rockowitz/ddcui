@@ -21,6 +21,8 @@
 #include "c_util/data_structures.h"
 
 #include "base/ddcui_core.h"
+#include "c_util/debug_util.h"
+#include "base/ddcui_rtti.h"
 #include "base/global_state.h"
 #include "base/monitor.h"
 #include "base/ddca_utils.h"
@@ -477,3 +479,16 @@ void FeatureBaseModel::notifyFeatureChangeObservers(uint8_t feature_code) {
 #endif
 }
 #endif
+
+void init_feature_base_model() {
+   bool debug = true;
+   DBGF(debug, "Starting");
+   RTTI_ADD_METHOD(FeatureBaseModel::FeatureBaseModel);
+   RTTI_ADD_METHOD(FeatureBaseModel::~FeatureBaseModel);
+   RTTI_ADD_METHOD(FeatureBaseModel::modelVcpValueUpdate);
+   RTTI_ADD_METHOD(FeatureBaseModel::setCapabilities);
+   RTTI_ADD_METHOD(FeatureBaseModel::setFeatureList);
+   RTTI_ADD_METHOD(FeatureBaseModel::reloadFeatures);
+   RTTI_ADD_METHOD(FeatureBaseModel::markDisconnected);
+   DBGF(debug, "Done");
+}

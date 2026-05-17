@@ -1,6 +1,6 @@
 // debug_actions_dialog.h
 
-// Copyright (C) 2020-2024 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2020-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef DEBUG_ACTIONS_DIALOG_H
@@ -54,5 +54,7 @@ private:
     // void setUiSource(NcValuesSource source);
 
 };
+
+void init_debug_actions_dialog();
 
 #endif // DEBUG_ACTIONS_DIALOG_H

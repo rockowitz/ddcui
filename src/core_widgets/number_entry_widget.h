@@ -1,6 +1,6 @@
 // number_entry_widget.h
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef NUMBER_ENTRY_WIDGET_H_
@@ -63,4 +63,6 @@ private:
     uint16_t     _valueEntered = 0;  // valid value displayed but not yet accepted
     NumberEntryWidget::States _widgetState;
 };
+void init_number_entry_widget();
+
 #endif /* NUMBER_ENTRY_WIDGET_H_ */

@@ -26,6 +26,8 @@
 #include "base/nc_values_state.h"
 #include "base/user_interface_options_state.h"
 #include "base/widget_debug.h"
+#include "c_util/debug_util.h"
+#include "base/ddcui_rtti.h"
 
 #include "help/help_browser.h"
 #include "help/help_dialog.h"
@@ -1688,3 +1690,44 @@ void MainWindow::on_vcpTableView_doubleClicked(const QModelIndex &index)
      printf("----------> (MainWindow::on_vcpTableView_doubleClicked) row=%d, col=%d\n", index.row(), index.column() );
 }
 #endif
+
+
+void init_mainwindow() {
+   bool debug = true;
+   DBGF(debug, "Starting");
+   RTTI_ADD_METHOD(MainWindow::findMonitor);
+   RTTI_ADD_METHOD(MainWindow::matchMonitor);
+   RTTI_ADD_METHOD(MainWindow::addMonitor);
+   RTTI_ADD_METHOD(MainWindow::removeMonitor);
+   RTTI_ADD_METHOD(MainWindow::enableMonitor);
+   RTTI_ADD_METHOD(MainWindow::forDisplayChanged);
+   RTTI_ADD_METHOD(MainWindow::initSerialMsgbox);
+   RTTI_ADD_METHOD(MainWindow::start_msgBoxThread);
+   RTTI_ADD_METHOD(MainWindow::freeMonitors);
+   RTTI_ADD_METHOD(MainWindow::initOneMonitor);
+   RTTI_ADD_METHOD(MainWindow::initMonitors);
+   RTTI_ADD_METHOD(MainWindow::quitShortcut);
+   RTTI_ADD_METHOD(MainWindow::MainWindow);
+   RTTI_ADD_METHOD(MainWindow::~MainWindow);
+   RTTI_ADD_METHOD(MainWindow::forControlKeyRequired_changed);
+   RTTI_ADD_METHOD(MainWindow::ctrlKeyStatusMsg);
+   RTTI_ADD_METHOD(MainWindow::setTransitoryStatusMsg);
+   RTTI_ADD_METHOD(MainWindow::showSerialMsgBox);
+   RTTI_ADD_METHOD(MainWindow::longRunningTaskStart);
+   RTTI_ADD_METHOD(MainWindow::longRunningTaskEnd);
+   RTTI_ADD_METHOD(MainWindow::displaySelectorCombobox_currentIndexChanged);
+   RTTI_ADD_METHOD(MainWindow::checkAltViewOk);
+   RTTI_ADD_METHOD(MainWindow::loadMonitorFeatures);
+   RTTI_ADD_METHOD(MainWindow::on_actionRedetect_triggered);
+   RTTI_ADD_METHOD(MainWindow::on_actionRescan_triggered);
+   RTTI_ADD_METHOD(MainWindow::for_resetStats_triggered);
+   RTTI_ADD_METHOD(MainWindow::for_reportStats_triggered);
+   RTTI_ADD_METHOD(MainWindow::on_actionDebugLocks_triggered);
+   RTTI_ADD_METHOD(MainWindow::on_actionFeatureSelectionDialog_triggered);
+   RTTI_ADD_METHOD(MainWindow::on_actionOtherOptionsDialog_triggered);
+   RTTI_ADD_METHOD(MainWindow::for_actionUserInterfaceOptionsDialog_accept);
+   RTTI_ADD_METHOD(MainWindow::on_actionUserInterfaceOptionsDialog_triggered);
+   RTTI_ADD_METHOD(MainWindow::keyPressEvent);
+   RTTI_ADD_METHOD(MainWindow::keyReleaseEvent);
+   DBGF(debug, "Done");
+}

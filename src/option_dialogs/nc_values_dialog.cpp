@@ -6,6 +6,8 @@
 #include <assert.h>
 
 #include "base/ddcui_core.h"
+#include "c_util/debug_util.h"
+#include "base/ddcui_rtti.h"
 #include "help/help_dialog.h"
 #include "help/help_browser.h"
 
@@ -95,4 +97,11 @@ void NcValuesDialog::on_buttonBox_clicked(QAbstractButton* button)
       setUiSource(NcValuesState::DefaultNcValuesSource);
       // setUseLatestNcValueNames(OtherOptionsState::DefaultUseMaximalMccsNcValues);
    }
+}
+
+void init_nc_values_dialog() {
+   bool debug = true;
+   DBGF(debug, "Starting");
+   RTTI_ADD_METHOD(NcValuesDialog::setUiSource);
+   DBGF(debug, "Done");
 }

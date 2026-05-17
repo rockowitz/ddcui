@@ -12,6 +12,8 @@
 #include <QSemaphore>
 
 #include "base/ddcui_core.h"
+#include "c_util/debug_util.h"
+#include "base/ddcui_rtti.h"
 
 #include "main/msgbox_thread.h"
 
@@ -98,3 +100,11 @@ void MsgBoxThread::showSerialMsgBox(QString title, QString text, QMessageBox::Ic
 }
 #endif
 
+
+void init_msgbox_thread() {
+   bool debug = true;
+   DBGF(debug, "Starting");
+   RTTI_ADD_METHOD(MsgBoxThread::MsgBoxThread);
+   RTTI_ADD_METHOD(MsgBoxThread::msbgoxClosed);
+   DBGF(debug, "Done");
+}

@@ -24,6 +24,9 @@
 #include "hex_number_validator.h"
 #include "base/ddcui_core.h"
 
+#include "c_util/debug_util.h"
+#include "base/ddcui_rtti.h"
+
 #include "number_entry_widget.h"
 
 void NumberEntryWidget::layoutWidget(
@@ -234,4 +237,16 @@ NumberEntryWidget::mousePressEvent(QMouseEvent * event) {
 void
 NumberEntryWidget::mouseReleaseEvent(QMouseEvent * event) {
    // TRACE("Executing, _curState = %d", _widgetState);
+}
+
+
+void init_number_entry_widget() {
+   bool debug = true;
+   DBGF(debug, "Starting");
+   RTTI_ADD_METHOD(NumberEntryWidget::getExistingValue);
+   RTTI_ADD_METHOD(NumberEntryWidget::getNewValue);
+   RTTI_ADD_METHOD(NumberEntryWidget::setValue);
+   RTTI_ADD_METHOD(NumberEntryWidget::reset);
+   RTTI_ADD_METHOD(NumberEntryWidget::onTextEdited);
+   DBGF(debug, "Done");
 }

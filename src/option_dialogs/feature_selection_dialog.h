@@ -59,5 +59,7 @@ private:     // member variables
     FeatureSelector*            _featureSelector;
 };
 
+void init_feature_selection_dialog();
+
 #endif // FEATURESELECTIONDIALOG_H
 

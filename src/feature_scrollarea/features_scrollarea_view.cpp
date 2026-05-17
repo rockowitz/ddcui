@@ -19,6 +19,8 @@
 #include "base/global_state.h"
 #include "base/monitor.h"
 #include "base/widget_debug.h"
+#include "c_util/debug_util.h"
+#include "base/ddcui_rtti.h"
 
 #include "nongui/msgbox_queue.h"
 
@@ -438,3 +440,13 @@ void FeaturesScrollAreaView::onModelDdcFeatureError(DdcFeatureError* perec) {
 }
 #endif
 
+
+void init_features_scrollarea_view() {
+   bool debug = true;
+   DBGF(debug, "Starting");
+   RTTI_ADD_METHOD(FeaturesScrollAreaView::FeaturesScrollAreaView);
+   RTTI_ADD_METHOD(FeaturesScrollAreaView::onEndInitialLoad);
+   RTTI_ADD_METHOD(FeaturesScrollAreaView::onUIValueChanged);
+   RTTI_ADD_METHOD(FeaturesScrollAreaView::onModelValueChanged);
+   DBGF(debug, "Done");
+}

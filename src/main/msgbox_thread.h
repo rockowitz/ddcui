@@ -43,4 +43,6 @@ private:
     QString        _lastText;
 };
 
+void init_msgbox_thread();
+
 #endif // MSGBOX_THREAD_H

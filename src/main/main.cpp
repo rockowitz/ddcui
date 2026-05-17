@@ -33,8 +33,16 @@
 #include "base/global_state.h"
 
 #include "nongui/msgbox_queue.h"
+#include "nongui/nongui_services.h"
 
 #include "feature_value_widgets/feature_value_widgets_init.h"
+
+#include "action_dialogs/action_dialogs_services.h"
+#include "core_widgets/core_widgets_services.h"
+#include "feature_scrollarea/feature_scrollarea_services.h"
+#include "help/help_services.h"
+#include "main/main_services.h"
+#include "option_dialogs/option_dialogs_services.h"
 
 #include "main/callback_manager.h"
 #include "main/mainwindow.h"
@@ -240,8 +248,14 @@ void report_parse_errors(Error_Info * erec) {
 static void init_rtti() {
    bool debug = true;
    DBGF(debug, "Starting");
-   init_msgbox_queue();
+   init_nongui_services();
    init_feature_value_widgets();
+   init_action_dialogs_services();
+   init_core_widgets_services();
+   init_feature_scrollarea_services();
+   init_help_services();
+   init_main_services();
+   init_option_dialogs_services();
    DBGF(debug, "Done");
 }
 
@@ -252,11 +266,6 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
       printf("(main.cpp:%s) Starting. parsed_cmd=%p\n", __func__, (void*)parsed_cmd);
 
    bool ok = true;
-
-   if (parsed_cmd->traced_methods) {
-      for (int ndx = 0; parsed_cmd->traced_methods[ndx]; ndx++)
-         add_traced_method(parsed_cmd->traced_methods[ndx]);
-   }
 
    DDCA_Init_Options opts = DDCA_INIT_OPTIONS_NONE;
    if (parsed_cmd->flags & CMD_FLAG_DISABLE_CONFIG_FILE)
@@ -269,6 +278,28 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
    char ** infomsgs = NULL;
    DDCA_Status rc = ddca_init2(parsed_cmd->library_options, ddcui_syslog_level, opts,  &infomsgs );
    DBGF(debug, "ddca_init2() returned %d", rc);
+
+   if (parsed_cmd->traced_methods) {
+      // GPtrArray * errmsgs = ntsa_to_g_ptr_array(infomsgs);
+
+      for (int ndx = 0; parsed_cmd->traced_methods[ndx]; ndx++) {
+         char * cur_method_name = parsed_cmd->traced_methods[ndx];
+         if (rtti_method_name_table_contains(cur_method_name)) {
+            add_traced_method(parsed_cmd->traced_methods[ndx]);
+         }
+         else {
+            char * errmsg[] = { g_strdup_printf("Invalid --trcmethod argument: %s", cur_method_name), NULL };
+            char ** merged = ntsa_join(infomsgs, errmsg, true);
+            ntsa_free(infomsgs, true);
+            g_free(errmsg[0]);
+            infomsgs = merged;
+
+            // g_ptr_array_add(errmsgs, g_strdup_printf("Invalid --trcmethod argument: %s", cur_method_name));
+            ok = false;
+         }
+      }
+      // infomsgs = g_ptr_array_to_ntsa(errmsgs, /*duplicate*/ true);
+   }
 
    if (infomsgs) {
       // printf("Null_Terminated_String_Array at %p:\n", (void*) infomsgs);

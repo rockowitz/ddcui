@@ -40,4 +40,6 @@ private:
     NcValuesState * _state;
 };
 
+void init_nc_values_dialog();
+
 #endif // NC_VALUES_DIALOG_H

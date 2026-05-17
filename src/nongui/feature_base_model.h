@@ -116,4 +116,6 @@ private:
 #endif
 };
 
+void init_feature_base_model();
+
 #endif // FEATURE_BASE_MODEL_H

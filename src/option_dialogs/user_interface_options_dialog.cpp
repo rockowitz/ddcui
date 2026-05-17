@@ -9,6 +9,8 @@
 #include <assert.h>
 
 #include "base/ddcui_core.h"
+#include "c_util/debug_util.h"
+#include "base/ddcui_rtti.h"
 #include "base/user_interface_options_state.h"
 #include "help/help_dialog.h"
 #include "help/help_browser.h"
@@ -114,3 +116,9 @@ void UserInterfaceOptionsDialog::on_actionButtonBox_clicked(QAbstractButton* but
    }
 }
 
+void init_user_interface_options_dialog() {
+   bool debug = true;
+   DBGF(debug, "Starting");
+   RTTI_ADD_METHOD(UserInterfaceOptionsDialog::UserInterfaceOptionsDialog);
+   DBGF(debug, "Done");
+}

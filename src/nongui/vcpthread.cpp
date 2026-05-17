@@ -14,6 +14,8 @@
 #include <QString>
 
 #include "base/ddcui_core.h"
+#include "c_util/debug_util.h"
+#include "base/ddcui_rtti.h"
 #include "base/ddca_utils.h"
 #include "base/global_state.h"
 
@@ -610,6 +612,7 @@ void VcpThread::run()
     bool debug = false;
     TRACECF(debug, "Starting");
 
+
 #ifdef TEMP
     qInfo() << "Thread started"
             << QThread::currentThread()
@@ -665,3 +668,21 @@ void VcpThread::run()
     }
 }
 
+void init_vcpthread() {
+   bool debug = true;
+   DBGF(debug, "Starting");
+   RTTI_ADD_METHOD(VcpThread::VcpThread);
+   RTTI_ADD_METHOD(VcpThread::~VcpThread);
+   RTTI_ADD_METHOD(VcpThread::rpt_feature_error);
+   RTTI_ADD_METHOD(VcpThread::rpt_nonfeature_error);
+   RTTI_ADD_METHOD(VcpThread::rpt_verify_error);
+   RTTI_ADD_METHOD(VcpThread::perform_open_display);
+   RTTI_ADD_METHOD(VcpThread::loadDynamicFeatureRecords);
+   RTTI_ADD_METHOD(VcpThread::capabilities);
+   RTTI_ADD_METHOD(VcpThread::getvcp);
+   RTTI_ADD_METHOD(VcpThread::setvcp);
+   RTTI_ADD_METHOD(VcpThread::startInitialLoad);
+   RTTI_ADD_METHOD(VcpThread::endInitialLoad);
+   RTTI_ADD_METHOD(VcpThread::run);
+   DBGF(debug, "Done");
+}

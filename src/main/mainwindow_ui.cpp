@@ -9,6 +9,8 @@
 // file with extension .ui to process.
 
 #include "base/ddcui_core.h"
+#include "c_util/debug_util.h"
+#include "base/ddcui_rtti.h"
 
 #include "mainwindow_ui.h"
 
@@ -294,3 +296,10 @@ void Ui_MainWindow::keyPressEvent(QKeyEvent * evt) {
 #endif
 
 
+void init_mainwindow_ui() {
+   bool debug = true;
+   DBGF(debug, "Starting");
+   RTTI_ADD_METHOD(Ui_MainWindow::Ui_MainWindow);
+   RTTI_ADD_METHOD(Ui_MainWindow::setupUi);
+   DBGF(debug, "Done");
+}

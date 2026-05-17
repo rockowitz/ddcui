@@ -1,6 +1,6 @@
 // features_scrollarea_contents.h  - Contains rows of FeatureWidgets
 
-// Copyright (C) 2018-2019 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef FEATURES_SCROLLAREA_CONTENTS_H_
@@ -66,5 +66,7 @@ private:         // member variables
    QVector<PageChangeObserver*> * _pageChangeObservers;
 #endif
 };
+
+void init_features_scrollarea_contents();
 
 #endif /* FEATURES_SCROLLAREA_CONTENTS_H_ */

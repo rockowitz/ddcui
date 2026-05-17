@@ -51,4 +51,6 @@ private:  // member variables
     QDialogButtonBox*  _buttons;
 };
 
+void init_help_dialog();
+
 #endif /* HELP_DIALOG_H_ */

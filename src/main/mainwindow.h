@@ -1,6 +1,6 @@
 /* mainwindow.h */
 
-// Copyright (C) 2018-2025 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef MAINWINDOW_H
@@ -236,5 +236,7 @@ private:
     QShortcut *                  _quit_shortcut = nullptr;
     QLabel* _ctlMsg = new QLabel("CTRL key required to change feature values");
 };
+
+void init_mainwindow();
 
 #endif // MAINWINDOW_H

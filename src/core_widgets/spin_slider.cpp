@@ -12,6 +12,9 @@
 
 #include "base/ddcui_core.h"
 
+#include "c_util/debug_util.h"
+#include "base/ddcui_rtti.h"
+
 #include "core_widgets/spin_slider.h"
 
 void SpinSlider::createWidgets() {
@@ -195,4 +198,12 @@ void SpinSlider::onSpinBoxTimedOut() {
                   "emitting featureValueChanged()",
                   _featureCode, _latestSpinBoxValue, new_sh, new_sl);
    emit featureValueChanged(_featureCode, new_sh, new_sl);
+}
+
+
+void init_spin_slider() {
+   bool debug = true;
+   DBGF(debug, "Starting");
+   RTTI_ADD_METHOD(SpinSlider::onSpinBoxValueChanged);
+   DBGF(debug, "Done");
 }

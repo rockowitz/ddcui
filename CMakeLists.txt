@@ -233,8 +233,9 @@ set(SOURCES
     src/base/user_interface_options_state.cpp
     src/base/widget_debug.cpp 
 
+    src/core_widgets/core_widgets_services.cpp
     src/core_widgets/hex_number_validator.cpp
-    src/core_widgets/hline_widget.cpp 
+    src/core_widgets/hline_widget.cpp
     src/core_widgets/number_entry_widget.cpp
     src/core_widgets/spin_slider.cpp
 
@@ -242,6 +243,7 @@ set(SOURCES
     src/cmdline/ddcui_cmd_parser_aux.c
     src/cmdline/ddcui_parsed_cmd.c
 
+    src/nongui/nongui_services.cpp
     src/nongui/ddca_simulator.cpp
     src/nongui/feature_base_model.cpp 
     src/nongui/feature_value.cpp 
@@ -266,26 +268,31 @@ set(SOURCES
     src/feature_value_widgets/value_stacked_widget.cpp 
     src/feature_value_widgets/value_std_widget.cpp 
 
-    src/feature_scrollarea/feature_widget.cpp 
-    src/feature_scrollarea/feature_widget_header.cpp 
-    src/feature_scrollarea/features_scrollarea.cpp 
-    src/feature_scrollarea/features_scrollarea_contents.cpp 
-    src/feature_scrollarea/features_scrollarea_ui.cpp 
+    src/feature_scrollarea/feature_scrollarea_services.cpp
+    src/feature_scrollarea/feature_widget.cpp
+    src/feature_scrollarea/feature_widget_header.cpp
+    src/feature_scrollarea/features_scrollarea.cpp
+    src/feature_scrollarea/features_scrollarea_contents.cpp
+    src/feature_scrollarea/features_scrollarea_ui.cpp
     src/feature_scrollarea/features_scrollarea_view.cpp
 
+    src/help/help_services.cpp
     src/help/help_dialog.cpp
     src/help/help_browser.cpp
     ddcui.qrc
 
+    src/action_dialogs/action_dialogs_services.cpp
     src/action_dialogs/debug_actions_dialog.cpp
-    src/option_dialogs/feature_selection_dialog.cpp 
+    src/option_dialogs/option_dialogs_services.cpp
+    src/option_dialogs/feature_selection_dialog.cpp
     src/option_dialogs/nc_values_dialog.cpp
     src/option_dialogs/user_interface_options_dialog.cpp
 
+    src/main/main_services.cpp
     src/main/main.cpp
-    src/main/mainwindow.cpp 
+    src/main/mainwindow.cpp
     src/main/mainwindow_ui.cpp
-    src/main/monitor.cpp 
+    src/main/monitor.cpp
     src/main/msgbox_thread.cpp
     src/main/callback_manager.cpp
 )

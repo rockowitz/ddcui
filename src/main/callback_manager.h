@@ -5,7 +5,7 @@
  *  allowing the callback to return quickly.
  */
 
-// Copyright (C) 2024-2025 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2024-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef CALLBACK_MANAGER_H_
@@ -41,5 +41,7 @@ public:
    void displayChanged(DDCA_Display_Status_Event evt);
 
 };
+
+void init_callback_manager();
 
 #endif /* CALLBACK_MANAGER_H_ */

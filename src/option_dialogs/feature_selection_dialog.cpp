@@ -13,6 +13,8 @@
 #include <ddcutil_types.h>
 
 #include "base/ddcui_core.h"
+#include "c_util/debug_util.h"
+#include "base/ddcui_rtti.h"
 #include "base/feature_list.h"
 #include "base/global_state.h"
 #include "help/help_dialog.h"
@@ -421,5 +423,12 @@ void FeatureSelectionDialog::on_buttonBox_helpRequested()
     hd->setAttribute(Qt::WA_DeleteOnClose);
     hd->setSource("qrc:docs/help_feature_selection.html");
     hd->exec();
+}
+
+void init_feature_selection_dialog() {
+   bool debug = true;
+   DBGF(debug, "Starting");
+   RTTI_ADD_METHOD(FeatureSelectionDialog::on_buttonBox_accepted);
+   DBGF(debug, "Done");
 }
 

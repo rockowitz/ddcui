@@ -9,6 +9,8 @@
 #include <QtWidgets/QWidget>
 
 #include "base/ddcui_core.h"
+#include "c_util/debug_util.h"
+#include "base/ddcui_rtti.h"
 
 #include "help_dialog.h"
 
@@ -167,4 +169,12 @@ void HelpDialog::viewResourceHelp(QString simpleFn, QString title, QWidget * par
 void HelpDialog::updateWindowTitle()
 {
    setWindowTitle(tr("Help: %1").arg(_textBrowser->documentTitle()));
+}
+
+
+void init_help_dialog() {
+   bool debug = true;
+   DBGF(debug, "Starting");
+   RTTI_ADD_METHOD(HelpDialog::HelpDialog);
+   DBGF(debug, "Done");
 }

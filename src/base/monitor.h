@@ -87,4 +87,6 @@ private:
     QHash<DDCA_Feature_Subset_Id, DDCA_Feature_List> _features;
 };
 
+void init_monitor();
+
 #endif // MONITOR_H
