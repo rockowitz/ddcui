@@ -43,6 +43,7 @@
 #include "feature_scrollarea/feature_scrollarea_services.h"
 #include "help/help_services.h"
 #include "main/main_services.h"
+#include "monitor_desc/monitor_desc_services.h"
 #include "option_dialogs/option_dialogs_services.h"
 
 #include "main/callback_manager.h"
@@ -257,6 +258,7 @@ static void init_rtti() {
    init_feature_scrollarea_services();
    init_help_services();
    init_main_services();
+   init_monitor_desc_services();
    init_option_dialogs_services();
    DBGF(debug, "Done");
 }

@@ -252,8 +252,9 @@ set(SOURCES
     src/nongui/vcprequest.cpp 
     src/nongui/vcpthread.cpp 
 
+    src/monitor_desc/monitor_desc_services.cpp
     src/monitor_desc/monitor_desc_actions.cpp
-    src/monitor_desc/monitor_desc_ui.cpp 
+    src/monitor_desc/monitor_desc_ui.cpp
 
     src/feature_value_widgets/feature_value_widgets_init.cpp
     src/feature_value_widgets/value_2button_widget.cpp
