@@ -464,7 +464,6 @@ int main(int argc, char *argv[])
     init_rtti();
     dbgrpt_rtti_method_name_table(3, true);
 
-
     // bool enable_syslog = true;
     // if ( ntsa_find(argv, "--disable-syslog") >= 0 || ntsa_find(argv, "--nosyslog") >= 0 )
     //    enable_syslog = false;
@@ -511,6 +510,11 @@ int main(int argc, char *argv[])
        Parsed_Ddcui_Cmd * parsed_cmd = parse_ddcui_command(new_argc, new_argv);
        if (!parsed_cmd)
           return 1;
+
+       if (parsed_cmd->cmd_id == CMDID_LIST_RTTI) {
+          report_rtti_method_name_table(0, "Methods traceable by name:");
+          return 0;
+       }
 
        if (parsed_cmd->flags & CMD_FLAG_SHOW_STYLES) {
           QStringList styles = QStyleFactory::keys();

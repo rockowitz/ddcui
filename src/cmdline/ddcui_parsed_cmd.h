@@ -86,6 +86,11 @@ typedef enum {
 
 
 
+typedef enum {
+   CMDID_NONE       = 0,
+   CMDID_LIST_RTTI  = 1,
+} Ddcui_Cmd_Id;
+
 #define PARSED_CMD_MARKER  "PCMD"
 typedef struct {
    char                    marker[4];   // PARSED_CMD_MARKER
@@ -111,6 +116,7 @@ typedef struct {
 
    char **                 traced_methods;
    char **                 traced_files;
+   Ddcui_Cmd_Id            cmd_id;
 } Parsed_Ddcui_Cmd;
 
 

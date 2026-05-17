@@ -390,11 +390,19 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    }
 
    if (ntsa_length(mangleable_argv) > 1) {
-      char * remainder = strjoin((const char**)(mangleable_argv+1), ntsa_length(mangleable_argv)-1, " ");
-      fprintf(stderr, "Unrecognized: %s\n", remainder);
-      syslog(LOG_CRIT, "Unrecognized: %s", remainder);
-      free(remainder);
-      ok = false;
+      char * cmd = mangleable_argv[1];
+      if (is_abbrev(cmd, "traceable-methods",  2) ||
+          is_abbrev(cmd, "traceable-functions", 2))
+      {
+         parsed_cmd->cmd_id = CMDID_LIST_RTTI;
+      }
+      else {
+         char * remainder = strjoin((const char**)(mangleable_argv+1), ntsa_length(mangleable_argv)-1, " ");
+         fprintf(stderr, "Unrecognized: %s\n", remainder);
+         syslog(LOG_CRIT, "Unrecognized: %s", remainder);
+         free(remainder);
+         ok = false;
+      }
    }
 
    if (false) {

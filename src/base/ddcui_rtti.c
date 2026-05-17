@@ -74,7 +74,7 @@ void dbgrpt_rtti_method_name_table(int depth, bool show_internal) {
  *  @param  depth  logical indentation depth
  *  @param  msg    optional header message, may be NULL
  */
-void report_rtti_method_name_table(int depth, char * msg) {
+void report_rtti_method_name_table(int depth, const char * msg) {
    if (msg) {
       rpt_label(depth, msg);
       depth++;
