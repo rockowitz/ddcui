@@ -2,7 +2,7 @@
  * Maintains the current state of the User Interface Options dialog
  */
 
-// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 // NB was originally named ui_options_state.h etc, but the ui prefix is
@@ -10,6 +10,8 @@
 
 #include "cmdline/ddcui_parsed_cmd.h"
 #include "ddcui_core.h"
+#include "c_util/debug_util.h"
+#include "ddcui_rtti.h"
 
 #include "user_interface_options_state.h"
 
@@ -45,4 +47,11 @@
        TRACECF(debug, "emitting controlKeyRequired_changed(%s)", SBOOL(_controlKeyRequired));
        emit controlKeyRequired_changed(_controlKeyRequired);
     }
+}
+
+void init_user_interface_options_state() {
+   bool debug = true;
+   DBGF(debug, "Starting");
+   RTTI_ADD_METHOD(UserInterfaceOptionsState::UserInterfaceOptionsState);
+   DBGF(debug, "Done");
 }

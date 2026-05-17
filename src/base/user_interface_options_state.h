@@ -1,7 +1,7 @@
 /** @file user_interface_options_state.h
  *  Maintains the current state of the User Interface Options dialog
  */
-// Copyright (C) 2018-2022 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef USER_INTERFACE_OPTIONS_STATE_H_
@@ -31,5 +31,7 @@ signals:
 private:
    const char * _cls;
 };
+
+void init_user_interface_options_state();
 
 #endif /* USER_INTERFACE_OPTIONS_STATE_H_ */

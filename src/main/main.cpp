@@ -37,6 +37,7 @@
 
 #include "feature_value_widgets/feature_value_widgets_init.h"
 
+#include "base/base_services.h"
 #include "action_dialogs/action_dialogs_services.h"
 #include "core_widgets/core_widgets_services.h"
 #include "feature_scrollarea/feature_scrollarea_services.h"
@@ -248,6 +249,7 @@ void report_parse_errors(Error_Info * erec) {
 static void init_rtti() {
    bool debug = true;
    DBGF(debug, "Starting");
+   init_base_services();
    init_nongui_services();
    init_feature_value_widgets();
    init_action_dialogs_services();

@@ -226,7 +226,8 @@ set(SOURCES
     src/base/ddcui_rtti.c
     src/base/ddcui_trace_control.c
     src/base/feature_list.c
-    src/base/feature_selector.cpp 
+    src/base/base_services.cpp
+    src/base/feature_selector.cpp
     src/base/global_state.cpp
 	src/base/monitor.h
     src/base/nc_values_state.cpp
