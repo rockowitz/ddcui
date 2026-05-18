@@ -199,7 +199,7 @@ int MainWindow::addMonitor(DDCA_Display_Ref dref) {
    DDCA_Display_Info2 * dinfo;
    DDCA_Status ddcrc = ddca_get_display_info2(dref, &dinfo);
    const char * explain = ddca_rc_name(ddcrc);
-   TRACECF(debug, "ddca_get_display_info2() returned %d %s", ddcrc, explain);
+   TRACECF_NOPREFIX(debug, "ddca_get_display_info2() returned %d %s", ddcrc, explain);
    if (ddcrc != 0) {
       syslog(LOG_ERR, "ddca_get_display_info2() returned %s", explain);
       assert(ddcrc == 0);   // ABORT!!!
@@ -230,7 +230,7 @@ int MainWindow::removeMonitor(DDCA_Display_Ref dref) {
    int monNdx = findMonitor(dref);
    if (monNdx >= 0) {
       Monitor * monitor = _monitors.at(monNdx);
-      TRACECF(debug, "Starting. monitor=%p, dref=%s", monitor, ddca_dref_repr(dref));
+      TRACECF_NOPREFIX(debug, "monitor=%p, dref=%s", monitor, ddca_dref_repr(dref));
 
       // Remove entry for monitor from display selector combo box
       // QString comboBoxString = monitor->comboBoxModelName();
@@ -241,7 +241,7 @@ int MainWindow::removeMonitor(DDCA_Display_Ref dref) {
       // disconnect signals from base model of monitor being removed
       disconnectBaseModel(monitor);
      _toolbarDisplayCB->removeItem(indexToDelete);
-      TRACECF(debug, "deleting monitor monNdx=%d, monitor=%p, dispno=%d",
+      TRACECF_NOPREFIX(debug, "deleting monitor monNdx=%d, monitor=%p, dispno=%d",
                      monNdx, monitor, monitor->_displayInfo->dispno);
       _monitors.removeAt(monNdx);
       delete monitor;
@@ -258,7 +258,7 @@ int MainWindow::removeMonitor(DDCA_Display_Ref dref) {
       }
    }
    else {
-      TRACECF(debug, "No monitor found for dref=%s", ddca_dref_repr(dref));
+      TRACECF_NOPREFIX(debug, "No monitor found for dref=%s", ddca_dref_repr(dref));
    }
 
    TRACECF_DONE(debug, "Returning %d", monNdx);
@@ -271,12 +271,17 @@ int MainWindow::removeMonitor(DDCA_Display_Ref dref) {
  */
 void MainWindow::enableMonitor(DDCA_Display_Ref dref) {
    bool debug = true;
+   char * msg = NULL;
    TRACECF_STARTING(debug, "dref=%s", ddca_dref_repr(dref));
    int monNdx = findMonitor(dref);
    if (monNdx >= 0) {
       Monitor * monitor = _monitors.at(monNdx);
-      TRACECF(debug, "Enabled monitor %p monNdx=%d", monitor, monNdx);
+      msg = g_strdup_printf("Enabled monitor %p monNdx=%d", monitor, monNdx);
    }
+   else {
+      msg = g_strdup_printf("No monitor found for dref=%s", ddca_dref_repr(dref));
+   }
+   TRACECF_DONE(debug, "%s", msg);
 }
 
 
@@ -323,7 +328,7 @@ void MainWindow::forDisplayChanged(DDCA_Display_Status_Event evt) {
 
    else {
       syslog(LOG_ERR, "Unexpected event type");
-      TRACEC("Unexpected event type: %d = %s",
+      TRACEC_NOPREFIX("Unexpected event type: %d = %s",
              evt.event_type, ddca_display_event_type_name(evt.event_type));
       // assert(false);
    }
