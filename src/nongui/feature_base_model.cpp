@@ -38,7 +38,7 @@ FeatureBaseModel::FeatureBaseModel(Monitor * monitor)
       , _monitor(monitor)
 {
     bool debug = false;
-    TRACECF(debug, "Starting. dref=%s", ddca_dref_repr(_monitor->_displayInfo->dref));
+    TRACECF_STARTING(debug, "Starting. dref=%s", ddca_dref_repr(_monitor->_displayInfo->dref));
 
     setObjectName(QString::asprintf("baseModel-%s",ddca_dref_repr(_monitor->_displayInfo->dref)));
     _featureValues          = new QVector<FeatureValue*>();
@@ -124,7 +124,7 @@ FeatureValue * FeatureBaseModel::modelVcpValueFilteredFind(uint8_t feature_code)
          DDCA_Status ddcrc = result->ddcrc();
          bool showUnsupported = GlobalState::instance()._mainWindow->_feature_selector->_showUnsupportedFeatures;
          if (!showUnsupported && (ddcrc == DDCRC_REPORTED_UNSUPPORTED || ddcrc == DDCRC_DETERMINED_UNSUPPORTED)) {
-            TRACECF(debug, "Filtering out feature 0x%02x because UNSUPPORTED", result->featureCode());
+            TRACECF_STARTING(debug, "Filtering out feature 0x%02x because UNSUPPORTED", result->featureCode());
             result = NULL;
          }
       }
@@ -178,7 +178,7 @@ void   FeatureBaseModel::modelVcpValueSet(
     bool debugFunc = false;  // || (feature_code == 0x14);
     debugFunc = debugFunc || debugModel;
     if (debugFunc)
-        TRACEMCF(debugFunc,
+        TRACEMCF_STARTING(debugFunc,
                  "Starting. feature_code=0x%02x, mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x, ddcrc = %s, _initialLoadActive=%s",
                  feature_code, feature_value->mh, feature_value->ml, feature_value->sh, feature_value->sl,
                  ddca_rc_name(ddcrc), SBOOL(_initialLoadActive));
@@ -245,7 +245,7 @@ FeatureBaseModel::modelVcpValueUpdate(
     bool debugFunc = false;  //  || (feature_code == 0x14);
     debugFunc = debugFunc || debugModel;
 
-    TRACECF(debugFunc, "feature_code=0x%02x, sh=0x%02x, sl=0x%02x, _initialLoadActive=%s",
+    TRACECF_STARTING(debugFunc, "feature_code=0x%02x, sh=0x%02x, sl=0x%02x, _initialLoadActive=%s",
           feature_code, sh, sl, SBOOL(_initialLoadActive));
 
     int ndx = modelVcpValueIndex(feature_code);
@@ -297,7 +297,7 @@ FeatureBaseModel::setCapabilities(
       DDCA_Capabilities *  parsed_capabilities)
 {
    bool debug = false;
-   TRACECF(debug, "ddcrc = %s, capabilities_string=|%s|", ddca_rc_name(ddcrc), capabilities_string);
+   TRACECF_STARTING(debug, "ddcrc = %s, capabilities_string=|%s|", ddca_rc_name(ddcrc), capabilities_string);
 
    _caps_check_complete = true;
    _caps_status = ddcrc;
@@ -326,7 +326,7 @@ FeatureBaseModel::setFeatureList(
 {
    bool debugFunc = false;
    debugFunc = debugFunc || debugFeatureLists;
-   TRACECF(debugFunc, "Starting. %d features: %s",
+   TRACECF_STARTING(debugFunc, "Starting. %d features: %s",
                       ddca_feature_list_count(featureList),
                       ddca_feature_list_string(featureList, NULL, (char*) " ") );
 
@@ -364,7 +364,7 @@ FeatureBaseModel::reloadSpecificFeatures(int ct, uint8_t* features) {
    for (int ndx = 0; ndx < ct; ndx++) {
       DDCA_Vcp_Feature_Code vcp_code = features[ndx];
       if (ddca_feature_list_contains(_featuresChecked, vcp_code)) {
-         TRACECF(debugFunc, "vcp_code = 0x%02x, in _features_checked", vcp_code);
+         TRACECF_STARTING(debugFunc, "vcp_code = 0x%02x, in _features_checked", vcp_code);
          FeatureValue *  fv = modelVcpValueFind(vcp_code);
          // should always exist, but just in case
          if (fv) {
@@ -391,7 +391,7 @@ void FeatureBaseModel::reloadFeatures() {
    bool debug = false;
    debug = debug || debugFeatureLists;
 
-   TRACECF(debug, "Starting.");
+   TRACECF_STARTING(debug, "Starting.");
 
    _monitor->_requestQueue->put(new VcpStartInitialLoadRequest);
    int ct = modelVcpValueCount();
@@ -415,7 +415,7 @@ void FeatureBaseModel::reloadFeatures() {
 
 void FeatureBaseModel::markDisconnected(DDCA_Display_Ref dref) {
    bool debug = true;
-   TRACECF(debug, "DDCA_Display_Ref = %p", dref);
+   TRACECF_STARTING(debug, "DDCA_Display_Ref = %p", dref);
    _monitor->markDisconnected();   // or should this be emit signalDisconnected(dref) ?
    // GlobalState& _globalState = GlobalState::instance();
     TRACECF(debug, "emitting signalEndInitialLoad()");
@@ -444,7 +444,7 @@ void FeatureBaseModel::dbgrpt() {
 void  FeatureBaseModel::modelStartInitialLoad(void) {
    bool debug = false;
    _initialLoadActive = true;
-    TRACECF(debug, "=> Emitting signalStartInitialLoad");
+    TRACECFNG(debug, "=> Emitting signalStartInitialLoad");
     emit signalStartInitialLoad();
 }
 

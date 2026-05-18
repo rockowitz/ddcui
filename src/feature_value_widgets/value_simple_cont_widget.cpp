@@ -23,7 +23,7 @@ static bool showResizeEvents = false;
 
 void ValueSimpleContWidget::additionalWidgets() {
    bool debug = false;
-   TRACEMCF(debug, "Starting." );
+   TRACEMCF_STARTING(debug, "Starting." );
 
    // max value fields
    _maxTitle = new QLabel("Max:");
@@ -48,7 +48,7 @@ void ValueSimpleContWidget::additionalWidgets() {
 
 void ValueSimpleContWidget::createWidgets() {
     bool debug = false;
-    TRACEMCF(debug, "Starting.");
+    TRACEMCF_STARTING(debug, "Starting.");
 
     _spinSlider = new SpinSlider();
 
@@ -58,7 +58,7 @@ void ValueSimpleContWidget::createWidgets() {
 
 void ValueSimpleContWidget::layoutWidget(QHBoxLayout * layout) {
     bool debug = false;
-    TRACEMCF(debug, "Starting." );
+    TRACEMCF_STARTING(debug, "Starting." );
 
     layout->addSpacing(5);
     layout->addWidget(_spinSlider);
@@ -79,7 +79,7 @@ ValueSimpleContWidget::ValueSimpleContWidget(QWidget *parent)
    // , _newval(0)
 {
     bool debug = false;
-    TRACEMCF(debug, "Starting. After ValueBaseWidget() constructor." );
+    TRACEMCF_STARTING(debug, "Starting. After ValueBaseWidget() constructor." );
 
     _newval = 0;
     createWidgets();
@@ -102,7 +102,7 @@ ValueSimpleContWidget::~ValueSimpleContWidget() {
 
 void   ValueSimpleContWidget::setEnabled(bool onoff) {
    bool debug = false;
-   TRACEMCF(debug, "_id=%d, _featureCode=0x%02x, onoff=%s", _id, _featureCode, SBOOL(onoff));
+   TRACEMCF_STARTING(debug, "_id=%d, _featureCode=0x%02x, onoff=%s", _id, _featureCode, SBOOL(onoff));
    ValueBaseWidget::setEnabled(onoff);
 #ifdef OUT
    if (onoff) {
@@ -118,7 +118,7 @@ void   ValueSimpleContWidget::setEnabled(bool onoff) {
 
 void ValueSimpleContWidget::setRange(int minval, int maxval) {
    bool debug = false;
-   TRACEMCF(debug, "minval=%d, maxval=%d", minval, maxval);
+   TRACEMCF_STARTING(debug, "minval=%d, maxval=%d", minval, maxval);
    assert (_minval < 0 && _maxval < 0);
    assert (minval >= 0 && maxval >= 0);
    _minval = minval;
@@ -133,7 +133,7 @@ void ValueSimpleContWidget::setFeatureValue(const FeatureValue &fv) {
     bool debug = false;
     debug = debug || debugValueWidgetSignals;
     // _guiChange = false;
-    TRACEMCF(debug, "Starting. feature code: 0x%02x, before ValueBaseWidget::setFeatureValue()", fv.featureCode());
+    TRACEMCF_STARTING(debug, "Starting. feature code: 0x%02x, before ValueBaseWidget::setFeatureValue()", fv.featureCode());
     ValueBaseWidget::setFeatureValue(fv);
 
     if (_maxval < 0) {     // setRange has not been called
@@ -162,7 +162,7 @@ void ValueSimpleContWidget::setFeatureValue(const FeatureValue &fv) {
 void ValueSimpleContWidget::setCurrentShSl(uint16_t newval) {
     bool debug = false;
     debug = debug || debugValueWidgetSignals;
-    TRACEMCF(debug, "Starting. newval = 0x%04x", newval);
+    TRACEMCF_STARTING(debug, "Starting. newval = 0x%04x", newval);
 
     ValueBaseWidget::setCurrentShSl(newval);
     int curval = _sh << 8 | _sl;
@@ -184,7 +184,7 @@ uint16_t ValueSimpleContWidget::getCurrentShSl() {
 
 void ValueSimpleContWidget::onFeatureValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl) {
    bool debug = false;
-   TRACEMCF(debug, "featureCode=0x%02x, sh=0x%02x, sl=0x%02x,_featureCode=0x%02x",
+   TRACEMCF_STARTING(debug, "featureCode=0x%02x, sh=0x%02x, sl=0x%02x,_featureCode=0x%02x",
                   featureCode, sh, sl, _featureCode);
    TRACEMCF(debug, "Emitting featureValueChanged(0x%02x, 0x%02x, 0x%02x)", _featureCode, sh, sl);
    emit featureValueChanged(_featureCode, sh, sl);
@@ -246,7 +246,7 @@ void ValueSimpleContWidget::resizeEvent(QResizeEvent * evt)
 #endif
 
    if (show) {
-      TRACEC("_id=%d, old size = %d, %d, new size = %d, %d ",
+      TRACEC_STARTING("_id=%d, old size = %d, %d, new size = %d, %d ",
               _id, oldSz.width(), oldSz.height(), newSz.width(), newSz.height());
    }
 
@@ -263,7 +263,7 @@ void ValueSimpleContWidget::debugSimpleContLayout()
 
        if (showDimensionReports && !dimensionReportShown) {
 
-          TRACEC("_spinSlider dimensions");
+          TRACEC_STARTING("_spinSlider dimensions");
           reportWidgetDimensions(_spinSlider, _cls, __func__);
 
 #ifdef FOR_SUBCLASS

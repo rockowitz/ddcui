@@ -25,7 +25,7 @@ DebugActionsDialog::DebugActionsDialog(QWidget *parent)
 {
     bool debug = false;
     _cls = metaObject()->className();
-    TRACECF(debug, "Constructor starting");
+    TRACECF_STARTING(debug, "Constructor starting");
     _ui->setupUi(this);
     setWindowTitle("ddcui - Debugging Actions");
     //  setWindowFlag(Qt::CustomizeWindowHint, true);      // not needed
@@ -79,7 +79,7 @@ void DebugActionsDialog::on_actionButtonBox_accepted()
     // not needed, automatically emitted when dialog accepted, by accept() or done()
     // emit userInterfaceDialog_accepted(_state);  // probably not needed
 
-    TRACECF(debugFunc, "Before calling accept()");
+    TRACECF_STARTING(debugFunc, "Before calling accept()");
     accept();  // causes accepted() to be emitted
 }
 

@@ -29,7 +29,7 @@
 DDCA_Feature_List FeatureSelectionDialog::validateCustomFeatureList(char * newval) {
    bool debugFunc = false;
    DDCA_Feature_List customFlist = DDCA_EMPTY_FEATURE_LIST;
-   TRACECF(debugFunc, "Starting. text: |%s|", newval);
+   TRACECF_STARTING(debugFunc, "Starting. text: |%s|", newval);
 
    char ** error_msgs = NULL;
    customFlist = parse_custom_feature_list(newval, &error_msgs);
@@ -61,7 +61,7 @@ void FeatureSelectionDialog::useSelectorData(FeatureSelector * fsel)
     bool debugFunc = false;
     debugFunc = debugFunc || debugFeatureSelection;
     if (debugFunc) {
-        TRACEC("Setting dialog box widgets from FeatureSelector:");
+        TRACEC_STARTING("Setting dialog box widgets from FeatureSelector:");
         fsel->dbgrpt();
     }
 
@@ -291,7 +291,7 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
 {
     bool debug = false;
     debug = debug || debugFeatureSelection;
-    TRACECF(debug, "Starting.");
+    TRACECF_STARTING(debug, "Starting.");
 
     DDCA_Feature_List customFlist = DDCA_EMPTY_FEATURE_LIST;
     DDCA_Feature_Subset_Id fsid = DDCA_SUBSET_UNSET;   // assignment to avoid warning re uninitialized var

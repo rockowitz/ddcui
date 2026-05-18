@@ -30,7 +30,7 @@ Ui_MainWindow::Ui_MainWindow(QMainWindow* mainWindow)
    : _mainWindow(mainWindow)
 {
    bool debug = false;
-   TRACECF(debug, "Starting");
+   TRACECF_STARTING(debug, "Starting");
    setupUi(mainWindow);
    TRACECF(debug, "Done");
 }
@@ -243,7 +243,7 @@ void Ui_MainWindow::layoutCentralWidget(QMainWindow *MainWindow)
 void Ui_MainWindow::setupUi(QMainWindow *MainWindow)
 {
    bool debug = false;
-   TRACECF(debug, "Starting");
+   TRACECF_STARTING(debug, "Starting");
 
    // std::cout << "(setupUi) Starting" << std::endl;
    if (MainWindow->objectName().isEmpty())

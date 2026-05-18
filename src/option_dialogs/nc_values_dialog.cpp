@@ -79,7 +79,7 @@ void NcValuesDialog::on_buttonBox_accepted()
 
 void NcValuesDialog::on_buttonBox_helpRequested()
 {
-   // TRACEC("Starting");
+   // TRACEC_STARTING("Starting");
    // viewHelp(QString("nc_values.html"), QString("ddcui Help -X Other Options"), this);
    // HelpBrowser::showPage("qrc:docs/help_nc_values.html", false);
 

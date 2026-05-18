@@ -27,7 +27,7 @@ MsgBoxQueueEntry::MsgBoxQueueEntry(
    , _boxText(text)
    , _boxIcon(icon)
 {
-   TRACECF(debugClass, "Constructor. title=%s, text=%s, icon=%d",
+   TRACECF_STARTING(debugClass, "Constructor. title=%s, text=%s, icon=%d",
                        QS2S(_boxTitle), QS2S(_boxText), _boxIcon);
 }
 
@@ -75,14 +75,14 @@ MsgBoxQueue::MsgBoxQueue()
     _freeBytes = new QSemaphore(9999);
     _usedBytes = new QSemaphore();
     // -Wnon-pod-varrags says will abort at runtime:
-    // TRACECF(debugFunc, "this=%p, queue=%p, _usedBytes=%p, _freeBytes=%p", this, _queue, _usedBytes, _freeBytes);
+    // TRACECF_STARTING(debugFunc, "this=%p, queue=%p, _usedBytes=%p, _freeBytes=%p", this, _queue, _usedBytes, _freeBytes);
 #endif
 }
 
 
 void MsgBoxQueue::put(MsgBoxQueueEntry * request) {
     bool debug = false || debugClass;
-    TRACECF(debug, "-> Starting. request: |%s|", QS2S(request->repr()));
+    TRACECF_STARTING(debug, "-> Starting. request: |%s|", QS2S(request->repr()));
     assert(request);
 
 #ifdef USE_MUTEX
@@ -102,7 +102,7 @@ void MsgBoxQueue::put(MsgBoxQueueEntry * request) {
 
 void MsgBoxQueue::putMessages(QString qstitle, QMessageBox::Icon icon, char** msgs) {
    bool debug = false || debugClass;
-   TRACECF(debug, "Starting");
+   TRACECF_STARTING(debug, "Starting");
    if (msgs) {
       if (debug) {
          int ct = 0;
@@ -122,7 +122,7 @@ void MsgBoxQueue::putMessages(QString qstitle, QMessageBox::Icon icon, char** ms
 
 MsgBoxQueueEntry * MsgBoxQueue::pop() {
     bool debug = false || debugClass;
-    TRACECF(debug, "Starting");
+    TRACECF_STARTING(debug, "Starting");
 #ifdef USE_MUTEX
     _mutex.lock();
     TRACECF(debug, "After lock, before wait");
@@ -146,7 +146,7 @@ MsgBoxQueueEntry * MsgBoxQueue::pop() {
 
 void MsgBoxQueue::dbgrpt_nolock() {
    int ct = _queue.size();
-   TRACEC("Queue contains %d entries", ct);
+   TRACEC_STARTING("Queue contains %d entries", ct);
    for (int ndx = 0; ndx < ct; ndx++) {
       MsgBoxQueueEntry * rqst = _queue.at(ndx);
       TRACEC("   %s", QS2S(rqst->repr()) );

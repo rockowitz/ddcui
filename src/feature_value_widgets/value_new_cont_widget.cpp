@@ -17,7 +17,7 @@
 
 void ValueNewContWidget::layoutWidget(QHBoxLayout * layout) {
     bool debug = false;
-    TRACECF(debug, " Starting." );
+    TRACECF_STARTING(debug, " Starting." );
 
     // createWidgets();   // done in ValueSimpleContWidget constructor
     // additionalWidgets();  // done in our constructor
@@ -61,7 +61,7 @@ void ValueNewContWidget::setFeatureValue(const FeatureValue &fv) {
     int curval = fv.val().sh << 8 | fv.val().sl;
     // maxval = 99999;   // for testing big numbers
     // curval = 99999;   // for testing big numbers
-    TRACEMCF(debug, "Starting. _id=%d, feature=0x%02x, curval=%d, maxval=%d",
+    TRACEMCF_STARTING(debug, "Starting. _id=%d, feature=0x%02x, curval=%d, maxval=%d",
                     _id, fv.featureCode(), curval, maxval);
 
     _spinSlider->setRange(0,maxval);

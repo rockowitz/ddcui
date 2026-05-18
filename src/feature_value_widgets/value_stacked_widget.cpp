@@ -35,7 +35,7 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
     bool debug = false;
     _cls = strdup(metaObject()->className());
     _id = ++nextId;
-    TRACECF(debug, "Starting. id=%d", _id);
+    TRACECF_STARTING(debug, "Starting. id=%d", _id);
 
     // _typedParent = dynamic_cast<FeatureWidget *>(parent);
 
@@ -194,7 +194,7 @@ ValueStackedWidget::~ValueStackedWidget() {
 void ValueStackedWidget::enableSubwidgets() {
    bool debug = false;
    bool enabled = !_instanceControlKeyRequired || _instanceControlKeyPressed;
-   TRACEMCF(debug, "_id=%d, _pageno_selected=%d, calling setEnabled(%s) for subwidgets",
+   TRACEMCF_STARTING(debug, "_id=%d, _pageno_selected=%d, calling setEnabled(%s) for subwidgets",
                    _id, _pageno_selected, SBOOL(enabled));
    for (int ndx = 0; ndx < _subwidgetCt; ndx++) {
       _subwidget[ndx]->setEnabled(enabled);
@@ -210,7 +210,7 @@ void ValueStackedWidget::enableSubwidgets() {
 void ValueStackedWidget::setInstanceControlKeyRequired(bool onoff) {
    bool debug = false;
    debug = debug | debugValueWidgetSignals;
-   TRACEMCF(debug, "_id=%d, _pageno_selected=%d, onoff=%s", _id, _pageno_selected, SBOOL(onoff));
+   TRACEMCF_STARTING(debug, "_id=%d, _pageno_selected=%d, onoff=%s", _id, _pageno_selected, SBOOL(onoff));
 
    _instanceControlKeyRequired = onoff;
    enableSubwidgets();
@@ -221,7 +221,7 @@ void ValueStackedWidget::setInstanceControlKeyRequired(bool onoff) {
 void ValueStackedWidget::setInstanceControlKeyPressed(bool onoff) {
    bool debug = false;
    debug = debug | debugValueWidgetSignals;
-   TRACEMCF(debug, "_id=%d, _pageno_selected=%d, onoff=%s", _id, _pageno_selected, SBOOL(onoff));
+   TRACEMCF_STARTING(debug, "_id=%d, _pageno_selected=%d, onoff=%s", _id, _pageno_selected, SBOOL(onoff));
 
    _instanceControlKeyPressed = onoff;
    enableSubwidgets();
@@ -243,7 +243,7 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
     // debug = debug || (fv.featureCode() == 0xdf);
     // debug = debug || (fv.featureCode() == 0x14);
     debug = debug || debugValueWidgetSignals;
-    TRACEMCF(debug, "Starting. this._id=%d, feature code: 0x%02x", _id, fv.featureCode());
+    TRACEMCF_STARTING(debug, "Starting. this._id=%d, feature code: 0x%02x", _id, fv.featureCode());
     // if (debug)
     //    fv.dbgrpt();
 
@@ -433,7 +433,7 @@ void  ValueStackedWidget::forContainedWidgetChanged(uint8_t feature_code, uint8_
 {
    bool debug = false;
    debug = debug || debugValueWidgetSignals;
-   TRACECF(debug, "feature_code=0x%02x, sh=0x%02x, sl=0x%02x", feature_code, sh, sl);
+   TRACECF_STARTING(debug, "feature_code=0x%02x, sh=0x%02x, sl=0x%02x", feature_code, sh, sl);
    assert(feature_code == _featureCode);
 
    TRACECF(debug,
@@ -456,7 +456,7 @@ bool ValueStackedWidget::hasSlTable() {
 void ValueStackedWidget::setNcValuesSource(NcValuesSource newValuesSource, bool newUseLatestNcValueNames) {
    bool debug = false;
    debug = debug || debugNcValues;
-   TRACECF(debug, "newValuesSource=%d, newUseLatestNcValueNames=%s, _pageno_selected=%d, _pageno_nc=%d, _pageno_ncplus=%d",
+   TRACECF_STARTING(debug, "newValuesSource=%d, newUseLatestNcValueNames=%s, _pageno_selected=%d, _pageno_nc=%d, _pageno_ncplus=%d",
                       newValuesSource, SBOOL(newUseLatestNcValueNames), _pageno_selected, _pageno_nc, _pageno_ncplus);
 
    // if (_pageno_selected == _pageno_nc) {

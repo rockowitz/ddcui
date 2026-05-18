@@ -24,7 +24,7 @@
      : _cls(metaObject()->className())
  {
     bool debug = false;
-    TRACEMCF(debug, "Starting");
+    TRACEMCF_STARTING(debug, "Starting");
     _controlKeyRequired = parsed_cmd->flags & CMD_FLAG_UI_REQUIRE_CONTROL_KEY;
     TRACEMCF(debug, "Done");
  }
@@ -40,7 +40,7 @@
     bool debug = false;
     bool old =   _controlKeyRequired;
     bool newControlKeyRequired = onoff;
-    TRACECF(debug, "old = %s, new = %s", SBOOL(_controlKeyRequired), SBOOL(onoff));
+    TRACECF_STARTING(debug, "old = %s, new = %s", SBOOL(_controlKeyRequired), SBOOL(onoff));
 
     if (newControlKeyRequired != old) {
        _controlKeyRequired = newControlKeyRequired;

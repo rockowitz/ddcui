@@ -33,7 +33,7 @@ MsgBoxThread::~MsgBoxThread() {
 }
 
 void MsgBoxThread::msbgoxClosed(int result) {
-   TRACECF(debugThread, "Releasing semaphore");
+   TRACECF_STARTING(debugThread, "Releasing semaphore");
    _semaphore->release();
 }
 
@@ -48,7 +48,7 @@ void MsgBoxThread::run() {
     // Crude but effective.  Just sleep before starting loop reading messages and
     // displaying SerialMsgBox
     long initial_sleep_millis =  MSGBOX_THREAD_RUN_DELAY_MILLIS;
-    TRACECF(debugThread, "Sleeping for %d milliseconds", initial_sleep_millis);
+    TRACECF_STARTING(debugThread, "Sleeping for %d milliseconds", initial_sleep_millis);
     QThread::msleep(initial_sleep_millis);
     TRACECF(debugThread, "Initial sleep complete");
 

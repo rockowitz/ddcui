@@ -113,7 +113,7 @@ void SpinSlider::setRange(int minval, int maxval) {
 // Called by the containing class to update the widget
 void SpinSlider::setShSl(uint16_t newval) {
     bool debug = false;
-    // TRACEMCF(debug, "newval = 0x%04x", newval);
+    // TRACEMCF_STARTING(debug, "newval = 0x%04x", newval);
     // ValueBaseWidget::setCurrentShSl(newval);
     // _guiChange = false;
 
@@ -145,7 +145,7 @@ uint16_t SpinSlider::getShSl() {
 void SpinSlider::onSliderReleased() {
    bool debug = false;
    debug = debug || debugValueWidgetSignals;
-   // TRACECF(debug, "feature=0x%02x",  _featureCode);
+   // TRACECF_STARTING(debug, "feature=0x%02x",  _featureCode);
 
    int newval = _spinBox->value();
 
@@ -164,7 +164,7 @@ void SpinSlider::onSliderReleased() {
 void SpinSlider::onSpinBoxValueChanged(int value) {
    bool debug = false;
    debug = debug || debugValueWidgetSignals;
-   // TRACECF(debug, "feature=0x%02x, value=%d, _guiChange=%d=%s",
+   // TRACECF_STARTING(debug, "feature=0x%02x, value=%d, _guiChange=%d=%s",
    //                _featureCode, value, _guiChange, SBOOL(_guiChange));
    TRACECF(debug, "feature=0x%02x, value=%d", _featureCode, value);
 
@@ -194,7 +194,7 @@ void SpinSlider::onSpinBoxTimedOut() {
    uint8_t new_sh = (_latestSpinBoxValue >> 8) & 0xff;
    uint8_t new_sl = _latestSpinBoxValue & 0xff;
 
-   TRACECF(debug, "feature 0x%02x, _latestSpinBoxValue=%d, new_sh=0x%02x, new_sl=0x%02x, "
+   TRACECF_STARTING(debug, "feature 0x%02x, _latestSpinBoxValue=%d, new_sh=0x%02x, new_sl=0x%02x, "
                   "emitting featureValueChanged()",
                   _featureCode, _latestSpinBoxValue, new_sh, new_sl);
    emit featureValueChanged(_featureCode, new_sh, new_sl);

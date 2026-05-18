@@ -80,7 +80,7 @@ ValueResetWidget::ValueResetWidget(QWidget *parent):
 {
    bool debug = false;
    _cls = strdup(metaObject()->className());
-   TRACEMCF(debug, "Starting. _id=%d, _featureCode=0x%02x", _id, _featureCode );
+   TRACEMCF_STARTING(debug, "Starting. _id=%d, _featureCode=0x%02x", _id, _featureCode );
    layoutWidget();
 
    // QObject::connect(_resetButton,  &QAbstractButton::released),
@@ -99,7 +99,7 @@ ValueResetWidget::~ValueResetWidget() {
 
 void ValueResetWidget::setEnabled(bool onoff) {
    bool debug = false;
-   TRACEMCF(debug, "Starting. onoff=%s", SBOOL(onoff));
+   TRACEMCF_STARTING(debug, "Starting. onoff=%s", SBOOL(onoff));
    ValueBaseWidget::setEnabled(onoff);
 #ifdef OUT
    if (onoff) {
@@ -115,7 +115,7 @@ void ValueResetWidget::setEnabled(bool onoff) {
 
 void ValueResetWidget::on_resetButton_pressed() {
    bool debug = false;
-   TRACEMCF(debug, "Starting. _id=%d, _featureCode=0x%02x, isEnabled=%s",
+   TRACEMCF_STARTING(debug, "Starting. _id=%d, _featureCode=0x%02x, isEnabled=%s",
                    _id, _featureCode, SBOOL(ValueBaseWidget::isEnabled()));
 
 
@@ -148,7 +148,7 @@ void ValueResetWidget::resizeEvent(QResizeEvent * evt)
 #endif
 
    if (show) {
-      TRACEC("old size = %d, %d", oldSz.width(), oldSz.height());
+      TRACEC_STARTING("old size = %d, %d", oldSz.width(), oldSz.height());
       TRACEC("new size = %d, %d", newSz.width(), newSz.height());
    }
 

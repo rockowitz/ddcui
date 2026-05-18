@@ -31,7 +31,7 @@ UserInterfaceOptionsDialog::UserInterfaceOptionsDialog(
     , _state(state)
 {
     bool debug = false;
-    TRACECF(debug, "Constructor starting");
+    TRACECF_STARTING(debug, "Constructor starting");
     _ui->setupUi(this);
     setWindowFlag(Qt::WindowContextHelpButtonHint, false);
     // setWindowFlag(Qt::WindowMaximizeButtonHint, false);  // no effect
@@ -105,7 +105,7 @@ void UserInterfaceOptionsDialog::on_actionButtonBox_helpRequested()
 void UserInterfaceOptionsDialog::on_actionButtonBox_clicked(QAbstractButton* button)
 {
    if(button== (QAbstractButton*) _ui->actionButtonBox->button(QDialogButtonBox::Reset) ){
-      // TRACEC("Reset");
+      // TRACEC_STARTING("Reset");
 
       // Pressing the reset button does not close the dialog box
       // Reset the state in UserInterfaceOptionsState

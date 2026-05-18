@@ -60,7 +60,7 @@ void ValueStdWidget::layoutWidget() {
 
         static bool dimensionReportShown = false;
         if (showDimensionReport && !dimensionReportShown) {
-            TRACEC("_valueField dimensions");
+            TRACEC_STARTING("_valueField dimensions");
             reportWidgetDimensions(_valueField, _cls, __func__);
             TRACEC("ValueStdWidget dimensions");
             reportWidgetDimensions(this, _cls, __func__);
@@ -96,7 +96,7 @@ ValueStdWidget::ValueStdWidget(QWidget *parent):
     _cls = strdup(metaObject()->className());
     // TRACE("Starting");
     layoutWidget();
-    TRACEMCF(debug, "TRACECMF. After superclass call");
+    TRACEMCF_STARTING(debug, "TRACECMF. After superclass call");
 }
 
 
@@ -133,7 +133,7 @@ void ValueStdWidget::setValueField() {
        if (_ddcrc == DDCRC_REPORTED_UNSUPPORTED || _ddcrc == DDCRC_DETERMINED_UNSUPPORTED) {
           FeatureSelector * fsel = _globalState._mainWindow->_feature_selector;
           bool showUnsupported = fsel->_showUnsupportedFeatures;
-          // TRACEC("showUnsupported = %s", sbool(showUnsupported));
+          // TRACEC_STARTING("showUnsupported = %s", sbool(showUnsupported));
           if (showUnsupported) {
              // TODO: Use QString !!!
              s_formatted = (char*) "Unsupported feature";
@@ -157,7 +157,7 @@ void ValueStdWidget::setFeatureValue(const FeatureValue &fv) {
     bool debug = false;
     debug = debug || debugValueWidgetSignals;
 
-    TRACEMCF(debug, "featureCode=0x%02x, capVcp=%p, ddcrc=%d, Before ValueBaseWidget::setFeatureValue() call",
+    TRACEMCF_STARTING(debug, "featureCode=0x%02x, capVcp=%p, ddcrc=%d, Before ValueBaseWidget::setFeatureValue() call",
                   fv.featureCode(), fv.capVcp(), fv.ddcrc());
     ValueBaseWidget::setFeatureValue(fv);
     setValueField();
@@ -220,7 +220,7 @@ void ValueStdWidget::resizeEvent(QResizeEvent * evt)
 #endif
 
    if (show) {
-      TRACEC("old size = %d, %d", oldSz.width(), oldSz.height());
+      TRACEC_STARTING("old size = %d, %d", oldSz.width(), oldSz.height());
       TRACEC("new size = %d, %d", newSz.width(), newSz.height());
    }
 

@@ -32,7 +32,7 @@ QLabel *
 ValueBytesWidget::newTitle(QString title, int titleHeight) {
    QLabel* lab = new QLabel(title);
 
-   // TRACECF(true, "titleHeight=%d",titleHeight);
+   // TRACECF_STARTING(true, "titleHeight=%d",titleHeight);
 
    // QFont nonMonoValueFont;
    // nonMonoValueFont.setPointSize(8);
@@ -63,7 +63,7 @@ ValueBytesWidget::createWidgets() {
    int buttonHeight = widgetHeight;
    int titleHeight  = widgetHeight - 2;
    // if (_id == 1) {
-   //    TRACEC("_id=%d, _widgetHeight=%d, widgetHeight=%d", _id, _featureValueWidgetHeight, widgetHeight);
+   //    TRACEC_STARTING("_id=%d, _widgetHeight=%d, widgetHeight=%d", _id, _featureValueWidgetHeight, widgetHeight);
    // }
    QSizePolicy fixedSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
    fixedSizePolicy.setHorizontalStretch(0);    // needed?
@@ -159,7 +159,7 @@ ValueBytesWidget::layoutWidget() {
 
       if (showDimensionReports && !dimensionReportShown  && _id == 1) {
 
-          TRACEC("_mhTitle dimensions");
+          TRACEC_STARTING("_mhTitle dimensions");
           reportWidgetDimensions(_mhTitle, _cls, __func__);
 
           //TRACEC("_mhWidget dimensions");
@@ -192,7 +192,7 @@ ValueBytesWidget::ValueBytesWidget(QWidget *parent)
 {
     _cls = strdup(metaObject()->className());
     bool debug = false;
-    TRACEMCF(debug, "Starting." );
+    TRACEMCF_STARTING(debug, "Starting." );
 
     _id = ValueBytesWidget::idGenerator++;
     createWidgets();
@@ -228,7 +228,7 @@ void ValueBytesWidget::when_combobox_activated(int ndx) {
 void ValueBytesWidget::setFeatureValue(const FeatureValue &fv) {
     bool debug = debugValueWidgetSignals;
     // debug = false;
-    TRACEMCF(debug,
+    TRACEMCF_STARTING(debug,
               "Starting. feature code: 0x%02x, mh: 0x%02x, ml: 0x%02x, sh: 0x%02x sl: 0x%02x",
               fv.featureCode(),
               fv.val().mh,
@@ -275,7 +275,7 @@ void ValueBytesWidget::setCurrentShSl(uint16_t newval) {
 
     // int baseval = _sh << 8 | _sl;
     // assert(baseval == newval);
-    TRACECF(debugValueWidgetSignals, "feature=0x%02x, newval=0%04x", _featureCode , newval);
+    TRACECF_STARTING(debugValueWidgetSignals, "feature=0x%02x, newval=0%04x", _featureCode , newval);
 
     _applyButton->setEnabled(false);
     _cancelButton->setEnabled(false);
@@ -297,7 +297,7 @@ void  ValueBytesWidget::onApplyButtonClicked(bool checked) {
    // TRACEF(debug, "Executing. checked=%s", sbool(checked));
 
    if (_shNew != _sh || _slNew != _sl) {
-      TRACECF(debug, "Emitting featureValueChanged(). feature code: 0x%02x, new sh: 0x%02x, new sl: 0x%02x",
+      TRACECF_STARTING(debug, "Emitting featureValueChanged(). feature code: 0x%02x, new sh: 0x%02x, new sl: 0x%02x",
                 _featureCode, _shNew, _slNew);
       _sh = _shNew;
       _sl = _slNew;

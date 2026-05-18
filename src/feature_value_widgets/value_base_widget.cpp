@@ -22,7 +22,7 @@
 
 void ValueBaseWidget::setEnabled(bool onoff) {
    bool debug = false;
-   TRACEMCF(debug, "Starting. _id=%d, _featureCode=0x%02x, onoff=%s, "
+   TRACEMCF_STARTING(debug, "Starting. _id=%d, _featureCode=0x%02x, onoff=%s, "
                    "before calling QFrame::setEnabled(%s)",
                    _id, _featureCode,  SBOOL(onoff), SBOOL(onoff));
 
@@ -34,7 +34,7 @@ void ValueBaseWidget::setEnabled(bool onoff) {
 // utility method that provides consistent formatting for comboboxes
 QComboBox * ValueBaseWidget::createFormattedComboBox() {
    bool debug = false;
-   TRACECF(debug, "Starting. _id=%d", _id);
+   TRACECF_STARTING(debug, "Starting. _id=%d", _id);
    QComboBox * cb = new QComboBox();
    TRACECF(debug, "Allocated");
 
@@ -77,7 +77,7 @@ ValueBaseWidget::ValueBaseWidget(QWidget *parent)
 
 ValueBaseWidget::~ValueBaseWidget() {
    bool debug = false;
-   TRACEMCF(debug, "Starting. this._id = %d", _id);
+   TRACEMCF_STARTING(debug, "Starting. this._id = %d", _id);
 
    // leave it to FeatureValueto delete finfo, since it may be shared among multiple widgets
    // ddca_free_feature_metadata(_finfo);
@@ -88,7 +88,7 @@ ValueBaseWidget::~ValueBaseWidget() {
 
 void ValueBaseWidget::setFeatureValue(const FeatureValue &fv) {
    bool debug = false;
-   TRACEMCF(debug, "ValueBaseWidget. this._id=%d, featureCode=0x%02x, capVcp=%p, ddcrc=%d",
+   TRACEMCF_STARTING(debug, "ValueBaseWidget. this._id=%d, featureCode=0x%02x, capVcp=%p, ddcrc=%d",
                     _id, fv.featureCode(), fv.capVcp(), fv.ddcrc());
 
     _featureCode    = fv.featureCode();
@@ -124,7 +124,7 @@ uint16_t ValueBaseWidget::getCurrentShSl() {
 
 void   ValueBaseWidget::delete_finfo() {
    bool debug = false;
-   TRACEMCF(debug, "Starting. this._id = %d DOING NOTHING, _finfo=%p", _id, _finfo);
+   TRACEMCF_STARTING(debug, "Starting. this._id = %d DOING NOTHING, _finfo=%p", _id, _finfo);
 
    // ddca_free_feature_metadata(_finfo);
 
@@ -167,7 +167,7 @@ void ValueBaseWidget::resizeEvent(QResizeEvent * evt)
    }
 
    if (show) {
-      TRACEC("old size = %d, %d", oldSz.width(), oldSz.height());
+      TRACEC_STARTING("old size = %d, %d", oldSz.width(), oldSz.height());
       TRACEC("new size = %d, %d", newSz.width(), newSz.height());
    }
 

@@ -26,7 +26,7 @@ Monitor::Monitor(DDCA_Display_Info2 * display_info, int monitorNumber)
     , _cls( strdup(metaObject()->className()) )
 {
    bool debug = false;
-   TRACECF(debug, "Starting. monitorNumber=%d, dispno=%d, dref=%s",
+   TRACECF_STARTING(debug, "Starting. monitorNumber=%d, dispno=%d, dref=%s",
                   monitorNumber, display_info->dispno, ddca_dref_repr(display_info->dref));
    _page_moninfo     = _page_capabilities     = NULL;
    _pageno_moninfo   = _pageno_capabilities   = 0;
@@ -69,7 +69,7 @@ Monitor::Monitor(DDCA_Display_Info2 * display_info, int monitorNumber)
 #ifdef UNUSED
 void Monitor::recheck() {
    bool debug = false;
-   TRACECF(debug, "Starting");
+   TRACECF_STARTING(debug, "Starting");
    // get displayinfo for dref
    DDCA_Display_Ref ddca_dref = this->_displayInfo->dref;
    DDCA_Display_Info2 * new_dinfo = nullptr;
@@ -83,7 +83,7 @@ void Monitor::recheck() {
 
 Monitor::~Monitor() {
    bool debug = false;
-   TRACECF(debug, "Starting. monitor=%p, _monitor_number=%d, _displayInfo->dispno=%d, _baseModel=%p, _moninfoPlainText=%p, _capabilitiesPlainTex=%p",
+   TRACECF_STARTING(debug, "Starting. monitor=%p, _monitor_number=%d, _displayInfo->dispno=%d, _baseModel=%p, _moninfoPlainText=%p, _capabilitiesPlainTex=%p",
          this, _monitorNumber, _displayInfo->dispno, _baseModel,  _moninfoPlainText, _capabilitiesPlainText);
 
    if (supportsDdc()) {
@@ -130,7 +130,7 @@ DDCA_Feature_List
 Monitor::getFeatureList(DDCA_Feature_Subset_Id feature_list_id) {
     bool debugFunc = debugFeatureLists;
     debugFunc = false;
-    TRACECF(debugFunc,
+    TRACECF_STARTING(debugFunc,
           "feature_list_id=%d-%s",feature_list_id, ddca_feature_list_id_name(feature_list_id));
 
     bool include_table_features = false;    // TODO get from feature selection dialog
@@ -173,7 +173,7 @@ bool Monitor::capabilitiesCheckComplete() {
    bool result = (supportsDdc());
    if (result)
       result = (_baseModel->_caps_check_complete);
-   TRACECF(debug, "dref=%s, returning %s", QS2S(dref_repr()), SBOOL(result));
+   TRACECF_STARTING(debug, "dref=%s, returning %s", QS2S(dref_repr()), SBOOL(result));
    return result;
 }
 
@@ -182,33 +182,33 @@ bool Monitor::capabilitiesCheckSuccessful() {
    bool result = (_displayInfo->dispno >  0);   // dispno -1 if API found display invalid, -2 if phantom
    if (result)
       result = (_baseModel->_caps_status == 0 && _baseModel->_parsed_caps);  // got capabilities?
-   TRACECF(debug, "dref=%s, returning %s", QS2S(dref_repr()), SBOOL(result));
+   TRACECF_STARTING(debug, "dref=%s, returning %s", QS2S(dref_repr()), SBOOL(result));
    return result;
 }
 
 bool Monitor::supportsDdc() {
    bool debug = false;
    bool result = (_displayInfo->dispno >  0);   // dispno -1 if API found display invalid, -2 if phantom
-   TRACECF(debug, "dref=%s, returning %s", QS2S(dref_repr()), SBOOL(result));
+   TRACECF_STARTING(debug, "dref=%s, returning %s", QS2S(dref_repr()), SBOOL(result));
    return result;
 }
 
  // called by initFeaturesScrollAreaView
 void Monitor::putVcpRequest(VcpRequest * rqst) {
     bool debug = false;
-    TRACECF(debug, "-> rqst->type=%d. Adding request to monitor's request queue", rqst->_type);
+    TRACECF_STARTING(debug, "-> rqst->type=%d. Adding request to monitor's request queue", rqst->_type);
     _requestQueue->put(rqst);
 }
 
 // never called!
 void Monitor::vcpThreadFinished() {
    bool debug =  true;
-   TRACECF(debug, "vcp thread finished");
+   TRACECF_STARTING(debug, "vcp thread finished");
 }
 
 void Monitor::markDisconnected() {
    bool debug =  true;
-   TRACECF(debug, "starting");
+   TRACECF_STARTING(debug, "starting");
 
    QString qstitle("Display Status Change");
    QMessageBox::Icon icon = QMessageBox::Warning;

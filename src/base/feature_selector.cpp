@@ -85,7 +85,7 @@ void FeatureSelector::applyParsedOptions(Parsed_Ddcui_Cmd * parsed_cmd) {
     }
 
     if (debug) {
-       TRACEC("Done.");
+       TRACEC_STARTING("Done.");
        dbgrpt();
     }
 }
@@ -114,7 +114,7 @@ bool FeatureSelector::operator==(const FeatureSelector &other) const {
                   _includeOnlyCapabilities == other._includeOnlyCapabilities &&
                   _includeAllCapabilities  == other._includeAllCapabilities);
    if (result && _featureSubsetId == DDCA_SUBSET_CUSTOM) {
-         TRACECF(debugFunc, "Comparing %s to %s",
+         TRACECF_STARTING(debugFunc, "Comparing %s to %s",
                   ddca_feature_list_string(_customFeatureList, "x", ","),
                   ddca_feature_list_string(other._customFeatureList, "x", ",") );
 

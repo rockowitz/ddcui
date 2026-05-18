@@ -78,7 +78,7 @@ Value2ButtonWidget::Value2ButtonWidget(
 {
    bool debug = false;
    _cls = strdup(metaObject()->className());
-   TRACEMCF(debug, "Starting. _id=%d, _featureCode=0x%02x", _id, _featureCode );
+   TRACEMCF_STARTING(debug, "Starting. _id=%d, _featureCode=0x%02x", _id, _featureCode );
    layoutWidget();
 
    QObject::connect(_button1, SIGNAL(released()),  this, SLOT(  on_button1_pressed()) );
@@ -110,7 +110,7 @@ void Value2ButtonWidget::setButtonDetail(
 
 void Value2ButtonWidget::setEnabled(bool onoff) {
    bool debug = false;
-   TRACEMCF(debug, "Starting. onoff=%s", SBOOL(onoff));
+   TRACEMCF_STARTING(debug, "Starting. onoff=%s", SBOOL(onoff));
    ValueBaseWidget::setEnabled(onoff);
 #ifdef OUT
    ValueBaseWidget::setEnabled(onoff);
@@ -130,7 +130,7 @@ void Value2ButtonWidget::setEnabled(bool onoff) {
 void Value2ButtonWidget::on_button1_pressed() {
    bool debug = false;
 //   if (_base_ctrl_key_is_pressed || !classControlKeyRequired) {
-      TRACEMCF(debug || debugValueWidgetSignals, "Button pressed. Emitting featureValueChanged()");
+      TRACEMCF_STARTING(debug || debugValueWidgetSignals, "Button pressed. Emitting featureValueChanged()");
       emit featureValueChanged(_featureCode, 0, _val1);
 //   }
 //   else
@@ -141,7 +141,7 @@ void Value2ButtonWidget::on_button1_pressed() {
 void Value2ButtonWidget::on_button2_pressed() {
    bool debug = false;
 //   if (_base_ctrl_key_is_pressed || !classControlKeyRequired) {
-      TRACEMCF(debug || debugValueWidgetSignals, "Button pressed. Emitting featureValueChanged()");
+      TRACEMCF_STARTING(debug || debugValueWidgetSignals, "Button pressed. Emitting featureValueChanged()");
       emit featureValueChanged(_featureCode, 0, _val2);
 //   }
 //   else

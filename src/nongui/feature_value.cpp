@@ -49,7 +49,7 @@ FeatureValue::FeatureValue(
    // debugFunc = debugFunc || (_featureCode == 0x14);
    // debugFunc = debugFunc || (_featureCode == 0xf5);
 
-   TRACECF(debugFunc, "_id=%d, feature_code=0x%02x, finfo=%p, cap_vcp=%p, sh=0x%02x, sl=0x%02x, getvcpStatus=%s",
+   TRACECF_STARTING(debugFunc, "_id=%d, feature_code=0x%02x, finfo=%p, cap_vcp=%p, sh=0x%02x, sl=0x%02x, getvcpStatus=%s",
               _id, _featureCode, _finfo, cap_vcp, val.sh, val.sl, ddca_rc_name(getvcpStatus));
    if (debugFunc) {
       ddca_dbgrpt_feature_metadata(_finfo, 2);
@@ -70,7 +70,7 @@ FeatureValue::FeatureValue(
 FeatureValue::~FeatureValue() {
    bool debugFunc = false;
    debugFunc = debugFunc || (_featureCode == 0x14);
-   TRACECF(debugFunc, "Starting _id=%d, _featureCode=0x%02x _finfo=%p", _id, _featureCode, _finfo);
+   TRACECF_STARTING(debugFunc, "Starting _id=%d, _featureCode=0x%02x _finfo=%p", _id, _featureCode, _finfo);
 
    if (_finfo)
       ddca_free_feature_metadata(_finfo);
@@ -126,7 +126,7 @@ FeatureValue::setCurrentValue(uint8_t sh, uint8_t sl) {
       _observedNcValues = bs256_insert(_observedNcValues, _value.sl);
    }
 
-   TRACECF(debugFunc, "Finished. _observedNcValues = %s", bs256_to_string_t(_observedNcValues, "", " "));
+   TRACECF_STARTING(debugFunc, "Finished. _observedNcValues = %s", bs256_to_string_t(_observedNcValues, "", " "));
 }
 
 
@@ -154,7 +154,7 @@ Bit_Set_256 FeatureValue::observedNcValues() const {
 
 void FeatureValue::delete_finfo() {
    bool debug = false;
-   TRACECF(debug, "Starting _id=%d, _finfo=%p", _id,  _finfo);
+   TRACECF_STARTING(debug, "Starting _id=%d, _finfo=%p", _id,  _finfo);
 
    if (_finfo) {
       ddca_free_feature_metadata(_finfo);

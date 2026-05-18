@@ -31,7 +31,7 @@ static bool showResizeEvents = false;
 
 void ValueNcWidget::createWidgets() {
    bool debug = false;
-   TRACECF(debug, "Starting. _id=%d", _id);
+   TRACECF_STARTING(debug, "Starting. _id=%d", _id);
    _cb = createFormattedComboBox();   // in ValueBaseWidget
    _savedBackgroundColor = _cb->backgroundRole();
 
@@ -67,7 +67,7 @@ void ValueNcWidget::layoutWidget() {
       _extraInfo->setStyleSheet("background-color:green;");
 
       if (showDimensionReports &&!dimensionReportShown) {
-           TRACEC("combobox dimensions");
+           TRACEC_STARTING("combobox dimensions");
            reportWidgetDimensions(_cb, _cls, __func__);
            TRACEC("ValueNcWidget dimensions");
            reportWidgetDimensions(this, _cls, __func__);
@@ -90,7 +90,7 @@ ValueNcWidget::ValueNcWidget(QWidget *parent):
 {
     bool debug  = false;
     _cls = strdup(metaObject()->className());
-    TRACEMCF(debug, "Starting. id=%d, _featureCode=0x%02x", _id, _featureCode );
+    TRACEMCF_STARTING(debug, "Starting. id=%d, _featureCode=0x%02x", _id, _featureCode );
 
     _layout = new QHBoxLayout();
     createWidgets();
@@ -110,7 +110,7 @@ ValueNcWidget::~ValueNcWidget() {
 
 void   ValueNcWidget::setEnabled(bool onoff) {
    bool debug = false;
-   TRACEMCF(debug, "onoff=%s", SBOOL(onoff));
+   TRACEMCF_STARTING(debug, "onoff=%s", SBOOL(onoff));
    ValueBaseWidget::setEnabled(onoff);
 #ifdef OUT
    if (onoff) {
@@ -144,7 +144,7 @@ void ValueNcWidget::setFeatureValue(const FeatureValue &fv) {
     bool debug = false;  // || (fv.featureCode() == 0x14);
     // debug = debug || (fv.featureCode() == 0xca);
     debug = debug || debugWidget;
-    // TRACEMCF(debug, "[TRACEMCF. ValueNcWidget]. Starting." );
+    // TRACEMCF_STARTING(debug, "[TRACEMCF. ValueNcWidget]. Starting." );
     // TRACEMF(debug,  "[TRACEMF.  ValueNcWidget]. Starting." );  // reports ValueNcPlosWidget, i.e. subclass name
     // TRACECF(debug,  "[TRACECF.  ValueNcWidget]. Starting." );  // reports ValueNcWidget
 
@@ -193,7 +193,7 @@ ValueNcWidget::sl_value_table_lookup(
       uint8_t                    value_id)
 {
    bool debug = false;
-   TRACEMF(debug, "Starting. value_entries=%p, value_id=0x%02x", value_entries, value_id);
+   TRACEMF_STARTING(debug, "Starting. value_entries=%p, value_id=0x%02x", value_entries, value_id);
    char * result = NULL;
    if (value_entries) {
       DDCA_Feature_Value_Entry *  cur_value = value_entries;
@@ -217,7 +217,7 @@ void ValueNcWidget::loadComboBox2() {
    debugFunc = debugFunc || debugNcValues;
 
    NcValuesSource mode = _ncValuesSource;
-   TRACEMF(debugFunc, "feature 0x%02x, mode=%d=%s, _useLatestNcValueNames=%s",
+   TRACEMF_STARTING(debugFunc, "feature 0x%02x, mode=%d=%s, _useLatestNcValueNames=%s",
                       _featureCode, mode, ncValuesSourceName(mode), SBOOL(_useLatestNcValues) );
 
    // In case we're called to reload the combobox values, delete existing values
@@ -290,7 +290,7 @@ void ValueNcWidget::loadComboBox2() {
 void ValueNcWidget::reloadComboBox(NcValuesSource newSource, bool newUseLatestNames) {
    bool debugFunc = false; // (_featureCode == 0x14);
    debugFunc = debugFunc || debugNcValues;
-   TRACEMF(debugFunc, "feature=0x%02x, newSource=%d=%s, _ncValuesSource=%d=%s,",
+   TRACEMF_STARTING(debugFunc, "feature=0x%02x, newSource=%d=%s, _ncValuesSource=%d=%s,",
                       _featureCode,
                        newSource,      ncValuesSourceName(newSource),
                       _ncValuesSource, ncValuesSourceName(_ncValuesSource) );
@@ -313,7 +313,7 @@ void ValueNcWidget::reloadComboBox(NcValuesSource newSource, bool newUseLatestNa
 void ValueNcWidget::setCurrentShSl(uint16_t newval) {
    bool debugFunc = false;  //  (_featureCode == 0x14);
    debugFunc = debugFunc || debugWidget;
-   TRACEMF(debugFunc, "Starting. ValueNcWidget.this._id=%d, feature 0x%02x, newval=x%04x",
+   TRACEMF_STARTING(debugFunc, "Starting. ValueNcWidget.this._id=%d, feature 0x%02x, newval=x%04x",
                       _id, _featureCode, newval);
 
    _guiChange = false;
@@ -369,7 +369,7 @@ uint16_t ValueNcWidget::getCurrentShSl() {
 void ValueNcWidget::combobox_activated(int index) {
    bool debug = false;
    debug = debug || debugWidget;
-   TRACEMCF(debug, "feature 0x%02x, index=%d", _featureCode, index);
+   TRACEMCF_STARTING(debug, "feature 0x%02x, index=%d", _featureCode, index);
    int ndx = _cb->currentIndex();
    assert(ndx == index);
 
@@ -407,7 +407,7 @@ void ValueNcWidget::resizeEvent(QResizeEvent * evt)
    }
 
    if (show) {
-      TRACEC("old size = %d, %d", oldSz.width(), oldSz.height());
+      TRACEC_STARTING("old size = %d, %d", oldSz.width(), oldSz.height());
       TRACEC("new size = %d, %d", newSz.width(), newSz.height());
    }
 

@@ -116,7 +116,7 @@ void FeatureWidgetHeader::resizeEvent(QResizeEvent * evt)
       QSize oldSz = evt->oldSize();
       QSize newSz = evt->size();
 
-      TRACEC("old size = %d, %d   new size = %d, %d", oldSz.width(), oldSz.height(),
+      TRACEC_STARTING("old size = %d, %d   new size = %d, %d", oldSz.width(), oldSz.height(),
             newSz.width(), newSz.height());
    }
    evt->ignore();

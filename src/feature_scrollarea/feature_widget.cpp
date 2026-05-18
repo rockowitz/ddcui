@@ -51,7 +51,7 @@ static QLabel * createFeatureWidgetField(
 void FeatureWidget::setupFeatureWidget()
 {
    bool debug = false;
-   TRACECF(debug, "Starting");
+   TRACECF_STARTING(debug, "Starting");
    // setFrameStyle(QFrame::Box);    // something to make it visible for development
 
    _featureCodeField = createFeatureWidgetField("featureCode",  30, "x00");
@@ -154,7 +154,7 @@ FeatureWidget::~FeatureWidget() {
 void FeatureWidget::setFeatureValue(FeatureValue &fv)
 {
    bool debug = false;
-   TRACECF(debug, "feature code = 0x%02x, ddcrc=%s",
+   TRACECF_STARTING(debug, "feature code = 0x%02x, ddcrc=%s",
              fv.featureCode(), ddca_rc_name(fv.ddcrc()));
 
     _feature_code  = fv.featureCode();
@@ -230,14 +230,14 @@ void FeatureWidget::dbgrpt() const
     const char * objname = on1.c_str();
     // printf("%-20s code: 0x%02x, flags: 0x%04x, mh: 0x%02x, ml: 0x%02x, sh: 0x%02x, sl 0x%02x\n",
     //        objname, _feature_code, _feature_flags, _mh, _ml, _sh, _sl);
-    TRACEC("%-20s feature code: 0x%02x, flags: 0x%04x", objname, _feature_code, _feature_flags);
+    TRACEC_STARTING("%-20s feature code: 0x%02x, flags: 0x%04x", objname, _feature_code, _feature_flags);
 }
 
 void FeatureWidget::onInternalValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl)
 {
    bool debug = false;
    debug = debug || debugSignals;
-   // TRACEMCF(debug, "feature_code = 0x%02x, sh=0x%02x, sl=0x%02x", featureCode, sh, sl);
+   // TRACEMCF_STARTING(debug, "feature_code = 0x%02x, sh=0x%02x, sl=0x%02x", featureCode, sh, sl);
    assert(featureCode == _feature_code);
 
    bool writeOnlyFeature = _feature_flags & DDCA_WO;
@@ -267,7 +267,7 @@ bool FeatureWidget::hasSlTable()
 void FeatureWidget::setNcValuesSource(NcValuesSource newsrc, bool useLatestNcValueNames)
 {
    bool debug = false;
-   TRACEMF(debug, "newsrc = %d-%s", newsrc, ncValuesSourceName(newsrc));
+   TRACEMF_STARTING(debug, "newsrc = %d-%s", newsrc, ncValuesSourceName(newsrc));
    _valueWidget->setNcValuesSource(newsrc, useLatestNcValueNames);
    TRACEMF(debug, "Done");
 }
@@ -298,7 +298,7 @@ void FeatureWidget::resizeEvent(QResizeEvent * evt)
 #endif
 
    if (show) {
-      TRACEC("old size = %d, %d, new size = %d, %d", oldSz.width(), oldSz.height(),
+      TRACEC_STARTING("old size = %d, %d, new size = %d, %d", oldSz.width(), oldSz.height(),
       newSz.width(), newSz.height());
    }
 

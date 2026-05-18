@@ -63,7 +63,7 @@ void FeaturesScrollAreaView::setInstanceControlKeyRequired(bool onoff) {
    // QList<FeatureWidget> * children = _scrollAreaContents->children();
    // n. find same FeatureValue children using _centralWidget->findChildren(..)
    QList<FeatureWidget*>  children2 = _scrollAreaContents->findChildren<FeatureWidget*>(re);
-   TRACEMCF(debugFunc, "Found %d children of scrollAreaContents using regular expression", children2.count());
+   TRACEMCF_STARTING(debugFunc, "Found %d children of scrollAreaContents using regular expression", children2.count());
    for (int ndx = 0; ndx < children2.count(); ndx++) {
       // printf("  ndx=%d\n", ndx);
       FeatureWidget * child = children2.at(ndx);
@@ -80,7 +80,7 @@ void FeaturesScrollAreaView::freeContents(void) {
        QWidget* curobj = _centralStackedWidget->widget(ndx);
        QString name   = curobj->objectName();
        const char *  clsName = curobj->metaObject()->className();
-       TRACEMCF(debug, "   widget[%d]: %s, type:%s", ndx, name.toLatin1().data(), clsName);
+       TRACEMCF_STARTING(debug, "   widget[%d]: %s, type:%s", ndx, name.toLatin1().data(), clsName);
        if (name.compare("scrollwrap") == 0 ) {
           TRACEMCF(debug, "scrollwrap found, index=%d", ndx);
           scrollWrapWidget = curobj;
@@ -97,7 +97,7 @@ void FeaturesScrollAreaView::freeContents(void) {
 // triggered by signal FeatureBaseModel::signalEndInitialLoad
 void FeaturesScrollAreaView::onEndInitialLoad(void) {
     bool debugFunc = false;
-    TRACEMCF(debugFunc, "Starting, this->_id=%d, Monitor=%s", _id, _monitor->_displayInfo->model_name);
+    TRACEMCF_STARTING(debugFunc, "Starting, this->_id=%d, Monitor=%s", _id, _monitor->_displayInfo->model_name);
 
     freeContents();
 
@@ -282,7 +282,7 @@ void FeaturesScrollAreaView::onUIValueChanged(
 {
    bool debug = false;
    debug = debug || debugSignals;
-   TRACEMCF(debug, "Starting. featureCode = 0x%02x, writeOnly=%s, sh=0x%02x, sl=0x%02x",
+   TRACEMCF_STARTING(debug, "Starting. featureCode = 0x%02x, writeOnly=%s, sh=0x%02x, sl=0x%02x",
                   featureCode, SBOOL(writeOnly), sh, sl);
 
    // *** Critical code point. This is what prevents infinite loop after getvcp returns a new value,
@@ -337,7 +337,7 @@ void FeaturesScrollAreaView::onModelValueChanged(
    bool debugFunc = false; //  || (featureCode == 0x14);
    debugFunc = debugFunc || debugSignals;
 
-   TRACEMCF(debugFunc,
+   TRACEMCF_STARTING(debugFunc,
              "caller = %s, feature_code = 0x%02x, sh=0x%02x, sl=0x%02x",
              caller, featureCode, sh, sl);
 
@@ -353,7 +353,7 @@ void FeaturesScrollAreaView::onModelValueChanged(
 void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc, bool newUseLatestNames) {
    bool debugFunc = false;
    debugFunc = debugFunc || debugSignals;
-   TRACEMF(debugFunc, "newsrc=%d=%s, newUseLatestNames=%s",
+   TRACEMF_STARTING(debugFunc, "newsrc=%d=%s, newUseLatestNames=%s",
                        newsrc, (char *) ncValuesSourceName(newsrc), SBOOL(newUseLatestNames));
 
    // TRACEMCF(debugFunc,
@@ -396,7 +396,7 @@ void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc, bool
 void FeaturesScrollAreaView::onModelDdcDetailedError(DdcDetailedError* perec) {
     bool debugFunc = false;
     debugFunc = debugFunc || debugSignals;
-    TRACEMCF(debugFunc, "perec=%p, perec->%s", perec, perec->srepr() );
+    TRACEMCF_STARTING(debugFunc, "perec=%p, perec->%s", perec, perec->srepr() );
 
     QString qstitle = QString("ddcutil Error");
     QString qsexpl  = perec->expl();
@@ -413,7 +413,7 @@ void FeaturesScrollAreaView::onModelDdcDetailedError(DdcDetailedError* perec) {
 void FeaturesScrollAreaView::onModelDdcFeatureError(DdcFeatureError* perec) {
     bool debugFunc = false;
     debugFunc      = debugFunc || debugSignals;
-    TRACEMCF(debugFunc, "perec=%p, perec->%s", perec, QS2S(perec->repr()) );
+    TRACEMCF_STARTING(debugFunc, "perec=%p, perec->%s", perec, QS2S(perec->repr()) );
 
     DDCA_Display_Info * dinfo = _monitor->_displayInfo;
 

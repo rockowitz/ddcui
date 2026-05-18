@@ -104,7 +104,7 @@ HelpBrowser::HelpBrowser(
       QWidget*       parent)
     : QWidget(parent)
 {
-   // TRACEM("Starting. page=%s, navigable=%s", QS2S(page), SBOOL(navigable));
+   // TRACEM_STARTING("Starting. page=%s, navigable=%s", QS2S(page), SBOOL(navigable));
    createWidgets(navigable);
    layoutWidgets(navigable);
 

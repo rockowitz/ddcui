@@ -69,7 +69,7 @@ HelpDialog::HelpDialog(QString title, QString& htmlText, QWidget* parent)
     : QDialog(parent)
     ,_cls(strdup(metaObject()->className()) )
 {
-    TRACEC("title=%s, htmlText=%s", QS2S(title), QS2S(htmlText));
+    TRACEC_STARTING("title=%s, htmlText=%s", QS2S(title), QS2S(htmlText));
     commonInit();
     setWindowTitle(title);
     _textBrowser->setText(htmlText);
@@ -100,7 +100,7 @@ void HelpDialog::setText(QString& htmlText) {
 }
 
 void HelpDialog::setSource(const char * source) {
-   // TRACEC("Source: %s", source);
+   // TRACEC_STARTING("Source: %s", source);
    _textBrowser->setSource(QUrl(source));
 }
 
@@ -108,13 +108,13 @@ void HelpDialog::setSource(const char * source) {
 // doesn't occur - there's only a Cancel button
 // but referenced in generated UI code
 void HelpDialog::on_buttonBox_accepted() {
-   // TRACEC("Executing");
+   // TRACEC_STARTING("Executing");
    this->close();
 }
 
 
 void HelpDialog::on_buttonBox_rejected() {
-   // TRACEC("Executing");
+   // TRACEC_STARTING("Executing");
    this->close();
 }
 

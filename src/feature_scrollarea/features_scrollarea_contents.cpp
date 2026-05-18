@@ -139,7 +139,7 @@ void FeaturesScrollAreaContents::addPageChangeObserver(PageChangeObserver * obse
 
 void FeaturesScrollAreaContents::notifyPageChangeObservers(int pageno) {
    int ct = _pageChangeObservers->count();
-   TRACECF(debugSignals, "Starting ct=%d", ct);
+   TRACECF_STARTING(debugSignals, "Starting ct=%d", ct);
    for (int ndx = 0; ndx < ct; ndx++) {
        TRACECF(debugSignals, "Notifying observer");
        PageChangeObserver*  observer = _pageChangeObservers->at(ndx);
@@ -150,12 +150,12 @@ void FeaturesScrollAreaContents::notifyPageChangeObservers(int pageno) {
 
 void FeaturesScrollAreaContents::resize(int w, int h)
 {
-   TRACEC("width = %d, height = %s", w, h);
+   TRACEC_STARTING("width = %d, height = %s", w, h);
    QWidget::resize(w, h);
 }
 void FeaturesScrollAreaContents::resize(QSize sz)
 {
-   TRACEC("width = %d, height = %s", sz.width(), sz.height());
+   TRACEC_STARTING("width = %d, height = %s", sz.width(), sz.height());
    QWidget::resize(sz);
 }
 
@@ -165,7 +165,7 @@ void FeaturesScrollAreaContents::resizeEvent(QResizeEvent * evt)
       QSize oldSz = evt->oldSize();
       QSize newSz = evt->size();
 
-      TRACEC("old size = %d, %d   new size = %d, %d",
+      TRACEC_STARTING("old size = %d, %d   new size = %d, %d",
               oldSz.width(), oldSz.height(), newSz.width(), newSz.height());
    }
    evt->ignore();
