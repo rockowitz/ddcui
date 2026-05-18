@@ -308,7 +308,7 @@ void FeatureWidget::resizeEvent(QResizeEvent * evt)
 
 
 void init_feature_widget() {
-   bool debug = true;
+   bool debug = false;
    DBGF(debug, "Starting");
    RTTI_ADD_METHOD(FeatureWidget::setupFeatureWidget);
    RTTI_ADD_METHOD(FeatureWidget::FeatureWidget);

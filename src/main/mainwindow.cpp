@@ -1693,7 +1693,7 @@ void MainWindow::on_vcpTableView_doubleClicked(const QModelIndex &index)
 
 
 void init_mainwindow() {
-   bool debug = true;
+   bool debug = false;
    DBGF(debug, "Starting");
    RTTI_ADD_METHOD(MainWindow::findMonitor);
    RTTI_ADD_METHOD(MainWindow::matchMonitor);

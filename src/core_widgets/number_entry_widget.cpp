@@ -241,7 +241,7 @@ NumberEntryWidget::mouseReleaseEvent(QMouseEvent * event) {
 
 
 void init_number_entry_widget() {
-   bool debug = true;
+   bool debug = false;
    DBGF(debug, "Starting");
    RTTI_ADD_METHOD(NumberEntryWidget::getExistingValue);
    RTTI_ADD_METHOD(NumberEntryWidget::getNewValue);

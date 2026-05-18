@@ -162,7 +162,7 @@ void ValueSpecialWidgetX62::combobox_activated(int index) {
 
 
 void init_value_special_widget_x62() {
-   bool debug = true;
+   bool debug = false;
    DBGF(debug, "Starting");
    RTTI_ADD_METHOD(ValueSpecialWidgetX62::ValueSpecialWidgetX62);
    RTTI_ADD_METHOD(ValueSpecialWidgetX62::~ValueSpecialWidgetX62);

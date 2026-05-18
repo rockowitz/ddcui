@@ -191,7 +191,7 @@ void DebugActionsDialog::for_actionResetStatsButton_clicked(bool onoff)
 }
 
 void init_debug_actions_dialog() {
-   bool debug = true;
+   bool debug = false;
    DBGF(debug, "Starting");
    RTTI_ADD_METHOD(DebugActionsDialog::DebugActionsDialog);
    RTTI_ADD_METHOD(DebugActionsDialog::on_actionButtonBox_accepted);

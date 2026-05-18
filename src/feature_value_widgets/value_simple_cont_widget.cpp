@@ -307,7 +307,7 @@ void ValueSimpleContWidget::debugSimpleContLayout()
 
 
 void init_value_simple_cont_widget() {
-   bool debug = true;
+   bool debug = false;
    DBGF(debug, "Starting");
    RTTI_ADD_METHOD(ValueSimpleContWidget::ValueSimpleContWidget);
    RTTI_ADD_METHOD(ValueSimpleContWidget::~ValueSimpleContWidget);

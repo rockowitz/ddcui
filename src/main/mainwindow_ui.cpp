@@ -297,7 +297,7 @@ void Ui_MainWindow::keyPressEvent(QKeyEvent * evt) {
 
 
 void init_mainwindow_ui() {
-   bool debug = true;
+   bool debug = false;
    DBGF(debug, "Starting");
    RTTI_ADD_METHOD(Ui_MainWindow::Ui_MainWindow);
    RTTI_ADD_METHOD(Ui_MainWindow::setupUi);

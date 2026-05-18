@@ -229,7 +229,7 @@ void ValueStdWidget::resizeEvent(QResizeEvent * evt)
 
 
 void init_value_std_widget() {
-   bool debug = true;
+   bool debug = false;
    DBGF(debug, "Starting");
    RTTI_ADD_METHOD(ValueStdWidget::setFeatureValue);
    RTTI_ADD_METHOD(ValueStdWidget::setEnabled);

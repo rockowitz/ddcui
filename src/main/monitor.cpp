@@ -225,7 +225,7 @@ void Monitor::markDisconnected() {
 
 
 void init_monitor() {
-   bool debug = true;
+   bool debug = false;
    DBGF(debug, "Starting");
    RTTI_ADD_METHOD(Monitor::Monitor);
    RTTI_ADD_METHOD(Monitor::~Monitor);

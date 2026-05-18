@@ -416,7 +416,7 @@ void ValueNcWidget::resizeEvent(QResizeEvent * evt)
 
 
 void init_value_nc_widget() {
-   bool debug = true;
+   bool debug = false;
    DBGF(debug, "Starting");
    RTTI_ADD_METHOD(ValueNcWidget::ValueNcWidget);
    RTTI_ADD_METHOD(ValueNcWidget::~ValueNcWidget);

@@ -481,7 +481,7 @@ void FeatureBaseModel::notifyFeatureChangeObservers(uint8_t feature_code) {
 #endif
 
 void init_feature_base_model() {
-   bool debug = true;
+   bool debug = false;
    DBGF(debug, "Starting");
    RTTI_ADD_METHOD(FeatureBaseModel::FeatureBaseModel);
    RTTI_ADD_METHOD(FeatureBaseModel::~FeatureBaseModel);

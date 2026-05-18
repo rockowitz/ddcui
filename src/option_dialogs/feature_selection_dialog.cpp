@@ -426,7 +426,7 @@ void FeatureSelectionDialog::on_buttonBox_helpRequested()
 }
 
 void init_feature_selection_dialog() {
-   bool debug = true;
+   bool debug = false;
    DBGF(debug, "Starting");
    RTTI_ADD_METHOD(FeatureSelectionDialog::on_buttonBox_accepted);
    DBGF(debug, "Done");

@@ -177,7 +177,7 @@ int FeaturesScrollAreaContents::maxRowHeight() {
 
 
 void init_features_scrollarea_contents() {
-   bool debug = true;
+   bool debug = false;
    DBGF(debug, "Starting");
    RTTI_ADD_METHOD(FeaturesScrollAreaContents::FeaturesScrollAreaContents);
    RTTI_ADD_METHOD(FeaturesScrollAreaContents::~FeaturesScrollAreaContents);

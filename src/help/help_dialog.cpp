@@ -173,7 +173,7 @@ void HelpDialog::updateWindowTitle()
 
 
 void init_help_dialog() {
-   bool debug = true;
+   bool debug = false;
    DBGF(debug, "Starting");
    RTTI_ADD_METHOD(HelpDialog::HelpDialog);
    DBGF(debug, "Done");

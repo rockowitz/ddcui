@@ -50,7 +50,7 @@
 }
 
 void init_user_interface_options_state() {
-   bool debug = true;
+   bool debug = false;
    DBGF(debug, "Starting");
    RTTI_ADD_METHOD(UserInterfaceOptionsState::UserInterfaceOptionsState);
    DBGF(debug, "Done");

@@ -117,7 +117,7 @@ void UserInterfaceOptionsDialog::on_actionButtonBox_clicked(QAbstractButton* but
 }
 
 void init_user_interface_options_dialog() {
-   bool debug = true;
+   bool debug = false;
    DBGF(debug, "Starting");
    RTTI_ADD_METHOD(UserInterfaceOptionsDialog::UserInterfaceOptionsDialog);
    DBGF(debug, "Done");

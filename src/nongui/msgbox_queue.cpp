@@ -162,7 +162,7 @@ void MsgBoxQueue::dbgrpt() {
 
 
 void init_msgbox_queue() {
-   bool debug = true;
+   bool debug = false;
    DBGF(debug, "Starting");
    RTTI_ADD_METHOD(MsgBoxQueue::put);
    RTTI_ADD_METHOD(MsgBoxQueue::pop);

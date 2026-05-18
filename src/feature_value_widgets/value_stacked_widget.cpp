@@ -473,7 +473,7 @@ void ValueStackedWidget::setNcValuesSource(NcValuesSource newValuesSource, bool 
 
 
 void init_value_stacked_widget() {
-   bool debug = true;
+   bool debug = false;
    DBGF(debug, "Starting");
    RTTI_ADD_METHOD(ValueStackedWidget::ValueStackedWidget);
    RTTI_ADD_METHOD(ValueStackedWidget::~ValueStackedWidget);

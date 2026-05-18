@@ -226,7 +226,7 @@ void ValueNcplusWidget::resizeEvent(QResizeEvent * evt)
 
 
 void init_value_ncplus_widget() {
-   bool debug = true;
+   bool debug = false;
    DBGF(debug, "Starting");
    RTTI_ADD_METHOD(ValueNcplusWidget::ValueNcplusWidget);
    RTTI_ADD_METHOD(ValueNcplusWidget::setFeatureValue);

@@ -157,7 +157,7 @@ void ValueResetWidget::resizeEvent(QResizeEvent * evt)
 
 
 void init_value_reset_widget() {
-   bool debug = true;
+   bool debug = false;
    DBGF(debug, "Starting");
    RTTI_ADD_METHOD(ValueResetWidget::ValueResetWidget);
    RTTI_ADD_METHOD(ValueResetWidget::setEnabled);

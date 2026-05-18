@@ -320,7 +320,7 @@ void ValueBytesWidget::onCancelButtonClicked(bool checked) {
 
 
 void init_value_bytes_widget() {
-   bool debug = true;
+   bool debug = false;
    DBGF(debug, "Starting");
    RTTI_ADD_METHOD(ValueBytesWidget::ValueBytesWidget);
    RTTI_ADD_METHOD(ValueBytesWidget::setFeatureValue);

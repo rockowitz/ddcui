@@ -150,7 +150,7 @@ void Value2ButtonWidget::on_button2_pressed() {
 
 
 void init_value_2button_widget() {
-   bool debug = true;
+   bool debug = false;
    DBGF(debug, "Starting");
    RTTI_ADD_METHOD(Value2ButtonWidget::Value2ButtonWidget);
    RTTI_ADD_METHOD(Value2ButtonWidget::~Value2ButtonWidget);

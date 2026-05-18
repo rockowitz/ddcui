@@ -102,7 +102,7 @@ void MsgBoxThread::showSerialMsgBox(QString title, QString text, QMessageBox::Ic
 
 
 void init_msgbox_thread() {
-   bool debug = true;
+   bool debug = false;
    DBGF(debug, "Starting");
    RTTI_ADD_METHOD(MsgBoxThread::MsgBoxThread);
    RTTI_ADD_METHOD(MsgBoxThread::msbgoxClosed);

@@ -202,7 +202,7 @@ void SpinSlider::onSpinBoxTimedOut() {
 
 
 void init_spin_slider() {
-   bool debug = true;
+   bool debug = false;
    DBGF(debug, "Starting");
    RTTI_ADD_METHOD(SpinSlider::onSpinBoxValueChanged);
    DBGF(debug, "Done");

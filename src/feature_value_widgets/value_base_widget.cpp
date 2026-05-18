@@ -132,7 +132,7 @@ void   ValueBaseWidget::delete_finfo() {
 
 
 void init_value_base_widget() {
-   bool debug = true;
+   bool debug = false;
    DBGF(debug, "Starting");
    RTTI_ADD_METHOD(ValueBaseWidget::ValueBaseWidget);
    RTTI_ADD_METHOD(ValueBaseWidget::~ValueBaseWidget);

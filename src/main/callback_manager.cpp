@@ -143,7 +143,7 @@ void CallbackManager::registerCallbacks(MainWindow * mainwindow) {
 
 
 void init_callback_manager() {
-   bool debug = true;
+   bool debug = false;
    DBGF(debug, "Starting");
    RTTI_ADD_METHOD(CallbackManager::emitDisplayChanged);
    DBGF(debug, "Done");

@@ -669,7 +669,7 @@ void VcpThread::run()
 }
 
 void init_vcpthread() {
-   bool debug = true;
+   bool debug = false;
    DBGF(debug, "Starting");
    RTTI_ADD_METHOD(VcpThread::VcpThread);
    RTTI_ADD_METHOD(VcpThread::~VcpThread);

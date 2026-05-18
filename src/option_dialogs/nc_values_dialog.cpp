@@ -100,7 +100,7 @@ void NcValuesDialog::on_buttonBox_clicked(QAbstractButton* button)
 }
 
 void init_nc_values_dialog() {
-   bool debug = true;
+   bool debug = false;
    DBGF(debug, "Starting");
    RTTI_ADD_METHOD(NcValuesDialog::setUiSource);
    DBGF(debug, "Done");

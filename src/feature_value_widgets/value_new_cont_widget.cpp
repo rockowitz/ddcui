@@ -73,7 +73,7 @@ void ValueNewContWidget::setFeatureValue(const FeatureValue &fv) {
 
 
 void init_value_new_cont_widget() {
-   bool debug = true;
+   bool debug = false;
    DBGF(debug, "Starting");
    RTTI_ADD_METHOD(ValueNewContWidget::ValueNewContWidget);
    RTTI_ADD_METHOD(ValueNewContWidget::~ValueNewContWidget);

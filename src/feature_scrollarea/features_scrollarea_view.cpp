@@ -442,7 +442,7 @@ void FeaturesScrollAreaView::onModelDdcFeatureError(DdcFeatureError* perec) {
 
 
 void init_features_scrollarea_view() {
-   bool debug = true;
+   bool debug = false;
    DBGF(debug, "Starting");
    RTTI_ADD_METHOD(FeaturesScrollAreaView::FeaturesScrollAreaView);
    RTTI_ADD_METHOD(FeaturesScrollAreaView::onEndInitialLoad);
