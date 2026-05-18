@@ -96,13 +96,13 @@ void MsgBoxQueue::put(MsgBoxQueueEntry * request) {
     _usedBytes->release();
 #endif
     // dbgrpt_nolock();
-    TRACECF(debug, "Done");
+    TRACECF_DONE(debug, "");
 }
 
 
 void MsgBoxQueue::putMessages(QString qstitle, QMessageBox::Icon icon, char** msgs) {
    bool debug = false || debugClass;
-   TRACECF_STARTING(debug, "Starting");
+   TRACECF_STARTING(debug, "");
    if (msgs) {
       if (debug) {
          int ct = 0;
@@ -116,13 +116,13 @@ void MsgBoxQueue::putMessages(QString qstitle, QMessageBox::Icon icon, char** ms
          put(qe);
       }
    }
-   TRACECF(debug, "Done");
+   TRACECF_DONE(debug, "");
 }
 
 
 MsgBoxQueueEntry * MsgBoxQueue::pop() {
     bool debug = false || debugClass;
-    TRACECF_STARTING(debug, "Starting");
+    TRACECF_STARTING(debug, "");
 #ifdef USE_MUTEX
     _mutex.lock();
     TRACECF(debug, "After lock, before wait");

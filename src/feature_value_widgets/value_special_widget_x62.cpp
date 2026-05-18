@@ -19,18 +19,18 @@ static bool debugWidget = true;
 
 void ValueSpecialWidgetX62::createInitialWidgets() {
    bool debug = false;
-   TRACECF_STARTING(debug, "Starting.  ValueSpecialWidgetX62::createInitialWidgets()");
+   TRACECF_STARTING(debug, "ValueSpecialWidgetX62::createInitialWidgets()");
    _cb = createFormattedComboBox();
 
    if (debugLayout)
       _cb->setStyleSheet("background-color:cyan;");
 
-   TRACECF(debug, "Done.  ValueSpecialWidgetX62::createInitialWidgets()");
+   TRACECF_DONE(debug, "ValueSpecialWidgetX62::createInitialWidgets()");
 }
 
 void ValueSpecialWidgetX62::layoutWidget(QHBoxLayout * layout) {
    bool debug = false;
-   TRACECF_STARTING(debug, "Starting. ValueSpecialWidgetX62::layoutWidget" );
+   TRACECF_STARTING(debug, "ValueSpecialWidgetX62::layoutWidget" );
 
    layout->addSpacing(5);
    _cb->setVisible(true);
@@ -41,7 +41,7 @@ void ValueSpecialWidgetX62::layoutWidget(QHBoxLayout * layout) {
    layout->addStretch(10);    // take up all the space at the end - stretch factor = 10
    layout->setContentsMargins(0,0,0,0);
    setLayout(layout);
-   TRACECF(debug, "Done. ValueSpecialWidgetX62::layoutWidget" );
+   TRACECF_DONE(debug, "ValueSpecialWidgetX62::layoutWidget" );
 }
 
 ValueSpecialWidgetX62::ValueSpecialWidgetX62(QWidget *parent)
@@ -49,7 +49,7 @@ ValueSpecialWidgetX62::ValueSpecialWidgetX62(QWidget *parent)
 {
     bool debug = false;
     _cls = strdup(metaObject()->className());
-    TRACEMCF_STARTING(debug, "Starting.  _cls=%s, _id=%d, _featureCode=0x%02x", _cls, _id, _featureCode );
+    TRACEMCF_STARTING(debug, "_cls=%s, _id=%d, _featureCode=0x%02x", _cls, _id, _featureCode );
     setRange(0x01, 0xfe);
 
     createInitialWidgets();
@@ -62,7 +62,7 @@ ValueSpecialWidgetX62::ValueSpecialWidgetX62(QWidget *parent)
     QObject::connect(_cb,  SIGNAL(activated(int)),
                      this, SLOT(combobox_activated(int)) );
 
-    TRACEMCF(debug, "Done.");
+    TRACEMCF_DONE(debug, "");
 }
 
 ValueSpecialWidgetX62::~ValueSpecialWidgetX62() {
@@ -78,7 +78,7 @@ void ValueSpecialWidgetX62::setFeatureValue(const FeatureValue &fv) {
                  fv.featureCode(), fv.capVcp(), fv.ddcrc());
    ValueSimpleContWidget::setFeatureValue(fv);
 
-   TRACEMCF(debug, "Done");
+   TRACEMCF_DONE(debug, "");
 }
 
 void ValueSpecialWidgetX62::loadComboBox() {
@@ -93,7 +93,7 @@ void ValueSpecialWidgetX62::loadComboBox() {
 void ValueSpecialWidgetX62::setCurrentShSl(uint16_t newval) {
    bool debugFunc = false;
    debugFunc = debugFunc || debugWidget;
-   TRACEMF_STARTING(debugFunc, "Starting. feature 0x%02x, newval=x%04x", _featureCode, newval);
+   TRACEMF_STARTING(debugFunc, "feature 0x%02x, newval=x%04x", _featureCode, newval);
 
     ValueBaseWidget::setCurrentShSl(newval);
 

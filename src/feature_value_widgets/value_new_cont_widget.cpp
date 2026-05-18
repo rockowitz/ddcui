@@ -17,7 +17,7 @@
 
 void ValueNewContWidget::layoutWidget(QHBoxLayout * layout) {
     bool debug = false;
-    TRACECF_STARTING(debug, " Starting." );
+    TRACECF_STARTING(debug, "" );
 
     // createWidgets();   // done in ValueSimpleContWidget constructor
     // additionalWidgets();  // done in our constructor
@@ -33,7 +33,7 @@ void ValueNewContWidget::layoutWidget(QHBoxLayout * layout) {
     layout->setContentsMargins(1,0,1,0);    // was 0,0,0,0
     setLayout(layout);
 
-    TRACECF(debug, "Done." );
+    TRACECF_DONE(debug, "" );
 }
 
 
@@ -61,14 +61,14 @@ void ValueNewContWidget::setFeatureValue(const FeatureValue &fv) {
     int curval = fv.val().sh << 8 | fv.val().sl;
     // maxval = 99999;   // for testing big numbers
     // curval = 99999;   // for testing big numbers
-    TRACEMCF_STARTING(debug, "Starting. _id=%d, feature=0x%02x, curval=%d, maxval=%d",
+    TRACEMCF_STARTING(debug, "_id=%d, feature=0x%02x, curval=%d, maxval=%d",
                     _id, fv.featureCode(), curval, maxval);
 
     _spinSlider->setRange(0,maxval);
     ValueSimpleContWidget::setFeatureValue(fv);
     _maxValue->setText(QString::number(maxval));
 
-    TRACEMCF(debug, "Done");
+    TRACEMCF_DONE(debug, "");
 }
 
 

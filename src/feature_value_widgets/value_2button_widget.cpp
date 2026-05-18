@@ -78,13 +78,13 @@ Value2ButtonWidget::Value2ButtonWidget(
 {
    bool debug = false;
    _cls = strdup(metaObject()->className());
-   TRACEMCF_STARTING(debug, "Starting. _id=%d, _featureCode=0x%02x", _id, _featureCode );
+   TRACEMCF_STARTING(debug, "_id=%d, _featureCode=0x%02x", _id, _featureCode );
    layoutWidget();
 
    QObject::connect(_button1, SIGNAL(released()),  this, SLOT(  on_button1_pressed()) );
    QObject::connect(_button2, SIGNAL(released()),  this, SLOT(  on_button2_pressed()) );
 
-   TRACEMCF(debug, "Done");
+   TRACEMCF_DONE(debug, "");
 }
 
 
@@ -110,7 +110,7 @@ void Value2ButtonWidget::setButtonDetail(
 
 void Value2ButtonWidget::setEnabled(bool onoff) {
    bool debug = false;
-   TRACEMCF_STARTING(debug, "Starting. onoff=%s", SBOOL(onoff));
+   TRACEMCF_STARTING(debug, "onoff=%s", SBOOL(onoff));
    ValueBaseWidget::setEnabled(onoff);
 #ifdef OUT
    ValueBaseWidget::setEnabled(onoff);
@@ -123,7 +123,7 @@ void Value2ButtonWidget::setEnabled(bool onoff) {
       _button2->setBackgroundRole(QPalette::Dark);
    }
 #endif
-   TRACEMCF(debug, "Done.");
+   TRACEMCF_DONE(debug, "");
 }
 
 

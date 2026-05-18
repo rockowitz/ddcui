@@ -192,7 +192,7 @@ ValueBytesWidget::ValueBytesWidget(QWidget *parent)
 {
     _cls = strdup(metaObject()->className());
     bool debug = false;
-    TRACEMCF_STARTING(debug, "Starting." );
+    TRACEMCF_STARTING(debug, "" );
 
     _id = ValueBytesWidget::idGenerator++;
     createWidgets();
@@ -207,7 +207,7 @@ ValueBytesWidget::ValueBytesWidget(QWidget *parent)
     connect(_applyButton,  &QPushButton::clicked, this, &ValueBytesWidget::onApplyButtonClicked);
     connect(_cancelButton, &QPushButton::clicked, this, &ValueBytesWidget::onCancelButtonClicked);
 
-    TRACEMCF(debug, "Done");
+    TRACEMCF_DONE(debug, "");
 }
 
 ValueBytesWidget::~ValueBytesWidget() {
@@ -262,7 +262,7 @@ void ValueBytesWidget::setFeatureValue(const FeatureValue &fv) {
    _cancelButton->setEnabled(false);
 
    _guiChange = true;
-   TRACEMCF(debug, "Done");
+   TRACEMCF_DONE(debug, "");
 }
 
 void ValueBytesWidget::setCurrentShSl(uint16_t newval) {

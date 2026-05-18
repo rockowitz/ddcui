@@ -35,7 +35,7 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
     bool debug = false;
     _cls = strdup(metaObject()->className());
     _id = ++nextId;
-    TRACECF_STARTING(debug, "Starting. id=%d", _id);
+    TRACECF_STARTING(debug, "id=%d", _id);
 
     // _typedParent = dynamic_cast<FeatureWidget *>(parent);
 
@@ -168,7 +168,7 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
       GlobalState::instance()._mainWindow, &MainWindow::signalControlKeyPressed,
       this,                                &ValueStackedWidget::setInstanceControlKeyPressed );
 
-    TRACECF(debug, "Done.");
+    TRACECF_DONE(debug, "");
 }
 
 
@@ -202,7 +202,7 @@ void ValueStackedWidget::enableSubwidgets() {
    // if called during initial setup, _cur_stacked_widget apparently wrong
    // _cur_stacked_widget->setEnabled(enabled);
 
-   TRACEMCF(debug, "Done.");
+   TRACEMCF_DONE(debug, "");
 }
 
 
@@ -215,7 +215,7 @@ void ValueStackedWidget::setInstanceControlKeyRequired(bool onoff) {
    _instanceControlKeyRequired = onoff;
    enableSubwidgets();
 
-   TRACEMCF(debug, "Done.");
+   TRACEMCF_DONE(debug, "");
 }
 
 void ValueStackedWidget::setInstanceControlKeyPressed(bool onoff) {
@@ -226,7 +226,7 @@ void ValueStackedWidget::setInstanceControlKeyPressed(bool onoff) {
    _instanceControlKeyPressed = onoff;
    enableSubwidgets();
 
-   TRACEMCF(debug, "Done.");
+   TRACEMCF_DONE(debug, "");
 }
 
 
@@ -243,7 +243,7 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
     // debug = debug || (fv.featureCode() == 0xdf);
     // debug = debug || (fv.featureCode() == 0x14);
     debug = debug || debugValueWidgetSignals;
-    TRACEMCF_STARTING(debug, "Starting. this._id=%d, feature code: 0x%02x", _id, fv.featureCode());
+    TRACEMCF_STARTING(debug, "this._id=%d, feature code: 0x%02x", _id, fv.featureCode());
     // if (debug)
     //    fv.dbgrpt();
 
@@ -407,7 +407,7 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
 
     TRACECF(debug, "Calling _cur_stacked_widget->setFeatureValue(), _pageno_selected=%d", _pageno_selected );
     _cur_stacked_widget->setFeatureValue(fv);
-    TRACECF(debug, "Done");
+    TRACECF_DONE(debug, "");
 }
 
 
@@ -468,7 +468,7 @@ void ValueStackedWidget::setNcValuesSource(NcValuesSource newValuesSource, bool 
       _ncplusWidget->reloadComboBox(newValuesSource, newUseLatestNcValueNames);
    }
 
-   TRACECF(debug, "Done");
+   TRACECF_DONE(debug, "");
 }
 
 

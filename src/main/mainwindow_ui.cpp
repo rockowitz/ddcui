@@ -30,9 +30,9 @@ Ui_MainWindow::Ui_MainWindow(QMainWindow* mainWindow)
    : _mainWindow(mainWindow)
 {
    bool debug = false;
-   TRACECF_STARTING(debug, "Starting");
+   TRACECF_STARTING(debug, "");
    setupUi(mainWindow);
-   TRACECF(debug, "Done");
+   TRACECF_DONE(debug, "");
 }
 
 
@@ -243,7 +243,7 @@ void Ui_MainWindow::layoutCentralWidget(QMainWindow *MainWindow)
 void Ui_MainWindow::setupUi(QMainWindow *MainWindow)
 {
    bool debug = false;
-   TRACECF_STARTING(debug, "Starting");
+   TRACECF_STARTING(debug, "");
 
    // std::cout << "(setupUi) Starting" << std::endl;
    if (MainWindow->objectName().isEmpty())
@@ -278,7 +278,7 @@ void Ui_MainWindow::setupUi(QMainWindow *MainWindow)
    QMetaObject::connectSlotsByName(MainWindow);
 
    // std::cout << "(setupUi) Done" << std::endl;
-   TRACECF(debug, "Done");
+   TRACECF_DONE(debug, "");
 } // setupUi
 
 #ifdef FAILS

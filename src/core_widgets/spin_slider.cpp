@@ -129,7 +129,7 @@ void SpinSlider::setShSl(uint16_t newval) {
     // _slider->setValue(curval);
 
     // _guiChange = true;
-    TRACECF(debug, "Done");
+    TRACECF_DONE(debug, "");
 }
 
 // Used by the containing class to query the widget's value after having been

@@ -145,20 +145,20 @@ void
 NumberEntryWidget::reset()
 {
    bool debug = false;
-   TRACECF_STARTING(debug, "Starting. widget = %s, _curState = %d", QS2S(this->objectName()),_widgetState);
+   TRACECF_STARTING(debug, "widget = %s, _curState = %d", QS2S(this->objectName()),_widgetState);
    if (_widgetState != NumberEntryWidget::StateOldValid ) {
       int textLength = 2*_bytect;
       _valueEntered = 0;
       setText( QString("%1").arg(_curval,textLength,16,QLatin1Char('0')) );
       _widgetState = NumberEntryWidget::StateOldValid;
    }
-   TRACECF(debug, "Done. _curState = %d", _widgetState);
+   TRACECF_DONE(debug, "_curState = %d", _widgetState);
 }
       
 #ifdef OLD
 void
 NumberEntryWidget::onTextEdited(const QString &text) {
-   TRACECF_STARTING(true, "Starting. text=%s", text.toLatin1().data());
+   TRACECF_STARTING(true, "text=%s", text.toLatin1().data());
    bool ok = false;
    if (text.length() > 0) {
 
@@ -187,7 +187,7 @@ NumberEntryWidget::onTextEdited(const QString &text) {
 void
 NumberEntryWidget::onTextEdited(const QString &text) {
    bool debug = false;
-   TRACECF_STARTING(debug, "Starting. text=%s", text.toLatin1().data());
+   TRACECF_STARTING(debug, "text=%s", text.toLatin1().data());
 
    NumberEntryWidget::States newState = NumberEntryWidget::StateInvalid;
    bool ok = false;
@@ -214,7 +214,7 @@ NumberEntryWidget::onTextEdited(const QString &text) {
    _widgetState = newState;
    // if (newState ==  NumberEntryWidget::StateNewValid )
    //    _curval = newval;
-   TRACECF(debug, "Done. setting _widgetState to %d", _widgetState);
+   TRACECF_DONE(debug, "setting _widgetState to %d", _widgetState);
 }
 
 // For exploring behavior

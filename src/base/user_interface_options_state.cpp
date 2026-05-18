@@ -24,9 +24,9 @@
      : _cls(metaObject()->className())
  {
     bool debug = false;
-    TRACEMCF_STARTING(debug, "Starting");
+    TRACEMCF_STARTING(debug, "");
     _controlKeyRequired = parsed_cmd->flags & CMD_FLAG_UI_REQUIRE_CONTROL_KEY;
-    TRACEMCF(debug, "Done");
+    TRACEMCF_DONE(debug, "");
  }
 
  UserInterfaceOptionsState::UserInterfaceOptionsState(UserInterfaceOptionsState &other)

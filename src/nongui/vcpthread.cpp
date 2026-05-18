@@ -37,22 +37,22 @@ VcpThread::VcpThread(
 {
     bool debug = false;
     debug |= debugThread;
-    TRACECF_STARTING(debug, "Starting");
+    TRACECF_STARTING(debug, "");
 
     _dref         = dinfo->dref;
     _ddcaSimulator = new DdcaSimulator();
 
     // ddca_dbgrpt_display_ref(_dref, 4);
-    TRACECF(debug, "Done.     _dref=%s", ddca_dref_repr(_dref));
+    TRACECF_DONE(debug, "_dref=%s", ddca_dref_repr(_dref));
 }
 
 
 VcpThread::~VcpThread() {
    bool debug = false;
    debug |= debugThread;
-   TRACECF_STARTING(debug, "Starting. _dref=%s", ddca_dref_repr(_dref));
+   TRACECF_STARTING(debug, "_dref=%s", ddca_dref_repr(_dref));
    delete _ddcaSimulator;
-   TRACECF(debug, "Done.");
+   TRACECF_DONE(debug, "");
 }
 
 
@@ -67,7 +67,7 @@ void VcpThread::rpt_feature_error(
       DDCA_Status      ddcrc)
 {
    bool debug = false;
-   TRACEMCF_STARTING(debug, "Starting.op=%d, featureCode=0x%02x, ddcrc=%d",
+   TRACEMCF_STARTING(debug, "op=%d, featureCode=0x%02x, ddcrc=%d",
                    op, featureCode, ddcrc);
    char * opText = (char *) "reading";
    if (op == FeatureWrite)
@@ -85,7 +85,7 @@ void VcpThread::rpt_feature_error(
                                                 QMessageBox::Warning);
    TRACEMCF(debug, "Calling _msgboxQueue.put() for qe: %s", QS2S(qe->repr()));
    GlobalState::instance()._msgBoxQueue->put(qe);
-   TRACEMCF(debug, "Done");
+   TRACEMCF_DONE(debug, "");
 }
 
 
@@ -96,7 +96,7 @@ void VcpThread::rpt_nonfeature_error(
       DDCA_Error_Detail * erec)
 {
    bool debug = false;
-   TRACECF_STARTING(debug, "Starting.action=%s, ddcaFuncName=%s, ddcrc=%d",
+   TRACECF_STARTING(debug, "action=%s, ddcaFuncName=%s, ddcrc=%d",
                    action, ddcaFuncName, ddcrc);
    QString qsexpl = QString("");
    if (erec) {
@@ -123,7 +123,7 @@ void VcpThread::rpt_nonfeature_error(
                                                 QMessageBox::Warning);
    TRACECF(debug, "Calling _msgboxQueue.put() for qe: %s", QS2S(qe->repr()));
    GlobalState::instance()._msgBoxQueue->put(qe);
-   TRACECF(debug, "Done");
+   TRACECF_DONE(debug, "");
 }
 
 
@@ -200,7 +200,7 @@ void VcpThread::rpt_verify_error(
                                                    QMessageBox::Warning);
       TRACECF(debug, "Calling _msgboxQueue.put() for qe: %s", QS2S(qe->repr()));
       GlobalState::instance()._msgBoxQueue->put(qe);
-      TRACECF(debug, "Done");
+      TRACECF_DONE(debug, "");
    }
 }
 
@@ -213,14 +213,14 @@ DDCA_Status VcpThread::perform_open_display(DDCA_Display_Handle * dh_loc)
 {
    bool debugFunc = false;
    debugFunc = debugFunc || debugThread;
-   TRACECF_STARTING(debugFunc, "Starting. dref=%s", ddca_dref_repr(this->_dref));
+   TRACECF_STARTING(debugFunc, "dref=%s", ddca_dref_repr(this->_dref));
 
    DDCA_Status ddcrc = ddca_open_display2(this->_dref, true, dh_loc);
    // if (ddcrc == 0) ddcrc = -EBUSY;
    if (ddcrc != 0) {
        rpt_nonfeature_error("performing open", "ddca_open_display2", ddcrc);
    }
-   TRACECF(debugFunc, "Returning %d", ddcrc);
+   TRACECF_DONE(debugFunc, "Returning %d", ddcrc);
    return ddcrc;
 }
 
@@ -249,7 +249,7 @@ void VcpThread::loadDynamicFeatureRecords()
 {
    bool debugFunc = false;
    debugFunc = debugFunc || debugThread;
-   TRACECF_STARTING(debugFunc, "Starting. dref=%s", ddca_dref_repr(this->_dref));
+   TRACECF_STARTING(debugFunc, "dref=%s", ddca_dref_repr(this->_dref));
 
    DDCA_Display_Handle dh;
    DDCA_Status ddcrc = perform_open_display(&dh);
@@ -270,7 +270,7 @@ void VcpThread::loadDynamicFeatureRecords()
       ddcrc = perform_close_display(dh);
    }
 
-   TRACECF(debugFunc, "Done. dref=%s", ddca_dref_repr(this->_dref));
+   TRACECF_DONE(debugFunc, "dref=%s", ddca_dref_repr(this->_dref));
 }
 
 
@@ -299,7 +299,7 @@ void VcpThread::capabilities() {
    debugFunc = debugFunc || debugThread;
    debugRetry = debugRetry || debugFunc;
    // debugFunc = false;
-   TRACECF_STARTING(debugFunc, "Starting. dref=%s", ddca_dref_repr(this->_dref));
+   TRACECF_STARTING(debugFunc, "dref=%s", ddca_dref_repr(this->_dref));
    DDCA_Display_Handle dh;
    char *              caps = NULL;
    DDCA_Capabilities * parsed_caps = NULL;
@@ -372,7 +372,7 @@ void VcpThread::capabilities() {
       }
    }  // open succeeded
 
-   TRACECF(debugFunc, "Done.     dref=%s, retry_count=%d", ddca_dref_repr(this->_dref), retry_count);
+   TRACECF_DONE(debugFunc, "dref=%s, retry_count=%d", ddca_dref_repr(this->_dref), retry_count);
 } // function
 
 
@@ -408,7 +408,7 @@ void VcpThread::getvcp(uint8_t featureCode, bool needMetadata)
 {
     bool debugFunc = false;  //  || (featureCode == 0x14);
     debugFunc = debugFunc || debugThread;
-    TRACECF_STARTING(debugFunc, "Starting. featureCode=0x%02x, needMetadata = %s",
+    TRACECF_STARTING(debugFunc, "featureCode=0x%02x, needMetadata = %s",
                       featureCode, SBOOL(needMetadata));
 
     DDCA_Display_Handle                   dh;
@@ -469,7 +469,7 @@ void VcpThread::getvcp(uint8_t featureCode, bool needMetadata)
 
        ddcrc = perform_close_display(dh);
     }  // open succeeded
-    TRACECF(debugThread, "Done");
+    TRACECF_DONE(debugThread, "");
 }
 
 
@@ -478,7 +478,7 @@ void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint16_t shsl)
 {
     bool debugFunc = false; // || (feature_code == 0x14);
     debugFunc = debugFunc || debugThread;
-    TRACECF_STARTING(debugFunc, "Starting. feature_code=0x%02x.  shsl=0x%04x, writeOnly=%s",
+    TRACECF_STARTING(debugFunc, "feature_code=0x%02x.  shsl=0x%04x, writeOnly=%s",
                        feature_code, shsl, SBOOL(writeOnly));
 
     uint8_t sh = (shsl >> 8);
@@ -575,7 +575,7 @@ bye:
            rpt_nonfeature_error("performing close", "ddca_close_display", ddcrc);
        }
     }   // open succeeded
-    TRACECF(debugFunc, "Done");
+    TRACECF_DONE(debugFunc, "");
 }
 
 
@@ -594,7 +594,7 @@ void VcpThread::startInitialLoad(void)
 // Process RQEndInitialLoad
 void VcpThread::endInitialLoad(void)
 {
-    TRACECF_STARTING(debugThread, "Starting");
+    TRACECF_STARTING(debugThread, "");
     // _baseModel->report();
     // _baseModel->endResetModel();
     _baseModel->modelEndInitialLoad();
@@ -610,7 +610,7 @@ void VcpThread::endInitialLoad(void)
 void VcpThread::run()
 {
     bool debug = false;
-    TRACECF_STARTING(debug, "Starting");
+    TRACECF_STARTING(debug, "");
 
 
 #ifdef TEMP

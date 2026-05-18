@@ -38,7 +38,7 @@ FeatureBaseModel::FeatureBaseModel(Monitor * monitor)
       , _monitor(monitor)
 {
     bool debug = false;
-    TRACECF_STARTING(debug, "Starting. dref=%s", ddca_dref_repr(_monitor->_displayInfo->dref));
+    TRACECF_STARTING(debug, "dref=%s", ddca_dref_repr(_monitor->_displayInfo->dref));
 
     setObjectName(QString::asprintf("baseModel-%s",ddca_dref_repr(_monitor->_displayInfo->dref)));
     _featureValues          = new QVector<FeatureValue*>();
@@ -77,7 +77,7 @@ FeatureBaseModel::~FeatureBaseModel() {
    TRACECF(debug, "          _caps+string=%p->%s", _caps_string, _caps_string);
    free(_caps_string);   // raw capabilities
    ddca_free_parsed_capabilities(_parsed_caps);
-   TRACECF(debug, "Done.");
+   TRACECF_DONE(debug, "");
    free((void*) _cls);
 }
 
@@ -326,7 +326,7 @@ FeatureBaseModel::setFeatureList(
 {
    bool debugFunc = false;
    debugFunc = debugFunc || debugFeatureLists;
-   TRACECF_STARTING(debugFunc, "Starting. %d features: %s",
+   TRACECF_STARTING(debugFunc, "%d features: %s",
                       ddca_feature_list_count(featureList),
                       ddca_feature_list_string(featureList, NULL, (char*) " ") );
 
@@ -352,7 +352,7 @@ FeatureBaseModel::setFeatureList(
    }
    _monitor->_requestQueue->put(new VcpEndInitialLoadRequest);
 
-   TRACECF(debugFunc, "Done");
+   TRACECF_DONE(debugFunc, "");
 }
 
 // reload specific features, but only if they were already loaded
@@ -391,7 +391,7 @@ void FeatureBaseModel::reloadFeatures() {
    bool debug = false;
    debug = debug || debugFeatureLists;
 
-   TRACECF_STARTING(debug, "Starting.");
+   TRACECF_STARTING(debug, "");
 
    _monitor->_requestQueue->put(new VcpStartInitialLoadRequest);
    int ct = modelVcpValueCount();
@@ -410,7 +410,7 @@ void FeatureBaseModel::reloadFeatures() {
    }
    _monitor->_requestQueue->put(new VcpEndInitialLoadRequest);
 
-   TRACECF(debug, "Done");
+   TRACECF_DONE(debug, "");
 }
 
 void FeatureBaseModel::markDisconnected(DDCA_Display_Ref dref) {
@@ -444,7 +444,7 @@ void FeatureBaseModel::dbgrpt() {
 void  FeatureBaseModel::modelStartInitialLoad(void) {
    bool debug = false;
    _initialLoadActive = true;
-    TRACECFNG(debug, "=> Emitting signalStartInitialLoad");
+    TRACECF(debug, "=> Emitting signalStartInitialLoad");
     emit signalStartInitialLoad();
 }
 

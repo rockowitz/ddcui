@@ -51,7 +51,7 @@ static QLabel * createFeatureWidgetField(
 void FeatureWidget::setupFeatureWidget()
 {
    bool debug = false;
-   TRACECF_STARTING(debug, "Starting");
+   TRACECF_STARTING(debug, "");
    // setFrameStyle(QFrame::Box);    // something to make it visible for development
 
    _featureCodeField = createFeatureWidgetField("featureCode",  30, "x00");
@@ -113,7 +113,7 @@ void FeatureWidget::setupFeatureWidget()
       basicDimsShown = true;
    }
 
-   TRACECF(debug, "Done");
+   TRACECF_DONE(debug, "");
 }
 
 void FeatureWidget::setupConnections()
@@ -269,7 +269,7 @@ void FeatureWidget::setNcValuesSource(NcValuesSource newsrc, bool useLatestNcVal
    bool debug = false;
    TRACEMF_STARTING(debug, "newsrc = %d-%s", newsrc, ncValuesSourceName(newsrc));
    _valueWidget->setNcValuesSource(newsrc, useLatestNcValueNames);
-   TRACEMF(debug, "Done");
+   TRACEMF_DONE(debug, "");
 }
 #endif
 

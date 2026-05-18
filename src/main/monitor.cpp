@@ -26,7 +26,7 @@ Monitor::Monitor(DDCA_Display_Info2 * display_info, int monitorNumber)
     , _cls( strdup(metaObject()->className()) )
 {
    bool debug = false;
-   TRACECF_STARTING(debug, "Starting. monitorNumber=%d, dispno=%d, dref=%s",
+   TRACECF_STARTING(debug, "monitorNumber=%d, dispno=%d, dref=%s",
                   monitorNumber, display_info->dispno, ddca_dref_repr(display_info->dref));
    _page_moninfo     = _page_capabilities     = NULL;
    _pageno_moninfo   = _pageno_capabilities   = 0;
@@ -61,7 +61,7 @@ Monitor::Monitor(DDCA_Display_Info2 * display_info, int monitorNumber)
 
    }
 
-   TRACECF(debug, "Done.     _monitorNumber=%d, dref: %s", _monitorNumber, ddca_dref_repr(_displayInfo->dref));
+   TRACECF_DONE(debug, "_monitorNumber=%d, dref: %s", _monitorNumber, ddca_dref_repr(_displayInfo->dref));
    // if (debug)
    //   ddca_report_display_info(_displayInfo, 3);
 }
@@ -69,7 +69,7 @@ Monitor::Monitor(DDCA_Display_Info2 * display_info, int monitorNumber)
 #ifdef UNUSED
 void Monitor::recheck() {
    bool debug = false;
-   TRACECF_STARTING(debug, "Starting");
+   TRACECF_STARTING(debug, "");
    // get displayinfo for dref
    DDCA_Display_Ref ddca_dref = this->_displayInfo->dref;
    DDCA_Display_Info2 * new_dinfo = nullptr;
@@ -77,13 +77,13 @@ void Monitor::recheck() {
    DDCA_Display_Info2 * old_dinfo = this->_displayInfo;
    this->_displayInfo = new_dinfo;
    ddca_free_display_info2(old_dinfo);
-   TRACECF(debug,"Done");
+   TRACECF_DONE(debug,"");
 }
 #endif
 
 Monitor::~Monitor() {
    bool debug = false;
-   TRACECF_STARTING(debug, "Starting. monitor=%p, _monitor_number=%d, _displayInfo->dispno=%d, _baseModel=%p, _moninfoPlainText=%p, _capabilitiesPlainTex=%p",
+   TRACECF_STARTING(debug, "monitor=%p, _monitor_number=%d, _displayInfo->dispno=%d, _baseModel=%p, _moninfoPlainText=%p, _capabilitiesPlainTex=%p",
          this, _monitorNumber, _displayInfo->dispno, _baseModel,  _moninfoPlainText, _capabilitiesPlainText);
 
    if (supportsDdc()) {
@@ -105,7 +105,7 @@ Monitor::~Monitor() {
    }
    delete _featuresScrollAreaView;
    ddca_free_display_info2(_displayInfo);
-   TRACECF(debug, "Done");
+   TRACECF_DONE(debug, "");
    free((void*) _cls);
 }
 

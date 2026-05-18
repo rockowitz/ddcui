@@ -97,7 +97,7 @@ void FeaturesScrollAreaView::freeContents(void) {
 // triggered by signal FeatureBaseModel::signalEndInitialLoad
 void FeaturesScrollAreaView::onEndInitialLoad(void) {
     bool debugFunc = false;
-    TRACEMCF_STARTING(debugFunc, "Starting, this->_id=%d, Monitor=%s", _id, _monitor->_displayInfo->model_name);
+    TRACEMCF_STARTING(debugFunc, ", this->_id=%d, Monitor=%s", _id, _monitor->_displayInfo->model_name);
 
     freeContents();
 
@@ -266,7 +266,7 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
     _scrollAreaContents = scrollAreaContents;
     _centralStackedWidget->show();
 
-    TRACEMCF(debugFunc, "Done.  feature count: %d", ct);
+    TRACEMCF_DONE(debugFunc, "feature count: %d", ct);
 }
 
 QSize FeaturesScrollAreaView::maxRowSize() {
@@ -282,7 +282,7 @@ void FeaturesScrollAreaView::onUIValueChanged(
 {
    bool debug = false;
    debug = debug || debugSignals;
-   TRACEMCF_STARTING(debug, "Starting. featureCode = 0x%02x, writeOnly=%s, sh=0x%02x, sl=0x%02x",
+   TRACEMCF_STARTING(debug, "featureCode = 0x%02x, writeOnly=%s, sh=0x%02x, sl=0x%02x",
                   featureCode, SBOOL(writeOnly), sh, sl);
 
    // *** Critical code point. This is what prevents infinite loop after getvcp returns a new value,
@@ -325,7 +325,7 @@ void FeaturesScrollAreaView::onUIValueChanged(
          break;
       }
    }
-   TRACEMCF(debug, "Done");
+   TRACEMCF_DONE(debug, "");
 }
 
 void FeaturesScrollAreaView::onModelValueChanged(
@@ -388,7 +388,7 @@ void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc, bool
       // _curNcValuesSource = newsrc;
       // _curUseLatestNcValueNames = newUseLatestNames;
    }
-   TRACEMCF(debugFunc, "Done");
+   TRACEMCF_DONE(debugFunc, "");
 }
 #endif
 
@@ -436,7 +436,7 @@ void FeaturesScrollAreaView::onModelDdcFeatureError(DdcFeatureError* perec) {
                                    icon);
      TRACEMCF(debugFunc, "Calling _msgboxQueue.put() for qe: %s", QS2S(qe->repr()));
     _msgboxQueue->put(qe);
-    TRACEMCF(debugFunc, "Done");
+    TRACEMCF_DONE(debugFunc, "");
 }
 #endif
 

@@ -23,7 +23,7 @@ static bool showResizeEvents = false;
 
 void ValueSimpleContWidget::additionalWidgets() {
    bool debug = false;
-   TRACEMCF_STARTING(debug, "Starting." );
+   TRACEMCF_STARTING(debug, "" );
 
    // max value fields
    _maxTitle = new QLabel("Max:");
@@ -42,23 +42,23 @@ void ValueSimpleContWidget::additionalWidgets() {
    if (debugLayout)
       _maxValue->setStyleSheet("background-color:orange;");
 
-   TRACEMCF(debug, "Done." );
+   TRACEMCF_DONE(debug, "" );
 }
 
 
 void ValueSimpleContWidget::createWidgets() {
     bool debug = false;
-    TRACEMCF_STARTING(debug, "Starting.");
+    TRACEMCF_STARTING(debug, "");
 
     _spinSlider = new SpinSlider();
 
-    TRACEMCF(debug, "Done.");
+    TRACEMCF_DONE(debug, "");
 }
 
 
 void ValueSimpleContWidget::layoutWidget(QHBoxLayout * layout) {
     bool debug = false;
-    TRACEMCF_STARTING(debug, "Starting." );
+    TRACEMCF_STARTING(debug, "" );
 
     layout->addSpacing(5);
     layout->addWidget(_spinSlider);
@@ -69,7 +69,7 @@ void ValueSimpleContWidget::layoutWidget(QHBoxLayout * layout) {
     setLayout(layout);
 
     debugSimpleContLayout();
-    TRACEMCF(debug, "Done." );
+    TRACEMCF_DONE(debug, "" );
 }
 
 
@@ -79,7 +79,7 @@ ValueSimpleContWidget::ValueSimpleContWidget(QWidget *parent)
    // , _newval(0)
 {
     bool debug = false;
-    TRACEMCF_STARTING(debug, "Starting. After ValueBaseWidget() constructor." );
+    TRACEMCF_STARTING(debug, "After ValueBaseWidget() constructor." );
 
     _newval = 0;
     createWidgets();
@@ -89,7 +89,7 @@ ValueSimpleContWidget::ValueSimpleContWidget(QWidget *parent)
     connect( _spinSlider, SIGNAL(featureValueChanged(uint8_t, uint8_t, uint8_t)),
              this,        SLOT(onFeatureValueChanged(uint8_t, uint8_t, uint8_t)));
 
-    TRACEMCF(debug, "Done." );
+    TRACEMCF_DONE(debug, "" );
 }
 
 
@@ -112,7 +112,7 @@ void   ValueSimpleContWidget::setEnabled(bool onoff) {
       _cb->setBackgroundRole(QPalette::Dark);
    }
 #endif
-   TRACEMCF(debug, "Done.");
+   TRACEMCF_DONE(debug, "");
 }
 
 
@@ -126,14 +126,14 @@ void ValueSimpleContWidget::setRange(int minval, int maxval) {
 
    _maxTitle->setText(QString("Range:"));
    _maxValue->setText( QString::asprintf("%d-%d", minval, maxval) );
-   TRACEMCF(debug, "Done");
+   TRACEMCF_DONE(debug, "");
 }
 
 void ValueSimpleContWidget::setFeatureValue(const FeatureValue &fv) {
     bool debug = false;
     debug = debug || debugValueWidgetSignals;
     // _guiChange = false;
-    TRACEMCF_STARTING(debug, "Starting. feature code: 0x%02x, before ValueBaseWidget::setFeatureValue()", fv.featureCode());
+    TRACEMCF_STARTING(debug, "feature code: 0x%02x, before ValueBaseWidget::setFeatureValue()", fv.featureCode());
     ValueBaseWidget::setFeatureValue(fv);
 
     if (_maxval < 0) {     // setRange has not been called
@@ -155,20 +155,20 @@ void ValueSimpleContWidget::setFeatureValue(const FeatureValue &fv) {
     _spinSlider->setRange(_minval, _maxval);
     _spinSlider->setShSl(curval);
 
-    TRACEMCF(debug, "Done.");
+    TRACEMCF_DONE(debug, "");
 }
 
 
 void ValueSimpleContWidget::setCurrentShSl(uint16_t newval) {
     bool debug = false;
     debug = debug || debugValueWidgetSignals;
-    TRACEMCF_STARTING(debug, "Starting. newval = 0x%04x", newval);
+    TRACEMCF_STARTING(debug, "newval = 0x%04x", newval);
 
     ValueBaseWidget::setCurrentShSl(newval);
     int curval = _sh << 8 | _sl;
     _spinSlider->setShSl(curval);
 
-    TRACEMCF(debug, "Done. feature=0x%02x, curval=%d", _featureCode , curval);
+    TRACEMCF_DONE(debug, "feature=0x%02x, curval=%d", _featureCode , curval);
 }
 
 

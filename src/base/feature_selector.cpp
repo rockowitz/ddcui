@@ -120,7 +120,7 @@ bool FeatureSelector::operator==(const FeatureSelector &other) const {
 
          result = ddca_feature_list_eq(_customFeatureList, other._customFeatureList);
    }
-   TRACECF(debugFunc, "Returning: %s", SBOOL(result));
+   TRACECF_DONE(debugFunc, "Returning: %s", SBOOL(result));
 
    return result;
 }

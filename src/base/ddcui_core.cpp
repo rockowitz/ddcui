@@ -191,6 +191,22 @@ bool printftcmf(
          char * buffer = g_strdup_vprintf(format, args);
          va_end(args);
 
+         if ((opts & TRACE_OPTIONS_STARTING) && (opts & TRACE_OPTIONS_DONE)) {
+            char * prefixed = g_strdup_printf("Executing. %s", buffer);
+            g_free(buffer);
+            buffer = prefixed;
+         }
+         else if (opts & TRACE_OPTIONS_STARTING) {
+            char * prefixed = g_strdup_printf("Starting. %s", buffer);
+            g_free(buffer);
+            buffer = prefixed;
+         }
+         else if (opts & TRACE_OPTIONS_DONE) {
+            char * prefixed = g_strdup_printf("Done. %s", buffer);
+            g_free(buffer);
+            buffer = prefixed;
+         }
+
          char * funcbuf = nullptr;
          if (metaclass_classname && cls) {
             if (streq(metaclass_classname, cls)) {

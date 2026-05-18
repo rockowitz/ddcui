@@ -22,19 +22,19 @@
 
 void ValueBaseWidget::setEnabled(bool onoff) {
    bool debug = false;
-   TRACEMCF_STARTING(debug, "Starting. _id=%d, _featureCode=0x%02x, onoff=%s, "
+   TRACEMCF_STARTING(debug, "_id=%d, _featureCode=0x%02x, onoff=%s, "
                    "before calling QFrame::setEnabled(%s)",
                    _id, _featureCode,  SBOOL(onoff), SBOOL(onoff));
 
    QFrame::setEnabled(onoff);
 
-   TRACEMCF(debug, "Done.");
+   TRACEMCF_DONE(debug, "");
 }
 
 // utility method that provides consistent formatting for comboboxes
 QComboBox * ValueBaseWidget::createFormattedComboBox() {
    bool debug = false;
-   TRACECF_STARTING(debug, "Starting. _id=%d", _id);
+   TRACECF_STARTING(debug, "_id=%d", _id);
    QComboBox * cb = new QComboBox();
    TRACECF(debug, "Allocated");
 
@@ -51,7 +51,7 @@ QComboBox * ValueBaseWidget::createFormattedComboBox() {
    // cb->setStyleSheet("background-color:white;color:black;padding-left:2px;");
    cb->setContentsMargins(0,0,0,0);
 
-   TRACECF(debug, "Done, _id=%d", _id);
+   TRACECF_DONE(debug, ", _id=%d", _id);
    return cb;
 }
 
@@ -72,17 +72,17 @@ ValueBaseWidget::ValueBaseWidget(QWidget *parent)
    // try setting frame style at this level,
    setFrameStyle(QFrame::Sunken | QFrame::Panel);
 
-   TRACECF(debug, "Done");
+   TRACECF_DONE(debug, "");
 }
 
 ValueBaseWidget::~ValueBaseWidget() {
    bool debug = false;
-   TRACEMCF_STARTING(debug, "Starting. this._id = %d", _id);
+   TRACEMCF_STARTING(debug, "this._id = %d", _id);
 
    // leave it to FeatureValueto delete finfo, since it may be shared among multiple widgets
    // ddca_free_feature_metadata(_finfo);
 
-   TRACEMCF(debug, "Done.");
+   TRACEMCF_DONE(debug, "");
    free((void*)_cls);
 }
 
@@ -124,11 +124,11 @@ uint16_t ValueBaseWidget::getCurrentShSl() {
 
 void   ValueBaseWidget::delete_finfo() {
    bool debug = false;
-   TRACEMCF_STARTING(debug, "Starting. this._id = %d DOING NOTHING, _finfo=%p", _id, _finfo);
+   TRACEMCF_STARTING(debug, "this._id = %d DOING NOTHING, _finfo=%p", _id, _finfo);
 
    // ddca_free_feature_metadata(_finfo);
 
-   TRACEMCF(debug, "Done.");
+   TRACEMCF_DONE(debug, "");
 }
 
 void init_value_base_widget() {

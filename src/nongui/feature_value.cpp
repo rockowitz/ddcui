@@ -63,19 +63,19 @@ FeatureValue::FeatureValue(
           _observedNcValues = bs256_insert(EMPTY_BIT_SET_256, val.sl);
        }
    }
-   TRACECF(debugFunc, "Done. _observedNcValues = %s", bs256_to_string_t(_observedNcValues, "", " "));
+   TRACECF_DONE(debugFunc, "_observedNcValues = %s", bs256_to_string_t(_observedNcValues, "", " "));
 }
 
 
 FeatureValue::~FeatureValue() {
    bool debugFunc = false;
    debugFunc = debugFunc || (_featureCode == 0x14);
-   TRACECF_STARTING(debugFunc, "Starting _id=%d, _featureCode=0x%02x _finfo=%p", _id, _featureCode, _finfo);
+   TRACECF_STARTING(debugFunc, "_id=%d, _featureCode=0x%02x _finfo=%p", _id, _featureCode, _finfo);
 
    if (_finfo)
       ddca_free_feature_metadata(_finfo);
 
-   TRACECF(debugFunc, "Done.");
+   TRACECF_DONE(debugFunc, "");
 }
 
 
@@ -154,13 +154,13 @@ Bit_Set_256 FeatureValue::observedNcValues() const {
 
 void FeatureValue::delete_finfo() {
    bool debug = false;
-   TRACECF_STARTING(debug, "Starting _id=%d, _finfo=%p", _id,  _finfo);
+   TRACECF_STARTING(debug, "_id=%d, _finfo=%p", _id,  _finfo);
 
    if (_finfo) {
       ddca_free_feature_metadata(_finfo);
       _finfo = NULL;
 
-    TRACECF(debug, "Done. _id=%d, _finfo=%p", _id,  _finfo);
+    TRACECF_DONE(debug, "_id=%d, _finfo=%p", _id,  _finfo);
    }
 }
 

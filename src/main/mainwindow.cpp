@@ -139,7 +139,7 @@ void display_status_event_main_callback(DDCA_Display_Status_Event evt) {
  */
 int MainWindow::findMonitor(DDCA_Display_Ref dref) {
    bool debug  = false;
-   TRACECF_STARTING(debug, "Starting. dref=%s", ddca_dref_repr(dref));
+   TRACECF_STARTING(debug, "dref=%s", ddca_dref_repr(dref));
    int result = -1;
    int ct0 = _monitors.size();
    // TRACECF(debug,"_monitors.size() = %d", ct0);
@@ -150,7 +150,7 @@ int MainWindow::findMonitor(DDCA_Display_Ref dref) {
          break;
       }
    }
-   TRACECF(debug,"Returning: %d", result);
+   TRACECF_DONE(debug,"Returning: %d", result);
    return result;
 }
 
@@ -162,7 +162,7 @@ int MainWindow::findMonitor(DDCA_Display_Ref dref) {
  */
 int MainWindow::matchMonitor(DDCA_Display_Ref dref) {
    bool debug  = false;
-   TRACECF_STARTING(debug, "Starting. dref=%s", ddca_dref_repr(dref));
+   TRACECF_STARTING(debug, "dref=%s", ddca_dref_repr(dref));
    int result = -1;
    int ct0 = _monitors.size();
    // TRACECF(debug,"_monitors.size() = %d", ct0);
@@ -180,7 +180,7 @@ int MainWindow::matchMonitor(DDCA_Display_Ref dref) {
       }
    }
    ddca_free_display_info2(dinfo0);
-   TRACECF(debug,"Returning: %d", result);
+   TRACECF_DONE(debug,"Returning: %d", result);
    return result;
 }
 
@@ -194,7 +194,7 @@ int MainWindow::matchMonitor(DDCA_Display_Ref dref) {
  */
 int MainWindow::addMonitor(DDCA_Display_Ref dref) {
    bool debug = true;
-   TRACECF_STARTING(debug, "Starting. dref=%s", ddca_dref_repr(dref));
+   TRACECF_STARTING(debug, "dref=%s", ddca_dref_repr(dref));
    int nextIndex = -1;
    DDCA_Display_Info2 * dinfo;
    DDCA_Status ddcrc = ddca_get_display_info2(dref, &dinfo);
@@ -206,7 +206,7 @@ int MainWindow::addMonitor(DDCA_Display_Ref dref) {
    }
    // initialize monitor data structures, add to display selector combo box
    initOneMonitor(dinfo, nextIndex);
-   TRACECF(debug, "Done.  Returning %d", nextIndex);
+   TRACECF_DONE(debug, "Returning %d", nextIndex);
    return nextIndex;
 }
 
@@ -225,7 +225,7 @@ int MainWindow::addMonitor(DDCA_Display_Ref dref) {
  */
 int MainWindow::removeMonitor(DDCA_Display_Ref dref) {
    bool debug  = true;
-   TRACECF_STARTING(debug, "Starting. dref=%s", ddca_dref_repr(dref));
+   TRACECF_STARTING(debug, "dref=%s", ddca_dref_repr(dref));
 
    int monNdx = findMonitor(dref);
    if (monNdx >= 0) {
@@ -261,7 +261,7 @@ int MainWindow::removeMonitor(DDCA_Display_Ref dref) {
       TRACECF(debug, "No monitor found for dref=%s", ddca_dref_repr(dref));
    }
 
-   TRACECF(debug, "Done.  Returning %d", monNdx);
+   TRACECF_DONE(debug, "Returning %d", monNdx);
    return monNdx;
 }
 
@@ -271,7 +271,7 @@ int MainWindow::removeMonitor(DDCA_Display_Ref dref) {
  */
 void MainWindow::enableMonitor(DDCA_Display_Ref dref) {
    bool debug = true;
-   TRACECF_STARTING(debug, "Starting. dref=%s", ddca_dref_repr(dref));
+   TRACECF_STARTING(debug, "dref=%s", ddca_dref_repr(dref));
    int monNdx = findMonitor(dref);
    if (monNdx >= 0) {
       Monitor * monitor = _monitors.at(monNdx);
@@ -293,7 +293,7 @@ void MainWindow::enableMonitor(DDCA_Display_Ref dref) {
  */
 void MainWindow::forDisplayChanged(DDCA_Display_Status_Event evt) {
    bool debug = true;
-   TRACECF_STARTING(debug, "Starting. event type: %d = %s, dref=%s",
+   TRACECF_STARTING(debug, "event type: %d = %s, dref=%s",
           evt.event_type, ddca_display_event_type_name(evt.event_type),
           ddca_dref_repr(evt.dref) );
 
@@ -327,7 +327,7 @@ void MainWindow::forDisplayChanged(DDCA_Display_Status_Event evt) {
              evt.event_type, ddca_display_event_type_name(evt.event_type));
       // assert(false);
    }
-   TRACECF(debug, "Done. newDisplayIndex=%d", newDisplayIndex);
+   TRACECF_DONE(debug, "newDisplayIndex=%d", newDisplayIndex);
 }
 
 
@@ -338,7 +338,7 @@ void MainWindow::forDisplayChanged(DDCA_Display_Status_Event evt) {
 // called from main.cpp before event mainwindow event loop started
 void MainWindow::initSerialMsgbox() {
    bool debug  = false;
-   TRACEMCF_STARTING(debug, "Starting");
+   TRACEMCF_STARTING(debug, "");
    // QMessageBox for displaying error messages, one at a time
    // using persistent serial message box
    _serialMsgBox = new QMessageBox(this);
@@ -357,12 +357,12 @@ void MainWindow::initSerialMsgbox() {
    // Defer until after MainWindow::show() so that dialog box appears over main window
    // _msgBoxThread->start();
 
-   TRACEMCF(debug, "Done");
+   TRACEMCF_DONE(debug, "");
 }
 
 void MainWindow::start_msgBoxThread() {
    bool debug  = false;
-   TRACEMCF_STARTING(debug, "Starting");
+   TRACEMCF_STARTING(debug, "");
 
 #ifdef DEFERRED_MSG_QUEUE
    TRACEMC("Putting %d MsgBoxQueueEntry on _msgBoxQueue", _deferredMsgs.count());
@@ -373,7 +373,7 @@ void MainWindow::start_msgBoxThread() {
 #endif
 
    _msgBoxThread->start();
-   TRACEMCF(debug, "Done.  _msgBoxThread started");
+   TRACEMCF_DONE(debug, "_msgBoxThread started");
 }
 
 
@@ -417,7 +417,7 @@ void MainWindow::disconnectBaseModel(Monitor * curMonitor) {
  */
 void MainWindow::freeMonitors() {
    bool debug = false;
-   TRACECF_STARTING(debug, "Starting");
+   TRACECF_STARTING(debug, "");
 
    int ct0 = _monitors.size();
    TRACECF(debug,"_monitors.size() = %d", ct0);
@@ -439,12 +439,12 @@ void MainWindow::freeMonitors() {
       _toolbarDisplayCB->removeItem(ndx);
    }
 
-   TRACECF(debug, "Done");
+   TRACECF_DONE(debug, "");
 }
 
 void MainWindow::initOneMonitor(DDCA_Display_Info2 * info, int curIndex) {
    bool debug = false;
-   TRACECF_STARTING(debug, "Starting. info=%p, curIndex=%d", info, curIndex);
+   TRACECF_STARTING(debug, "info=%p, curIndex=%d", info, curIndex);
 
    int monitorNumber = curIndex+1;
    _toolbarDisplayCB->addItem(ddcu_comboBoxModelName(info), QVariant(monitorNumber));
@@ -480,7 +480,7 @@ void MainWindow::initOneMonitor(DDCA_Display_Info2 * info, int curIndex) {
       _ui->actionCapabilities->setEnabled(false);
       _ui->actionFeaturesScrollArea->setEnabled(false);
    }
-   TRACECF(debug, "Done.");
+   TRACECF_DONE(debug, "");
 }
 
 void MainWindow::setInitialDisplayIndex(Parsed_Ddcui_Cmd * parsed_cmd) {
@@ -526,7 +526,7 @@ void MainWindow::setInitialDisplayIndex(Parsed_Ddcui_Cmd * parsed_cmd) {
 
 void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
     bool debug = false;
-    TRACECF_STARTING(debug, "Starting.  parsed_cmd=%p", parsed_cmd);
+    TRACECF_STARTING(debug, "parsed_cmd=%p", parsed_cmd);
 
     longRunningTaskStart();
     statusBar()->showMessage(QString("Loading display information..."));
@@ -628,7 +628,7 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
     statusBar()->showMessage(msg);
     longRunningTaskEnd();
 
-    TRACECF(debug, "Done");
+    TRACECF_DONE(debug, "");
 }
 
 void MainWindow::quitShortcut() {
@@ -696,7 +696,7 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
 {
     bool debug = false;
     _cls = strdup(metaObject()->className());
-    TRACECF_STARTING(debug, "Starting. thread = %d", get_thread_id());
+    TRACECF_STARTING(debug, "thread = %d", get_thread_id());
 
     GlobalState& globalState = GlobalState::instance();
     globalState._parsed_cmd = parsed_cmd;  // in case of reinitialization
@@ -827,24 +827,24 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
      QObject::connect(this,       &MainWindow::signalRedetectDisplaysEnd,
                       this,       &MainWindow::longRunningTaskEnd);
 
-     TRACECF(debug, "Done");
+     TRACECF_DONE(debug, "");
 }
 
 MainWindow::~MainWindow()
 {
     bool debug = false;
-    TRACECF_STARTING(debug, "Starting");
+    TRACECF_STARTING(debug, "");
     delete _ui;
 
     delete _feature_selector;
     delete _otherOptionsState;
     delete _uiOptionsState;
     _msgBoxThread->quit();
-    TRACEMCF(debug, "Done.  _msgBoxThread halted");
+    TRACEMCF_DONE(debug, "_msgBoxThread halted");
 
     freeMonitors();
     free(_drefs);
-    TRACECF(debug, "Done");
+    TRACECF_DONE(debug, "");
     free((void*) _cls);
 }
 
@@ -855,14 +855,14 @@ MainWindow::~MainWindow()
 // Slot for UserInterfaceOptionsState::controlKeyRequired_changed,
 void MainWindow::forControlKeyRequired_changed(bool onoff) {
    bool debug = false;
-   TRACECF_STARTING(debug, "Starting. onoff=%s", SBOOL(onoff));
+   TRACECF_STARTING(debug, "onoff=%s", SBOOL(onoff));
    ctrlKeyStatusMsg();
-   TRACECF(debug, "Done");
+   TRACECF_DONE(debug, "");
 }
 
 void MainWindow::ctrlKeyStatusMsg() {
    bool debug = false;
-   TRACECF_STARTING(debug, "Starting");
+   TRACECF_STARTING(debug, "");
    if (_curView == View::FeaturesView && _uiOptionsState->_controlKeyRequired ) {
       statusBar()->addWidget(_ctlMsg);  // Normal message, no timeout
       _ctlMsg->show();
@@ -870,7 +870,7 @@ void MainWindow::ctrlKeyStatusMsg() {
    else {
       statusBar()->removeWidget(_ctlMsg);
    }
-   TRACECF(debug, "Done");
+   TRACECF_DONE(debug, "");
 }
 
 //
@@ -880,9 +880,9 @@ void MainWindow::ctrlKeyStatusMsg() {
 void MainWindow::setTransitoryStatusMsg(QString msg) {
    bool debug = false;
    char * m = QS2S(msg);
-   TRACECF_STARTING(debug, "Starting. msg = %s", m);
+   TRACECF_STARTING(debug, "msg = %s", m);
    statusBar()->showMessage(msg,2000);
-   TRACECF(debug, "Done");
+   TRACECF_DONE(debug, "");
 }
 
 // Report API error in status bar
@@ -903,7 +903,7 @@ void MainWindow::reportDdcApiError(QString funcname, int rc) const {
 
 void MainWindow::showSerialMsgBox(QString title, QString text, QMessageBox::Icon icon) {
    bool debug = false;
-   TRACEMCF_STARTING(debug, "Starting. text=%s", QS2S(text));
+   TRACEMCF_STARTING(debug, "text=%s", QS2S(text));
 // #ifdef DIALOG_BOX_STILL_ON_SEPARATE_SCREEN
 #ifdef NON_PERSISTENT
    QMessageBox * serialMbox2 = new QMessageBox(this);
@@ -924,7 +924,7 @@ void MainWindow::showSerialMsgBox(QString title, QString text, QMessageBox::Icon
 #endif
 
    _serialMsgBox->exec();
-   TRACEMCF(debug, "Done.     After serialMsgBox2->exec() returns.");
+   TRACEMCF_DONE(debug, "After serialMsgBox2->exec() returns.");
 // #endif
 
 #ifdef NO
@@ -948,7 +948,7 @@ static int longRunningTaskNesting = 0;
 // Appears to have no effect when called because initial 
 void MainWindow::longRunningTaskStart() {
    bool debug  = false;
-   TRACECF_STARTING(debug, "Starting. longRunningTaskNesting=%d", longRunningTaskNesting);
+   TRACECF_STARTING(debug, "longRunningTaskNesting=%d", longRunningTaskNesting);
    longRunningTaskNesting++;
 
    // _spinner->start();
@@ -957,14 +957,14 @@ void MainWindow::longRunningTaskStart() {
       statusBar()->showMessage(QString("Please wait..."));
       QGuiApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
    }
-   TRACECF(debug, "Done.     longRunningTaskNesting=%d", longRunningTaskNesting);
+   TRACECF_DONE(debug, "longRunningTaskNesting=%d", longRunningTaskNesting);
 }
 
 // Restores normal cursor at the of a long running task
 // Both a direct call from initMonitors and a slot for FeatureBaseModel
 void MainWindow::longRunningTaskEnd() {
    bool debug  = false;
-   TRACECF_STARTING(debug, "Starting. longRunningTaskNesting=%d", longRunningTaskNesting);
+   TRACECF_STARTING(debug, "longRunningTaskNesting=%d", longRunningTaskNesting);
    if (longRunningTaskNesting > 0)
       longRunningTaskNesting--;
    if (longRunningTaskNesting == 0) {
@@ -977,7 +977,7 @@ void MainWindow::longRunningTaskEnd() {
    else
       TRACECF(debug, "longRunningTaskNesting=%d > 0, not clearing status message", longRunningTaskNesting);
 
-   TRACECF(debug, "Done.     longRunningTaskNesting=%d", longRunningTaskNesting);
+   TRACECF_DONE(debug, "longRunningTaskNesting=%d", longRunningTaskNesting);
 }
 
 //
@@ -1063,7 +1063,7 @@ void MainWindow::on_actionMonitorSummary_triggered()
 // Checks to be performed before entering alternate views (Capabilities, Features)
 bool MainWindow::checkAltViewOk(Monitor * monitor) {
    bool debug  = false;
-   TRACECF_STARTING(debug, "Starting. dref=%s, valid display %s, _initChecksDone=%s",
+   TRACECF_STARTING(debug, "dref=%s, valid display %s, _initChecksDone=%s",
          QS2S(monitor->dref_repr()),
          sbool(monitor->supportsDdc()), sbool(monitor->_initChecksDone) );
 
@@ -1136,7 +1136,7 @@ bool MainWindow::checkAltViewOk(Monitor * monitor) {
       monitor->_initChecksDone = true;
    }
 
-   TRACECF(debug, "Done.  Returning %s", sbool(!qe));
+   TRACECF_DONE(debug, "Returning %s", sbool(!qe));
    return !qe;
 }
 
@@ -1284,7 +1284,7 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
     // causes async feature reads in VcpThread, then load feature values from model into widgets
     monitor->_baseModel->setFeatureList(featuresToShow);
 
-    TRACECF(debug, "Done");
+    TRACECF_DONE(debug, "");
 }
 
 //
@@ -1325,7 +1325,7 @@ void MainWindow::on_actionRedetect_triggered() {
 
    // longRunningTaskEnd();
    emit signalRedetectDisplaysEnd();
-   TRACECF(debug,"Done");
+   TRACECF_DONE(debug,"");
 }
 
 // Actions->Rescan
@@ -1397,7 +1397,7 @@ void MainWindow::on_actionDebugLocks_triggered() {
    TRACECF(debug, "Executing");
    ddca_report_locks(0);
    captureLocks();
-   TRACECF(debug,"Done");
+   TRACECF_DONE(debug,"");
 }
 
 void MainWindow::captureLocks() {
@@ -1517,7 +1517,7 @@ void MainWindow::on_actionOtherOptionsDialog_triggered()
    //                  this,    &MainWindow::for_actionOtherOptionsDialog_ncValuesSourceChanged);
    dialog->exec();
    delete dialog;
-   TRACECF(debug, "Done");
+   TRACECF_DONE(debug, "");
 }
 
 #ifdef OLD
@@ -1535,7 +1535,7 @@ void MainWindow::for_actionOtherOptionsDialog_ncValuesSourceChanged(
       // or emit signal?
       monitor->_featuresScrollAreaView->onNcValuesSourceChanged(valuesSource, useLatestNcValueNames);
    }
-   TRACECF(debug, "Done");
+   TRACECF_DONE(debug, "");
 }
 #endif
 

@@ -31,7 +31,7 @@ static bool showResizeEvents = false;
 
 void ValueNcWidget::createWidgets() {
    bool debug = false;
-   TRACECF_STARTING(debug, "Starting. _id=%d", _id);
+   TRACECF_STARTING(debug, "_id=%d", _id);
    _cb = createFormattedComboBox();   // in ValueBaseWidget
    _savedBackgroundColor = _cb->backgroundRole();
 
@@ -45,7 +45,7 @@ void ValueNcWidget::createWidgets() {
    extraInfoSizePolicy.setHorizontalStretch(1);
    _extraInfo->setSizePolicy( extraInfoSizePolicy);
 
-   TRACECF(debug, "Done. _id=%d", _id);
+   TRACECF_DONE(debug, "_id=%d", _id);
 }
 
 void ValueNcWidget::layoutWidget() {
@@ -90,7 +90,7 @@ ValueNcWidget::ValueNcWidget(QWidget *parent):
 {
     bool debug  = false;
     _cls = strdup(metaObject()->className());
-    TRACEMCF_STARTING(debug, "Starting. id=%d, _featureCode=0x%02x", _id, _featureCode );
+    TRACEMCF_STARTING(debug, "id=%d, _featureCode=0x%02x", _id, _featureCode );
 
     _layout = new QHBoxLayout();
     createWidgets();
@@ -98,7 +98,7 @@ ValueNcWidget::ValueNcWidget(QWidget *parent):
     QObject::connect(_cb,  SIGNAL(activated(int)),
                      this, SLOT(combobox_activated(int)) );
 
-    TRACEMCF(debug, "Done");
+    TRACEMCF_DONE(debug, "");
 }
 
 ValueNcWidget::~ValueNcWidget() {
@@ -120,7 +120,7 @@ void   ValueNcWidget::setEnabled(bool onoff) {
       _cb->setBackgroundRole(QPalette::Dark);
    }
 #endif
-   TRACEMCF(debug, "Done.");
+   TRACEMCF_DONE(debug, "");
 }
 
 /*
@@ -183,7 +183,7 @@ void ValueNcWidget::setFeatureValue(const FeatureValue &fv) {
 
     _guiChange=true;
 
-    TRACEMCF(debug, "Done");
+    TRACEMCF_DONE(debug, "");
 }
 
 // copied from feature_metadata.c
@@ -193,7 +193,7 @@ ValueNcWidget::sl_value_table_lookup(
       uint8_t                    value_id)
 {
    bool debug = false;
-   TRACEMF_STARTING(debug, "Starting. value_entries=%p, value_id=0x%02x", value_entries, value_id);
+   TRACEMF_STARTING(debug, "value_entries=%p, value_id=0x%02x", value_entries, value_id);
    char * result = NULL;
    if (value_entries) {
       DDCA_Feature_Value_Entry *  cur_value = value_entries;
@@ -207,7 +207,7 @@ ValueNcWidget::sl_value_table_lookup(
          cur_value++;
       }
    }
-   TRACEMF(debug, "Returning %p -> %s", result, result);
+   TRACEMF_DONE(debug, "Returning %p -> %s", result, result);
    return result;
 }
 
@@ -283,7 +283,7 @@ void ValueNcWidget::loadComboBox2() {
       _cb->setCurrentIndex(0);
    }
 
-   TRACEMF(debugFunc, "Done. VCP feature 0x%02x, _sl=0x%02x, current index: %d",
+   TRACEMF_DONE(debugFunc, "VCP feature 0x%02x, _sl=0x%02x, current index: %d",
                       _featureCode, _sl, _cb->currentIndex());
 }
 
@@ -307,13 +307,13 @@ void ValueNcWidget::reloadComboBox(NcValuesSource newSource, bool newUseLatestNa
       _guiChange = true;
    }
 
-   TRACEMF(debugFunc, "Done");
+   TRACEMF_DONE(debugFunc, "");
 }
 
 void ValueNcWidget::setCurrentShSl(uint16_t newval) {
    bool debugFunc = false;  //  (_featureCode == 0x14);
    debugFunc = debugFunc || debugWidget;
-   TRACEMF_STARTING(debugFunc, "Starting. ValueNcWidget.this._id=%d, feature 0x%02x, newval=x%04x",
+   TRACEMF_STARTING(debugFunc, "ValueNcWidget.this._id=%d, feature 0x%02x, newval=x%04x",
                       _id, _featureCode, newval);
 
    _guiChange = false;
@@ -345,7 +345,7 @@ void ValueNcWidget::setCurrentShSl(uint16_t newval) {
     }
 
     _guiChange = true;
-    TRACEMF(debugFunc, "Done");
+    TRACEMF_DONE(debugFunc, "");
 }
 
 // returns -1 if not found
