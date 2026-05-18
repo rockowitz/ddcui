@@ -48,6 +48,15 @@ bool     enable_trace_show_thread_id(bool onoff);
 intmax_t get_thread_id();
 intmax_t get_process_id();
 void     create_timestamp(char* buf, int bufsz);
+
+typedef uint16_t Printftcmf_Options;
+#define TRACE_OPTIONS_NONE      0x00
+//#define TRACE_OPTIONS_SYSLOG    0x01
+// #define TRACE_OPTIONS_SEVERE    0x02
+#define TRACE_OPTIONS_STARTING  0x08
+#define TRACE_OPTIONS_DONE      0x10
+
+
 bool     printftcmf(
             bool debug,
             const char * metaclass_classname,
