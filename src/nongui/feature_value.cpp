@@ -48,11 +48,13 @@ FeatureValue::FeatureValue(
    bool debugFunc = false;
    // debugFunc = debugFunc || (_featureCode == 0x14);
    // debugFunc = debugFunc || (_featureCode == 0xf5);
-   if (debugFunc) {
-      TRACEC("_id=%d, feature_code=0x%02x, finfo=%p, cap_vcp=%p, sh=0x%02x, sl=0x%02x, getvcpStatus=%s",
+
+   TRACECF(debugFunc, "_id=%d, feature_code=0x%02x, finfo=%p, cap_vcp=%p, sh=0x%02x, sl=0x%02x, getvcpStatus=%s",
               _id, _featureCode, _finfo, cap_vcp, val.sh, val.sl, ddca_rc_name(getvcpStatus));
+   if (debugFunc) {
       ddca_dbgrpt_feature_metadata(_finfo, 2);
    }
+
    if (_finfo) {  // when would it be NULL ? if getvcp failed
        assert(_featureCode  == _finfo->feature_code);
 
@@ -104,7 +106,8 @@ FeatureValue::flags() const {
    return _finfo->feature_flags;
 }
 
-DDCA_Cap_Vcp * FeatureValue::capVcp() const {
+DDCA_Cap_Vcp *
+FeatureValue::capVcp() const {
    return _capVcp;
 }
 
@@ -150,10 +153,14 @@ Bit_Set_256 FeatureValue::observedNcValues() const {
 }
 
 void FeatureValue::delete_finfo() {
-   // printf("deleting _finfo = %p\n", _finfo);
+   bool debug = false;
+   TRACECF(debug, "Starting _id=%d, _finfo=%p", _id,  _finfo);
+
    if (_finfo) {
       ddca_free_feature_metadata(_finfo);
       _finfo = NULL;
+
+    TRACECF(debug, "Done. _id=%d, _finfo=%p", _id,  _finfo);
    }
 }
 

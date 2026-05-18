@@ -79,7 +79,8 @@ ValueBaseWidget::~ValueBaseWidget() {
    bool debug = false;
    TRACEMCF(debug, "Starting. this._id = %d", _id);
 
-   ddca_free_feature_metadata(_finfo);
+   // leave it to FeatureValueto delete finfo, since it may be shared among multiple widgets
+   // ddca_free_feature_metadata(_finfo);
 
    TRACEMCF(debug, "Done.");
    free((void*)_cls);
@@ -123,13 +124,12 @@ uint16_t ValueBaseWidget::getCurrentShSl() {
 
 void   ValueBaseWidget::delete_finfo() {
    bool debug = false;
-   TRACEMCF(debug, "Starting. this._id = %d, _finfo=%p", _id, _finfo);
+   TRACEMCF(debug, "Starting. this._id = %d DOING NOTHING, _finfo=%p", _id, _finfo);
 
-   ddca_free_feature_metadata(_finfo);
+   // ddca_free_feature_metadata(_finfo);
 
    TRACEMCF(debug, "Done.");
 }
-
 
 void init_value_base_widget() {
    bool debug = false;
