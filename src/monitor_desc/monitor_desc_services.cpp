@@ -8,7 +8,7 @@
 #include "monitor_desc/monitor_desc_services.h"
 
 void init_monitor_desc_services() {
-   bool debug = true;
+   bool debug = false;
    DBGF(debug, "Starting");
    DBGF(debug, "Done");
 }

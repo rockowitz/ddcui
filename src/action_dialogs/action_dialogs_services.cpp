@@ -10,7 +10,7 @@
 #include "action_dialogs/action_dialogs_services.h"
 
 void init_action_dialogs_services() {
-   bool debug = true;
+   bool debug = false;
    DBGF(debug, "Starting");
    init_debug_actions_dialog();
    DBGF(debug, "Done");

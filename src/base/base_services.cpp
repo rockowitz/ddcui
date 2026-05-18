@@ -10,7 +10,7 @@
 #include "base/base_services.h"
 
 void init_base_services() {
-   bool debug = true;
+   bool debug = false;
    DBGF(debug, "Starting");
    init_user_interface_options_state();
    DBGF(debug, "Done");

@@ -12,7 +12,7 @@
 #include "option_dialogs/option_dialogs_services.h"
 
 void init_option_dialogs_services() {
-   bool debug = true;
+   bool debug = false;
    DBGF(debug, "Starting");
    init_feature_selection_dialog();
    init_nc_values_dialog();

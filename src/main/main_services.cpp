@@ -14,7 +14,7 @@
 #include "main/main_services.h"
 
 void init_main_services() {
-   bool debug = true;
+   bool debug = false;
    DBGF(debug, "Starting");
    init_callback_manager();
    init_monitor();

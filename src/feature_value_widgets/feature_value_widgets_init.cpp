@@ -20,7 +20,7 @@
 #include "feature_value_widgets/feature_value_widgets_init.h"
 
 void init_feature_value_widgets() {
-   bool debug = true;
+   bool debug = false;
    DBGF(debug, "Starting");
    init_value_base_widget();
    init_value_2button_widget();

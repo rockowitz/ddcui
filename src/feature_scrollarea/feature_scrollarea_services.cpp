@@ -12,7 +12,7 @@
 #include "feature_scrollarea/feature_scrollarea_services.h"
 
 void init_feature_scrollarea_services() {
-   bool debug = true;
+   bool debug = false;
    DBGF(debug, "Starting");
    init_feature_widget();
    init_features_scrollarea_contents();

@@ -11,7 +11,7 @@
 #include "core_widgets/core_widgets_services.h"
 
 void init_core_widgets_services() {
-   bool debug = true;
+   bool debug = false;
    DBGF(debug, "Starting");
    init_number_entry_widget();
    init_spin_slider();

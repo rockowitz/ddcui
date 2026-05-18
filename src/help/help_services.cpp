@@ -10,7 +10,7 @@
 #include "help/help_services.h"
 
 void init_help_services() {
-   bool debug = true;
+   bool debug = false;
    DBGF(debug, "Starting");
    init_help_dialog();
    DBGF(debug, "Done");

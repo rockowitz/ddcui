@@ -8,14 +8,16 @@
 #include "nongui/msgbox_queue.h"
 #include "nongui/feature_base_model.h"
 #include "nongui/vcpthread.h"
+#include "nongui/feature_value.h"
 
 #include "nongui/nongui_services.h"
 
 void init_nongui_services() {
-   bool debug = true;
+   bool debug = false;
    DBGF(debug, "Starting");
    init_msgbox_queue();
    init_feature_base_model();
    init_vcpthread();
+   init_feature_value();
    DBGF(debug, "Done");
 }
