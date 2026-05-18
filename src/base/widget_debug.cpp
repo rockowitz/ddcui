@@ -49,6 +49,7 @@ void reportBasicWidgetDimensions(
 
     printftcmf(
        true,
+       TRACE_OPTIONS_NONE,
        caller_class,
        NULL,
        caller_func,

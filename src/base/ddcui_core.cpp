@@ -164,6 +164,7 @@ bool enable_syslog = true;
 
 bool printftcmf(
       bool debug,
+      Printftcmf_Options opts,
       const char * metaclass_classname,
       const char * cls,     // _cls
       const char * funcname,
