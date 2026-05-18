@@ -78,9 +78,29 @@ do { \
    printftcmf(true, TRACE_OPTIONS_NONE, nullptr, _cls, __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
 } while(0)
 
+#define TRACEC_STARTING( _FMT, ...) \
+do { \
+   printftcmf(true, TRACE_OPTIONS_STARTING, nullptr, _cls, __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+} while(0)
+
+#define TRACEC_DONE( _FMT, ...) \
+do { \
+   printftcmf(true, TRACE_OPTIONS_DONE, nullptr, _cls, __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+} while(0)
+
 #define TRACECF(_FLAG, _FMT, ...) \
 do { \
    printftcmf(_FLAG, TRACE_OPTIONS_NONE, nullptr, _cls, __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+} while(0)
+
+#define TRACECF_STARTING(_FLAG, _FMT, ...) \
+do { \
+   printftcmf(_FLAG, TRACE_OPTIONS_STARTING, nullptr, _cls, __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+} while(0)
+
+#define TRACECF_DONE(_FLAG, _FMT, ...) \
+do { \
+   printftcmf(_FLAG, TRACE_OPTIONS_DONE, nullptr, _cls, __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
 } while(0)
 
 #define TRACEM( _FMT, ...) \
@@ -88,9 +108,29 @@ do { \
    printftcmf(true, TRACE_OPTIONS_NONE, metaObject()->className(), nullptr,  __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
 } while(0)
 
+#define TRACEM_STARTING( _FMT, ...) \
+do { \
+   printftcmf(true, TRACE_OPTIONS_STARTING, metaObject()->className(), nullptr,  __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+} while(0)
+
+#define TRACEM_DONE( _FMT, ...) \
+do { \
+   printftcmf(true, TRACE_OPTIONS_DONE, metaObject()->className(), nullptr,  __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+} while(0)
+
 #define TRACEMF(_FLAG, _FMT, ...) \
 do { \
    printftcmf(_FLAG, TRACE_OPTIONS_NONE, metaObject()->className(), nullptr,  __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+} while(0)
+
+#define TRACEMF_STARTING(_FLAG, _FMT, ...) \
+do { \
+   printftcmf(_FLAG, TRACE_OPTIONS_STARTING, metaObject()->className(), nullptr,  __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+} while(0)
+
+#define TRACEMF_DONE(_FLAG, _FMT, ...) \
+do { \
+   printftcmf(_FLAG, TRACE_OPTIONS_DONE, metaObject()->className(), nullptr,  __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
 } while(0)
 
 #define TRACEMC( _FMT, ...) \
@@ -98,9 +138,29 @@ do { \
    printftcmf(true, TRACE_OPTIONS_NONE, metaObject()->className(), _cls,  __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
 } while(0)
 
+#define TRACEMC_STARTING( _FMT, ...) \
+do { \
+   printftcmf(true, TRACE_OPTIONS_STARTING, metaObject()->className(), _cls,  __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+} while(0)
+
+#define TRACEMC_DONE( _FMT, ...) \
+do { \
+   printftcmf(true, TRACE_OPTIONS_DONE, metaObject()->className(), _cls,  __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+} while(0)
+
 #define TRACEMCF(_FLAG, _FMT, ...) \
 do { \
    printftcmf(_FLAG, TRACE_OPTIONS_NONE, metaObject()->className(), _cls,  __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+} while(0)
+
+#define TRACEMCF_STARTING(_FLAG, _FMT, ...) \
+do { \
+   printftcmf(_FLAG, TRACE_OPTIONS_STARTING, metaObject()->className(), _cls,  __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+} while(0)
+
+#define TRACEMCF_DONE(_FLAG, _FMT, ...) \
+do { \
+   printftcmf(_FLAG, TRACE_OPTIONS_DONE, metaObject()->className(), _cls,  __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
 } while(0)
 
 
