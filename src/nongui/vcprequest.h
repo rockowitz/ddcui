@@ -60,25 +60,25 @@ public:
 class VcpCapRequest: public VcpRequest {
 public:
     VcpCapRequest();
-    ~VcpCapRequest();
+    ~VcpCapRequest() override = default;
 };
 
 class LoadDfrRequest: public VcpRequest {
 public:
     LoadDfrRequest();
-    ~LoadDfrRequest();
+    ~LoadDfrRequest() override = default;
 };
 
 class HaltRequest: public VcpRequest {
 public:
     HaltRequest();
-    ~HaltRequest();
+    ~HaltRequest() override = default;
 };
 
 class VcpGetRequest: public VcpRequest {
 public:
     VcpGetRequest(uint8_t featureCode, bool needMetadata);
-    ~VcpGetRequest();
+    ~VcpGetRequest() override = default;
 
     DDCA_Vcp_Feature_Code _featureCode;
     bool                  _needMetadata;
@@ -87,7 +87,7 @@ public:
 class VcpSetRequest: public VcpRequest {
 public:
     VcpSetRequest(uint8_t featureCode, uint8_t newSh, uint8_t newSl, bool writeOnly=false);
-    ~VcpSetRequest();
+    ~VcpSetRequest() override = default;
 
     DDCA_Vcp_Feature_Code _featureCode = 0;
     uint8_t               _newSh = 0;
@@ -98,7 +98,7 @@ public:
 class VcpStartInitialLoadRequest : public VcpRequest {
 public:
     VcpStartInitialLoadRequest();
-    ~VcpStartInitialLoadRequest();
+    ~VcpStartInitialLoadRequest()  override = default;
 };
 
 class VcpEndInitialLoadRequest : public VcpRequest {

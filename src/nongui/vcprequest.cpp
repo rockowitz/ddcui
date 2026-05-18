@@ -19,12 +19,14 @@ VcpRequest::~VcpRequest()
 {
 }
 
+#ifdef NOT_NEEDED_PER_PULL_REQUEST_74
 VcpCapRequest::~VcpCapRequest() {}
 LoadDfrRequest::~LoadDfrRequest() {}
 HaltRequest::~HaltRequest() {}
 VcpGetRequest::~VcpGetRequest() {}
 VcpSetRequest::~VcpSetRequest() {}
 VcpStartInitialLoadRequest::~VcpStartInitialLoadRequest() {}
+#endif
 
 #ifdef NOT_NEEDED
 VcpDumpStatsRequest::VcpDumpStatsRequest(DDCA_Stats_Type stats_type)
