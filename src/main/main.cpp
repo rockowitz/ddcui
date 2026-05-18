@@ -462,7 +462,7 @@ int main(int argc, char *argv[])
     // initialize rtti function name table
     DBG("Initializing RTTI function name table");
     init_rtti();
-    dbgrpt_rtti_method_name_table(3, true);
+    // dbgrpt_rtti_method_name_table(3, true);
 
     // bool enable_syslog = true;
     // if ( ntsa_find(argv, "--disable-syslog") >= 0 || ntsa_find(argv, "--nosyslog") >= 0 )

@@ -77,7 +77,7 @@ ValueBaseWidget::ValueBaseWidget(QWidget *parent)
 
 ValueBaseWidget::~ValueBaseWidget() {
    bool debug = false;
-   TRACEMCF(debug, "Executing. this._id = %d", _id);
+   TRACEMCF(debug, "Starting. this._id = %d", _id);
 
    ddca_free_feature_metadata(_finfo);
 
@@ -122,7 +122,12 @@ uint16_t ValueBaseWidget::getCurrentShSl() {
 }
 
 void   ValueBaseWidget::delete_finfo() {
+   bool debug = false;
+   TRACEMCF(debug, "Starting. this._id = %d, _finfo=%p", _id, _finfo);
+
    ddca_free_feature_metadata(_finfo);
+
+   TRACEMCF(debug, "Done.");
 }
 
 
@@ -134,6 +139,7 @@ void init_value_base_widget() {
    RTTI_ADD_METHOD(ValueBaseWidget::setEnabled);
    RTTI_ADD_METHOD(ValueBaseWidget::setFeatureValue);
    RTTI_ADD_METHOD(ValueBaseWidget::createFormattedComboBox);
+   RTTI_ADD_METHOD(ValueBaseWidget::delete_finfo);
    DBGF(debug, "Done");
 }
 

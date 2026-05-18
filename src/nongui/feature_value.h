@@ -12,6 +12,8 @@
 
 #include "c_util/data_structures.h"
 
+void init_feature_value();
+
 
 class FeatureValue
 {

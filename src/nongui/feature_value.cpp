@@ -12,6 +12,7 @@
 #include "ddcutil_c_api.h"
 
 #include "base/ddcui_core.h"
+#include "base/ddcui_rtti.h"
 
 #include "nongui/feature_value.h"
 
@@ -67,10 +68,12 @@ FeatureValue::FeatureValue(
 FeatureValue::~FeatureValue() {
    bool debugFunc = false;
    debugFunc = debugFunc || (_featureCode == 0x14);
-   TRACEC("Executing. _id=%d, _featureCode=0x%02x", _id, _featureCode);
+   TRACECF(debugFunc, "Starting _id=%d, _featureCode=0x%02x _finfo=%p", _id, _featureCode, _finfo);
 
    if (_finfo)
       ddca_free_feature_metadata(_finfo);
+
+   TRACECF(debugFunc, "Done.");
 }
 
 
@@ -192,3 +195,10 @@ void FeatureValue::dbgrpt() const {
 #endif
     fflush(stdout);
 }
+
+
+void init_feature_value() {
+   RTTI_ADD_METHOD(FeatureValue::~FeatureValue);
+   RTTI_ADD_METHOD(FeatureValue::delete_finfo);
+}
+
