@@ -191,18 +191,27 @@ bool printftcmf(
          char * buffer = g_strdup_vprintf(format, args);
          va_end(args);
 
-         if ((opts & TRACE_OPTIONS_STARTING) && (opts & TRACE_OPTIONS_DONE)) {
-            char * prefixed = g_strdup_printf("Executing. %s", buffer);
+         int prefixed_field_min_width = 10;
+
+         if (opts & TRACE_OPTIONS_NOPREFIX) {
+            gchar * spaces = g_strnfill(prefixed_field_min_width, ' ');
+            char * prefixed = g_strconcat(spaces, buffer, NULL);
+            g_free(spaces);
+            g_free(buffer);
+            buffer = prefixed;
+         }
+         else if ((opts & TRACE_OPTIONS_STARTING) && (opts & TRACE_OPTIONS_DONE)) {
+            char * prefixed = g_strdup_printf("%-*s%s", prefixed_field_min_width, "Executing.", buffer);
             g_free(buffer);
             buffer = prefixed;
          }
          else if (opts & TRACE_OPTIONS_STARTING) {
-            char * prefixed = g_strdup_printf("Starting. %s", buffer);
+            char * prefixed = g_strdup_printf("%-*s%s", prefixed_field_min_width, "Starting.", buffer);
             g_free(buffer);
             buffer = prefixed;
          }
          else if (opts & TRACE_OPTIONS_DONE) {
-            char * prefixed = g_strdup_printf("Done. %s", buffer);
+            char * prefixed = g_strdup_printf("%-*s%s", prefixed_field_min_width, "Done.", buffer);
             g_free(buffer);
             buffer = prefixed;
          }

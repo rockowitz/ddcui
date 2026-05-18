@@ -55,6 +55,7 @@ typedef uint16_t Printftcmf_Options;
 // #define TRACE_OPTIONS_SEVERE    0x02
 #define TRACE_OPTIONS_STARTING  0x08
 #define TRACE_OPTIONS_DONE      0x10
+#define TRACE_OPTIONS_NOPREFIX  0x20
 
 
 bool     printftcmf(
@@ -161,6 +162,36 @@ do { \
 #define TRACEMCF_DONE(_FLAG, _FMT, ...) \
 do { \
    printftcmf(_FLAG, TRACE_OPTIONS_DONE, metaObject()->className(), _cls,  __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+} while(0)
+
+#define TRACEC_NOPREFIX( _FMT, ...) \
+do { \
+   printftcmf(true, TRACE_OPTIONS_NOPREFIX, nullptr, _cls, __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+} while(0)
+
+#define TRACECF_NOPREFIX(_FLAG, _FMT, ...) \
+do { \
+   printftcmf(_FLAG, TRACE_OPTIONS_NOPREFIX, nullptr, _cls, __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+} while(0)
+
+#define TRACEM_NOPREFIX( _FMT, ...) \
+do { \
+   printftcmf(true, TRACE_OPTIONS_NOPREFIX, metaObject()->className(), nullptr,  __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+} while(0)
+
+#define TRACEMF_NOPREFIX(_FLAG, _FMT, ...) \
+do { \
+   printftcmf(_FLAG, TRACE_OPTIONS_NOPREFIX, metaObject()->className(), nullptr,  __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+} while(0)
+
+#define TRACEMC_NOPREFIX( _FMT, ...) \
+do { \
+   printftcmf(true, TRACE_OPTIONS_NOPREFIX, metaObject()->className(), _cls,  __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+} while(0)
+
+#define TRACEMCF_NOPREFIX(_FLAG, _FMT, ...) \
+do { \
+   printftcmf(_FLAG, TRACE_OPTIONS_NOPREFIX, metaObject()->className(), _cls,  __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
 } while(0)
 
 
