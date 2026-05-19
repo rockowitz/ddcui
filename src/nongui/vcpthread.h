@@ -29,7 +29,9 @@ public:
         QObject*            parent,
         DDCA_Display_Info2 *dinfo,
         VcpRequestQueue    *requestQueue,
-        FeatureBaseModel   *baseModel);
+        FeatureBaseModel   *baseModel,
+        bool                estimate_x10 = false,
+        bool                noverify_x10 = false);
 
     ~VcpThread();
 
@@ -96,6 +98,8 @@ private:       // member variables
     FeatureBaseModel*    _baseModel;
 //  DDCA_Display_Handle  _dh = NULL;     // unused
     DdcaSimulator *      _ddcaSimulator = NULL;
+    bool                 _estimate_x10 = false;
+    bool                 _noverify_x10 = false;
 };
 
 void init_vcpthread();

@@ -29,11 +29,15 @@ VcpThread::VcpThread(
         QObject*            parent,
         DDCA_Display_Info2* dinfo,
         VcpRequestQueue*    requestQueue,
-        FeatureBaseModel *  baseModel)
+        FeatureBaseModel *  baseModel,
+        bool                estimate_x10,
+        bool                noverify_x10)
     : QThread(parent)
     , _dinfo(dinfo)
     , _requestQueue(requestQueue)
     , _baseModel(baseModel)
+    , _estimate_x10(estimate_x10)
+    , _noverify_x10(noverify_x10)
 {
     bool debug = false;
     debug |= debugThread;
@@ -453,6 +457,13 @@ void VcpThread::getvcp(uint8_t featureCode, bool needMetadata)
                 // TODO:  get metadata once and cache
                 ddcrcMetadata = getMetadata(dh, featureCode, &finfo);
              }
+             if (_estimate_x10 && featureCode == 0x10) {
+                uint16_t max_val = ((uint16_t)valrec.mh << 8) | valrec.ml;
+                uint16_t est_val = (uint16_t)(max_val * 70 / 100);
+                valrec.sh = est_val >> 8;
+                valrec.sl = est_val & 0xff;
+                TRACECF(debugFunc, "estimate_x10: setting feature x10 to 70%% of max %d = %d", max_val, est_val);
+             }
           }
           // whether or not succeeded, set feature info in  _baseModel so FeatureValueWidget can display error
 
@@ -522,7 +533,7 @@ void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint16_t shsl)
 
           goto bye;
        }
-       if (!writeOnly) {
+       if (!writeOnly && !((_estimate_x10 || _noverify_x10) && feature_code == 0x10)) {
            DDCA_Non_Table_Vcp_Value  valrec;
 
            // Special handling for feature x60, can trigger Null Response if sleep-multiplier is too low.
