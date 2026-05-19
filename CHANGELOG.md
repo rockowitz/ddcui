@@ -5,51 +5,55 @@
 
 Requires libddcutil.so.5.5 ? from ddcutil 2.2.7 or later.
 
-improved tracing
---trcfunc/--trcmeth/--trcmethod
-   accept simple method name as well as qualified,   accept non class function
+### Added
 
---trcfile
-add: --trcclass ??
+Trace options and commands: 
+- Option: ***--trcmethod*** (alt. ***--trcmeth***, ***--trcfunc***). The argument can be of the
+  form Class::Method or simply a method/function name.  The latter will match a method in any 
+  class that has that name, as well as a non-class function.
+- Option: ***--trcfile***.  Turn on all tracing for a file, specified as its base name, with 
+  or without a trailing ".c" or ".cpp".
+  <!-- option --trcclass -->
+- Command **traceable-methods** (alt **traceable functions**). List all methods/functions 
+  that can be traced.
 
---estimate-x10
---noverify-x10
+Accomodate ill-behaved monitors.  Some monitors set a different value from the one specified
+on the "setvcp" request.  For example, the Dell xxxx, adjusts request values less than 50?
+upwards to that the value set is never less than 20.  So verifying will likely fail.
+Other monitors, e.g. Samsung LS34A650U, set the value requested, but always return the 
+wrong value.  For example, the Samsun LS34A650U always returns 0 as the brightness value.
+Two options address these problematic cases.
 
-add command traceable-medhods, aka traceable-functions
+- Option: ***--noverify-x10***, Do not report an error if the value of feature x10 (brightness)
+  that is read immediately after set the feature is set does not match.
+  The argument is the model name, as taken from the EDID and 
+  shown in the Display combo box. 
+- Option: ***--estimate-x10***.  The value initially shown is 70% of the maximum value, as 
+  reported by get feature value response packet. For example, if the maximum value is 255, 
+  the initial value shown will be 179, which undoubtedly will be wrong. When the slider is 
+  moved or the number in the spin box is changed, the new feature value is sent to the 
+  monitor.  There can be no check that the value is correctly set, but if it is the value
+  on the monitor will now match the value in the user interface.
+  again. the argument is the model name, as taken from the EDID and 
+  shown in the Display combo box.
 
-TODO: convert traceable function table to hash
+<!-- TODO: convert traceable function table to hash -->
 
-CMakeLists.txt 
+### Fixed
 
- changes per Claude Code
+CMakeLists.txt: 
+- Incorrect version check caused the VERBOSE message level to never be used, even 
+  if it is available on the current CMake Version
+- Properly handle Qt5/Qt6 differences in include directory and linked libraries.
 
-      1. Wrong version string in VERSION_LESS check (line 8)
-      VERSION_LESS 15 compares against version 15.0.0, not 3.15. With any cmake 3.x, this condition is always
-      true, so VERBOSE is always aliased to STATUS — the VERBOSE message level is never used.
-      if (CMAKE_VERSION VERSION_LESS 15)   # wrong
-      if (CMAKE_VERSION VERSION_LESS "3.15")  # correct
+ 
 
-      2. Qt include dirs hardcoded to Qt5 even when building with Qt6 (lines 316–319)
-      target_include_directories unconditionally uses ${Qt5Help_INCLUDE_DIRS}, which is empty when USE_QT6=ON.
-      Should be conditional:
-      if (USE_QT6)
-          target_include_directories(ddcui SYSTEM PRIVATE ${Qt6Help_INCLUDE_DIRS} ...)
-      else()
-          target_include_directories(ddcui SYSTEM PRIVATE ${Qt5Help_INCLUDE_DIRS} ...)
-      endif()
-
-      3. Qt Help module not linked (lines 325, 328)
-      find_package requests the Help component, but target_link_libraries only links Qt6::Widgets / Qt5::Widgets.
-      If help_browser.cpp or help_dialog.cpp use QHelpEngine, this will produce linker errors. Should add
-      Qt6::Help / Qt5::Help.
 
       4. option() used for a directory path (line 44)
       option() creates a boolean ON/OFF variable. A directory path should use set() with CACHE PATH:
       set(DDCUTIL_PROJECT_DIR "" CACHE PATH "Root directory of ddcutil project")
 
-      5. Header file listed in SOURCES (line 229)
-      src/base/monitor.h is in the SOURCES list. CMake silently ignores it at compile time, but headers don't
-      belong there.
+
 
       6. Copy-paste error in message (line 190)
       Inside the ddcutil git-branch check block, the message reads "ddcui source is not managed by git" — should
