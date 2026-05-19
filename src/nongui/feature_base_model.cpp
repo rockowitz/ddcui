@@ -59,7 +59,7 @@ FeatureBaseModel::FeatureBaseModel(Monitor * monitor)
     ddca_feature_list_add(&_featuresTouchedByX14, 0x0b);
     ddca_feature_list_add(&_featuresTouchedByX14, 0x0c);
 
-    TRACECF(debug, "Constructor complete. _monitor -> dispno=%d, model=%s, dref=%p",
+    TRACECF_NOPREFIX(debug, "Constructor complete. _monitor -> dispno=%d, model=%s, dref=%p",
                    _monitor->_displayInfo->dispno,
                    _monitor->_displayInfo->model_name,
                    _monitor->_displayInfo->dref);
@@ -67,14 +67,14 @@ FeatureBaseModel::FeatureBaseModel(Monitor * monitor)
 
 FeatureBaseModel::~FeatureBaseModel() {
    bool debug = false;
-   TRACECF(debug, "Executing. _monitor=%p, monitor number %d, dref: %p",
+   TRACECF_STARTING(debug, "Executing. _monitor=%p, monitor number %d, dref: %p",
                   _monitor, _monitor->_displayInfo->dispno, _monitor->_displayInfo->dref);
    for (int ndx = 0; ndx < _featureValues->size(); ndx++) {
       FeatureValue * fv = _featureValues->at(ndx);
       fv->delete_finfo();
    }
    delete _featureValues;
-   TRACECF(debug, "          _caps+string=%p->%s", _caps_string, _caps_string);
+   TRACECF_NOPREFIX(debug, "          _caps+string=%p->%s", _caps_string, _caps_string);
    free(_caps_string);   // raw capabilities
    ddca_free_parsed_capabilities(_parsed_caps);
    TRACECF_DONE(debug, "");
@@ -177,15 +177,14 @@ void   FeatureBaseModel::modelVcpValueSet(
 {
     bool debugFunc = false;  // || (feature_code == 0x14);
     debugFunc = debugFunc || debugModel;
-    if (debugFunc)
-        TRACEMCF_STARTING(debugFunc,
+    TRACEMCF_STARTING(debugFunc,
                  "Starting. feature_code=0x%02x, mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x, ddcrc = %s, _initialLoadActive=%s",
                  feature_code, feature_value->mh, feature_value->ml, feature_value->sh, feature_value->sl,
                  ddca_rc_name(ddcrc), SBOOL(_initialLoadActive));
 
     int ndx = modelVcpValueIndex(feature_code);
     if (ndx < 0) {
-        // TRACECF(debugFunc, "Creating new FeatureValue");
+        // TRACECF_NOPREFIX(debugFunc, "Creating new FeatureValue");
         DDCA_Cap_Vcp * cap_vcp = NULL;
         if (_parsed_caps)
            cap_vcp = ddcu_find_cap_vcp(_parsed_caps, feature_code);
@@ -198,7 +197,7 @@ void   FeatureBaseModel::modelVcpValueSet(
                                    *feature_value,
                                    ddcrc);
         _featureValues->append(fv);
-        TRACECF(debugFunc, "Created new FeatureValue. id = %d, observedNcValues=%s",
+        TRACECF_NOPREFIX(debugFunc, "Created new FeatureValue. id = %d, observedNcValues=%s",
                            fv->_id, bs256_to_string_t(fv->_observedNcValues, "", " "));
 
         // Not needed, only thing that matters is end initial load
@@ -209,7 +208,7 @@ void   FeatureBaseModel::modelVcpValueSet(
     }
     else {
         FeatureValue * fv =  _featureValues->at(ndx);
-        TRACECF(debugFunc, "Modifying existing FeatureValue, _id=%d, initial _observedNcValues=%s",
+        TRACECF_NOPREFIX(debugFunc, "Modifying existing FeatureValue, _id=%d, initial _observedNcValues=%s",
                            fv->_id, bs256_to_string_t(fv->observedNcValues(), ""," " ) );
 
         // fv->_value.sh = feature_value->sh;
@@ -217,10 +216,10 @@ void   FeatureBaseModel::modelVcpValueSet(
 
         if ( ddcrc == fv->ddcrc() ) {
            fv->setCurrentValue(feature_value->sh, feature_value->sl);  // sets _observedNcValues
-           TRACECF(debugFunc, "Updated FeatureValue _observedNcValues=%s",
+           TRACECF_NOPREFIX(debugFunc, "Updated FeatureValue _observedNcValues=%s",
                  bs256_to_string_t(fv->observedNcValues(), ""," " ) );
 
-           TRACECF(debugFunc || debugSignals,
+           TRACECF_NOPREFIX(debugFunc || debugSignals,
                    "Emitting signalFeatureUpdated3(), feature code: 0x%02x, sl: 0x%02x",
                    fv->featureCode(), feature_value->sl);
            emit signalFeatureUpdated3(__func__,
@@ -233,6 +232,7 @@ void   FeatureBaseModel::modelVcpValueSet(
                     ddca_rc_name(ddcrc), fv->featureCode() );
         }
     }
+    TRACEMCF_DONE(debugFunc, "");
 }
 
 // called from VcpThread::setvcp()
@@ -251,15 +251,15 @@ FeatureBaseModel::modelVcpValueUpdate(
     int ndx = modelVcpValueIndex(feature_code);
     assert (ndx >= 0);
     FeatureValue * fv =  _featureValues->at(ndx);
-    TRACECF(debugFunc, "Found FeatureValue instance,  _observedNcValues=%s",
+    TRACECF_NOPREFIX(debugFunc, "Found FeatureValue instance,  _observedNcValues=%s",
                        bs256_to_string_t(fv->observedNcValues(), ""," " ) );
 
     // updates fv to the current value, sets _observedNcValues if appropriate
     fv->setCurrentValue(sh,sl);
 
-    TRACECF(debugFunc, "Updated FeatureValue: _observedNcValues=%s",
+    TRACECF_NOPREFIX(debugFunc, "Updated FeatureValue: _observedNcValues=%s",
                        bs256_to_string_t(fv->observedNcValues(), ""," " ) );
-    TRACECF(debugFunc || debugSignals, "Emitting signalFeatureUpdated3()");
+    TRACECF_NOPREFIX(debugFunc || debugSignals, "Emitting signalFeatureUpdated3()");
     // -> &FeaturesScrollAreaView::onModelValueChanged
     emit signalFeatureUpdated3(__func__, feature_code, sh, sl);
 
@@ -286,7 +286,7 @@ FeatureBaseModel::modelVcpValueUpdate(
        }
     }
 #endif
-
+   TRACECF_DONE(debugFunc, "");
 }
 
 // This really belongs in Monitor
@@ -361,10 +361,12 @@ FeatureBaseModel::setFeatureList(
 void
 FeatureBaseModel::reloadSpecificFeatures(int ct, uint8_t* features) {
    bool debugFunc =true;
+   TRACECF_STARTING(debugFunc, "ct=%d", ct);
+
    for (int ndx = 0; ndx < ct; ndx++) {
       DDCA_Vcp_Feature_Code vcp_code = features[ndx];
       if (ddca_feature_list_contains(_featuresChecked, vcp_code)) {
-         TRACECF_STARTING(debugFunc, "vcp_code = 0x%02x, in _features_checked", vcp_code);
+         TRACECF_NOPREFIX(debugFunc, "vcp_code = 0x%02x, in _features_checked", vcp_code);
          FeatureValue *  fv = modelVcpValueFind(vcp_code);
          // should always exist, but just in case
          if (fv) {
@@ -379,6 +381,7 @@ FeatureBaseModel::reloadSpecificFeatures(int ct, uint8_t* features) {
          TRACECF(debugFunc, "vcp_code = 0x%02x not in _features_checked", vcp_code);
       }
    }
+   TRACECF_DONE(debugFunc, "");
 }
 
 void FeatureBaseModel::setFeatureChecked(uint8_t featureCode) {
@@ -444,14 +447,14 @@ void FeatureBaseModel::dbgrpt() {
 void  FeatureBaseModel::modelStartInitialLoad(void) {
    bool debug = false;
    _initialLoadActive = true;
-    TRACECF(debug, "=> Emitting signalStartInitialLoad");
+    TRACECF_EVENT(debug, "=> Emitting signalStartInitialLoad");
     emit signalStartInitialLoad();
 }
 
 void  FeatureBaseModel::modelEndInitialLoad(void) {
    bool debug = false;
    _initialLoadActive = false;
-    TRACECF(debug, "=> Emitting signalEndInitialLoad");
+    TRACECF_EVENT(debug, "=> Emitting signalEndInitialLoad");
     emit signalEndInitialLoad();   // claude added emit - is there a reason this was a simple call?
 }
 
