@@ -201,7 +201,7 @@ bool printftcmf(
             buffer = prefixed;
          }
          else if ((opts & TRACE_OPTIONS_STARTING) && (opts & TRACE_OPTIONS_DONE)) {
-            char * prefixed = g_strdup_printf("%-*s%s", prefixed_field_min_width, "Executing.", buffer);
+            char * prefixed = g_strdup_printf("%-*s%s", prefixed_field_min_width, "Event.", buffer);
             g_free(buffer);
             buffer = prefixed;
          }
