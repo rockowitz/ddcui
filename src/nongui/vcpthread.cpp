@@ -458,7 +458,7 @@ void VcpThread::getvcp(uint8_t featureCode, bool needMetadata)
                 ddcrcMetadata = getMetadata(dh, featureCode, &finfo);
              }
              if (_estimate_x10 && featureCode == 0x10) {
-                uint16_t max_val = ((uint16_t)valrec.mh << 8) | valrec.ml;
+               uint16_t max_val = ((uint16_t)valrec.mh << 8) | valrec.ml;
                 uint16_t est_val = (uint16_t)(max_val * 70 / 100);
                 valrec.sh = est_val >> 8;
                 valrec.sl = est_val & 0xff;
