@@ -86,7 +86,7 @@ bool  DdcaSimulator::simulateGetNonTableVcpValue(
 
    bool simulated = false;
    if (simulationEnabled) {
-      TRACECF(debug, "Simulation enabled. simTableCt=%d", simTableCt);
+      TRACECF_NOPREFIX(debug, "Simulation enabled. simTableCt=%d", simTableCt);
 
       DDCA_Status ddcrc = DDCRC_DETERMINED_UNSUPPORTED;
       int ndx = findSimTableEntry(featureCode, vspec);
