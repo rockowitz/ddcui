@@ -37,7 +37,7 @@ UserInterfaceOptionsDialog::UserInterfaceOptionsDialog(
     // setWindowFlag(Qt::WindowMaximizeButtonHint, false);  // no effect
     setWindowTitle("ddcui - User Interface Options");
     // setUSource(state->ncValuesSource);
-    TRACECF(debug, "Constructor done");
+    TRACECF_DONE(debug, "Constructor done");
 }
 
 UserInterfaceOptionsDialog::~UserInterfaceOptionsDialog()
@@ -58,7 +58,7 @@ void UserInterfaceOptionsDialog::on_actionButtonBox_accepted()
 {
     bool debugFunc = false;
     bool newCtrlKeyRequired  = _ui->ckrCheckBox->isChecked();
-    TRACECF(debugFunc, "Executing. Value read from ckr checkbox; %s", SBOOL(newCtrlKeyRequired));
+    TRACECF_STARTING(debugFunc, "Executing. Value read from ckr checkbox; %s", SBOOL(newCtrlKeyRequired));
 
     TRACECF(debugFunc, "Calling _state->setControlKey_Required(%s)", SBOOL(newCtrlKeyRequired));
 
@@ -67,7 +67,7 @@ void UserInterfaceOptionsDialog::on_actionButtonBox_accepted()
     // not needed, automatically emitted when dialog accepted, by accept() or done()
     // emit userInterfaceDialog_accepted(_state);  // probably not needed
 
-    TRACECF(debugFunc, "Before calling accept()");
+    TRACECF_DONE(debugFunc, "Before calling accept()");
     accept();  // causes accepted() to be emitted
 }
 

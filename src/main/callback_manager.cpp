@@ -99,7 +99,7 @@ CallbackManager::CallbackManager() {
 
 void CallbackManager::emitDisplayChanged(DDCA_Display_Status_Event evt) {
    bool debug = true;
-   TRACECF(debug, "Executing. event_type=%s, dref=%s",
+   TRACECF_EVENT(debug, "Executing. event_type=%s, dref=%s",
            ddca_display_event_type_name(evt.event_type), ddca_dref_repr(evt.dref));
    emit displayChanged(evt);
 }

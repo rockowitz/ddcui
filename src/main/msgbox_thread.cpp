@@ -24,7 +24,7 @@ MsgBoxThread::MsgBoxThread(MsgBoxQueue*    requestQueue)
     , _requestQueue(requestQueue)
 {
    // bool debug = false;
-   TRACECF(debugThread, "Executing");
+   TRACECF_EVENT(debugThread, "Executing");
    _semaphore = new QSemaphore(1);
 }
 
@@ -33,7 +33,7 @@ MsgBoxThread::~MsgBoxThread() {
 }
 
 void MsgBoxThread::msbgoxClosed(int result) {
-   TRACECF_STARTING(debugThread, "Releasing semaphore");
+   TRACECF_EVENT(debugThread, "Releasing semaphore");
    _semaphore->release();
 }
 
@@ -50,21 +50,21 @@ void MsgBoxThread::run() {
     long initial_sleep_millis =  MSGBOX_THREAD_RUN_DELAY_MILLIS;
     TRACECF_STARTING(debugThread, "Sleeping for %d milliseconds", initial_sleep_millis);
     QThread::msleep(initial_sleep_millis);
-    TRACECF(debugThread, "Initial sleep complete");
+    TRACECF_NOPREFIX(debugThread, "Initial sleep complete");
 
     while (true) {    // eclipse doesn't recognize keyword forever
-        TRACECF(debugThread, "Waiting to pop"); fflush(stdout);
+        TRACECF_NOPREFIX(debugThread, "Waiting to pop"); fflush(stdout);
         MsgBoxQueueEntry * rqst = this->_requestQueue->pop();
-        TRACECF(debugThread, "Popped: _boxTitle: %s, _boxText: %s",
+        TRACECF_NOPREFIX(debugThread, "Popped: _boxTitle: %s, _boxText: %s",
                                 QS2S(rqst->_boxTitle), QS2S(rqst->_boxText));
-        TRACECF(debugThread, "_lastText: %s", QS2S(_lastText));
+        TRACECF_NOPREFIX(debugThread, "_lastText: %s", QS2S(_lastText));
         // Duplicate message can occur becuase UDEV doesn't report disconnection
         // events immediately, but instead just before a subsequent connection.
         // In the meantime, a DDCRC_DISCONNECTED status code on a feature request
         // causes a disconnected message to be posted
         if (rqst->_boxText != _lastText) {
            _semaphore->acquire();
-           TRACECF(debugThread, "Acquired semaphore");
+           TRACECF_NOPREFIX(debugThread, "Acquired semaphore");
            emit postSerialMsgBox(rqst->_boxTitle, rqst->_boxText, rqst->_boxIcon);
            // requires MainWindow; clearer since MainWindow::showSerialMsgBox is what gets called
            // but would require knowing MainWindow
@@ -72,10 +72,11 @@ void MsgBoxThread::run() {
            _lastText = rqst->_boxText;
         }
         else {
-           TRACECF(debugThread, "Skipping duplicate message");
+           TRACECF_NOPREFIX(debugThread, "Skipping duplicate message");
         }
         delete rqst;
     }
+    TRACECF_DONE(debugThread, "Exiting");
 }
 
 #ifdef NO
