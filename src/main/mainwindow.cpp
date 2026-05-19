@@ -193,7 +193,7 @@ int MainWindow::matchMonitor(DDCA_Display_Ref dref) {
  * Initializes monitor data structures, adds monitor to display selector combo box
  */
 int MainWindow::addMonitor(DDCA_Display_Ref dref) {
-   bool debug = true;
+   bool debug = false;
    TRACECF_STARTING(debug, "dref=%s", ddca_dref_repr(dref));
    int nextIndex = -1;
    DDCA_Display_Info2 * dinfo;
@@ -224,7 +224,7 @@ int MainWindow::addMonitor(DDCA_Display_Ref dref) {
  *    and sets summary view
  */
 int MainWindow::removeMonitor(DDCA_Display_Ref dref) {
-   bool debug  = true;
+   bool debug  = false;
    TRACECF_STARTING(debug, "dref=%s", ddca_dref_repr(dref));
 
    int monNdx = findMonitor(dref);
@@ -297,7 +297,7 @@ void MainWindow::enableMonitor(DDCA_Display_Ref dref) {
  *      enables monitor for DDC communication
  */
 void MainWindow::forDisplayChanged(DDCA_Display_Status_Event evt) {
-   bool debug = true;
+   bool debug = false;
    TRACECF_STARTING(debug, "event type: %d = %s, dref=%s",
           evt.event_type, ddca_display_event_type_name(evt.event_type),
           ddca_dref_repr(evt.dref) );
@@ -305,7 +305,7 @@ void MainWindow::forDisplayChanged(DDCA_Display_Status_Event evt) {
    int newDisplayIndex = -1;
    if (evt.event_type ==  DDCA_EVENT_DISPLAY_CONNECTED ) {
       int monndx = matchMonitor(evt.dref);
-      TRACECF(debug, "matchMonitor returned %d", monndx);
+      TRACECF_NOPREFIX(debug, "matchMonitor returned %d", monndx);
       if (monndx >= 0) {
          Monitor * monitor = _monitors.at(monndx);
          // monitor->recheck();
@@ -351,7 +351,7 @@ void MainWindow::initSerialMsgbox() {
    _serialMsgBox->setWindowModality(Qt::WindowModal);
    _serialMsgBox->setFont(_ui->mainMenuFont);
 
-   TRACECF(debug, "_msgboxQueue=%p, _msgBoxThread=%p", _msgBoxQueue, _msgBoxThread);
+   TRACECF_NOPREFIX(debug, "_msgboxQueue=%p, _msgBoxThread=%p", _msgBoxQueue, _msgBoxThread);
 
    QObject::connect(_serialMsgBox, &QMessageBox::finished,
                     _msgBoxThread, &MsgBoxThread::msbgoxClosed);
@@ -425,21 +425,21 @@ void MainWindow::freeMonitors() {
    TRACECF_STARTING(debug, "");
 
    int ct0 = _monitors.size();
-   TRACECF(debug,"_monitors.size() = %d", ct0);
+   TRACECF_NOPREFIX(debug,"_monitors.size() = %d", ct0);
    for (int ndx = _monitors.size()-1; ndx >= 0; ndx--) {
       Monitor * curMonitor = _monitors.at(ndx);
       TRACECF(debug, "deleting monitor ndx=%d, curMonitor=%p, dispno=%d",
                      ndx, curMonitor, curMonitor->_displayInfo->dispno);
       _monitors.removeAt(ndx);
       delete curMonitor;
-      TRACECF(debug, "deleted monitor ndx=%d", ndx);
+      TRACECF_NOPREFIX(debug, "deleted monitor ndx=%d", ndx);
    }
 
    QObject::disconnect(_toolbarDisplayCB, SIGNAL(currentIndexChanged(int)),
                        this,              SLOT(  displaySelectorCombobox_currentIndexChanged(int)));
 
    int ct = _toolbarDisplayCB->count();
-   TRACECF(debug,"_toolbarDisplayCB->size() = %d", ct);
+   TRACECF_NOPREFIX(debug,"_toolbarDisplayCB->size() = %d", ct);
    for (int ndx = ct-1; ndx >= 0; ndx--) {
       _toolbarDisplayCB->removeItem(ndx);
    }
@@ -457,10 +457,10 @@ void MainWindow::initOneMonitor(DDCA_Display_Info2 * info, int curIndex) {
    // Create Monitor instance, initialize data structures
    Monitor * curMonitor = new Monitor(info, monitorNumber);
 
-   TRACECF(debug, "connecting reportDisconnected");
+   TRACECF_NOPREFIX(debug, "connecting reportDisconnected");
    QObject::connect(curMonitor, &Monitor::reportDisconnected,
                     this,       &MainWindow::removeMonitor);
-   TRACECF(debug, "connected reportDisconnected");
+   TRACECF_NOPREFIX(debug, "connected reportDisconnected");
 
    _monitors.append(curMonitor);
    initMonitorInfoWidget(curMonitor, _ui->centralWidget);
@@ -490,6 +490,7 @@ void MainWindow::initOneMonitor(DDCA_Display_Info2 * info, int curIndex) {
 
 void MainWindow::setInitialDisplayIndex(Parsed_Ddcui_Cmd * parsed_cmd) {
    bool debug = false;
+   TRACECF_STARTING(debug, "parsed_cmd=%p", parsed_cmd);
    int initialDisplayIndex = -1;
    if (parsed_cmd->model) {
       QString userModelParm(parsed_cmd->model);
@@ -497,16 +498,16 @@ void MainWindow::setInitialDisplayIndex(Parsed_Ddcui_Cmd * parsed_cmd) {
          QString curName(_toolbarDisplayCB->itemText(ndx));
          // Check if the model name of this monitor matches one specified
          // on the command line.
-         TRACECF_STARTING(debug, "ndx=%d, parsed_cmd->model = |%s|, curname = |%s|",
+         TRACECF_NOPREFIX(debug, "ndx=%d, parsed_cmd->model = |%s|, curname = |%s|",
                  ndx, parsed_cmd->model, QS2S(curName));
          if (QString::compare(userModelParm, curName, Qt::CaseInsensitive) == 0) {
             initialDisplayIndex = ndx;
-            TRACECF(debug, "model found, ndx=%d", ndx);
+            TRACECF_NOPREFIX(debug, "model found, ndx=%d", ndx);
             break;
          }
       }
 
-      TRACECF(debug, "after check model name, initialDisplayIndex = %d", initialDisplayIndex);
+      TRACECF_NOPREFIX(debug, "after check model name, initialDisplayIndex = %d", initialDisplayIndex);
       if (initialDisplayIndex < 0) {
          // queue status dialog
          initialDisplayIndex = 0;
@@ -517,14 +518,14 @@ void MainWindow::setInitialDisplayIndex(Parsed_Ddcui_Cmd * parsed_cmd) {
 #ifdef DEFERRED_MSG_QUEUE
          _deferredMsgs.append(qe);     // not needed
 #endif
-         TRACECF(debug, "Pre put, _msgBoxQueue=%p", _msgBoxQueue);
+         TRACECF_NOPREFIX(debug, "Pre put, _msgBoxQueue=%p", _msgBoxQueue);
          _msgBoxQueue->put(qe);
       }
    }
    else {
       initialDisplayIndex = 0;
    }
-   TRACECF(debug, "initialDisplayIndex (2) = %d", initialDisplayIndex);
+   TRACECF_DONE(debug, "initialDisplayIndex (2) = %d", initialDisplayIndex);
 
    _toolbarDisplayCB->setCurrentIndex(initialDisplayIndex);
 }
@@ -537,7 +538,7 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
     statusBar()->showMessage(QString("Loading display information..."));
 
     DDCA_Status ddcrc = ddca_get_display_refs(/*include invalid displays=*/true, &_drefs);
-    TRACECF(debug, "ddca_get_display_refs() returned %d, _drefs=%p", ddcrc, _drefs);
+    TRACECF_NOPREFIX(debug, "ddca_get_display_refs() returned %d, _drefs=%p", ddcrc, _drefs);
     assert(ddcrc == 0);
 
     DDCA_Error_Detail * errs = ddca_get_error_detail();
@@ -549,7 +550,7 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
        if (errs->cause_ct > 0) {
           for (int ndx = 0; ndx < errs->cause_ct; ndx++) {
               DDCA_Error_Detail * cause = errs->causes[ndx];
-              TRACECF(debug, "errs->status_code=%d", errs->status_code);
+              TRACECF_NOPREFIX(debug, "errs->status_code=%d", errs->status_code);
               // if (cause->status_code == -13) {    // -EACCES
               //    permissionsError = true;
               // }
@@ -570,21 +571,21 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
 #ifdef DEFERRED_MSG_QUEUE
        _deferredMsgs.append(qe);     // not needed
 #endif
-       TRACECF(debug, "Pre put, _msgBoxQueue=%p", _msgBoxQueue);
+       TRACECF_NOPREFIX(debug, "Pre put, _msgBoxQueue=%p", _msgBoxQueue);
        _msgBoxQueue->put(qe);
     } // end, error reporting
 
     for (_drefs_ct=0; _drefs[_drefs_ct]; _drefs_ct++) {}
-    TRACECF(debug, "_drefs_ct = %d", _drefs_ct);
+    TRACECF_NOPREFIX(debug, "_drefs_ct = %d", _drefs_ct);
 
     for (int ndx = 0; ndx < _drefs_ct; ndx++) {
-        TRACECF(debug, "Processing display %d", ndx);
+        TRACECF_NOPREFIX(debug, "Processing display %d", ndx);
         DDCA_Display_Info2 * dinfo;
         DDCA_Status ddcrc = ddca_get_display_info2(_drefs[ndx], &dinfo);
         if (ddcrc != 0) {
            const char * expl = ddca_rc_name(ddcrc);
            syslog(LOG_ERR, "ddca_get_display_info() returned %s", expl);
-           TRACEC("ddca_get_display_info() returned %s", expl);
+           TRACEC_NOPREFIX("ddca_get_display_info() returned %s", expl);
            assert(ddcrc == 0);
         }
         initOneMonitor(dinfo, ndx);
@@ -599,7 +600,7 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
     else {
        MsgBoxQueueEntry * qe =
              new MsgBoxQueueEntry("ddcui", QString("No displays detected"), QMessageBox::Warning);
-       TRACECF(debug, "Pre put, _msgBoxQueue=%p", _msgBoxQueue);
+       TRACECF_NOPREFIX(debug, "Pre put, _msgBoxQueue=%p", _msgBoxQueue);
        _msgBoxQueue->put(qe);
     }
 
@@ -638,14 +639,17 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
 
 void MainWindow::quitShortcut() {
    bool debug = false;
-   TRACECF(debug, "Executing");
+   TRACECF_NOPREFIX(debug, "Executing");
    //close();
-   TRACECF(debug, "Before _application->exit()");
+   TRACECF_NOPREFIX(debug, "Before _application->exit()");
    GlobalState::instance()._application->exit(0);
 }
 
 // Extracted from MainWindow constructor for clarity
 void MainWindow::startWatchDisplays() {
+   bool debug = false;
+   TRACECF_STARTING(debug, "");
+
    bool watching_active = false;
    DDCA_Display_Event_Class event_classes;
    // in case watch thread already started by libddcutil
@@ -691,14 +695,16 @@ void MainWindow::startWatchDisplays() {
       // ddca_register_display_status_callback(display_status_event_main_callback);
       CallbackManager::instance().registerCallbacks(this);
    }
+   TRACECF_DONE(debug, "");
 }
+
 
 MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
     QMainWindow(parent),
     _ui(new Ui_MainWindow(this))
     // _ui(new Ui::MainWindow)
-    // , PageChangeObserver()
-{
+    // , PageChangeObserver()1
+    {
     bool debug = false;
     _cls = strdup(metaObject()->className());
     TRACECF_STARTING(debug, "thread = %d", get_thread_id());
@@ -742,7 +748,7 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
     connect(_quit_shortcut,   &QShortcut::activated,
              this,            &MainWindow::quitShortcut);
 
-    TRACECF(debug, "Before initMonitors()");
+    TRACECF_NOPREFIX(debug, "Before initMonitors()");
     // reportWidgetChildren(ui->centralWidget, "Children of centralWidget, before initMonitors():");
     initMonitors(parsed_cmd);
 
@@ -787,7 +793,7 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
 
      if (_monitors.size() > 0) {
         if (_initialView == SummaryView) {
-           TRACECF(debug, "_monitors_size=%d. emitting signalMonitorSummaryView", _monitors.size());
+           TRACECF_NOPREFIX(debug, "_monitors_size=%d. emitting signalMonitorSummaryView", _monitors.size());
            emit signalMonitorSummaryView();
         }
         else {
@@ -799,12 +805,12 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
 #endif
 
            if (_initialView == CapabilitiesView) {
-              TRACECF(debug, "_monitors_size=%d. emitting signalCapabilitiesView", _monitors.size());
+              TRACECF_NOPREFIX(debug, "_monitors_size=%d. emitting signalCapabilitiesView", _monitors.size());
               emit signalCapabilitiesView();
            }
            else {
               assert (_initialView == FeaturesView);
-              TRACECF(debug, "_monitors_size=%d. emitting signalFeaturesView", _monitors.size());
+              TRACECF_NOPREFIX(debug, "_monitors_size=%d. emitting signalFeaturesView", _monitors.size());
               emit signalFeaturesView();
            }
         }
@@ -835,6 +841,7 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
      TRACECF_DONE(debug, "");
 }
 
+
 MainWindow::~MainWindow()
 {
     bool debug = false;
@@ -852,6 +859,7 @@ MainWindow::~MainWindow()
     TRACECF_DONE(debug, "");
     free((void*) _cls);
 }
+
 
 //
 // Control key option for changing feature values
@@ -980,7 +988,7 @@ void MainWindow::longRunningTaskEnd() {
       QGuiApplication::restoreOverrideCursor();
    }
    else
-      TRACECF(debug, "longRunningTaskNesting=%d > 0, not clearing status message", longRunningTaskNesting);
+      TRACECF_NOPREFIX(debug, "longRunningTaskNesting=%d > 0, not clearing status message", longRunningTaskNesting);
 
    TRACECF_DONE(debug, "longRunningTaskNesting=%d", longRunningTaskNesting);
 }
@@ -1009,6 +1017,8 @@ void MainWindow::displaySelectorCombobox_currentIndexChanged(int index) {
    case NoView:
       break;
    }
+
+   TRACECF_DONE(debug, "");
 }
 
 #ifdef UNNEEDED
@@ -1039,11 +1049,11 @@ void MainWindow::on_actionMonitorSummary_triggered()
        Monitor * monitor = _monitors[monitorNdx];
        DDCA_Display_Info2 * dinfo =  monitor->_displayInfo;    // &_dlist->info[monitorNdx];
        DDCA_Display_Ref dref = dinfo->dref;
-       TRACEMF(debug, "monitorNdx (%d), dref=%s", monitorNdx, ddca_dref_repr(dref));
+       TRACEMF_NOPREFIX(debug, "monitorNdx (%d), dref=%s", monitorNdx, ddca_dref_repr(dref));
 
        char * s = MonitorDescActions::capture_display_info_report(dinfo);
 
-       TRACECF(debug, "monitor=%p, s=%p -> %s", monitor, s, s);
+       TRACECF_NOPREFIX(debug, "monitor=%p, s=%p -> %s", monitor, s, s);
        QPlainTextEdit * moninfoPlainText = monitor->_moninfoPlainText;
        // int pageno = monitor->_pageno_moninfo;
        moninfoPlainText->setPlainText(s);
@@ -1061,7 +1071,7 @@ void MainWindow::on_actionMonitorSummary_triggered()
        _initialViewShown = true;
     }
     ctrlKeyStatusMsg();   // clears the message since not Features view
-    TRACECF(debug, "_ui->actionCapabilities->isEnabled()=%s",
+    TRACECF_DONE(debug, "_ui->actionCapabilities->isEnabled()=%s",
                    SBOOL(_ui->actionCapabilities->isEnabled() ));
 }
 
@@ -1096,7 +1106,7 @@ bool MainWindow::checkAltViewOk(Monitor * monitor) {
          else {
             if (!_initialViewShown) {
                // on startup, be patient
-               TRACECF(debug, "Capabilities check not complete, but initial view not yet shown, waiting");
+               TRACECF_NOPREFIX(debug, "Capabilities check not complete, but initial view not yet shown, waiting");
                int max_wait_millisec = 1000;
                int waited_millisec = 0;
                while (!(capabilitiesChecked=monitor->capabilitiesCheckComplete()) &&
@@ -1105,7 +1115,7 @@ bool MainWindow::checkAltViewOk(Monitor * monitor) {
                   QThread::msleep(100);   // wait a bit for capabilities check to finish
                   waited_millisec += 100;
                }
-               TRACECF(debug, "After wait, capabilitiesChecked=%s after %d millisec",
+               TRACECF_NOPREFIX(debug, "After wait, capabilitiesChecked=%s after %d millisec",
                            SBOOL(capabilitiesChecked), waited_millisec);
             }
          }
@@ -1135,7 +1145,7 @@ bool MainWindow::checkAltViewOk(Monitor * monitor) {
    #ifdef DEFERRED_MSG_QUEUE
          _deferredMsgs.append(qe);     // not needed
    #endif
-         TRACECF(debug, "Pre put, _msgBoxQueue=%p", _msgBoxQueue);
+         TRACECF_NOPREFIX(debug, "Pre put, _msgBoxQueue=%p", _msgBoxQueue);
          _msgBoxQueue->put(qe);
       }
       monitor->_initChecksDone = true;
@@ -1153,7 +1163,7 @@ void MainWindow::on_actionCapabilities_triggered()
     int monitorNdx = _toolbarDisplayCB->currentIndex();
     TRACECF_STARTING(debug, "monitorNdx=%d", monitorNdx);
     if (monitorNdx < 0) {
-       TRACECF(debug, "monitorNdx = %d is < 0, ignoring", monitorNdx);
+       TRACECF_DONE(debug, "monitorNdx = %d is < 0, ignoring", monitorNdx);
     }
     else {
        Monitor * monitor = _monitors.at(monitorNdx);
@@ -1169,7 +1179,7 @@ void MainWindow::on_actionCapabilities_triggered()
           DDCA_Status ddcrc = MonitorDescActions::capture_capabilities_report(monitor, dref, &caps_report);
           if (ddcrc != 0) {
               reportDdcApiError("ddca_open_display", ddcrc);
-              TRACEC("capture_capabilites_report returned %d", ddcrc);
+              TRACEC_NOPREFIX("capture_capabilites_report returned %d", ddcrc);
           }
           else {
               // cout << "Parsed capabilities: " << endl;
@@ -1193,6 +1203,7 @@ void MainWindow::on_actionCapabilities_triggered()
        }
     }
     ctrlKeyStatusMsg();   // clears the message since not Features view
+    TRACECF_DONE(debug, "");
 }
 
 // FeaturesView
@@ -1208,12 +1219,12 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
 
     int monitorNdx = _toolbarDisplayCB->currentIndex();
     if (monitorNdx < 0) {
-       TRACECF(debug, "monitorNdx = %d is < 0, ignoring", monitorNdx);
+       TRACECF_NOPREFIX(debug, "monitorNdx = %d is < 0, ignoring", monitorNdx);
     }
     else {
        Monitor * monitor = _monitors[monitorNdx];
        if (debug) {
-           TRACEC("Current view: %d, feature list:", _curView);
+           TRACEC_NOPREFIX("Current view: %d, feature list:", _curView);
            monitor->_curFeatureSelector.dbgrpt();
        }
 
@@ -1237,12 +1248,13 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
              monitor->_curFeatureSelector   = *_feature_selector;
           }
           else {
-             TRACECF(debug, "Unchanged view and feature set, no need to load");
+             TRACECF_NOPREFIX(debug, "Unchanged view and feature set, no need to load");
           }
           _initialViewShown = true;   // right location?
        }
     }
     ctrlKeyStatusMsg();
+    TRACECF_DONE(debug, "");
 }
 
 void MainWindow::loadMonitorFeatures(Monitor * monitor) {
@@ -1262,7 +1274,7 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
     }
     else {
        featuresToShow = monitor->getFeatureList(_feature_selector->_featureSubsetId);
-       TRACECF(debug,
+       TRACECF_NOPREFIX(debug,
            "features_to_show: (%d) %s", ddca_feature_list_count(featuresToShow),
                                         ddca_feature_list_string(featuresToShow, NULL, (char*)" "));
        if (_feature_selector->_includeOnlyCapabilities || _feature_selector->_includeAllCapabilities) {
@@ -1270,7 +1282,7 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
           // n. simply manipulates data structures, does not perform monitor io
           DDCA_Feature_List caps_features =
                 ddca_feature_list_from_capabilities(monitor->_baseModel->_parsed_caps);
-          TRACECF(debug,
+          TRACECF_NOPREFIX(debug,
               "Capabilities features: (%d) %s",
               ddca_feature_list_count(caps_features),
               ddca_feature_list_string(caps_features, NULL, (char*)" "));
@@ -1281,7 +1293,7 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
        }
     }
 
-    TRACECF(debug,
+    TRACECF_NOPREFIX(debug,
         "Final featuresToShow: (%d) %s",
         ddca_feature_list_count(featuresToShow),
         ddca_feature_list_string(featuresToShow, NULL, (char*)" "));
@@ -1301,7 +1313,7 @@ void MainWindow::loadMonitorFeatures(Monitor * monitor) {
 // redetect displays
 void MainWindow::on_actionRedetect_triggered() {
    bool debug  = false;
-   TRACECF(debug, "Executing");
+   TRACECF_STARTING(debug, "");
    // longRunningTaskStart();
    emit signalRedetectDisplaysStart();
 
@@ -1310,16 +1322,16 @@ void MainWindow::on_actionRedetect_triggered() {
    // ddca_free_display_info_list(_dlist);
    // _dlist = NULL;
 
-   TRACECF(debug, "Before ddca_redetect_displays");
+   TRACECF_NOPREFIX(debug, "Before ddca_redetect_displays");
    DDCA_Status ddcrc = ddca_redetect_displays();
    assert(ddcrc == 0);     // always returns 0
    _ui->actionMonitorSummary->setEnabled(false);
    _ui->actionCapabilities->setEnabled(false);
    _ui->actionFeaturesScrollArea->setEnabled(false);
 
-   TRACECF(debug, "Before initMonitors()");
+   TRACECF_NOPREFIX(debug, "Before initMonitors()");
    this->initMonitors(GlobalState::instance()._parsed_cmd);
-   TRACECF(debug, "After initMonitors()");
+   TRACECF_NOPREFIX(debug, "After initMonitors()");
 
    // reinit UI to first monitor, summary view
    // if no monitors, set _curDisplayIndex = -1
@@ -1350,6 +1362,7 @@ void MainWindow::for_resetStats_triggered() {
    bool debug = false;
    TRACECF_STARTING(debug, "triggered");
    ddca_reset_stats();
+   TRACECF_DONE(debug, "");
 }
 
 void MainWindow::for_reportStats_triggered(DDCA_Stats_Type stats_type, bool show_thread_data) {
@@ -1358,6 +1371,7 @@ void MainWindow::for_reportStats_triggered(DDCA_Stats_Type stats_type, bool show
    // TO DO: Make per/thread setting a checkbox on dialog
    // ddca_show_stats(stats_type, show_thread_data, 0);
    capture_stats(stats_type, show_thread_data);
+   TRACECF_DONE(debug, "");
 }
 
 void MainWindow::showCapturedText(QString windowTitle, QString text) {
@@ -1399,22 +1413,27 @@ void MainWindow::capture_stats(DDCA_Stats_Type stats_type, bool show_thread_data
 
 void MainWindow::on_actionDebugLocks_triggered() {
    bool debug = false;
-   TRACECF(debug, "Executing");
+   TRACECF_STARTING(debug, "");
    ddca_report_locks(0);
    captureLocks();
    TRACECF_DONE(debug,"");
 }
 
 void MainWindow::captureLocks() {
-    ddca_start_capture(DDCA_CAPTURE_NOOPTS);
-    // DDCA_Output_Level saved_ol = ddca_get_output_level();
-    // ddca_set_output_level(DDCA_OL_VERBOSE);
-    ddca_report_locks(0);
-    // ddca_set_output_level(saved_ol);
-    char * s = ddca_end_capture();
-    QString qs(s);
-    free(s);
-    showCapturedText("Execution Statistics", qs);
+   bool debug = false;
+   TRACECF_STARTING(false, "");
+
+   ddca_start_capture(DDCA_CAPTURE_NOOPTS);
+   // DDCA_Output_Level saved_ol = ddca_get_output_level();
+   // ddca_set_output_level(DDCA_OL_VERBOSE);
+   ddca_report_locks(0);
+   // ddca_set_output_level(saved_ol);
+   char * s = ddca_end_capture();
+   QString qs(s);
+   free(s);
+   showCapturedText("Execution Statistics", qs);
+
+   TRACECF_DONE(debug, "");
 }
 
 // Actions->Debug: DebugActionsDialog slots
@@ -1446,7 +1465,7 @@ void MainWindow::on_actionDebugActionsDialog_triggered()
 void MainWindow::on_actionFeatureSelectionDialog_triggered()
 {
    bool debug = false;
-   TRACECF(debug, "Executing. _fsd=%p", _fsd);
+   TRACECF_STARTING(debug, "fsd=%p", _fsd);
 
     // FeatureSelectionDialog*
    if (_fsd) {
@@ -1459,6 +1478,7 @@ void MainWindow::on_actionFeatureSelectionDialog_triggered()
     }
     _fsd->exec();
   //   delete _fsd;
+    TRACECF_DONE(debug, "");
 }
 
 // named "for_action..." instead of "on_action..." to avoid the connectSlotsByName naming convention
@@ -1468,16 +1488,16 @@ void MainWindow::for_actionFeatureSelectionDialog_accepted()
 {
    bool debugFunc = false;
    debugFunc = debugFunc || debugSignals || debugFeatureSelection;
+   TRACECF_STARTING(debugFunc, "triggered");
    if (debugFunc) {
-       TRACEC("Executing");
        _feature_selector->dbgrpt();
    }
    if (_curView == FeaturesView) {
-      TRACECF(debugFunc, "in FeaturesView, signaling featureSelectionChanged()");
+      TRACECF_NOPREFIX(debugFunc, "in FeaturesView, signaling featureSelectionChanged()");
       emit featureSelectionChanged();
    }
    else {
-      TRACECF(debugFunc, "Not in FeaturesView, so not signaling featureSelectionChanged()");
+      TRACECF_NOPREFIX(debugFunc, "Not in FeaturesView, so not signaling featureSelectionChanged()");
    }
 
 #ifdef UNNEEDED
@@ -1493,6 +1513,7 @@ void MainWindow::for_actionFeatureSelectionDialog_accepted()
    }
 #endif
 
+   TRACECF_DONE(debugFunc, "");
 }
 
 #ifdef UNUSED
@@ -1522,6 +1543,7 @@ void MainWindow::on_actionOtherOptionsDialog_triggered()
    //                  this,    &MainWindow::for_actionOtherOptionsDialog_ncValuesSourceChanged);
    dialog->exec();
    delete dialog;
+
    TRACECF_DONE(debug, "");
 }
 
@@ -1550,7 +1572,7 @@ void MainWindow::for_actionOtherOptionsDialog_ncValuesSourceChanged(
 void MainWindow::on_actionUserInterfaceOptionsDialog_triggered()
 {
    bool debug = false;
-   TRACECF(debug, "Executing. _uid=%p", _uid);
+   TRACECF_STARTING(debug, "uid=%p", _uid);
 
 #ifdef NO  // don't bother keeping the dialog box around and hidden
    if (_uid) {
@@ -1575,6 +1597,8 @@ void MainWindow::on_actionUserInterfaceOptionsDialog_triggered()
 
     dialog->exec();
     delete dialog;
+
+    TRACECF_DONE(debug, "");
 }
 
 void MainWindow::for_actionUserInterfaceOptionsDialog_accept()
@@ -1601,6 +1625,8 @@ void MainWindow::on_actionAbout_Qt_triggered()
 
 void MainWindow::on_actionAbout_triggered()
 {
+   bool debug = false;
+   TRACECF_STARTING(debug, "triggered");
     QString ddcutil_version = ddca_ddcutil_version_string();
     uint8_t build_opts = ddca_build_options();
     // QString ans1 = (build_opts & DDCA_BUILT_WITH_ADL) ? "true" : "false";
@@ -1629,6 +1655,8 @@ void MainWindow::on_actionAbout_triggered()
     // mbox.exec();
     // QMessageBox::information(this, "..", msg);
     QMessageBox::about(this, "About ddcui", msg);
+
+    TRACECF_DONE(debug, "");
 }
 
 //
@@ -1637,23 +1665,24 @@ void MainWindow::on_actionAbout_triggered()
 
 void MainWindow::keyPressEvent(QKeyEvent *   ev) {
    bool debug = false;
-
-   TRACEMCF(debug, "Executing");
+   TRACEMCF_STARTING(debug, "Executing");
    if (debug)
       dbgrptQKeyEvent(ev);
 
    if (ev->key() == Qt::Key_Control)  {   // 68
       _ctrl_key_is_pressed = true;
-      TRACEMCF(debug, "Control key recognized. Emitting signalControlKeyPressed(true)");
+      TRACEMCF_NOPREFIX(debug, "Control key recognized. Emitting signalControlKeyPressed(true)");
       signalControlKeyPressed(true);
    }
    QMainWindow::keyPressEvent(ev);
    ev->ignore();
+
+   TRACECF_DONE(debug, "");
 }
 
 void MainWindow::keyReleaseEvent(QKeyEvent *   ev) {
    bool debug = false;
-   TRACEMCF(debug, "Executing");
+   TRACEMCF_STARTING (debug, "");
    if (debug)
       dbgrptQKeyEvent(ev);
 
@@ -1664,6 +1693,8 @@ void MainWindow::keyReleaseEvent(QKeyEvent *   ev) {
    }
    QMainWindow::keyPressEvent(ev);
    ev->ignore();
+
+   TRACECF_DONE(debug, "");
 }
 
 //
@@ -1710,8 +1741,11 @@ void init_mainwindow() {
    RTTI_ADD_METHOD(MainWindow::start_msgBoxThread);
    RTTI_ADD_METHOD(MainWindow::freeMonitors);
    RTTI_ADD_METHOD(MainWindow::initOneMonitor);
+   RTTI_ADD_METHOD(MainWindow::setInitialDisplayIndex);
    RTTI_ADD_METHOD(MainWindow::initMonitors);
    RTTI_ADD_METHOD(MainWindow::quitShortcut);
+   RTTI_ADD_METHOD(MainWindow::startWatchDisplays);
+   RTTI_ADD_METHOD(MainWindow::startRedetectDisplays);
    RTTI_ADD_METHOD(MainWindow::MainWindow);
    RTTI_ADD_METHOD(MainWindow::~MainWindow);
    RTTI_ADD_METHOD(MainWindow::forControlKeyRequired_changed);
@@ -1721,17 +1755,24 @@ void init_mainwindow() {
    RTTI_ADD_METHOD(MainWindow::longRunningTaskStart);
    RTTI_ADD_METHOD(MainWindow::longRunningTaskEnd);
    RTTI_ADD_METHOD(MainWindow::displaySelectorCombobox_currentIndexChanged);
+   RTTI_ADD_METHOD(MainWindow::on_actionMonitorSummary_triggered);
    RTTI_ADD_METHOD(MainWindow::checkAltViewOk);
+   RTTI_ADD_METHOD(MainWindow::on_actionCapabilities_triggered);
+   RTTI_ADD_METHOD(MainWindow::on_actionFeaturesScrollArea_triggered);
    RTTI_ADD_METHOD(MainWindow::loadMonitorFeatures);
    RTTI_ADD_METHOD(MainWindow::on_actionRedetect_triggered);
    RTTI_ADD_METHOD(MainWindow::on_actionRescan_triggered);
    RTTI_ADD_METHOD(MainWindow::for_resetStats_triggered);
    RTTI_ADD_METHOD(MainWindow::for_reportStats_triggered);
    RTTI_ADD_METHOD(MainWindow::on_actionDebugLocks_triggered);
+   RTTI_ADD_METHOD(MainWindow::captureLocks);
    RTTI_ADD_METHOD(MainWindow::on_actionFeatureSelectionDialog_triggered);
+   RTTI_ADD_METHOD(MainWindow::for_actionFeatureSelectionDialog_accepted);
    RTTI_ADD_METHOD(MainWindow::on_actionOtherOptionsDialog_triggered);
+   RTTI_ADD_METHOD(MainWindow::for_actionOtherOptionsDialog_ncValuesSourceChanged);
    RTTI_ADD_METHOD(MainWindow::for_actionUserInterfaceOptionsDialog_accept);
    RTTI_ADD_METHOD(MainWindow::on_actionUserInterfaceOptionsDialog_triggered);
+   RTTI_ADD_METHOD(MainWindow::on_actionAbout_triggered);
    RTTI_ADD_METHOD(MainWindow::keyPressEvent);
    RTTI_ADD_METHOD(MainWindow::keyReleaseEvent);
    DBGF(debug, "Done");
