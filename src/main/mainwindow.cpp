@@ -370,7 +370,7 @@ void MainWindow::start_msgBoxThread() {
    TRACEMCF_STARTING(debug, "");
 
 #ifdef DEFERRED_MSG_QUEUE
-   TRACEMC("Putting %d MsgBoxQueueEntry on _msgBoxQueue", _deferredMsgs.count());
+   TRACEMC_NOPREFIX("Putting %d MsgBoxQueueEntry on _msgBoxQueue", _deferredMsgs.count());
    for (int ndx = 0; ndx < _deferredMsgs.count(); ndx++) {
       MsgBoxQueueEntry * qe = _deferredMsgs.at(ndx);
     _msgBoxQueue->put(qe);
@@ -428,7 +428,7 @@ void MainWindow::freeMonitors() {
    TRACECF_NOPREFIX(debug,"_monitors.size() = %d", ct0);
    for (int ndx = _monitors.size()-1; ndx >= 0; ndx--) {
       Monitor * curMonitor = _monitors.at(ndx);
-      TRACECF(debug, "deleting monitor ndx=%d, curMonitor=%p, dispno=%d",
+      TRACECF_NOPREFIX(debug, "deleting monitor ndx=%d, curMonitor=%p, dispno=%d",
                      ndx, curMonitor, curMonitor->_displayInfo->dispno);
       _monitors.removeAt(ndx);
       delete curMonitor;
@@ -639,7 +639,7 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
 
 void MainWindow::quitShortcut() {
    bool debug = false;
-   TRACECF_NOPREFIX(debug, "Executing");
+   TRACECF_EVENT(debug, "Executing");
    //close();
    TRACECF_NOPREFIX(debug, "Before _application->exit()");
    GlobalState::instance()._application->exit(0);
@@ -800,7 +800,7 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
 #ifdef OUT
            // on startup, don't want msg that capabilities not ready and be forced to summary view
            int sleep_millis = 000;  // *** TO BE TUNED ***
-           TRACECF(debug, "Sleeping %d millis before emitting view signal", sleep_millis);
+           TRACECF_NOPREFIX(debug, "Sleeping %d millis before emitting view signal", sleep_millis);
            QThread::msleep(sleep_millis);
 #endif
 
@@ -829,7 +829,7 @@ MainWindow::MainWindow(Parsed_Ddcui_Cmd * parsed_cmd, QWidget *parent) :
          this,     &MainWindow::reportApplicationEventLoopStarted,
          this,     &MainWindow::start_msgBoxThread);
 
-     TRACEMC("Emitting reportApplicationEventLoopStarted()");
+     TRACEMC_NOPREFIX("Emitting reportApplicationEventLoopStarted()");
      emit reportApplicationEventLoopStarted();   // will not be delivered until application event loop started
 #endif
 
@@ -1350,7 +1350,7 @@ void MainWindow::on_actionRedetect_triggered() {
 // rescan features for current monitor
 void MainWindow::on_actionRescan_triggered() {
    bool debug = false;
-   TRACECF(debug, "Executing");
+   TRACECF_EVENT(debug, "Executing");
    assert(_curView == FeaturesView);
    assert(_curDisplayIndex >= 0);
    _monitors[_curDisplayIndex]->_baseModel->reloadFeatures();
@@ -1583,7 +1583,7 @@ void MainWindow::on_actionUserInterfaceOptionsDialog_triggered()
        QObject::connect(_uid,     &UserInterfaceOptionsDialog::userInterfaceOptionsChanged,
                         this,     &MainWindow::for_UserInterfaceOptionsDialog_accepted);
     }
-    _uid->exec();
+    _uid->TRACECF_NOPREFIX();
     //   delete _uid;
 #endif
 
@@ -1592,7 +1592,7 @@ void MainWindow::on_actionUserInterfaceOptionsDialog_triggered()
                      this,     &MainWindow::for_actionUserInterfaceOptionsDialog_accept);
     // need a connection for reset?
 
-    TRACECF(debug, "Calling setControKeyRequired(%s)", SBOOL(_uiOptionsState->_controlKeyRequired) );
+    TRACECF_NOPREFIX(debug, "Calling setControKeyRequired(%s)", SBOOL(_uiOptionsState->_controlKeyRequired) );
     dialog->setDialogBoxControlKeyRequired( _uiOptionsState->_controlKeyRequired);
 
     dialog->exec();
@@ -1604,7 +1604,7 @@ void MainWindow::on_actionUserInterfaceOptionsDialog_triggered()
 void MainWindow::for_actionUserInterfaceOptionsDialog_accept()
 {
    bool debug = false;
-   TRACECF(debug, "Executing, Emitting userIntefaceOptionsChanged");
+   TRACECF(debug, "Emitting userIntefaceOptionsChanged");
    emit userInterfaceOptionsChanged();
 }
 
@@ -1614,7 +1614,7 @@ void MainWindow::for_actionUserInterfaceOptionsDialog_accept()
 
 void MainWindow::on_actionContentsHelp_triggered()
 {
-    // TRACEC_STARTING("Executing");
+    // TRACEC_EVENT("Executing");
     HelpBrowser::showPage(QString("qrc:/docs/help_general.html"), /*navigable=*/ true);
 }
 
@@ -1688,7 +1688,7 @@ void MainWindow::keyReleaseEvent(QKeyEvent *   ev) {
 
    if (ev->key() == Qt::Key_Control) {   // 68
       _ctrl_key_is_pressed = false;
-      TRACEMCF(debug, "Control key recognized. Emitting signalControlKeyPressed(false)");
+      TRACEMCF_NOPREFIX(debug, "Control key recognized. Emitting signalControlKeyPressed(false)");
       signalControlKeyPressed(false);
    }
    QMainWindow::keyPressEvent(ev);
