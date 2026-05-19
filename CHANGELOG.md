@@ -1,5 +1,70 @@
 # Changelog
 
+
+5/19
+
+Requires libddcutil.so.5.5 ? from ddcutil 2.2.7 or later.
+
+improved tracing
+--trcfunc/--trcmeth/--trcmethod
+   accept simple method name as well as qualified,   accept non class function
+
+--trcfile
+add: --trcclass ??
+
+--estimate-x10
+--noverify-x10
+
+add command traceable-medhods, aka traceable-functions
+
+TODO: convert traceable function table to hash
+
+CMakeLists.txt 
+
+ changes per Claude Code
+
+      1. Wrong version string in VERSION_LESS check (line 8)
+      VERSION_LESS 15 compares against version 15.0.0, not 3.15. With any cmake 3.x, this condition is always
+      true, so VERBOSE is always aliased to STATUS — the VERBOSE message level is never used.
+      if (CMAKE_VERSION VERSION_LESS 15)   # wrong
+      if (CMAKE_VERSION VERSION_LESS "3.15")  # correct
+
+      2. Qt include dirs hardcoded to Qt5 even when building with Qt6 (lines 316–319)
+      target_include_directories unconditionally uses ${Qt5Help_INCLUDE_DIRS}, which is empty when USE_QT6=ON.
+      Should be conditional:
+      if (USE_QT6)
+          target_include_directories(ddcui SYSTEM PRIVATE ${Qt6Help_INCLUDE_DIRS} ...)
+      else()
+          target_include_directories(ddcui SYSTEM PRIVATE ${Qt5Help_INCLUDE_DIRS} ...)
+      endif()
+
+      3. Qt Help module not linked (lines 325, 328)
+      find_package requests the Help component, but target_link_libraries only links Qt6::Widgets / Qt5::Widgets.
+      If help_browser.cpp or help_dialog.cpp use QHelpEngine, this will produce linker errors. Should add
+      Qt6::Help / Qt5::Help.
+
+      4. option() used for a directory path (line 44)
+      option() creates a boolean ON/OFF variable. A directory path should use set() with CACHE PATH:
+      set(DDCUTIL_PROJECT_DIR "" CACHE PATH "Root directory of ddcutil project")
+
+      5. Header file listed in SOURCES (line 229)
+      src/base/monitor.h is in the SOURCES list. CMake silently ignores it at compile time, but headers don't
+      belong there.
+
+      6. Copy-paste error in message (line 190)
+      Inside the ddcutil git-branch check block, the message reads "ddcui source is not managed by git" — should
+      say "ddcutil source".
+
+      7. Typo in environment variable name (line 115)
+      $ENV{LD_LIBARARY_PATH} — LIBARARY should be LIBRARY. Diagnostic only, but always prints empty.
+
+handle monitor connnection and disconnection
+
+
+
+
+
+
 ## [0.7.0] 2026-01-20
 
 Requires libddcutil.so.5.4 from ddcutil 2.2.3 or later.
