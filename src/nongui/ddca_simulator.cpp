@@ -82,37 +82,42 @@ bool  DdcaSimulator::simulateGetNonTableVcpValue(
       DDCA_Status *              pddcrc)
 {
    bool debug = false;
-   if (!simulationEnabled)
-      return false;
+   TRACECF_STARTING(debug, "Feature 0x%02x, vspec=%d.%d", featureCode, vspec.major, vspec.minor);
 
    bool simulated = false;
-   DDCA_Status ddcrc = DDCRC_DETERMINED_UNSUPPORTED;
-   int ndx = findSimTableEntry(featureCode, vspec);
-   if (ndx >= 0) {
-      valrec->mh = simTable[ndx].mh;
-      valrec->ml = simTable[ndx].ml;
-      valrec->sh = simTable[ndx].sh;
-      valrec->sl = simTable[ndx].sl;
-      ddcrc      = simTable[ndx].ddcrc;
+   if (simulationEnabled) {
+      TRACECF(debug, "Simulation enabled. simTableCt=%d", simTableCt);
 
-      if (ddcrc == DDCRC_OK) {
-         if (simVals.contains(featureCode)) {
-            // override with value set by a previous call
-            uint16_t savedVal = simVals.value(featureCode);
-            valrec->sh =  savedVal >> 8;
-            valrec->sl =  savedVal & 0xff;
-            // TRACEC_STARTING("feature 0x%02x, returning simulated sh=0x%02x, sl=0x%02x",
-            //       featureCode, valrec->sh, valrec->sl);
+      DDCA_Status ddcrc = DDCRC_DETERMINED_UNSUPPORTED;
+      int ndx = findSimTableEntry(featureCode, vspec);
+      if (ndx >= 0) {
+         valrec->mh = simTable[ndx].mh;
+         valrec->ml = simTable[ndx].ml;
+         valrec->sh = simTable[ndx].sh;
+         valrec->sl = simTable[ndx].sl;
+         ddcrc      = simTable[ndx].ddcrc;
+
+         if (ddcrc == DDCRC_OK) {
+            if (simVals.contains(featureCode)) {
+               // override with value set by a previous call
+               uint16_t savedVal = simVals.value(featureCode);
+               valrec->sh =  savedVal >> 8;
+               valrec->sl =  savedVal & 0xff;
+               // TRACEC_STARTING("feature 0x%02x, returning simulated sh=0x%02x, sl=0x%02x",
+               //       featureCode, valrec->sh, valrec->sl);
+            }
          }
+         *pddcrc = ddcrc;
+         simulated = true;
       }
-      *pddcrc = ddcrc;
-      simulated = true;
+      if (simulated)
+         TRACECF_NOPREFIX(debug,
+              "Feature 0x%02x, vspec=%d.%d, returning %s. ddcrc=%s. mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x",
+               featureCode, vspec.major, vspec.minor,
+               SBOOL(simulated),  ddca_rc_name(ddcrc), valrec->mh, valrec->ml, valrec->sh, valrec->sl);
    }
-   if (simulated)
-      TRACECF(debug,
-           "Feature 0x%02x, vspec=%d.%d, returning %s. ddcrc=%s. mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x",
-            featureCode, vspec.major, vspec.minor,
-            SBOOL(simulated),  ddca_rc_name(ddcrc), valrec->mh, valrec->ml, valrec->sh, valrec->sl);
+
+   TRACECF_DONE(debug, "returning %s", SBOOL(simulated));
    return simulated;
 }
 
