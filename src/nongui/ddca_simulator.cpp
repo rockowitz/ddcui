@@ -131,21 +131,25 @@ bool DdcaSimulator::simulateSetNonTableVcpValue(
       DDCA_Status *              pddcrc)
 {
    bool debug = false;
-   if (!simulationEnabled)
-      return false;
+   TRACECF_STARTING(debug, "Feature 0x%02x, vspec=%d.%d, sh=0x%02x, sl=0x%02x",
+         featureCode, vspec.major, vspec.minor, sh, sl);
 
    bool simulated = false;
-   *pddcrc = DDCRC_OK;
-   int ndx = findSimTableEntry(featureCode, vspec);
-   if (ndx >= 0) {
-      uint16_t shsl = sh << 8 | sl;
-      simVals.insert(featureCode, shsl);
-      simulated = true;
-      TRACEC_STARTING("Simulating set feature 0x%02x, shsl=0x%04x", featureCode, shsl);
+   if (simulationEnabled) {
+      *pddcrc = DDCRC_OK;
+      int ndx = findSimTableEntry(featureCode, vspec);
+      if (ndx >= 0) {
+         uint16_t shsl = sh << 8 | sl;
+         simVals.insert(featureCode, shsl);
+         simulated = true;
+         TRACEC_STARTING("Simulating set feature 0x%02x, shsl=0x%04x", featureCode, shsl);
+      }
+      if (simulated)
+         TRACECF(debug, "Feature 0x%02x, vspec=%d.%d. returning %s. ddcrc=%s",
+              featureCode, vspec.major, vspec.minor, SBOOL(simulated),  ddca_rc_name(*pddcrc) );
    }
-   if (simulated)
-      TRACECF(debug, "Feature 0x%02x, vspec=%d.%d. returning %s. ddcrc=%s",
-           featureCode, vspec.major, vspec.minor, SBOOL(simulated),  ddca_rc_name(*pddcrc) );
+
+   TRACECF_DONE(debug, "returning %s", SBOOL(simulated));
    return simulated;
 }
 
