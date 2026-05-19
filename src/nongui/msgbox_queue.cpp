@@ -34,7 +34,7 @@ MsgBoxQueueEntry::MsgBoxQueueEntry(
 
 MsgBoxQueueEntry::~MsgBoxQueueEntry()
 {
-   TRACECF(debugClass, "Executing");
+   TRACECF_EVENT(debugClass, "Executing");
 }
 
 
