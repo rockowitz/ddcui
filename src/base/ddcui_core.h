@@ -35,7 +35,7 @@ extern const QFont FeatureValueButtonFont;
 extern const QFont FeatureValueNumberEntryFont;
 extern const QFont FeatureValueComboBoxFont;
 extern const QFont FeatureValueHeaderFont;
-extern QFont MainMenuFont2;
+extern QFont MainMenuFont2;, co
 
 void init_core();
 
@@ -56,8 +56,8 @@ typedef uint16_t Printftcmf_Options;
 #define TRACE_OPTIONS_STARTING  0x08
 #define TRACE_OPTIONS_DONE      0x10
 #define TRACE_OPTIONS_NOPREFIX  0x20
-#define TRACE_OPTION_EVENT     (TRACE_OPTIONS_STARTING | TRACE_OPTIONS_DONE)
-
+#define TRACE_OPTIONS_EVENT     (TRACE_OPTIONS_STARTING | TRACE_OPTIONS_DONE)
+  ddd
 
 bool     printftcmf(
             bool debug,
