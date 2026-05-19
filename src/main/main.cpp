@@ -248,7 +248,7 @@ void report_parse_errors(Error_Info * erec) {
 
 
 static void init_rtti() {
-   bool debug = true;
+   bool debug = false;
    DBGF(debug, "Starting");
    init_base_services();
    init_nongui_services();
