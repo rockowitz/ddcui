@@ -125,7 +125,7 @@ void VcpThread::rpt_nonfeature_error(
    MsgBoxQueueEntry * qe = new MsgBoxQueueEntry(QString("ddcutil API Error"),
                                                 qsexpl,
                                                 QMessageBox::Warning);
-   TRACECF(debug, "Calling _msgboxQueue.put() for qe: %s", QS2S(qe->repr()));
+   TRACECF_NOPREFIX(debug, "Calling _msgboxQueue.put() for qe: %s", QS2S(qe->repr()));
    GlobalState::instance()._msgBoxQueue->put(qe);
    TRACECF_DONE(debug, "");
 }
@@ -189,7 +189,7 @@ void VcpThread::rpt_verify_error(
               abs8(expectedValue & 0xff, observedValue & 0xff)
              ) <= 1)
    {
-      TRACECF(debug, "difference <= 1, suppressing error");
+      TRACECF_NOPREFIX(debug, "difference <= 1, suppressing error");
    }
    else {
       QString qsexpl = QString("Verification failed after value change for feature 0x%1.\n\n"
@@ -202,7 +202,7 @@ void VcpThread::rpt_verify_error(
       MsgBoxQueueEntry * qe = new MsgBoxQueueEntry(QString("Verification Error"),
                                                    qsexpl,
                                                    QMessageBox::Warning);
-      TRACECF(debug, "Calling _msgboxQueue.put() for qe: %s", QS2S(qe->repr()));
+      TRACECF_NOPREFIX(debug, "Calling _msgboxQueue.put() for qe: %s", QS2S(qe->repr()));
       GlobalState::instance()._msgBoxQueue->put(qe);
       TRACECF_DONE(debug, "");
    }
@@ -261,10 +261,10 @@ void VcpThread::loadDynamicFeatureRecords()
       ddcrc = ddca_dfr_check_by_dh(dh);
       if (ddcrc != 0) {
          if (ddcrc == DDCRC_NOT_FOUND) {
-            TRACECF(debugFunc, "ddca_dfr_check_by_dh() returned DDCRC_NOT_FOUND");
+            TRACECF_NOPREFIX(debugFunc, "ddca_dfr_check_by_dh() returned DDCRC_NOT_FOUND");
          }
          else {
-            TRACECF(debugFunc, "ddca_dfr_check_by_dh() returned %s", ddca_rc_name(ddcrc));
+            TRACECF_NOPREFIX(debugFunc, "ddca_dfr_check_by_dh() returned %s", ddca_rc_name(ddcrc));
             DDCA_Error_Detail * erec = ddca_get_error_detail();
             ddca_report_error_detail(erec, 4);
             rpt_nonfeature_error("loading dynamic feature records", "ddca_dfr_check_by_dh", ddcrc, erec);
@@ -288,7 +288,7 @@ void VcpThread::adjustRetries() {
    uint16_t multiMax     = ddca_get_max_tries(DDCA_MULTI_PART_READ_TRIES);
    uint16_t newWriteReadMax  = (writeReadMax/2) + 1;
    uint16_t newMultiMax = (multiMax/2) + 1;
-   TRACECF(debugFunc, "writeReadMax %d -> %d, multiMax %d -> %d",
+   TRACECF_NOPREFIX(debugFunc, "writeReadMax %d -> %d, multiMax %d -> %d",
                    writeReadMax, newWriteReadMax, multiMax, newMultiMax);
    ddca_set_max_tries(DDCA_WRITE_READ_TRIES, newWriteReadMax);
    ddca_set_max_tries(DDCA_MULTI_PART_READ_TRIES, newMultiMax);
@@ -321,7 +321,7 @@ void VcpThread::capabilities() {
          ddcrc = ddca_get_capabilities_string(dh, &caps);
          // ddcrc = DDCRC_ALL_TRIES_ZERO;
          if (ddcrc != 0) {
-            TRACECF(debugRetry, "Error getting capabilities string for %s, ddcrc=%s",
+            TRACECF_NOPREFIX(debugRetry, "Error getting capabilities string for %s, ddcrc=%s",
                                 ddca_dref_repr(this->_dref), ddca_rc_name(ddcrc));
             // DDCA_Error_Detail * err_detail =  ddca_get_error_detail();
             // ddca_report_error_detail(err_detail, 2);
@@ -334,7 +334,7 @@ void VcpThread::capabilities() {
 
             if (curmult <= 2.0f) {    // retry possible
                // curmult = curmult * 2;
-               // TRACECF(debugRetry, "Adjusting thread sleep multiplier for %s to %5.2f",
+               // TRACECF_NOPREFIX(debugRetry, "Adjusting thread sleep multiplier for %s to %5.2f",
                //                    ddca_dref_repr(this->_dref), curmult);
                // todo: output message in status bar that retrying
                // RETRYING DOESN"T HELP
@@ -345,12 +345,12 @@ void VcpThread::capabilities() {
             }   // end, ddca_get_capabilities_string() failure, retry possible
             else {  // failure, can't retry
                if (retry_count > 0)
-                  TRACECF(debugRetry || true, "Capabilities check failed after %d retries, retries exhausted", retry_count);
+                  TRACECF_NOPREFIX(debugRetry || true, "Capabilities check failed after %d retries, retries exhausted", retry_count);
                rpt_nonfeature_error("getting capabilities string", "ddca_get_capabilities_string", ddcrc);
             }  // end, failure, can't retry
          }  // ddca_get_capabilities() failed
          else if (retry_count > 0) {
-            TRACECF(debugRetry || true, "Capabilities check succeeded after %d retries", retry_count);
+            TRACECF_NOPREFIX(debugRetry || true, "Capabilities check succeeded after %d retries", retry_count);
          }
       } // end of while() loop calling ddca_get_capabilities_string()
 
@@ -367,11 +367,11 @@ void VcpThread::capabilities() {
       _baseModel->setCapabilities(ddcrc, caps, parsed_caps);
 
       if (ddcrc == -EBADF) {
-         TRACECF(debugFunc, "ddca_get_capabilities_string() returned -EBADF. Skipping close. dh=%s",
+         TRACECF_NOPREFIX(debugFunc, "ddca_get_capabilities_string() returned -EBADF. Skipping close. dh=%s",
                             ddca_dref_repr(this->_dref));
       }
       else {
-         TRACECF(debugFunc, "Closing %s",  ddca_dref_repr(this->_dref) );
+         TRACECF_NOPREFIX(debugFunc, "Closing %s",  ddca_dref_repr(this->_dref) );
          ddcrc = perform_close_display(dh);
       }
    }  // open succeeded
@@ -435,10 +435,10 @@ void VcpThread::getvcp(uint8_t featureCode, bool needMetadata)
           // TRACEC("non-simulated");
           ddcrc = ddca_get_non_table_vcp_value(dh, featureCode, &valrec);
        }
-       TRACECF(debugFunc, "feature_code=0x%02x, ddca_get_non_table_vcp_value() returned %d - %s",
+       TRACECF_NOPREFIX(debugFunc, "feature_code=0x%02x, ddca_get_non_table_vcp_value() returned %d - %s",
                   featureCode, ddcrc, ddca_rc_name(ddcrc));
        if (ddcrc == DDCRC_DISCONNECTED) { // server went away
-          TRACECF(debugFunc, "DDCRC_DISCONNECTED received, NOT purging request queue");
+          TRACECF_NOPREFIX(debugFunc, "DDCRC_DISCONNECTED received, NOT purging request queue");
           // this->_requestQueue->purge();
        }
        else {
@@ -446,7 +446,7 @@ void VcpThread::getvcp(uint8_t featureCode, bool needMetadata)
              rpt_feature_error(FeatureRead, featureCode, "ddca_get_nontable_vcp_value", ddcrc);
           }
           else {
-             // TRACECF(debugFunc,
+             // TRACECF_NOPREFIX(debugFunc,
              //      "  opcode: 0x%02x, requested: 0x%02x, reported: 0x%02x",
              //      valrec.opcode,
              //      valrec.requested_value,
@@ -462,7 +462,7 @@ void VcpThread::getvcp(uint8_t featureCode, bool needMetadata)
                 uint16_t est_val = (uint16_t)(max_val * 70 / 100);
                 valrec.sh = est_val >> 8;
                 valrec.sl = est_val & 0xff;
-                TRACECF(debugFunc, "estimate_x10: setting feature x10 to 70%% of max %d = %d", max_val, est_val);
+                TRACECF_NOPREFIX(debugFunc, "estimate_x10: setting feature x10 to 70%% of max %d = %d", max_val, est_val);
              }
           }
           // whether or not succeeded, set feature info in  _baseModel so FeatureValueWidget can display error
@@ -472,9 +472,9 @@ void VcpThread::getvcp(uint8_t featureCode, bool needMetadata)
        }
        if (ddcrcMetadata == DDCRC_DISCONNECTED || ddcrc == DDCRC_DISCONNECTED) {
           // monitor disappeared
-          TRACECF(debugFunc, "DDCRC_DISCONNECTED received, purging request queue");
+          TRACECF_NOPREFIX(debugFunc, "DDCRC_DISCONNECTED received, purging request queue");
          this->_requestQueue->purge();
-          TRACECF(debugFunc, "request queue purged");
+          TRACECF_NOPREFIX(debugFunc, "request queue purged");
           _baseModel->markDisconnected(this->_dref);
        }
 
@@ -494,7 +494,7 @@ void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint16_t shsl)
 
     uint8_t sh = (shsl >> 8);
     uint8_t sl = (shsl & 0xff);
-    TRACECF(debugFunc, "sh: 0x%02x, sl: 0x%02x", sh, sl);
+    TRACECF_NOPREFIX(debugFunc, "sh: 0x%02x, sl: 0x%02x", sh, sl);
     // rpt_ddca_status(feature_code, __func__, "ddca_bogus", 0);
 
     DDCA_Display_Handle dh;
@@ -520,14 +520,14 @@ void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint16_t shsl)
           ddcrc = ddca_set_non_table_vcp_value(dh, feature_code, sh, sl);
        }
        if (ddcrc != 0) {
-          TRACECF(debugFunc, "ddca_set_non_table_vcp_value() returned %d = %s", ddcrc, ddca_rc_name(ddcrc));
+          TRACECF_NOPREFIX(debugFunc, "ddca_set_non_table_vcp_value() returned %d = %s", ddcrc, ddca_rc_name(ddcrc));
           rpt_feature_error(FeatureWrite, feature_code, "ddca_set_non_table_vcp_value", ddcrc);
 
           if (ddcrc == DDCRC_DISCONNECTED) {
              // monitor disappeared
-             TRACECF(debugFunc, "DDCRC_DISCONNECTED received, purging request queue");
+             TRACECF_NOPREFIX(debugFunc, "DDCRC_DISCONNECTED received, purging request queue");
              this->_requestQueue->purge();
-             TRACECF(debugFunc, "request queue purged");
+             TRACECF_NOPREFIX(debugFunc, "request queue purged");
              _baseModel->markDisconnected(this->_dref);
           }
 
@@ -539,7 +539,7 @@ void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint16_t shsl)
            // Special handling for feature x60, can trigger Null Response if sleep-multiplier is too low.
            if (feature_code == 0x60) {
               int msec = 100;
-              TRACECF(debugFunc, "Special %d millisecond sleep before verifying feature x60", msec);
+              TRACECF_NOPREFIX(debugFunc, "Special %d millisecond sleep before verifying feature x60", msec);
               QThread::msleep(msec);
            }
 
@@ -556,8 +556,8 @@ void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint16_t shsl)
                 rpt_feature_error(FeatureRead, feature_code, "ddca_get_nontable_vcp_value", ddcrc);
            }
            else {
-              TRACECF(debugFunc, "ddca_get_nontable_vcp_value() after ddca_set_non_table_vcp_value():");
-              TRACECF(debugFunc, "  opcode: 0x%02x, requested: sh=0x%02x, sl=0x%02x, observed: mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x",
+              TRACECF_NOPREFIX(debugFunc, "ddca_get_nontable_vcp_value() after ddca_set_non_table_vcp_value():");
+              TRACECF_NOPREFIX(debugFunc, "  opcode: 0x%02x, requested: sh=0x%02x, sl=0x%02x, observed: mh=0x%02x, ml=0x%02x, sh=0x%02x, sl=0x%02x",
                          feature_code, sh, sl, valrec.mh, valrec.ml, valrec.sh, valrec.sl);
 
               FeatureValue* fv = _baseModel->modelVcpValueFind(feature_code);
@@ -574,14 +574,14 @@ void VcpThread::setvcp(uint8_t feature_code, bool writeOnly, uint16_t shsl)
                     rpt_verify_error(feature_code, "ddca_set_non_table_vcp_value", sh, sl, valrec.sh, valrec.sl);
                  }
               }
-              TRACECF(debugFunc, "Calling _baseModel->modelVcpValueUpdate()");
+              TRACECF_NOPREFIX(debugFunc, "Calling _baseModel->modelVcpValueUpdate()");
               _baseModel->modelVcpValueUpdate(feature_code, valrec.sh, valrec.sl);
            }  // ddca_get_non_table_vcp_value() succeeded
        }     // !writeOnly
 
 bye:
        ddcrc = ddca_close_display(dh);
-       TRACECF(debugFunc, "ddca_close_display() returned %d", ddcrc);
+       TRACECF_NOPREFIX(debugFunc, "ddca_close_display() returned %d", ddcrc);
        if (ddcrc != 0) {
            rpt_nonfeature_error("performing close", "ddca_close_display", ddcrc);
        }
@@ -593,7 +593,7 @@ bye:
 // Process RQStartInitailLoad
 void VcpThread::startInitialLoad(void)
 {
-    TRACECF(debugThread, "Executing");
+    TRACECF_EVENT(debugThread, "Executing");
     // _baseModel->beginResetModel();
     _baseModel->modelStartInitialLoad();
 #ifdef UNUSED
@@ -633,20 +633,20 @@ void VcpThread::run()
 
     while(true) {    // eclipse parser does not recognize keyword forever
         VcpRequest * rqst = this->_requestQueue->pop();
-        TRACECF(debug, "Received request. rqst->_type=%d", rqst->_type);
+        TRACECF_NOPREFIX(debug, "Received request. rqst->_type=%d", rqst->_type);
         switch(rqst->_type) {
         case VcpRequestType::RQGetVcp:
         {
             VcpGetRequest* getRqst = static_cast<VcpGetRequest*>(rqst);
             // printf("(VcpThread::run) VcpGetRequest. feature_code=0x%02x\n", getRqst->_featureCode);
-            TRACECF(debug, "VcpGetRequest. feature code = 0x%02x", getRqst->_featureCode);
+            TRACECF_NOPREFIX(debug, "VcpGetRequest. feature code = 0x%02x", getRqst->_featureCode);
             getvcp(getRqst->_featureCode, getRqst->_needMetadata);
             break;
         }
         case VcpRequestType::RQSetVcp:
         {
             VcpSetRequest* setRqst = static_cast<VcpSetRequest*>(rqst);
-            TRACECF(debug, "RQSetVcp. feature code=0x%02x, newSl=%d\n",
+            TRACECF_NOPREFIX(debug, "RQSetVcp. feature code=0x%02x, newSl=%d\n",
                         setRqst->_featureCode, setRqst->_newSl);  fflush(stdout);
             // if (debugThread)
             //     printf("(VcpThread::run) RQSetVcp. feature code=0x%02x, newval=%d\n",
@@ -668,7 +668,7 @@ void VcpThread::run()
             loadDynamicFeatureRecords();
             break;
         case VcpRequestType::RQHalt:
-            TRACECF(debug, "RQHalt");
+            TRACECF_NOPREFIX(debug, "RQHalt");
             delete rqst;
             return;
             break;
