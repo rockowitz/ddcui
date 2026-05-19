@@ -12,7 +12,9 @@
 
 #include "base/ddcui_core.h"
 #include "c_util/debug_util.h"
+#include "c_util/string_util.h"
 #include "base/ddcui_rtti.h"
+#include "base/global_state.h"
 #include "nongui/vcpthread.h"    // includes vcprequest.h
 #include "nongui/feature_value.h"
 
@@ -33,13 +35,21 @@ Monitor::Monitor(DDCA_Display_Info2 * display_info, int monitorNumber)
    _moninfoPlainText = _capabilitiesPlainText = NULL;
    _vcpThread = NULL;
 
+   Parsed_Ddcui_Cmd * parsed_cmd = GlobalState::instance()._parsed_cmd;
+   if (parsed_cmd) {
+      if (parsed_cmd->estimate_x10_model && streq(display_info->model_name, parsed_cmd->estimate_x10_model))
+         estimate_x10 = true;
+      if (parsed_cmd->noverify_x10_model && streq(display_info->model_name, parsed_cmd->noverify_x10_model))
+         noverify_x10 = true;
+   }
+
    // ddca_report_display_info(_displayInfo, 3);
    if (supportsDdc()) {
       _requestQueue = new VcpRequestQueue();
       _baseModel = new FeatureBaseModel(this);
       // baseModel->setObjectName(QString::asprintf("baseModel-%s",ddca_dref_repr(_displayInfo->dref));
 
-      _vcpThread = new VcpThread(NULL, _displayInfo,  _requestQueue, _baseModel);
+      _vcpThread = new VcpThread(NULL, _displayInfo,  _requestQueue, _baseModel, estimate_x10, noverify_x10);
 
       // never triggered ??
       QObject::connect(_vcpThread, &VcpThread::finished,
