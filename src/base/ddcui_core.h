@@ -35,7 +35,7 @@ extern const QFont FeatureValueButtonFont;
 extern const QFont FeatureValueNumberEntryFont;
 extern const QFont FeatureValueComboBoxFont;
 extern const QFont FeatureValueHeaderFont;
-extern QFont MainMenuFont2;, co
+extern QFont MainMenuFont2;
 
 void init_core();
 
@@ -57,7 +57,6 @@ typedef uint16_t Printftcmf_Options;
 #define TRACE_OPTIONS_DONE      0x10
 #define TRACE_OPTIONS_NOPREFIX  0x20
 #define TRACE_OPTIONS_EVENT     (TRACE_OPTIONS_STARTING | TRACE_OPTIONS_DONE)
-  ddd
 
 bool     printftcmf(
             bool debug,
@@ -197,32 +196,32 @@ do { \
 
 #define TRACEC_EVENT( _FMT, ...) \
 do { \
-   printftcmf(true, TRACE_OPTION_EVENT, nullptr, _cls, __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+   printftcmf(true, TRACE_OPTIONS_EVENT, nullptr, _cls, __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
 } while(0)
 
 #define TRACECF_EVENT(_FLAG, _FMT, ...) \
 do { \
-   printftcmf(_FLAG, TRACE_OPTION_EVENT, nullptr, _cls, __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+   printftcmf(_FLAG, TRACE_OPTIONS_EVENT, nullptr, _cls, __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
 } while(0)
 
 #define TRACEM_EVENT( _FMT, ...) \
 do { \
-   printftcmf(true, TRACE_OPTION_EVENT, metaObject()->className(), nullptr,  __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+   printftcmf(true, TRACE_OPTIONS_EVENT, metaObject()->className(), nullptr,  __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
 } while(0)
 
 #define TRACEMF_EVENT(_FLAG, _FMT, ...) \
 do { \
-   printftcmf(_FLAG, TRACE_OPTION_EVENT, metaObject()->className(), nullptr,  __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+   printftcmf(_FLAG, TRACE_OPTIONS_EVENT, metaObject()->className(), nullptr,  __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
 } while(0)
 
 #define TRACEMC_EVENT( _FMT, ...) \
 do { \
-   printftcmf(true, TRACE_OPTION_EVENT, metaObject()->className(), _cls,  __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+   printftcmf(true, TRACE_OPTIONS_EVENT, metaObject()->className(), _cls,  __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
 } while(0)
 
 #define TRACEMCF_EVENT(_FLAG, _FMT, ...) \
 do { \
-   printftcmf(_FLAG, TRACE_OPTION_EVENT, metaObject()->className(), _cls,  __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
+   printftcmf(_FLAG, TRACE_OPTIONS_EVENT, metaObject()->className(), _cls,  __func__, __LINE__, __FILE__, _FMT, ##__VA_ARGS__); \
 } while(0)
 
 
