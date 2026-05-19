@@ -247,7 +247,9 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
 //                 '\0', 0, G_OPTION_ARG_NONE,       &all_capabilities_false_set, "Negate include all values in capabilities", NULL},
 
 // Display selection
-      {"model",    '\0',   0, G_OPTION_ARG_STRING,   &parsed_cmd->model,                "Model of default display",              NULL},
+      {"model",       '\0', 0, G_OPTION_ARG_STRING,   &parsed_cmd->model,               "Model of default display",              NULL},
+      {"estimate-x10",'\0', 0, G_OPTION_ARG_STRING,   &parsed_cmd->estimate_x10_model,  "Use x10 sleep multiplier estimate for model", NULL},
+      {"noverify-x10",'\0', 0, G_OPTION_ARG_STRING,   &parsed_cmd->noverify_x10_model,  "Skip verify for x10 sleep writes for model",  NULL},
 //    {"bus",      '\0',   0, G_OPTION_ARG_INT,      &parsed_cmd->busno,    "I2C bus number",                        "integer"},
 #ifdef DISABLED_LIBDDCUTIL_ONLY
       {"nousb",    '\0',   0, G_OPTION_ARG_NONE,     &nousb_flag,       "Do not detect USB devices", NULL},

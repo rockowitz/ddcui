@@ -148,6 +148,8 @@ void dbgrpt_parsed_ddcui_cmd(Parsed_Ddcui_Cmd * parsed_cmd) {
       printf("   include all  capabilities features: %s\n", trival_repr(parsed_cmd->include_all_capabilities_features));
       printf("   include_only capabilities features: %s\n", trival_repr(parsed_cmd->include_only_capabilities_features));
       printf("   initial model:             %s\n",   parsed_cmd->model);
+      printf("   estimate_x10_model:        %s\n",   parsed_cmd->estimate_x10_model);
+      printf("   noverify_x10_model:        %s\n",   parsed_cmd->noverify_x10_model);
       printf("   initial bus number:        %d\n",   parsed_cmd->busno);
       printf("   hidpi:                     %s\n",   sbool(parsed_cmd->flags & CMD_FLAG_HIDPI));
       printf("   disable config file:       %s\n",   sbool(parsed_cmd->flags & CMD_FLAG_DISABLE_CONFIG_FILE));
@@ -197,6 +199,8 @@ void free_parsed_ddcui_cmd(Parsed_Ddcui_Cmd * parsed_cmd) {
       parsed_cmd->marker[3] = 'x';
       free(parsed_cmd->library_options);
       free(parsed_cmd->model);
+      free(parsed_cmd->estimate_x10_model);
+      free(parsed_cmd->noverify_x10_model);
       ntsa_free(parsed_cmd->traced_methods, true);
       ntsa_free(parsed_cmd->traced_files, true);
       free(parsed_cmd);

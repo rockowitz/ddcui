@@ -105,6 +105,8 @@ typedef struct {
    Optional_True_False     include_only_capabilities_features;
    Optional_True_False     enable_sleep_suppression;
    char *                  model;
+   char *                  estimate_x10_model;
+   char *                  noverify_x10_model;
    int                     busno;
    DDCA_Feature_List       custom_feature_list;
    DDCA_Syslog_Level       syslog_level;
