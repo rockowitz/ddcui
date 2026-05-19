@@ -52,6 +52,9 @@ public:
     void              recheck();
 #endif
 
+    bool                 estimate_x10 = false;
+    bool                 noverify_x10 = false;
+
     bool                 _initChecksDone = false;
     const int            _monitorNumber = -1;    // 1 based
     DDCA_Display_Info2 * _displayInfo;
