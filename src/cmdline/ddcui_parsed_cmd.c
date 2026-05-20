@@ -16,6 +16,7 @@
 #include "c_util/data_structures.h"
 
 #include "base/ddcui_trace_control.h"
+
 #include "ddcui_parsed_cmd.h"
 
 // // all uses of this local function are safe,
