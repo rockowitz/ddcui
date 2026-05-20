@@ -328,7 +328,18 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
 
    if (parsed_cmd->traced_metaclasses) {
       for (int ndx = 0; parsed_cmd->traced_metaclasses[ndx]; ndx++) {
-         add_traced_metaclass(parsed_cmd->traced_metaclasses[ndx]);
+         char * cur_metaclass_name = parsed_cmd->traced_metaclasses[ndx];
+         if (rtti_metaclass_name_table_contains(cur_metaclass_name)) {
+            add_traced_metaclass(cur_metaclass_name);
+         }
+         else {
+            char * errmsg[] = { g_strdup_printf("Invalid --trcmetaclass argument: %s", cur_metaclass_name), NULL };
+            char ** merged = ntsa_join(infomsgs, errmsg, true);
+            ntsa_free(infomsgs, true);
+            g_free(errmsg[0]);
+            infomsgs = merged;
+            ok = false;
+         }
       }
       if (debug)
          dbgrpt_traced_metaclass_table(2);
@@ -545,6 +556,10 @@ int main(int argc, char *argv[])
        }
        if (parsed_cmd->cmd_id == CMDID_LIST_CLASSES) {
           report_rtti_class_name_table(0, "Classes traceable by name:");
+          return 0;
+       }
+       if (parsed_cmd->cmd_id == CMDID_LIST_METACLASSES) {
+          report_rtti_metaclass_name_table(0, "Metaclasses traceable by name:");
           return 0;
        }
 

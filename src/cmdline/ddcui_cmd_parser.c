@@ -399,14 +399,18 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
 
    if (ntsa_length(mangleable_argv) > 1) {
       char * cmd = mangleable_argv[1];
-      if (is_abbrev(cmd, "traceable-methods",   11) ||
-          is_abbrev(cmd, "traceable-functions", 11))
+      if (is_abbrev(cmd, "traceable-methods",     14) ||
+          is_abbrev(cmd, "traceable-functions",   11))
       {
          parsed_cmd->cmd_id = CMDID_LIST_RTTI;
       }
       else if (is_abbrev(cmd, "traceable-classes", 11))
       {
          parsed_cmd->cmd_id = CMDID_LIST_CLASSES;
+      }
+      else if (is_abbrev(cmd, "traceable-metaclasses", 14))
+      {
+         parsed_cmd->cmd_id = CMDID_LIST_METACLASSES;
       }
       else {
          char * remainder = strjoin((const char**)(mangleable_argv+1), ntsa_length(mangleable_argv)-1, " ");

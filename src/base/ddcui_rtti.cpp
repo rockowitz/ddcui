@@ -9,12 +9,28 @@
 /** \cond */
 #include <glib-2.0/glib.h>
 #include <stdbool.h>
+
+#include <QMetaType>
 /** \endcond */
 
 #include "c_util/glib_util.h"
 #include "c_util/report_util.h"
 
 #include "base/ddcui_rtti.h"
+
+
+static const char * metaclass_name(const char * classname) {
+   if (!classname)
+      return NULL;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+   const QMetaObject * mo = QMetaType::fromName(classname).metaObject();
+#else
+   const QMetaObject * mo = QMetaType::metaObjectForType(QMetaType::type(classname));
+#endif
+   if (mo)
+      return mo->className();
+   return classname;
+}
 
 
 static const int Initial_Method_Table_Size    = 200;
@@ -47,10 +63,10 @@ void rtti_method_name_table_add(const char * method_name) {
       gchar * class_name = g_strndup(method_name, sep - method_name);
       if (!gaux_ptr_array_find_with_equal_func(class_name_table, class_name, g_str_equal, NULL))
          g_ptr_array_add(class_name_table, g_strdup(class_name));
-      if (!gaux_ptr_array_find_with_equal_func(metaclass_name_table, class_name, g_str_equal, NULL))
-         g_ptr_array_add(metaclass_name_table, class_name);
-      else
-         g_free(class_name);
+      const char * mcname = metaclass_name(class_name);
+      if (!gaux_ptr_array_find_with_equal_func(metaclass_name_table, mcname, g_str_equal, NULL))
+         g_ptr_array_add(metaclass_name_table, g_strdup(mcname));
+      g_free(class_name);
    }
 }
 
