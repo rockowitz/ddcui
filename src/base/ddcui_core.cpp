@@ -192,7 +192,7 @@ bool printftcmf(
          char * buffer = g_strdup_vprintf(format, args);
          va_end(args);
 
-         int prefixed_field_min_width = 10;
+         int prefixed_field_min_width = 11;
 
          if (opts & TRACE_OPTIONS_NOPREFIX) {
             gchar * spaces = g_strnfill(prefixed_field_min_width, ' ');
