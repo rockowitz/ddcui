@@ -100,17 +100,17 @@ void ValueSpecialWidgetX62::setCurrentShSl(uint16_t newval) {
     newval = newval & 0xff;
 
     if (newval == 0) {
-       TRACECF(debugFunc, "newval = 0, oldCbIndex != 0");
+       TRACECF_NOPREFIX(debugFunc, "newval = 0, oldCbIndex != 0");
        _cb->setCurrentIndex(0);
        _spinSlider->setEnabled(false);
     }
     else if (newval == 255) {
-       TRACECF(debugFunc,"newval = 255, oldCbIndex != 2");
+       TRACECF_NOPREFIX(debugFunc,"newval = 255, oldCbIndex != 2");
        _cb->setCurrentIndex(2);
        _spinSlider->setEnabled(false);
     }
     else {   // newval = 1..254
-       TRACECF(debugFunc, "newval = %d, oldCbIndex != 1", newval);
+       TRACECF_NOPREFIX(debugFunc, "newval = %d, oldCbIndex != 1", newval);
        _cb->setCurrentIndex(1);
        _spinSlider->setShSl(newval);
        _spinSlider->setEnabled(true);

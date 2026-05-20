@@ -374,14 +374,14 @@ FeatureBaseModel::reloadSpecificFeatures(int ct, uint8_t* features) {
          // should always exist, but just in case
          if (fv) {
             bool needMetadata = false;
-            TRACECF(debugFunc, "Putting VcpGetRequest(0x%02x) on _requestQueue", vcp_code);
+            TRACECF_NOPREFIX(debugFunc, "Putting VcpGetRequest(0x%02x) on _requestQueue", vcp_code);
             _monitor->_requestQueue->put( new VcpGetRequest(vcp_code, needMetadata));
          }
          else
-            TRACECF(debugFunc, "FeatureValue for 0x%02x not found", vcp_code);
+            TRACECF_NOPREFIX(debugFunc, "FeatureValue for 0x%02x not found", vcp_code);
       }
       else {
-         TRACECF(debugFunc, "vcp_code = 0x%02x not in _features_checked", vcp_code);
+         TRACECF_NOPREFIX(debugFunc, "vcp_code = 0x%02x not in _features_checked", vcp_code);
       }
    }
    TRACECF_DONE(debugFunc, "");
@@ -424,7 +424,7 @@ void FeatureBaseModel::markDisconnected(DDCA_Display_Ref dref) {
    TRACECF_STARTING(debug, "DDCA_Display_Ref = %p", dref);
    _monitor->markDisconnected();   // or should this be emit signalDisconnected(dref) ?
    // GlobalState& _globalState = GlobalState::instance();
-    TRACECF(debug, "emitting signalEndInitialLoad()");
+    TRACECF_NOPREFIX(debug, "emitting signalEndInitialLoad()");
    emit signalEndInitialLoad();
    TRACECF_DONE(debug, "");
 }

@@ -52,7 +52,7 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
     _bytesWidget      = new ValueBytesWidget(this);
     _ncplusWidget     = new ValueNcplusWidget(this);
     _specialWidgetX62 = new ValueSpecialWidgetX62(this);
-    TRACECF(debug," _ncWidget->_id=%d, _cncWidgetX14->_id=%d, _ncplusWidget._id=%d",
+    TRACECF_NOPREFIX(debug," _ncWidget->_id=%d, _cncWidgetX14->_id=%d, _ncplusWidget._id=%d",
                   _ncWidget->_id,      _cncWidgetX14->_id,   _ncplusWidget->_id);
 
     _subwidget[_subwidgetCt++] =         _stdWidget;
@@ -151,7 +151,7 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
 
    // Initialize based on current UserInterfaceOptionsState value
    bool initialControlKeyRequired =   GlobalState::instance()._uiOptionsState->_controlKeyRequired;
-   TRACECF(debug, "calling setInstanceControlKeyRequired(%s)", SBOOL(initialControlKeyRequired));
+   TRACECF_NOPREFIX(debug, "calling setInstanceControlKeyRequired(%s)", SBOOL(initialControlKeyRequired));
    setInstanceControlKeyRequired(initialControlKeyRequired);
 
 #ifdef NOT_NEEDED
@@ -174,7 +174,7 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
 
 ValueStackedWidget::~ValueStackedWidget() {
    bool debug = false;
-   TRACECF(debug, "Executing. _cls=%s", _cls);
+   TRACECF_EVENT(debug, "Executing. _cls=%s", _cls);
 
    delete _newContWidget;
    delete _simpleContWidget ;
@@ -405,7 +405,7 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
     }
 #endif
 
-    TRACECF(debug, "Calling _cur_stacked_widget->setFeatureValue(), _pageno_selected=%d", _pageno_selected );
+    TRACECF_NOPREFIX(debug, "Calling _cur_stacked_widget->setFeatureValue(), _pageno_selected=%d", _pageno_selected );
     _cur_stacked_widget->setFeatureValue(fv);
     TRACECF_DONE(debug, "");
 }
@@ -436,7 +436,7 @@ void  ValueStackedWidget::forContainedWidgetChanged(uint8_t feature_code, uint8_
    TRACECF_STARTING(debug, "feature_code=0x%02x, sh=0x%02x, sl=0x%02x", feature_code, sh, sl);
    assert(feature_code == _featureCode);
 
-   TRACECF(debug,
+   TRACECF_NOPREFIX(debug,
            "-> Calling emit stackedFeatureValueChanged(), feature_code=0x%02x, sh=0x%02x, sl=0x%02x",
            feature_code, sh, sl);
    emit stackedFeatureValueChanged(feature_code, sh, sl);

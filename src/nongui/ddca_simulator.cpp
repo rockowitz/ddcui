@@ -145,7 +145,7 @@ bool DdcaSimulator::simulateSetNonTableVcpValue(
          TRACEC_EVENT("Simulating set feature 0x%02x, shsl=0x%04x", featureCode, shsl);
       }
       if (simulated)
-         TRACECF(debug, "Feature 0x%02x, vspec=%d.%d. returning %s. ddcrc=%s",
+         TRACECF_NOPREFIX(debug, "Feature 0x%02x, vspec=%d.%d. returning %s. ddcrc=%s",
               featureCode, vspec.major, vspec.minor, SBOOL(simulated),  ddca_rc_name(*pddcrc) );
    }
 

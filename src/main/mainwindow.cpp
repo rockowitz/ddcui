@@ -1604,7 +1604,7 @@ void MainWindow::on_actionUserInterfaceOptionsDialog_triggered()
 void MainWindow::for_actionUserInterfaceOptionsDialog_accept()
 {
    bool debug = false;
-   TRACECF(debug, "Emitting userIntefaceOptionsChanged");
+   TRACECF_EVENT(debug, "Emitting userIntefaceOptionsChanged");
    emit userInterfaceOptionsChanged();
 }
 

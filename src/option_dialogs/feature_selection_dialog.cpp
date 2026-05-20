@@ -370,7 +370,7 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
      }
 
 
-     TRACECF(debug, "_feature_selector:");
+     TRACECF_NOPREFIX(debug, "_feature_selector:");
      if (debug) {
         _featureSelector->dbgrpt();
     }

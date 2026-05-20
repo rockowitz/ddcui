@@ -62,11 +62,11 @@ Monitor::Monitor(DDCA_Display_Info2 * display_info, int monitorNumber)
                        this, SLOT(  putVcpRequest(VcpRequest*)));
 
 #ifdef OUT
-      TRACECF(true, "connecting reportDisconnected");
+      TRACECF_NOPREFIXtrue, "connecting reportDisconnected");
       GlobalState& globals = GlobalState::instance();
       QObject::connect(this,                 &Monitor::reportDisconnected,
                        globals._mainWindow, &MainWindow::removeMonitor);
-      TRACECF(true, "connected reportDisconnected");
+      TRACECF_NOPREFIXtrue, "connected reportDisconnected");
 #endif
 
    }
@@ -101,10 +101,10 @@ Monitor::~Monitor() {
 
       // wait for halt
       while (!_vcpThread->isFinished()) {
-         TRACECF(debug, "Waiting for _vcpThread to finish");
+         TRACECF_NOPREFIX(debug, "Waiting for _vcpThread to finish");
          QThread::msleep(100);
       }
-      TRACECF(debug, "_vcpThread finished");
+      TRACECF_NOPREFIX(debug, "_vcpThread finished");
 
       QObject::disconnect(_baseModel, SIGNAL(signalVcpRequest(VcpRequest*)),
                           this,       SLOT(  putVcpRequest(VcpRequest*)));
@@ -154,14 +154,14 @@ Monitor::getFeatureList(DDCA_Feature_Subset_Id feature_list_id) {
 
         ddcrc = ddca_get_feature_list_by_dref(
                    feature_list_id, _displayInfo->dref, include_table_features, &result);
-        TRACECF(debugFunc, "ddca_get_feature_list_by_dref() returned %d", ddcrc);
+        TRACECF_NOPREFIX(debugFunc, "ddca_get_feature_list_by_dref() returned %d", ddcrc);
         if (ddcrc == 0) {
            // hack
            if (feature_list_id == DDCA_SUBSET_KNOWN) {
               DDCA_Feature_List mfgFeatureList;
               ddcrc = ddca_get_feature_list_by_dref(
                          DDCA_SUBSET_MFG, _displayInfo->dref, include_table_features, &mfgFeatureList);
-              TRACECF(debugFunc, "ddca_get_feature_list_by_dref(DDCA_SUBSET_MFG) returned %d", ddcrc);
+              TRACECF_NOPREFIX(debugFunc, "ddca_get_feature_list_by_dref(DDCA_SUBSET_MFG) returned %d", ddcrc);
               if (ddcrc == 0) {
                  result = ddca_feature_list_or(result, mfgFeatureList);
               }
@@ -169,7 +169,7 @@ Monitor::getFeatureList(DDCA_Feature_Subset_Id feature_list_id) {
            _features.insert(feature_list_id, result);
         }
     }
-    TRACECF(debugFunc,
+    TRACECF_NOPREFIX(debugFunc,
          "Returning: %d features: %s", ddca_feature_list_count(result),
                                        ddca_feature_list_string(result, NULL, (char*)" "));
     TRACECF_DONE(debugFunc, "");

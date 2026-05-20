@@ -104,7 +104,7 @@ ValueNcWidget::ValueNcWidget(QWidget *parent):
 ValueNcWidget::~ValueNcWidget() {
    bool debugFunc = false;
    // debugFunc = debugFunc || (_featureCode == 0x14);
-   TRACECF(debugFunc, "Executing. _id=%d, _featureCode=0x%02x", _id, _featureCode);
+   TRACECF_NOPREFIX(debugFunc, "Executing. _id=%d, _featureCode=0x%02x", _id, _featureCode);
    free((void*) _cls);
 }
 

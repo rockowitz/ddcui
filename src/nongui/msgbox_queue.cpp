@@ -112,7 +112,7 @@ void MsgBoxQueue::putMessages(QString qstitle, QMessageBox::Icon icon, char** ms
       for (int ndx = 0; msgs[ndx]; ndx++) {
          QString qsexpl = QString::asprintf("%s", msgs[ndx]);
          MsgBoxQueueEntry * qe = new MsgBoxQueueEntry(qstitle,qsexpl,icon);
-         TRACECF(debug, "Calling put() for qe: %s", QS2S(qe->repr()) );
+         TRACECF_NOPREFIX(debug, "Calling put() for qe: %s", QS2S(qe->repr()) );
          put(qe);
       }
    }
@@ -125,7 +125,7 @@ MsgBoxQueueEntry * MsgBoxQueue::pop() {
     TRACECF_STARTING(debug, "");
 #ifdef USE_MUTEX
     _mutex.lock();
-    TRACECF(debug, "After lock, before wait");
+    TRACECF_NOPREFIX(debug, "After lock, before wait");
     if (_queue.empty())
         _queueNonempty.wait(&_mutex);
     MsgBoxQueueEntry * rqst = _queue.dequeue();
@@ -136,7 +136,7 @@ MsgBoxQueueEntry * MsgBoxQueue::pop() {
     MsgBoxQueueEntry * rqst = _queue.dequeue();
     _freeBytes->release();
 
-    // TRACECF(debug, "-> After releasing  _freeBytes. available=%d, request: |%s|",
+    // TRACECF_NOPREFIX(debug, "-> After releasing  _freeBytes. available=%d, request: |%s|",
     //       _freeBytes->available(), QS2S(rqst->repr()));
 #endif
     TRACECF_DONE(debug, "Returning request: %s", QS2S(rqst->repr()) );
