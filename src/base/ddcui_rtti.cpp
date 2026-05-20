@@ -115,13 +115,13 @@ bool rtti_class_name_table_contains(const char * class_name) {
  */
 void dbgrpt_rtti_method_name_table(int depth, bool show_internal) {
    if (show_internal) {
-      rpt_vstring(depth, "Method name table at %p", method_name_table);
+      rpt_vstring(depth, (char*)"Method name table at %p", method_name_table);
       depth++;
    }
    if (method_name_table) {
       g_ptr_array_sort(method_name_table, gaux_ptr_scomp);
       for (guint ndx = 0; ndx < method_name_table->len; ndx++)
-         rpt_vstring(depth, "   %s", (char *) g_ptr_array_index(method_name_table, ndx));
+         rpt_vstring(depth, (char*)"   %s", (char *) g_ptr_array_index(method_name_table, ndx));
    }
    else {
       if (!show_internal)
@@ -137,13 +137,13 @@ void dbgrpt_rtti_method_name_table(int depth, bool show_internal) {
  */
 void dbgrpt_rtti_class_name_table(int depth, bool show_internal) {
    if (show_internal) {
-      rpt_vstring(depth, "Class name table at %p", class_name_table);
+      rpt_vstring(depth, (char*)"Class name table at %p", class_name_table);
       depth++;
    }
    if (class_name_table) {
       g_ptr_array_sort(class_name_table, gaux_ptr_scomp);
       for (guint ndx = 0; ndx < class_name_table->len; ndx++)
-         rpt_vstring(depth, "   %s", (char *) g_ptr_array_index(class_name_table, ndx));
+         rpt_vstring(depth, (char*)"   %s", (char *) g_ptr_array_index(class_name_table, ndx));
    }
    else {
       if (!show_internal)
@@ -171,13 +171,13 @@ bool rtti_metaclass_name_table_contains(const char * metaclass_name) {
  */
 void dbgrpt_rtti_metaclass_name_table(int depth, bool show_internal) {
    if (show_internal) {
-      rpt_vstring(depth, "Metaclass name table at %p", metaclass_name_table);
+      rpt_vstring(depth, (char*)"Metaclass name table at %p", metaclass_name_table);
       depth++;
    }
    if (metaclass_name_table) {
       g_ptr_array_sort(metaclass_name_table, gaux_ptr_scomp);
       for (guint ndx = 0; ndx < metaclass_name_table->len; ndx++)
-         rpt_vstring(depth, "   %s", (char *) g_ptr_array_index(metaclass_name_table, ndx));
+         rpt_vstring(depth, (char*)"   %s", (char *) g_ptr_array_index(metaclass_name_table, ndx));
    }
    else {
       if (!show_internal)
