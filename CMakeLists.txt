@@ -223,7 +223,7 @@ set(SOURCES
     src/base/ddcui_core.cpp
     src/base/ddca_utils.cpp
     src/base/ddcui_parms.cpp
-    src/base/ddcui_rtti.c
+    src/base/ddcui_rtti.cpp
     src/base/ddcui_trace_control.c
     src/base/feature_list.c
     src/base/base_services.cpp
