@@ -22,6 +22,7 @@ extern char * trcfunc_multiple_call_option_help;
 extern char * trcfile_multiple_call_option_help;
 extern char * trcmethod_multiple_call_option_help;
 extern char * trcclass_multiple_call_option_help;
+extern char * trcmetaclass_multiple_call_option_help;
 extern char * stats_multiple_call_option_help;
 
 #endif /* DDCUI_CMD_PARSER_AUX_H_ */

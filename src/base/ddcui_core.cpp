@@ -183,6 +183,7 @@ bool printftcmf(
 #endif
 
    debug = debug || is_traced_file(filename) || is_traced_method(funcname) ||
+                   is_traced_metaclass(metaclass_classname) ||
                    is_traced_class(metaclass_classname) || is_traced_class(cls);
 
    bool msg_emitted = false;

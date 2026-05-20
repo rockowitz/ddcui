@@ -305,7 +305,8 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
       {"trcmethod", '\0', 0, G_OPTION_ARG_STRING_ARRAY, &parsed_cmd->traced_methods, "Trace methods", "method name"},
       {"trcmeth",   '\0', 0, G_OPTION_ARG_STRING_ARRAY, &parsed_cmd->traced_methods, "Trace methods", "method name"},
       {"trcfunc",   '\0', 0, G_OPTION_ARG_STRING_ARRAY, &parsed_cmd->traced_methods, "Trace methods", "method name"},
-      {"trcclass",  '\0', 0, G_OPTION_ARG_STRING_ARRAY, &parsed_cmd->traced_classes, "Trace classes", "class name"},
+      {"trcclass",     '\0', 0, G_OPTION_ARG_STRING_ARRAY, &parsed_cmd->traced_classes,     "Trace classes",     "class name"},
+      {"trcmetaclass", '\0', 0, G_OPTION_ARG_STRING_ARRAY, &parsed_cmd->traced_metaclasses, "Trace metaclasses", "class name"},
       {"trcfile",   '\0', 0, G_OPTION_ARG_STRING_ARRAY, &parsed_cmd->traced_files,   "Trace files",   "file name"},
 
       {"f1",      '\0', 0,  G_OPTION_ARG_NONE,     &f1_flag,              "Special flag 1",    NULL},
@@ -365,6 +366,7 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
          trcfile_multiple_call_option_help,
          trcmethod_multiple_call_option_help,
          trcclass_multiple_call_option_help,
+         trcmetaclass_multiple_call_option_help,
          stats_multiple_call_option_help,
          NULL
          );

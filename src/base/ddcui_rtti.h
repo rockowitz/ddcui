@@ -19,10 +19,13 @@ extern "C" {
 void   rtti_method_name_table_add(const char * method_name);
 bool   rtti_method_name_table_contains(const char * method_name);
 bool   rtti_class_name_table_contains(const char * class_name);
+bool   rtti_metaclass_name_table_contains(const char * metaclass_name);
 void   dbgrpt_rtti_method_name_table(int depth, bool show_internal);
 void   report_rtti_method_name_table(int depth, const char * msg);
 void   dbgrpt_rtti_class_name_table(int depth, bool show_internal);
 void   report_rtti_class_name_table(int depth, const char * msg);
+void   dbgrpt_rtti_metaclass_name_table(int depth, bool show_internal);
+void   report_rtti_metaclass_name_table(int depth, const char * msg);
 void   terminate_rtti();
 
 #ifdef __cplusplus

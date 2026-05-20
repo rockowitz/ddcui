@@ -87,6 +87,12 @@ char * trcclass_multiple_call_option_help =
        "  times to trace multiple classes, e.g. \"--trcclass MainWindow --trcclass Monitor\"\n"
       ;
 
+char * trcmetaclass_multiple_call_option_help =
+       "Trace by metaclass name:\n"
+       "  The argument to --trcmetaclass is a class name (from metaObject()->className()).\n"
+       "  Use the --trcmetaclass option multiple times to trace multiple metaclasses.\n"
+      ;
+
 
 char * stats_multiple_call_option_help =
        "Stats:\n"

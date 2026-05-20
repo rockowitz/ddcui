@@ -326,6 +326,14 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
          dbgrpt_traced_class_table(2);
    }
 
+   if (parsed_cmd->traced_metaclasses) {
+      for (int ndx = 0; parsed_cmd->traced_metaclasses[ndx]; ndx++) {
+         add_traced_metaclass(parsed_cmd->traced_metaclasses[ndx]);
+      }
+      if (debug)
+         dbgrpt_traced_metaclass_table(2);
+   }
+
    if (parsed_cmd->traced_files) {
       for (int ndx = 0; parsed_cmd->traced_files[ndx]; ndx++) {
          add_traced_file(parsed_cmd->traced_files[ndx]);

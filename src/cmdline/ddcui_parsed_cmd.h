@@ -119,6 +119,7 @@ typedef struct {
 
    char **                 traced_methods;
    char **                 traced_classes;
+   char **                 traced_metaclasses;
    char **                 traced_files;
    Ddcui_Cmd_Id            cmd_id;
 } Parsed_Ddcui_Cmd;
