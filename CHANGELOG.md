@@ -11,22 +11,6 @@ Requires libddcutil.so.5.5 from ddcutil 2.2.7 or later.
 - Option ***--view***, specifies initial view (Summary, Capabilities, or
   Features). The default is Summary.
 
-#### Improved tracing facilities
-
-Trace Options: 
-- ***--trcmethod*** (alt. ***--trcmeth***, ***--trcfunc***). The argument can be
-  of the form Class::Method or simply a method/function name.  The latter will 
-  match a method in any class that has that name, as well as a non-class function.
-- ***--trcfile***.  Turn on all tracing for a file, specified as its base name,
-  with or without a trailing ".c" or ".cpp".
-- ***--trcclass***: Takes as its argument the name of class to trace.
-- ***--trcmetaclass***: Takes as its argument the name of a metaclass to trace. 
-Commands
-- **traceable-methods** (alt **traceable functions**). List all methods/functions 
-  that can be traced.
-- **traceable-classes**: List classes that can be traced.
-- **traceable-metaclasses**: List traceable metaclasses
-
 #### Special handling for ill-behaved monitors
 
 Some monitors set a different brightness value from the one specified on the 
@@ -51,6 +35,23 @@ Two new options address these problematic cases.
   set the then value shown in the user interface will will now match the actual
   value on the monitor. The argument to this option is the model name, as taken
   from the EDID and shown in the Display combo box.
+
+
+#### Improved tracing facilities
+
+Trace Options: 
+- ***--trcmethod*** (alt. ***--trcmeth***, ***--trcfunc***). The argument can be
+  of the form Class::Method or simply a method/function name.  The latter will 
+  match a method in any class that has that name, as well as a non-class function.
+- ***--trcfile***.  Turn on all tracing for a file, specified as its base name,
+  with or without a trailing ".c" or ".cpp".
+- ***--trcclass***: Takes as its argument the name of class to trace.
+- ***--trcmetaclass***: Takes as its argument the name of a metaclass to trace. 
+Commands
+- **traceable-methods** (alt **traceable functions**). List all methods/functions 
+  that can be traced.
+- **traceable-classes**: List classes that can be traced.
+- **traceable-metaclasses**: List traceable metaclasses
 
 
 ### Changed
