@@ -165,6 +165,15 @@ void dbgrpt_parsed_ddcui_cmd(Parsed_Ddcui_Cmd * parsed_cmd) {
          printf("   traced_methods:            none\n");
       dbgrpt_traced_method_table(1);
 
+      if (parsed_cmd->traced_classes) {
+         char * joined = g_strjoinv(", ", (gchar **) parsed_cmd->traced_classes);
+         printf("   traced_classes:            %s\n", joined);
+         free(joined);
+      }
+      else
+         printf("   traced_classes:            none\n");
+      dbgrpt_traced_class_table(1);
+
       if (parsed_cmd->traced_files) {
          char * joined = g_strjoinv(", ", (gchar **) parsed_cmd->traced_files);
          printf("   traced_files:              %s\n", joined);
@@ -203,6 +212,7 @@ void free_parsed_ddcui_cmd(Parsed_Ddcui_Cmd * parsed_cmd) {
       free(parsed_cmd->estimate_x10_model);
       free(parsed_cmd->noverify_x10_model);
       ntsa_free(parsed_cmd->traced_methods, true);
+      ntsa_free(parsed_cmd->traced_classes, true);
       ntsa_free(parsed_cmd->traced_files, true);
       free(parsed_cmd);
    }

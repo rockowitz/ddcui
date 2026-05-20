@@ -81,6 +81,12 @@ char * trcmethod_multiple_call_option_help =
        "  times to trace multiple methods, e.g. \"--trcmethod method1 --trcmethod method2\"\n"
       ;
 
+char * trcclass_multiple_call_option_help =
+       "Trace by class name:\n"
+       "  The argument to --trcclass is a class name.  Use the --trcclass option multiple\n"
+       "  times to trace multiple classes, e.g. \"--trcclass MainWindow --trcclass Monitor\"\n"
+      ;
+
 
 char * stats_multiple_call_option_help =
        "Stats:\n"

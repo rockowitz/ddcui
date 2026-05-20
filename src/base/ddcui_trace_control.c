@@ -45,6 +45,7 @@ static void parse_method_name(
 // there will be at most a handful of entries.
 
 static GPtrArray * traced_method_table = NULL;
+static GPtrArray * traced_class_table  = NULL;
 static GPtrArray * traced_file_table   = NULL;
 
 
@@ -142,6 +143,51 @@ void dbgrpt_traced_method_table(int depth) {
    }
    else {
       rpt_vstring(depth, "traced_method_table: NULL");
+   }
+}
+
+
+/** Adds a class to the list of classes to be traced.
+ *
+ *  @param  classname  class name
+ */
+void add_traced_class(const char * classname) {
+   if (!traced_class_table)
+      traced_class_table = g_ptr_array_new_with_free_func(g_free);
+   if (!gaux_ptr_array_find_with_equal_func(traced_class_table, classname, g_str_equal, NULL))
+      g_ptr_array_add(traced_class_table, g_strdup(classname));
+}
+
+
+/** Checks if a class is being traced.
+ *
+ *  @param  classname  class name
+ *  @return **true** if the class is being traced, **false** if not
+ */
+bool is_traced_class(const char * classname) {
+   return classname &&
+          traced_class_table &&
+          gaux_ptr_array_find_with_equal_func(traced_class_table, classname, g_str_equal, NULL);
+}
+
+
+/** Reports the contents of the traced class table.
+ *
+ *  @param  depth  logical indentation depth
+ */
+void dbgrpt_traced_class_table(int depth) {
+   if (traced_class_table) {
+      rpt_vstring(depth, "traced_class_table:");
+      if (traced_class_table->len == 0)
+         rpt_vstring(depth+1, "(empty)");
+      else {
+         g_ptr_array_sort(traced_class_table, gaux_ptr_scomp);
+         for (guint ndx = 0; ndx < traced_class_table->len; ndx++)
+            rpt_vstring(depth+1, "%s", (char *) g_ptr_array_index(traced_class_table, ndx));
+      }
+   }
+   else {
+      rpt_vstring(depth, "traced_class_table: NULL");
    }
 }
 

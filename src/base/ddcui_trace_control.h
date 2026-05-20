@@ -19,6 +19,10 @@ void add_traced_method(      const char * methodname);
 bool is_traced_method(       const char * methodname);
 void dbgrpt_traced_method_table(int depth);
 
+void add_traced_class(       const char * classname);
+bool is_traced_class(        const char * classname);
+void dbgrpt_traced_class_table(int depth);
+
 void add_traced_file(        const char * filename);
 bool is_traced_file(         const char * filename);
 void dbgrpt_traced_file_table(int depth);

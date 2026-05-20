@@ -306,6 +306,24 @@ static bool init_ddcutil_library(Parsed_Ddcui_Cmd * parsed_cmd) {
       dbgrpt_traced_method_table(2);
    }
 
+   if (parsed_cmd->traced_classes) {
+      for (int ndx = 0; parsed_cmd->traced_classes[ndx]; ndx++) {
+         char * cur_class_name = parsed_cmd->traced_classes[ndx];
+         if (rtti_class_name_table_contains(cur_class_name)) {
+            add_traced_class(cur_class_name);
+         }
+         else {
+            char * errmsg[] = { g_strdup_printf("Invalid --trcclass argument: %s", cur_class_name), NULL };
+            char ** merged = ntsa_join(infomsgs, errmsg, true);
+            ntsa_free(infomsgs, true);
+            g_free(errmsg[0]);
+            infomsgs = merged;
+            ok = false;
+         }
+      }
+      dbgrpt_traced_class_table(2);
+   }
+
    if (parsed_cmd->traced_files) {
       for (int ndx = 0; parsed_cmd->traced_files[ndx]; ndx++) {
          add_traced_file(parsed_cmd->traced_files[ndx]);
@@ -513,6 +531,10 @@ int main(int argc, char *argv[])
 
        if (parsed_cmd->cmd_id == CMDID_LIST_RTTI) {
           report_rtti_method_name_table(0, "Methods traceable by name:");
+          return 0;
+       }
+       if (parsed_cmd->cmd_id == CMDID_LIST_CLASSES) {
+          report_rtti_class_name_table(0, "Classes traceable by name:");
           return 0;
        }
 
