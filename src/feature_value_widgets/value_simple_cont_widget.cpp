@@ -263,25 +263,25 @@ void ValueSimpleContWidget::debugSimpleContLayout()
 
        if (showDimensionReports && !dimensionReportShown) {
 
-          TRACEC_STARTING("_spinSlider dimensions");
+          TRACEC_EVENT("_spinSlider dimensions");
           reportWidgetDimensions(_spinSlider, _cls, __func__);
 
 #ifdef FOR_SUBCLASS
-           TRACEC("_maxTitle dimensions");
+           TRACEC_EVENT("_maxTitle dimensions");
            reportWidgetDimensions(_maxTitle, _cls, __func__);
 
-           TRACEC("_maxValue dimensions");
+           TRACEC_EVENT("_maxValue dimensions");
            reportWidgetDimensions(_maxValue, _cls, __func__);
 #endif
 
-           TRACEC("ValueSimpleContWidget dimensions");
+           TRACEC_EVENT("ValueSimpleContWidget dimensions");
            reportWidgetDimensions(this, _cls, __func__);
            dimensionReportShown = true;
        }
     }
 
     // if (_id == 1) {
-    //   TRACEC("widget background color %s", QS2S(this->palette().color(QWidget::backgroundRole()).name()));
+    //   TRACEC_EVENT("widget background color %s", QS2S(this->palette().color(QWidget::backgroundRole()).name()));
     //   TRACEC("slider background color %s", QS2S(_curSlider->palette().color(QWidget::backgroundRole()).name()));
     // }
 

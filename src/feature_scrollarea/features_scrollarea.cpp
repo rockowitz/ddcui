@@ -1,6 +1,6 @@
 // features_scrollarea.cpp
 
-// Copyright (C) 2019-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2019-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <QScrollArea>
@@ -49,10 +49,10 @@ void FeaturesScrollArea::resizeEvent(QResizeEvent * evt)
    evt->ignore();
 
    if (traceResizeEvents) {
-      TRACEC_STARTING("old size = %d, %d", oldSz.width(), oldSz.height());
-      TRACEC("new size = %d, %d", newSz.width(), newSz.height());
-      TRACEC("Current contents size %d,%d", contentsSize.width(), contentsSize.height());
-      TRACEC("Resizing contents to  %d,%d", newSize.width(), newSize.height());
+      TRACEC_EVENT("old size = %d, %d", oldSz.width(), oldSz.height());
+      TRACEC_EVENT("new size = %d, %d", newSz.width(), newSz.height());
+      TRACEC_EVENT("Current contents size %d,%d", contentsSize.width(), contentsSize.height());
+      TRACEC_EVENT("Resizing contents to  %d,%d", newSize.width(), newSize.height());
    }
 }
 

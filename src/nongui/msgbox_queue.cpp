@@ -139,7 +139,7 @@ MsgBoxQueueEntry * MsgBoxQueue::pop() {
     // TRACECF(debug, "-> After releasing  _freeBytes. available=%d, request: |%s|",
     //       _freeBytes->available(), QS2S(rqst->repr()));
 #endif
-    TRACECF(debug, "<- Done. Returning request: %s", QS2S(rqst->repr()) );
+    TRACECF_DONE(debug, "Returning request: %s", QS2S(rqst->repr()) );
     return rqst;
 }
 
@@ -149,8 +149,9 @@ void MsgBoxQueue::dbgrpt_nolock() {
    TRACEC_STARTING("Queue contains %d entries", ct);
    for (int ndx = 0; ndx < ct; ndx++) {
       MsgBoxQueueEntry * rqst = _queue.at(ndx);
-      TRACEC("   %s", QS2S(rqst->repr()) );
+      TRACEC_NOPREFIX"   %s", QS2S(rqst->repr()) );
    }
+   TRACECF_DONE("Done");
 }
 
 

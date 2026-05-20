@@ -67,9 +67,9 @@ void ValueNcWidget::layoutWidget() {
       _extraInfo->setStyleSheet("background-color:green;");
 
       if (showDimensionReports &&!dimensionReportShown) {
-           TRACEC_STARTING("combobox dimensions");
+           TRACEC_EVENT("combobox dimensions");
            reportWidgetDimensions(_cb, _cls, __func__);
-           TRACEC("ValueNcWidget dimensions");
+           TRACEC_EVENT("ValueNcWidget dimensions");
            reportWidgetDimensions(this, _cls, __func__);
            dimensionReportShown = true;
       }
@@ -408,8 +408,8 @@ void ValueNcWidget::resizeEvent(QResizeEvent * evt)
    }
 
    if (show) {
-      TRACEC_STARTING("old size = %d, %d", oldSz.width(), oldSz.height());
-      TRACEC("new size = %d, %d", newSz.width(), newSz.height());
+      TRACEC_EVENT("old size = %d, %d", oldSz.width(), oldSz.height());
+      TRACEC_EVENT("new size = %d, %d", newSz.width(), newSz.height());
    }
 
    evt->ignore();

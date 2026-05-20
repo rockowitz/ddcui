@@ -159,28 +159,28 @@ ValueBytesWidget::layoutWidget() {
 
       if (showDimensionReports && !dimensionReportShown  && _id == 1) {
 
-          TRACEC_STARTING("_mhTitle dimensions");
+          TRACEC_EVENT("_mhTitle dimensions");
           reportWidgetDimensions(_mhTitle, _cls, __func__);
 
-          //TRACEC("_mhWidget dimensions");
+          //TRACEC_EVENT("_mhWidget dimensions");
           //reportWidgetDimensions(_mhWidget, _cls, __func__);
 
-          TRACEC("_mhvalue dimensions");
+          TRACEC_EVENT("_mhvalue dimensions");
           reportWidgetDimensions(_mhValue, _cls, __func__);
 
-          TRACEC("_mlTitle dimensions");
+          TRACEC_EVENT("_mlTitle dimensions");
           reportWidgetDimensions(_mlTitle, _cls, __func__);
 
-          // TRACEC("_mlWidget dimensions");
+          // TRACEC_EVENT("_mlWidget dimensions");
           // reportWidgetDimensions(_mlWidget, _cls, __func__);
 
-          TRACEC("_mlvalue dimensions");
+          TRACEC_EVENT("_mlvalue dimensions");
           reportWidgetDimensions(_mlValue, _cls, __func__);
 
-          TRACEC("_applyButton dimensions");
+          TRACEC_EVENT("_applyButton dimensions");
           reportWidgetDimensions(_applyButton, _cls, __func__);
 
-          TRACEC("ValueBytesWidget dimensions");
+          TRACEC_EVENT("ValueBytesWidget dimensions");
           reportWidgetDimensions(this, _cls, __func__);
           dimensionReportShown = true;
       }

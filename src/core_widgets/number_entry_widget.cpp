@@ -170,7 +170,7 @@ NumberEntryWidget::onTextEdited(const QString &text) {
          emit NumberEntryWidget::valueChanged8( newval & 0xff);
       }
       else {
-         TRACEC("Not a number: %s", QS2S(text));
+         TRACEC_NOPREFIX("Not a number: %s", QS2S(text));
       }
    }
    TRACEC("emitting NumberEntryWidet::isValidValue, _fieldNumber = %d, ok=%s",
@@ -201,7 +201,7 @@ NumberEntryWidget::onTextEdited(const QString &text) {
             newState = NumberEntryWidget::StateNewValid;
       }
       else {
-         TRACEC("Not a number: %s", QS2S(text));
+         TRACEC_NOPREFIX("Not a number: %s", QS2S(text));
       }
    }
 

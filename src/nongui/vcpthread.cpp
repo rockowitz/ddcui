@@ -328,7 +328,7 @@ void VcpThread::capabilities() {
             double curmult = 1.0f;
             ddca_get_current_display_sleep_multiplier(this->_dref, &curmult);
             if (ddcrc == -EBADF) {
-               TRACEC("EBADF");
+               TRACEC_NOPREFIX("EBADF");
                continue;
             }
 

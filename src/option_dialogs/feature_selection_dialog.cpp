@@ -60,8 +60,8 @@ void FeatureSelectionDialog::useSelectorData(FeatureSelector * fsel)
 {
     bool debugFunc = false;
     debugFunc = debugFunc || debugFeatureSelection;
+    TRACECF_STARTING(debugFunc, "Setting dialog box widgets from FeatureSelector:");
     if (debugFunc) {
-        TRACEC_STARTING("Setting dialog box widgets from FeatureSelector:");
         fsel->dbgrpt();
     }
 
@@ -124,8 +124,8 @@ void FeatureSelectionDialog::useSelectorData(FeatureSelector * fsel)
     curButton->setChecked(true);
     // to do: enable/disable other buttons as appropriate
 
+    TRACECF_NOPREFIX(debugFunc, "fsel before setting flag checkboxes:");
     if (debugFunc) {
-       TRACEC("fsel before setting flag checkboxes:");
        fsel->dbgrpt();
     }
     _ui->includeTable_checkbox->setChecked(    fsel->_includeTableFeatures);
@@ -369,8 +369,9 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
         changed = true;
      }
 
-    if (debug) {
-        TRACEC("_feature_selector:");
+
+     TRACECF(debug, "_feature_selector:");
+     if (debug) {
         _featureSelector->dbgrpt();
     }
 
@@ -383,6 +384,8 @@ void FeatureSelectionDialog::on_buttonBox_accepted()
        TRACECF_NOPREFIX(debug, "NOT Signaling featureSelectionChanged()");
     }
     accept();
+
+    TRACECF_DONE(debug, "");
 }
 
 // Reset

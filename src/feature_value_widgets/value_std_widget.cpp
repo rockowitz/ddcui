@@ -60,9 +60,9 @@ void ValueStdWidget::layoutWidget() {
 
         static bool dimensionReportShown = false;
         if (showDimensionReport && !dimensionReportShown) {
-            TRACEC_STARTING("_valueField dimensions");
+            TRACEC_EVENT("_valueField dimensions");
             reportWidgetDimensions(_valueField, _cls, __func__);
-            TRACEC("ValueStdWidget dimensions");
+            TRACEC_EVENT("ValueStdWidget dimensions");
             reportWidgetDimensions(this, _cls, __func__);
             dimensionReportShown = true;
         }
@@ -220,8 +220,8 @@ void ValueStdWidget::resizeEvent(QResizeEvent * evt)
 #endif
 
    if (show) {
-      TRACEC_STARTING("old size = %d, %d", oldSz.width(), oldSz.height());
-      TRACEC("new size = %d, %d", newSz.width(), newSz.height());
+      TRACEC_EVENT("old size = %d, %d", oldSz.width(), oldSz.height());
+      TRACEC_EVENT("new size = %d, %d", newSz.width(), newSz.height());
    }
 
    evt->ignore();
