@@ -1,82 +1,57 @@
 # Changelog
 
+## [0.7.0] 2026-05-20
 
-5/19
-
-Requires libddcutil.so.5.5 ? from ddcutil 2.2.7 or later.
-
-### Added
-
-Trace options and commands: 
-- Option: ***--trcmethod*** (alt. ***--trcmeth***, ***--trcfunc***). The argument can be of the
-  form Class::Method or simply a method/function name.  The latter will match a method in any 
-  class that has that name, as well as a non-class function.
-- Option: ***--trcfile***.  Turn on all tracing for a file, specified as its base name, with 
-  or without a trailing ".c" or ".cpp".
-  <!-- option --trcclass -->
-- Command **traceable-methods** (alt **traceable functions**). List all methods/functions 
-  that can be traced.
-
-Accomodate ill-behaved monitors.  Some monitors set a different value from the one specified
-on the "setvcp" request.  For example, the Dell xxxx, adjusts request values less than 50?
-upwards to that the value set is never less than 20.  So verifying will likely fail.
-Other monitors, e.g. Samsung LS34A650U, set the value requested, but always return the 
-wrong value.  For example, the Samsun LS34A650U always returns 0 as the brightness value.
-Two options address these problematic cases.
-
-- Option: ***--noverify-x10***, Do not report an error if the value of feature x10 (brightness)
-  that is read immediately after set the feature is set does not match.
-  The argument is the model name, as taken from the EDID and 
-  shown in the Display combo box. 
-- Option: ***--estimate-x10***.  The value initially shown is 70% of the maximum value, as 
-  reported by get feature value response packet. For example, if the maximum value is 255, 
-  the initial value shown will be 179, which undoubtedly will be wrong. When the slider is 
-  moved or the number in the spin box is changed, the new feature value is sent to the 
-  monitor.  There can be no check that the value is correctly set, but if it is the value
-  on the monitor will now match the value in the user interface.
-  again. the argument is the model name, as taken from the EDID and 
-  shown in the Display combo box.
-
-<!-- TODO: convert traceable function table to hash -->
-
-### Fixed
-
-CMakeLists.txt: 
-- Incorrect version check caused the VERBOSE message level to never be used, even 
-  if it is available on the current CMake Version
-- Properly handle Qt5/Qt6 differences in include directory and linked libraries.
-
- 
-
-
-      4. option() used for a directory path (line 44)
-      option() creates a boolean ON/OFF variable. A directory path should use set() with CACHE PATH:
-      set(DDCUTIL_PROJECT_DIR "" CACHE PATH "Root directory of ddcutil project")
-
-
-
-      6. Copy-paste error in message (line 190)
-      Inside the ddcutil git-branch check block, the message reads "ddcui source is not managed by git" — should
-      say "ddcutil source".
-
-      7. Typo in environment variable name (line 115)
-      $ENV{LD_LIBARARY_PATH} — LIBARARY should be LIBRARY. Diagnostic only, but always prints empty.
-
-handle monitor connnection and disconnection
-
-
-
-
-
-
-## [0.7.0] 2026-01-20
-
-Requires libddcutil.so.5.4 from ddcutil 2.2.3 or later.
+Requires libddcutil.so.5.5 from ddcutil 2.2.7 or later.
 
 ### Added
+
+#### Miscellaneous
 
 - Option ***--view***, specifies initial view (Summary, Capabilities, or
   Features). The default is Summary.
+
+#### Improved tracing facilities
+
+Trace Options: 
+- ***--trcmethod*** (alt. ***--trcmeth***, ***--trcfunc***). The argument can be
+  of the form Class::Method or simply a method/function name.  The latter will 
+  match a method in any class that has that name, as well as a non-class function.
+- ***--trcfile***.  Turn on all tracing for a file, specified as its base name,
+  with or without a trailing ".c" or ".cpp".
+- ***--trcclass***: Takes as its argument the name of class to trace.
+- ***--trcmetaclass***: Takes as its argument the name of a metaclass to trace. 
+Commands
+- **traceable-methods** (alt **traceable functions**). List all methods/functions 
+  that can be traced.
+- **traceable-classes**: List classes that can be traced.
+- **traceable-metaclasses**: List traceable metaclasses
+
+#### Special handling for ill-behaved monitors
+
+Some monitors set a different brightness value from the one specified on the 
+setvcp request. For example, Dell model 2407WFP adjusts request values less
+than 50 upwards so that the value set is never less than 30.  Hence verifiation
+of the value set will often fail. Other monitors, e.g. Samsung LS34A650U, adjust
+the monitor brightness according to the value requested, but reading the value 
+of feature x10 (brightness) always returns 0. 
+
+Two new options address these problematic cases.
+
+- Option: ***--noverify-x10***, Do not report an error if the value of feature 
+  x10 that is read immediately after set the feature is set does not match the 
+  value requested. The argument is the model name, as taken from the EDID and
+  shown in the Display combo box. 
+- Option: ***--estimate-x10***.  The value initially shown in the Features view 
+  is 70% of the maximum value, as reported by get feature value response packet.
+  For example, if the maximum value is 255, the initial value shown will be 179.
+  This will undoubtedly be wrong. However, when the slider is moved or the 
+  number in the spin box is changed, the new feature value is sent to the monitor. 
+  There can be no check that the value is correctly set, but if it is correctly 
+  set the then value shown in the user interface will will now match the actual
+  value on the monitor. The argument to this option is the model name, as taken
+  from the EDID and shown in the Display combo box.
+
 
 ### Changed
 
@@ -97,7 +72,19 @@ Requires libddcutil.so.5.4 from ddcutil 2.2.3 or later.
   - ddcui.desktop -> com.ddcutil.ddcui.desktop
   Command **make install** erases files with the old names if they exist.
   Addresses pull request #71
-- CMakeLists.txt: replace deprecated execute_program() with exec_process().
+- CMakeLists.txt: 
+    - Replace deprecated execute_program() with exec_process().
+    - Incorrect version check caused the VERBOSE message level to never be
+      used, even if it is available on the current CMake Version.
+    - Properly handle Qt5/Qt6 differences in include directory and linked 
+      libraries.
+    - Fix assignment of root directory of ddcutil project (DDCUTIL_PROJECT_DIR),
+      so that the most recent version of libddcutil its header files are used 
+      instead of ones obtained from /usr or /usr/local.
+    - Typo in environment variable name (LD_LIBRARY_PATH) was misspelled 
+      "LD_LIBRRARY_PATH". Caused invalid diagnostic message.  
+    - Miscellaneous message typos.
+
 
 ## [0.6.0] 2025-02-15
 
