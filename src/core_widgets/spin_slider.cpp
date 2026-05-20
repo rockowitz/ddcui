@@ -155,7 +155,7 @@ void SpinSlider::onSliderReleased() {
    //     printf("(%s::%s) sh=0x%02x, sl=0x%02x \n", _cls, __func__, new_sh, new_sl); fflush(stdout);
 
    // if (_guiChange) {
-      TRACECF(debug, "emitting featureValueChanged(), _feature_code=0x%02x, new_sh=0x%02x, new_sl=0x%02x",
+      TRACECF_EVENT(debug, "emitting featureValueChanged(), _feature_code=0x%02x, new_sh=0x%02x, new_sl=0x%02x",
                      _featureCode, new_sh, new_sl);
       emit featureValueChanged(_featureCode, new_sh, new_sl);
    // }
@@ -166,7 +166,7 @@ void SpinSlider::onSpinBoxValueChanged(int value) {
    debug = debug || debugValueWidgetSignals;
    // TRACECF_STARTING(debug, "feature=0x%02x, value=%d, _guiChange=%d=%s",
    //                _featureCode, value, _guiChange, SBOOL(_guiChange));
-   TRACECF(debug, "feature=0x%02x, value=%d", _featureCode, value);
+   TRACECF_EVENT(debug, "feature=0x%02x, value=%d", _featureCode, value);
 
    int newval = _spinBox->value();
 
@@ -179,7 +179,7 @@ void SpinSlider::onSpinBoxValueChanged(int value) {
    _latestSpinBoxValue = newval & 0xffff;
 
    // if (_guiChange || true) {   // *** TEMP ***
-      TRACECF(debug, "Starting spinbox timer");
+      TRACECF_EVENT(debug, "Starting spinbox timer");
       _spinBoxTimer->start();
    // }
    // else {
@@ -198,6 +198,7 @@ void SpinSlider::onSpinBoxTimedOut() {
                   "emitting featureValueChanged()",
                   _featureCode, _latestSpinBoxValue, new_sh, new_sl);
    emit featureValueChanged(_featureCode, new_sh, new_sl);
+   TRACECF_DONE(debug, "");
 }
 
 

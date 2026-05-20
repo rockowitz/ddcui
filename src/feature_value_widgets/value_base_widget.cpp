@@ -36,7 +36,7 @@ QComboBox * ValueBaseWidget::createFormattedComboBox() {
    bool debug = false;
    TRACECF_STARTING(debug, "_id=%d", _id);
    QComboBox * cb = new QComboBox();
-   TRACECF(debug, "Allocated");
+   TRACECF_NOPREFIX(debug, "Allocated");
 
    QSizePolicy cbSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
    cbSizePolicy.setControlType(QSizePolicy::ComboBox);
@@ -64,7 +64,7 @@ ValueBaseWidget::ValueBaseWidget(QWidget *parent)
    _cls = strdup(metaObject()->className());  // private to this class
    _id = ++nextId;
 
-   TRACECF(debug, "Executing. this._id = %d, _featureCode=%0x%02x", _id, _featureCode);
+   TRACECF_STARTING(debug, "Executing. this._id = %d, _featureCode=%0x%02x", _id, _featureCode);
    //QMargins margins = contentsMargins();
    //printf("(ValueBaseWidget::ValueBaseWidget) margins: left=%d, top=%d, right=%d, bottom=%d)\n",
    //       margins.m_left, margins.m_top, margins.m_right, margins.m_bottom);

@@ -165,7 +165,7 @@ NumberEntryWidget::onTextEdited(const QString &text) {
       int newval = text.toInt(&ok, 16);
       if (ok) {          // should already have been checked
          _curval = newval;
-         TRACECF(true, "About to emit, _curval = newval = 0x%02x", newval);
+         TRACECF_NOPREFIX)true, "About to emit, _curval = newval = 0x%02x", newval);
 
          emit NumberEntryWidget::valueChanged8( newval & 0xff);
       }
@@ -207,7 +207,7 @@ NumberEntryWidget::onTextEdited(const QString &text) {
 
    if (newState != _widgetState && newState != NumberEntryWidget::StateInvalid)
    {
-      TRACECF(debug, "About to emit stateChanged, newstate = %d", newState);
+      TRACECF_NOPREFIX(debug, "About to emit stateChanged, newstate = %d", newState);
       emit NumberEntryWidget::stateChanged(this, newState);
    }
 

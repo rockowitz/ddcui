@@ -43,7 +43,7 @@ FeaturesScrollAreaContents::FeaturesScrollAreaContents(QWidget * parent) :
 
    // doesn't expand the contents area
    //setSizePolicy( QSizePolicy::MinimumExpanding,  QSizePolicy::MinimumExpanding);
-   TRACECF(debug, "Executing");
+   TRACECF_EVENT(debug, "Executing");
 
    if (debugLayout) {
       setStyleSheet("background-color:aqua;");
@@ -57,7 +57,7 @@ FeaturesScrollAreaContents::FeaturesScrollAreaContents(QWidget * parent) :
 
 FeaturesScrollAreaContents::~FeaturesScrollAreaContents() {
    bool debug = false;
-   TRACECF(debug, "Executing");
+   TRACECF_EVENT(debug, "Executing");
    // TODO IMPLEMENT!!!
 }
 
@@ -116,7 +116,7 @@ void FeaturesScrollAreaContents::startInitialLoad(void)
 {
    bool debugFunc = debugWidget;
    debugFunc = false;
-   TRACECF(debugFunc, "Executing");
+   TRACECF_EVENT(debugFunc, "Executing");
    assert(_containingScrollArea != nullptr);
    // _containingScrollArea->hide();
 
@@ -126,7 +126,7 @@ void FeaturesScrollAreaContents::endInitialLoad()
 {
    bool debugFunc = debugWidget;
    debugFunc = false;
-   TRACECF(debugFunc, "Executing");
+   TRACECF_EVENT(debugFunc, "Executing");
    assert(_containingScrollArea);
 
    emit showCentralWidgetByWidget(_containingScrollArea);

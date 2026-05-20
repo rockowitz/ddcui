@@ -61,7 +61,7 @@ void FeatureWidget::setupFeatureWidget()
    _featureRwField   = createFeatureWidgetField("featureRW",    25, "XX");    // RW/RO/WO
    _featureTypeField = createFeatureWidgetField("featureType",  25, "YY");    // MCCS type
 
-   TRACECF(debug, "creating ValueStackedWidget, feature code dummy");
+   TRACECF_NOPREFIX(debug, "creating ValueStackedWidget, feature code dummy");
    _valueWidget = new ValueStackedWidget();
    _valueWidget->setSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::MinimumExpanding);
 
@@ -187,11 +187,11 @@ void FeatureWidget::setFeatureValue(FeatureValue &fv)
 
     DDCA_Status ddcrc =fv.ddcrc();
 
-    TRACECF(debug, "feature=0x%02x, getvcp status=%s", _feature_code , ddca_rc_name(ddcrc) );
+    TRACECF_NOPREFIX(debug, "feature=0x%02x, getvcp status=%s", _feature_code , ddca_rc_name(ddcrc) );
     // TRACEF(debug, "Before calling valueWidget->setFeatureValue()");
     _valueWidget->setFeatureValue(fv);
 
-    TRACECF(debug, "After calling valueWidget->setFeatureValue()");
+    TRACECF_DONE(debug, "After calling valueWidget->setFeatureValue()");
     _layout->addWidget(_valueWidget); // claude says redundant, _valueWidget already added in constructor ??
 }
 

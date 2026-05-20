@@ -44,9 +44,10 @@
 
     if (newControlKeyRequired != old) {
        _controlKeyRequired = newControlKeyRequired;
-       TRACECF(debug, "emitting controlKeyRequired_changed(%s)", SBOOL(_controlKeyRequired));
+       TRACECF_EVENT(debug, "emitting controlKeyRequired_changed(%s)", SBOOL(_controlKeyRequired));
        emit controlKeyRequired_changed(_controlKeyRequired);
     }
+    TRACECF_DONE(debug, "");
 }
 
 void init_user_interface_options_state() {
