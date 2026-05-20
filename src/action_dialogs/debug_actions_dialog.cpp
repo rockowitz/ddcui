@@ -81,6 +81,7 @@ void DebugActionsDialog::on_actionButtonBox_accepted()
 
     TRACECF_STARTING(debugFunc, "Before calling accept()");
     accept();  // causes accepted() to be emitted
+    TRACECF_DONE(debugFunc, "");
 }
 
 

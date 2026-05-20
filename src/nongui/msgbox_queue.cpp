@@ -27,7 +27,7 @@ MsgBoxQueueEntry::MsgBoxQueueEntry(
    , _boxText(text)
    , _boxIcon(icon)
 {
-   TRACECF_STARTING(debugClass, "Constructor. title=%s, text=%s, icon=%d",
+   TRACECF_EVENT(debugClass, "Constructor. title=%s, text=%s, icon=%d",
                        QS2S(_boxTitle), QS2S(_boxText), _boxIcon);
 }
 

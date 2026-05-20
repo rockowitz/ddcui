@@ -96,7 +96,7 @@ ValueStdWidget::ValueStdWidget(QWidget *parent):
     _cls = strdup(metaObject()->className());
     // TRACE("Starting");
     layoutWidget();
-    TRACEMCF_STARTING(debug, "TRACECMF. After superclass call");
+    TRACEMCF_EVENT(debug, "TRACECMF. After superclass call");
 }
 
 
@@ -161,6 +161,7 @@ void ValueStdWidget::setFeatureValue(const FeatureValue &fv) {
                   fv.featureCode(), fv.capVcp(), fv.ddcrc());
     ValueBaseWidget::setFeatureValue(fv);
     setValueField();
+    TRACEMCF_DONE(debug, "");
 }
 
 

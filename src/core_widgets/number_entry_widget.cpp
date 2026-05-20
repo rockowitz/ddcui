@@ -103,7 +103,7 @@ uint16_t
 NumberEntryWidget::getExistingValue()
 {
    bool debug = false;
-   TRACECF_STARTING(debug, "widget = %s, returning: x%04x", QS2S(this->objectName()), _curval);
+   TRACECF_EVENT(debug, "widget = %s, returning: x%04x", QS2S(this->objectName()), _curval);
    return _curval;
 }
 
@@ -111,7 +111,7 @@ uint16_t
 NumberEntryWidget::getNewValue()
 {
    bool debug = false;
-   TRACECF_STARTING(debug, "widget = %s, returning: x%04x", QS2S(this->objectName()), _valueEntered);
+   TRACECF_EVENT(debug, "widget = %s, returning: x%04x", QS2S(this->objectName()), _valueEntered);
    return _valueEntered;
 }
 
@@ -130,6 +130,7 @@ NumberEntryWidget::setValue(uint16_t newval)
 
    _curval = newval;
    _widgetState = NumberEntryWidget::StateOldValid;
+   TRACECF_DONE(debug, "");
 }
 
 NumberEntryWidget::States

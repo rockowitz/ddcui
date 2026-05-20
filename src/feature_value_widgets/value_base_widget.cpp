@@ -88,7 +88,7 @@ ValueBaseWidget::~ValueBaseWidget() {
 
 void ValueBaseWidget::setFeatureValue(const FeatureValue &fv) {
    bool debug = false;
-   TRACEMCF_STARTING(debug, "ValueBaseWidget. this._id=%d, featureCode=0x%02x, capVcp=%p, ddcrc=%d",
+   TRACEMCF_EVENT(debug, "ValueBaseWidget. this._id=%d, featureCode=0x%02x, capVcp=%p, ddcrc=%d",
                     _id, fv.featureCode(), fv.capVcp(), fv.ddcrc());
 
     _featureCode    = fv.featureCode();

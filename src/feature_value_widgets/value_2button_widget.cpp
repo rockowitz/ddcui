@@ -130,22 +130,23 @@ void Value2ButtonWidget::setEnabled(bool onoff) {
 void Value2ButtonWidget::on_button1_pressed() {
    bool debug = false;
 //   if (_base_ctrl_key_is_pressed || !classControlKeyRequired) {
-      TRACEMCF_STARTING(debug || debugValueWidgetSignals, "Button pressed. Emitting featureValueChanged()");
+      TRACEMCF_EVENT(debug || debugValueWidgetSignals, "Button pressed. Emitting featureValueChanged()");
       emit featureValueChanged(_featureCode, 0, _val1);
 //   }
 //   else
-//      TRACEMCF(debug|| debugValueWidgetSignals, "Button pressed.  NOT emitting featureValueChanged()");
+//      TRACEMCF_EVENT(debug|| debugValueWidgetSignals, "Button pressed.  NOT emitting featureValueChanged()");
+
 }
 
 
 void Value2ButtonWidget::on_button2_pressed() {
    bool debug = false;
 //   if (_base_ctrl_key_is_pressed || !classControlKeyRequired) {
-      TRACEMCF_STARTING(debug || debugValueWidgetSignals, "Button pressed. Emitting featureValueChanged()");
+      TRACEMCF_EVENT(debug || debugValueWidgetSignals, "Button pressed. Emitting featureValueChanged()");
       emit featureValueChanged(_featureCode, 0, _val2);
 //   }
 //   else
-//      TRACEMCF(debug|| debugValueWidgetSignals, "Button pressed.  NOT emitting featureValueChanged()");
+//      TRACEMCF_EVENT(debug|| debugValueWidgetSignals, "Button pressed.  NOT emitting featureValueChanged()");
 }
 
 

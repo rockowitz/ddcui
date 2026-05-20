@@ -63,6 +63,7 @@ FeatureBaseModel::FeatureBaseModel(Monitor * monitor)
                    _monitor->_displayInfo->dispno,
                    _monitor->_displayInfo->model_name,
                    _monitor->_displayInfo->dref);
+    TRACECF_DONE(debug, "");
 }
 
 FeatureBaseModel::~FeatureBaseModel() {
@@ -124,8 +125,9 @@ FeatureValue * FeatureBaseModel::modelVcpValueFilteredFind(uint8_t feature_code)
          DDCA_Status ddcrc = result->ddcrc();
          bool showUnsupported = GlobalState::instance()._mainWindow->_feature_selector->_showUnsupportedFeatures;
          if (!showUnsupported && (ddcrc == DDCRC_REPORTED_UNSUPPORTED || ddcrc == DDCRC_DETERMINED_UNSUPPORTED)) {
-            TRACECF_STARTING(debug, "Filtering out feature 0x%02x because UNSUPPORTED", result->featureCode());
+            TRACECF_EVENT(debug, "Filtering out feature 0x%02x because UNSUPPORTED", result->featureCode());
             result = NULL;
+
          }
       }
    }
@@ -303,6 +305,7 @@ FeatureBaseModel::setCapabilities(
    _caps_status = ddcrc;
    _caps_string = capabilities_string;
    _parsed_caps = parsed_capabilities;
+   TRACECF_DONE(debug, "");
 }
 
 #ifdef UNUSED
@@ -423,6 +426,7 @@ void FeatureBaseModel::markDisconnected(DDCA_Display_Ref dref) {
    // GlobalState& _globalState = GlobalState::instance();
     TRACECF(debug, "emitting signalEndInitialLoad()");
    emit signalEndInitialLoad();
+   TRACECF_DONE(debug, "");
 }
 
 /** Debugging function to report the contents of the current 

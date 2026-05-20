@@ -188,6 +188,7 @@ void ValueSimpleContWidget::onFeatureValueChanged(uint8_t featureCode, uint8_t s
                   featureCode, sh, sl, _featureCode);
    TRACEMCF(debug, "Emitting featureValueChanged(0x%02x, 0x%02x, 0x%02x)", _featureCode, sh, sl);
    emit featureValueChanged(_featureCode, sh, sl);
+   TRACEMCF_DONE(debug, "");
 }
 
 
@@ -248,6 +249,7 @@ void ValueSimpleContWidget::resizeEvent(QResizeEvent * evt)
    if (show) {
       TRACEC_STARTING("_id=%d, old size = %d, %d, new size = %d, %d ",
               _id, oldSz.width(), oldSz.height(), newSz.width(), newSz.height());
+      TRACEC_DONE("");
    }
 
    evt->ignore();

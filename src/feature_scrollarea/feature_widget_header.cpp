@@ -3,7 +3,7 @@
   * Row at top of central widget showing column titles
   */
 
-// Copyright (C) 2018-2020 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <QFrame>
@@ -116,7 +116,7 @@ void FeatureWidgetHeader::resizeEvent(QResizeEvent * evt)
       QSize oldSz = evt->oldSize();
       QSize newSz = evt->size();
 
-      TRACEC_STARTING("old size = %d, %d   new size = %d, %d", oldSz.width(), oldSz.height(),
+      TRACEC_EVENT("old size = %d, %d   new size = %d, %d", oldSz.width(), oldSz.height(),
             newSz.width(), newSz.height());
    }
    evt->ignore();

@@ -126,7 +126,7 @@ FeatureValue::setCurrentValue(uint8_t sh, uint8_t sl) {
       _observedNcValues = bs256_insert(_observedNcValues, _value.sl);
    }
 
-   TRACECF_STARTING(debugFunc, "Finished. _observedNcValues = %s", bs256_to_string_t(_observedNcValues, "", " "));
+   TRACECF_EVENT(debugFunc, "Finished. _observedNcValues = %s", bs256_to_string_t(_observedNcValues, "", " "));
 }
 
 

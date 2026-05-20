@@ -172,6 +172,7 @@ Monitor::getFeatureList(DDCA_Feature_Subset_Id feature_list_id) {
     TRACECF(debugFunc,
          "Returning: %d features: %s", ddca_feature_list_count(result),
                                        ddca_feature_list_string(result, NULL, (char*)" "));
+    TRACECF_DONE(debugFunc, "");
     return result;
 }
 
@@ -183,7 +184,7 @@ bool Monitor::capabilitiesCheckComplete() {
    bool result = (supportsDdc());
    if (result)
       result = (_baseModel->_caps_check_complete);
-   TRACECF_STARTING(debug, "dref=%s, returning %s", QS2S(dref_repr()), SBOOL(result));
+   TRACECF_EVENT(debug, "dref=%s, returning %s", QS2S(dref_repr()), SBOOL(result));
    return result;
 }
 
@@ -192,14 +193,14 @@ bool Monitor::capabilitiesCheckSuccessful() {
    bool result = (_displayInfo->dispno >  0);   // dispno -1 if API found display invalid, -2 if phantom
    if (result)
       result = (_baseModel->_caps_status == 0 && _baseModel->_parsed_caps);  // got capabilities?
-   TRACECF_STARTING(debug, "dref=%s, returning %s", QS2S(dref_repr()), SBOOL(result));
+   TRACECF_EVENT(debug, "dref=%s, returning %s", QS2S(dref_repr()), SBOOL(result));
    return result;
 }
 
 bool Monitor::supportsDdc() {
    bool debug = false;
    bool result = (_displayInfo->dispno >  0);   // dispno -1 if API found display invalid, -2 if phantom
-   TRACECF_STARTING(debug, "dref=%s, returning %s", QS2S(dref_repr()), SBOOL(result));
+   TRACECF_EVENT(debug, "dref=%s, returning %s", QS2S(dref_repr()), SBOOL(result));
    return result;
 }
 
@@ -208,12 +209,14 @@ void Monitor::putVcpRequest(VcpRequest * rqst) {
     bool debug = false;
     TRACECF_STARTING(debug, "-> rqst->type=%d. Adding request to monitor's request queue", rqst->_type);
     _requestQueue->put(rqst);
+    TRACECF_DONE(debug, "");
 }
 
 // never called!
 void Monitor::vcpThreadFinished() {
    bool debug =  true;
    TRACECF_STARTING(debug, "vcp thread finished");
+   TRACECF_DONE(debug, "");
 }
 
 void Monitor::markDisconnected() {
@@ -229,8 +232,8 @@ void Monitor::markDisconnected() {
    GlobalState::instance()._msgBoxQueue->put(qe);
 
    emit reportDisconnected(this->_displayInfo->dref);
-   TRACECF(debug, "emitted");
-
+   TRACECF_NOPREFIX(debug, "emitted");
+   TRACECF_DONE(debug, "");
 }
 
 

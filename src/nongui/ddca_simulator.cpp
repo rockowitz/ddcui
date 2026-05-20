@@ -142,7 +142,7 @@ bool DdcaSimulator::simulateSetNonTableVcpValue(
          uint16_t shsl = sh << 8 | sl;
          simVals.insert(featureCode, shsl);
          simulated = true;
-         TRACEC_STARTING("Simulating set feature 0x%02x, shsl=0x%04x", featureCode, shsl);
+         TRACEC_EVENT("Simulating set feature 0x%02x, shsl=0x%04x", featureCode, shsl);
       }
       if (simulated)
          TRACECF(debug, "Feature 0x%02x, vspec=%d.%d. returning %s. ddcrc=%s",

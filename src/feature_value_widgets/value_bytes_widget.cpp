@@ -275,12 +275,13 @@ void ValueBytesWidget::setCurrentShSl(uint16_t newval) {
 
     // int baseval = _sh << 8 | _sl;
     // assert(baseval == newval);
-    TRACECF_STARTING(debugValueWidgetSignals, "feature=0x%02x, newval=0%04x", _featureCode , newval);
+    TRACECF_EVENT(debugValueWidgetSignals, "feature=0x%02x, newval=0%04x", _featureCode , newval);
 
     _applyButton->setEnabled(false);
     _cancelButton->setEnabled(false);
 
     _guiChange = true;
+
 }
 
 // MOC not finding base class implementation #ifdef SHOULD_USE_BASE
@@ -297,11 +298,12 @@ void  ValueBytesWidget::onApplyButtonClicked(bool checked) {
    // TRACEF(debug, "Executing. checked=%s", sbool(checked));
 
    if (_shNew != _sh || _slNew != _sl) {
-      TRACECF_STARTING(debug, "Emitting featureValueChanged(). feature code: 0x%02x, new sh: 0x%02x, new sl: 0x%02x",
+      TRACECF_EVENT(debug, "Emitting featureValueChanged(). feature code: 0x%02x, new sh: 0x%02x, new sl: 0x%02x",
                 _featureCode, _shNew, _slNew);
       _sh = _shNew;
       _sl = _slNew;
       emit featureValueChanged(_featureCode, _shNew, _slNew);
+
    }
 
    // what to do while we're waiting for the update to apply or fail?

@@ -240,6 +240,7 @@ DDCA_Status VcpThread::perform_close_display(DDCA_Display_Handle dh)
       // n. returns DDCRC_INVALID_STATE if already closed
       rpt_nonfeature_error("performing close", "ddca_close_display", ddcrc);
    }
+   TRACECF_DONE(debugFunc, "");
    return ddcrc;
 }
 
@@ -386,13 +387,15 @@ DDCA_Status VcpThread::getMetadata(
       DDCA_Feature_Metadata** finfo_loc)
 {
    bool debugFunc = false;
+   TRACECF_STARTING(debugFunc, "feature 0x%02x", feature_code);
+   
    // TODO:  get metadata once and cache
    DDCA_Status ddcrc = ddca_get_feature_metadata_by_dh(
                           feature_code,
                           dh,
                           true,         /* create_default_if_not_found*/
                           finfo_loc);
-   TRACECF_STARTING(debugFunc, "ddca_get_feature_metadata_by_dh() for feature 0x%02x returned %d - %s",
+   TRACECF_EVENT(debugFunc, "ddca_get_feature_metadata_by_dh() for feature 0x%02x returned %d - %s",
          feature_code, ddcrc, ddca_rc_name(ddcrc));
    // if (featureCode == 0xdf || featureCode == 0xf4 || featureCode == 0xf5)
    //       ddca_dbgrpt_feature_metadata(finfo, 1);
@@ -402,7 +405,7 @@ DDCA_Status VcpThread::getMetadata(
       rpt_feature_error(FeatureMetadata, feature_code, "ddca_get_feature_data_by_dh", ddcrc);
       *finfo_loc = nullptr; // indicate no metadata
    }
-
+   TRACECF_DONE(debugFunc, "");
    return ddcrc;
 }
 
@@ -611,6 +614,7 @@ void VcpThread::endInitialLoad(void)
     _baseModel->modelEndInitialLoad();
     // emit signalStatusMsg(QString("Loading complete"));
     _baseModel->setStatusMsg(QString("Loading complete"));
+    TRACECF_DONE(debugThread, "");
 }
 
 

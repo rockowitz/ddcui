@@ -69,6 +69,7 @@ void FeaturesScrollAreaView::setInstanceControlKeyRequired(bool onoff) {
       FeatureWidget * child = children2.at(ndx);
       child->setInstanceControlKeyRequired(onoff);
    }
+   TRACEMCF_DONE(debugFunc, "");
 }
 #endif
 
@@ -347,6 +348,7 @@ void FeaturesScrollAreaView::onModelValueChanged(
    // set value in the widget
    uint16_t newval = sh << 8 | sl;
    curWidget->setCurrentValue(newval);
+   TRACEMCF_DONE(debugFunc, "");
 }
 
 #ifdef PASS_NC_PARMS

@@ -230,7 +230,7 @@ void FeatureWidget::dbgrpt() const
     const char * objname = on1.c_str();
     // printf("%-20s code: 0x%02x, flags: 0x%04x, mh: 0x%02x, ml: 0x%02x, sh: 0x%02x, sl 0x%02x\n",
     //        objname, _feature_code, _feature_flags, _mh, _ml, _sh, _sl);
-    TRACEC_STARTING("%-20s feature code: 0x%02x, flags: 0x%04x", objname, _feature_code, _feature_flags);
+    TRACEC_EVENT("%-20s feature code: 0x%02x, flags: 0x%04x", objname, _feature_code, _feature_flags);   TRACEC_DONE("");
 }
 
 void FeatureWidget::onInternalValueChanged(uint8_t featureCode, uint8_t sh, uint8_t sl)
@@ -298,7 +298,7 @@ void FeatureWidget::resizeEvent(QResizeEvent * evt)
 #endif
 
    if (show) {
-      TRACEC_STARTING("old size = %d, %d, new size = %d, %d", oldSz.width(), oldSz.height(),
+      TRACEC_EVENT("old size = %d, %d, new size = %d, %d", oldSz.width(), oldSz.height(),
       newSz.width(), newSz.height());
    }
 

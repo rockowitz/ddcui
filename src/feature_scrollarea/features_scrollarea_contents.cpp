@@ -145,6 +145,7 @@ void FeaturesScrollAreaContents::notifyPageChangeObservers(int pageno) {
        PageChangeObserver*  observer = _pageChangeObservers->at(ndx);
        observer->pageChangedByWidget(_containingScrollArea);
    }
+   TRACECF_DONE(debugSignals, "");
 }
 #endif
 
@@ -152,11 +153,13 @@ void FeaturesScrollAreaContents::resize(int w, int h)
 {
    TRACEC_STARTING("width = %d, height = %s", w, h);
    QWidget::resize(w, h);
+   TRACEC_DONE("");
 }
 void FeaturesScrollAreaContents::resize(QSize sz)
 {
    TRACEC_STARTING("width = %d, height = %s", sz.width(), sz.height());
    QWidget::resize(sz);
+   TRACEC_DONE("");
 }
 
 void FeaturesScrollAreaContents::resizeEvent(QResizeEvent * evt)
@@ -167,6 +170,7 @@ void FeaturesScrollAreaContents::resizeEvent(QResizeEvent * evt)
 
       TRACEC_STARTING("old size = %d, %d   new size = %d, %d",
               oldSz.width(), oldSz.height(), newSz.width(), newSz.height());
+      TRACEC_DONE("");
    }
    evt->ignore();
 }

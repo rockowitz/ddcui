@@ -443,6 +443,7 @@ void  ValueStackedWidget::forContainedWidgetChanged(uint8_t feature_code, uint8_
 
    // printf("(%s::%s) Calling simpleFeatueValueNotify() \n", _cls, __func__);  fflush(stdout);
    // simpleFeatureValueNotify(SimpleFeatureValue(feature_code, sh, sl));
+   TRACECF_DONE(debug, "");
 }
 
 #ifdef NC_FEATURE_VALUES2

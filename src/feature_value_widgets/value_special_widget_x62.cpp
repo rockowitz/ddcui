@@ -115,6 +115,7 @@ void ValueSpecialWidgetX62::setCurrentShSl(uint16_t newval) {
        _spinSlider->setShSl(newval);
        _spinSlider->setEnabled(true);
    }
+   TRACEMF_DONE(debugFunc, "");
 }
 
 uint16_t ValueSpecialWidgetX62::getCurrentShSl() {
@@ -158,6 +159,7 @@ void ValueSpecialWidgetX62::combobox_activated(int index) {
    else {
       TRACEMCF(debug, "Value not changed.");
    }
+   TRACEMCF_DONE(debug, "");
 }
 
 
