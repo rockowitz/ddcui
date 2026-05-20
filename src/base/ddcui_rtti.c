@@ -17,6 +17,7 @@
 #include "base/ddcui_rtti.h"
 
 
+static const int Initial_Size = 200;
 static GPtrArray * method_name_table = NULL;
 
 
@@ -30,7 +31,7 @@ static GPtrArray * method_name_table = NULL;
  */
 void rtti_method_name_table_add(const char * method_name) {
    if (!method_name_table)
-      method_name_table = g_ptr_array_new_with_free_func(g_free);
+      method_name_table = g_ptr_array_new_full(Initial_Size,g_free);
    if (!gaux_ptr_array_find_with_equal_func(method_name_table, method_name, g_str_equal, NULL))
       g_ptr_array_add(method_name_table, g_strdup(method_name));
 }
