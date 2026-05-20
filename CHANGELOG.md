@@ -59,7 +59,8 @@ Two new options address these problematic cases.
   To build with QT5, use cmake argument ***-DUSE_QT5=ON***. Support for QT5 
   will be removed in a later release.
 - The check for the model name specified in option ***--model***
-  is now case-insensitive. 
+  is now case-insensitive.
+- Improved tracing facilities.
  
 ### Fixed
 
