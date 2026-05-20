@@ -217,8 +217,8 @@ void ValueNcplusWidget::resizeEvent(QResizeEvent * evt)
    }
 
    if (show) {
-      TRACEC_EVENT"old size = %d, %d", oldSz.width(), oldSz.height());
-      TRACEC_EVENT("new size = %d, %d", newSz.width(), newSz.height());
+      TRACEC_NOPREFIX("old size = %d, %d", oldSz.width(), oldSz.height());
+      TRACEC_NOPREFIX("new size = %d, %d", newSz.width(), newSz.height());
    }
 
    evt->ignore();

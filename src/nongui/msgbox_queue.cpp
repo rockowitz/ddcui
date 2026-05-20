@@ -107,7 +107,7 @@ void MsgBoxQueue::putMessages(QString qstitle, QMessageBox::Icon icon, char** ms
       if (debug) {
          int ct = 0;
          while(msgs[ct]) ct++;
-         TRACEC("%d error messages", ct);
+         TRACECF(debug, "%d error messages", ct);
       }
       for (int ndx = 0; msgs[ndx]; ndx++) {
          QString qsexpl = QString::asprintf("%s", msgs[ndx]);
@@ -146,12 +146,11 @@ MsgBoxQueueEntry * MsgBoxQueue::pop() {
 
 void MsgBoxQueue::dbgrpt_nolock() {
    int ct = _queue.size();
-   TRACEC_STARTING("Queue contains %d entries", ct);
+   TRACEC_NOPREFIX("Queue contains %d entries", ct);
    for (int ndx = 0; ndx < ct; ndx++) {
       MsgBoxQueueEntry * rqst = _queue.at(ndx);
-      TRACEC_NOPREFIX"   %s", QS2S(rqst->repr()) );
+      TRACEC_NOPREFIX( "   %s", QS2S(rqst->repr()) );
    }
-   TRACECF_DONE("Done");
 }
 
 
