@@ -277,7 +277,7 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
      }
 
     else if (_featureCode == 0x14) {
-       TRACEMCF(debug, "_feature_code == 0x14");
+       TRACEMCF_NOPREFIX(debug, "_feature_code == 0x14");
        _pageno_selected = _pageno_ncplus;
        _cur_stacked_widget = _ncplusWidget;
        setCurrentWidget(_cur_stacked_widget);
@@ -379,14 +379,14 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
               (fv.flags() & DDCA_WRITABLE)
             )
     {
-        TRACEMCF(debug, "DDCA_SIMPLE_NC");
+        TRACEMCF_NOPREFIX(debug, "DDCA_SIMPLE_NC");
         _pageno_selected = _pageno_nc;
         _cur_stacked_widget = _ncWidget;
         // setCurrentIndex(_pageno_selected);
         setCurrentWidget(_cur_stacked_widget);
     }
     else {
-       TRACEMCF(debug, "default case, _stdWidget");
+       TRACEMCF_NOPREFIX(debug, "default case, _stdWidget");
 
         _pageno_selected = _pageno_std;
         // setCurrentIndex(_pageno_selected);

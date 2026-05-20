@@ -95,7 +95,7 @@ ValueSimpleContWidget::ValueSimpleContWidget(QWidget *parent)
 
 ValueSimpleContWidget::~ValueSimpleContWidget() {
    bool debug = false;
-   TRACEMCF(debug, "Executing. this._id = %d", _id);
+   TRACEMCF_EVENT(debug, "Executing. this._id = %d", _id);
    free((void*) _cls);
 }
 
@@ -144,13 +144,13 @@ void ValueSimpleContWidget::setFeatureValue(const FeatureValue &fv) {
 
     _featureCode = fv.featureCode();  // needed when signaling value changed
 
-    TRACEMCF(debug, "feature=0x%02x, curval=%d, maxval=%d", _featureCode, curval, _maxval);
+    TRACEMCF_NOPREFIX(debug, "feature=0x%02x, curval=%d, maxval=%d", _featureCode, curval, _maxval);
 
     // maxval = 99999;   // for testing big numbers
     // curval = 99999;
     // _guiChange = false;
 
-    TRACEMCF(debug, "Calling  _spinSlider->setFeatureCode(), setRange(), setShSl()");
+    TRACEMCF_NOPREFIX(debug, "Calling  _spinSlider->setFeatureCode(), setRange(), setShSl()");
     _spinSlider->setFeatureCode(fv.featureCode());
     _spinSlider->setRange(_minval, _maxval);
     _spinSlider->setShSl(curval);
@@ -186,7 +186,7 @@ void ValueSimpleContWidget::onFeatureValueChanged(uint8_t featureCode, uint8_t s
    bool debug = false;
    TRACEMCF_STARTING(debug, "featureCode=0x%02x, sh=0x%02x, sl=0x%02x,_featureCode=0x%02x",
                   featureCode, sh, sl, _featureCode);
-   TRACEMCF(debug, "Emitting featureValueChanged(0x%02x, 0x%02x, 0x%02x)", _featureCode, sh, sl);
+   TRACEMCF_NOPREFIX(debug, "Emitting featureValueChanged(0x%02x, 0x%02x, 0x%02x)", _featureCode, sh, sl);
    emit featureValueChanged(_featureCode, sh, sl);
    TRACEMCF_DONE(debug, "");
 }

@@ -99,7 +99,7 @@ void FeatureWidget::setupFeatureWidget()
        this->setStyleSheet("background-color:orange;");
 
        if (!dimensionReportShown) {
-          TRACEMC("FeatureWidget dimensions:");
+          TRACEMC_NOPREFIX("FeatureWidget dimensions:");
           reportWidgetDimensions(this, _cls, __func__);
           dimensionReportShown = true;
        }
@@ -139,7 +139,7 @@ FeatureWidget::FeatureWidget(FeatureValue& fv, QWidget *parent)
    , _id(++nextId)
 {
     bool debug = false;
-    TRACEMCF(debug, "Executing. this._id = %d, FeatureValue::id=%d, featureCode = 0x%02x",
+    TRACEMCF_EVENT(debug, "Executing. this._id = %d, FeatureValue::id=%d, featureCode = 0x%02x",
                     _id, fv._id, fv.featureCode());
     setupFeatureWidget();
     setupConnections();
@@ -241,7 +241,7 @@ void FeatureWidget::onInternalValueChanged(uint8_t featureCode, uint8_t sh, uint
    assert(featureCode == _feature_code);
 
    bool writeOnlyFeature = _feature_flags & DDCA_WO;
-   TRACEMCF(debug, "-> Calling emit valueChanged, feature_code=0x%02x, writeOnlyFeature=%s, sh=0x%02x, sl=0x%02x",
+   TRACEMCF_EVENT(debug, "-> Calling emit valueChanged, feature_code=0x%02x, writeOnlyFeature=%s, sh=0x%02x, sl=0x%02x",
                     featureCode, SBOOL(writeOnlyFeature), sh, sl);
    emit valueChanged(featureCode, writeOnlyFeature, sh, sl);
 }

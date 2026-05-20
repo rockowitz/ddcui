@@ -90,7 +90,7 @@ Value2ButtonWidget::Value2ButtonWidget(
 
 Value2ButtonWidget::~Value2ButtonWidget() {
    bool debug = false;
-   TRACEMCF(debug, "Executing. this._id = %d", _id);
+   TRACEMCF_EVENT(debug, "Executing. this._id = %d", _id);
    free((void*) _cls);
 }
 

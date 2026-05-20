@@ -173,7 +173,7 @@ void ValueStdWidget::setCurrentShSl(uint16_t newval) {
 
 void ValueStdWidget::setEnabled(bool onoff) {
    bool debug = false;
-   TRACEMCF(debug, "Executing. _id=%d", _id);
+   TRACEMCF_EVENT(debug, "Executing. _id=%d", _id);
 }
 
 

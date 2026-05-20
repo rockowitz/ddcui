@@ -119,8 +119,9 @@ void ValueResetWidget::on_resetButton_pressed() {
                    _id, _featureCode, SBOOL(ValueBaseWidget::isEnabled()));
 
 
-   TRACEMCF(debug || debugValueWidgetSignals, "Button pressed. Emitting featureValueChanged()");
+   TRACEMCF_NOPREFIX(debug || debugValueWidgetSignals, "Button pressed. Emitting featureValueChanged()");
    emit featureValueChanged(_featureCode, 0, 1);
+   TRACEMCF_DONE(debug, "");
 }
 
 

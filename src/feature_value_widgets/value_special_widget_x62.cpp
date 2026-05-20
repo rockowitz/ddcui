@@ -67,7 +67,7 @@ ValueSpecialWidgetX62::ValueSpecialWidgetX62(QWidget *parent)
 
 ValueSpecialWidgetX62::~ValueSpecialWidgetX62() {
    bool debug = false;
-   TRACEMCF(debug, "Executing. this._id = %d", _id);
+   TRACEMCF_EVENT(debug, "Executing. this._id = %d", _id);
    free((void*) _cls);
 }
 
@@ -149,15 +149,15 @@ void ValueSpecialWidgetX62::combobox_activated(int index) {
       new_sl = 255;
 
    if (new_sh != _sh || new_sl != _sl) {
-      TRACEMCF(debug, "Value changed.  New sl: %u", new_sl);
-      TRACEMCF(debug, "Emitting featureValueChanged, featureCode = 0x%02x, sh=0, new_sl=0x%02x",
+      TRACEMCF_NOPREFIX(debug, "Value changed.  New sl: %u", new_sl);
+      TRACEMCF_NOPREFIX(debug, "Emitting featureValueChanged, featureCode = 0x%02x, sh=0, new_sl=0x%02x",
                          _featureCode, new_sl);
          emit featureValueChanged(_featureCode, 0, new_sl);
    // _sh = 0;  // unnecessary because of assert()
       _sl = new_sl;
    }
    else {
-      TRACEMCF(debug, "Value not changed.");
+      TRACEMCF_NOPREFIX(debug, "Value not changed.");
    }
    TRACEMCF_DONE(debug, "");
 }

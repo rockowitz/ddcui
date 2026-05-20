@@ -230,7 +230,7 @@ void   FeatureBaseModel::modelVcpValueSet(
         }
 
         else {
-           TRACEMCF(debugFunc, "Unexpected status code %s for previously read feature 0x%02x",
+           TRACEMCF_NOPREFIX(debugFunc, "Unexpected status code %s for previously read feature 0x%02x",
                     ddca_rc_name(ddcrc), fv->featureCode() );
         }
     }

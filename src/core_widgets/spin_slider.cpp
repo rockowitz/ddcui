@@ -113,16 +113,16 @@ void SpinSlider::setRange(int minval, int maxval) {
 // Called by the containing class to update the widget
 void SpinSlider::setShSl(uint16_t newval) {
     bool debug = false;
-    // TRACEMCF_STARTING(debug, "newval = 0x%04x", newval);
+    TRACEMCF_STARTING(debug, "newval = 0x%04x", newval);
     // ValueBaseWidget::setCurrentShSl(newval);
     // _guiChange = false;
 
     uint8_t sh = newval >> 8;
     uint8_t sl = newval & 0xff;
     int curval = sh << 8 | sl;
-    TRACEMCF(debug, "Starting. feature=0x%02x, newval=%d, curval=%d", _featureCode , curval);
+    TRACEMCF_NOPREFIX(debug, "Starting. feature=0x%02x, newval=%d, curval=%d", _featureCode , curval);
 
-    TRACEMF(debug, "Calling _spinBoxTime->stop(), _spinBox->setValue()");
+    TRACEMF_NOPREFIX(debug, "Calling _spinBoxTime->stop(), _spinBox->setValue()");
     // in case the timer is running, don't trigger
     _spinBoxTimer->stop();
     _spinBox->setValue(curval);

@@ -87,7 +87,7 @@ void VcpThread::rpt_feature_error(
    MsgBoxQueueEntry * qe = new MsgBoxQueueEntry(QString("ddcutil API Error"),
                                                 qsexpl,
                                                 QMessageBox::Warning);
-   TRACEMCF(debug, "Calling _msgboxQueue.put() for qe: %s", QS2S(qe->repr()));
+   TRACEMCF_NOPREFIX(debug, "Calling _msgboxQueue.put() for qe: %s", QS2S(qe->repr()));
    GlobalState::instance()._msgBoxQueue->put(qe);
    TRACEMCF_DONE(debug, "");
 }

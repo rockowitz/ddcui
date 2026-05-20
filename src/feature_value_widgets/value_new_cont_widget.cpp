@@ -42,13 +42,13 @@ ValueNewContWidget::ValueNewContWidget(QWidget *parent)
 {
     bool debug = false;
     _cls = strdup(metaObject()->className());
-    TRACEMCF(debug, "TRACECMF. Executing. After ValueSimpleContWidget constructor, _id=%d, _featureCode=0x%02x", _id, _featureCode);
+    TRACEMCF_EVENT(debug, "TRACECMF. Executing. After ValueSimpleContWidget constructor, _id=%d, _featureCode=0x%02x", _id, _featureCode);
 }
 
 
 ValueNewContWidget::~ValueNewContWidget() {
    bool debug = false;
-   TRACEMCF(debug, "Executing. this._id = %d", _id);
+   TRACEMCF_EVENT(debug, "Executing. this._id = %d", _id);
    free((void*) _cls);
 }
 

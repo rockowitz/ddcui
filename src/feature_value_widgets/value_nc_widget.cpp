@@ -157,7 +157,7 @@ void ValueNcWidget::setFeatureValue(const FeatureValue &fv) {
 
     _guiChange = false;
 
-    // TRACEMCF(debug, "_sl = 0x%02x", _sl);
+    // TRACEMCF_NOPREFIX(debug, "_sl = 0x%02x", _sl);
     TRACEMF_NOPREFIX(debug, "Local _observedNcValues: %s", bs256_to_string_t(_observedValues, ""," "));
 
     TRACEMF_NOPREFIX(debug, "Persistent _observedValues from FeatureValue: %s",
@@ -320,8 +320,8 @@ void ValueNcWidget::setCurrentShSl(uint16_t newval) {
 
     ValueBaseWidget::setCurrentShSl(newval);
 
-    // TRACEMCF(debugFunc, "_sl = 0x%02x", _sl);
-    TRACEMCF(debugFunc, "Using local _observedNcValues: %s", bs256_to_string_t(_observedValues, ""," "));
+    // TRACEMCF_NOPREFIX(debugFunc, "_sl = 0x%02x", _sl);
+    TRACEMCF_NOPREFIX(debugFunc, "Using local _observedNcValues: %s", bs256_to_string_t(_observedValues, ""," "));
 
     if (!bs256_contains(_observedValues, _sl)) {
        TRACECF_NOPREFIX(debugFunc, "Value 0x%02x not found in existing _observedValues: %s",

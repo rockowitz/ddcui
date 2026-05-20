@@ -53,7 +53,7 @@ FeaturesScrollAreaView::FeaturesScrollAreaView(
 {
    bool debug = false;
 //    _id = ++nextId;
-   TRACEMCF(debug, "Executing. this->_id=%d, _msgboxQueue=%p", _id, _msgboxQueue);
+   TRACEMCF_EVENT(debug, "Executing. this->_id=%d, _msgboxQueue=%p", _id, _msgboxQueue);
 }
 
 #ifdef UNUSED
@@ -81,16 +81,16 @@ void FeaturesScrollAreaView::freeContents(void) {
        QWidget* curobj = _centralStackedWidget->widget(ndx);
        QString name   = curobj->objectName();
        const char *  clsName = curobj->metaObject()->className();
-       TRACEMCF_STARTING(debug, "   widget[%d]: %s, type:%s", ndx, name.toLatin1().data(), clsName);
+       TRACEMCF_EVENT(debug, "   widget[%d]: %s, type:%s", ndx, name.toLatin1().data(), clsName);
        if (name.compare("scrollwrap") == 0 ) {
-          TRACEMCF(debug, "scrollwrap found, index=%d", ndx);
+          TRACEMCF_EVENT(debug, "scrollwrap found, index=%d", ndx);
           scrollWrapWidget = curobj;
           break;
        }
    }
 
    if (scrollWrapWidget) {
-      TRACEMCF(debug, "Removing locally found scrollWrapWidget %p", scrollWrapWidget);
+      TRACEMCF_EVENT(debug, "Removing locally found scrollWrapWidget %p", scrollWrapWidget);
       _centralStackedWidget->removeWidget(scrollWrapWidget);
    }
 }
@@ -144,7 +144,7 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
 
     int maxHeight1     = 0;
     int maxHintHeight1 = 0;
-    TRACEMCF(debugFunc, "Create FeatureWidgets for each reported VCP code and"
+    TRACEMCF_NOPREFIX(debugFunc, "Create FeatureWidgets for each reported VCP code and"
                    " add them to the layout for ScrollAreaContents...");
     int ct = 0;
     for (int feature_code = 0; feature_code < 256; feature_code++) {
@@ -179,8 +179,8 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
              ct++;
          }
     }
-    TRACEMCF(debugFunc, "Created %d FeatureWidgets", ct);
-    TRACEMCF(debugFunc, "Max height, maxHintHeight after widget creation: %d, %d",
+    TRACEMCF_NOPREFIX(debugFunc, "Created %d FeatureWidgets", ct);
+    TRACEMCF_NOPREFIX(debugFunc, "Max height, maxHintHeight after widget creation: %d, %d",
                    maxHeight1, maxHintHeight1); ;
 
     scrollAreaContents->setLayout(vLayout);
@@ -207,7 +207,7 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
     // QList<FeatureWidget> children = scrollAreaContents.children();
     // n. find same FeatureValue children using _centralWidget->findChildren(..)
     QList<FeatureWidget*> children2 = scrollAreaContents->findChildren<FeatureWidget*>(re);
-    TRACEMCF(debugFunc, "Found %d children of scrollAreaContents using regular expression", children2.count());
+    TRACEMCF_NOPREFIX(debugFunc, "Found %d children of scrollAreaContents using regular expression", children2.count());
     int maxHeight2 = 0;
     int maxHintHeight2 = 0;
     for (int ndx = 0; ndx < children2.count(); ndx++) {
@@ -221,7 +221,7 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
        int  hintHeight = hintSize.height();
 
        // const char *  clsName = child->metaObject()->className();
-       // TRACEMCF(debug, "   FeatureValue: %s, type:%s, height=%d, hintHeight=%d",
+       // TRACEMCF_NOPREFIX(debug, "   FeatureValue: %s, type:%s, height=%d, hintHeight=%d",
        //                    QS2S(name), clsName, ht, hintHeight);
 
        if (ht > maxHeight2)
@@ -230,12 +230,12 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
           maxHintHeight2 = hintHeight;
     }
 
-    TRACEMCF(debugFunc, "Maximum values of height, hintheight after all widgets added to layout: %d, %d",
+    TRACEMCF_NOPREFIX(debugFunc, "Maximum values of height, hintheight after all widgets added to layout: %d, %d",
                    maxHeight2, maxHintHeight2); ;
 #endif
 
 #ifdef NO
-    TRACEMCF(debugFunc, "Setting height of each FeatureWidget...");
+    TRACEMCF_NOPREFIX(debugFunc, "Setting height of each FeatureWidget...");
     for (int ndx = 0; ndx < children2.count(); ndx++) {
        FeatureWidget * child = children2.at(scrollwrapNdx);
        QSize sz = child->size();
@@ -291,18 +291,18 @@ void FeaturesScrollAreaView::onUIValueChanged(
    // *** set and verify the new value, etc.
    FeatureValue * curFv = _baseModel->modelVcpValueFind(featureCode);
    if (curFv && curFv->val().sh == sh && curFv->val().sl == sl) {
-      TRACEMCF(debug, "featureCode = 0x%02x, New value matches model value, sh=0x%02x, sl=0x%02x, Suppressing.",
+      TRACEMCF_NOPREFIX(debug, "featureCode = 0x%02x, New value matches model value, sh=0x%02x, sl=0x%02x, Suppressing.",
             featureCode, sh, sl);
    }
    else {
-      // TRACEMCF(debug, "Emitting signalVcpRequest() for VcpSetRequest, featureCode=0x%02x", featureCode);
-      TRACEMCF(debug, "Calling _monitor->putVcpRequest() for VcpSetRequest, featureCode=0x%02x", featureCode);
+      // TRACEMCF_NOPREFIX(debug, "Emitting signalVcpRequest() for VcpSetRequest, featureCode=0x%02x", featureCode);
+      TRACEMCF_NOPREFIX(debug, "Calling _monitor->putVcpRequest() for VcpSetRequest, featureCode=0x%02x", featureCode);
       VcpRequest * rqst = new VcpSetRequest(featureCode, sh, sl, writeOnly);
       // emit signalVcpRequest(rqst);  // used to call into monitor
       _monitor->putVcpRequest(rqst);
 
       // If feature value change affects other features, reread possibly affected features
-      TRACEMCF(debug, "Rereading possibly affected features");
+      TRACEMCF_NOPREFIX(debug, "Rereading possibly affected features");
       switch(featureCode) {
       case 0x05:      // restore factory defaults brightness/contrast
       {
@@ -358,7 +358,7 @@ void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc, bool
    TRACEMF_STARTING(debugFunc, "newsrc=%d=%s, newUseLatestNames=%s",
                        newsrc, (char *) ncValuesSourceName(newsrc), SBOOL(newUseLatestNames));
 
-   // TRACEMCF(debugFunc,
+   // TRACEMCF_NOPREFIX(debugFunc,
    //           "newsrc=%d=%s, _curNcValuesSource=%d=%s, newUseLatestNames=%s,_curUseLatestNcValueNames=%s",
    //           newsrc,             (char*) ncValuesSourceName(newsrc),
    //           _curNcValuesSource, (char*) ncValuesSourceName(_curNcValuesSource),
@@ -380,9 +380,9 @@ void FeaturesScrollAreaView::onNcValuesSourceChanged(NcValuesSource newsrc, bool
 
           FeatureWidget * curWidget = dynamic_cast<FeatureWidget*>(curobj);
           if (curWidget) {
-             // TRACEMCF(debugFunc, "dynamic_cast succeeded");
+             // TRACEMCF_NOPREFIX(debugFunc, "dynamic_cast succeeded");
              if (curWidget->hasSlTable()) {
-                TRACEMCF(debugFunc, "feature_code=0x%02x, has SL table", curWidget->_feature_code);
+                TRACEMCF_NOPREFIX(debugFunc, "feature_code=0x%02x, has SL table", curWidget->_feature_code);
                 curWidget->setNcValuesSource(newsrc, newUseLatestNames);
              }
           }
@@ -408,7 +408,7 @@ void FeaturesScrollAreaView::onModelDdcDetailedError(DdcDetailedError* perec) {
                                        qstitle,
                                        qsexpl,
                                        icon);
-   TRACEMCF(debugFunc, "Calling _msgboxQueue.put() for qe: %s", QS2S(qe->repr()));
+   TRACEMCF_NOPREFIX(debugFunc, "Calling _msgboxQueue.put() for qe: %s", QS2S(qe->repr()));
    _msgboxQueue->put(qe);
 }
 
@@ -436,7 +436,7 @@ void FeaturesScrollAreaView::onModelDdcFeatureError(DdcFeatureError* perec) {
                                    qstitle,
                                    qsexpl,
                                    icon);
-     TRACEMCF(debugFunc, "Calling _msgboxQueue.put() for qe: %s", QS2S(qe->repr()));
+     TRACEMCF_NOPREFIX(debugFunc, "Calling _msgboxQueue.put() for qe: %s", QS2S(qe->repr()));
     _msgboxQueue->put(qe);
     TRACEMCF_DONE(debugFunc, "");
 }

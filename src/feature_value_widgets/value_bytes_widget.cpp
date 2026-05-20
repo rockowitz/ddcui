@@ -238,7 +238,7 @@ void ValueBytesWidget::setFeatureValue(const FeatureValue &fv) {
 
     ValueBaseWidget::setFeatureValue(fv);
 
-    TRACEMCF(debug,
+    TRACEMCF_NOPREFIX(debug,
               "After valueBaseWidget::setFeatureValue() called, feature code: 0x%02x, mh: 0x%02x, ml: 0x%02x, sh: 0x%02x sl: 0x%02x",
               _featureCode,
               _mh,
