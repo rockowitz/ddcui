@@ -251,11 +251,11 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
     if (debugLayout) {
        static bool dimensionReportShown = false;
        if ( (showDimensionReport && !dimensionReportShown) ) {
-           TRACEC("---------------------> scrollAreaContents in QScrollArea");
+           TRACEC_NOPREFIX("---------------------> scrollAreaContents in QScrollArea");
            reportWidgetDimensions(scrollAreaContents,    _cls, __func__, "scrollAreaContents in QScrollArea");
-           TRACEC("---------------------> QScrollArea in _centralStackedWidget");
+           TRACEC_NOPREFIX("---------------------> QScrollArea in _centralStackedWidget");
            reportWidgetDimensions(scrollArea,            _cls, __func__, "QScrollArea in _centralStackedWidget");
-           TRACEC("---------------------> centralStackedWidget" );
+           TRACEC_NOPREFIX("---------------------> centralStackedWidget" );
            reportWidgetDimensions(_centralStackedWidget, _cls, __func__, "centralStackedWidget");
 
            dimensionReportShown = true;

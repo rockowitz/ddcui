@@ -107,7 +107,7 @@ void MsgBoxQueue::putMessages(QString qstitle, QMessageBox::Icon icon, char** ms
       if (debug) {
          int ct = 0;
          while(msgs[ct]) ct++;
-         TRACECF(debug, "%d error messages", ct);
+         TRACECF_NOPREFIX(debug, "%d error messages", ct);
       }
       for (int ndx = 0; msgs[ndx]; ndx++) {
          QString qsexpl = QString::asprintf("%s", msgs[ndx]);

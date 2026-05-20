@@ -338,7 +338,7 @@ FeatureBaseModel::setFeatureList(
          ddca_feature_list_and_not(_featuresToShow, _featuresChecked);
 
    if (debugFeatureLists) {
-       TRACECF(debugFunc, "Unchecked features: %s",
+       TRACECF_NOPREFIX(debugFunc, "Unchecked features: %s",
                 ddca_feature_list_string(unchecked_features, NULL, (char*) " "));
    }
 
