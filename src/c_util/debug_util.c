@@ -8,6 +8,9 @@
 
 #include "config.h"
 /** \cond */
+#ifdef HAVE_EXECINFO_H
+#include <execinfo.h>
+#endif
 #include <glib-2.0/glib.h>
 #include <stdbool.h>
 #include <stdio.h>
