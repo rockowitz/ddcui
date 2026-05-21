@@ -15,6 +15,7 @@
 #include "ddcutil_types.h"
 
 #include "c_util/string_util.h"
+#include "c_util/timestamp.h"
 
 #include "ddcui_parms.h"
 #include "ddcui_core_aux.h"
@@ -82,6 +83,7 @@ get_thread_fixed_buffer_ddcui(
 
 // ddcutil timestamp.c
 
+#ifdef OUT   // use version in util/timestamp.c
 uint64_t cur_realtime_nanosec() {
    // on Pi, __time_t resolves to long int
    struct timespec tvNow;
@@ -95,8 +97,9 @@ uint64_t cur_realtime_nanosec() {
    //        __func__, tvNow.tv_sec, tvNow.tv_nsec, result);
 return result;
 }
+#endif
 
-
+#ifdef OUT // use version in util/timestamp.c
 static uint64_t initial_timestamp_nanos = 0;
 
 
@@ -117,8 +120,10 @@ uint64_t elapsed_time_nanosec() {
    // printf("(%s) Returning: %"PRIu64"\n", __func__, result);
    return result;
 }
+#endif
 
 
+#ifdef OUT    // use formatted_elapsed_time_t() in timestamp.c
 /** Returns the elapsed time since start of program execution
  *  as a formatted, printable string.
  *
@@ -140,6 +145,7 @@ char * formatted_elapsed_time() {
    // printf("(%s) |%s|\n", __func__, elapsed_buf);
    return elapsed_buf;
 }
+#endif
 
 
 static bool ddcui_trace_show_time;
@@ -192,7 +198,7 @@ bool printftcmf(
          char * buffer = g_strdup_vprintf(format, args);
          va_end(args);
 
-         int prefixed_field_min_width = 11;
+         int prefixed_field_min_width = 10;
 
          if (opts & TRACE_OPTIONS_NOPREFIX) {
             gchar * spaces = g_strnfill(prefixed_field_min_width, ' ');
@@ -202,17 +208,17 @@ bool printftcmf(
             buffer = prefixed;
          }
          else if ((opts & TRACE_OPTIONS_STARTING) && (opts & TRACE_OPTIONS_DONE)) {
-            char * prefixed = g_strdup_printf("%-*s%s", prefixed_field_min_width, "Event.", buffer);
+            char * prefixed = g_strdup_printf("%-*s%s", prefixed_field_min_width, "Event", buffer);
             g_free(buffer);
             buffer = prefixed;
          }
          else if (opts & TRACE_OPTIONS_STARTING) {
-            char * prefixed = g_strdup_printf("%-*s%s", prefixed_field_min_width, "Starting.", buffer);
+            char * prefixed = g_strdup_printf("%-*s%s", prefixed_field_min_width, "Starting", buffer);
             g_free(buffer);
             buffer = prefixed;
          }
          else if (opts & TRACE_OPTIONS_DONE) {
-            char * prefixed = g_strdup_printf("%-*s%s", prefixed_field_min_width, "Done.", buffer);
+            char * prefixed = g_strdup_printf("%-*s%s", prefixed_field_min_width, "Done", buffer);
             g_free(buffer);
             buffer = prefixed;
          }
@@ -240,7 +246,7 @@ bool printftcmf(
 
          char  elapsed_prefix[15] = "";
          if (ddcui_trace_show_time)
-            g_snprintf(elapsed_prefix, 15, "[%s]", formatted_elapsed_time());
+            g_snprintf(elapsed_prefix, 15, "[%s]", formatted_elapsed_time_t(6));
 
          char thread_prefix[15] = "";
          if (ddcui_trace_show_thread_id) {
