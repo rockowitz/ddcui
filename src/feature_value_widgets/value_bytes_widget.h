@@ -63,8 +63,8 @@ private:   // member variables
     bool                   _guiChange = false;
     const int              widgetHeight = 20;
     // QFont nonMonoFont9;
-    uint8_t                _shNew;
-    uint8_t                _slNew;
+    uint8_t                _shNew = 0;
+    uint8_t                _slNew = 0;
 };
 
 void init_value_bytes_widget();
