@@ -202,7 +202,8 @@ int MainWindow::addMonitor(DDCA_Display_Ref dref) {
    TRACECF_NOPREFIX(debug, "ddca_get_display_info2() returned %d %s", ddcrc, explain);
    if (ddcrc != 0) {
       syslog(LOG_ERR, "ddca_get_display_info2() returned %s", explain);
-      assert(ddcrc == 0);   // ABORT!!!
+      TRACECF_DONE(debug, "ddca_get_display_info2() failed. Returning -1");
+      return -1;
    }
    // initialize monitor data structures, add to display selector combo box
    initOneMonitor(dinfo, nextIndex);
@@ -586,7 +587,7 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
            const char * expl = ddca_rc_name(ddcrc);
            syslog(LOG_ERR, "ddca_get_display_info() returned %s", expl);
            TRACEC_NOPREFIX("ddca_get_display_info() returned %s", expl);
-           assert(ddcrc == 0);
+           continue;
         }
         initOneMonitor(dinfo, ndx);
     }
@@ -1691,7 +1692,7 @@ void MainWindow::keyReleaseEvent(QKeyEvent *   ev) {
       TRACEMCF_NOPREFIX(debug, "Control key recognized. Emitting signalControlKeyPressed(false)");
       signalControlKeyPressed(false);
    }
-   QMainWindow::keyPressEvent(ev);
+   QMainWindow::keyReleaseEvent(ev);
    ev->ignore();
 
    TRACECF_DONE(debug, "");
