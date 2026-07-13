@@ -120,7 +120,7 @@ void SpinSlider::setShSl(uint16_t newval) {
     uint8_t sh = newval >> 8;
     uint8_t sl = newval & 0xff;
     int curval = sh << 8 | sl;
-    TRACEMCF_NOPREFIX(debug, "Starting. feature=0x%02x, newval=%d, curval=%d", _featureCode , curval);
+    TRACEMCF_NOPREFIX(debug, "Starting. feature=0x%02x, newval=%d, curval=%d", _featureCode, newval, curval);
 
     TRACEMF_NOPREFIX(debug, "Calling _spinBoxTime->stop(), _spinBox->setValue()");
     // in case the timer is running, don't trigger
