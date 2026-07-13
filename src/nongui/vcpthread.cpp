@@ -309,6 +309,7 @@ void VcpThread::capabilities() {
    char *              caps = NULL;
    DDCA_Capabilities * parsed_caps = NULL;
    int retry_count = 0;
+   const int max_retries = 4;
 
    DDCA_Status ddcrc = perform_open_display(&dh);
    if (ddcrc == 0) {
@@ -333,7 +334,7 @@ void VcpThread::capabilities() {
                continue;
             }
 
-            if (curmult <= 2.0f) {    // retry possible
+            if (curmult <= 2.0f && retry_count < max_retries) {    // retry possible
                // curmult = curmult * 2;
                // TRACECF_NOPREFIX(debugRetry, "Adjusting thread sleep multiplier for %s to %5.2f",
                //                    ddca_dref_repr(this->_dref), curmult);
