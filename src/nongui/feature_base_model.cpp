@@ -251,7 +251,12 @@ FeatureBaseModel::modelVcpValueUpdate(
           feature_code, sh, sl, SBOOL(_initialLoadActive));
 
     int ndx = modelVcpValueIndex(feature_code);
-    assert (ndx >= 0);
+    if (ndx < 0) {
+       // should never occur; guard rather than assert so a release build
+       // does not read past the start of _featureValues
+       TRACEC_NOPREFIX("No FeatureValue found for feature 0x%02x, ignoring", feature_code);
+    }
+    else {
     FeatureValue * fv =  _featureValues->at(ndx);
     TRACECF_NOPREFIX(debugFunc, "Found FeatureValue instance,  _observedNcValues=%s",
                        bs256_to_string_t(fv->observedNcValues(), ""," " ) );
@@ -264,6 +269,7 @@ FeatureBaseModel::modelVcpValueUpdate(
     TRACECF_NOPREFIX(debugFunc || debugSignals, "Emitting signalFeatureUpdated3()");
     // -> &FeaturesScrollAreaView::onModelValueChanged
     emit signalFeatureUpdated3(__func__, feature_code, sh, sl);
+    }  // ndx >= 0
 
 #ifdef FUTURE
     if (!_initialLoadActive) {
