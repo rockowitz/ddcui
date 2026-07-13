@@ -209,7 +209,7 @@ private:
     // Ui::MainWindow*           _ui;
     Ui_MainWindow *              _ui;
     // DDCA_Display_Info_List *  _dlist ;
-    DDCA_Display_Ref *           _drefs;
+    DDCA_Display_Ref *           _drefs = nullptr;   // freed in destructor and on redetect
     int                          _drefs_ct = 0;
     int                          _curDisplayIndex = -1;
     View                         _curView = NoView;
@@ -217,14 +217,14 @@ private:
     View                         _initialView = SummaryView;
     bool                         _initialViewShown = false;
 // #endif
-    QComboBox *                  _toolbarDisplayCB;
+    QComboBox *                  _toolbarDisplayCB = nullptr;
     NcValuesState *              _otherOptionsState = nullptr;
     UserInterfaceOptionsState*   _uiOptionsState = nullptr;
     QVector<Monitor*>            _monitors;
     DDCA_Feature_Subset_Id       _feature_list_id = DDCA_SUBSET_KNOWN;
     QVector<VcpThread*>          _vcp_threads;
 
-    QMessageBox*                 _loadingMsgBox;
+    QMessageBox*                 _loadingMsgBox = nullptr;
 
     // Accumulates messages that will be shown in the SerialMsgBox once
     // initialization is sufficiently complete.  Not needed.
