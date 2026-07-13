@@ -58,8 +58,8 @@ protected:
 // *** Member variables ***
 
 public:
-    uint8_t             _feature_code;
-    QString*            _feature_name;
+    uint8_t             _feature_code = 0;
+    QString*            _feature_name = nullptr;
 
 protected:
     static int          nextId;
@@ -72,7 +72,7 @@ private:
 
     // uint8_t          _feature_code;
    //  QString*         _feature_name;
-    DDCA_Version_Feature_Flags  _feature_flags;      // uint16_t
+    DDCA_Version_Feature_Flags  _feature_flags = 0;  // uint16_t
 
     QHBoxLayout*        _layout;
     QLabel*             _featureCodeField;
