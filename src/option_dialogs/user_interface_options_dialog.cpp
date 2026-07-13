@@ -51,7 +51,7 @@ void UserInterfaceOptionsDialog::setDialogBoxControlKeyRequired(bool onoff) {
    if (onoff)
       stateToSet = Qt::Checked;
 
-   _ui->ckrCheckBox->setChecked(stateToSet);
+   _ui->ckrCheckBox->setCheckState(stateToSet);   // was setChecked(), which takes a bool
 }
 
 void UserInterfaceOptionsDialog::on_actionButtonBox_accepted()
