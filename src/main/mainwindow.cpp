@@ -233,11 +233,12 @@ int MainWindow::removeMonitor(DDCA_Display_Ref dref) {
       Monitor * monitor = _monitors.at(monNdx);
       TRACECF_NOPREFIX(debug, "monitor=%p, dref=%s", monitor, ddca_dref_repr(dref));
 
-      // Remove entry for monitor from display selector combo box
-      // QString comboBoxString = monitor->comboBoxModelName();
-      QString comboBoxString = ddcu_comboBoxModelName(monitor->_displayInfo);
+      // Remove entry for monitor from display selector combo box.
+      // The combo box entries parallel the _monitors array, so the entry to
+      // delete is at monNdx.  Do not look it up with findText(): the result
+      // is ambiguous if two monitors have the same model name.
       int curIndex = _toolbarDisplayCB->currentIndex();
-      int indexToDelete = _toolbarDisplayCB->findText(comboBoxString,Qt::MatchExactly);
+      int indexToDelete = monNdx;
 
       // disconnect signals from base model of monitor being removed
       disconnectBaseModel(monitor);
