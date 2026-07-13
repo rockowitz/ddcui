@@ -113,10 +113,11 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
     QWidget::connect(_simpleContWidget, &ValueSimpleContWidget::featureValueChanged,
                      this,              &ValueStackedWidget::forContainedWidgetChanged);
 
+    // n. only one connection: featureValueChanged is declared once, in ValueBaseWidget;
+    // connecting via both the ValueSpecialWidgetX62 and ValueSimpleContWidget names
+    // created two connections to the same signal, so each x62 change was delivered
+    // (and setvcp issued) twice
     QWidget::connect(_specialWidgetX62, &ValueSpecialWidgetX62::featureValueChanged,
-                      this,             &ValueStackedWidget::forContainedWidgetChanged);
-    // needed?
-    QWidget::connect(_specialWidgetX62, &ValueSimpleContWidget::featureValueChanged,
                       this,             &ValueStackedWidget::forContainedWidgetChanged);
 
     QWidget::connect(_ncWidget,         &ValueNcWidget::featureValueChanged,
