@@ -420,7 +420,7 @@ void VcpThread::getvcp(uint8_t featureCode, bool needMetadata)
                       featureCode, SBOOL(needMetadata));
 
     DDCA_Display_Handle                   dh;
-    DDCA_Non_Table_Vcp_Value              valrec;
+    DDCA_Non_Table_Vcp_Value              valrec = {};  // stored in FeatureValue even if read fails
     DDCA_Feature_Metadata *               finfo = nullptr;
 
     DDCA_Status ddcrcMetadata = 0;
