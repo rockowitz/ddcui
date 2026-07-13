@@ -249,10 +249,13 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
 
     // ValueBaseWidget::setFeatureValue(fv);
     _featureCode = fv.featureCode();   // needed since not calling ValueBaseWidget::setFeatureValue()
-    DDCA_MCCS_Version_Spec vspec = fv.vspec();   // unused
+    // fv.vspec() asserts a non-null _finfo, which does not exist if the value read failed
+    DDCA_MCCS_Version_Spec vspec = {0,0};
+    if (fv.finfo())
+       vspec = fv.finfo()->vcp_version;
 
-    if (fv.ddcrc() != 0) {
-       // use the default standard widget, set in constructor
+    if (fv.ddcrc() != 0 || !fv.finfo()) {
+       // value read failed, or no metadata: use the default standard widget, set in constructor
     }
     // alt, test for PRESET, then xb0 (settings) or normal
     else if ( _featureCode == 0x04 ||    // Restore factory defaults
