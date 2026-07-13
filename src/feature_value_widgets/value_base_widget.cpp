@@ -64,7 +64,7 @@ ValueBaseWidget::ValueBaseWidget(QWidget *parent)
    _cls = strdup(metaObject()->className());  // private to this class
    _id = ++nextId;
 
-   TRACECF_STARTING(debug, "Executing. this._id = %d, _featureCode=%0x%02x", _id, _featureCode);
+   TRACECF_STARTING(debug, "Executing. this._id = %d, _featureCode=0x%02x", _id, _featureCode);
    //QMargins margins = contentsMargins();
    //printf("(ValueBaseWidget::ValueBaseWidget) margins: left=%d, top=%d, right=%d, bottom=%d)\n",
    //       margins.m_left, margins.m_top, margins.m_right, margins.m_bottom);
