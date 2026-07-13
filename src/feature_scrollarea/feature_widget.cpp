@@ -158,32 +158,33 @@ void FeatureWidget::setFeatureValue(FeatureValue &fv)
              fv.featureCode(), ddca_rc_name(fv.ddcrc()));
 
     _feature_code  = fv.featureCode();
-    _feature_flags = fv.flags();
+    // fv.flags() asserts a non-null finfo, which does not exist if the value read failed
+    _feature_flags = (fv.finfo()) ? fv.flags() : 0;
 
     setObjectName(QString::asprintf("FeatureWidget-0x%02x", _feature_code));
 
     _featureCodeField->setText(QString::asprintf("x%02x", _feature_code) );
-    _featureNameField->setText(QString::fromUtf8( fv.finfo()->feature_name));
+    _featureNameField->setText( (fv.finfo())
+                                   ? QString::fromUtf8(fv.finfo()->feature_name)
+                                   : QString("Unknown feature"));
 
     QString s_rw;
     if (_feature_flags & DDCA_RW)
         s_rw = QString("RW");
     else if (_feature_flags & DDCA_RO)
         s_rw = QString("RO");
-    else {
-        assert(_feature_flags & DDCA_WO);
+    else if (_feature_flags & DDCA_WO)
         s_rw = QString("WO");
-    }
     _featureRwField->setText(s_rw);
 
     if (_feature_flags & DDCA_CONT)
         _featureTypeField->setText(QString("C"));
     else if (_feature_flags & DDCA_NC)
         _featureTypeField->setText(QString("NC"));
-    else {
-        assert(_feature_flags & DDCA_TABLE);
+    else if (_feature_flags & DDCA_TABLE)
         _featureTypeField->setText(QString("T"));
-    }
+    else
+        _featureTypeField->setText(QString(""));
 
     DDCA_Status ddcrc =fv.ddcrc();
 
@@ -192,7 +193,6 @@ void FeatureWidget::setFeatureValue(FeatureValue &fv)
     _valueWidget->setFeatureValue(fv);
 
     TRACECF_DONE(debug, "After calling valueWidget->setFeatureValue()");
-    _layout->addWidget(_valueWidget); // claude says redundant, _valueWidget already added in constructor ??
 }
 
 #ifdef UNUSED
