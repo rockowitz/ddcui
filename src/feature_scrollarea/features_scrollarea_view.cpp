@@ -92,7 +92,13 @@ void FeaturesScrollAreaView::freeContents(void) {
    if (scrollWrapWidget) {
       TRACEMCF_EVENT(debug, "Removing locally found scrollWrapWidget %p", scrollWrapWidget);
       _centralStackedWidget->removeWidget(scrollWrapWidget);
+      scrollWrapWidget->deleteLater();   // o.w. the replaced widget tree leaks
    }
+
+   // FeatureWidget instances found in _widgets belong to the widget tree just
+   // deleted.  Clear the pointers so onModelValueChanged() cannot use a stale one.
+   for (int ndx = 0; ndx < 256; ndx++)
+      _widgets[ndx] = NULL;
 }
 
 // triggered by signal FeatureBaseModel::signalEndInitialLoad
@@ -189,8 +195,11 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
     wrapLayout->addWidget(scrollArea);
     scrollWrap->setLayout(wrapLayout);
 
+    // Qt::UniqueConnection: this method executes on every (re)load; without it
+    // duplicate connections accumulate and the slot fires multiple times per signal
     QObject::connect(_baseModel, &FeatureBaseModel::signalFeatureUpdated3,
-                     this,       &FeaturesScrollAreaView::onModelValueChanged);
+                     this,       &FeaturesScrollAreaView::onModelValueChanged,
+                     Qt::UniqueConnection);
 
     _centralStackedWidget->addWidget(scrollWrap);   // was scrollArea
 
@@ -344,10 +353,14 @@ void FeaturesScrollAreaView::onModelValueChanged(
 
    // find the FeatureWidget for the feature code
    FeatureWidget * curWidget = _widgets[featureCode];
-
-   // set value in the widget
-   uint16_t newval = sh << 8 | sl;
-   curWidget->setCurrentValue(newval);
+   if (curWidget) {
+      // set value in the widget
+      uint16_t newval = sh << 8 | sl;
+      curWidget->setCurrentValue(newval);
+   }
+   else {
+      TRACEMCF_NOPREFIX(debugFunc, "No widget for feature 0x%02x in current view, ignoring", featureCode);
+   }
    TRACEMCF_DONE(debugFunc, "");
 }
 
