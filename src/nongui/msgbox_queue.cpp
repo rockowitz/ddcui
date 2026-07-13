@@ -92,7 +92,12 @@ void MsgBoxQueue::put(MsgBoxQueueEntry * request) {
     _mutex.unlock();
 #else
     _freeBytes->acquire();
+    // The semaphores only count slots, they do not serialize access to _queue.
+    // put() is called from multiple threads (GUI, VcpThread per monitor, the
+    // display watch callback thread), so QQueue mutation must be locked.
+    _mutex.lock();
     _queue.enqueue(request);
+    _mutex.unlock();
     _usedBytes->release();
 #endif
     // dbgrpt_nolock();
@@ -133,7 +138,9 @@ MsgBoxQueueEntry * MsgBoxQueue::pop() {
     _mutex.unlock();
 #else
     _usedBytes->acquire();
+    _mutex.lock();     // see put()
     MsgBoxQueueEntry * rqst = _queue.dequeue();
+    _mutex.unlock();
     _freeBytes->release();
 
     // TRACECF_NOPREFIX(debug, "-> After releasing  _freeBytes. available=%d, request: |%s|",
