@@ -156,6 +156,7 @@ void ValueNcplusWidget::setAuxFieldsXca() {     // OSD
    if ( (_vspec.major == 2 && _vspec.minor >= 2) ) {
       // _auxTitle->setText("Power Mode:");
       const char * s = NULL;
+      char buf[40];   // declared outside the switch so it outlives the default: case
       switch(_sh) {
       case 0x00:
          s = "Host control of power function unsupported, display may not report power events (sh=x00)";
@@ -170,8 +171,9 @@ void ValueNcplusWidget::setAuxFieldsXca() {     // OSD
          s = "Power button disabled, events disabled (sh=x03)";
          break;
       default:
-         char buf[40];
          g_snprintf(buf, 40, "Invalid value (sh=x%02x)", _sh);
+         s = buf;    // was missing, the invalid-value message was never displayed
+         break;
       }
       _extraInfo->setText(QString(s));
    }
