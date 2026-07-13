@@ -117,7 +117,7 @@ void VcpRequestQueue::put(VcpRequest * request) {
 
 VcpRequest * VcpRequestQueue::pop() {
     _mutex.lock();
-    if (_queue.empty())
+    while (_queue.empty())
         _queueNonempty.wait(&_mutex);
 
     VcpRequest * rqst = _queue.dequeue();
