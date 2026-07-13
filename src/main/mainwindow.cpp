@@ -284,6 +284,7 @@ void MainWindow::enableMonitor(DDCA_Display_Ref dref) {
       msg = g_strdup_printf("No monitor found for dref=%s", ddca_dref_repr(dref));
    }
    TRACECF_DONE(debug, "%s", msg);
+   free(msg);
 }
 
 
@@ -894,8 +895,8 @@ void MainWindow::ctrlKeyStatusMsg() {
 
 void MainWindow::setTransitoryStatusMsg(QString msg) {
    bool debug = false;
-   char * m = QS2S(msg);
-   TRACECF_STARTING(debug, "msg = %s", m);
+   // n. do not save QS2S(msg) in a variable, it points into a destroyed temporary
+   TRACECF_STARTING(debug, "msg = %s", QS2S(msg));
    statusBar()->showMessage(msg,2000);
    TRACECF_DONE(debug, "");
 }
