@@ -95,7 +95,8 @@ void ValueBaseWidget::setFeatureValue(const FeatureValue &fv) {
     _dref           = fv.dref();
     _finfo          = fv.finfo();
     _capVcp         = fv.capVcp();
-    _vspec          = fv.vspec();
+    // fv.vspec() asserts a non-null _finfo, which does not exist if the value read failed
+    _vspec          = (_finfo) ? _finfo->vcp_version : DDCA_MCCS_Version_Spec{0,0};
     _mh             = fv.val().mh;
     _ml             = fv.val().ml;
     _sh             = fv.val().sh;
