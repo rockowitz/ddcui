@@ -223,21 +223,25 @@ NumberEntryWidget::onTextEdited(const QString &text) {
 void
 NumberEntryWidget::focusInEvent(QFocusEvent * event) {
    // TRACE("Executing, _curState = %d", _widgetState);
+   QLineEdit::focusInEvent(event);
 }
 
 void
 NumberEntryWidget::focusOutEvent(QFocusEvent * event) {
    // TRACE("Executing, _curState = %d", _widgetState);
+   QLineEdit::focusOutEvent(event);
 }
 
 void
 NumberEntryWidget::mousePressEvent(QMouseEvent * event) {
    // TRACE("Executing, _curState = %d", _widgetState);
+   QLineEdit::mousePressEvent(event);
 }
 
 void
 NumberEntryWidget::mouseReleaseEvent(QMouseEvent * event) {
    // TRACE("Executing, _curState = %d", _widgetState);
+   QLineEdit::mouseReleaseEvent(event);
 }
 
 
