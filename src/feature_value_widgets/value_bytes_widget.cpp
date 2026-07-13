@@ -215,8 +215,11 @@ ValueBytesWidget::~ValueBytesWidget() {
 }
 
 void ValueBytesWidget::when_combobox_activated(int ndx) {
-   uint8_t new_sh = ndx >> 8;
-   uint8_t new_sl = ndx & 0xff;
+   // ndx is the index within whichever combobox was activated, not a
+   // combined sh/sl value.  Read both comboboxes for the full new value.
+   // (Item index == byte value, the comboboxes hold entries for 0..255.)
+   uint8_t new_sh = _shValue->currentIndex();
+   uint8_t new_sl = _slValue->currentIndex();
    if (new_sh != _sh  || new_sl != _sl) {
       _shNew = new_sh;
       _slNew = new_sl;
