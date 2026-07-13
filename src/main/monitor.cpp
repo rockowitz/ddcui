@@ -111,8 +111,12 @@ Monitor::~Monitor() {
       delete _requestQueue;
       delete _vcpThread;
       delete _baseModel;
-      delete _moninfoPlainText;
    }
+   // Deleting the page widgets removes them from the central QStackedWidget
+   // and deletes their child text widgets. O.w. the pages accumulate in the
+   // stacked widget across Redetect operations.
+   delete _page_moninfo;
+   delete _page_capabilities;
    delete _featuresScrollAreaView;
    ddca_free_display_info2(_displayInfo);
    TRACECF_DONE(debug, "");
