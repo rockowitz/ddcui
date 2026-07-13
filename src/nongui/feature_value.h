@@ -62,7 +62,7 @@ public:
 
 private:
     static int               nextId;
-    const char *             _cls;
+    const char *             _cls = "FeatureValue";   // the no-arg constructor does not set it
     uint8_t                  _featureCode = 0;
     DDCA_Display_Ref         _dref   = NULL;
     DDCA_Feature_Metadata *  _finfo  = NULL;
