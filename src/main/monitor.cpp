@@ -145,7 +145,7 @@ Monitor::getFeatureList(DDCA_Feature_Subset_Id feature_list_id) {
 
     bool include_table_features = false;    // TODO get from feature selection dialog
     DDCA_Status ddcrc = 0;
-    DDCA_Feature_List result;
+    DDCA_Feature_List result = DDCA_EMPTY_FEATURE_LIST;
     if (_features.contains(feature_list_id)) {
         result = _features.value(feature_list_id);
     }
