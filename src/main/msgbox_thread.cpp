@@ -7,6 +7,7 @@
 // Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+#include <QDateTime>
 #include <QString>
 #include <QThread>
 #include <QSemaphore>
@@ -61,8 +62,15 @@ void MsgBoxThread::run() {
         // Duplicate message can occur becuase UDEV doesn't report disconnection
         // events immediately, but instead just before a subsequent connection.
         // In the meantime, a DDCRC_DISCONNECTED status code on a feature request
-        // causes a disconnected message to be posted
-        if (rqst->_boxText != _lastText) {
+        // causes a disconnected message to be posted.
+        // Suppress duplicates only within a time window, o.w. a legitimately
+        // repeated message (e.g. the same monitor disconnecting again much
+        // later) is dropped forever.
+        const qint64 duplicate_suppression_millis = 60 * 1000;
+        qint64 nowMillis = QDateTime::currentMSecsSinceEpoch();
+        bool duplicate = (rqst->_boxText == _lastText &&
+                          (nowMillis - _lastTextMillis) < duplicate_suppression_millis);
+        if (!duplicate) {
            _semaphore->acquire();
            TRACECF_NOPREFIX(debugThread, "Acquired semaphore");
            emit postSerialMsgBox(rqst->_boxTitle, rqst->_boxText, rqst->_boxIcon);
@@ -70,6 +78,7 @@ void MsgBoxThread::run() {
            // but would require knowing MainWindow
            // showSerialMsgBox(rqst->_boxTitle, rqst->_boxText, rqst->_boxIcon);
            _lastText = rqst->_boxText;
+           _lastTextMillis = nowMillis;
         }
         else {
            TRACECF_NOPREFIX(debugThread, "Skipping duplicate message");

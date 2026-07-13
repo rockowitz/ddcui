@@ -41,6 +41,7 @@ private:
     QSemaphore *   _semaphore = nullptr;
     // char  *        _lastMsgText = nullptr;
     QString        _lastText;
+    qint64         _lastTextMillis = 0;   // when _lastText was posted
 };
 
 void init_msgbox_thread();
