@@ -151,13 +151,13 @@ void FeaturesScrollAreaContents::notifyPageChangeObservers(int pageno) {
 
 void FeaturesScrollAreaContents::resize(int w, int h)
 {
-   TRACEC_STARTING("width = %d, height = %s", w, h);
+   TRACEC_STARTING("width = %d, height = %d", w, h);
    QWidget::resize(w, h);
    TRACEC_DONE("");
 }
 void FeaturesScrollAreaContents::resize(QSize sz)
 {
-   TRACEC_STARTING("width = %d, height = %s", sz.width(), sz.height());
+   TRACEC_STARTING("width = %d, height = %d", sz.width(), sz.height());
    QWidget::resize(sz);
    TRACEC_DONE("");
 }
