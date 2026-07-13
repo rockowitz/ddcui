@@ -49,9 +49,9 @@ private:
    QSlider *        _slider;
    QSpinBox *       _spinBox;
    QTimer *         _spinBoxTimer;
-   uint8_t          _featureCode;
+   uint8_t          _featureCode = 0;
    bool             _isFeatureCodeSet = true;  // for assert()
-   uint16_t         _latestSpinBoxValue;
+   uint16_t         _latestSpinBoxValue = 0;
    // enum          _valueChangeInitiator { ChangedByModel, ChangedByGUI };
 };
 
