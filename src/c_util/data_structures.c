@@ -1,6 +1,6 @@
 /** @file data_structures.c  General purpose data structures */
 
-// Copyright (C) 2014-2025 Sanford Rockowitz <rockowitz@minsoft.com>
+// Copyright (C) 2014-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 /** \cond */
@@ -418,7 +418,8 @@ csb_free(Circular_String_Buffer * csb, bool free_strings) {
          first = csb->ct % csb->size;
       // printf("(%s) first=%d\n", __func__, first);
 
-      for (int ndx = 0; ndx < csb->ct; ndx++) {
+      int count = (csb->ct < csb->size) ? csb->ct : csb->size;
+      for (int ndx = 0; ndx < count; ndx++) {
          int pos = (first + ndx) % csb->size;
          char * s = csb->lines[pos];
          // printf("(%s) line %d, |%s|\n", __func__, ndx, s);
@@ -514,6 +515,7 @@ void cib_get_latest(Circular_Integer_Buffer * cib, int ct, int latest_values[]) 
    while(ctr < ct) {
       int ndx = (ctr > 0) ? (ctr-1) % cib->size : cib->size - 1;
       latest_values[ctr] = cib->values[ ndx ];
+      ctr++;
    }
 }
 
@@ -1157,6 +1159,16 @@ Bit_Set_256 bs256_and_not(
    // char * s = ddca_bs256_string(&result, "0x",", ");
    // DBGMSG("Returning: %s", s);
    // free(s);
+   return result;
+}
+
+
+bool bs256_is_subset(
+      Bit_Set_256 possible_subset,
+      Bit_Set_256 superset)
+{
+   Bit_Set_256 excess = bs256_and_not(possible_subset, superset);
+   bool result = bs256_eq(excess, EMPTY_BIT_SET_256);
    return result;
 }
 
