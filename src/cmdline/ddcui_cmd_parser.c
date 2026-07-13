@@ -280,7 +280,7 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
                    '\0', 0, G_OPTION_ARG_NONE,     &disable_config_file, "Ignore ddcutil config file", NULL},
       {"noconfig", '\0', 0, G_OPTION_ARG_NONE,     &disable_config_file, "Ignore ddcutil config file", NULL},
 
-      {"syslog",   '\0', 0, G_OPTION_ARG_STRING,   &syslog_work,                    "system log level", "NONE, ERROR, WARN, INFO, NONE"},
+      {"syslog",   '\0', 0, G_OPTION_ARG_STRING,   &syslog_work,                    "system log level", "NEVER|ERROR|WARN|NOTICE|INFO|VERBOSE|DEBUG"},
 
       {"version",  'V',  0, G_OPTION_ARG_NONE,     &version_flag,         "Show version information",   NULL},
       { NULL }
