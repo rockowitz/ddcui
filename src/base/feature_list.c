@@ -96,7 +96,10 @@ DDCA_Feature_List parse_custom_feature_list(
        else {
           feature_list = DDCA_EMPTY_FEATURE_LIST;
           *error_msgs_loc = g_ptr_array_to_ntsa(errors, false);
-          g_ptr_array_free(errors, false);
+          // true: free the pointer segment as well, o.w. it leaks.
+          // The strings themselves survive (no free func is set) and are
+          // now owned by *error_msgs_loc.
+          g_ptr_array_free(errors, true);
        }
     }
     ntsa_free(pieces, /* free_strings */ true);
