@@ -72,7 +72,7 @@ FeatureBaseModel::~FeatureBaseModel() {
                   _monitor, _monitor->_displayInfo->dispno, _monitor->_displayInfo->dref);
    for (int ndx = 0; ndx < _featureValues->size(); ndx++) {
       FeatureValue * fv = _featureValues->at(ndx);
-      fv->delete_finfo();
+      delete fv;      // destructor frees finfo
    }
    delete _featureValues;
    TRACECF_NOPREFIX(debug, "          _caps+string=%p->%s", _caps_string, _caps_string);
@@ -363,7 +363,7 @@ FeatureBaseModel::setFeatureList(
 
 void
 FeatureBaseModel::reloadSpecificFeatures(int ct, uint8_t* features) {
-   bool debugFunc =true;
+   bool debugFunc = false;
    TRACECF_STARTING(debugFunc, "ct=%d", ct);
 
    for (int ndx = 0; ndx < ct; ndx++) {
@@ -420,7 +420,7 @@ void FeatureBaseModel::reloadFeatures() {
 }
 
 void FeatureBaseModel::markDisconnected(DDCA_Display_Ref dref) {
-   bool debug = true;
+   bool debug = false;
    TRACECF_STARTING(debug, "DDCA_Display_Ref = %p", dref);
    _monitor->markDisconnected();   // or should this be emit signalDisconnected(dref) ?
    // GlobalState& _globalState = GlobalState::instance();
