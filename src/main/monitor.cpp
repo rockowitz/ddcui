@@ -97,7 +97,11 @@ Monitor::~Monitor() {
          this, _monitorNumber, _displayInfo->dispno, _baseModel,  _moninfoPlainText, _capabilitiesPlainText);
 
    if (supportsDdc()) {
-      _requestQueue->put(new HaltRequest());
+      // halt() purges any pending requests and enqueues a HaltRequest, so the
+      // thread need only finish its current request before halting.  Using
+      // put() instead would drain the entire queue first, blocking the GUI
+      // thread here for the duration of every pending DDC operation.
+      _requestQueue->halt();
 
       // wait for halt
       while (!_vcpThread->isFinished()) {
