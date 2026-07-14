@@ -168,18 +168,23 @@ int MainWindow::matchMonitor(DDCA_Display_Ref dref) {
    // TRACECF(debug,"_monitors.size() = %d", ct0);
 
    DDCA_Display_Info2 * dinfo0 = NULL;
-   ddca_get_display_info2(dref, &dinfo0);
-   assert(dinfo0);
-   DDCA_IO_Path p0 = dinfo0->path;
-   for (int ndx = _monitors.size()-1; ndx >= 0; ndx--) {
-      Monitor * curMonitor = _monitors.at(ndx);
-      DDCA_IO_Path p1 = curMonitor->_displayInfo->path;
-      if (ddcu_dpath_eq(p0, p1)) {
-         result = ndx;
-         break;
-      }
+   DDCA_Status ddcrc = ddca_get_display_info2(dref, &dinfo0);
+   if (ddcrc != 0 || !dinfo0) {
+      // guard rather than assert, o.w. a release build dereferences a NULL dinfo0
+      syslog(LOG_ERR, "ddca_get_display_info2() returned %s", ddca_rc_name(ddcrc));
    }
-   ddca_free_display_info2(dinfo0);
+   else {
+      DDCA_IO_Path p0 = dinfo0->path;
+      for (int ndx = _monitors.size()-1; ndx >= 0; ndx--) {
+         Monitor * curMonitor = _monitors.at(ndx);
+         DDCA_IO_Path p1 = curMonitor->_displayInfo->path;
+         if (ddcu_dpath_eq(p0, p1)) {
+            result = ndx;
+            break;
+         }
+      }
+      ddca_free_display_info2(dinfo0);
+   }
    TRACECF_DONE(debug,"Returning: %d", result);
    return result;
 }
@@ -552,7 +557,9 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
 
     DDCA_Status ddcrc = ddca_get_display_refs(/*include invalid displays=*/true, &_drefs);
     TRACECF_NOPREFIX(debug, "ddca_get_display_refs() returned %d, _drefs=%p", ddcrc, _drefs);
-    assert(ddcrc == 0);
+    // guard rather than assert, o.w. a release build walks a NULL _drefs below
+    if (ddcrc != 0)
+       syslog(LOG_ERR, "ddca_get_display_refs() returned %s", ddca_rc_name(ddcrc));
 
     DDCA_Error_Detail * errs = ddca_get_error_detail();
     if (errs) {
@@ -588,7 +595,10 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
        _msgBoxQueue->put(qe);
     } // end, error reporting
 
-    for (_drefs_ct=0; _drefs[_drefs_ct]; _drefs_ct++) {}
+    _drefs_ct = 0;
+    if (_drefs) {   // NULL if ddca_get_display_refs() failed
+       for (_drefs_ct=0; _drefs[_drefs_ct]; _drefs_ct++) {}
+    }
     TRACECF_NOPREFIX(debug, "_drefs_ct = %d", _drefs_ct);
 
     for (int ndx = 0; ndx < _drefs_ct; ndx++) {
