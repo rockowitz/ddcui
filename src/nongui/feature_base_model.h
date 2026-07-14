@@ -6,6 +6,8 @@
 #ifndef FEATURE_BASE_MODEL_H
 #define FEATURE_BASE_MODEL_H
 
+#include <atomic>
+
 #include <QObject>
 
 #include "ddcutil_types.h"
@@ -74,7 +76,10 @@ public:
     // *** Public Member Variables ***
     const char *        _cls;    // className
     Monitor *           _monitor;
-    bool                _caps_check_complete = false;
+    // Written by the VcpThread (setCapabilities()), polled by the GUI thread.
+    // atomic (seq_cst) so that when the GUI thread sees true, the writes to
+    // _caps_status, _caps_string, _parsed_caps are visible as well.
+    std::atomic<bool>   _caps_check_complete{false};
     DDCA_Status         _caps_status = -999;    // a value that's undefined
     char *              _caps_string = NULL;
     DDCA_Capabilities * _parsed_caps = NULL;

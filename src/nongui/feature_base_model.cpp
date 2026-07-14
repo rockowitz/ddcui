@@ -307,10 +307,11 @@ FeatureBaseModel::setCapabilities(
    bool debug = false;
    TRACECF_STARTING(debug, "ddcrc = %s, capabilities_string=|%s|", ddca_rc_name(ddcrc), capabilities_string);
 
-   _caps_check_complete = true;
    _caps_status = ddcrc;
    _caps_string = capabilities_string;
    _parsed_caps = parsed_capabilities;
+   // set last: the atomic store publishes the field values above to the GUI thread
+   _caps_check_complete = true;
    TRACECF_DONE(debug, "");
 }
 
