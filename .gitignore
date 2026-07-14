@@ -23,3 +23,5 @@ ddcui-coverity.tgz
 config.h
 todo
 TODO
+*.swp
+
