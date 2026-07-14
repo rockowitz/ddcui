@@ -105,6 +105,7 @@ int FeatureBaseModel::modelVcpValueIndex(uint8_t feature_code) {
  * \return pointer to FeatureValue instance, NULL if not found
  */
 FeatureValue * FeatureBaseModel::modelVcpValueFind(uint8_t feature_code) {
+    QMutexLocker locker(&_valuesMutex);
     FeatureValue * result = NULL;
     for (int ndx = 0; ndx < _featureValues->count(); ndx++) {
         FeatureValue * cur = _featureValues->at(ndx);
@@ -142,15 +143,17 @@ FeatureValue * FeatureBaseModel::modelVcpValueFilteredFind(uint8_t feature_code)
  */
 FeatureValue * FeatureBaseModel::modelVcpValueAt(int ndx) const {
     assert(ndx >= 0);
+    QMutexLocker locker(&_valuesMutex);
     FeatureValue * result = NULL;
     if (ndx < _featureValues->count() )
         result = _featureValues->at(ndx);
     return result;
 }
 
-/** Returns the number of #FeatureValue instances. 
+/** Returns the number of #FeatureValue instances.
  */
 int FeatureBaseModel::modelVcpValueCount(void) const {
+    QMutexLocker locker(&_valuesMutex);
     return _featureValues->count();
 }
 
@@ -184,6 +187,10 @@ void   FeatureBaseModel::modelVcpValueSet(
                  feature_code, feature_value->mh, feature_value->ml, feature_value->sh, feature_value->sl,
                  ddca_rc_name(ddcrc), SBOOL(_initialLoadActive));
 
+    // n. emitting signalFeatureUpdated3() below while holding the lock is safe:
+    // this method executes on the VcpThread, so delivery to GUI thread slots is
+    // queued and no slot code runs under the lock
+    QMutexLocker locker(&_valuesMutex);
     int ndx = modelVcpValueIndex(feature_code);
     if (ndx < 0) {
         // TRACECF_NOPREFIX(debugFunc, "Creating new FeatureValue");
@@ -250,6 +257,8 @@ FeatureBaseModel::modelVcpValueUpdate(
     TRACECF_STARTING(debugFunc, "feature_code=0x%02x, sh=0x%02x, sl=0x%02x, _initialLoadActive=%s",
           feature_code, sh, sl, SBOOL(_initialLoadActive));
 
+    // see comment in modelVcpValueSet() re emitting while holding the lock
+    QMutexLocker locker(&_valuesMutex);
     int ndx = modelVcpValueIndex(feature_code);
     if (ndx < 0) {
        // should never occur; guard rather than assert so a release build
@@ -341,8 +350,12 @@ FeatureBaseModel::setFeatureList(
                       ddca_feature_list_string(featureList, NULL, (char*) " ") );
 
    _featuresToShow = featureList;
-   DDCA_Feature_List unchecked_features =
-         ddca_feature_list_and_not(_featuresToShow, _featuresChecked);
+   DDCA_Feature_List unchecked_features;
+   {
+      // _featuresChecked is written on the VcpThread
+      QMutexLocker locker(&_valuesMutex);
+      unchecked_features = ddca_feature_list_and_not(_featuresToShow, _featuresChecked);
+   }
 
    if (debugFeatureLists) {
        TRACECF_NOPREFIX(debugFunc, "Unchecked features: %s",
@@ -373,9 +386,16 @@ FeatureBaseModel::reloadSpecificFeatures(int ct, uint8_t* features) {
    bool debugFunc = false;
    TRACECF_STARTING(debugFunc, "ct=%d", ct);
 
+   // _featuresChecked is written on the VcpThread, copy it under the lock
+   DDCA_Feature_List featuresChecked;
+   {
+      QMutexLocker locker(&_valuesMutex);
+      featuresChecked = _featuresChecked;
+   }
+
    for (int ndx = 0; ndx < ct; ndx++) {
       DDCA_Vcp_Feature_Code vcp_code = features[ndx];
-      if (ddca_feature_list_contains(_featuresChecked, vcp_code)) {
+      if (ddca_feature_list_contains(featuresChecked, vcp_code)) {
          TRACECF_NOPREFIX(debugFunc, "vcp_code = 0x%02x, in _features_checked", vcp_code);
          FeatureValue *  fv = modelVcpValueFind(vcp_code);
          // should always exist, but just in case
@@ -395,6 +415,7 @@ FeatureBaseModel::reloadSpecificFeatures(int ct, uint8_t* features) {
 }
 
 void FeatureBaseModel::setFeatureChecked(uint8_t featureCode) {
+   QMutexLocker locker(&_valuesMutex);
    ddca_feature_list_add(&_featuresChecked, featureCode);
 }
 
@@ -442,6 +463,7 @@ void FeatureBaseModel::markDisconnected(DDCA_Display_Ref dref) {
 // TODO: report feature_info, feature_name
 void FeatureBaseModel::dbgrpt() {
     printf("(FeatureBaseModel::report)\n");
+    QMutexLocker locker(&_valuesMutex);
     int ct = _featureValues->count();
     for (int ndx = 0; ndx < ct; ndx++) {
         FeatureValue* fv = _featureValues->at(ndx);

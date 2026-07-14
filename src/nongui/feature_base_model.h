@@ -8,6 +8,7 @@
 
 #include <atomic>
 
+#include <QMutex>
 #include <QObject>
 
 #include "ddcutil_types.h"
@@ -101,8 +102,12 @@ protected:
 #endif
 
 private:
-    int modelVcpValueIndex(uint8_t feature_code);
+    int modelVcpValueIndex(uint8_t feature_code);   // caller must hold _valuesMutex
 
+    // Guards _featureValues and _featuresChecked, which are written on the
+    // VcpThread and read on the GUI thread.  mutable so that const accessors
+    // can lock it.
+    mutable QMutex           _valuesMutex;
     QVector<FeatureValue*> * _featureValues;
  // DDCA_Feature_Metadata *  _featureMetadata[256] = {NULL}; //unused
  // DDCA_Status              _featureStatusCode[256];    // side table for now, include in FeatureValue?  UNUSED
