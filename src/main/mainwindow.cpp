@@ -441,6 +441,16 @@ void MainWindow::freeMonitors() {
    QObject::disconnect(_toolbarDisplayCB, SIGNAL(currentIndexChanged(int)),
                        this,              SLOT(  displaySelectorCombobox_currentIndexChanged(int)));
 
+   // initMonitors() runs on every Redetect and reconnects these; disconnect
+   // them here (as with the combo box above) so the connections do not
+   // accumulate and fire the view slots once per past Redetect.
+   QObject::disconnect(this, &MainWindow::signalMonitorSummaryView,
+                       this, &MainWindow::on_actionMonitorSummary_triggered);
+   QObject::disconnect(this, &MainWindow::signalCapabilitiesView,
+                       this, &MainWindow::on_actionCapabilities_triggered);
+   QObject::disconnect(this, &MainWindow::signalFeaturesView,
+                       this, &MainWindow::on_actionFeaturesScrollArea_triggered);
+
    int ct = _toolbarDisplayCB->count();
    TRACECF_NOPREFIX(debug,"_toolbarDisplayCB->size() = %d", ct);
    for (int ndx = ct-1; ndx >= 0; ndx--) {
