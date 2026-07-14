@@ -6,6 +6,8 @@
 #ifndef FEATURE_VALUE_H
 #define FEATURE_VALUE_H
 
+#include <atomic>
+
 #include <QMetaType>
 
 #include "ddcutil_types.h"
@@ -61,7 +63,8 @@ public:
     int                      _id;
 
 private:
-    static int               nextId;
+    // atomic: FeatureValue instances are constructed on each monitor's VcpThread
+    static std::atomic<int>  nextId;
     const char *             _cls = "FeatureValue";   // the no-arg constructor does not set it
     uint8_t                  _featureCode = 0;
     DDCA_Display_Ref         _dref   = NULL;

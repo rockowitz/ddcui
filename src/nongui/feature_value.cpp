@@ -16,7 +16,7 @@
 
 #include "nongui/feature_value.h"
 
-int FeatureValue::nextId = 0;
+std::atomic<int> FeatureValue::nextId{0};
 
 FeatureValue::FeatureValue()
 {
