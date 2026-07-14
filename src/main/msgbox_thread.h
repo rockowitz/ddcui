@@ -10,6 +10,8 @@
 #ifndef MSGBOX_THREAD_H
 #define MSGBOX_THREAD_H
 
+#include <atomic>
+
 #include <QObject>
 #include <QThread>
 #include <QMessageBox>
@@ -26,6 +28,7 @@ public:
     MsgBoxThread(MsgBoxQueue *requestQueue);
     ~MsgBoxThread();
     void run() override;
+    void stop();   // request termination and wait for the thread to exit
 
 signals:
     void postSerialMsgBox(QString boxTitle, QString boxText, QMessageBox::Icon boxIcon);
@@ -36,12 +39,13 @@ public slots:
 private:
      // void showSerialMsgBox(QString title, QString text, QMessageBox::Icon icon);
 
-    const char *   _cls = "MsgBoxThread";
-    MsgBoxQueue *  _requestQueue = nullptr;
-    QSemaphore *   _semaphore = nullptr;
+    const char *      _cls = "MsgBoxThread";
+    MsgBoxQueue *     _requestQueue = nullptr;
+    QSemaphore *      _semaphore = nullptr;
     // char  *        _lastMsgText = nullptr;
-    QString        _lastText;
-    qint64         _lastTextMillis = 0;   // when _lastText was posted
+    QString           _lastText;
+    qint64            _lastTextMillis = 0;   // when _lastText was posted
+    std::atomic<bool> _stopRequested{false};
 };
 
 void init_msgbox_thread();

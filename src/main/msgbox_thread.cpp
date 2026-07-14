@@ -53,39 +53,57 @@ void MsgBoxThread::run() {
     QThread::msleep(initial_sleep_millis);
     TRACECF_NOPREFIX(debugThread, "Initial sleep complete");
 
-    while (true) {    // eclipse doesn't recognize keyword forever
+    while (!_stopRequested.load()) {    // eclipse doesn't recognize keyword forever
         TRACECF_NOPREFIX(debugThread, "Waiting to pop"); fflush(stdout);
         MsgBoxQueueEntry * rqst = this->_requestQueue->pop();
-        TRACECF_NOPREFIX(debugThread, "Popped: _boxTitle: %s, _boxText: %s",
-                                QS2S(rqst->_boxTitle), QS2S(rqst->_boxText));
-        TRACECF_NOPREFIX(debugThread, "_lastText: %s", QS2S(_lastText));
-        // Duplicate message can occur becuase UDEV doesn't report disconnection
-        // events immediately, but instead just before a subsequent connection.
-        // In the meantime, a DDCRC_DISCONNECTED status code on a feature request
-        // causes a disconnected message to be posted.
-        // Suppress duplicates only within a time window, o.w. a legitimately
-        // repeated message (e.g. the same monitor disconnecting again much
-        // later) is dropped forever.
-        const qint64 duplicate_suppression_millis = 60 * 1000;
-        qint64 nowMillis = QDateTime::currentMSecsSinceEpoch();
-        bool duplicate = (rqst->_boxText == _lastText &&
-                          (nowMillis - _lastTextMillis) < duplicate_suppression_millis);
-        if (!duplicate) {
-           _semaphore->acquire();
-           TRACECF_NOPREFIX(debugThread, "Acquired semaphore");
-           emit postSerialMsgBox(rqst->_boxTitle, rqst->_boxText, rqst->_boxIcon);
-           // requires MainWindow; clearer since MainWindow::showSerialMsgBox is what gets called
-           // but would require knowing MainWindow
-           // showSerialMsgBox(rqst->_boxTitle, rqst->_boxText, rqst->_boxIcon);
-           _lastText = rqst->_boxText;
-           _lastTextMillis = nowMillis;
-        }
-        else {
-           TRACECF_NOPREFIX(debugThread, "Skipping duplicate message");
+        // stop() wakes pop() with a sentinel entry; do not display it
+        if (!_stopRequested.load()) {
+           TRACECF_NOPREFIX(debugThread, "Popped: _boxTitle: %s, _boxText: %s",
+                                   QS2S(rqst->_boxTitle), QS2S(rqst->_boxText));
+           TRACECF_NOPREFIX(debugThread, "_lastText: %s", QS2S(_lastText));
+           // Duplicate message can occur becuase UDEV doesn't report disconnection
+           // events immediately, but instead just before a subsequent connection.
+           // In the meantime, a DDCRC_DISCONNECTED status code on a feature request
+           // causes a disconnected message to be posted.
+           // Suppress duplicates only within a time window, o.w. a legitimately
+           // repeated message (e.g. the same monitor disconnecting again much
+           // later) is dropped forever.
+           const qint64 duplicate_suppression_millis = 60 * 1000;
+           qint64 nowMillis = QDateTime::currentMSecsSinceEpoch();
+           bool duplicate = (rqst->_boxText == _lastText &&
+                             (nowMillis - _lastTextMillis) < duplicate_suppression_millis);
+           if (!duplicate) {
+              _semaphore->acquire();
+              // stop() may have released the semaphore to unblock us; recheck
+              if (!_stopRequested.load()) {
+                 TRACECF_NOPREFIX(debugThread, "Acquired semaphore");
+                 emit postSerialMsgBox(rqst->_boxTitle, rqst->_boxText, rqst->_boxIcon);
+                 // requires MainWindow; clearer since MainWindow::showSerialMsgBox is what gets called
+                 // but would require knowing MainWindow
+                 // showSerialMsgBox(rqst->_boxTitle, rqst->_boxText, rqst->_boxIcon);
+                 _lastText = rqst->_boxText;
+                 _lastTextMillis = nowMillis;
+              }
+           }
+           else {
+              TRACECF_NOPREFIX(debugThread, "Skipping duplicate message");
+           }
         }
         delete rqst;
     }
     TRACECF_DONE(debugThread, "Exiting");
+}
+
+// Called from the GUI thread to shut the thread down cleanly.
+void MsgBoxThread::stop() {
+   TRACECF_STARTING(debugThread, "");
+   _stopRequested.store(true);
+   // Unblock run() whether it is waiting for a queued message (pop()) or for
+   // the currently displayed dialog to be dismissed (semaphore->acquire()).
+   _semaphore->release();
+   _requestQueue->put(new MsgBoxQueueEntry(QString(), QString(), QMessageBox::NoIcon));
+   wait();     // join; returns immediately if the thread was never started
+   TRACECF_DONE(debugThread, "");
 }
 
 #ifdef NO
@@ -116,5 +134,6 @@ void init_msgbox_thread() {
    DBGF(debug, "Starting");
    RTTI_ADD_METHOD(MsgBoxThread::MsgBoxThread);
    RTTI_ADD_METHOD(MsgBoxThread::msbgoxClosed);
+   RTTI_ADD_METHOD(MsgBoxThread::stop);
    DBGF(debug, "Done");
 }

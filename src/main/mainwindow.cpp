@@ -854,10 +854,17 @@ MainWindow::~MainWindow()
     delete _feature_selector;
     delete _otherOptionsState;
     delete _uiOptionsState;
-    _msgBoxThread->quit();
+
+    // Tear down monitors first: halting their VcpThreads can still post
+    // messages (e.g. markDisconnected()) to _msgBoxQueue, so the consumer
+    // thread must remain running until freeMonitors() completes.
+    freeMonitors();
+
+    _msgBoxThread->stop();   // request termination and join
+    delete _msgBoxThread;
+    _msgBoxThread = nullptr;
     TRACEMCF_DONE(debug, "_msgBoxThread halted");
 
-    freeMonitors();
     free(_drefs);
     TRACECF_DONE(debug, "");
     free((void*) _cls);
