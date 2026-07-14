@@ -90,8 +90,8 @@ HelpDialog::HelpDialog(char * simpleFn, char * title, QWidget* parent)
 
 HelpDialog::~HelpDialog() {
    free(_cls);
-   delete _buttons;
-   delete _textBrowser;
+   // _buttons and _textBrowser are children of this dialog (added to its
+   // layout), so Qt deletes them with the dialog; no manual delete needed.
 }
 
 
