@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.7.0] 2026-07-15
+## [0.7.0] 2026-07-15     draft
 
 Requires libddcutil.so.5.5 from ddcutil 2.2.7 or later.
 
