@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.7.0] 2026-05-20
+## [0.7.0] 2026-07-15
 
 Requires libddcutil.so.5.5 from ddcutil 2.2.7 or later.
 
@@ -86,6 +86,37 @@ Commands
     - Typo in environment variable name (LD_LIBRARY_PATH) was misspelled 
       "LD_LIBRRARY_PATH". Caused invalid diagnostic message.  
     - Miscellaneous message typos.
+- Thread safety: serialized concurrent access to shared model and queue state
+  that runs across ddcui's worker threads.
+    - **FeatureBaseModel** guards **_featureValues** and **_featuresChecked**
+      with a mutex, makes **_caps_check_complete** atomic (set after the data
+      fields), and makes the **FeatureValue** id counter atomic.
+    - **MsgBoxQueue** serializes its queue with its mutex, and
+      **VcpRequestQueue::pop()** guards the condition-variable wait with a loop
+      rather than a single test.
+    - Worker threads shut down cleanly: **MsgBoxThread** terminates on shutdown,
+      and the **Monitor** destructor halts the request queue rather than
+      posting a halt request.
+- Robustness: many places that asserted on libddcutil API results, or on the
+  presence of feature information, now handle failure gracefully instead of
+  crashing — main window API-result handling and key-release event, a missing
+  **FeatureValue** on value update, null feature metadata in the feature and
+  value widgets, and display-info and feature-list query failures. Several
+  previously uninitialized member variables are now initialized (feature and
+  value widgets, spin slider, main window pointers, and the getvcp value
+  record).
+- Memory leaks and stale state fixed: feature-value instances are freed in the
+  **FeatureBaseModel** destructor; leaks and stale state on feature reload; a
+  custom feature-list parse error path; view-signal connections accumulating
+  across monitor reloads; summary, capabilities, and dialog child widgets; and
+  a dangling pointer in trace code.
+- User interface fixes: remove the correct combo box entry when a monitor is
+  removed; show the invalid-value message for aux fields; read both comboboxes
+  when setting a byte value; forward focus and mouse events from the number
+  entry widget; remove a duplicate value-widget signal connection; expire
+  duplicate-message suppression after 60 seconds; bound the capabilities retry
+  loop; and correct the ***--syslog*** help text.
+- Corrected several malformed trace format strings.
 
 
 ## [0.6.0] 2025-02-15
