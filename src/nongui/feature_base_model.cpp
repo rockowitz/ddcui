@@ -210,9 +210,6 @@ void   FeatureBaseModel::modelVcpValueSet(
                            fv->_id, bs256_to_string_t(fv->_observedNcValues, "", " "));
 
         // Not needed, only thing that matters is end initial load
-        // if (debugSignals)
-        //     printf("(%s::%s) Emitting signalFeatureAdded()\n", _cls, __func__); fflush(stdout);
-        // emit signalFeatureAdded(*fv);
         // notifyFeatureChangeObservers(feature_code);   // alternative
     }
     else {

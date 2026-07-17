@@ -8,8 +8,6 @@
 
 #include <atomic>
 
-#include <QMetaType>
-
 #include "ddcutil_types.h"
 
 #include "c_util/data_structures.h"
@@ -21,7 +19,7 @@ class FeatureValue
 {
 
 public:
-    // no-arg constructor needed for Q_METATYPE
+    // no-arg constructor (previously required by Q_DECLARE_METATYPE)
     FeatureValue();
 
     FeatureValue(
@@ -53,9 +51,11 @@ public:
  // DDCA_Monitor_Model_Key   mmid()        const;
 
 private:
-    // disable - fails, QT uses copy constructor
-    // FeatureValue(const FeatureValue& original);
-    // FeatureValue& operator=(const FeatureValue& original);
+    // Non-copyable: this class owns _finfo and frees it in the destructor,
+    // so a shallow copy would double-free.  (Copyability was previously forced
+    // by Q_DECLARE_METATYPE, now removed.)
+    FeatureValue(const FeatureValue& original) = delete;
+    FeatureValue& operator=(const FeatureValue& original) = delete;
 
 
 public:
@@ -73,8 +73,6 @@ private:
     DDCA_Non_Table_Vcp_Value _value;     // use this or individual bytes? DDCA_Non_Table_Value needed for get_formatted_value call
     DDCA_Status              _getvcpStatus = 0; // an experiment
 };
-
-Q_DECLARE_METATYPE(FeatureValue)
 
 #endif // FEATURE_VALUE_H
 
