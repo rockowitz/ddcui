@@ -26,18 +26,28 @@
 const int  FeatureRowHeight = 22;
 const int  FeatureHeaderHeight = 22;
 
-const QFont FeatureValueTextFont(       "SansSerif",  8, QFont::Normal);
-const QFont FeatureValueMonoFont(       "Monospace",  8, QFont::Normal);    // used?
-const QFont FeatureValueButtonFont(     "Serif",      8, QFont::Normal);
-const QFont FeatureValueNumberEntryFont("Monospace",  8, QFont::Normal);
-const QFont FeatureValueComboBoxFont(   "SansSerif",  8, QFont::Normal);
-const QFont FeatureValueHeaderFont(     "SansSerif",  8, QFont::Bold);
-QFont MainMenuFont2(                    "DejaVu Sans [Qt Embedded]",
-                                                     10, QFont::Normal);
+// Default-constructed here (a QFont should not be fully specified before the
+// QApplication exists); the family/size/weight are set in init_core(), which
+// runs after the QApplication is created.
+QFont FeatureValueTextFont;
+QFont FeatureValueMonoFont;    // used?
+QFont FeatureValueButtonFont;
+QFont FeatureValueNumberEntryFont;
+QFont FeatureValueComboBoxFont;
+QFont FeatureValueHeaderFont;
+QFont MainMenuFont2;
 
 void init_core() {
+   FeatureValueTextFont        = QFont("SansSerif",  8, QFont::Normal);
+   FeatureValueMonoFont        = QFont("Monospace",  8, QFont::Normal);
+   FeatureValueButtonFont      = QFont("Serif",      8, QFont::Normal);
+   FeatureValueNumberEntryFont = QFont("Monospace",  8, QFont::Normal);
+   FeatureValueComboBoxFont    = QFont("SansSerif",  8, QFont::Normal);
+   FeatureValueHeaderFont      = QFont("SansSerif",  8, QFont::Bold);
+
+   MainMenuFont2 = QFont("DejaVu Sans [Qt Embedded]", 10, QFont::Normal);
    MainMenuFont2.setKerning(true);
-   MainMenuFont2.setStyleStrategy(   QFont::PreferDefault);
+   MainMenuFont2.setStyleStrategy(QFont::PreferDefault);
 }
 
 

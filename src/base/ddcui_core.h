@@ -29,12 +29,15 @@ const int FeatureWidgetType = QListWidgetItem::UserType+1;
 extern const int FeatureRowHeight;
 extern const int FeatureHeaderHeight;
 
-extern const QFont FeatureValueTextFont;
-extern const QFont FeatureValueMonoFont;
-extern const QFont FeatureValueButtonFont;
-extern const QFont FeatureValueNumberEntryFont;
-extern const QFont FeatureValueComboBoxFont;
-extern const QFont FeatureValueHeaderFont;
+// Not const: default-constructed at file scope, given their actual values in
+// init_core() after the QApplication exists (a QFont should not be fully
+// specified before QApplication).
+extern QFont FeatureValueTextFont;
+extern QFont FeatureValueMonoFont;
+extern QFont FeatureValueButtonFont;
+extern QFont FeatureValueNumberEntryFont;
+extern QFont FeatureValueComboBoxFont;
+extern QFont FeatureValueHeaderFont;
 extern QFont MainMenuFont2;
 
 void init_core();
