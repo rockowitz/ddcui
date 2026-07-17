@@ -56,9 +56,9 @@ Commands
 
 ### Changed
 
-- CMakeLists.txt defaults to QT 6. The minimum supported QT 6 version is 6.7.
-  To build with QT5, use cmake argument ***-DUSE_QT5=ON***. Support for QT5 
-  will be removed in a later release.
+- Support for Qt5 has been removed. ddcui now requires Qt 6, minimum version
+  6.7. The ***-DUSE_QT5=ON*** cmake option and the Qt5/Qt6 conditional code
+  have been removed.
 - The check for the model name specified in option ***--model***
   is now case-insensitive.
 - Improved tracing facilities.
