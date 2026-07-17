@@ -13,11 +13,11 @@
 
 class UserInterfaceOptionsState : public QObject {
    Q_OBJECT
+   Q_DISABLE_COPY(UserInterfaceOptionsState)   // a QObject is not meaningfully copyable
 
 public:
    UserInterfaceOptionsState();
    UserInterfaceOptionsState(Parsed_Ddcui_Cmd* parsed_cmd);
-   UserInterfaceOptionsState(UserInterfaceOptionsState &other);
 
    static const bool CkrDefault = false;
 

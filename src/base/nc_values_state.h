@@ -22,6 +22,7 @@ typedef enum {
 
 class NcValuesState : public QObject {
    Q_OBJECT
+   Q_DISABLE_COPY(NcValuesState)   // a QObject is not meaningfully copyable
 
 public:
    static const NcValuesSource DefaultNcValuesSource = NcValuesFromCapabilities;
@@ -29,7 +30,6 @@ public:
 
    NcValuesState();
    NcValuesState(Parsed_Ddcui_Cmd * parsedCmd);
-   NcValuesState(const NcValuesState &other);
 
    void changeNcValuesSource(NcValuesSource mode, bool useLatestNcValues);
 

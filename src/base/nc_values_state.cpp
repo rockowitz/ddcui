@@ -37,11 +37,6 @@ NcValuesState::NcValuesState(Parsed_Ddcui_Cmd * parsed_cmd) {
       _ncValuesSource = parsedNcValuesSource_to_NcValuesSource(parsed_cmd->nc_values_source);
 }
 
-NcValuesState::NcValuesState(const NcValuesState &other) : QObject() {
-   _ncValuesSource = other._ncValuesSource;
-   // _useLatestNcValues = other._useLatestNcValues;
-}
-
 #ifdef UNUSED
 void NcValuesState::changeNcValuesSource(NcValuesSource mode, bool useLatestNcValues) {
    bool changed = (mode != _ncValuesSource || useLatestNcValues != _useLatestNcValues);

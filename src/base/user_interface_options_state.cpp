@@ -29,13 +29,6 @@
     TRACEMCF_DONE(debug, "");
  }
 
- UserInterfaceOptionsState::UserInterfaceOptionsState(UserInterfaceOptionsState &other)
-     : QObject()
-     , _cls(metaObject()->className())
- {
-    _controlKeyRequired = other._controlKeyRequired;
- }
-
  void UserInterfaceOptionsState::setControlKeyRequired(bool onoff) {
     bool debug = false;
     bool old =   _controlKeyRequired;
