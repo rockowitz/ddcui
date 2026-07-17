@@ -42,17 +42,20 @@ void FeaturesScrollArea::resizeEvent(QResizeEvent * evt)
    QSize oldSz = evt->oldSize();
    QSize newSz = evt->size();
    QWidget * contents = widget();
-   QSize contentsSize = contents->size();
-   // TODO: get calculate the actual scrollbar width
-   QSize newSize = QSize(contentsSize.width()-24, contentsSize.height());
-   contents->resize(newSize);
-   evt->ignore();
+   // widget() is null until setWidget() has been called
+   if (contents) {
+      QSize contentsSize = contents->size();
+      // TODO: get calculate the actual scrollbar width
+      QSize newSize = QSize(contentsSize.width()-24, contentsSize.height());
+      contents->resize(newSize);
 
-   if (traceResizeEvents) {
-      TRACEC_EVENT("old size = %d, %d", oldSz.width(), oldSz.height());
-      TRACEC_EVENT("new size = %d, %d", newSz.width(), newSz.height());
-      TRACEC_EVENT("Current contents size %d,%d", contentsSize.width(), contentsSize.height());
-      TRACEC_EVENT("Resizing contents to  %d,%d", newSize.width(), newSize.height());
+      if (traceResizeEvents) {
+         TRACEC_EVENT("old size = %d, %d", oldSz.width(), oldSz.height());
+         TRACEC_EVENT("new size = %d, %d", newSz.width(), newSz.height());
+         TRACEC_EVENT("Current contents size %d,%d", contentsSize.width(), contentsSize.height());
+         TRACEC_EVENT("Resizing contents to  %d,%d", newSize.width(), newSize.height());
+      }
    }
+   evt->ignore();
 }
 
