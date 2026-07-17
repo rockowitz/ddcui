@@ -58,8 +58,8 @@ Monitor::Monitor(DDCA_Display_Info2 * display_info, int monitorNumber)
       _vcpThread->start();
       // _vcp_threads.append(curThread);
 
-      QObject::connect(_baseModel,  SIGNAL(signalVcpRequest(VcpRequest*)),
-                       this, SLOT(  putVcpRequest(VcpRequest*)));
+      QObject::connect(_baseModel, &FeatureBaseModel::signalVcpRequest,
+                       this,       &Monitor::putVcpRequest);
 
 #ifdef OUT
       TRACECF_NOPREFIXtrue, "connecting reportDisconnected");
@@ -110,8 +110,8 @@ Monitor::~Monitor() {
       }
       TRACECF_NOPREFIX(debug, "_vcpThread finished");
 
-      QObject::disconnect(_baseModel, SIGNAL(signalVcpRequest(VcpRequest*)),
-                          this,       SLOT(  putVcpRequest(VcpRequest*)));
+      QObject::disconnect(_baseModel, &FeatureBaseModel::signalVcpRequest,
+                          this,       &Monitor::putVcpRequest);
       delete _requestQueue;
       delete _vcpThread;
       delete _baseModel;

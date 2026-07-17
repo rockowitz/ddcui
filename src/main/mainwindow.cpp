@@ -443,8 +443,8 @@ void MainWindow::freeMonitors() {
       TRACECF_NOPREFIX(debug, "deleted monitor ndx=%d", ndx);
    }
 
-   QObject::disconnect(_toolbarDisplayCB, SIGNAL(currentIndexChanged(int)),
-                       this,              SLOT(  displaySelectorCombobox_currentIndexChanged(int)));
+   QObject::disconnect(_toolbarDisplayCB, &QComboBox::currentIndexChanged,
+                       this,              &MainWindow::displaySelectorCombobox_currentIndexChanged);
 
    // initMonitors() runs on every Redetect and reconnects these; disconnect
    // them here (as with the combo box above) so the connections do not
@@ -632,8 +632,8 @@ void MainWindow::initMonitors(Parsed_Ddcui_Cmd * parsed_cmd) {
 #endif
     setInitialDisplayIndex(parsed_cmd);
 
-    connect(_toolbarDisplayCB, SIGNAL(currentIndexChanged(int)),
-            this,              SLOT(  displaySelectorCombobox_currentIndexChanged(int)));
+    connect(_toolbarDisplayCB, &QComboBox::currentIndexChanged,
+            this,              &MainWindow::displaySelectorCombobox_currentIndexChanged);
 
 #ifdef UNNEEDED
     connect(_toolbarDisplayCB, SIGNAL(activated(int)),
