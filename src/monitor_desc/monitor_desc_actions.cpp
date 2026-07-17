@@ -23,11 +23,11 @@ capture_display_info_report(
        printf("(%s) Starting. dinfo=%p\n", __func__, (void*)dinfo);
        fflush(stdout);
     }
-    ddca_start_capture(DDCA_CAPTURE_NOOPTS);
     DDCA_Output_Level saved_ol = ddca_set_output_level(DDCA_OL_VERBOSE);
+    ddca_start_capture(DDCA_CAPTURE_NOOPTS);
     ddca_report_display_info2(dinfo, 0);
-    ddca_set_output_level(saved_ol);
     char * s = ddca_end_capture();
+    ddca_set_output_level(saved_ol);
     if (debug) {
        printf("(%s) Done.\n", __func__);
        fflush(stdout);
@@ -50,8 +50,7 @@ capture_capabilities_report(
        DDCA_Capabilities *parsed_caps = monitor->_baseModel->_parsed_caps;
        // DDCA_Monitor_Model_Key mmid = ddca_monitor_model_key_from_dref(dref);
        // wrap in collector
-       DDCA_Output_Level saved_ol = ddca_get_output_level();
-       ddca_set_output_level(DDCA_OL_VERBOSE);
+       DDCA_Output_Level saved_ol = ddca_set_output_level(DDCA_OL_VERBOSE);
        ddca_start_capture(DDCA_CAPTURE_NOOPTS);
        ddca_report_parsed_capabilities_by_dref(parsed_caps, dref, 0);
        char * caps_report = ddca_end_capture();
