@@ -86,8 +86,8 @@ ValueResetWidget::ValueResetWidget(QWidget *parent):
    // QObject::connect(_resetButton,  &QAbstractButton::released),
    //                  this,          &ValueResetWidget::on_resetButton_pressed );
 
-   QObject::connect(_resetButton,  SIGNAL(released()),
-                    this,          SLOT(  on_resetButton_pressed()) );
+   QObject::connect(_resetButton, &QPushButton::released,
+                    this,         &ValueResetWidget::on_resetButton_pressed);
    TRACEMCF_DONE(debug, "");
 }
 

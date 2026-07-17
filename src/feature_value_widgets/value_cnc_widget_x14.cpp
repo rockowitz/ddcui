@@ -94,8 +94,8 @@ ValueCncWidgetX14::ValueCncWidgetX14(QWidget *parent):
         this->setStyleSheet("background-color:cyan;");
     }
 
-    QObject::connect(_cb,  SIGNAL(activated(int)),
-                     this, SLOT(combobox_activated(int)) );
+    QObject::connect(_cb,  &QComboBox::activated,
+                     this, &ValueCncWidgetX14::combobox_activated);
 
 #endif
 

@@ -95,8 +95,8 @@ ValueNcWidget::ValueNcWidget(QWidget *parent):
     _layout = new QHBoxLayout();
     createWidgets();
     layoutWidget();
-    QObject::connect(_cb,  SIGNAL(activated(int)),
-                     this, SLOT(combobox_activated(int)) );
+    QObject::connect(_cb,  &QComboBox::activated,
+                     this, &ValueNcWidget::combobox_activated);
 
     TRACEMCF_DONE(debug, "");
 }

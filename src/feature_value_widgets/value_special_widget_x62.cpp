@@ -59,8 +59,8 @@ ValueSpecialWidgetX62::ValueSpecialWidgetX62(QWidget *parent)
 
     loadComboBox();
 
-    QObject::connect(_cb,  SIGNAL(activated(int)),
-                     this, SLOT(combobox_activated(int)) );
+    QObject::connect(_cb,  &QComboBox::activated,
+                     this, &ValueSpecialWidgetX62::combobox_activated);
 
     TRACEMCF_DONE(debug, "");
 }

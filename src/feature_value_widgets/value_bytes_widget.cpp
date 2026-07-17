@@ -198,11 +198,11 @@ ValueBytesWidget::ValueBytesWidget(QWidget *parent)
     createWidgets();
     layoutWidget();
 
-    QObject::connect(_shValue,  SIGNAL(activated(int)),
-                     this, SLOT(when_combobox_activated(int)) );
+    QObject::connect(_shValue, &QComboBox::activated,
+                     this,     &ValueBytesWidget::when_combobox_activated);
 
-    QObject::connect(_slValue,  SIGNAL(activated(int)),
-                     this, SLOT(when_combobox_activated(int)) );
+    QObject::connect(_slValue, &QComboBox::activated,
+                     this,     &ValueBytesWidget::when_combobox_activated);
 
     connect(_applyButton,  &QPushButton::clicked, this, &ValueBytesWidget::onApplyButtonClicked);
     connect(_cancelButton, &QPushButton::clicked, this, &ValueBytesWidget::onCancelButtonClicked);

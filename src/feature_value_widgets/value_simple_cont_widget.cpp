@@ -86,8 +86,8 @@ ValueSimpleContWidget::ValueSimpleContWidget(QWidget *parent)
     additionalWidgets();
     QHBoxLayout * layout = new QHBoxLayout();
     layoutWidget(layout);
-    connect( _spinSlider, SIGNAL(featureValueChanged(uint8_t, uint8_t, uint8_t)),
-             this,        SLOT(onFeatureValueChanged(uint8_t, uint8_t, uint8_t)));
+    connect(_spinSlider, &SpinSlider::featureValueChanged,
+            this,        &ValueSimpleContWidget::onFeatureValueChanged);
 
     TRACEMCF_DONE(debug, "" );
 }

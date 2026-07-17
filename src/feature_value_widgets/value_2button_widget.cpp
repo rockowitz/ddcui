@@ -81,8 +81,8 @@ Value2ButtonWidget::Value2ButtonWidget(
    TRACEMCF_STARTING(debug, "_id=%d, _featureCode=0x%02x", _id, _featureCode );
    layoutWidget();
 
-   QObject::connect(_button1, SIGNAL(released()),  this, SLOT(  on_button1_pressed()) );
-   QObject::connect(_button2, SIGNAL(released()),  this, SLOT(  on_button2_pressed()) );
+   QObject::connect(_button1, &QPushButton::released, this, &Value2ButtonWidget::on_button1_pressed);
+   QObject::connect(_button2, &QPushButton::released, this, &Value2ButtonWidget::on_button2_pressed);
 
    TRACEMCF_DONE(debug, "");
 }
