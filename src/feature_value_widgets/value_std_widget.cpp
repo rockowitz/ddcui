@@ -44,10 +44,9 @@ void ValueStdWidget::layoutWidget() {
      _valueField->setSizePolicy(sp);
 #endif
 
-     QSizePolicy* sizePolicy = new QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
-     sizePolicy->setHorizontalStretch(1);
-     _valueField->setSizePolicy(*sizePolicy);
-     delete sizePolicy;
+     QSizePolicy sizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+     sizePolicy.setHorizontalStretch(1);
+     _valueField->setSizePolicy(sizePolicy);
 
      QHBoxLayout * layout = new QHBoxLayout();
      layout->setContentsMargins(0,0,0,0);

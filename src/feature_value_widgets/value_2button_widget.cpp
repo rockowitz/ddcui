@@ -36,12 +36,12 @@ void Value2ButtonWidget::layoutWidget()
    _button2 = new QPushButton();
    _button2->setMaximumSize(60,buttonHeight);
 
-    QSizePolicy* sizePolicy = new QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    _button1->setSizePolicy(*sizePolicy);
+    QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    _button1->setSizePolicy(sizePolicy);
     _button1->setFont(FeatureValueButtonFont);
     // _cb->setFrameStyle(QFrame::Sunken | QFrame::Panel);   // not a method
     // _button1->setStyleSheet("background-color:white;");
-    _button2->setSizePolicy(*sizePolicy);
+    _button2->setSizePolicy(sizePolicy);
     _button2->setFont(FeatureValueButtonFont);
     // _button2->setStyleSheet("background-color:white;color:black;");
     _savedBackgroundColor = _button1->backgroundRole();
@@ -53,8 +53,6 @@ void Value2ButtonWidget::layoutWidget()
     layout->addStretch(1);
     layout->setContentsMargins(0,0,0,0);
     setLayout(layout);
-
-    delete sizePolicy;
 
     if (debugLayout) {
        this->setStyleSheet("background-color:cyan;");

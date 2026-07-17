@@ -30,8 +30,8 @@ void ValueResetWidget::layoutWidget() {
    _resetButton = new QPushButton("Restore");
    _resetButton->setMaximumSize(60,20);
 
-   QSizePolicy* sizePolicy = new QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-   _resetButton->setSizePolicy(*sizePolicy);
+   QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+   _resetButton->setSizePolicy(sizePolicy);
    _resetButton->setFont(FeatureValueButtonFont);
    //   _resetButton->setStyleSheet("background-color:white;color:black;");
    _savedBackgroundColor = _resetButton->backgroundRole();
@@ -42,8 +42,6 @@ void ValueResetWidget::layoutWidget() {
    layout->addStretch(1);
    layout->setContentsMargins(0,0,0,0);
    setLayout(layout);
-
-   delete(sizePolicy);
 
    if (debugLayout) {
       this->setStyleSheet("background-color:cyan;");
