@@ -11,7 +11,6 @@ else()
    set(VERBOSE VERBOSE)
 endif()
 
-set(ddcui_qt5_min_version    5.5)
 # QCheckBox::checkStateChanged() added in 6.7
 # QCheckBox::stateChanged() deprecated in 6.9
 set(ddcui_qt6_min_version    6.7)
@@ -20,20 +19,9 @@ set(ddcui_libddcutil_version 2.2.7)
 set(cmake_build_type_default "RelWithDebInfo")
 
 message(${VERBOSE} "Required Minimum Versions:")
-message(${VERBOSE} "  ddcui_qt5_min_version:     ${ddcui_qt5_min_version}" )
 message(${VERBOSE} "  ddcui_qt6_min_version:     ${ddcui_qt6_min_version}" )
 message(${VERBOSE} "  ddcui_qlib_version:        ${ddcui_glib_version}" )
 message(${VERBOSE} "  ddcui_libddcutil_version:  ${ddcui_libddcutil_version}" ) 
-
-option(USE_QT5 "Use QT5 instead of QT6" OFF)
-option(USE_QT6 "Use QT6 (default)" ON)
-if (USE_QT5)
-   set (USE_QT6 OFF)
-endif()
-
-message(STATUS "USE_QT5:                   ${USE_QT5}")
-message(STATUS "USE_QT6:                   ${USE_QT6}")
-
 
 option(USE_CCACHE "Use ccache" ON)
 message(STATUS "USE_CCACHE:                ${USE_CCACHE}" )
@@ -137,25 +125,13 @@ message( ${VERBOSE} "  CMAKE_AUTOMOC:           ${CMAKE_AUTOMOC}")
 message( ${VERBOSE} "  CMAKE_AUTORCC:           ${CMAKE_AUTORCC}")
 # message( ${VERBOSE} "AUTOGEN_BUILD_DIR:       ${AUTOGEN_BUILD_DIR}") overrides default location
 
-if (USE_QT6)
-   set(QT6_LIBRARIES Qt6::Widgets )
-   # Ensures all Qt componenets have same version: 
-   find_package(Qt6 ${ddcui_qt6_min_version} COMPONENTS Core Widgets Gui Help REQUIRED)
-   message( ${VERBOSE} "Qt directories:")
-   message( ${VERBOSE} "  Qt6Widgets_INCLUDE_DIRS:  ${Qt6Widgets_INCLUDE_DIRS}" )
-   message( ${VERBOSE} "  Qt6Core_INCLUDE_DIRS:     ${Qt6Core_INCLUDE_DIRS}"    )
-   message( ${VERBOSE} "  Qt6Gui_INCLUDE_DIRS:      ${Qt6Gui_INCLUDE_DIRS}"     )
-   message( ${VERBOSE} "  Qt6Help_INCLUDE_DIRS:     ${Qt6Help_INCLUDE_DIRS}"    )
-else()
-   set(QT5_LIBRARIES Qt5::Widgets )
-   # Ensures all Qt componenets have same version: 
-   find_package(Qt5 ${ddcui_qt5_min_version} COMPONENTS Core Widgets Gui Help REQUIRED)
-   message( ${VERBOSE} "Qt directories:")
-   message( ${VERBOSE} "  Qt5Widgets_INCLUDE_DIRS:  ${Qt5Widgets_INCLUDE_DIRS}" )
-   message( ${VERBOSE} "  Qt5Core_INCLUDE_DIRS:     ${Qt5Core_INCLUDE_DIRS}"    )
-   message( ${VERBOSE} "  Qt5Gui_INCLUDE_DIRS:      ${Qt5Gui_INCLUDE_DIRS}"     )
-   message( ${VERBOSE} "  Qt5Help_INCLUDE_DIRS:     ${Qt5Help_INCLUDE_DIRS}"    )
-endif()
+# Ensures all Qt components have same version:
+find_package(Qt6 ${ddcui_qt6_min_version} COMPONENTS Core Widgets Gui Help REQUIRED)
+message( ${VERBOSE} "Qt directories:")
+message( ${VERBOSE} "  Qt6Widgets_INCLUDE_DIRS:  ${Qt6Widgets_INCLUDE_DIRS}" )
+message( ${VERBOSE} "  Qt6Core_INCLUDE_DIRS:     ${Qt6Core_INCLUDE_DIRS}"    )
+message( ${VERBOSE} "  Qt6Gui_INCLUDE_DIRS:      ${Qt6Gui_INCLUDE_DIRS}"     )
+message( ${VERBOSE} "  Qt6Help_INCLUDE_DIRS:     ${Qt6Help_INCLUDE_DIRS}"    )
 
 find_package (PkgConfig REQUIRED )
 pkg_check_modules(GLIB2 REQUIRED glib-2.0>=${ddcui_glib_version})
@@ -325,25 +301,14 @@ target_compile_options(ddcui PUBLIC "-fPIC" ${coverity_cflags} ${asan_flags})
 
 # redundant: ${QtNGui_INCLUDE_DIRS} ${QtNCore_INCLUDE_DIRS} ${QtNWidgets_INCLUDE_DIRS}.
 #            ${QtNHelp_INCLUDE_DIRS} is a superset of them all
-if (USE_QT6)
-   target_include_directories(ddcui SYSTEM PRIVATE
-                                    ${Qt6Help_INCLUDE_DIRS}
-                                    ${GLIB2_INCLUDE_DIRS}
-                                    ${DDCUTIL_INCLUDE_DIRS})
-else()
-   target_include_directories(ddcui SYSTEM PRIVATE
-                                    ${Qt5Help_INCLUDE_DIRS}
-                                    ${GLIB2_INCLUDE_DIRS}
-                                    ${DDCUTIL_INCLUDE_DIRS})
-endif()
+target_include_directories(ddcui SYSTEM PRIVATE
+                                 ${Qt6Help_INCLUDE_DIRS}
+                                 ${GLIB2_INCLUDE_DIRS}
+                                 ${DDCUTIL_INCLUDE_DIRS})
 
 target_include_directories(ddcui PRIVATE src)
 
-if (USE_QT6)
-   target_link_libraries(ddcui ${ASAN_LIBRARY} Qt6::Widgets Qt6::Help ${GLIB2_LIBRARIES} ${DDCUTIL_LIBRARIES})
-else()
-   target_link_libraries(ddcui ${ASAN_LIBRARY} Qt5::Widgets Qt5::Help ${GLIB2_LIBRARIES} ${DDCUTIL_LIBRARIES})
-endif()
+target_link_libraries(ddcui ${ASAN_LIBRARY} Qt6::Widgets Qt6::Help ${GLIB2_LIBRARIES} ${DDCUTIL_LIBRARIES})
 
 get_property(dirs TARGET ddcui PROPERTY INCLUDE_DIRECTORIES)
 message( ${VERBOSE} "INCLUDE_DIRECTORIES:     ${dirs}" )

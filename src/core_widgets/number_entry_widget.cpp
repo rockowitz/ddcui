@@ -8,13 +8,8 @@
 #include <QtCore/qglobal.h>
 #include <QWidget>
 #include <QString>
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-#include <QRegExp>
-#include <QRegExpValidator>
-#else
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
-#endif
 #include <QLineEdit>
 #include <QValidator>
 

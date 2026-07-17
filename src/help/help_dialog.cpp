@@ -24,11 +24,7 @@ void HelpDialog::createWidgets() {
 
 void HelpDialog::layoutWidgets() {
     setAttribute(Qt::WA_DeleteOnClose);
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    setAttribute(Qt::WA_GroupLeader);
-#else
     setWindowModality(Qt::NonModal);
-#endif
 
     Qt::WindowFlags flags = windowFlags();
     flags &= ~Qt::WindowContextHelpButtonHint;

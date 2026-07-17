@@ -109,11 +109,7 @@ HelpBrowser::HelpBrowser(
    layoutWidgets(navigable);
 
    setAttribute(Qt::WA_DeleteOnClose);
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    setAttribute(Qt::WA_GroupLeader);
-#else
-    setWindowModality(Qt::NonModal);
-#endif
+   setWindowModality(Qt::NonModal);
    // setWindowModality(Qt::ApplicationModal);   // choices: Qt::NonModal, Qt::WindowModal, Qt::ApplicationModal
 
    if (navigable) {

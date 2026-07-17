@@ -108,14 +108,12 @@ void dbgrptQScreen(QScreen * screen) {
    QString s = screen->name();     // on X11, XRandr screen names
    qrpt_Qstring("name", s);
 
-#if QT_VERSION >= QT_VERSION_CHECK(5,9,0)
-   s = screen->manufacturer(); // 5.9
+   s = screen->manufacturer();
    qrpt_Qstring("manufacturer", s);
-   s = screen->model();  // 5.9
+   s = screen->model();
    qrpt_Qstring("model", s);
-   s = screen->serialNumber();   // 5.9
+   s = screen->serialNumber();
    qrpt_Qstring("serialNumber", s);
-#endif
 
    QSizeF sizef = screen->physicalSize();
    qrpt_QSizef("physicalSize", sizef);

@@ -22,11 +22,7 @@
 static const char * metaclass_name(const char * classname) {
    if (!classname)
       return NULL;
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
    const QMetaObject * mo = QMetaType::fromName(classname).metaObject();
-#else
-   const QMetaObject * mo = QMetaType::metaObjectForType(QMetaType::type(classname));
-#endif
    if (mo)
       return mo->className();
    return classname;
