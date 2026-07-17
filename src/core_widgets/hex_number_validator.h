@@ -3,6 +3,10 @@
 // Copyright (C) 2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+// NOTE: HexNumberValidator is currently unused; its only references are under
+// #ifdef METHOD3 (not defined) in number_entry_widget.cpp.  Retained for
+// reference.
+
 #ifndef HEX_NUMBER_VALIDATOR_H_
 #define HEX_NUMBER_VALIDATOR_H_
 

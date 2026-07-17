@@ -3,6 +3,10 @@
 // Copyright (C) 2019 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+// NOTE: HexNumberValidator is currently unused.  It is compiled and linked,
+// but the only references to it are under #ifdef METHOD3 (not defined) in
+// number_entry_widget.cpp.  Retained for reference.
+
 #include "base/ddcui_core.h"
 
 #include "hex_number_validator.h"
