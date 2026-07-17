@@ -76,23 +76,23 @@ SpinSlider::SpinSlider(QWidget * parent)
    if (debug)
       REPORT_BASIC_WIDGET_DIMENSIONS(_spinBox);
 
-   connect(_slider,  SIGNAL(sliderReleased()),
-           this,     SLOT(  onSliderReleased()));
-   connect(_spinBox, SIGNAL(valueChanged(int)),
-           this,     SLOT(  onSpinBoxValueChanged(int)));
+   connect(_slider,  &QSlider::sliderReleased,
+           this,     &SpinSlider::onSliderReleased);
+   connect(_spinBox, &QSpinBox::valueChanged,
+           this,     &SpinSlider::onSpinBoxValueChanged);
 
    // Tie the slider and spinbox together
-   connect(_slider,  SIGNAL(valueChanged(int)),
-           _spinBox, SLOT(  setValue(int)));
-   connect(_spinBox, SIGNAL(valueChanged(int)),
-           _slider,  SLOT(  setValue(int)));
+   connect(_slider,  &QSlider::valueChanged,
+           _spinBox, &QSpinBox::setValue);
+   connect(_spinBox, &QSpinBox::valueChanged,
+           _slider,  &QSlider::setValue);
 
     _spinBoxTimer = new QTimer();
     _spinBoxTimer->setSingleShot(true);
     _spinBoxTimer->setInterval(1000);
 
-    connect(_spinBoxTimer,   SIGNAL(timeout()),
-            this,            SLOT(onSpinBoxTimedOut()));
+    connect(_spinBoxTimer, &QTimer::timeout,
+            this,          &SpinSlider::onSpinBoxTimedOut);
 }
 
 SpinSlider::~SpinSlider() {
