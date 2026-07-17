@@ -50,7 +50,9 @@ private:
    QSpinBox *       _spinBox;
    QTimer *         _spinBoxTimer;
    uint8_t          _featureCode = 0;
-   bool             _isFeatureCodeSet = true;  // for assert()
+#ifdef UNUSED
+   bool             _isFeatureCodeSet = true;  // for assert() - never read
+#endif
    uint16_t         _latestSpinBoxValue = 0;
    // enum          _valueChangeInitiator { ChangedByModel, ChangedByGUI };
 };

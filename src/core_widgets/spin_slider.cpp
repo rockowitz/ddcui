@@ -101,7 +101,9 @@ SpinSlider::~SpinSlider() {
 
 void SpinSlider::setFeatureCode(uint8_t featureCode) {
    _featureCode = featureCode;
+#ifdef UNUSED
    _isFeatureCodeSet = true;
+#endif
 }
 
 void SpinSlider::setRange(int minval, int maxval) {
