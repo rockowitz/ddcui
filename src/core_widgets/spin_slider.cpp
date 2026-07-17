@@ -87,7 +87,7 @@ SpinSlider::SpinSlider(QWidget * parent)
    connect(_spinBox, &QSpinBox::valueChanged,
            _slider,  &QSlider::setValue);
 
-    _spinBoxTimer = new QTimer();
+    _spinBoxTimer = new QTimer(this);   // parented: Qt deletes it with this widget
     _spinBoxTimer->setSingleShot(true);
     _spinBoxTimer->setInterval(1000);
 
@@ -96,7 +96,7 @@ SpinSlider::SpinSlider(QWidget * parent)
 }
 
 SpinSlider::~SpinSlider() {
-   delete _spinBoxTimer;
+   // _spinBoxTimer is parented to this, so Qt deletes it automatically
 }
 
 void SpinSlider::setFeatureCode(uint8_t featureCode) {
