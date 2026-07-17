@@ -47,7 +47,6 @@ void initPlaintextWidget(
       plainTextWidget->setObjectName(QString::asprintf("plainTextWidget-%s-%d", name, monitorNumber));
       plainTextWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
 
-      plainTextWidget->setGeometry(QRect(6, 6, 700, 191));   // was 574,191
       // sizePolicy1.setHeightForWidth(plainTextWidget->sizePolicy().hasHeightForWidth());
       plainTextWidget->setSizePolicy(sizePolicy1);
       plainTextWidget->setMaximumSize(QSize(2000, 16777215));   // 574->2000
