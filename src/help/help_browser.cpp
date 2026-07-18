@@ -46,8 +46,7 @@ void HelpBrowser::createWidgets(bool navigable) {
    }
    // _closeButton = new QPushButton(QDialogButtonBox::Close);  // doesn't compile
    _closeButton = new QPushButton("&Close");
-   _closeButton->setShortcut(tr("Esc"));
-   _closeButton->setShortcut(tr("C"));
+   _closeButton->setShortcut(tr("C"));   // Esc is handled by keyPressEvent()
    _closeButton->setDefault(true);
 }
 
