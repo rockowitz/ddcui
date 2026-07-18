@@ -57,6 +57,9 @@ QString MsgBoxQueueEntry::repr() {
 
 MsgBoxQueue::~MsgBoxQueue()
 {
+   // delete any entries still queued (the consumer thread has already stopped)
+   while (!_queue.isEmpty())
+      delete _queue.dequeue();
 #ifndef USE_MUTEX
    delete _freeBytes;
    delete _usedBytes;
