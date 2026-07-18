@@ -19,8 +19,10 @@ class FeatureValue
 {
 
 public:
-    // no-arg constructor (previously required by Q_DECLARE_METATYPE)
+#ifdef UNUSED
+    // no-arg constructor was needed for Q_DECLARE_METATYPE, which has been removed
     FeatureValue();
+#endif
 
     FeatureValue(
             uint8_t                   featureCode,

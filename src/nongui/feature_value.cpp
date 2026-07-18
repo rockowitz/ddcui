@@ -18,6 +18,8 @@
 
 std::atomic<int> FeatureValue::nextId{0};
 
+#ifdef UNUSED
+// no-arg constructor was needed for Q_DECLARE_METATYPE, which has been removed
 FeatureValue::FeatureValue()
 {
    // memset(&_finfo, 0, sizeof(_finfo));  // avoid -Wmissing-field-initializers
@@ -25,6 +27,7 @@ FeatureValue::FeatureValue()
    _value.mh = _value.ml = _value.sh = _value.sl = 0;
    _id = ++nextId;
 }
+#endif
 
 FeatureValue::FeatureValue(
         uint8_t                  feature_code,
