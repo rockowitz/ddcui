@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.7.0] 2026-07-15     draft
+## [0.7.0] 2026-07-18     draft
 
 Requires libddcutil.so.5.5 from ddcutil 2.2.7 or later.
 
@@ -10,6 +10,8 @@ Requires libddcutil.so.5.5 from ddcutil 2.2.7 or later.
 
 - Option ***--view***, specifies initial view (Summary, Capabilities, or
   Features). The default is Summary.
+- Initial unit tests, built and registered with ctest.  Controlled by cmake
+  option ***BUILD_TESTS*** (default ON); the test binaries are not installed.
 
 #### Special handling for ill-behaved monitors
 
@@ -62,6 +64,9 @@ Commands
 - The check for the model name specified in option ***--model***
   is now case-insensitive.
 - Improved tracing facilities.
+- Internal modernization: string-based SIGNAL/SLOT connections converted to
+  the compile-time checked pointer-to-member form throughout; miscellaneous
+  dead code removed or documented as retained reference code.
  
 ### Fixed
 
@@ -97,6 +102,13 @@ Commands
     - Worker threads shut down cleanly: **MsgBoxThread** terminates on shutdown,
       and the **Monitor** destructor halts the request queue rather than
       posting a halt request.
+    - The Capabilities/Features view gate no longer marks its checks done
+      while the capabilities check is still running, which allowed a later
+      view change to read capabilities state concurrently with the worker
+      thread writing it.
+    - Each **VcpThread**'s DDC simulator keeps its simulated values in a
+      per-instance member rather than function-static state shared across
+      threads.
 - Robustness: many places that asserted on libddcutil API results, or on the
   presence of feature information, now handle failure gracefully instead of
   crashing — main window API-result handling and key-release event, a missing
@@ -116,6 +128,12 @@ Commands
   entry widget; remove a duplicate value-widget signal connection; expire
   duplicate-message suppression after 60 seconds; bound the capabilities retry
   loop; and correct the ***--syslog*** help text.
+- The ***--stats*** help text now documents the ELAPSED and TIME statistics
+  classes, which were accepted but undocumented.
+- Command line parser cleanups: option argument strings are consistently
+  freed after processing, and the developer options ***--i1***/***--i2***
+  now record whether they were specified (distinguishing an explicit 0 from
+  the option being absent, with invalid values rejected).
 - Corrected several malformed trace format strings.
 
 
