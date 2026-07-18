@@ -170,6 +170,9 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
 // gboolean report_freed_excp_flag         = false;
    gboolean timestamp_trace_flag           = false;
    gboolean thread_id_trace_flag           = false;
+   // -V/--version is handled in main() before the parser is invoked;
+   // the option entry exists so that --version appears in --help output
+   // and is not rejected as unrecognized
    gboolean version_flag                   = false;
    gboolean show_styles_flag               = false;
    gboolean show_active_style_flag         = false;
@@ -645,9 +648,6 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
       syslog(LOG_CRIT, "Unrecognized: %s",   s);
       free(s);
       ok = false;
-   }
-
-   if (version_flag) {
    }
 
    // DBGMSF(debug, "Calling g_option_context_free(), context=%p...", context);
