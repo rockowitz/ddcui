@@ -257,7 +257,7 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
 
 // Tuning
       {"stats",    's',  G_OPTION_FLAG_OPTIONAL_ARG,
-                            G_OPTION_ARG_CALLBACK, stats_arg_func,    "Show performance statistics",  "TRIES|ERRORS|CALLS|ALL"},
+                            G_OPTION_ARG_CALLBACK, stats_arg_func,    "Show performance statistics",  "TRIES|ERRORS|CALLS|ELAPSED|ALL"},
 //    {"ddc",      '\0', 0, G_OPTION_ARG_NONE,     &ddc_flag,         "Report DDC protocol and data errors", NULL},
       {"force-slave-address",
                    '\0', 0, G_OPTION_ARG_NONE,     &force_slave_address_true_set, "Deprecated", NULL},
