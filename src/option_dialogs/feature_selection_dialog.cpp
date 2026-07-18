@@ -393,9 +393,8 @@ void FeatureSelectionDialog::on_buttonBox_clicked(QAbstractButton* button)
 {
    if(button == (QAbstractButton*) _ui->buttonBox->button(QDialogButtonBox::Reset) ){
       // TRACE("Reset");
-      FeatureSelector * defaultSelector = new FeatureSelector;
-      useSelectorData(defaultSelector);
-      delete defaultSelector;
+      FeatureSelector defaultSelector;
+      useSelectorData(&defaultSelector);
    }
 }
 
