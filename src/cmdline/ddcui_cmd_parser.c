@@ -182,7 +182,6 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    char *   syslog_work     = NULL;
    gboolean disable_config_file            = false;
 // gboolean disable_libddcutil_config_file = false;
-   gboolean trace_to_syslog_flag           = false;   //???
    gboolean watch_displays_flag     = true;   // the default
 
    gchar*   view_work                      = NULL;
