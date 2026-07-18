@@ -1121,6 +1121,7 @@ bool MainWindow::checkAltViewOk(Monitor * monitor) {
                          : QString("usb /dev/usb/hiddev" + QString::number(dinfo->path.path.hiddev_devno) );
 
       QString msg;
+      bool checksIncomplete = false;
       if (!monitor->supportsDdc()) {
          msg = QString("Display %1 on %2 does not support DDC (1)")
                .arg(dinfo->model_name)
@@ -1151,6 +1152,7 @@ bool MainWindow::checkAltViewOk(Monitor * monitor) {
          }
 
          if (!capabilitiesChecked) {
+            checksIncomplete = true;
             msg = QString("Capabilities check still in progress for display %1 on %2")
                     .arg(dinfo->model_name)
                     .arg(path);
@@ -1178,7 +1180,12 @@ bool MainWindow::checkAltViewOk(Monitor * monitor) {
          TRACECF_NOPREFIX(debug, "Pre put, _msgBoxQueue=%p", _msgBoxQueue);
          _msgBoxQueue->put(qe);
       }
-      monitor->_initChecksDone = true;
+      // Set _initChecksDone only if the capabilities check was observed
+      // complete.  O.w. a subsequent invocation would skip the
+      // capabilitiesCheckComplete() gate and read _caps_status/_parsed_caps
+      // while the VcpThread may still be writing them.
+      if (!checksIncomplete)
+         monitor->_initChecksDone = true;
    }
 
    TRACECF_DONE(debug, "Returning %s", sbool(!qe));
