@@ -363,6 +363,7 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    g_option_context_set_help_enabled(context, true);
    // bool ok = false;
 
+#ifdef UNUSED
    char * help_description = g_strjoin("\n",
          tracing_multiple_call_option_help,
          trcfunc_multiple_call_option_help,
@@ -375,8 +376,9 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
          );
 
    // on --help, comes at end after option detail
-   // g_option_context_set_description(context, help_description);
+   g_option_context_set_description(context, help_description);
    free(help_description);
+#endif
 
    char ** mangleable_argv = argv;
    if (debug) {
