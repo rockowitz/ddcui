@@ -204,6 +204,9 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
    gboolean debug_parse                    = false;
    gboolean parse_only                     = false;
 
+   gchar*   i1_work        = NULL;
+   gchar*   i2_work        = NULL;
+
    gboolean f1_flag        = false;
    gboolean f2_flag        = false;
    gboolean f3_flag        = false;
@@ -315,8 +318,8 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
       {"f4",      '\0', 0,  G_OPTION_ARG_NONE,     &f4_flag,              "Special flag 4",    NULL},
       {"f5",      '\0', 0,  G_OPTION_ARG_NONE,     &f5_flag,              "Special flag 5",    NULL},
       {"f6",      '\0', 0,  G_OPTION_ARG_NONE,     &f6_flag,              "Special flag 6",    NULL},
-      {"i1",      '\0', 0,  G_OPTION_ARG_INT,      &parsed_cmd->i1,       "Special integer 1", NULL},
-      {"i2",      '\0', 0,  G_OPTION_ARG_INT,      &parsed_cmd->i2,       "Special integer 2", NULL},
+      {"i1",      '\0', 0,  G_OPTION_ARG_STRING,   &i1_work,              "Special integer 1", "decimal number"},
+      {"i2",      '\0', 0,  G_OPTION_ARG_STRING,   &i2_work,              "Special integer 2", "decimal number"},
 
   //    {G_OPTION_REMAINING,
   //                    '\0', 0,  G_OPTION_ARG_STRING_ARRAY, &cmd_and_args, NULL,   NULL},
@@ -489,6 +492,30 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
       free(syslog_work);
    }
    parsed_cmd->syslog_level = syslog_level;
+
+   // parsed as strings, not G_OPTION_ARG_INT, so that "option specified"
+   // is detectable and the _SET flags can be set
+   if (i1_work) {
+      if (parse_int_arg(i1_work, &parsed_cmd->i1))
+         parsed_cmd->flags |= CMD_FLAG_I1_SET;
+      else {
+         fprintf(stderr,  "Invalid --i1 value: %s\n", i1_work);
+         syslog(LOG_CRIT, "Invalid --i1 value: %s",   i1_work);
+         ok = false;
+      }
+      free(i1_work);
+   }
+
+   if (i2_work) {
+      if (parse_int_arg(i2_work, &parsed_cmd->i2))
+         parsed_cmd->flags |= CMD_FLAG_I2_SET;
+      else {
+         fprintf(stderr,  "Invalid --i2 value: %s\n", i2_work);
+         syslog(LOG_CRIT, "Invalid --i2 value: %s",   i2_work);
+         ok = false;
+      }
+      free(i2_work);
+   }
 
 
    if (all_capabilities_true_set)
