@@ -533,6 +533,7 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
             syslog(LOG_CRIT, "%s",   s);
          }
       }
+      free(custom_feature_set_work);
    }
 
    if (view_work) {
@@ -560,6 +561,7 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
       else{
          parsed_cmd->nc_values_source = src;
       }
+      free(nc_values_source_work);
    }
 
 // Does this macro make code cleaner or more obscure?
@@ -574,6 +576,7 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
       else{                                                                 \
          parsed_cmd->_NAME = src;                                           \
       }                                                                     \
+      free(_NAME ## _work);                                                 \
    }
 
    VALUE_LOOKUP(Parsed_Feature_Set, feature_set, FS_UNSET);
