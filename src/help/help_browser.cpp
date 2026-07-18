@@ -115,7 +115,7 @@ HelpBrowser::HelpBrowser(
       QObject::connect(_homeButton, &QPushButton::clicked, _textBrowser, &QTextBrowser::home);
       QObject::connect(_backButton, &QPushButton::clicked, _textBrowser, &QTextBrowser::backward);
    }
-   QObject::connect(   _closeButton, &QPushButton::clicked,        this, &QTextBrowser::close);
+   QObject::connect(   _closeButton, &QPushButton::clicked,        this, &HelpBrowser::close);
    QObject::connect(   _textBrowser, &QTextBrowser::sourceChanged, this, &HelpBrowser::updateWindowTitle);
 
    _textBrowser->setSource(page);
