@@ -333,6 +333,28 @@ endforeach()
 
 
 
+### unit tests (ctest)
+
+option(BUILD_TESTS "Build unit tests" ON)
+message(STATUS "BUILD_TESTS:               ${BUILD_TESTS}")
+
+if (BUILD_TESTS)
+   enable_testing()
+
+   add_executable(test_ddcui_core_aux
+       src/unit_tests/base/test_ddcui_core_aux.c
+       src/base/ddcui_core_aux.c
+   )
+   # config.h is found via CMAKE_INCLUDE_CURRENT_DIR
+   target_include_directories(test_ddcui_core_aux SYSTEM PRIVATE
+                                    ${GLIB2_INCLUDE_DIRS}
+                                    ${DDCUTIL_INCLUDE_DIRS})
+   target_include_directories(test_ddcui_core_aux PRIVATE src)
+
+   add_test(NAME ddcui_core_aux COMMAND test_ddcui_core_aux)
+endif()
+
+
 ### make clean
 
 # ADDITIONAL_MAKE_CLEAN_FILES(  ... )
