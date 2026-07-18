@@ -277,7 +277,7 @@ void FeatureSelectionDialog::on_onlyCapabilities_checkbox_stateChanged(int arg1)
 void FeatureSelectionDialog::on_allCapabilities_checkbox_stateChanged(int arg1)
 {
    // cout << "(on_allCapabilities_checkBox_stateChanged) arg1 = " << arg1 << endl;
-   if (arg1 == 2) {
+   if (arg1 == Qt::Checked) {
       _ui->onlyCapabilities_checkbox->setCheckState(Qt::Unchecked);
    }
 }
