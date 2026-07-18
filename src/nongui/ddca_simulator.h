@@ -6,6 +6,7 @@
 #ifndef DDCA_SIMULATOR_H_
 #define DDCA_SIMULATOR_H_
 
+#include <QHash>
 #include <QObject>
 
 #include "ddcutil_types.h"
@@ -35,6 +36,9 @@ public:
 private:
    const char *   _cls;    // className
    bool           simulationEnabled = false;  // eventually make this externally controllable
+   // per-instance (per-monitor) store of values set by simulated setvcp;
+   // was a file-static shared across all VcpThreads
+   QHash<uint8_t,uint16_t> _simVals;
 };
 
 #endif /* DDCA_SIMULATOR_H_ */

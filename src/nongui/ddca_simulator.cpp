@@ -37,9 +37,6 @@ SimTableEntry simTable[] = {
 };
 static int simTableCt = sizeof(simTable)/sizeof(SimTableEntry);
 
-// Maintains values that have been set by simulated ddca_set_non_table_vcp_value():
-static QHash<uint8_t,uint16_t> simVals;
-
 
 static bool vspec_eq(DDCA_MCCS_Version_Spec vspec1, DDCA_MCCS_Version_Spec vspec2) {
    bool result = false;
@@ -98,9 +95,9 @@ bool  DdcaSimulator::simulateGetNonTableVcpValue(
          ddcrc      = simTable[ndx].ddcrc;
 
          if (ddcrc == DDCRC_OK) {
-            if (simVals.contains(featureCode)) {
+            if (_simVals.contains(featureCode)) {
                // override with value set by a previous call
-               uint16_t savedVal = simVals.value(featureCode);
+               uint16_t savedVal = _simVals.value(featureCode);
                valrec->sh =  savedVal >> 8;
                valrec->sl =  savedVal & 0xff;
                // TRACEC_STARTING("feature 0x%02x, returning simulated sh=0x%02x, sl=0x%02x",
@@ -140,7 +137,7 @@ bool DdcaSimulator::simulateSetNonTableVcpValue(
       int ndx = findSimTableEntry(featureCode, vspec);
       if (ndx >= 0) {
          uint16_t shsl = sh << 8 | sl;
-         simVals.insert(featureCode, shsl);
+         _simVals.insert(featureCode, shsl);
          simulated = true;
          TRACEC_EVENT("Simulating set feature 0x%02x, shsl=0x%04x", featureCode, shsl);
       }
