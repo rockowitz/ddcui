@@ -155,15 +155,7 @@ ValueStackedWidget::~ValueStackedWidget() {
    bool debug = false;
    TRACECF_EVENT(debug, "Executing. _cls=%s", _cls);
 
-   delete _newContWidget;
-   delete _simpleContWidget ;
-   delete _ncWidget         ;
-   delete _stdWidget        ;
-   delete _resetWidget      ;
-   delete _2ButtonWidget    ;
-   delete _bytesWidget      ;
-   delete _ncplusWidget     ;
-   delete _specialWidgetX62 ;
+   // the subwidgets are children of this widget; Qt deletes them
 
    free((void*) _cls);
 }
