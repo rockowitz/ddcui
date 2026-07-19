@@ -75,23 +75,11 @@ void FeaturesScrollAreaView::setInstanceControlKeyRequired(bool onoff) {
 void FeaturesScrollAreaView::freeContents(void) {
    bool debug = false;
 
-   QWidget * scrollWrapWidget = NULL;
-   for (int ndx = 0; ndx < _centralStackedWidget->count(); ndx++) {
-       QWidget* curobj = _centralStackedWidget->widget(ndx);
-       QString name   = curobj->objectName();
-       const char *  clsName = curobj->metaObject()->className();
-       TRACEMCF_EVENT(debug, "   widget[%d]: %s, type:%s", ndx, name.toLatin1().data(), clsName);
-       if (name.compare("scrollwrap") == 0 ) {
-          TRACEMCF_EVENT(debug, "scrollwrap found, index=%d", ndx);
-          scrollWrapWidget = curobj;
-          break;
-       }
-   }
-
-   if (scrollWrapWidget) {
-      TRACEMCF_EVENT(debug, "Removing locally found scrollWrapWidget %p", scrollWrapWidget);
-      _centralStackedWidget->removeWidget(scrollWrapWidget);
-      scrollWrapWidget->deleteLater();   // o.w. the replaced widget tree leaks
+   if (_scrollWrap) {
+      TRACEMCF_EVENT(debug, "Removing _scrollWrap %p", _scrollWrap);
+      _centralStackedWidget->removeWidget(_scrollWrap);
+      _scrollWrap->deleteLater();   // o.w. the replaced widget tree leaks
+      _scrollWrap = NULL;
    }
 
    // FeatureWidget instances found in _widgets belong to the widget tree just
@@ -275,6 +263,7 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
     // GlobalState& globalState = GlobalState::instance();
     // _curNcValuesSource = globalState._otherOptionsState->_ncValuesSource;
     _scrollAreaContents = scrollAreaContents;
+    _scrollWrap = scrollWrap;
     _centralStackedWidget->show();
 
     TRACEMCF_DONE(debugFunc, "feature count: %d", ct);

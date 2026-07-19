@@ -36,7 +36,7 @@ public:
             MsgBoxQueue *      msgboxQueue,
             QObject *          parent = nullptr);
 
-    void freeContents(void);    // unimplemented
+    void freeContents(void);
 
     QSize maxRowSize();
 
@@ -78,6 +78,7 @@ private:        // member variables
     bool               _curUseLatestNcValueNames;
 #endif
     bool               _controlKeyRequired;
+    QWidget *          _scrollWrap = NULL;          // widget tree of the current load
     QWidget *          _scrollAreaContents = NULL;
 
     // quick and dirty for now, eventually replace by hash
