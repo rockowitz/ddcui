@@ -11,7 +11,6 @@
 #include "value_2button_widget.h"
 #include "value_base_widget.h"
 #include "value_bytes_widget.h"
-#include "value_cnc_widget_x14.h"
 #include "value_nc_widget.h"
 #include "value_ncplus_widget.h"
 #include "value_new_cont_widget.h"
@@ -71,12 +70,11 @@ private:
     ValueNcWidget*          _ncWidget;
     ValueResetWidget*       _resetWidget;
     Value2ButtonWidget*     _2ButtonWidget;
-    ValueCncWidgetX14*      _cncWidgetX14;
     ValueBytesWidget*       _bytesWidget;
     ValueNcplusWidget*      _ncplusWidget;
     ValueSpecialWidgetX62*  _specialWidgetX62;
 
-    ValueBaseWidget *       _subwidget[10];
+    ValueBaseWidget *       _subwidget[9];
     int                     _subwidgetCt = 0;
 
     bool                    _instanceControlKeyRequired = false;

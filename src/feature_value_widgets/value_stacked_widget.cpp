@@ -17,7 +17,6 @@
 #include "base/ddcui_rtti.h"
 
 #include "feature_value_widgets/value_bytes_widget.h"
-#include "feature_value_widgets/value_cnc_widget_x14.h"
 #include "feature_value_widgets/value_nc_widget.h"
 #include "feature_value_widgets/value_new_cont_widget.h"
 #include "feature_value_widgets/value_std_widget.h"
@@ -48,12 +47,11 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
     _stdWidget        = new ValueStdWidget(this);
     _resetWidget      = new ValueResetWidget(this);
     _2ButtonWidget    = new Value2ButtonWidget(this);
-    _cncWidgetX14     = new ValueCncWidgetX14(this);
     _bytesWidget      = new ValueBytesWidget(this);
     _ncplusWidget     = new ValueNcplusWidget(this);
     _specialWidgetX62 = new ValueSpecialWidgetX62(this);
-    TRACECF_NOPREFIX(debug," _ncWidget->_id=%d, _cncWidgetX14->_id=%d, _ncplusWidget._id=%d",
-                  _ncWidget->_id,      _cncWidgetX14->_id,   _ncplusWidget->_id);
+    TRACECF_NOPREFIX(debug," _ncWidget->_id=%d, _ncplusWidget._id=%d",
+                  _ncWidget->_id,      _ncplusWidget->_id);
 
     _subwidget[_subwidgetCt++] =         _stdWidget;
     _subwidget[_subwidgetCt++] =     _newContWidget;
@@ -61,7 +59,6 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
     _subwidget[_subwidgetCt++] =           _ncWidget;
     _subwidget[_subwidgetCt++] =     _resetWidget;
     _subwidget[_subwidgetCt++] =    _2ButtonWidget;
-    _subwidget[_subwidgetCt++] =     _cncWidgetX14;
     _subwidget[_subwidgetCt++] =       _bytesWidget;
     _subwidget[_subwidgetCt++] =     _ncplusWidget;
     _subwidget[_subwidgetCt++] =   _specialWidgetX62;
@@ -73,7 +70,6 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
     addWidget(_stdWidget);
     addWidget(_resetWidget);
     addWidget(_2ButtonWidget);
-    addWidget(_cncWidgetX14);
     addWidget(_bytesWidget);
     addWidget(_ncplusWidget);
     addWidget(_simpleContWidget);
@@ -111,10 +107,6 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
 
     QWidget::connect(_ncplusWidget,     &ValueNcplusWidget::featureValueChanged,
                      this,              &ValueStackedWidget::forContainedWidgetChanged);
-
-    // why disabled?
-    // QWidget::connect(_cncWidgetX14,  &ValueNcWidget::featureValueChanged,
-    //                  this,           &ValueStackedWidget::forContainedWidgetChanged);
 
     QWidget::connect(_bytesWidget,      &ValueBaseWidget::featureValueChanged,
                      this,              &ValueStackedWidget::forContainedWidgetChanged);
@@ -169,7 +161,6 @@ ValueStackedWidget::~ValueStackedWidget() {
    delete _stdWidget        ;
    delete _resetWidget      ;
    delete _2ButtonWidget    ;
-   delete _cncWidgetX14     ;
    delete _bytesWidget      ;
    delete _ncplusWidget     ;
    delete _specialWidgetX62 ;

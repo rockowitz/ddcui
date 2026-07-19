@@ -1,6 +1,12 @@
 /* value_cnc_widget_x14.cpp
  *
  *  Special handling for complex non-continuous feature x14 - Color Preset
+ *
+ *  NOT BUILT.  Removed from CMakeLists.txt: ValueStackedWidget no longer
+ *  instantiates this widget.  It was created and stacked but never selected
+ *  as the current page (feature x14 is handled by ValueNcplusWidget), and
+ *  its featureValueChanged connection was commented out.  Retained as
+ *  reference code.
  */
 
 // Copyright (C) 2019-2026 Sanford Rockowitz <rockowitz@minsoft.com>
