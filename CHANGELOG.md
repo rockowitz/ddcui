@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.7.0] 2026-07-18     draft
+## [0.7.0] 2026-07-19     draft
 
 Requires libddcutil.so.5.5 from ddcutil 2.2.7 or later.
 
@@ -67,6 +67,12 @@ Commands
 - Internal modernization: string-based SIGNAL/SLOT connections converted to
   the compile-time checked pointer-to-member form throughout; miscellaneous
   dead code removed or documented as retained reference code.
+- Features view simplification: the **FeaturesScrollAreaContents** and
+  **FeaturesScrollArea** classes were removed from the build (their APIs were
+  unused, and the custom resize handling fought QScrollArea's widgetResizable
+  machinery).  The view now uses a stock QScrollArea and a plain QWidget for
+  the contents, letting widgetResizable manage contents sizing, and tracks
+  its widget tree directly instead of searching by object name.
  
 ### Fixed
 
