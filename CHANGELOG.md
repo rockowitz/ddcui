@@ -73,6 +73,11 @@ Commands
   machinery).  The view now uses a stock QScrollArea and a plain QWidget for
   the contents, letting widgetResizable manage contents sizing, and tracks
   its widget tree directly instead of searching by object name.
+- Value widget simplification: **ValueStackedWidget** no longer instantiates
+  the never-selected **ValueCncWidgetX14** for every feature row (feature x14
+  is handled by ValueNcplusWidget); the class was removed from the build.
+  Also removed the write-only page-number bookkeeping and redundant child
+  deletes in ValueStackedWidget.
  
 ### Fixed
 
