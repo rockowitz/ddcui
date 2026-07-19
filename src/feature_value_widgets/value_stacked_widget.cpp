@@ -199,7 +199,7 @@ void ValueStackedWidget::setInstanceControlKeyPressed(bool onoff) {
 }
 
 
-bool vspec_eq(DDCA_MCCS_Version_Spec vspec1, DDCA_MCCS_Version_Spec vspec2) {
+static bool vspec_eq(DDCA_MCCS_Version_Spec vspec1, DDCA_MCCS_Version_Spec vspec2) {
    bool result = false;
    if (vspec1.major == vspec2.major && vspec1.minor == vspec2.minor)
       result = true;
