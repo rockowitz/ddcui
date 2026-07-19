@@ -1,4 +1,9 @@
 // features_scrollarea.cpp
+//
+// NOT BUILT.  Removed from CMakeLists.txt: its resizeEvent() override manually
+// shrank the contents width (hardcoded scrollbar guess) without calling the
+// base class implementation, fighting QScrollArea's widgetResizable machinery.
+// The view now uses a stock QScrollArea.  Retained as reference code.
 
 // Copyright (C) 2019-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later

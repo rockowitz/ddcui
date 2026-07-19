@@ -249,7 +249,6 @@ set(SOURCES
     src/feature_scrollarea/feature_scrollarea_services.cpp
     src/feature_scrollarea/feature_widget.cpp
     src/feature_scrollarea/feature_widget_header.cpp
-    src/feature_scrollarea/features_scrollarea.cpp
     src/feature_scrollarea/features_scrollarea_ui.cpp
     src/feature_scrollarea/features_scrollarea_view.cpp
 

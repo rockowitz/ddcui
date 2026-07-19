@@ -26,7 +26,6 @@
 
 #include "feature_scrollarea/feature_widget.h"
 #include "feature_scrollarea/feature_widget_header.h"
-#include "feature_scrollarea/features_scrollarea.h"
 
 #include "feature_scrollarea/features_scrollarea_view.h"
 
@@ -104,7 +103,11 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
     wrapLayout->setSpacing(0);
     wrapLayout->addWidget(new FeatureWidgetHeader());
 
-    FeaturesScrollArea * scrollArea = new FeaturesScrollArea();
+    // Formerly a FeaturesScrollArea, whose resizeEvent() override manually
+    // shrank the contents width and skipped the base class implementation,
+    // fighting the widgetResizable machinery.  Stock QScrollArea behavior
+    // with widgetResizable handles contents sizing.
+    QScrollArea * scrollArea = new QScrollArea();
     scrollArea->setWidgetResizable(true);
 
     // Formerly a FeaturesScrollAreaContents, a QWidget subclass whose entire
