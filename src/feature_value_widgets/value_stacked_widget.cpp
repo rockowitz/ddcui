@@ -12,13 +12,19 @@
 #include <QVBoxLayout>
 
 #include "base/ddcui_core.h"
+#include "base/global_state.h"
 #include "base/widget_debug.h"
 #include "c_util/debug_util.h"
 #include "base/ddcui_rtti.h"
 
+#include "feature_value_widgets/value_2button_widget.h"
 #include "feature_value_widgets/value_bytes_widget.h"
 #include "feature_value_widgets/value_nc_widget.h"
+#include "feature_value_widgets/value_ncplus_widget.h"
 #include "feature_value_widgets/value_new_cont_widget.h"
+#include "feature_value_widgets/value_reset_widget.h"
+#include "feature_value_widgets/value_simple_cont_widget.h"
+#include "feature_value_widgets/value_special_widget_x62.h"
 #include "feature_value_widgets/value_std_widget.h"
 
 #include "feature_value_widgets/value_stacked_widget.h"
@@ -41,39 +47,7 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
     // this->setObjectName(QString::fromUtf8("value_stacked_widget"));   // ambiguous
     // setGeometry(QRect(209,6, 181, 20));
 
-    _newContWidget    = new ValueNewContWidget(this);
-    _simpleContWidget = new ValueSimpleContWidget(this);
-    _ncWidget         = new ValueNcWidget(this);
-    _stdWidget        = new ValueStdWidget(this);
-    _resetWidget      = new ValueResetWidget(this);
-    _2ButtonWidget    = new Value2ButtonWidget(this);
-    _bytesWidget      = new ValueBytesWidget(this);
-    _ncplusWidget     = new ValueNcplusWidget(this);
-    _specialWidgetX62 = new ValueSpecialWidgetX62(this);
-    TRACECF_NOPREFIX(debug," _ncWidget->_id=%d, _ncplusWidget._id=%d",
-                  _ncWidget->_id,      _ncplusWidget->_id);
-
-    _subwidget[_subwidgetCt++] =         _stdWidget;
-    _subwidget[_subwidgetCt++] =     _newContWidget;
-    _subwidget[_subwidgetCt++] =  _simpleContWidget;
-    _subwidget[_subwidgetCt++] =           _ncWidget;
-    _subwidget[_subwidgetCt++] =     _resetWidget;
-    _subwidget[_subwidgetCt++] =    _2ButtonWidget;
-    _subwidget[_subwidgetCt++] =       _bytesWidget;
-    _subwidget[_subwidgetCt++] =     _ncplusWidget;
-    _subwidget[_subwidgetCt++] =   _specialWidgetX62;
-    assert(_subwidgetCt == ARRAY_SIZE(_subwidget));
-
-
-    addWidget(_newContWidget);
-    addWidget(_ncWidget);
-    addWidget(_stdWidget);
-    addWidget(_resetWidget);
-    addWidget(_2ButtonWidget);
-    addWidget(_bytesWidget);
-    addWidget(_ncplusWidget);
-    addWidget(_simpleContWidget);
-    addWidget(_specialWidgetX62);
+    // The value widget appropriate to the feature is created by setFeatureValue()
 
     if (debugLayout) {
         if (!dimensionReportShown) {
@@ -83,46 +57,6 @@ ValueStackedWidget::ValueStackedWidget(QWidget *parent)
         }
         this->setStyleSheet("background-color:red;");
     }
-
-    setCurrentWidget(_stdWidget);      // default
-    _cur_stacked_widget = _stdWidget;
-
-    // ValueStackedWidget * curWidget = this;  // still treated as ValueBaseWidget* in SIGNAL/SLOT versions
-
-    QWidget::connect(_newContWidget,    &ValueNewContWidget::featureValueChanged,
-                     this,              &ValueStackedWidget::forContainedWidgetChanged);
-
-    QWidget::connect(_simpleContWidget, &ValueSimpleContWidget::featureValueChanged,
-                     this,              &ValueStackedWidget::forContainedWidgetChanged);
-
-    // n. only one connection: featureValueChanged is declared once, in ValueBaseWidget;
-    // connecting via both the ValueSpecialWidgetX62 and ValueSimpleContWidget names
-    // created two connections to the same signal, so each x62 change was delivered
-    // (and setvcp issued) twice
-    QWidget::connect(_specialWidgetX62, &ValueSpecialWidgetX62::featureValueChanged,
-                      this,             &ValueStackedWidget::forContainedWidgetChanged);
-
-    QWidget::connect(_ncWidget,         &ValueNcWidget::featureValueChanged,
-                     this,              &ValueStackedWidget::forContainedWidgetChanged);
-
-    QWidget::connect(_ncplusWidget,     &ValueNcplusWidget::featureValueChanged,
-                     this,              &ValueStackedWidget::forContainedWidgetChanged);
-
-    QWidget::connect(_bytesWidget,      &ValueBaseWidget::featureValueChanged,
-                     this,              &ValueStackedWidget::forContainedWidgetChanged);
-
-
-    QWidget::connect(_resetWidget,     &ValueResetWidget::featureValueChanged,
-                     this,             &ValueStackedWidget::forContainedWidgetChanged);
-
-#ifdef WORKS
-    QWidget::connect(_ncWidget, SIGNAL(featureValueChanged(     uint8_t, uint8_t, uint8_t)),
-                     curWidget,   SLOT(forContainedWidgetChanged(uint8_t, uint8_t, uint8_t)));
-
-
-    QWidget::connect(_ncWidget, SIGNAL(featureValueChanged(     uint8_t, uint8_t, uint8_t)),
-                      curWidget,  SLOT(forContainedWidgetChanged(uint8_t, uint8_t, uint8_t)));
-#endif
 
    QWidget::connect(
       GlobalState::instance()._ncValuesState, &NcValuesState::ncValuesSourceChanged,
@@ -155,22 +89,20 @@ ValueStackedWidget::~ValueStackedWidget() {
    bool debug = false;
    TRACECF_EVENT(debug, "Executing. _cls=%s", _cls);
 
-   // the subwidgets are children of this widget; Qt deletes them
+   // the value widget is a child of this widget; Qt deletes it
 
    free((void*) _cls);
 }
 
 
-void ValueStackedWidget::enableSubwidgets() {
+void ValueStackedWidget::enableCurrentWidget() {
    bool debug = false;
    bool enabled = !_instanceControlKeyRequired || _instanceControlKeyPressed;
-   TRACEMCF_STARTING(debug, "_id=%d, calling setEnabled(%s) for subwidgets", _id, SBOOL(enabled));
-   for (int ndx = 0; ndx < _subwidgetCt; ndx++) {
-      _subwidget[ndx]->setEnabled(enabled);
-   }
-   // if called during initial setup, _cur_stacked_widget apparently wrong
-   // _cur_stacked_widget->setEnabled(enabled);
-
+   TRACEMCF_STARTING(debug, "_id=%d, calling setEnabled(%s)", _id, SBOOL(enabled));
+   // NULL until setFeatureValue() has created the widget; setFeatureValue()
+   // applies the accumulated state at creation
+   if (_cur_stacked_widget)
+      _cur_stacked_widget->setEnabled(enabled);
    TRACEMCF_DONE(debug, "");
 }
 
@@ -182,7 +114,7 @@ void ValueStackedWidget::setInstanceControlKeyRequired(bool onoff) {
    TRACEMCF_STARTING(debug, "_id=%d, onoff=%s", _id, SBOOL(onoff));
 
    _instanceControlKeyRequired = onoff;
-   enableSubwidgets();
+   enableCurrentWidget();
 
    TRACEMCF_DONE(debug, "");
 }
@@ -193,7 +125,7 @@ void ValueStackedWidget::setInstanceControlKeyPressed(bool onoff) {
    TRACEMCF_STARTING(debug, "_id=%d, onoff=%s", _id, SBOOL(onoff));
 
    _instanceControlKeyPressed = onoff;
-   enableSubwidgets();
+   enableCurrentWidget();
 
    TRACEMCF_DONE(debug, "");
 }
@@ -207,6 +139,10 @@ static bool vspec_eq(DDCA_MCCS_Version_Spec vspec1, DDCA_MCCS_Version_Spec vspec
 }
 
 
+/** Creates the value widget appropriate to the feature and makes it current.
+ *
+ *  Called once per instance, from the FeatureWidget constructor.
+ */
 void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
     bool debug = false;
     // debug = debug || (fv.featureCode() == 0xdf);
@@ -216,15 +152,30 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
     // if (debug)
     //    fv.dbgrpt();
 
-    // ValueBaseWidget::setFeatureValue(fv);
-    _featureCode = fv.featureCode();   // needed since not calling ValueBaseWidget::setFeatureValue()
+    _featureCode = fv.featureCode();
     // fv.vspec() asserts a non-null _finfo, which does not exist if the value read failed
     DDCA_MCCS_Version_Spec vspec = {0,0};
     if (fv.finfo())
        vspec = fv.finfo()->vcp_version;
 
+    // Not expected, but if called again discard the previously created widget
+    if (_cur_stacked_widget) {
+       removeWidget(_cur_stacked_widget);
+       delete _cur_stacked_widget;
+       _cur_stacked_widget = nullptr;
+    }
+
+    ValueBaseWidget * w = nullptr;
+
+    // ValueStdWidget is display-only and never emits featureValueChanged.
+    // Value2ButtonWidget (xB0) is left unconnected, replicating the previous
+    // eager-creation design, which never connected it.
+    bool connectValueChanged = true;
+
     if (fv.ddcrc() != 0 || !fv.finfo()) {
-       // value read failed, or no metadata: use the default standard widget, set in constructor
+       // value read failed, or no metadata: use the standard display-only widget
+       w = new ValueStdWidget(this);
+       connectValueChanged = false;
     }
     // alt, test for PRESET, then xb0 (settings) or normal
     else if ( _featureCode == 0x04 ||    // Restore factory defaults
@@ -233,32 +184,26 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
          _featureCode == 0x08 ||    // Restore factory color defaults
          _featureCode == 0x0a )     // Restore factory TV defaults
     {
-       setCurrentWidget(_resetWidget);
-       _cur_stacked_widget = _resetWidget;
+       w = new ValueResetWidget(this);
     }
 
     else if (_featureCode == 0x0c) {
        // fv.flags marks it as DDCA_COMPLEX_CONT, but just treat it a normal continuous feature
-       // printf("(ValueStackedWidget::%s) x0c\n", __func__); fflush(stdout);
-        _cur_stacked_widget = _newContWidget;
-        setCurrentWidget(_cur_stacked_widget);
-     }
+       w = new ValueNewContWidget(this);
+    }
 
     else if (_featureCode == 0x14) {
        TRACEMCF_NOPREFIX(debug, "_feature_code == 0x14");
-       _cur_stacked_widget = _ncplusWidget;
-       setCurrentWidget(_cur_stacked_widget);
+       w = new ValueNcplusWidget(this);
     }
 
     else if (_featureCode == 0x62    // Audio volume
              &&
              (vspec_eq(vspec, DDCA_VSPEC_V30) || vspec_eq(vspec, DDCA_VSPEC_V22) )
             )
-      {
-         // TRACEC( "setting _specialWidgetX62");
-         _cur_stacked_widget = _specialWidgetX62;
-         setCurrentWidget(_cur_stacked_widget);
-      }
+    {
+       w = new ValueSpecialWidgetX62(this);
+    }
 
     else if (  (vspec_eq(vspec, DDCA_VSPEC_V30) ||
                 vspec_eq(vspec, DDCA_VSPEC_V22) )
@@ -268,28 +213,27 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
                  _featureCode == 0x93 )      // Audio Balance
            )
     {
-       _cur_stacked_widget = _simpleContWidget;
-       setCurrentWidget(_cur_stacked_widget);
+       ValueSimpleContWidget * scw = new ValueSimpleContWidget(this);
        if (_featureCode == 0x93)
-          _simpleContWidget->setRange(0x01, 0xfe);
+          scw->setRange(0x01, 0xfe);
        else
-          _simpleContWidget->setRange(0x01, 0xff);
+          scw->setRange(0x01, 0xff);
+       w = scw;
     }
 
     else if (_featureCode == 0xb0) {
-       // printf("(%s::%s) B0\n", _cls, __func__);
-       _2ButtonWidget->setButtonDetail(
+       Value2ButtonWidget * bw = new Value2ButtonWidget(this);
+       bw->setButtonDetail(
              QString("Store"),
              1,
              QString("Restore"),
              2);
-       _cur_stacked_widget = _2ButtonWidget;
-       setCurrentWidget(_cur_stacked_widget);
+       w = bw;
+       connectValueChanged = false;
     }
 
     else if ( _featureCode == 0xca) {
-       _cur_stacked_widget = _ncplusWidget;
-       setCurrentWidget(_cur_stacked_widget);
+       w = new ValueNcplusWidget(this);
     }
 
     else if ( _featureCode >= 0xe0) {
@@ -300,59 +244,48 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
 #ifdef TOO_MANY_EDGE_CASES
        if (capvcp && capvcp->value_ct > 0) {   // segfaults if use fv.capvcp() instead of capvcp
           TRACEMC("capabilities string for feature 0x%02x has vcp value list, treat it as simple NC", _featureCode);
-          _cur_stacked_widget = _ncWidget;
-          setCurrentWidget(_cur_stacked_widget);
+          w = new ValueNcWidget(this);
        }
        else {
 #endif
-          _cur_stacked_widget = _bytesWidget;
-          setCurrentWidget(_cur_stacked_widget);
+          w = new ValueBytesWidget(this);
 #ifdef TOO_MANY_EDIGE_CASES
        }
 #endif
     }
 
-#ifdef OUT
-    // *** temp for comparison ***
-    else if (_featureCode == 0x12 ||
-             _featureCode == 0x16 )
-    {
-       _cur_stacked_widget = _contWidget;
-       setCurrentWidget(_cur_stacked_widget);
-   }
-#endif
-
-
     else if (fv.flags() & DDCA_STD_CONT) {
-         // printf("(ValueStackedWidget::%s) DDCA_STD_CONT\n", __func__); fflush(stdout);
-        _cur_stacked_widget = _newContWidget;
-        setCurrentWidget(_cur_stacked_widget);
+        // printf("(ValueStackedWidget::%s) DDCA_STD_CONT\n", __func__); fflush(stdout);
+        w = new ValueNewContWidget(this);
     }
     else if ( (fv.flags() & DDCA_SIMPLE_NC) &&
               (fv.flags() & DDCA_WRITABLE)
             )
     {
         TRACEMCF_NOPREFIX(debug, "DDCA_SIMPLE_NC");
-        _cur_stacked_widget = _ncWidget;
-        setCurrentWidget(_cur_stacked_widget);
+        w = new ValueNcWidget(this);
     }
     else {
-       TRACEMCF_NOPREFIX(debug, "default case, _stdWidget");
-
-        _cur_stacked_widget = _stdWidget;
-        setCurrentWidget(_cur_stacked_widget);
+       TRACEMCF_NOPREFIX(debug, "default case, ValueStdWidget");
+       w = new ValueStdWidget(this);
+       connectValueChanged = false;
     }
 
-#ifdef NO
-    if (_pageno_selected == _pageno_nc || _pageno_selected == _pageno_ncplus) {
-       QWidget::connect(GlobalState::instance()._ncValuesState, &NcValuesState::ncValuesSourceChanged,
-               _ncWidget,                        &ValueNcWidget::reloadComboBox );
+    if (connectValueChanged) {
+       // featureValueChanged is declared once, in ValueBaseWidget, so one
+       // connection per widget suffices.  (A previous design connected the
+       // x62 widget twice, once via each class name in its ancestry, so each
+       // change was delivered, and setvcp issued, twice.)
+       QWidget::connect(w,    &ValueBaseWidget::featureValueChanged,
+                        this, &ValueStackedWidget::forContainedWidgetChanged);
     }
-    else if (_pageno_selected == _pageno_ncplus) {
-       QWidget::connect(GlobalState::instance()._ncValuesState, &NcValuesState::ncValuesSourceChanged,
-               _ncplusWidget,                        &ValueNcWidget::reloadComboBox );
-    }
-#endif
+
+    addWidget(w);
+    setCurrentWidget(w);
+    _cur_stacked_widget = w;
+
+    // apply the control-key state received before the widget existed
+    enableCurrentWidget();
 
     TRACECF_NOPREFIX(debug, "Calling _cur_stacked_widget->setFeatureValue()");
     _cur_stacked_widget->setFeatureValue(fv);
@@ -361,7 +294,9 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
 
 
 void ValueStackedWidget::setCurrentValue(uint16_t newval) {
-    _cur_stacked_widget->setCurrentShSl(newval);
+    // NULL only if setFeatureValue() has not yet been called
+    if (_cur_stacked_widget)
+       _cur_stacked_widget->setCurrentShSl(newval);
 }
 
 #ifdef UNUSED
@@ -397,7 +332,8 @@ void  ValueStackedWidget::forContainedWidgetChanged(uint8_t feature_code, uint8_
 
 #ifdef NC_FEATURE_VALUES2
 bool ValueStackedWidget::hasSlTable() {
-   bool result = (_cur_stacked_widget == _ncWidget || _cur_stacked_widget == _ncplusWidget);
+   // a ValueNcplusWidget is a ValueNcWidget, so one test covers both
+   bool result = (dynamic_cast<ValueNcWidget*>(_cur_stacked_widget) != nullptr);
    return result;
 }
 #endif
@@ -409,12 +345,10 @@ void ValueStackedWidget::setNcValuesSource(NcValuesSource newValuesSource, bool 
    TRACECF_STARTING(debug, "newValuesSource=%d, newUseLatestNcValueNames=%s",
                       newValuesSource, SBOOL(newUseLatestNcValueNames));
 
-   if (_cur_stacked_widget == _ncWidget) {
-      _ncWidget->reloadComboBox(newValuesSource, newUseLatestNcValueNames);
-   }
-   else if (_cur_stacked_widget == _ncplusWidget) {
-      _ncplusWidget->reloadComboBox(newValuesSource, newUseLatestNcValueNames);
-   }
+   // a ValueNcplusWidget is a ValueNcWidget, so one test covers both
+   ValueNcWidget * ncw = dynamic_cast<ValueNcWidget*>(_cur_stacked_widget);
+   if (ncw)
+      ncw->reloadComboBox(newValuesSource, newUseLatestNcValueNames);
 
    TRACECF_DONE(debug, "");
 }
@@ -425,7 +359,7 @@ void init_value_stacked_widget() {
    DBGF(debug, "Starting");
    RTTI_ADD_METHOD(ValueStackedWidget::ValueStackedWidget);
    RTTI_ADD_METHOD(ValueStackedWidget::~ValueStackedWidget);
-   RTTI_ADD_METHOD(ValueStackedWidget::enableSubwidgets);
+   RTTI_ADD_METHOD(ValueStackedWidget::enableCurrentWidget);
    RTTI_ADD_METHOD(ValueStackedWidget::setInstanceControlKeyRequired);
    RTTI_ADD_METHOD(ValueStackedWidget::setInstanceControlKeyPressed);
    RTTI_ADD_METHOD(ValueStackedWidget::setFeatureValue);
@@ -433,4 +367,3 @@ void init_value_stacked_widget() {
    RTTI_ADD_METHOD(ValueStackedWidget::setNcValuesSource);
    DBGF(debug, "Done");
 }
-

@@ -8,15 +8,9 @@
 
 #include <QStackedWidget>
 
-#include "value_2button_widget.h"
+#include "base/nc_values_state.h"
+
 #include "value_base_widget.h"
-#include "value_bytes_widget.h"
-#include "value_nc_widget.h"
-#include "value_ncplus_widget.h"
-#include "value_new_cont_widget.h"
-#include "value_reset_widget.h"
-#include "value_special_widget_x62.h"
-#include "value_std_widget.h"
 
 
 class QWidget;
@@ -53,7 +47,7 @@ private slots:
     void forContainedWidgetChanged(uint8_t feature_code, uint8_t sh, uint8_t sl);
 
 private:
-    void enableSubwidgets();
+    void enableCurrentWidget();
 
 protected:
     static int nextId;
@@ -62,27 +56,15 @@ private:
     const char *        _cls;
     int                 _id;
     uint8_t             _featureCode;
-    ValueBaseWidget*    _cur_stacked_widget;
 
-    ValueStdWidget*         _stdWidget;
-    ValueNewContWidget*     _newContWidget;
-    ValueSimpleContWidget*  _simpleContWidget;
-    ValueNcWidget*          _ncWidget;
-    ValueResetWidget*       _resetWidget;
-    Value2ButtonWidget*     _2ButtonWidget;
-    ValueBytesWidget*       _bytesWidget;
-    ValueNcplusWidget*      _ncplusWidget;
-    ValueSpecialWidgetX62*  _specialWidgetX62;
+    // The single value widget appropriate to the feature, created by
+    // setFeatureValue().  NULL until setFeatureValue() has been called.
+    ValueBaseWidget*    _cur_stacked_widget = nullptr;
 
-    ValueBaseWidget *       _subwidget[9];
-    int                     _subwidgetCt = 0;
-
-    bool                    _instanceControlKeyRequired = false;
-    bool                    _instanceControlKeyPressed = false;
+    bool                _instanceControlKeyRequired = false;
+    bool                _instanceControlKeyPressed = false;
 };
 
 void init_value_stacked_widget();
 
 #endif // VALUE_STACKED_WIDGET_H
-
-

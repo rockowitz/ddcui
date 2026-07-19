@@ -18,6 +18,7 @@
 #include <ddcutil_c_api.h>
 #include <ddcutil_status_codes.h>
 
+#include "base/ddca_utils.h"
 #include "base/ddcui_core_aux.h"
 #include "base/ddcui_core.h"
 #include "base/ddcui_parms.h"
