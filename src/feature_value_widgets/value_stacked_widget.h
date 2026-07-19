@@ -63,19 +63,7 @@ private:
     const char *        _cls;
     int                 _id;
     uint8_t             _featureCode;
-    int                 _pageno_selected;
     ValueBaseWidget*    _cur_stacked_widget;
-
-    int                 _pageno_std;
-    int                 _pageno_cont;
-    int                 _pageno_simple_cont;
-    int                 _pageno_nc;
-    int                 _pageno_reset;
-    int                 _pageno_2button;
-    int                 _pageno_x14;
-    int                 _pageno_bytes;
-    int                 _pageno_ncplus;
-    int                 _pageno_x62;
 
     ValueStdWidget*         _stdWidget;
     ValueNewContWidget*     _newContWidget;
