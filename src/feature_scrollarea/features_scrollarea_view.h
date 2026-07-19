@@ -19,8 +19,8 @@
 #include "feature_scrollarea/feature_widget.h"
 
 class QStackedWidget;
+class QWidget;
 class Monitor;
-class FeaturesScrollAreaContents;
 class MsgBoxQueue;
 
 
@@ -78,7 +78,7 @@ private:        // member variables
     bool               _curUseLatestNcValueNames;
 #endif
     bool               _controlKeyRequired;
-    FeaturesScrollAreaContents * _scrollAreaContents = NULL;
+    QWidget *          _scrollAreaContents = NULL;
 
     // quick and dirty for now, eventually replace by hash
     FeatureWidget *    _widgets[256] = {0};

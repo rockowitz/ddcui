@@ -1,4 +1,7 @@
 // features_scroll_area_contents.cpp - Contains rows of FeatureWidgets
+//
+// NOT BUILT.  Removed from CMakeLists.txt: the class's entire API was unused
+// and the view now creates a plain QWidget instead.  Retained as reference code.
 
 // Copyright (C) 2018-2026 Sanford Rockowitz <rockowitz@minsoft.com>
 // SPDX-License-Identifier: GPL-2.0-or-later

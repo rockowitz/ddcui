@@ -26,7 +26,6 @@
 
 #include "feature_scrollarea/feature_widget.h"
 #include "feature_scrollarea/feature_widget_header.h"
-#include "feature_scrollarea/features_scrollarea_contents.h"
 #include "feature_scrollarea/features_scrollarea.h"
 
 #include "feature_scrollarea/features_scrollarea_view.h"
@@ -120,7 +119,9 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
     FeaturesScrollArea * scrollArea = new FeaturesScrollArea();
     scrollArea->setWidgetResizable(true);
 
-    FeaturesScrollAreaContents * scrollAreaContents = new FeaturesScrollAreaContents();
+    // Formerly a FeaturesScrollAreaContents, a QWidget subclass whose entire
+    // API was unused; a plain QWidget suffices.
+    QWidget * scrollAreaContents = new QWidget();
     scrollAreaContents->setObjectName("scrollAreaContents local to onEndInitialLoad");
 
     // no effect, only applies if no layout is set
