@@ -137,8 +137,6 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
 
     // vLayout->addWidget(new FeatureWidgetHeader());
 
-    int maxHeight1     = 0;
-    int maxHintHeight1 = 0;
     TRACEMCF_NOPREFIX(debugFunc, "Create FeatureWidgets for each reported VCP code and"
                    " add them to the layout for ScrollAreaContents...");
     int ct = 0;
@@ -153,20 +151,6 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
              }
              // w->setFeatureValue(*fv);
 
-             int ht = w->height();
-             QSize hintSize = w->sizeHint();
-             int  hintHeight = hintSize.height();
-
-             // QString name   = w->objectName();
-             // const char *  clsName = w->metaObject()->className();
-             // printf("   Child: %s, type:%s, height=%d, hintHeight=%d\n",
-             //            QS2S(name), clsName, ht, hintHeight);
-
-             if (ht > maxHeight1)
-                maxHeight1 = ht;
-             if (hintHeight > maxHintHeight1)
-                maxHintHeight1 = hintHeight;
-
              QObject::connect(w ,   &FeatureWidget::valueChanged,
                               this, &FeaturesScrollAreaView::onUIValueChanged);
              vLayout->addWidget(w);
@@ -175,8 +159,6 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
          }
     }
     TRACEMCF_NOPREFIX(debugFunc, "Created %d FeatureWidgets", ct);
-    TRACEMCF_NOPREFIX(debugFunc, "Max height, maxHintHeight after widget creation: %d, %d",
-                   maxHeight1, maxHintHeight1); ;
 
     scrollAreaContents->setLayout(vLayout);
     scrollArea->setWidget(scrollAreaContents);
@@ -267,11 +249,6 @@ void FeaturesScrollAreaView::onEndInitialLoad(void) {
     _centralStackedWidget->show();
 
     TRACEMCF_DONE(debugFunc, "feature count: %d", ct);
-}
-
-QSize FeaturesScrollAreaView::maxRowSize() {
-   QSize result(0,0);
-   return result;
 }
 
 void FeaturesScrollAreaView::onUIValueChanged(

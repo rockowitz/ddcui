@@ -38,8 +38,6 @@ public:
 
     void freeContents(void);
 
-    QSize maxRowSize();
-
 // signals:
 //     void signalVcpRequest(VcpRequest * rqst);  // used to call into monitor
 
