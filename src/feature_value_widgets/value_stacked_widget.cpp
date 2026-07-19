@@ -168,8 +168,6 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
     ValueBaseWidget * w = nullptr;
 
     // ValueStdWidget is display-only and never emits featureValueChanged.
-    // Value2ButtonWidget (xB0) is left unconnected, replicating the previous
-    // eager-creation design, which never connected it.
     bool connectValueChanged = true;
 
     if (fv.ddcrc() != 0 || !fv.finfo()) {
@@ -229,7 +227,9 @@ void ValueStackedWidget::setFeatureValue(const FeatureValue &fv) {
              QString("Restore"),
              2);
        w = bw;
-       connectValueChanged = false;
+       // n. unlike the earlier eager-creation design, the widget's
+       // featureValueChanged signal is connected, so the Store/Restore
+       // buttons actually issue a setvcp
     }
 
     else if ( _featureCode == 0xca) {
