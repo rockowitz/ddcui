@@ -24,7 +24,7 @@
 //    return (b) ? "true" : "false";
 // }
 
-const char * trival_repr(Optional_True_False value) {
+const char * trival_repr0(Optional_True_False0 value) {
    char * result = NULL;
    switch(value) {
    case TRIVAL_TRUE:    result = "true";    break;
@@ -146,8 +146,8 @@ void dbgrpt_parsed_ddcui_cmd(Parsed_Ddcui_Cmd * parsed_cmd) {
       printf("   custom feature set:        %s\n",   ddca_feature_list_string(parsed_cmd->custom_feature_list, "",","));
       printf("   NC values source:          %s\n",   get_nc_values_source_table_symbol(parsed_cmd->nc_values_source));
  //   printf("   Force Latest NC Value Names:%s\n",  sbool(parsed_cmd->flags & CMD_FLAG_LATEST_NC_VALUE_NAMES) );
-      printf("   include all  capabilities features: %s\n", trival_repr(parsed_cmd->include_all_capabilities_features));
-      printf("   include_only capabilities features: %s\n", trival_repr(parsed_cmd->include_only_capabilities_features));
+      printf("   include all  capabilities features: %s\n", trival_repr0(parsed_cmd->include_all_capabilities_features));
+      printf("   include_only capabilities features: %s\n", trival_repr0(parsed_cmd->include_only_capabilities_features));
       printf("   initial model:             %s\n",   parsed_cmd->model);
       printf("   estimate_x10_model:        %s\n",   parsed_cmd->estimate_x10_model);
       printf("   noverify_x10_model:        %s\n",   parsed_cmd->noverify_x10_model);

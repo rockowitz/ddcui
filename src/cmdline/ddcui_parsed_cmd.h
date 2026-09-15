@@ -17,9 +17,9 @@ typedef enum {
    TRIVAL_UNSET,
    TRIVAL_FALSE,
    TRIVAL_TRUE
-} Optional_True_False;      // what's the term used for kernel configuration?
+} Optional_True_False0;      // what's the term used for kernel configuration?
 
-const char * trival_repr(Optional_True_False value);
+const char * trival_repr0(Optional_True_False0 value);
 
 
 // View Menu
@@ -103,9 +103,9 @@ typedef struct {
    Parsed_View             view;
    Parsed_Feature_Set      feature_set;
    Parsed_NC_Values_Source nc_values_source;
-   Optional_True_False     include_all_capabilities_features;
-   Optional_True_False     include_only_capabilities_features;
-   Optional_True_False     enable_sleep_suppression;
+   Optional_True_False0     include_all_capabilities_features;
+   Optional_True_False0     include_only_capabilities_features;
+   Optional_True_False0     enable_sleep_suppression;
    char *                  model;
    char *                  estimate_x10_model;
    char *                  noverify_x10_model;
