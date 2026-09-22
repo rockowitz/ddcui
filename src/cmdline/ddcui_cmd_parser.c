@@ -523,23 +523,23 @@ Parsed_Ddcui_Cmd * parse_ddcui_command(int argc, char * argv[]) {
 
 
    if (all_capabilities_true_set)
-      parsed_cmd->include_all_capabilities_features = TRIVAL_TRUE;
+      parsed_cmd->include_all_capabilities_features = TRIVAL0_TRUE;
 #ifdef TRIVAL
    else if (all_capabilities_false_set)
-      parsed_cmd->include_all_capabilities_features = TRIVAL_FALSE;
+      parsed_cmd->include_all_capabilities_features = TRIVAL0_FALSE;
 #endif
    else
-      parsed_cmd->include_all_capabilities_features = TRIVAL_UNSET;
+      parsed_cmd->include_all_capabilities_features = TRIVAL0_UNSET;
 
 
    if (only_capabilities_true_set)
-      parsed_cmd->include_only_capabilities_features = TRIVAL_TRUE;
+      parsed_cmd->include_only_capabilities_features = TRIVAL0_TRUE;
 #ifdef TRIVAL
    else if (only_capabilities_false_set)
-      parsed_cmd->include_only_capabilities_features = TRIVAL_FALSE;
+      parsed_cmd->include_only_capabilities_features = TRIVAL0_FALSE;
 #endif
    else
-      parsed_cmd->include_only_capabilities_features = TRIVAL_UNSET;
+      parsed_cmd->include_only_capabilities_features = TRIVAL0_UNSET;
 
 
    if (custom_feature_set_work) {

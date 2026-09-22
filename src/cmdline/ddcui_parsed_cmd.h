@@ -14,9 +14,9 @@
 // Used to distinguish between an explicit option set vs no option set,
 // in which case the default value will be used
 typedef enum {
-   TRIVAL_UNSET,
-   TRIVAL_FALSE,
-   TRIVAL_TRUE
+   TRIVAL0_UNSET,
+   TRIVAL0_FALSE,
+   TRIVAL0_TRUE
 } Optional_True_False0;      // what's the term used for kernel configuration?
 
 const char * trival_repr0(Optional_True_False0 value);

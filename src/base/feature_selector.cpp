@@ -68,17 +68,17 @@ void FeatureSelector::applyParsedOptions(Parsed_Ddcui_Cmd * parsed_cmd) {
 
     _showUnsupportedFeatures = parsed_cmd->flags & CMD_FLAG_SHOW_UNSUPPORTED;
 
-    if (parsed_cmd->include_only_capabilities_features == TRIVAL_TRUE)
+    if (parsed_cmd->include_only_capabilities_features == TRIVAL0_TRUE)
        _includeOnlyCapabilities = true;
-    else if (parsed_cmd->include_only_capabilities_features == TRIVAL_FALSE)
+    else if (parsed_cmd->include_only_capabilities_features == TRIVAL0_FALSE)
       _includeOnlyCapabilities = false;
     else {
       _includeOnlyCapabilities = defaultIncludeOnlyCapabilities(_featureSubsetId);
     }
 
-    if (parsed_cmd->include_all_capabilities_features == TRIVAL_TRUE)
+    if (parsed_cmd->include_all_capabilities_features == TRIVAL0_TRUE)
        _includeAllCapabilities = true;
-    else if (parsed_cmd->include_all_capabilities_features == TRIVAL_FALSE)
+    else if (parsed_cmd->include_all_capabilities_features == TRIVAL0_FALSE)
       _includeAllCapabilities = false;
     else {
       _includeAllCapabilities = defaultIncludeAllCapabilities(_featureSubsetId);

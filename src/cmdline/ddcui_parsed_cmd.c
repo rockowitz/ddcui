@@ -27,9 +27,9 @@
 const char * trival_repr0(Optional_True_False0 value) {
    char * result = NULL;
    switch(value) {
-   case TRIVAL_TRUE:    result = "true";    break;
-   case TRIVAL_FALSE:   result = "false";   break;
-   case TRIVAL_UNSET:   result = "not set"; break;
+   case TRIVAL0_TRUE:    result = "true";    break;
+   case TRIVAL0_FALSE:   result = "false";   break;
+   case TRIVAL0_UNSET:   result = "not set"; break;
    }
    return result;
 }
