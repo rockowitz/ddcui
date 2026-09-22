@@ -28,6 +28,7 @@
 #include "msg_util.h"
 #include "report_util.h"
 #include "string_util.h"
+#include "syslog_util.h"
 #include "traced_function_stack.h"
 
 #include "error_info.h"
@@ -927,7 +928,8 @@ errinfo_report_to_syslog(int syslog_priority, Error_Info * erec, int depth) {
    errinfo_report_collect(erec, collector, depth);
    for (int ndx = 0; ndx < collector->len; ndx++) {
       char * line = g_ptr_array_index(collector, ndx);
-      syslog(syslog_priority, "%s", line);
+      // syslog(syslog_priority, "%s", line);
+      BARE_STD_SYSLOGV(syslog_priority, "%s", line);
    }
    g_ptr_array_free(collector, true);
 }
@@ -1004,4 +1006,43 @@ errinfo_summary(Error_Info * erec) {
    strcpy(buf, buf1);
    free(buf1);
    return buf;
+}
+
+
+/** Moves subcauses into the list of causes
+ *
+ *  @param original  instance to squash
+ *  @return newly allocated squashed copy
+ *
+ *  The original instance is freed.
+ */
+Error_Info * errinfo_squash(Error_Info * original) {
+   bool debug = false;
+   DBGF(debug, "Starting.  original=%p", original);
+
+   Error_Info * squashed = NULL;
+   if (original) {
+      // n.b. errinfo_new() interprets its detail argument as a format string,
+      // so pass the already formatted detail as a substitution value
+      squashed = (original->detail)
+            ? errinfo_new(original->status_code, original->func, "%s", original->detail)
+            : errinfo_new(original->status_code, original->func, NULL);
+      if (original->cause_ct > 0) {
+         for (int ndx = 0; ndx < original->cause_ct; ndx++) {
+            Error_Info * suberror = original->causes[ndx];
+            if (suberror->cause_ct == 0) {
+               errinfo_add_cause(squashed, errinfo_copy(suberror));
+            }
+            else {
+               for (int subctr = 0; subctr < suberror->cause_ct; subctr++) {
+                  errinfo_add_cause(squashed, errinfo_copy(suberror->causes[subctr]));
+               }
+            }
+         }
+      }
+      errinfo_free(original);
+   }
+
+   DBGF(debug, "Done.    Returning %p", squashed);
+   return squashed;
 }

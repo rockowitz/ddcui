@@ -30,6 +30,9 @@ bool dbgtrc_show_process_id = false;  ///< include process id in debug/trace out
 bool dbgtrc_trace_to_syslog_only = false; ///< send trace output only to system log
 bool dbgtrc_trace_to_syslog = false;
 bool stdout_stderr_redirected = false;
+#ifdef FIX_LIBRARY_TRACE_FILE
+bool library_trace_file_active = false;
+#endif
 
 bool __thread msg_decoration_suspended = false;
 
@@ -52,6 +55,20 @@ void set_funcname_field_size(int fieldsize) {
  *  @param buf          buffer in which to return string
  *  @param bufsz        buffer size
  *  @param dest_syslog  message destination is the system log
+ *
+ *  If message destination is the system log, the generated decoration
+ *  always includes just the elapsed time and thread id:
+ *      [elapsed time][thread id]
+ *
+ *  If the message destination is not the system log
+ *
+ *  Full form:
+ *      [elapsed time][wall time]process id][thread id](function name)
+ *  The function name field is included if it can be obtained from the
+ *  traced function stack.
+ *  Inclusion of the other fields depends on the value of their associated
+ *  global:dbgtrc_show_time, dbgtrc_show_wall_iime, dbgtrc_show_process_id,
+ *  dbgtrc_show_thread_id.
  */
 char * get_msg_decoration(char * buf, uint bufsz, bool dest_syslog) {
    bool debug = false;

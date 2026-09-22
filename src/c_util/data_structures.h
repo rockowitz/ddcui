@@ -34,6 +34,17 @@ typedef enum {
 const char * none_some_all_name(None_Some_All value);
 
 
+// Used to represent a true/false value which may or may not exist,
+// i.e. between an explicit value versus no value assigned
+typedef enum {
+   TRIVAL_UNSET,
+   TRIVAL_FALSE,
+   TRIVAL_TRUE
+} Optional_True_False;
+
+const char * trival_repr(Optional_True_False value);
+
+
 //
 // Buffer with length management
 //

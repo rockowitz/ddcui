@@ -41,17 +41,22 @@
 int tokenize_options_line(const char * string, char ***tokens_loc) {
    bool debug = false;
    DBGF(debug,"string -> |%s|", string);
-   wordexp_t p;
+   // Zero-initialized so that wordfree() below is always safe to call: on
+   // some syntax errors (e.g. an unterminated quote) wordexp() returns
+   // failure without touching p at all, leaving we_wordv/we_wordc as
+   // uninitialized stack garbage if p were not pre-zeroed.
+   wordexp_t p = {0};
    int flags = WRDE_NOCMD;
    if (debug)
       flags |= WRDE_SHOWERR;
    int rc = wordexp(string, &p, flags);
    DBGF(debug, "wordexp returned %d", rc);
    if (rc != 0) {
-      // p.we_wordv, p.we_wordc are undefined, e.g. unmatched quote,
-      // command substitution rejected by WRDE_NOCMD
       fprintf(stderr, "Error tokenizing options line: |%s|\n", string);
       *tokens_loc = ntsa_create_empty_array();
+      // On failure structure pointed to by p may be partially filled.
+      // The safe pattern is to always call wordfree() on error.
+      wordfree(&p);
       return 0;
    }
    *tokens_loc = p.we_wordv;

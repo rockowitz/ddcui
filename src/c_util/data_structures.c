@@ -26,10 +26,23 @@
 
 const char * none_some_all_name(None_Some_All value) {
    char * result = "NONE";
-   if (value == SOME)
-      result = "SOME";
-   else if (value == ALL)
-         result = "ALL";
+   switch(value) {
+   case SOME:    result = "SOME";   break;
+   case ALL:     result = "All";    break;
+   case NONE:    result = "NONE";   break;   // redundant, but exhausts the switch
+   }
+   return result;
+}
+
+
+const char * trival_repr(Optional_True_False value) {
+   char * result = NULL;
+   switch(value) {
+   case TRIVAL_TRUE:    result = "true";    break;
+   case TRIVAL_FALSE:   result = "false";   break;
+   case TRIVAL_UNSET:   result = "not set"; break;
+   }
+   assert(result);     // silence bogus error reports
    return result;
 }
 

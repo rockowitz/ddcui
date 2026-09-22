@@ -223,9 +223,63 @@ int matches_by_func(const char * s, const char ** match_list, String_Comp_Func c
  *
  *  @retval >= 0  index of matching array entry
  *  @retval -1    no match
+ *
+ *  @remark
+ *  Returns -1 if empty match list
  */
 int exactly_matches_any(const char * s, const char ** match_list) {
    return matches_by_func(s, match_list, streq);
+}
+
+
+/** Tests if a string exactly matches any of a variable number of strings.
+ *
+ *  The match is case-sensitive.  The variable argument list must be
+ *  terminated by a NULL.
+ *
+ *  @param  s  string to test for
+ *  @param  ...  candidate strings to compare against, NULL terminated
+ *
+ *  @retval >= 0  index of matching argument (0 based)
+ *  @retval -1    no match
+ *
+ *  @remark
+ *  Returns -1 if empty match list
+ */
+int exactly_matches_anyv(const char * s, ...) {
+   int result = -1;
+   int ndx = 0;
+   va_list args;
+   va_start(args, s);
+   const char * candidate;
+   while ( (candidate = va_arg(args, const char *)) != NULL) {
+      if (streq(s, candidate)) {
+         result = ndx;
+         break;
+      }
+      ndx++;
+   }
+   va_end(args);
+   return result;
+}
+
+
+/** Tests if a string exactly matches any string in a null-terminated
+ *  array of strings.  (Null_Terminated_String_Array).
+ *
+ *  The match is case-insensitive.
+ *
+ *  @param  s           string to test for
+ *  @param  match_list  null terminated array of pointers to strings
+ *
+ *  @retval >= 0  index of matching array entry
+ *  @retval -1    no match
+ *
+ *  @remark
+ *  Returns -1 if empty match list
+ */
+int exactly_matches_any_case(const char * s, const char ** match_list) {
+   return matches_by_func(s, match_list, streqcase);
 }
 
 
