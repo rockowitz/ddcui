@@ -403,7 +403,7 @@ void MainWindow::initSerialMsgbox() {
 
    TRACECF_NOPREFIX(debug, "_msgboxQueue=%p, _msgBoxThread=%p", _msgBoxQueue, _msgBoxThread);
 
-// #define RECURSIVE_EXEC_FIX
+#define RECURSIVE_EXEC_FIX
 #ifdef RECURSIVE_EXEC_FIX
    // Do not connect QMessageBox::finished to MsgBoxThread::msbgoxClosed.  QDialog::done()
    // quits the nested event loop and only then emits finished(), so the semaphore would be
