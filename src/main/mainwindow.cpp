@@ -362,8 +362,18 @@ void MainWindow::initSerialMsgbox() {
 
    TRACECF_NOPREFIX(debug, "_msgboxQueue=%p, _msgBoxThread=%p", _msgBoxQueue, _msgBoxThread);
 
+#ifdef RECURSIVE_EXEC_FIX
+   // Do not connect QMessageBox::finished to MsgBoxThread::msbgoxClosed.  QDialog::done()
+   // quits the nested event loop and only then emits finished(), so the semaphore would be
+   // released while this thread is still inside exec().  The worker's acquire() then returns
+   // and posts the next postSerialMsgBox, which the not yet exited nested loop can dispatch,
+   // re-entering showSerialMsgBox() and calling exec() on a dialog that is still visible --
+   // "QDialog::exec: Recursive call detected", the second message overwriting the text of the
+   // one on screen.  showSerialMsgBox() releases the semaphore after exec() returns instead.
+#else
    QObject::connect(_serialMsgBox, &QMessageBox::finished,
                     _msgBoxThread, &MsgBoxThread::msbgoxClosed);
+#endif
 
    QObject::connect(_msgBoxThread, &MsgBoxThread::postSerialMsgBox,
                     this,          &MainWindow::showSerialMsgBox);
@@ -967,7 +977,21 @@ void MainWindow::showSerialMsgBox(QString title, QString text, QMessageBox::Icon
          _msgBoxThread, &MsgBoxThread::msbgoxClosed );
 #endif
 
+#ifdef RECURSIVE_EXEC_FIX
+   int result = _serialMsgBox->exec();
+
+   // Release only now that exec() has returned and the nested event loop is gone, so the
+   // next message cannot be dispatched into a still-executing dialog.  See the comment in
+   // initSerialMsgbox().
+   // Guarded: the nested event loop can have processed a shutdown -- the main window
+   // closing while this dialog is up -- which runs the teardown that deletes
+   // _msgBoxThread and nulls it, and only then does exec() return.
+   if (_msgBoxThread)
+      _msgBoxThread->msbgoxClosed(result);
+#else
+
    _serialMsgBox->exec();
+ #endif
    TRACEMCF_DONE(debug, "After serialMsgBox2->exec() returns.");
 // #endif
 
