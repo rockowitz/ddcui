@@ -14,6 +14,7 @@
 #include <QMessageBox>
 #include <QWidget>
 #include <QShortcut>     // 5.9
+#include <QSignalBlocker>
 
 #include <ddcutil_c_api.h>
 #include <ddcutil_status_codes.h>
@@ -191,6 +192,28 @@ int MainWindow::matchMonitor(DDCA_Display_Ref dref) {
 }
 
 
+/** Returns the Monitor instance currently selected in the display selector
+ *  combo box.
+ *
+ *  @return Monitor instance, NULL if the combo box selects no monitor
+ *
+ *  @remark
+ *  The combo box entries parallel the _monitors array, but the two are updated
+ *  by separate statements, so the combo box index must be range checked against
+ *  _monitors before it is used as a subscript.  QVector::operator[] and at() are
+ *  unchecked, and an out of range slot can still hold the pointer to a Monitor
+ *  that has been deleted.  See the comments in initOneMonitor() and
+ *  removeMonitor() for how the window between the two updates is closed.
+ */
+Monitor * MainWindow::currentMonitor() {
+   Monitor * result = NULL;
+   int monitorNdx = _toolbarDisplayCB->currentIndex();
+   if (monitorNdx >= 0 && monitorNdx < _monitors.size())
+      result = _monitors.at(monitorNdx);
+   return result;
+}
+
+
 /** Called when a new monitor is detected
  *
  * @oaran dref  Display reference for monitor being added
@@ -213,6 +236,12 @@ int MainWindow::addMonitor(DDCA_Display_Ref dref) {
    }
    // initialize monitor data structures, add to display selector combo box
    initOneMonitor(dinfo, nextIndex);
+
+   // Perform the view refresh that the combo box signal blocked in
+   // initOneMonitor() would have performed, now that the combo box and the
+   // _monitors array agree.
+   displaySelectorCombobox_currentIndexChanged(_toolbarDisplayCB->currentIndex());
+
    TRACECF_DONE(debug, "Returning %d", nextIndex);
    return nextIndex;
 }
@@ -248,10 +277,22 @@ int MainWindow::removeMonitor(DDCA_Display_Ref dref) {
 
       // disconnect signals from base model of monitor being removed
       disconnectBaseModel(monitor);
-     _toolbarDisplayCB->removeItem(indexToDelete);
       TRACECF_NOPREFIX(debug, "deleting monitor monNdx=%d, monitor=%p, dispno=%d",
                      monNdx, monitor, monitor->_displayInfo->dispno);
-      _monitors.removeAt(monNdx);
+
+      {
+         // QComboBox::removeItem() can change the current index, and emits
+         // currentIndexChanged() before it returns.  Suppress that signal until the
+         // combo box and the _monitors array agree again.  The slot refreshes the
+         // current view, and the view slots subscript _monitors with the combo box
+         // index: between the two statements below the combo box has one entry
+         // fewer than _monitors, so that index names the wrong monitor, or the one
+         // about to be deleted.  The explicit view refresh below replaces the
+         // suppressed signal.
+         QSignalBlocker blocker(_toolbarDisplayCB);
+         _toolbarDisplayCB->removeItem(indexToDelete);
+         _monitors.removeAt(monNdx);
+      }
       delete monitor;
       // TRACECF(debug, "deleted monitor monNdx=%d", monNdx);
 
@@ -362,6 +403,7 @@ void MainWindow::initSerialMsgbox() {
 
    TRACECF_NOPREFIX(debug, "_msgboxQueue=%p, _msgBoxThread=%p", _msgBoxQueue, _msgBoxThread);
 
+// #define RECURSIVE_EXEC_FIX
 #ifdef RECURSIVE_EXEC_FIX
    // Do not connect QMessageBox::finished to MsgBoxThread::msbgoxClosed.  QDialog::done()
    // quits the nested event loop and only then emits finished(), so the semaphore would be
@@ -481,7 +523,21 @@ void MainWindow::initOneMonitor(DDCA_Display_Info2 * info, int curIndex) {
    TRACECF_STARTING(debug, "info=%p, curIndex=%d", info, curIndex);
 
    int monitorNumber = curIndex+1;
-   _toolbarDisplayCB->addItem(ddcu_comboBoxModelName(info), QVariant(monitorNumber));
+   {
+      // Adding an entry to an empty combo box makes it the current entry, and
+      // QComboBox emits currentIndexChanged() from inside addItem().  Suppress that
+      // signal: the Monitor instance for this entry does not exist yet, and the slot
+      // refreshes the current view, which subscripts _monitors with the combo box
+      // index.  With _monitors empty that subscript is out of range, and the
+      // unchecked QVector slot still holds the pointer to the Monitor last deleted
+      // by removeMonitor() -- so a connect event following a disconnect event wrote
+      // into the deleted monitor's QPlainTextEdit and aborted.  addMonitor()
+      // refreshes the view explicitly once the Monitor and its widgets exist.
+      // initMonitors() connects the signal only after its initOneMonitor() loop, so
+      // startup never saw this.
+      QSignalBlocker blocker(_toolbarDisplayCB);
+      _toolbarDisplayCB->addItem(ddcu_comboBoxModelName(info), QVariant(monitorNumber));
+   }
 
    // Create Monitor instance, initialize data structures
    Monitor * curMonitor = new Monitor(info, monitorNumber);
@@ -954,6 +1010,7 @@ void MainWindow::reportDdcApiError(QString funcname, int rc) const {
 //
 // SerialMsgBox slots
 //
+// #define NON_PERSISTENT
 
 void MainWindow::showSerialMsgBox(QString title, QString text, QMessageBox::Icon icon) {
    bool debug = false;
@@ -989,9 +1046,8 @@ void MainWindow::showSerialMsgBox(QString title, QString text, QMessageBox::Icon
    if (_msgBoxThread)
       _msgBoxThread->msbgoxClosed(result);
 #else
-
    _serialMsgBox->exec();
- #endif
+#endif
    TRACEMCF_DONE(debug, "After serialMsgBox2->exec() returns.");
 // #endif
 
@@ -1096,12 +1152,11 @@ void MainWindow::on_actionMonitorSummary_triggered()
     int monitorNdx = _toolbarDisplayCB->currentIndex();
     TRACEMF_STARTING(debug, "monitorNdx=%d", monitorNdx);
 
-    if (monitorNdx < 0) {
+    Monitor * monitor = currentMonitor();
+    if (!monitor) {
        // _ui->centralWidget->hide();
     }
     else {
-       // find Monitor rec
-       Monitor * monitor = _monitors[monitorNdx];
        DDCA_Display_Info2 * dinfo =  monitor->_displayInfo;    // &_dlist->info[monitorNdx];
        DDCA_Display_Ref dref = dinfo->dref;
        TRACEMF_NOPREFIX(debug, "monitorNdx (%d), dref=%s", monitorNdx, ddca_dref_repr(dref));
@@ -1224,11 +1279,11 @@ void MainWindow::on_actionCapabilities_triggered()
     bool debug  = false;
     int monitorNdx = _toolbarDisplayCB->currentIndex();
     TRACECF_STARTING(debug, "monitorNdx=%d", monitorNdx);
-    if (monitorNdx < 0) {
-       TRACECF_DONE(debug, "monitorNdx = %d is < 0, ignoring", monitorNdx);
+    Monitor * monitor = currentMonitor();
+    if (!monitor) {
+       TRACECF_DONE(debug, "monitorNdx = %d selects no monitor, ignoring", monitorNdx);
     }
     else {
-       Monitor * monitor = _monitors.at(monitorNdx);
        DDCA_Display_Info2 * dinfo = monitor->_displayInfo; // &_dlist->info[monitorNdx];
        DDCA_Display_Ref dref = dinfo->dref;
        char * caps_report = NULL;
@@ -1247,7 +1302,6 @@ void MainWindow::on_actionCapabilities_triggered()
               // cout << "Parsed capabilities: " << endl;
               // cout << caps_report << endl;
 
-              Monitor * monitor = _monitors[monitorNdx];
               QPlainTextEdit * capabilitiesPlainText = monitor->_capabilitiesPlainText;
               // int pageno = monitor->_pageno_capabilities;
               capabilitiesPlainText->setPlainText(caps_report);
@@ -1280,11 +1334,11 @@ void MainWindow::on_actionFeaturesScrollArea_triggered()
     }
 
     int monitorNdx = _toolbarDisplayCB->currentIndex();
-    if (monitorNdx < 0) {
-       TRACECF_NOPREFIX(debug, "monitorNdx = %d is < 0, ignoring", monitorNdx);
+    Monitor * monitor = currentMonitor();
+    if (!monitor) {
+       TRACECF_NOPREFIX(debug, "monitorNdx = %d selects no monitor, ignoring", monitorNdx);
     }
     else {
-       Monitor * monitor = _monitors[monitorNdx];
        if (debug) {
            TRACEC_NOPREFIX("Current view: %d, feature list:", _curView);
            monitor->_curFeatureSelector.dbgrpt();
