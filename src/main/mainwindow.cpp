@@ -394,6 +394,7 @@ void MainWindow::forDisplayChanged(DDCA_Display_Status_Event evt) {
 void MainWindow::initSerialMsgbox() {
    bool debug  = false;
    TRACEMCF_STARTING(debug, "");
+#ifdef PERSISTENT
    // QMessageBox for displaying error messages, one at a time
    // using persistent serial message box
    _serialMsgBox = new QMessageBox(this);
@@ -417,11 +418,18 @@ void MainWindow::initSerialMsgbox() {
                     _msgBoxThread, &MsgBoxThread::msbgoxClosed);
 #endif
 
-   QObject::connect(_msgBoxThread, &MsgBoxThread::postSerialMsgBox,
-                    this,          &MainWindow::showSerialMsgBox);
-
    // Defer until after MainWindow::show() so that dialog box appears over main window
    // _msgBoxThread->start();
+#endif
+
+   // Must not be inside the conditional above.  MsgBoxThread::run() emits
+   // postSerialMsgBox for every message it takes off the queue, and with nothing
+   // connected to that signal showSerialMsgBox() is never called and no dialog
+   // appears at all.  The persistent QMessageBox created above is no longer used -
+   // showSerialMsgBox() creates its own per message - but this connection is what
+   // delivers the messages and is needed either way.
+   QObject::connect(_msgBoxThread, &MsgBoxThread::postSerialMsgBox,
+                    this,          &MainWindow::showSerialMsgBox);
 
    TRACEMCF_DONE(debug, "");
 }
@@ -1010,32 +1018,36 @@ void MainWindow::reportDdcApiError(QString funcname, int rc) const {
 //
 // SerialMsgBox slots
 //
-// #define NON_PERSISTENT
 
 void MainWindow::showSerialMsgBox(QString title, QString text, QMessageBox::Icon icon) {
    bool debug = false;
    TRACEMCF_STARTING(debug, "text=%s", QS2S(text));
-// #ifdef DIALOG_BOX_STILL_ON_SEPARATE_SCREEN
-#ifdef NON_PERSISTENT
+
+   // A fresh dialog for each message, deleted at the end of this function.  It is
+   // parented to the main window, so without that delete it would live on, hidden,
+   // for the life of the window, one child accumulating per message.
    QMessageBox * serialMbox2 = new QMessageBox(this);
    serialMbox2->setStandardButtons(QMessageBox::Ok);
    serialMbox2->setWindowModality(Qt::WindowModal);
    serialMbox2->setModal(true);
    serialMbox2->setFont(_ui->mainMenuFont);
-#endif
-   // _serialMsgBox->setTextFormat(Qt::RichText);
-   _serialMsgBox->setText(text);
-   _serialMsgBox->setWindowTitle(title);
-   _serialMsgBox->setIcon(icon);
 
-#ifdef NON_PERSISTENT
-   QObject::connect(
-         serialMbox2,   &QMessageBox::finished,
-         _msgBoxThread, &MsgBoxThread::msbgoxClosed );
-#endif
+   // TOTO: do not create in initSerialMsgBox()
+   // The persistent dialog created once by initSerialMsgbox(), reused here.
+   // QMessageBox * serialMbox2 = _serialMsgBox;
 
-#ifdef RECURSIVE_EXEC_FIX
-   int result = _serialMsgBox->exec();
+   // serialMbox2->setTextFormat(Qt::RichText);
+   serialMbox2->setText(text);
+   serialMbox2->setWindowTitle(title);
+   serialMbox2->setIcon(icon);
+
+// #ifdef NON_PERSISTENT
+//    QObject::connect(
+//          serialMbox2,   &QMessageBox::finished,
+//          _msgBoxThread, &MsgBoxThread::msbgoxClosed );
+// #endif
+
+   int result = serialMbox2->exec();
 
    // Release only now that exec() has returned and the nested event loop is gone, so the
    // next message cannot be dispatched into a still-executing dialog.  See the comment in
@@ -1045,21 +1057,38 @@ void MainWindow::showSerialMsgBox(QString title, QString text, QMessageBox::Icon
    // _msgBoxThread and nulls it, and only then does exec() return.
    if (_msgBoxThread)
       _msgBoxThread->msbgoxClosed(result);
-#else
-   _serialMsgBox->exec();
-#endif
-   TRACEMCF_DONE(debug, "After serialMsgBox2->exec() returns.");
-// #endif
 
-#ifdef NO
-   _serialMsgBox->setText(text);
-   _serialMsgBox->setWindowTitle(title);
-   _serialMsgBox->setIcon(icon);
-   _serialMsgBox->show();
-   _serialMsgBox->exec();
-#endif
+   // Only now that exec() has returned.  Deleting a QWidget detaches it from its
+   // parent, so this is all the cleanup the dialog needs.  Not WA_DeleteOnClose:
+   // that also works with exec(), which clears the attribute and deletes the
+   // dialog itself before returning the result, but then this pointer dangles and
+   // nothing, a trace statement included, may touch it afterwards.
+   delete serialMbox2;
+
+   TRACEMCF_DONE(debug, "After serialMsgBox2->exec() returns.");
 
 }
+
+
+#ifdef PERSISTENT_ARCHIVED
+
+void MainWindow::showSerialMsgBox(QString title, QString text, QMessageBox::Icon icon) {
+   bool debug = false;
+   TRACEMCF_STARTING(debug, "text=%s", QS2S(text));
+// #ifdef DIALOG_BOX_STILL_ON_SEPARATE_SCREEN
+
+   // The persistent dialog created once by initSerialMsgbox(), reused here.
+   QMessageBox * serialMsgBox = _serialMsgBox;
+   // serialMsgBox->setTextFormat(Qt::RichText);
+   serialMsgBox->setText(text);
+   serialMsgBox->setWindowTitle(title);
+   serialMsgBox->setIcon(icon);
+
+   serialMsgBox->exec();
+   TRACEMCF_DONE(debug, "After serialMsgBox2->exec() returns.");
+}
+#endif
+
 
 //
 // Miscellaneous Slots
