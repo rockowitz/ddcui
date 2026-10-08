@@ -10,23 +10,12 @@
 #include <glib-2.0/glib.h>
 #include <stdbool.h>
 
-#include <QMetaType>
 /** \endcond */
 
 #include "c_util/glib_util.h"
 #include "c_util/report_util.h"
 
 #include "base/ddcui_rtti.h"
-
-
-static const char * metaclass_name(const char * classname) {
-   if (!classname)
-      return NULL;
-   const QMetaObject * mo = QMetaType::fromName(classname).metaObject();
-   if (mo)
-      return mo->className();
-   return classname;
-}
 
 
 static const int Initial_Method_Table_Size    = 200;
@@ -59,9 +48,23 @@ void rtti_method_name_table_add(const char * method_name) {
       gchar * class_name = g_strndup(method_name, sep - method_name);
       if (!gaux_ptr_array_find_with_equal_func(class_name_table, class_name, g_str_equal, NULL))
          g_ptr_array_add(class_name_table, g_strdup(class_name));
-      const char * mcname = metaclass_name(class_name);
-      if (!gaux_ptr_array_find_with_equal_func(metaclass_name_table, mcname, g_str_equal, NULL))
-         g_ptr_array_add(metaclass_name_table, g_strdup(mcname));
+      // The metaclass name is the class name.  At a trace site the metaclass is
+      // metaObject()->className(), i.e. the dynamic class of the live object, and for an
+      // instance of class Foo that is "Foo" -- see the M variants of the TRACE macros in
+      // ddcui_core.h and the Metaclass/Class formatting in printftcmf().
+      //
+      // This used to ask QMetaType::fromName(class_name).metaObject()->className(), which
+      // never answered: fromName() resolves a meta-type name, and a QObject subclass is not
+      // registered as a meta-type under its bare class name -- only pointer types are, and
+      // only for classes Qt itself registers.  So the lookup failed for every ddcui class
+      // and the code fell through to the class name, which is the value used here.  Besides
+      // being useless, the call provoked an Invalid read of size 16 inside
+      // QMetaType::fromName() under valgrind, once per registration: a vectorized string
+      // compare reading a 16 byte word that begins before the g_strndup'd class name.  That
+      // over-read is harmless -- reproducible with Qt alone, and not reported when the name
+      // is a string literal, since .rodata is always addressable -- but it is noise.
+      if (!gaux_ptr_array_find_with_equal_func(metaclass_name_table, class_name, g_str_equal, NULL))
+         g_ptr_array_add(metaclass_name_table, g_strdup(class_name));
       g_free(class_name);
    }
 }
